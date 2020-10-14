@@ -99,7 +99,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val RATING_5 = 5
         private const val SAME_ARGS_ERROR = 3
 
-        private const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
+        const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
         private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
@@ -412,9 +412,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewScrollView.smoothScrollTo(0, createReviewDivider.bottom)
     }
 
-    override fun trackWhenHasFocus(isEmpty: Boolean) {
-        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), isEmpty, isEditMode, feedbackId.toString())
-        setHelperText(0)
+    override fun trackWhenHasFocus(textLength: Int) {
+        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), textLength == 0, isEditMode, feedbackId.toString())
+        setHelperText(textLength)
     }
 
     override fun onTextChanged(textLength: Int) {
@@ -1042,13 +1042,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     fun showCancelDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                if (isEditMode) {
-                    setTitle(getString(R.string.review_edit_dialog_title))
-                    setDescription(getString(R.string.review_edit_dialog_subtitle))
-                } else {
-                    setTitle(getString(R.string.review_create_dialog_title))
-                    setDescription(getString(R.string.review_create_dialog_body))
-                }
+                setTitle(getString(R.string.review_edit_dialog_title))
+                setDescription(getString(R.string.review_edit_dialog_subtitle))
                 setPrimaryCTAText(getString(R.string.review_edit_dialog_continue_writing))
                 setPrimaryCTAClickListener {
                     dismiss()

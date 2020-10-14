@@ -5,16 +5,21 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.fragment_create_review.*
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
@@ -39,6 +44,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
         context?.let {
             val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
             val editText: EditText = view.findViewById(R.id.createReviewBottomSheetEditText)
+            val incentiveHelperText: Typography = view.findViewById(R.id.incentiveHelperTypography)
             editText.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
@@ -50,9 +56,37 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                     }
                 }
                 setBackgroundColor(Color.TRANSPARENT)
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        // No Op
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        // No Op
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        val textLength = s?.length ?: 0
+                        with(incentiveHelperText) {
+                            incentiveHelper = when {
+                                textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
+                                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
+                                }
+                                textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
+                                    context?.getString(R.string.review_create_text_area_partial) ?: ""
+                                }
+                                else -> {
+                                    context?.getString(R.string.review_create_text_area_empty) ?: ""
+                                }
+                            }
+                            text = incentiveHelper
+                            show()
+                        }
+                    }
+
+                })
             }
-            val incentiveHelper: Typography = view.findViewById(R.id.incentiveHelperTypography)
-            incentiveHelper.text = this.incentiveHelper
+            incentiveHelperText.text = this.incentiveHelper
             setChild(view)
             showCloseIcon = false
             isFullpage = true

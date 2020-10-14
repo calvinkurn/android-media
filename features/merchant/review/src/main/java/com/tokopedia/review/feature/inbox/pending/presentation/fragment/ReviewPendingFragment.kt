@@ -163,7 +163,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         super.onViewCreated(view, savedInstanceState)
         initView()
         showFullPageLoading()
-        getIncentiveOvoData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
