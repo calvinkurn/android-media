@@ -19,10 +19,10 @@ class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListe
         globalNavWidgetWithoutBackground?.setData(globalNavWidgetWithoutBackgroundInModel, this)
         globalNavWidgetCard?.setData(globalNavWidgetModelCard, this)
         globalNavWidgetCard2?.setData(globalNavWidgetModelCard2, this)
-        singleGlobalNavWidgetPill?.setData(singleGlobalNavWidgetPill, this)
-        singleGlobalNavWidgetCardIconWithNoSubtitleInfo?.setData(singleGlobalNavWidgetCardIconWithNoSubtitleInfo, this)
-        singleGlobalNavWidgetCardIcon?.setData(singleGlobalNavWidgetCardIcon, this)
-        singleGlobalNavWidgetCardImage?.setData(singleGlobalNavWidgetCardImage, this)
+        singleGlobalNavWidgetPill?.setData(singleGlobalNavWidgetModelPill, this)
+        singleGlobalNavWidgetCardIconWithNoSubtitleInfo?.setData(singleGlobalNavWidgetModelCardIconWithNoSubtitleInfo, this)
+        singleGlobalNavWidgetCardIcon?.setData(singleGlobalNavWidgetModelCardIcon, this)
+        singleGlobalNavWidgetCardImage?.setData(singleGlobalNavWidgetModelCardImage, this)
     }
 
     override fun onClickItem(item: GlobalNavWidgetModel.Item) {

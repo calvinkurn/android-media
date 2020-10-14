@@ -292,7 +292,7 @@ internal val globalNavWidgetModelCard2 = GlobalNavWidgetModel(
         }
 )
 
-internal val singleGlobalNavWidgetPill = GlobalNavWidgetModel(
+internal val singleGlobalNavWidgetModelPill = GlobalNavWidgetModel(
         source = "other",
         keyword = "qurban",
         title = "Qurban untuk Indonesia",
@@ -316,7 +316,7 @@ internal val singleGlobalNavWidgetPill = GlobalNavWidgetModel(
         }
 )
 
-internal val singleGlobalNavWidgetCardIconWithNoSubtitleInfo = GlobalNavWidgetModel(
+internal val singleGlobalNavWidgetModelCardIconWithNoSubtitleInfo = GlobalNavWidgetModel(
         source = "hotel",
         keyword = "hotel jakarta",
         title = "Booking Hotel",
@@ -340,7 +340,7 @@ internal val singleGlobalNavWidgetCardIconWithNoSubtitleInfo = GlobalNavWidgetMo
         }
 )
 
-internal val singleGlobalNavWidgetCardIcon = GlobalNavWidgetModel(
+internal val singleGlobalNavWidgetModelCardIcon = GlobalNavWidgetModel(
         source = "transport",
         keyword = "tiket pesawat bandung",
         title = "Tiket Pesawat",
@@ -364,7 +364,7 @@ internal val singleGlobalNavWidgetCardIcon = GlobalNavWidgetModel(
         }
 )
 
-internal val singleGlobalNavWidgetCardImage = GlobalNavWidgetModel(
+internal val singleGlobalNavWidgetModelCardImage = GlobalNavWidgetModel(
         source = "recharge",
         keyword = "ps 3",
         title = "Beli Voucher Game",
