@@ -25,8 +25,6 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        //delay for BottomSheet
-        Thread.sleep(750)
     }
 
     fun searchWithKeyword(keyword: String) {
