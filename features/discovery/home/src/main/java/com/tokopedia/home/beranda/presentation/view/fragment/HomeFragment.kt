@@ -537,7 +537,7 @@ open class HomeFragment : BaseDaggerFragment(),
         registerBroadcastReceiverTokoCash()
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
-            HomePageTracking.eventClickJumpRecomendation(activity)
+            HomePageTracking.eventClickJumpRecomendation()
         }
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, object : OnKeyboardVisibilityChangedListener {
             override fun onKeyboardShown() {
@@ -1190,7 +1190,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo(activity)
+        HomePageTracking.eventClickViewAllPromo()
         HomeTrackingUtils.homeViewAllPromotions(activity, "PromoListActivity")
         val remoteConfigEnable: Boolean
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
@@ -1378,14 +1378,14 @@ open class HomeFragment : BaseDaggerFragment(),
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation(activity)
+                        HomePageTracking.eventClickNotAllowGeolocation()
                         getHomeViewModel().onCloseGeolocation()
                         showNotAllowedGeolocationSnackbar()
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation(activity)
+                        HomePageTracking.eventClickAllowGeolocation()
                         detectAndSendLocation()
                         getHomeViewModel().onCloseGeolocation()
                         showAllowedGeolocationSnackbar()
@@ -1892,7 +1892,7 @@ open class HomeFragment : BaseDaggerFragment(),
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) { view: View? ->
-                    HomePageTracking.eventClickOnAtur(activity)
+                    HomePageTracking.eventClickOnAtur()
                     goToApplicationDetailActivity()
                 }.show()
     }

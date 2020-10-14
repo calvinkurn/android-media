@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
@@ -12,7 +11,7 @@ import com.tokopedia.merchantvoucher.common.model.getMinSpendLongString
 import com.tokopedia.merchantvoucher.common.model.getTypeString
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.adapter.ProductMerchantVoucherAdapter
-import kotlinx.android.synthetic.main.item_merchant_voucher.view.*
+import kotlinx.android.synthetic.main.item_product_merchant_voucher.view.*
 
 /**
  * Created by Yehezkiel on 22/09/20
@@ -20,7 +19,7 @@ import kotlinx.android.synthetic.main.item_merchant_voucher.view.*
 class ItemMerchantVoucherViewHolder(view: View, val listener: ProductMerchantVoucherAdapter.PdpMerchantVoucherInterface?) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_merchant_voucher
+        val LAYOUT = R.layout.item_product_merchant_voucher
     }
 
     fun bind(element: MerchantVoucherViewModel) {
@@ -50,11 +49,11 @@ class ItemMerchantVoucherViewHolder(view: View, val listener: ProductMerchantVou
         ic_merchant_voucher?.run {
             when (merchantVoucherType) {
                 MerchantVoucherTypeDef.TYPE_DISCOUNT, MerchantVoucherTypeDef.TYPE_CASHBACK -> {
-                    setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_voucher_discount))
+                    setImageResource(R.drawable.ic_voucher_discount)
                     show()
                 }
                 MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {
-                    setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_voucher_shipping))
+                    setImageResource(R.drawable.ic_voucher_shipping)
                     show()
                 }
                 else -> hide()

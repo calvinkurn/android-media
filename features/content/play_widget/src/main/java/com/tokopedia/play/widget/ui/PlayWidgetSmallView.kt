@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -27,6 +29,8 @@ class PlayWidgetSmallView : ConstraintLayout {
 
     private val adapter = PlayWidgetCardSmallAdapter()
 
+    private var mListener: PlayWidgetListener? = null
+
     init {
         val view = View.inflate(context, R.layout.view_play_widget_small, this)
         tvTitle = view.findViewById(R.id.tv_title)
@@ -36,9 +40,15 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
+    fun setListener(listener: PlayWidgetListener?) {
+        mListener = listener
+    }
+
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
+
         tvSeeAll.text = data.actionTitle
+        tvSeeAll.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
 
         adapter.setItemsAndAnimateChanges(data.items)
     }

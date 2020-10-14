@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMock
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -18,7 +18,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private val rvWidgetSample by lazy { findViewById<RecyclerView>(R.id.rv_widget_sample) }
 
-    private val adapter = PlayWidgetSampleAdapter()
+    private lateinit var widgetCoordinator: PlayWidgetCoordinator
+    private lateinit var adapter: PlayWidgetSampleAdapter
 
     private val cardItemTypeRandom = Random(2)
 
@@ -33,6 +34,9 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     }
 
     private fun setupView() {
+        widgetCoordinator = PlayWidgetCoordinator(this)
+        adapter = PlayWidgetSampleAdapter(widgetCoordinator)
+
         rvWidgetSample.adapter = adapter
         adapter.setItemsAndAnimateChanges(getSampleData())
     }

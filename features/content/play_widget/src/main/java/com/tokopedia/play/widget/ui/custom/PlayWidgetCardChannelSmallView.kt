@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -54,7 +55,9 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
 
         tvTitle.text = model.title
-        tvUpcoming.text = "10 Jan - 17.00"
+        tvUpcoming.text = model.startTime
+
+        setOnClickListener { RouteManager.route(context, model.appLink) }
 
         if (model.video.isLive) {
             flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)

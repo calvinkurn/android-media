@@ -32,9 +32,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -1064,22 +1062,28 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //        }
 //    }
 
-//    override fun onPlayBannerSeeMoreClick(appLink: String) {
-//        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "")
+//    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
+//        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
+//        if(isLogin) {
+//            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+//        } else {
+//            // reset remind icon
+//            adapter.notifyItemChanged(position, Bundle().apply {
+//                putBoolean(UPDATE_REMIND_ME_PLAY, true)
+//                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
+//            })
+//            redirectToLoginPage()
+//        }
+//    }
+//
+//    override fun onPlayBannerSeeMoreClick(appLink: String, widgetPosition: Int) {
+//        shopPageHomeTracking.clickSeeMorePlayCarousel(shopId, viewModel?.userId ?: "", widgetPosition)
 //        RouteManager.route(context, appLink)
 //    }
-
-//    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.impressionPlayBanner(
-//                shopId = dataModel.partnerId,
-//                userId = viewModel?.userId ?: "",
-//                channelId = dataModel.channelId,
-//                bannerId = widgetId,
-//                creativeName = dataModel.coverUrl,
-//                autoPlay = autoPlay,
-//                positionWidget = widgetPosition,
-//                positionChannel = position.toString()
-//        )
+//
+//    override fun onPlayBannerSeeMoreBanner(appLink: String, widgetPosition: Int) {
+//        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
+//        RouteManager.route(context, appLink)
 //    }
 
 //    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
@@ -1540,10 +1544,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val isResetButtonVisible = sortFilterBottomSheet?.bottomSheetAction?.isVisible
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
-        if(applySortFilterModel.selectedSortName.isEmpty()){
+        if(isResetButtonVisible == false){
             sortId = ""
         }
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())

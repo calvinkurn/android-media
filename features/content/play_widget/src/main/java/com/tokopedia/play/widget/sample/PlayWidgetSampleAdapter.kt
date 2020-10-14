@@ -1,16 +1,20 @@
 package com.tokopedia.play.widget.sample
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSampleAdapter : BaseDiffUtilAdapter<PlayWidgetUiModel>(isFlexibleType = true) {
+class PlayWidgetSampleAdapter(
+        coordinator: PlayWidgetCoordinator
+) : BaseDiffUtilAdapter<PlayWidgetUiModel>(isFlexibleType = true) {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetViewAdapterDelegate())
+                .addDelegate(PlayWidgetViewAdapterDelegate(coordinator))
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {

@@ -8,4 +8,8 @@ project.ext {
     artifactName = "graphql_beta_notif-debug"
 }
 
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+}
 apply from: '../publish_local.gradle'
