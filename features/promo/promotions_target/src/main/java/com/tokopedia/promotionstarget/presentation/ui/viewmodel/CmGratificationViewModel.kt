@@ -4,14 +4,14 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
-import com.tokopedia.promotionstarget.data.autoApply.UpdateGratificationNotificationResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.domain.usecase.UpdateGratifNotification
 import com.tokopedia.promotionstarget.presentation.launchCatchError
-import com.tokopedia.promotionstarget.presentation.ui.CustomToast
+import com.tokopedia.promotionstarget.presentation.ui.Locks
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -44,8 +44,10 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 if(!notificationID.isNullOrEmpty()) {
-                    val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
-                    updateGratifNotificationUsecase.getResponse(map)
+                    Locks.notificationMutex.withLock {
+                        val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
+                        updateGratifNotificationUsecase.getResponse(map)
+                    }
                 }
             }
         }, onError = {})

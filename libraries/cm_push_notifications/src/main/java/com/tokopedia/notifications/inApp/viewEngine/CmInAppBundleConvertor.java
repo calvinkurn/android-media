@@ -1,5 +1,7 @@
 package com.tokopedia.notifications.inApp.viewEngine;
 
+import android.text.TextUtils;
+
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,7 +73,17 @@ public class CmInAppBundleConvertor {
 
             if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME))
                 cmInApp.setScreen(map.get(RulesUtil.Constants.Payload.SCREEN_NAME));
-            else
+
+            if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
+                String screenName = cmInApp.getScreen();
+                String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
+                if (TextUtils.isEmpty(screenName)) {
+                    finalScreenName = screenName + finalScreenName;
+                }
+                cmInApp.setScreen(finalScreenName);
+            }
+
+            if(TextUtils.isEmpty(cmInApp.getScreen()))
                 return null;
 
             if (!map.containsKey(RulesUtil.Constants.Payload.UI)) {

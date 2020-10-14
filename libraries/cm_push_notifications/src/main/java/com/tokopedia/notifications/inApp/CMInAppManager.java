@@ -88,6 +88,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
      * This is useful for avoiding InApp dialog appearing more than once.
      * */
     String TEMP_TAG = "GratifTag";
+
     static {
         inAppManager = new CMInAppManager();
     }
@@ -276,7 +277,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 }
             }, screenName);
 
-            mapOfGratifJobs.put(entityHashCode, job);
+            if (job != null) {
+                mapOfGratifJobs.put(entityHashCode, job);
+            }
 
         } catch (Exception e) {
             dataConsumed(data);

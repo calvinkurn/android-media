@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
+import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationPresenterComponent
 import com.tokopedia.promotionstarget.data.di.modules.AppModule
@@ -27,12 +28,13 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Com
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
+import com.tokopedia.promotionstarget.presentation.ui.Locks
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -45,10 +47,9 @@ class GratificationPresenter @Inject constructor(val application: Application) {
     @Inject
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
 
-
-    //    @Inject
-//    @field:Named(IO)
-    var worker: CoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    @Inject
+    @field:Named(IO)
+    lateinit var worker: CoroutineDispatcher
 
     @Inject
     @field:Named(MAIN)
@@ -74,48 +75,49 @@ class GratificationPresenter @Inject constructor(val application: Application) {
                                 gratifPopupCallback: GratifPopupCallback? = null,
                                 screenName: String): Job? {
         return scope?.launch(worker + ceh) {
-
-            val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
-            Timber.d("$TAG GRATIF ENGINE API START with=$map")
-            val notifResponse = notificationUseCase.getResponse(map)
-//            val notifResponse = notificationUseCase.getFakeResponse(map)
-            Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
-            //todo Rahul verify key later
-            val reason = notifResponse.response?.resultStatus?.code
-            if (reason == GratifResultStatus.SUCCESS) {
-                //todo Rahul refactor later
-                val code = notifResponse.response.promoCode
-//                val code = "NUPLBDAY5D7RUU5M329"
-                if (!code.isNullOrEmpty()) {
-                    val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
+            Locks.notificationMutex.withLock {
+                val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
+                Timber.d("$TAG GRATIF ENGINE API START with=$map")
+//            val notifResponse = notificationUseCase.getResponse(map)
+                val notifResponse = notificationUseCase.getFakeResponse(map)
+                Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
+                //todo Rahul verify key later
+                val reason = notifResponse.response?.resultStatus?.code
+                if (reason == GratifResultStatus.SUCCESS) {
+                    //todo Rahul refactor later
+//                val code = notifResponse.response.promoCode
+                    val code = "NUPLBDAY5D7RUU5M329"
+                    if (!code.isNullOrEmpty()) {
+                        val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
-                    val couponStatus = couponDetail?.coupon?.realCode ?: ""
-                    if (couponStatus.isNotEmpty()) {
-                        withContext(uiWorker) {
-                            weakActivity.get()?.let { activity ->
-                                if (notificationEntryType == NotificationEntryType.PUSH) {
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
-                                } else if (CmGratificationDialog.weakHashMap[activity] != null) {
-                                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
-                                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
-                                } else {
-                                    Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
+                        val couponStatus = couponDetail?.coupon?.realCode ?: ""
+                        if (couponStatus.isNotEmpty()) {
+                            withContext(uiWorker) {
+                                weakActivity.get()?.let { activity ->
+                                    if (notificationEntryType == NotificationEntryType.PUSH) {
+                                        performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
+                                    } else if (CmGratificationDialog.weakHashMap[activity] != null) {
+                                        Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
+                                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                                    } else {
+                                        Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
+                                        performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
+                                    }
                                 }
                             }
+                        } else {
+                            Timber.d("$TAG COUPON ENGINE INVALID COUPON, notifId = $notificationID, couponCode=$code")
+                            gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                         }
-                    } else {
-                        Timber.d("$TAG COUPON ENGINE INVALID COUPON, notifId = $notificationID, couponCode=$code")
-                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
-                    }
 
+                    } else {
+                        Timber.d("$TAG GRATIF ENGINE COUPON CODE EMPTY, notifId = $notificationID")
+                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
+                    }
                 } else {
-                    Timber.d("$TAG GRATIF ENGINE COUPON CODE EMPTY, notifId = $notificationID")
-                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
+                    Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
+                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
                 }
-            } else {
-                Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
-                gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
             }
         }
     }
@@ -163,6 +165,13 @@ class GratificationPresenter @Inject constructor(val application: Application) {
             synchronized(this) {
                 initSafeJob()
                 initSafeScope()
+            }
+            weakActivity.get()?.let { activity ->
+                if (CmGratificationDialog.weakHashMap[activity] != null) {
+                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
+                    gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                    return null
+                }
             }
             if (!gratificationId.isNullOrEmpty()) {
                 return getNotification(weakActivity, gratificationId.toInt(), notificationEntryType, gratifPopupCallback = gratifPopupCallback, screenName = screenName)
