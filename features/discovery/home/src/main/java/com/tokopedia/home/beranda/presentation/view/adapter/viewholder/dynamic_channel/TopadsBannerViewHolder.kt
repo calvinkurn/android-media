@@ -65,6 +65,13 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         categoryListener.userId,
                         adapterPosition
                 )
+                BannerAdsTracking.sendBannerAdsImpressionTracking(
+                        categoryListener.getTrackingQueueObj(),
+                        element.channel,
+                        categoryListener.userId,
+                        adapterPosition,
+                        true
+                )
 
                 TopAdsUrlHitter(className).hitImpressionUrl(
                         itemView.context,

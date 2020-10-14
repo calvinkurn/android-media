@@ -2,9 +2,11 @@ package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
-object BannerAdsTracking : BaseTracking() {
+object BannerAdsTracking: BaseTrackerConst() {
     private class CustomAction{
         companion object {
             val IMPRESSION_ON_BANNER_ADS = Action.IMPRESSION_ON.format("banner dynamic channel ads")
@@ -17,25 +19,28 @@ object BannerAdsTracking : BaseTracking() {
             isToIris: Boolean = false,
             channel: DynamicHomeChannel.Channels,
             position: Int
-    ) = getBasicPromotionChannelView(
-            event = if (isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-            eventCategory = Category.HOMEPAGE_TOPADS,
-            eventAction = CustomAction.IMPRESSION_ON_BANNER_ADS,
-            eventLabel = "",
-            channelId = channel.id,
-            userId = userId,
-            promotions = listOf(
-                    Promotion(
-                            id = channel.id,
-                            name = channel.promoName,
-                            creative = "",
-                            position = (position+1).toString()
-                    )
-            ),
-            currentSite = CurrentSite.DEFAULT,
-            businessUnit = BusinessUnit.DEFAULT,
-            screen = Screen.DEFAULT
-    )
+    ): Map<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        return trackerBuilder.constructBasicPromotionView(
+                event = if (isToIris)  Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE_TOPADS,
+                eventAction = CustomAction.IMPRESSION_ON_BANNER_ADS,
+                eventLabel = Label.NONE,
+                promotions = listOf(
+                        Promotion(
+                                id = channel.id,
+                                name = channel.promoName,
+                                creative = "",
+                                position = (position+1).toString()
+                        )
+                ))
+                .appendChannelId(channel.id)
+                .appendUserId(userId)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendScreen(Screen.DEFAULT)
+                .build()
+    }
 
     private fun getBannerAdsClick(
             headerName: String,
@@ -43,30 +48,33 @@ object BannerAdsTracking : BaseTracking() {
             userId: String,
             position: Int,
             channel: DynamicHomeChannel.Channels
-    ) = getBasicPromotionChannelClick(
-            event = Event.PROMO_CLICK,
-            eventCategory = Category.HOMEPAGE_TOPADS,
-            eventAction = CustomAction.CLICK_ON_BANNER_ADS,
-            eventLabel = "",
-            channelId = channelId,
-            affinity = channel.persona,
-            attribution = channel.galaxyAttribution,
-            categoryId = channel.categoryID,
-            shopId = channel.brandId,
-            userId = userId,
-            campaignCode = channel.campaignCode,
-            promotions = listOf(
-                    Promotion(
-                            id = channel.id,
-                            name = channel.promoName,
-                            creative = "",
-                            position = (position+1).toString()
-                    )
-            ),
-            currentSite = CurrentSite.DEFAULT,
-            businessUnit = BusinessUnit.DEFAULT,
-            screen = Screen.DEFAULT
-    )
+    ): Map<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        return trackerBuilder.constructBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE_TOPADS,
+                eventAction = CustomAction.CLICK_ON_BANNER_ADS,
+                eventLabel = Label.NONE,
+                promotions = listOf(
+                        Promotion(
+                                id = channel.id,
+                                name = channel.promoName,
+                                creative = "",
+                                position = (position+1).toString()
+                        )
+                ))
+                .appendChannelId(channelId)
+                .appendUserId(userId)
+                .appendAffinity(channel.persona)
+                .appendAttribution(channel.galaxyAttribution)
+                .appendCategoryId(channel.categoryID)
+                .appendShopId(channel.brandId)
+                .appendCampaignCode(channel.campaignCode)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendScreen(Screen.DEFAULT)
+                .build()
+    }
 
     fun sendBannerAdsClickTracking(channelModel: DynamicHomeChannel.Channels,
                                    userId: String,
