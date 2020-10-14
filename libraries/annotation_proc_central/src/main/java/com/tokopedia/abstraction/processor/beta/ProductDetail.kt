@@ -8,10 +8,10 @@ import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.checkers.ProductDetailViewsChecker
 import com.tokopedia.checkers.ProductListImpressionProductChecker
 import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.product.util.processor.KEY_SESSION_IRIS
+import com.tokopedia.product.util.processor.Product
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
@@ -107,3 +107,14 @@ data class ProductDetailProduct(
         @DefinedInCollections
         val stringCollection: HashMap<String, String>
 )
+
+object ProductDetailViewsChecker {
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
+
+        fun isOnlyOneProduct(items: List<ProductDetailProduct>) = items.size == 1
+
+        fun isOnlyOneProduct_(items: List<Product>) = items.size == 1
+
+        fun checkMap(map: Map<String, String>) = map.isNotEmpty()
+}

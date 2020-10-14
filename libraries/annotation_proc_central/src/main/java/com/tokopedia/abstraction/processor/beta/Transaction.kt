@@ -101,8 +101,8 @@ object TransactionChecker {
         try {
             return eventAction.equals(Event.ECOMMERCE_PURCHASE)
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -113,8 +113,8 @@ object TransactionChecker {
         try {
             return eventAction > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 

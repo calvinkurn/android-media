@@ -31,8 +31,8 @@ data class CheckoutOther(
         @DefaultValueString("")
         val checkout_option: String?,
         @CustomChecker(CheckoutOtherChecker::class, Level.ERROR, functionName = ["isCheckoutStepValid"])
-        @DefaultValueString("0")
-        val checkout_step: String?,
+        @DefaultValueLong(0)
+        val checkout_step: Long?,
         @DefaultValueString("")
         val currentSite: String?,
         @DefaultValueString("")
@@ -89,8 +89,8 @@ object CheckoutOtherChecker {
         try {
             return eventAction.equals(Event.ECOMMERCE_PURCHASE)
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -101,19 +101,19 @@ object CheckoutOtherChecker {
         try {
             return eventAction > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
     fun checkMap(map: Map<String, String>) = map.isNotEmpty()
 
-    fun isCheckoutStepValid(products: Long) : Boolean{
+    fun isCheckoutStepValid(products: Long): Boolean {
         try {
             return products != 1L
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 

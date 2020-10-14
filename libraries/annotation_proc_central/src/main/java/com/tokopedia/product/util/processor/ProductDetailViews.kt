@@ -5,7 +5,6 @@ import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.checkers.ProductDetailViewsChecker
 import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
@@ -18,7 +17,7 @@ const val KEY_SESSION_IRIS = "sessionIris"
 data class ProductDetailViews(
         @Key(com.tokopedia.analytic_constant.Param.ITEM_LIST)
         val itemList: String,
-        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct_"])
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         @Key("items")
         val items: List<Product>,
         @Key("key")
@@ -59,7 +58,7 @@ data class ProductDetailViews(
         val layout: String,
         @Key(ProductTrackingConstant.Tracking.KEY_COMPONENT)
         val component: String,
-        @Key("productPrice" )
+        @Key("productPrice")
         val productPrice: String,
         @Key("productName")
         val productName: String,
@@ -95,3 +94,14 @@ data class ProductDetailViews(
         val screenName: String?
 
 )
+
+object ProductDetailViewsChecker {
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
+
+        fun isOnlyOneProduct(items: List<Product>) = items.size == 1
+
+        fun checkMap(map: Map<String, String>) = map.isNotEmpty()
+
+        fun isIndexNotZero(index: Long) = !(index > 0)
+}

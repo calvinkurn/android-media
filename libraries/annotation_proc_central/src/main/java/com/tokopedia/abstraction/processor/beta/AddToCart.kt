@@ -81,8 +81,8 @@ object AddToCartChecker {
         try {
             return eventAction.equals(Event.ECOMMERCE_PURCHASE)
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -93,8 +93,8 @@ object AddToCartChecker {
         try {
             return eventAction > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -104,8 +104,8 @@ object AddToCartChecker {
         try {
             return products.size > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 
@@ -113,8 +113,8 @@ object AddToCartChecker {
         try {
             return products == 1L
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 

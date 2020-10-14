@@ -337,7 +337,8 @@ public class TopChatAnalytics {
                 getFrom(product),
                 getFrom(product),
                 null,
-                null
+                null,
+                new HashMap<>()
         );
         products.add(product1);
 
@@ -349,7 +350,8 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_PRODUCT_PREVIEW,
                 null,
-                null
+                null,
+                new HashMap<>()
         );
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle

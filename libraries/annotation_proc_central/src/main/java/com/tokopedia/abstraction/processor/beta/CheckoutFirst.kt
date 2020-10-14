@@ -32,8 +32,8 @@ data class CheckoutFirst(
         @DefaultValueString("")
         val checkout_option: String?,
         @CustomChecker(CheckoutFirstChecker::class, Level.IGNORE, functionName = ["isCheckoutStepValid"])
-        @DefaultValueString("1")
-        val checkout_step: String?,
+        @DefaultValueLong(1L)
+        val checkout_step: Long?,
         @DefaultValueString("")
         val currentSite: String?,
         @DefaultValueString("")
@@ -90,8 +90,8 @@ object CheckoutFirstChecker {
         try {
             return eventAction.equals(Event.ECOMMERCE_PURCHASE)
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -102,28 +102,28 @@ object CheckoutFirstChecker {
         try {
             return eventAction > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
     fun checkMap(map: Map<String, String>) = map.isNotEmpty()
 
-    fun isOnlyOneProduct(products: List<CheckoutFirstProduct>) : Boolean{
+    fun isOnlyOneProduct(products: List<CheckoutFirstProduct>): Boolean {
         try {
             return products.size > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 
-    fun isCheckoutStepValid(products: Long) : Boolean{
+    fun isCheckoutStepValid(products: Long): Boolean {
         try {
             return products == 1L
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 

@@ -8,8 +8,6 @@ import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.checkers.ProductDetailViewsChecker
-import com.tokopedia.checkers.ProductListImpressionProductChecker
 import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.product.util.processor.KEY_SESSION_IRIS
 import com.tokopedia.util.GTMErrorHandlerImpl
@@ -80,13 +78,13 @@ data class ProductDetailProduct(
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
         val brand: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long,
@@ -104,3 +102,16 @@ data class ProductDetailProduct(
 
         val map: HashMap<String, String>
 )
+
+object ProductDetailViewsChecker {
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
+
+        fun isOnlyOneProduct(items: List<ProductDetailProduct>) = items.size == 1
+
+        fun checkMap(map: Map<String, String>) = map.isNotEmpty()
+
+        fun isIndexNotZero(index: Long) = !(index > 0)
+
+        fun isPriceNotZero(price: Double) = !(price == 0.0)
+}

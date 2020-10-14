@@ -6,10 +6,7 @@ import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.checkers.ProductListImpressionProductChecker
-import com.tokopedia.firebase.analytic.rules.AddToCartRules
 import com.tokopedia.firebase.analytic.rules.PromoClickRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
@@ -72,8 +69,8 @@ object PromoClickChecker {
         try {
             return eventAction.equals(Event.ECOMMERCE_PURCHASE)
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -84,8 +81,8 @@ object PromoClickChecker {
         try {
             return eventAction > 0
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
@@ -95,8 +92,8 @@ object PromoClickChecker {
         try {
             return products.size == 1
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 
@@ -104,17 +101,17 @@ object PromoClickChecker {
         try {
             return products == 1L
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${products} get exception $e")
+            return true
         }
     }
 
     fun isEventActionValid(eventAction: String): Boolean {
         try {
-            return !(eventAction.contains("impression")||eventAction.contains("view"))
+            return !(eventAction.contains("impression") || eventAction.contains("view"))
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception ${e.toString()}")
-            return true;
+            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            return true
         }
     }
 
