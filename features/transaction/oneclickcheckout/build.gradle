@@ -77,13 +77,13 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestUtil rootProject.ext.testDependencies.androidTestOrchestrator
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

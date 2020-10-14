@@ -88,6 +88,23 @@ class OrderSummaryPageActivityCampaignTest {
     }
 
     @Test
+    fun errorFlow_UpdateCartGotDialogPrompt() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SLASH_PRICE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPayment("Rp116.000", "Bayar")
+
+            cartInterceptor.customUpdateCartOccResponsePath = UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH
+
+            pay()
+            assertPromptDialogVisible("title prompt", "description prompt", "button")
+        }
+    }
+
+    @Test
     fun errorFlow_CheckoutGotBottomSheetPrompt() {
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -152,6 +169,19 @@ class OrderSummaryPageActivityCampaignTest {
                     queryString = "transaction_id=123",
                     method = "POST"
             )
+        }
+    }
+
+    @Test
+    fun errorFlow_ErrorTickerButtonPayDisabled() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_DISABLE_BUTTON_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertPaymentErrorTicker("OVO Error Ticker")
+            assertPaymentButtonEnable(false)
         }
     }
 }

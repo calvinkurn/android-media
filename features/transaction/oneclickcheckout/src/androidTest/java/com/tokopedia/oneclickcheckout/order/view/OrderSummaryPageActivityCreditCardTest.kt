@@ -90,9 +90,7 @@ class OrderSummaryPageActivityCreditCardTest {
 
             assertInstallment("Bayar Penuh")
 
-            for (i in 1..4) {
-                clickAddProductQuantity()
-            }
+            clickAddProductQuantity(4)
 
             clickChangeInstallment {
                 chooseInstallment(3)
@@ -182,9 +180,7 @@ class OrderSummaryPageActivityCreditCardTest {
 
             assertInstallment("Bayar Penuh")
 
-            for (i in 1..4) {
-                clickAddProductQuantity()
-            }
+            clickAddProductQuantity(4)
 
             clickChangeInstallment {
                 chooseInstallment(3)
