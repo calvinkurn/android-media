@@ -9,23 +9,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object HomeRecommendationTracking : BaseTracking(){
+object HomeRecommendationTracking : BaseTrackerConst(){
 
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
     private object CustomAction{
-        val RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS = Action.CLICK.format("product recommendation") + " - non login"
-        val RECOMMENDATION_CLICK_LOGIN_NON_TOPADS = Action.CLICK.format("product recommendation")
-        val RECOMMENDATION_CLICK_NON_LOGIN_TOPADS = Action.CLICK.format("product recommendation") + " - non login - topads"
-        val RECOMMENDATION_CLICK_LOGIN_TOPADS = Action.CLICK.format("product recommendation") + " - topads"
-
-        val RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS = Action.IMPRESSION.format("product recommendation") + " - non login"
-        val RECOMMENDATION_VIEW_NON_LOGIN_TOPADS = Action.IMPRESSION.format("product recommendation") + " - non login - topads"
-        val RECOMMENDATION_VIEW_LOGIN_NON_TOPADS = Action.IMPRESSION.format("product recommendation")
-        val RECOMMENDATION_VIEW_LOGIN_TOPADS = Action.IMPRESSION.format("product recommendation") + " - topads"
-
+        val RECOMMENDATION_VIEW_BASE = Action.IMPRESSION.format("product recommendation")
+        val RECOMMENDATION_CLICK_BASE = Action.CLICK.format("product recommendation")
         const val RECOMMENDATION_ADD_WISHLIST_LOGIN = "add wishlist - product recommendation - login"
         const val RECOMMENDATION_REMOVE_WISHLIST_LOGIN = "remove wishlist - product recommendation - login"
         const val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN = "add wishlist - product recommendation - non login"
@@ -36,82 +28,93 @@ object HomeRecommendationTracking : BaseTracking(){
     }
 
     private object ActionField{
+        // note for https://tokopedia.atlassian.net/browse/AN-20317
+        //  '/ - p2{ - non login} - {homepage recommendation tab} - rekomendasi untuk anda - {recommendation_type} - {recomm_page_name}{ - product topads}'
+
         private const val BASE = "/ - p2 - %s%s - rekomendasi untuk anda - %s"
-        val RECOMMENDATION_ACTION_FIELD_NON_LOGIN = BASE.format("non login", " - %s", "%s")
-        val RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS = BASE.format("non login", " - %s", "%s - product topads")
-        val RECOMMENDATION_ACTION_FIELD_LOGIN = BASE.format("", "%s", "%s")
-        val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS = BASE.format("", "%s", "%s - product topads")
+        val RECOMMENDATION_ACTION_FIELD_NON_LOGIN = BASE.format("non login", " - %s", "%s - %s")
+        val RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS = BASE.format("non login", " - %s", "%s - %s - product topads")
+        val RECOMMENDATION_ACTION_FIELD_LOGIN = BASE.format("", "%s", "%s - %s")
+        val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS = BASE.format("", "%s", "%s - %s - product topads")
     }
 
-    fun getRecommendationProductClickNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
+    fun getRecommendationProductClickNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductClickLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
+    fun getRecommendationProductClickLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_NON_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductClickLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
+    fun getRecommendationProductClickLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductClick(
+    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_CLICK_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductViewLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
+    fun getRecommendationProductViewLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_NON_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductViewLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
+    fun getRecommendationProductViewLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductViewNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
+    fun getRecommendationProductViewNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
-    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = BaseTrackerBuilder().constructBasicProductView(
+    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel)
+            = BaseTrackerBuilder().constructBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_TOPADS,
+            eventAction = CustomAction.RECOMMENDATION_VIEW_BASE,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType, ""),
             products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     ).build()
 
@@ -136,13 +139,16 @@ object HomeRecommendationTracking : BaseTracking(){
             Label.KEY, "$productId - $tabName"
     )
 
-    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationDataModel) = getBasicPromotionView(
-            Event.PROMO_VIEW,
-            Category.HOMEPAGE,
-            Action.IMPRESSION_ON.format(BANNER_INSIDE_RECOMMENDATION),
-            bannerRecommendationDataModel.tabName,
-            listOf(mapToPromoTracking(bannerRecommendationDataModel))
-    )
+    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationDataModel): Map<String, Any> {
+        val trackerBuilder = BaseTrackerBuilder()
+        return trackerBuilder.constructBasicPromotionView(
+                event = Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.IMPRESSION_ON.format(BANNER_INSIDE_RECOMMENDATION),
+                eventLabel = bannerRecommendationDataModel.tabName,
+                promotions = listOf(mapToPromoTracking(bannerRecommendationDataModel))
+        ).build()
+    }
 
     fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
             Event.PROMO_VIEW,

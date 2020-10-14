@@ -4,6 +4,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
@@ -20,11 +21,17 @@ class ItemNavigationSearchViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_search_result_navigation
+        const val SVG = ".svg"
     }
 
     override fun bind(element: NavigationSellerSearchUiModel) {
         bindTitleText(element)
-        with(itemView){
+        with(itemView) {
+            if(element.imageUrl?.contains(SVG) == true) {
+                ivSearchResultNav?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_topads))
+            } else {
+                ivSearchResultNav?.setImageUrl(element.imageUrl.orEmpty())
+            }
             tvDescSearchResultNav?.text = element.desc
             setOnClickListener {
                 navigationSearchListener.onNavigationItemClicked(element, adapterPosition)
