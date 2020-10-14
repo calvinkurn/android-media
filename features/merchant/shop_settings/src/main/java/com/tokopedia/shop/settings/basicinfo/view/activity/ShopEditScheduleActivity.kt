@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
@@ -25,7 +26,6 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
-import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 import javax.inject.Inject
 
@@ -43,8 +43,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
     private var isClosedNow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+        window.decorView.setBackgroundColor(Color.WHITE)
 
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
