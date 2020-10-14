@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others.creditcard.authenticator;
+package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator;
 
 import android.os.Parcel;
 import android.os.Parcelable;

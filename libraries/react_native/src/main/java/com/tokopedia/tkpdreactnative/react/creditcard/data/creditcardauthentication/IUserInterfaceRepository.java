@@ -1,7 +1,7 @@
-package com.tokopedia.buyerorder.others.creditcardauthentication;
+package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication;
 
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 import rx.Observable;
 

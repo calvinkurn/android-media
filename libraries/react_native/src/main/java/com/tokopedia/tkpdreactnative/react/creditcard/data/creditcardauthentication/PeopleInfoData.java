@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others.creditcardauthentication;
+package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication;
 
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;

@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.data;
 
 /**
  * Created by nabilla on 5/31/17.

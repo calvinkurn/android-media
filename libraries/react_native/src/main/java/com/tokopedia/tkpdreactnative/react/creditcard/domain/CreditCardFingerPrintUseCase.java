@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.domain;
 
 
 import android.text.TextUtils;
@@ -7,13 +7,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.buyerorder.common.util.Sha1EncoderUtils;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.buyerorder.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
-import com.tokopedia.buyerorder.others.creditcard.authenticator.UpdateWhiteListRequestData;
-import com.tokopedia.buyerorder.others.creditcardauthentication.UserInfoRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.CreditCardListRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.ResponseRuntimeException;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.UserInfoRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator.AuthenticatorUpdateWhiteListResponse;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator.UpdateWhiteListRequestData;
+import com.tokopedia.tkpdreactnative.react.creditcard.di.SingleAuthenticationComponent;
+import com.tokopedia.tkpdreactnative.react.creditcard.util.Sha1EncoderUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -53,8 +56,7 @@ public class CreditCardFingerPrintUseCase extends UseCase<String> {
         final String userIdKey = requestParams.getString(USER_ID_KEY, "");
         TKPDMapParam<String, String> userInfoParam = new TKPDMapParam<>();
         userInfoParam.put(PROFILE_USER_ID, requestParams.getString(userIdKey, ""));
-        return userInfoRepository.getUserInfo(AuthUtil.generateParamsNetwork(
-                userIdKey, deviceIdKey, userInfoParam))
+        return userInfoRepository.getUserInfo(AuthUtil.generateParamsNetwork(userIdKey, deviceIdKey, userInfoParam))
                 .flatMap(new Func1<String, Observable<AuthenticatorUpdateWhiteListResponse>>() {
                              @Override
                              public Observable<AuthenticatorUpdateWhiteListResponse>

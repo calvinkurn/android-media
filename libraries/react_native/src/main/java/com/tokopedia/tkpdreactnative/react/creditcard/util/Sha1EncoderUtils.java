@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.common.util;
+package com.tokopedia.tkpdreactnative.react.creditcard.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others.creditcard.authenticator;
+package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

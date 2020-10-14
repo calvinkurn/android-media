@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

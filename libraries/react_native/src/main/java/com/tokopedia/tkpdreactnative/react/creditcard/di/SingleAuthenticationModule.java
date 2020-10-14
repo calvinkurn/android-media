@@ -1,8 +1,9 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.di;
 
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.buyerorder.others.creditcardauthentication.UserInfoRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.CreditCardListRepository;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.UserInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

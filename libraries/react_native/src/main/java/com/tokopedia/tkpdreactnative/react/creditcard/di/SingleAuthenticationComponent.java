@@ -1,4 +1,6 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.di;
+
+import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 
 import dagger.Component;
 

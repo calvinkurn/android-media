@@ -1,9 +1,9 @@
-package com.tokopedia.buyerorder.others;
+package com.tokopedia.tkpdreactnative.react.creditcard.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
-import com.tokopedia.buyerorder.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
+import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator.AuthenticatorUpdateWhiteListResponse;
 
 import retrofit2.Response;
 import rx.Observable;

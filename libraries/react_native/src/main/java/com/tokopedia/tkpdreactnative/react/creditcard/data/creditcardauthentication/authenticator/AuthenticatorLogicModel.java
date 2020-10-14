@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.others.creditcard.authenticator;
+package com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator;
 
 /**
  * Created by kris on 10/10/17. Tokopedia
