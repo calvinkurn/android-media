@@ -34,8 +34,6 @@ class LoadMoreViewModel(val application: Application, private val components: Co
         }, onError = {
             it.printStackTrace()
         })
-
-
     }
 
 
