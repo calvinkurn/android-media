@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
     android:background="@drawable/bg_banner_deal_order_detail">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -21,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         tools:text="Hai Mike Wiliam,"
         app:typographyWeight="bold"
         android:textColor="@color/Neutral_N0"
@@ -42,6 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:typographyType="body_3" />
 
     <androidx.appcompat.widget.AppCompatImageView

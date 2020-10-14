@@ -151,7 +151,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     LinearLayout userInfo;
     TextView userInfoLabel;
     private String categoryName;
-    View dividerUserInfo, dividerActionBtn, dividerInfoLabel;
+    View dividerUserInfo, dividerActionBtn, dividerInfoLabel, dividerBannerDeals;
     private CardView policy;
     private CardView claim;
     private View bannerDeals;
@@ -210,6 +210,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         dividerUserInfo = view.findViewById(R.id.divider_above_userInfo);
         dividerActionBtn = view.findViewById(R.id.divider_above_actionButton);
         dividerInfoLabel = view.findViewById(R.id.divider_above_info_label);
+        dividerBannerDeals = view.findViewById(R.id.divider_above_banner_deals);
         actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
         policy = view.findViewById(R.id.policy);
@@ -624,13 +625,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             if (metaDataInfo.getCustomLinkType() != null) {
                 if (metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)) {
                     UserSession userSession = new UserSession(getContext());
+                    dividerBannerDeals.setVisibility(View.VISIBLE);
                     bannerDeals.setVisibility(View.VISIBLE);
 
                     if (isCoachmarkAlreadyShowed()) {
                         bannerDeals.post(new Runnable() {
                             @Override
                             public void run() {
-                                int scrollTo = ((View) bannerDeals.getParent().getParent()).getTop() + bannerDeals.getTop();
+                                int scrollTo = ((View) bannerDeals.getParent()).getTop() + bannerDeals.getTop();
                                 parentScroll.smoothScrollTo(0, scrollTo);
                                 addCoachmarkBannerDeals();
                             }
@@ -660,7 +662,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
         if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
             actionButtonLayout.setVisibility(View.GONE);
-            dividerActionBtn.setVisibility(View.GONE);
         } else {
             dividerActionBtn.setVisibility(View.VISIBLE);
             actionButtonLayout.setVisibility(View.VISIBLE);

@@ -130,12 +130,6 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/voucher_item_card_events" />
 
-                <include
-                    android:id="@+id/banner_deals_order_detail"
-                    layout="@layout/partial_order_detail_banner_deals"
-                    android:visibility="gone"
-                    />
-
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
@@ -317,6 +311,26 @@
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
 
             </RelativeLayout>
+
+            <View
+                android:id="@+id/divider_above_banner_deals"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/grey_300" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/banner_deals_order_detail"
+                    layout="@layout/partial_order_detail_banner_deals"
+                    android:visibility="gone"
+                    />
+
+            </LinearLayout>
 
             <View
                 android:id="@+id/divider_above_info_label"
