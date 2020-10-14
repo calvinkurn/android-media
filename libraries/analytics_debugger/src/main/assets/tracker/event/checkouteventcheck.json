@@ -1,0 +1,64 @@
+{
+  "readme": "Tracking Event PDP",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "screenName": "digital/events/summary",
+      "userId": "{{.*}}",
+      "eventAction": "view checkout",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "checkout_step": "1",
+      "currentSite": "tokopediadigitalevents",
+      "category": "events",
+      "event": "begin_checkout",
+      "items": [
+        {
+          "shop_id": "{{.*}}",
+          "quantity": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "shop_type": "{{.*}}",
+          "item_name": "{{.*}}",
+          "shop_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "checkout_option": "cart page loaded"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": "{{.*}}",
+      "eventCategory": "digital - event",
+      "screenName": "digital/events/summary",
+      "userId": "{{.*}}",
+      "eventAction": "clicked proceed payment",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "checkout_step": "2",
+      "currentSite": "tokopediadigitalevents",
+      "category": "events",
+      "event": "checkout_progress",
+      "items": [
+        {
+          "shop_id": "{{.*}}",
+          "quantity": "{{.*}}",
+          "item_id": "{{.*}}",
+          "price": "{{.*}}",
+          "shop_type": "{{.*}}",
+          "item_name": "{{.*}}",
+          "shop_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}"
+        }
+      ],
+      "checkout_option": "click payment option button"
+    }
+  ]
+}

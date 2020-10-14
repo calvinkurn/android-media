@@ -41,12 +41,12 @@
                 android:ellipsize="end"
                 android:paddingLeft="@dimen/tp_margin_medium"
                 android:paddingRight="@dimen/tp_margin_medium"
-                tools:text="Text Decription"
                 android:textColor="@color/clr_f531353b"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_banner"
                 app:typographyType="heading_3"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Text Decription" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_quota_count"
@@ -75,12 +75,12 @@
                 android:layout_marginStart="@dimen/tp_margin_regular"
                 android:layout_marginLeft="@dimen/tp_margin_regular"
                 android:layout_marginTop="@dimen/tp_margin_small"
-                tools:text="disabled error"
                 android:textColor="@color/red_error"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/text_quota_count"
                 app:layout_constraintTop_toBottomOf="@+id/text_quota_count"
-                app:typographyType="small" />
+                app:typographyType="small"
+                tools:text="disabled error" />
 
             <RelativeLayout
                 android:id="@+id/top_separator"
@@ -121,8 +121,8 @@
                 android:id="@+id/tnc_see_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/sp_4"
                 android:layout_marginLeft="@dimen/dp_16"
+                android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/see_more_txt"
                 android:textColor="@color/medium_green"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
@@ -271,12 +271,12 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:paddingBottom="@dimen/tp_padding_xxsmall"
-            tools:text=";laksdjf;alsjd"
             android:textColor="@color/discount_color"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/text_point_discount"
             app:layout_constraintTop_toTopOf="@+id/text_point_discount"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text=";laksdjf;alsjd" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_point_discount"
@@ -305,7 +305,6 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_6"
-            tools:text="code"
             android:textColor="@color/black"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -313,7 +312,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginTop="@dimen/dp_24"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="code" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_point_value_label"
@@ -333,7 +333,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/tp_margin_xsmall"
             android:layout_marginLeft="@dimen/tp_margin_xsmall"
-            tools:text="point value"
             android:textColor="@color/clr_ae31353b"
             android:visibility="gone"
             app:layout_constraintBaseline_toBaselineOf="@+id/text_point_value_label"
@@ -341,26 +340,43 @@
             app:layout_constraintStart_toEndOf="@+id/text_point_value_label"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="point value" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/button_action_2"
+
+        <RelativeLayout
+            android:id="@+id/btnContainer"
             android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_48"
-            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_12"
-            android:layout_weight="1"
-            android:background="@drawable/bg_button_buy_orange_tokopoints"
-            android:gravity="center"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/tp_text_size_small"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
+            app:layout_constraintTop_toBottomOf="@+id/top_shaded_view">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/button_action_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_button_buy_orange_tokopoints"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/tp_text_size_small"
+                android:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/progressbar_coupon"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_gravity="center"
+                app:loader_corner_radius="@dimen/dp_16"
+                app:loader_type="circular_white"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
