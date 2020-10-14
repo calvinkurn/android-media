@@ -6,12 +6,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 
 /**
  * Created by jegul on 07/10/20
@@ -28,6 +30,8 @@ class PlayWidgetSmallView : ConstraintLayout {
     private val rvWidgetCardSmall: RecyclerView
 
     private val adapter = PlayWidgetCardSmallAdapter()
+
+    private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
     private var mListener: PlayWidgetListener? = null
 
@@ -56,5 +60,7 @@ class PlayWidgetSmallView : ConstraintLayout {
     private fun setupView(view: View) {
         rvWidgetCardSmall.adapter = adapter
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
+
+        snapHelper.attachToRecyclerView(rvWidgetCardSmall)
     }
 }
