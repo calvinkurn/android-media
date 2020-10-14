@@ -11,7 +11,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
@@ -165,7 +164,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-//                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
             }
@@ -229,7 +227,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
             globalEvent.value = newGlobalEvent
-//            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             calculateTotal(forceButtonState = OccButtonState.DISABLE)
         }
     }
@@ -268,7 +265,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (it.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-//                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
             }
         }

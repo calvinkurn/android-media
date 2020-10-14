@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -38,21 +37,18 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
     private fun setupButtonBayar(orderTotal: OrderTotal) {
         view.context?.let { context ->
             btnPay?.apply {
-                Log.i("qwertyuiop", "render button ${orderTotal.buttonType} - ${orderTotal.buttonState}")
                 when (orderTotal.buttonType) {
                     OccButtonType.CHOOSE_PAYMENT -> {
                         layoutParams?.width = Utils.convertDpToPixel(160f, context)
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-//                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
                                 setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                             }
                             OccButtonState.DISABLE -> {
-//                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
@@ -111,7 +107,6 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         }
                     }
                 }
-                Log.i("qwertyuiop", "done render button $text - $isLoading - $isEnabled")
             }
 
             if (orderTotal.orderCost.totalPrice > 0.0) {

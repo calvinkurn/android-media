@@ -19,7 +19,7 @@ import kotlin.math.ceil
 class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                      private val executorDispatchers: ExecutorDispatchers) {
 
-    fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
+    private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() && !orderCart.product.quantity.isStateError)
     }
 
