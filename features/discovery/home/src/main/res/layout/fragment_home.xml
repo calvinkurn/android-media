@@ -62,8 +62,7 @@
       app:contentInsetLeft="0dp"
       app:contentInsetStart="0dp"
         app:toolbarBackButton="back"
-        app:toolbarAlwaysShowShadow="true"
-        app:toolbarFillColor="@color/red_500"/>
+        app:toolbarAlwaysShowShadow="true"/>
     
     <View
       android:id="@+id/status_bar_bg"
