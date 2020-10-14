@@ -29,9 +29,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                 this.incentiveHelper = incentiveHelper
             }
         }
-
-        const val ORIGINAL_UNIFY_MARGIN = 16
-        const val HEADER_BOTTOM_MARGIN = 8
     }
 
     private var text: String = ""
@@ -98,7 +95,6 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
             }
             isKeyboardOverlap = false
             setShowListener {
-                (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, ORIGINAL_UNIFY_MARGIN, HEADER_BOTTOM_MARGIN)
                 Handler().postDelayed({
                     editText.requestFocus()
                 }, 100)
