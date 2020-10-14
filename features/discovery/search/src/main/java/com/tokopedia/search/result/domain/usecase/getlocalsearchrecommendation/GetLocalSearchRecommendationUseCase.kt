@@ -40,6 +40,9 @@ class GetLocalSearchRecommendationUseCase(
         private val LOCAL_SEARCH_QUERY = """
 query SearchProduct(${'$'}params: String!) {
     ace_search_product_v4(params: ${'$'}params) {
+        header {
+            totalData
+        }
         data {
             products {
                 id
