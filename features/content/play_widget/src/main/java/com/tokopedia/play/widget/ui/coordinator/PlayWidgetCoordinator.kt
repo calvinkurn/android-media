@@ -64,7 +64,7 @@ class PlayWidgetCoordinator(
         stopTimer()
         if (config.autoRefresh) {
             timerJob = scope.launch {
-                initTimer(10) {
+                initTimer(config.autoRefreshTimer) {
                     mWidget?.let { mListener?.onWidgetShouldRefresh(it) }
                 }
             }
