@@ -49,5 +49,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
+    implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.tokopoints)
 }
