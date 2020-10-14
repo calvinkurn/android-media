@@ -123,6 +123,7 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
 
     //User
+    implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
