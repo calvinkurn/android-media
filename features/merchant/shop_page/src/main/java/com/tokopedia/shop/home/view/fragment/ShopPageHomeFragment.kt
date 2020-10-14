@@ -1477,7 +1477,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     customDimensionShopPage
             )
             context?.let {context ->
-                RouteManager.route(context, model.header.ctaLink)
+                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
+                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
+                    // set isNeedToReload data to true for sync shop info data in product result fragment
+                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                }
+                startActivity(showcaseIntent)
             }
         }
     }
