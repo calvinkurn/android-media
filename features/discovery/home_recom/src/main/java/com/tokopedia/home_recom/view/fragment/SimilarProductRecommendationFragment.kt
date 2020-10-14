@@ -112,7 +112,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                 when {
                     it.status.isLoading() || it.status.isLoadMore()  -> showLoading()
                     it.status.isEmpty() -> showEmpty()
-                    it.status.isError() -> showGetListError(Throwable(it.exception?.message))
+                    it.status.isError() -> showGetListError(it.exception)
                     it.status.isSuccess() -> {
                         if(it.data?.isNotEmpty() == true){
                             it.data[0].let {

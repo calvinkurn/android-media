@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -19,6 +20,8 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.launch
 import rx.Subscriber
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /**
@@ -43,7 +46,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
         launch(dispatcher.getIODispatcher()){
             try{
-                if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
+                if(page == 1 && _recommendationItem.value != null) _recommendationItem.postValue(null)
                 if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
                 else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
                 val userId: Int = if(userSessionInterface.isLoggedIn) userSessionInterface.userId.toInt() else 0
@@ -58,9 +61,13 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
                 _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data ?: emptyList(), recommendationItems)))
 
-            }catch (e: Exception){
+            } catch (e: Exception){
                 if(page == 1) _filterChips.postValue(Response.error(e))
-                _recommendationItem.postValue(Response.error(e, _recommendationItem.value?.data))
+                if(e is IOException || e is TimeoutException){
+                    _recommendationItem.postValue(Response.error(TimeoutException(), _recommendationItem.value?.data))
+                } else {
+                    _recommendationItem.postValue(Response.error(e, _recommendationItem.value?.data))
+                }
             }
         }
     }

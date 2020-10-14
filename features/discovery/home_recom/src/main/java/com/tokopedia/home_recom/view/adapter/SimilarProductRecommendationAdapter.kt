@@ -57,6 +57,7 @@ class SimilarProductRecommendationAdapter(
             ErrorNetworkViewHolder.LAYOUT -> layout.isFullSpan = true
             LoadingShimmeringGridViewHolder.LAYOUT -> layout.isFullSpan = true
             SimilarProductLoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }
