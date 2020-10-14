@@ -340,6 +340,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String QUANTITY = "quantity";
     public static final String NOTES = "notes";
     public static final String SHOP_ID = "shop_id";
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String CATEGORY = "category";
+    public static final String PRODUCT_NAME = "product_name";
 
 
     private JsonArray generateInputQueryBuyAgain(List<Items> items) {
@@ -351,11 +354,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             int quantity = 0;
             int shopId = 0;
             String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
                 shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
@@ -363,6 +372,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, notes);
             passenger.addProperty(SHOP_ID, shopId);
+            passenger.addProperty(PRODUCT_PRICE, price);
+            passenger.addProperty(CATEGORY, category);
+            passenger.addProperty(PRODUCT_NAME, productName);
             jsonArray.add(passenger);
         }
         return jsonArray;

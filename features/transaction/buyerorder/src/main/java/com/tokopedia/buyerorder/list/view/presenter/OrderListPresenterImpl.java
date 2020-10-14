@@ -102,6 +102,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private static final String QUANTITY = "quantity";
     private static final String NOTES = "notes";
     private static final String SHOP_ID = "shop_id";
+    private static final String PRODUCT_PRICE = "product_price";
+    private static final String CATEGORY = "category";
+    private static final String PRODUCT_NAME = "product_name";
     private static final String SEARCH = "Search";
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
@@ -488,6 +491,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
         int productId = 0;
         int shopId = 0;
+        int quantity = 0;
         String productName = "";
         String productCategory = "";
         String productPrice = "";
@@ -504,6 +508,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             externalSource = "recommendation_list";
             clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
             imageUrl = orderListRecomViewModel.getRecommendationItem().getImageUrl();
+            quantity = orderListRecomViewModel.getRecommendationItem().getMinOrder();
         }
 
         if(!clickUrl.isEmpty()) {
@@ -512,7 +517,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);
         addToCartRequestParams.setShopId(shopId);
-        addToCartRequestParams.setQuantity(0);
+        addToCartRequestParams.setQuantity(quantity);
         addToCartRequestParams.setNotes("");
         addToCartRequestParams.setWarehouseId(0);
         addToCartRequestParams.setAtcFromExternalSource(externalSource);
@@ -781,11 +786,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             int quantity = 0;
             int shopId = 0;
             String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
                 shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
@@ -793,6 +804,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, notes);
             passenger.addProperty(SHOP_ID, shopId);
+            passenger.addProperty(PRODUCT_PRICE, price);
+            passenger.addProperty(CATEGORY, category);
+            passenger.addProperty(PRODUCT_NAME, productName);
             jsonArray.add(passenger);
         }
         return jsonArray;

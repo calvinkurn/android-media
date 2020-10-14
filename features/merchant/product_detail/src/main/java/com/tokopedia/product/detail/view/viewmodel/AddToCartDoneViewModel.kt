@@ -131,6 +131,9 @@ class AddToCartDoneViewModel @Inject constructor(
                 quantity = if(recommendationItem.minOrder > 0) recommendationItem.minOrder else 1
                 notes = ""
                 userId = userSessionInterface.userId
+                productName = recommendationItem.name
+                category = recommendationItem.categoryBreadcrumbs
+                price = recommendationItem.price
             }
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()

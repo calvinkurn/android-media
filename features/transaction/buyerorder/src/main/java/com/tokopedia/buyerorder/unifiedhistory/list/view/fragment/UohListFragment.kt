@@ -125,7 +125,6 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -1445,7 +1444,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (order.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1600,6 +1599,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
         atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
         atcJsonObject.addProperty(UohConsts.NOTES, "")
+        atcJsonObject.addProperty(UohConsts.CATEGORY, recommendationItem.categoryBreadcrumbs)
+        atcJsonObject.addProperty(UohConsts.PRODUCT_NAME, recommendationItem.name)
+        atcJsonObject.addProperty(UohConsts.PRODUCT_PRICE, recommendationItem.priceInt)
         jsonArrayAtc.add(atcJsonObject)
         uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArrayAtc)
 
