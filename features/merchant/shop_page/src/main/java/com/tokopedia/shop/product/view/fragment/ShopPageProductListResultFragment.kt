@@ -301,7 +301,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun loadShopRestrictionInfo() {
-        // hit restriction engine when showcase type is -2 and rules name "followers_only"
+        // hit restriction engine when showcase type is -2 (campaign type) and rules name "followers_only"
         selectedEtalaseRules?.let { rules ->
             if(selectedEtalaseType == -2 && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY))) {
                 val userIdFromSession = userId.toIntOrZero()
@@ -458,7 +458,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val shopRestrictionData = it.data.dataResponse[0]
                     // handle view to follow shop for campaign type showcase
                     val isFollowShop = shopInfo?.favoriteData?.alreadyFavorited == ALREADY_FOLLOW_SHOP
-                    if(!isMyShop && shopRestrictionData.status == PRODUCT_INELIGIBLE && !isFollowShop) {
+                    if(isLogin && !isMyShop && shopRestrictionData.status == PRODUCT_INELIGIBLE && !isFollowShop) {
                         val title = shopRestrictionData.actions[0].title
                         val description = shopRestrictionData.actions[0].description
                         showShopFollowersView(title, description, isFollowShop)
@@ -519,15 +519,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout?.let {
             partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
                 override fun onButtonFollowNplClick() {
-                    if(isLogin) {
-                        shopId?.let { shopId -> toggleFavoriteShop(shopId) }
-                    } else {
-                        context?.let { ctx ->
-                            RouteManager.getIntent(ctx, ApplinkConst.LOGIN).apply {
-                                startActivityForResult(this, REQUEST_CODE_USER_LOGIN)
-                            }
-                        }
-                    }
+                    shopId?.let { shopId -> toggleFavoriteShop(shopId) }
                 }
             })
             partialShopNplFollowersView?.renderView(title, desc, isFollowShop)
