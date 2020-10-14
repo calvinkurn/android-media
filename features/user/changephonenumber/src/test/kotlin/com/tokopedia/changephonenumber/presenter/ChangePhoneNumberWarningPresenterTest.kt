@@ -5,7 +5,7 @@ import com.tokopedia.changephonenumber.domain.interactor.GetWarningUseCase
 import com.tokopedia.changephonenumber.domain.interactor.ValidateOtpStatusUseCase
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener
 import com.tokopedia.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -48,8 +48,8 @@ class ChangePhoneNumberWarningPresenterTest {
 
     @Test
     fun `Successfully get warning` () {
-        val expectedReturn = mockk<WarningViewModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<WarningViewModel> = TestSubscriber()
+        val expectedReturn = mockk<WarningUIModel>(relaxed = true)
+        val testSubscriber: TestSubscriber<WarningUIModel> = TestSubscriber()
 
         every {
             getWarningUseCase.execute(any(), any())
@@ -73,7 +73,7 @@ class ChangePhoneNumberWarningPresenterTest {
     @Test
     fun `Failed get warning` () {
         val expectedReturn = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<WarningViewModel> = TestSubscriber()
+        val testSubscriber: TestSubscriber<WarningUIModel> = TestSubscriber()
 
         every {
             getWarningUseCase.execute(any(), any())

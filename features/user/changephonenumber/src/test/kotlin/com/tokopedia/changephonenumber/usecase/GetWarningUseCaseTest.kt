@@ -3,7 +3,7 @@ package com.tokopedia.changephonenumber.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.changephonenumber.domain.ChangePhoneNumberRepository
 import com.tokopedia.changephonenumber.domain.interactor.GetWarningUseCase
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -31,14 +31,14 @@ class GetWarningUseCaseTest {
 
     @Test
     fun `Successfully Get Warning`() {
-        val expectedResult = mockk<WarningViewModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<WarningViewModel> = TestSubscriber()
+        val expectedResult = mockk<WarningUIModel>(relaxed = true)
+        val testSubscriber: TestSubscriber<WarningUIModel> = TestSubscriber()
 
         every {
             changePhoneNumberRepository.getWarning(GetWarningUseCase.getGetWarningParam().parameters)
         } returns Observable.just(expectedResult)
 
-        val observable: Observable<WarningViewModel> = warningUsecase.getExecuteObservable(GetWarningUseCase.getGetWarningParam())
+        val observable: Observable<WarningUIModel> = warningUsecase.getExecuteObservable(GetWarningUseCase.getGetWarningParam())
 
         observable.subscribe(testSubscriber)
 
@@ -50,13 +50,13 @@ class GetWarningUseCaseTest {
     @Test
     fun `Failed Get Warning`() {
         val expectedResult = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<WarningViewModel> = TestSubscriber()
+        val testSubscriber: TestSubscriber<WarningUIModel> = TestSubscriber()
 
         every {
             changePhoneNumberRepository.getWarning(GetWarningUseCase.getGetWarningParam().parameters)
         } returns Observable.error(expectedResult)
 
-        val observable: Observable<WarningViewModel> = warningUsecase.getExecuteObservable(GetWarningUseCase.getGetWarningParam())
+        val observable: Observable<WarningUIModel> = warningUsecase.getExecuteObservable(GetWarningUseCase.getGetWarningParam())
 
         observable.subscribe(testSubscriber)
 
