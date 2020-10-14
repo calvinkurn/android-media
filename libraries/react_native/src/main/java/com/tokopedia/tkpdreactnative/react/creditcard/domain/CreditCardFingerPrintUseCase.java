@@ -15,8 +15,9 @@ import com.tokopedia.tkpdreactnative.react.creditcard.data.ResponseRuntimeExcept
 import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.UserInfoRepository;
 import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator.AuthenticatorUpdateWhiteListResponse;
 import com.tokopedia.tkpdreactnative.react.creditcard.data.creditcardauthentication.authenticator.UpdateWhiteListRequestData;
-import com.tokopedia.tkpdreactnative.react.creditcard.di.SingleAuthenticationComponent;
 import com.tokopedia.tkpdreactnative.react.creditcard.util.Sha1EncoderUtils;
+import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
+import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -42,10 +43,9 @@ public class CreditCardFingerPrintUseCase extends UseCase<String> {
     public static final String UPDATED_STATE = "UPDATED_STATE";
 
     public CreditCardFingerPrintUseCase() {
-        SingleAuthenticationComponent component = DaggerSingleAuthenticationComponent
-                .builder()
+        ReactNativeNetworkComponent daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
                 .build();
-        component.inject(this);
+        daggerRnNetworkComponent.inject(this);
     }
 
 
