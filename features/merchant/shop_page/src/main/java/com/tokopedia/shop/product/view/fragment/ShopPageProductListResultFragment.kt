@@ -303,7 +303,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun loadShopRestrictionInfo() {
         // hit restriction engine when showcase type is -2 (campaign type) and rules name "followers_only"
         selectedEtalaseRules?.let { rules ->
-            if(selectedEtalaseType == -2 && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY))) {
+            if(selectedEtalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN && rules.contains(ShopEtalaseRules(name = ShowcaseRulesName.FOLLOWERS_ONLY))) {
                 val userIdFromSession = userId.toIntOrZero()
                 val campaignId = if(selectedEtalaseId.contains("_")) {
                     // get campaign id from showcaseId cmp_****
