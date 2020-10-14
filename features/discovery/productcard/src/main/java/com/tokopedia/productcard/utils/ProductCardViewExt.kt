@@ -171,6 +171,18 @@ internal fun ImageView.loadIcon(url: String?) {
     }
 }
 
+internal fun ImageView.loadImageTopRightCrop(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .transform(TopRightCrop())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
+                .into(this)
+    }
+}
+
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
     else showLabel(labelGroup)

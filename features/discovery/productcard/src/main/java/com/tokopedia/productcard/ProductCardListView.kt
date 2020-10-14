@@ -4,14 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -38,15 +35,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
-        labelCampaignBackground?.let {
-            Glide.with(context)
-                    .load(R.drawable.product_card_label_campaign_background)
-                    .transform(TopRightCrop())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .placeholder(R.drawable.placeholder_grey)
-                    .error(R.drawable.placeholder_grey)
-                    .into(it)
-        }
+        renderLabelCampaign(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
@@ -74,6 +63,22 @@ class ProductCardListView: BaseCustomView, IProductCardView {
                     getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
                     getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
             )
+        }
+    }
+
+    internal fun renderLabelCampaign(productCardModel: ProductCardModel) {
+        val labelCampaign = productCardModel.getLabelCampaign()
+
+        if (labelCampaign?.isShowLabelCampaign() == true) {
+            labelCampaignBackground?.show()
+            labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.url)
+
+            textViewLabelCampaign?.show()
+            textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)
+        }
+        else {
+            labelCampaignBackground?.hide()
+            textViewLabelCampaign?.hide()
         }
     }
 

@@ -37,25 +37,29 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageProduct"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewLabelCampaign"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:ellipsize="end"
-            android:text="Official Store"
             android:gravity="center_vertical"
             android:textColor="@color/Neutral_N0"
+            android:visibility="gone"
             app:typographyType="small"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/labelCampaignBackground"
             app:layout_constraintTop_toTopOf="@id/labelCampaignBackground"
             app:layout_constraintEnd_toEndOf="@id/labelCampaignBackground"
-            app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground" />
+            app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/outOfStockOverlay"

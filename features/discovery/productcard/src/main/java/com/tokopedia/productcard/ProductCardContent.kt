@@ -37,7 +37,10 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
 
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    if (productCardModel.isShowLabelGimmick())
+        textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    else
+        textViewGimmick?.initLabelGroup(null)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
