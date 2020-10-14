@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.linker.share.DefaultShare;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
@@ -34,7 +35,6 @@ import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.sharedata.DefaultShareData;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
@@ -118,7 +118,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     private void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap) {
-        new DefaultShareData(activity, createShareDataFromHashMap(keyValueMap)).show();
+        new DefaultShare(activity, createShareDataFromHashMap(keyValueMap)).show();
     }
 
     private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap) {

@@ -545,6 +545,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                             hideSuccessToaster = true
                             showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
                         }
+                        shopId = discussionDataByQuestionID.shopID
                     }
                 }
                 else -> {

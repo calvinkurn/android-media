@@ -3,14 +3,16 @@ package com.tokopedia.seller.product.etalase.view.adapter;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.product.manage.item.etalase.view.model.EtalaseViewModel;
-import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.seller.manageitem.data.model.EtalaseViewModel;
+import com.tokopedia.seller.manageitem.data.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
         this.customLayoutRes = customLayoutRes;
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == MyEtalaseItemViewModel.LAYOUT) {

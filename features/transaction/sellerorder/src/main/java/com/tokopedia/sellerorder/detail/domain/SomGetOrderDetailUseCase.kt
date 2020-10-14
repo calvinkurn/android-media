@@ -193,6 +193,9 @@ class SomGetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlU
                   total_purchase_protection_fee
                   total_purchase_protection_fee_text
                   total_purchase_protection_quantity
+                  total_readiness_insurance_fee
+                  total_readiness_insurance_fee_text
+                  total_readiness_insurance_quantity
                   total_item
                   total_weight
                   total_weight_text

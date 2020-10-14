@@ -48,6 +48,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
     private String isFulfillment;
     private boolean isDiscountedPrice;
     private boolean isFreeShipping;
+    private int campaignId;
 
     public ProductDataCheckoutRequest() {
     }
@@ -82,6 +83,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         isFulfillment = builder.isFulfillment;
         isDiscountedPrice = builder.isDiscountedPrice;
         isFreeShipping = builder.isFreeShipping;
+        campaignId = builder.campaignId;
     }
 
     protected ProductDataCheckoutRequest(Parcel in) {
@@ -114,6 +116,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         isFulfillment = in.readString();
         isDiscountedPrice = in.readByte() != 0;
         isFreeShipping = in.readByte() != 0;
+        campaignId = in.readInt();
     }
 
     @Override
@@ -147,6 +150,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         dest.writeString(isFulfillment);
         dest.writeByte((byte) (isDiscountedPrice ? 1 : 0));
         dest.writeByte((byte) (isFreeShipping ? 1 : 0));
+        dest.writeInt(campaignId);
     }
 
     @Override
@@ -306,6 +310,10 @@ public class ProductDataCheckoutRequest implements Parcelable {
         return isDiscountedPrice;
     }
 
+    public int getCampaignId() {
+        return campaignId;
+    }
+
     public static final class Builder {
         private int productId;
         private boolean isPurchaseProtection;
@@ -336,6 +344,7 @@ public class ProductDataCheckoutRequest implements Parcelable {
         private String isFulfillment;
         private boolean isDiscountedPrice;
         private boolean isFreeShipping;
+        private int campaignId;
 
         public Builder() {
         }
@@ -482,6 +491,11 @@ public class ProductDataCheckoutRequest implements Parcelable {
 
         public Builder isFreeShipping(boolean val) {
             isFreeShipping = val;
+            return this;
+        }
+
+        public Builder campaignId(int val) {
+            campaignId = val;
             return this;
         }
 

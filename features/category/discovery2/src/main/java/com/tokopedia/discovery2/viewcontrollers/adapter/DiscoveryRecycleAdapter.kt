@@ -96,7 +96,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     }
 
-    fun clearListViewModel() {
+    private fun clearListViewModel() {
         viewHolderListModel.clearList()
     }
 

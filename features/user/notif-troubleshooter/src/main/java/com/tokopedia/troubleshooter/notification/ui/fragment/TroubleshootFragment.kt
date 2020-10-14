@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent
 import com.tokopedia.fcmcommon.di.FcmModule
@@ -114,8 +115,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initObservable() {
-        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer {
-            isNotificationEnabled -> if (!isNotificationEnabled) activity?.finish()
+        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer { isNotificationEnabled ->
+            if (!GlobalConfig.isSellerApp()) {
+                if (!isNotificationEnabled) activity?.finish()
+            }
         })
 
         viewModel.token.observe(viewLifecycleOwner, Observer { newToken ->
@@ -336,7 +339,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     override fun onRingtoneTest(uri: Uri) {
-        RingtoneManager.getRingtone(context, uri).play()
+        RingtoneManager.getRingtone(context, uri)?.play()
     }
 
     override fun initInjector() {

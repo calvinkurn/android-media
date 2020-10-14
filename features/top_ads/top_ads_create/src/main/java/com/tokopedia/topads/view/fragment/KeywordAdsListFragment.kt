@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.common.data.util.Utils
@@ -29,7 +30,9 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordSelectedAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
 import javax.inject.Inject
@@ -60,6 +63,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var selectedKeyFromSearch: ArrayList<SearchData>? = arrayListOf()
     private var userID: String = ""
     private var shopID = ""
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     companion object {
 
@@ -110,14 +115,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
     private fun startShowCase() {
@@ -136,10 +140,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         if (STAGE == 0) {
             keywordSelectedAdapter.items.clear()
         }
-        val list = stepperModel?.selectedProductIds!!
-        val productId = list.joinToString(",")
+        val list:MutableList<Int>? = stepperModel?.selectedProductIds
+        val productId = list?.joinToString(",")
         keywordListAdapter.items.clear()
-        viewModel.getSuggestionKeyword(productId, 0, this::onSuccessSuggestion, this::onEmptySuggestion)
+        viewModel.getSuggestionKeyword(productId?:"", 0, this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
     private fun restorePrevState() {
@@ -147,7 +151,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         setStepLayout(View.VISIBLE)
         setBtnText()
         keywordSelectedAdapter.items.clear()
-        keywordSelectedAdapter.items.addAll(stepperModel?.selectedKeywordStage?.asIterable()!!)
+        stepperModel?.selectedKeywordStage?.asIterable()?.let { keywordSelectedAdapter.items.addAll(it) }
         keywordSelectedAdapter.notifyDataSetChanged()
         removeFromRecommended()
     }
@@ -310,8 +314,18 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             } else
                 gotoNextPage()
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
+
         tip_btn.setOnClickListener {
-            TipSheetKeywordList().show(fragmentManager!!, KeywordAdsListFragment::class.java.name)
+            TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_KEYWORD, shopID, userID)
         }
         setAdapters()
@@ -356,7 +370,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun sortListSelected() {
         keywordSelectedAdapter.items.sortWith(Comparator
-        { lhs, rhs -> lhs?.totalSearch?.toInt()!!.compareTo(rhs?.totalSearch?.toInt()!!) })
+        { lhs, rhs -> lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0) })
         keywordSelectedAdapter.items.reverse()
         keywordSelectedAdapter.notifyDataSetChanged()
     }
@@ -401,8 +415,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             selectedKeyFromSearch?.clear()
             if (resultCode == Activity.RESULT_OK) {
                 val dataFromSearch: ArrayList<SearchData>? = data?.getParcelableArrayListExtra(SELECTED_KEYWORDS)
-                for (item in dataFromSearch!!) {
-                    selectedKeyFromSearch?.add(item)
+                dataFromSearch?.forEach {
+                    selectedKeyFromSearch?.add(it)
                 }
                 if(selectedKeyFromSearch?.isNotEmpty()!=false)
                     setEmptyView(false)
@@ -441,13 +455,12 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun mapSearchDataToModel(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()
-        for (item in selectedKeyFromSearch!!) {
+        selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.competition ?: "", item.source ?: "", true, true))
+                        ?: "", item.competition ?: "", item.source ?: "", true, fromSearch = true))
             }
         }
         return list
     }
-
 }
