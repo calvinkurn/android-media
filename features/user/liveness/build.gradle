@@ -72,6 +72,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.espressoCore
     testImplementation rootProject.ext.testDependencies.espressoContrib
+    testImplementation project(rootProject.ext.libraries.instrumentation_test)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
