@@ -162,8 +162,9 @@ public class ApplinkNotificationHelper {
     }
 
     public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        return (applinkNotificationModel.getTargetApp() == null) ||
-                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        return true;
+//        return (applinkNotificationModel.getTargetApp() == null) ||
+//                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
     }
 }
 

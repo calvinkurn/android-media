@@ -57,7 +57,6 @@ open class PageLoadTimePerformanceCallback(
             stopMethodTracing(traceName)
         }
         invalidate()
-        PerformanceAnalyticsUtil.decrement()
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -139,6 +138,7 @@ open class PageLoadTimePerformanceCallback(
         isPrepareDone = true
         isNetworkDone = true
         isRenderDone = true
+        PerformanceAnalyticsUtil.decrement()
     }
 
     private fun beginSystraceSection(sectionName: String) {

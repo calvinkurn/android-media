@@ -6,11 +6,12 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
-import com.tokopedia.play.widget.ui.custom.PlayWidgetVideoView
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -24,7 +25,7 @@ class PlayWidgetCardMediumChannelViewHolder(
 
     private val thumbnail: AppCompatImageView = itemView.findViewById(R.id.play_widget_thumbnail)
 
-    private val videoView: PlayWidgetVideoView = itemView.findViewById(R.id.play_widget_player)
+    private val videoPlayerView: PlayerView = itemView.findViewById(R.id.play_widget_player_view)
 
     private val reminderBadge: AppCompatImageView = itemView.findViewById(R.id.play_widget_iv_reminder)
     private val liveBadge: View = itemView.findViewById(R.id.play_widget_badge_live)
@@ -38,13 +39,28 @@ class PlayWidgetCardMediumChannelViewHolder(
 
     private var channelType: PlayWidgetChannelType = PlayWidgetChannelType.Unknown
 
-    private val videoListener = object : PlayWidgetVideoView.PlayWidgetVideoListener {
-        override fun onPlayerStateChanged(state: PlayWidgetVideoView.PlayWidgetVideoState) {
-            videoView.visibility = if (state == PlayWidgetVideoView.PlayWidgetVideoState.Ready) View.VISIBLE else View.INVISIBLE
+    private var videoUrl: String = ""
+
+    private val videoPlayerListener = object : PlayVideoPlayer.VideoPlayerListener {
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            videoPlayerView.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
         }
     }
 
     fun bind(item: PlayWidgetMediumChannelUiModel) {
+        setData(item)
+
+        itemView.setOnClickListener {
+            cardMediumListener.onCardClicked(item, adapterPosition)
+        }
+        itemView.addOnImpressionListener(item.impress) {
+            cardMediumListener.onCardVisible(item, adapterPosition)
+        }
+
+        channelType = item.channelType
+    }
+
+    private fun setData(item: PlayWidgetMediumChannelUiModel) {
         thumbnail.loadImage(item.video.coverUrl)
 
         promoBadge.visibility = if (item.hasPromo) View.VISIBLE else View.GONE
@@ -66,36 +82,20 @@ class PlayWidgetCardMediumChannelViewHolder(
         author.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         startTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
-        videoView.videoUrl = item.video.videoUrl
-        videoView.listener = videoListener
-
-        channelType = item.channelType
-
-        setupListener(item)
+        videoUrl = item.video.videoUrl
     }
 
-    fun playVideo() {
-        videoView.start()
+    fun setPlayer(playVideoPlayer: PlayVideoPlayer) {
+        playVideoPlayer.videoUrl = videoUrl
+        playVideoPlayer.listener = videoPlayerListener
+        videoPlayerView.player = playVideoPlayer.getPlayer()
     }
 
-    fun stopVideo() {
-        videoView.stop()
-    }
-
-    fun release() {
-        videoView.release()
+    fun getPlayer(): PlayVideoPlayer? {
+        return videoPlayerView.player as? PlayVideoPlayer
     }
 
     fun getChannelType(): PlayWidgetChannelType = channelType
-
-    private fun setupListener(item: PlayWidgetMediumChannelUiModel) {
-        itemView.setOnClickListener {
-            cardMediumListener.onCardMediumClicked(item, adapterPosition)
-        }
-        itemView.addOnImpressionListener(item.impress) {
-            cardMediumListener.onCardMediumVisible(item, adapterPosition)
-        }
-    }
 
     companion object {
         @LayoutRes val layoutRes = R.layout.item_play_widget_card_channel_medium
