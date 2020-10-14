@@ -51,6 +51,26 @@
       "eventAction": "click - search",
       "eventLabel": "{{.*}}",
       "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete local",
+      "eventLabel": "{{keyword: .* - value: .* - applink: .* - campaign: .*}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "search",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete global",
+      "eventLabel": "{{keyword: .* - value: .* - applink: .*}}",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.+}}",
+      "businessUnit": "search",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

@@ -5,7 +5,7 @@
     "items": [
       {
         "template": "list_double_line_without_image",
-        "type": "local_global",
+        "type": "local",
         "applink": "tokopedia://people/5853939",
         "url": "/people/5853939",
         "title": "sneakers",
@@ -23,7 +23,7 @@
       },
       {
         "template": "list_double_line_without_image",
-        "type": "local_global",
+        "type": "global",
         "applink": "tokopedia://people/5853939",
         "url": "/people/5853939",
         "title": "sneakers",

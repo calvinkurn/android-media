@@ -38,6 +38,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private var searchParameter = HashMap<String, String>()
 
+    private var shouldAddSeparator = true
+
     fun setSearchParameter(searchParameter: HashMap<String, String>) {
         this.searchParameter = searchParameter
     }
@@ -52,6 +54,10 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     fun setIsTyping(isTyping: Boolean) {
         this.isTyping = isTyping
+    }
+
+    private fun getUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
     override fun search() {
@@ -92,7 +98,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun updateListVisitable(suggestionUniverse: SuggestionUniverse) {
         val typePosition = HashMap<String, Int?>()
-        for (item in suggestionUniverse.data.items) {
+        for (item in dummyResponse.data.items) {
             if (suggestionUniverse.data.items.isNotEmpty()) {
                 when (item.template) {
                     SUGGESTION_HEADER -> addTitleToVisitable(item)
@@ -116,7 +122,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             item.convertToSingleLineVisitableList(getQueryKey(), position = it)
         }?.let {
             listVisitable.add(
-                    it
+                it
             )
         }
     }
@@ -156,12 +162,14 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     private fun processDoubleLineWithoutImageAtTopBottom(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        addSuggestionSeparator(typePosition, item)
+        addSuggestionSeparator()
         processDoubleLineWithoutImageToVisitable(typePosition, item)
     }
 
-    private fun addSuggestionSeparator(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
-        if (typePosition[item.type] == null) listVisitable.add(SuggestionSeparatorViewModel())
+    private fun addSuggestionSeparator() {
+        if (shouldAddSeparator) {
+            listVisitable.add(SuggestionSeparatorViewModel())
+        }
     }
 
     private fun processDoubleLineWithoutImageToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {
@@ -171,6 +179,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                     it
             )
         }
+        shouldAddSeparator = false
     }
 
     private fun notifyView() {
@@ -239,6 +248,12 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             TYPE_RECENT_KEYWORD -> {
                 view?.trackEventClickRecentKeyword(item.title)
             }
+            TYPE_LOCAL -> {
+                view?.trackEventClickLocalKeyword(getLocalEventLabelForTracking(item), getUserId())
+            }
+            TYPE_GLOBAL -> {
+                view?.trackEventClickGlobalKeyword(getGlobalEventLabelForTracking(item), getUserId())
+            }
         }
     }
 
@@ -278,6 +293,29 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 item.title,
                 getProfileIdFromApplink(item.applink),
                 item.position.toString()
+        )
+    }
+
+    private fun getLocalEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "keyword: %s - value: %s - applink: %s - campaign: %s",
+                item.title,
+                item.searchTerm,
+                item.applink,
+                getCampaignFromLocal()
+        )
+    }
+
+    private fun getCampaignFromLocal(): String {
+        return searchParameter[SearchApiConst.SRP_PAGE_TITLE] ?: ""
+    }
+
+    private fun getGlobalEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "keyword: %s - value: %s - applink: %s",
+                item.title,
+                item.searchTerm,
+                item.applink
         )
     }
 

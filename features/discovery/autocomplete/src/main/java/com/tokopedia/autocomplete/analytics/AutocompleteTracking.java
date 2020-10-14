@@ -286,4 +286,32 @@ public class AutocompleteTracking {
                 )
         );
     }
+
+    public static void eventClickLocalKeyword(String label, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_LOCAL_KEYWORD,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
+
+    public static void eventClickGlobalKeyword(String label, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_GLOBAL_KEYWORD,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
+    }
 }
