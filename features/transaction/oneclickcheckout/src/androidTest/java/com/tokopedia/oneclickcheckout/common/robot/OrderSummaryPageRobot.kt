@@ -14,6 +14,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.junit.Assert.assertEquals
@@ -34,8 +35,12 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.button_atur_pilihan)).perform(scrollTo()).perform(click())
     }
 
-    fun clickAddProductQuantity() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo()).perform(click())
+    fun clickAddProductQuantity(times: Int = 1) {
+        val addButton = onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo())
+        for (i in 0 until times) {
+            addButton.perform(click())
+        }
+        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
     }
 
     fun clickMinusProductQuantity() {
