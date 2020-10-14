@@ -98,6 +98,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
             productListView.removeLoading()
             productListView.addLocalSearchRecommendation(capture(visitableListSlot))
             productListView.addLoading()
+            productListView.updateScrollListener()
         }
 
         `Then verify visitable list for set empty recommendation page 1`(localSearchRecommendationModel)

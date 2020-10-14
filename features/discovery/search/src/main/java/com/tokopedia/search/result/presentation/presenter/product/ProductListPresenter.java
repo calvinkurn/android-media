@@ -1010,6 +1010,8 @@ final class ProductListPresenter
         getView().addLocalSearchRecommendation(visitableList);
 
         if (hasNextPage()) getView().addLoading();
+
+        getView().updateScrollListener();
     }
 
     private ProductViewModel createProductViewModelMapperLocalSearchRecommendation(SearchProductModel searchProductModel) {
