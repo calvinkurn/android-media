@@ -8,8 +8,6 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
-import com.crashlytics.android.Crashlytics
-import com.tokopedia.loginregister.BuildConfig
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
@@ -61,7 +59,6 @@ class RegisterPushNotifService : JobIntentService() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            logExceptionToCrashlytic(e)
         }
     }
 
@@ -140,17 +137,6 @@ class RegisterPushNotifService : JobIntentService() {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
                 enqueueWork(context, RegisterPushNotifService::class.java, JOB_ID, intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                logExceptionToCrashlytic(e)
-            }
-        }
-
-        private fun logExceptionToCrashlytic(exception: Exception) {
-            try {
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(exception)
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
