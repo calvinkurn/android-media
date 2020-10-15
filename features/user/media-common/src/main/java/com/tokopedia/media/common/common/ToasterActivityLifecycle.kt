@@ -3,7 +3,12 @@ package com.tokopedia.media.common.common
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.common.R
+import com.tokopedia.unifycomponents.Toaster
+import java.lang.Exception
 
 class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
 
@@ -13,11 +18,22 @@ class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
         }
 
         if (!isCurrentPage.isNullOrEmpty()) {
-            Toast.makeText(
-                    activity.applicationContext,
-                    "Kualitas gambarmu diturunkan karena jaringan HP-mu lebih rendah dari 4G.",
-                    Toast.LENGTH_LONG
-            ).show()
+            try {
+                activity.window.decorView
+                        .findViewById<ViewGroup>(android.R.id.content)
+                        ?.let {
+                            Toaster.make(
+                                    view = it,
+                                    text = activity.getString(R.string.media_toaster_title),
+                                    actionText = activity.getString(R.string.media_toaster_cta),
+                                    duration = Toaster.LENGTH_LONG,
+                                    type = Toaster.TYPE_NORMAL,
+                                    clickListener = View.OnClickListener {
+                                        RouteManager.getIntent(activity, "")
+                                    }
+                            )
+                }
+            } catch (ignored: Exception) {}
         }
     }
 
@@ -36,7 +52,6 @@ class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
     companion object {
         private val WHITELIST = arrayOf(
                 "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
-                "com.tokopedia.navigation.presentation.activity.MainParentActivity",
                 "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
                 "com.tokopedia.search.result.presentation.view.activity.SearchActivity"
         )

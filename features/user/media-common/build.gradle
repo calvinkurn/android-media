@@ -26,8 +26,11 @@ android {
 }
 
 dependencies {
+    implementation rootProject.ext.unifyDependencies.components
+
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.applink)
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
