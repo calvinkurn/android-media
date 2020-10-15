@@ -47,6 +47,7 @@ import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.url.Env;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -124,6 +125,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private PermissionCheckerHelper permissionCheckerHelper;
     private RemoteConfig remoteConfig;
 
+
     /**
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
@@ -200,7 +202,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
 
         webView.clearCache(true);
-        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -354,7 +356,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(PermissionRequest request) {
-            for (String resource:
+            for (String resource :
                     request.getResources()) {
                 if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     permissionCheckerHelper = new PermissionCheckerHelper();
@@ -363,10 +365,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         public void onPermissionDenied(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onNeverAskAgain(String permissionText) {
                             request.deny();
                         }
+
                         @Override
                         public void onPermissionGranted() {
                             request.grant(request.getResources());
@@ -375,6 +379,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             }
         }
+
         @Override
         public void onPermissionRequestCanceled(PermissionRequest request) {
             super.onPermissionRequestCanceled(request);
@@ -644,7 +649,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if(headerText != null)
+            if (headerText != null)
                 intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
@@ -682,7 +687,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
@@ -694,6 +699,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
+        if (isLiteThankYouPage(url)) {
+            return openNativeThankYouPage(url);
+        }
+
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -713,6 +722,33 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
+    }
+
+    private boolean isLiteThankYouPage(String url) {
+        if (url.startsWith(getLiteThankYouPageURL())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private String getLiteThankYouPageURL() {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.LIVE) {
+            return "https://m.tokopedia.com/payment/thank-you/";
+        } else {
+            return "https://m-staging.tokopedia.com/payment/thank-you/";
+        }
+    }
+
+    private boolean openNativeThankYouPage(String url) {
+        String applinkThankYouPage = "tokopedia://payment/thankyou?merchant=%s&payment_id=%s";
+        String[] params = url.replace(getLiteThankYouPageURL(), "").split("/");
+        if (params.length == 2) {
+            RouteManager.route(getActivity(), String.format(applinkThankYouPage, params[0], params[1]));
+            getActivity().finish();
+            return true;
+        }
+        return false;
     }
 
     private void logApplinkErrorOpen(String url) {
