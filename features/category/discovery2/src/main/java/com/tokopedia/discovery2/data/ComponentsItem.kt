@@ -70,7 +70,8 @@ data class ComponentsItem(
         var filters: ArrayList<Filter> = ArrayList(),
         var rpc_discoQuery:  Map<String, String?>? = null,
         var pinnedActiveTabId: String? = "",
-        var dynamicOriginalId: String? = "") {
+        var dynamicOriginalId: String? = "",
+        var showVerticalLoader: Boolean = false) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

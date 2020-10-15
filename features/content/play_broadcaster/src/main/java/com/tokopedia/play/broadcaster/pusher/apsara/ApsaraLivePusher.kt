@@ -185,6 +185,9 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
             mAliVcLivePusher?.reconnectPushAsync(mIngestUrl)
         }
 
+        override fun onConnectionLost(p0: AlivcLivePusher?) {
+        }
+
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
             // Indicates that data transmission times out.
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.NetworkLoss)
@@ -195,6 +198,9 @@ class ApsaraLivePusher(@ApplicationContext private val mContext: Context) {
         override fun onConnectFail(pusher: AlivcLivePusher?) {
             mApsaraLivePusherStatus = ApsaraLivePusherStatus.Error(ApsaraLivePusherErrorStatus.ConnectFailed)
             mApsaraLivePusherInfoListener?.onError(ApsaraLivePusherErrorStatus.ConnectFailed)
+        }
+
+        override fun onPacketsLost(p0: AlivcLivePusher?) {
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
