@@ -5,12 +5,12 @@
             fulfillmentMode="actions.fulfillment.SLICE"
             urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderType}">
             <parameter-mapping
-                intentParameter="order.type"
+                intentParameter="order.@type"
                 required="false"
                 urlParameter="orderType"/>
         </fulfillment>
     </action>
-    <action intentName="action.intent.GET_REVIEW">
+    <action intentName="actions.intent.GET_REVIEW">
         <fulfillment
             fulfillmentMode="actions.fulfillment.SLICE"
             urlTemplate="content://com.tokopedia.seller.action.slices/stars{?rating}">
