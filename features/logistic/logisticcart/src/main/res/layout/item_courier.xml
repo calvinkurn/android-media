@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_courier"
         style="@style/TextMidMediumBlack70"
         android:layout_width="wrap_content"
@@ -17,14 +17,14 @@
         android:lineSpacingExtra="@dimen/sp_4"
         tools:text="@string/tv_courier" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo_potency"
         style="@style/TextSmallNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_toRightOf="@+id/tv_courier"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_toEndOf="@+id/tv_price_or_duration"
         android:background="@drawable/bg_promo_potency"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_2"
@@ -40,17 +40,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_toEndOf="@+id/tv_courier"
-        android:layout_toRightOf="@+id/tv_courier"
+        android:layout_toEndOf="@+id/tv_price_or_duration"
         android:layout_alignBottom="@id/tv_courier"
         android:layout_alignTop="@id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
         android:visibility="gone"
         app:labelType="general_light_green" />
 
-    <TextView
-        android:id="@+id/tv_price"
+    <!--price in old view, duration in ETA-->
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_price_or_duration"
         style="@style/TextSmallNormalBlack54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,7 +61,7 @@
         android:id="@+id/lbl_otd_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_price"
+        android:layout_below="@+id/tv_price_or_duration"
         android:text="@string/jaminan_tepat_waktu"
         android:layout_marginTop="@dimen/dp_4"
         app:labelType="general_light_green" />

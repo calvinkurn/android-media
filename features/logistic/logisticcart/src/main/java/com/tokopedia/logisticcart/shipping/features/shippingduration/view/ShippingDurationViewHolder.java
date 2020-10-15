@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
+ * tvDurationOrPrice means it will get duration in existing, and price when ETA is applied
+ * tvPriceOrDuration means it will get price in existing, and duration when ETA is applied
  */
 
 public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
@@ -37,8 +39,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     public static final int ITEM_VIEW_SHIPMENT_DURATION = R.layout.item_duration;
 
     private TextView tvError;
-    private TextView tvDuration;
-    private TextView tvPrice;
+    private TextView tvDurationOrPrice;
+    private TextView tvPriceOrDuration;
     private TextView tvTextDesc;
     private ImageView imgCheck;
     private RelativeLayout rlContent;
@@ -55,8 +57,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);
-        tvDuration = itemView.findViewById(R.id.tv_duration);
-        tvPrice = itemView.findViewById(R.id.tv_price);
+        tvDurationOrPrice = itemView.findViewById(R.id.tv_duration_or_price);
+        tvPriceOrDuration = itemView.findViewById(R.id.tv_price_or_duration);
         tvTextDesc = itemView.findViewById(R.id.tv_text_desc);
         imgCheck = itemView.findViewById(R.id.img_check);
         rlContent = itemView.findViewById(R.id.rl_content);
@@ -82,22 +84,29 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.getErrorMessage())) {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
-            tvPrice.setVisibility(View.GONE);
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.font_disabled));
+            tvPriceOrDuration.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.black_70));
             tvError.setVisibility(View.GONE);
-            tvPrice.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
-            tvPrice.setVisibility(View.VISIBLE);
 
             if (!shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc().isEmpty()) {
                 tvTextDesc.setText(shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc());
                 tvTextDesc.setVisibility(View.VISIBLE);
             } else {
                 tvTextDesc.setVisibility(View.GONE);
+            }
+
+            /*put eta here*/
+            if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
+                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
+                tvPriceOrDuration.setVisibility(View.VISIBLE);
+            } else {
+                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
+                tvPriceOrDuration.setVisibility(View.VISIBLE);
             }
 
             if (!isDisableOrderPrioritas && shippingDurationUiModel.getServiceData().getOrderPriority().getNow()) {
@@ -111,7 +120,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
 
         }
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDuration, shippingDurationUiModel.getServiceData().getServiceName(), tvDuration.getContext().getString(R.string.content_desc_tv_duration));
+        /*tv duration and contentdesctiption*/
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);

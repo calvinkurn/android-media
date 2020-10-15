@@ -69,6 +69,9 @@ public class ProductData implements Parcelable {
     @SerializedName("features")
     @Expose
     private ProductFeatures features;
+    @SerializedName("eta")
+    @Expose
+    private EstimatedTimeArrival estimatedTimeArrival;
 
     public ProductData() {
     }
@@ -283,5 +286,13 @@ public class ProductData implements Parcelable {
 
     public void setFeatures(ProductFeatures features) {
         this.features = features;
+    }
+
+    public EstimatedTimeArrival getEstimatedTimeArrival() {
+        return estimatedTimeArrival;
+    }
+
+    public void setEstimatedTimeArrival(EstimatedTimeArrival estimatedTimeArrival) {
+        this.estimatedTimeArrival = estimatedTimeArrival;
     }
 }
