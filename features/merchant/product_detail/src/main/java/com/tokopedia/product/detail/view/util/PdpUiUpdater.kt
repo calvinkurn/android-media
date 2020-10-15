@@ -242,7 +242,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopInfoMap?.run {
                 shopLocation = it.shopInfo.location
                 shopLastActive = it.shopInfo.shopLastActive
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
                 shopAvatar = it.shopInfo.shopAssets.avatar
                 isAllowManage = it.shopInfo.isAllowManage
                 isGoAPotik = it.isGoApotik
@@ -266,7 +265,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
             }
 
             orderPriorityMap?.run {
@@ -402,6 +400,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
         shopCredibility?.isFavorite = !isFavorite
         shopCredibility?.enableButtonFavorite = true
+    }
+
+    fun updateShopFollow(isFollow: Int) {
+        shopInfoMap?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
+        shopCredibility?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
     }
 
     fun failUpdateShopFollow() {

@@ -102,10 +102,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   uiHidden
                 }
               }
-              favoriteData {
-                totalFavorite
-                alreadyFavorited
-              }
               activeProduct
               createInfo {
                 shopCreated
