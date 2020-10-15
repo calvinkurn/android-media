@@ -272,6 +272,8 @@ class ShopHomeNplCampaignViewHolder(
             } else {
                 itemView.timer?.gone()
             }
+        }else{
+            itemView.layout_timer?.gone()
         }
     }
 
