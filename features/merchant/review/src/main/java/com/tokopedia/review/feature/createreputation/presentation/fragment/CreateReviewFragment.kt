@@ -596,7 +596,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             showThankYouBottomSheet()
         }
         data?.productrevIncentiveOvo?.let {
-            if (ovoIncentiveAmount != 0) {
+            if (ovoIncentiveAmount == 0) {
                 ovoIncentiveAmount = it.amount
             }
             it.ticker.let {
@@ -704,8 +704,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)
             val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
             val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
-            val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
             view.apply {
+                val defaultTitle = context?.getString(R.string.review_create_thank_you_title)
                 incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
@@ -714,14 +714,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         setOnClickListener {
                             dismiss()
                             goToReviewPending()
-                            CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
+                            CreateReviewTracking.eventClickSendAnother(defaultTitle ?: "", true)
                         }
                     }
                     incentiveOvoLater?.apply {
                         setOnClickListener {
                             dismiss()
                             finishIfRoot(true)
-                            CreateReviewTracking.eventClickLater(defaultTitle, true)
+                            CreateReviewTracking.eventClickLater(defaultTitle ?: "", true)
                         }
                         show()
                     }
@@ -732,7 +732,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         dismiss()
                         finishIfRoot(true)
-                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
+                        CreateReviewTracking.eventClickOk(defaultTitle ?: "", productRevIncentiveOvoDomain != null)
                     }
                 }
             }

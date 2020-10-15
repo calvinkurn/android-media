@@ -191,7 +191,7 @@
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
-    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks.</string>
+    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
 </resources>
