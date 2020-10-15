@@ -59,6 +59,7 @@ class EventRedeemFragment : BaseDaggerFragment() {
 
         eventRedeemViewModel.eventRedeemed.observe(viewLifecycleOwner, Observer {
             it.run {
+                progressDialog.dismiss()
                 if(it.data.invoice.providerInvoiceStatus.equals("SUCCESS")){
                     urlRedeem?.let {
                         eventRedeemViewModel.getDataRedeem(it)
@@ -117,6 +118,7 @@ class EventRedeemFragment : BaseDaggerFragment() {
 
             btn_redeem_ticket.apply {
                 setOnClickListener {
+                    progressDialog.show()
                     eventRedeemViewModel.redeemData(action.first().urlParams.appUrl)
                 }
             }
