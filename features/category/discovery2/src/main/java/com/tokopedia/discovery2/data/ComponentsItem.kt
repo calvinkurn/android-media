@@ -72,7 +72,8 @@ data class ComponentsItem(
         var pinnedActiveTabId: String? = "",
         var dynamicOriginalId: String? = "",
         var rpc_PinnedProduct: String? = "",
-        var loadForHorizontal: Boolean = false) {
+        var loadForHorizontal: Boolean = false,
+        var pageLoadedCounter: Int = 1) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

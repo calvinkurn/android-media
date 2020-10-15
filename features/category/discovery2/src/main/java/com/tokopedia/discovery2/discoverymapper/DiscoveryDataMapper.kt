@@ -9,9 +9,9 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"

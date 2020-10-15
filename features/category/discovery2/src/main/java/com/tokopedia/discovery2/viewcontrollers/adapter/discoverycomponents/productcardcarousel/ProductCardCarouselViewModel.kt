@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.user.session.UserSession
@@ -32,6 +33,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
     private var isLoading = false
+    private val PRODUCT_PER_PAGE = 10
 
     @Inject
     lateinit var productCardsUseCase: ProductCardsUseCase
@@ -69,7 +71,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery)
+            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)
             setProductsList()
         }, onError = {
             productLoadError.value = true
@@ -106,7 +108,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchCarouselPaginatedProducts() {
         isLoading = true
         launchCatchError(block = {
-            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery)) {
+            if (productCardsUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint, components.rpc_discoQuery, PRODUCT_PER_PAGE)) {
                 getProductList()?.let {
                     isLoading = false
                     productCarouselList.value = addLoadMore(it)
@@ -131,7 +133,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun addLoadMore(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         productLoadState.addAll(productDataList)
-        if (productDataList.size.isMoreThanZero() && productDataList.size.rem(components.componentsPerPage) == 0) {
+        if (productDataList.size.isMoreThanZero() && productDataList.size.rem(PRODUCT_PER_PAGE) == 0) {
             productLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
                 pageEndPoint = components.pageEndPoint
                 parentComponentId = components.id
@@ -147,7 +149,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun isLastPage(): Boolean {
         getProductList()?.let {
-            if (it.size.isMoreThanZero() && it.size.rem(components.componentsPerPage) == 0) return false
+            if (it.size.isMoreThanZero() && it.size.rem(PRODUCT_PER_PAGE) == 0) return false
         }
         return true
     }
@@ -162,5 +164,5 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         return null
     }
 
-    fun getPageSize() = components.componentsPerPage
+    fun getPageSize() = PRODUCT_PER_PAGE
 }
