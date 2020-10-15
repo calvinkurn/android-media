@@ -74,11 +74,11 @@ data class ProductCardModel (
             val position: String = "",
             val title: String = "",
             val type: String = "",
-            val url: String = ""
+            val imageUrl: String = ""
     ):Parcelable {
 
         fun isShowLabelCampaign(): Boolean {
-            return url.isNotEmpty() && title.isNotEmpty()
+            return imageUrl.isNotEmpty() && title.isNotEmpty()
         }
     }
 

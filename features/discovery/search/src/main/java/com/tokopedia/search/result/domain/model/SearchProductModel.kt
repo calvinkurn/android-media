@@ -425,7 +425,11 @@ data class SearchProductModel(
 
             @SerializedName("type")
             @Expose
-            val type: String = ""
+            val type: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductBadge(

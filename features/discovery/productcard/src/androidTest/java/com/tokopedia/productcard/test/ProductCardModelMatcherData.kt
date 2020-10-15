@@ -1303,7 +1303,7 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
     val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", url = campaignLabelUrl)
+    val labelCampaign = LabelGroup(position = LABEL_CAMPAIGN, title = "Waktu Indonesia Belanja", imageUrl = campaignLabelUrl)
 
     val productCardModel = ProductCardModel(
             productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",

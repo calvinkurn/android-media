@@ -301,7 +301,7 @@ internal fun renderLabelCampaign(
 
     if (labelCampaign?.isShowLabelCampaign() == true) {
         labelCampaignBackground?.show()
-        labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.url)
+        labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
 
         textViewLabelCampaign?.show()
         textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)

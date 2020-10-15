@@ -59,7 +59,7 @@ abstract class ProductItemViewHolder(
 
     private fun List<LabelGroupViewModel>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
         return this?.map {
-            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
         } ?: listOf()
     }
 
