@@ -41,6 +41,14 @@ object InstrumentationAuthHelper {
         }
     }
 
+    fun loginInstrumentationTestSellerUser() {
+        userSession {
+            userId =  "77816542"
+            email = "evy.maria@tokopedia.com"
+            accessTokenBearer = "bRqIfBkFS5Ov3Ecgr5nA6Q"
+        }
+    }
+
     fun clearUserSession() {
         try {
             val userSession = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)

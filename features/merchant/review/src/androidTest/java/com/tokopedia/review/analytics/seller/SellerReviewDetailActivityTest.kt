@@ -44,7 +44,7 @@ class SellerReviewDetailActivityTest {
     var activityRule: IntentsTestRule<SellerReviewDetailActivity> = object : IntentsTestRule<SellerReviewDetailActivity>(SellerReviewDetailActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val intent = Intent(targetContext, SellerReviewDetailActivity::class.java)
-            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, "")
+            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
             return intent
         }
     }
@@ -90,7 +90,7 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun fakeLogin() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestSellerUser()
     }
 
     private fun waitForData() {
@@ -102,7 +102,7 @@ class SellerReviewDetailActivityTest {
     }
 
     companion object {
-        const val PRODUCT_ID = "669405017"
+        const val PRODUCT_ID = "606541173"
         const val TAG_EDIT_PRODUCT = "Ubah Produk"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time_star.json"
