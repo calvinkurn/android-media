@@ -217,14 +217,19 @@ public class BranchWrapper implements WrapperInterface {
                             }
                         } else {
                             if(shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), url));
+                                if(data.isThrowOnError()){
+                                    shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
+                                }
+                                else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                                }
                             }
                         }
                     }
                 });
             }
         } else {
-            shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+            shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
         }
     }
 

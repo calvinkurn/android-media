@@ -1,6 +1,6 @@
 package com.tokopedia.topads.product.view.presenter;
 
-import com.tokopedia.topads.auto.data.AutoAdsUseCase;
+import com.tokopedia.topads.common.AutoAdsUseCase;
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus;
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
