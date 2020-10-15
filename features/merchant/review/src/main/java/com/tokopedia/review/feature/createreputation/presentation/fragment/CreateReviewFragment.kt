@@ -658,6 +658,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 thankYouBottomSheet = BottomSheetUnify()
                 val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
                 thankYouBottomSheet?.setChild(child)
+                thankYouBottomSheet?.setCloseClickListener {
+                    finishIfRoot(true)
+                }
                 initThankYouView(child, it, thankYouBottomSheet)
             }
             thankYouBottomSheet?.let { bottomSheet ->
@@ -735,6 +738,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         CreateReviewTracking.eventClickOk(defaultTitle ?: "", productRevIncentiveOvoDomain != null)
                     }
                 }
+                overlayClickDismiss = false
             }
         }
     }
