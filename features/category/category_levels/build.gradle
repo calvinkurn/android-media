@@ -14,6 +14,21 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    defaultConfig {
+        multiDexEnabled true
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
 
@@ -51,7 +66,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
-
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
 
 project.ext {
