@@ -184,7 +184,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/no_resi_title"
             android:text="@string/kode_booking"
             android:textColor="@color/Neutral_N700_68"
             app:typographyType="body_3"
@@ -219,7 +218,7 @@
         android:text="@string/alamat_pengiriman"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi"
+        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
@@ -230,7 +229,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@id/alamat_label"
-        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi"
+        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
         app:srcCompat="@drawable/ic_copy" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -244,8 +243,8 @@
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@id/rl_no_resi"
-        app:layout_constraintStart_toStartOf="id/rl_no_resi"
-        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi"
+        app:layout_constraintStart_toStartOf="@id/rl_no_resi"
+        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="AS Misbeh (0812345678)" />
