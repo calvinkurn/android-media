@@ -26,6 +26,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     var bonus: Int = 0
 
     companion object {
+        private const val SPAN_COUNT = 2
         private const val TOPADS_BOTTOM_SHEET_TAG = "CHOOSE_AUTO_TOPUP"
         fun newInstance(): TopAdsChooseTopUpAmountSheet = TopAdsChooseTopUpAmountSheet()
     }
@@ -51,14 +52,13 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.firstOrNull()?.priceFmt
-                ?: "1", bonus)
-                .toLong())))
-
+        setInitialState()
         adapter?.setChipData(data)
         creditOptionsRV?.adapter = adapter
-        creditOptionsRV?.layoutManager = GridLayoutManager(context, 2)
-
+        creditOptionsRV?.layoutManager = GridLayoutManager(context, SPAN_COUNT)
+        setOnDismissListener {
+            onCancel?.invoke()
+        }
         cancelBtn?.setOnClickListener {
             dismiss()
             onCancel?.invoke()
@@ -75,5 +75,13 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
                 }
             }
         })
+    }
+
+    private fun setInitialState() {
+        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.firstOrNull()?.priceFmt
+                ?: "1", bonus)
+                .toLong())))
+        dedAmount?.text = data?.availableNominals?.firstOrNull()?.minCreditFmt
+
     }
 }

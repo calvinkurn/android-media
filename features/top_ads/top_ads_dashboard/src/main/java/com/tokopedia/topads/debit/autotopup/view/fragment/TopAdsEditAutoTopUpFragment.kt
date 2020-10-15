@@ -164,13 +164,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
 
     private fun showToastSuccess(type: Int) {
         view?.let {
-            var toast = ""
-            when (type) {
+            val toast = when (type) {
                 TYPE_BOTTOMSHEET -> {
-                    toast = getString(R.string.topads_dash_auto_topup_activated_toast)
+                    getString(R.string.topads_dash_auto_topup_activated_toast)
                 }
                 TYPE_AUTOTOPUP_DISABLED -> {
-                    toast = getString(R.string.topads_dash_auto_topup_disabled_toast)
+                    getString(R.string.topads_dash_auto_topup_disabled_toast)
                 }
                 else -> {
                     getString(R.string.topads_dash_auto_topup_setting_is_saved_toast)

@@ -14,7 +14,7 @@ class TopAdsAutoTopUpChipsAdapter : RecyclerView.Adapter<TopAdsAutoTopUPCreditOp
 
     @LayoutRes
     private var itemLayout = R.layout.topads_dash_credit_option_chip
-    private var selectedTabPosition = 0
+    private var selectedTabPosition = 3
     private var listener: OnCreditOptionItemClicked? = null
     private val chipsList: MutableList<AutoTopUpItem> = mutableListOf()
 
@@ -46,7 +46,6 @@ class TopAdsAutoTopUpChipsAdapter : RecyclerView.Adapter<TopAdsAutoTopUPCreditOp
 
     fun getSelected(): Int {
         return selectedTabPosition
-
     }
 
     override fun getItemCount() = chipsList.size

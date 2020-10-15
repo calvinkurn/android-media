@@ -43,7 +43,8 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private var isTopUp = false
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var onSavedAutoTopUp: ((positionSelected: Int) -> Unit)? = null
-    var defPosition = 0
+    private var defPosition = 0
+    private var topUpChoice = 2
     private var autoTopUpData: AutoTopUpStatus? = null
 
     private val viewModelProvider by lazy {
@@ -87,7 +88,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         saveButton?.setOnClickListener {
             dismiss()
             if (isTopUp)
-                onSaved?.invoke(defPosition)
+                onSaved?.invoke(topUpChoice)
             else
                 onSavedAutoTopUp?.invoke(defPosition)
         }
@@ -149,7 +150,6 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
         if (!isTopUp)
             setAutoTopUpList()
-
     }
 
     private fun setList() {
@@ -164,18 +164,18 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         listGroup?.run {
             onLoadFinish {
                 this.setOnItemClickListener { _, _, position, _ ->
-                    defPosition = position
+                    topUpChoice = position
                     setSelectedItem(listUnify, position) {
                     }
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
-                        defPosition = position
+                        topUpChoice = position
                         this.setSelectedItem(listUnify, position) {
                         }
                     }
                 }
-                this.setSelectedItem(listUnify, 0) {}
+                this.setSelectedItem(listUnify, topUpChoice) {}
             }
         }
     }

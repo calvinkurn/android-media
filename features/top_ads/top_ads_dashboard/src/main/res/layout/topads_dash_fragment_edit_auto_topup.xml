@@ -146,6 +146,7 @@
                 android:layout_height="@dimen/dp_10"
                 android:layout_marginStart="@dimen/dp_5"
                 android:src="@drawable/topads_dash_info_tooltip"
+                android:contentDescription="@string/toapds_dash_tooltip_text"
                 app:layout_constraintBottom_toBottomOf="@id/deductionTitle"
                 app:layout_constraintStart_toEndOf="@id/deductionTitle"
                 app:layout_constraintTop_toTopOf="@id/deductionTitle" />
