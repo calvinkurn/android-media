@@ -69,29 +69,4 @@
         tools:text="RP2323234423" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceUsedTokopoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceServiceTax"
-        app:typographyType="body_3"
-        tools:text="@string/thank_invoice_used_tokopoint" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceUsedTokopointsValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:gravity="end"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvInvoiceUsedTokopoints"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceServiceTax"
-        app:typographyType="body_3"
-        tools:text="- RP2323234423" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

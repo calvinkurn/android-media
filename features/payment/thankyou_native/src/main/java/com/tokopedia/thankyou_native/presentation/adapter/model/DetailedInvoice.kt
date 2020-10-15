@@ -26,8 +26,8 @@ data class TotalFee(val totalBillAmountStr: String,
     }
 }
 
-data class ObtainedAfterTransaction(
-        val benefitMapList: ArrayList<BenefitMap>
+data class CashBackEarned(
+        val benefitMapList: ArrayList<CashBackMap>
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
@@ -44,7 +44,7 @@ data class PaymentInfo(
     }
 }
 
-data class BenefitMap(
+data class CashBackMap(
         val benefitName: String,
         val benefitAmount: String,
         var isBBICashBack : Boolean = false

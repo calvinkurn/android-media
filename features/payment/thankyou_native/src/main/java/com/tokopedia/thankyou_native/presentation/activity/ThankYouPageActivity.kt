@@ -69,7 +69,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
+
         showAppFeedbackBottomSheet(thanksPageData)
+
         postEventOnThankPageDataLoaded(thanksPageData)
     }
 
