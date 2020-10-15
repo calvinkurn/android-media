@@ -68,7 +68,7 @@ object GlideBuilder {
         if (url == null) {
             imageView.setImageDrawable(drawableError)
         } else {
-            GlideApp.with(imageView).load(url).apply {
+            GlideApp.with(imageView.context).load(url).apply {
                 if (!isAnimate) dontAnimate()
 
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
