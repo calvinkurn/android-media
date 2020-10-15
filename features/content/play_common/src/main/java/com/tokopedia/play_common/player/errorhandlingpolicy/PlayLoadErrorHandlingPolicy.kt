@@ -20,7 +20,6 @@ class PlayLoadErrorHandlingPolicy : DefaultLoadErrorHandlingPolicy() {
 
     override fun getMinimumLoadableRetryCount(dataType: Int): Int {
         return when (dataType) {
-//            C.DATA_TYPE_MANIFEST -> 0
             C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE -> RETRY_COUNT_LIVE
             else -> RETRY_COUNT_DEFAULT
         }

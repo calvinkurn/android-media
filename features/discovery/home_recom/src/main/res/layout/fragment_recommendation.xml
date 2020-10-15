@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/recomNestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
