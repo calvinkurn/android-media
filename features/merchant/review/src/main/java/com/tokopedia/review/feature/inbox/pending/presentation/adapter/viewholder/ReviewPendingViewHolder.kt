@@ -16,6 +16,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
+        const val UNLOCK_UNIFY_LABEL = true
     }
 
     override fun bind(element: ReviewPendingUiModel) {
@@ -95,6 +96,9 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     private fun showOvoIncentive(isEligible: Boolean) {
         if (isEligible) {
             itemView.reviewPendingOvoIncentiveLabel.apply {
+                unlockFeature = UNLOCK_UNIFY_LABEL
+                fontColorByPass = getColorString(R.color.ovo_incentive_label_text)
+                setLabelType(getColorString(R.color.ovo_incentive_label))
                 val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
                 ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
                 setCompoundDrawables(ovoIncentiveIcon, null, null, null)
@@ -104,5 +108,9 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()
+    }
+
+    private fun getColorString(color: Int): String {
+        return "#${Integer.toHexString(ContextCompat.getColor(itemView.context, color))}"
     }
 }

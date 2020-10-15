@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -44,6 +45,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -59,7 +61,8 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
 
 class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
-        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract {
+        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract,
+        IncentiveOvoListener {
 
     companion object {
         const val CREATE_REVIEW_REQUEST_CODE = 420
@@ -228,6 +231,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         return ReviewPendingAdapter(adapterTypeFactory)
     }
 
+    override fun onUrlClicked(url: String): Boolean {
+        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        ovoIncentiveBottomSheet?.dismiss()
+        return RouteManager.route(context, webviewUrl)
+    }
+
     private fun initView() {
         setupErrorPage()
         setupEmptyState()
@@ -365,11 +374,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                     bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
                     bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
                     bottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
-                        override fun onSlide(p0: View, p1: Float) {
-                        }
+                        override fun onSlide(p0: View, p1: Float) {}
                         override fun onStateChanged(p0: View, p1: Int) {
                             if(p1 == BottomSheetBehavior.STATE_COLLAPSED){
-                                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                                dismiss()
                             }
                         }
                     })
@@ -401,7 +409,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
 
             val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
-                    ?: emptyList())
+                    ?: emptyList(), this@ReviewPendingFragment)
             view.rvIncentiveOvoExplain.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo

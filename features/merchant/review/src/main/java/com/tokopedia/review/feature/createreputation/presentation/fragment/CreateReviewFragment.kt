@@ -61,6 +61,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -72,7 +73,8 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewFragment : BaseDaggerFragment(),
-        ImageClickListener, TextAreaListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
+        ImageClickListener, TextAreaListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract,
+        IncentiveOvoListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -432,6 +434,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         return true
     }
 
+    override fun onUrlClicked(url: String): Boolean {
+        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        ovoIncentiveBottomSheet?.dismiss()
+        return RouteManager.route(context, webviewUrl)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
@@ -530,6 +538,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 }
                 setSecondaryCTAText(getString(R.string.review_create_incomplete_send_anyways))
                 setSecondaryCTAClickListener {
+                    dismiss()
                     submitNewReview()
                     CreateReviewTracking.eventClickSendNow(title)
                 }
@@ -604,7 +613,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                     initView(view, data, ovoIncentiveBottomSheet)
                                     setOnDismissListener {
                                         ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                                        dismiss()
                                     }
                                     setShowListener {
                                         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
@@ -614,7 +622,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                             }
                                             override fun onStateChanged(p0: View, p1: Int) {
                                                 if(p1 == BottomSheetBehavior.STATE_COLLAPSED){
-                                                    bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                                                    dismiss()
                                                 }
                                             }
                                         })
@@ -676,7 +684,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
 
             val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
-                    ?: emptyList())
+                    ?: emptyList(), this@CreateReviewFragment)
             view.rvIncentiveOvoExplain.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = adapterIncentiveOvo

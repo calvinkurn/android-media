@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 
-class IncentiveOvoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class IncentiveOvoViewHolder(view: View, private val incentiveOvoListener: IncentiveOvoListener) : RecyclerView.ViewHolder(view) {
     fun bindHero(explanation: String) {
         itemView.apply {
             tgIncentiveOvoNumber.text = "${adapterPosition+1}."
@@ -38,7 +39,7 @@ class IncentiveOvoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
                             val link = buffer.getSpans(off, off, URLSpan::class.java)
                             if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                return RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link.first().url.toString()))
+                                return incentiveOvoListener.onUrlClicked(link.first().url.toString())
                             }
                         }
                         return super.onTouchEvent(widget, buffer, event);
