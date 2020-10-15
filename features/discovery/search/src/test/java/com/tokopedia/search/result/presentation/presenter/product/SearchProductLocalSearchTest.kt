@@ -131,7 +131,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     @Test
-    fun `Empty search with response code 11 during local search`() {
+    fun `Empty search by keyword with response code 11 during local search`() {
         val searchProductModel = searchProductLocalSearchEmptyResponseCode11JSON.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -172,6 +172,35 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         verify {
             getLocalSearchRecommendationUseCase.execute(any(), any())
         }
+    }
+
+    @Test
+    fun `Empty search by filter with response code 11 during local search`() {
+        val searchProductModel = searchProductLocalSearchEmptyResponseCode11JSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given getQueryKey will return keyword`()
+        every { productListView.isAnyFilterActive } returns true
+
+        `When Load Data`(searchParameter)
+
+        `Then verify recommendation use case not called`()
+        `Then verify empty search view model by filter`()
+        `Then verify local search recommendation use case is called`()
+    }
+
+    private fun `Then verify empty search view model by filter`() {
+        val emptySearchViewModelSlot = slot<EmptySearchProductViewModel>()
+        verify {
+            productListView.setEmptyProduct(null, capture(emptySearchViewModelSlot))
+        }
+
+        val emptySearchViewModel = emptySearchViewModelSlot.captured
+        emptySearchViewModel.isFilterActive shouldBe true
+        emptySearchViewModel.isLocalSearch shouldBe false
+        emptySearchViewModel.globalSearchApplink shouldBe ""
+        emptySearchViewModel.keyword shouldBe ""
+        emptySearchViewModel.pageTitle shouldBe ""
     }
 
     @Test

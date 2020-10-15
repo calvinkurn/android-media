@@ -935,7 +935,7 @@ final class ProductListPresenter
         emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
         emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
 
-        if (isShowLocalSearchRecommendation()) {
+        if (isShowLocalSearchRecommendation() && !getView().isAnyFilterActive()) {
             emptySearchViewModel.setLocalSearch(true);
             emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
             emptySearchViewModel.setKeyword(getView().getQueryKey());
