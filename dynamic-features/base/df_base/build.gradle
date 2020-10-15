@@ -134,9 +134,6 @@ dependencies {
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
 
-    //Entertainment
-    implementation project(rootProject.ext.features.orderhistory)
-
     //Transaction
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)

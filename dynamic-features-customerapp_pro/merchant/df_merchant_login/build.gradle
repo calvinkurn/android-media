@@ -50,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
     implementation project(rootProject.ext.features.favorite)
+    implementation project(rootProject.ext.features.orderhistory)
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.attachinvoice)
