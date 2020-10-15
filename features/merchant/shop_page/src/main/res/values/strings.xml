@@ -185,7 +185,7 @@
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_seller">Belum ada produk terjual nih</string>
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
-    <string name="text_success_follow_shop">Kamu berhasil follow toko. Pantau biar nggak ketinggalan tanggal rilisnya, ya!</string>
+    <string name="text_success_follow_shop">Kamu berhasil follow toko. Jangan lupa beli sebelum barang incaranmu habis!</string>
     <string name="text_shop_no_product_description_seller">Mulai detik ini, tekadkan semangatmu untuk cetak penjualan pertama</string>
     <string name="shop_menu_action_cart">Cart</string>
     <string name="shop_menu_action_share">Share</string>
@@ -284,12 +284,10 @@
     <string name="content_desc_shop_page_main_profile_badge">image badge toko</string>
     <string name="content_desc_shop_page_main_profile_name">text nama toko</string>
     <string name="content_desc_shop_page_main_profile_location">text lokasi toko</string>
-    <string name="content_desc_shop_page_main_profile_follower">text jumlah follower toko</string>
+    <string name="content_desc_shop_page_main_profile_follower">text follower toko</string>
     <string name="content_desc_shop_page_main_profile_free_ongkir">text toko bebas ongkir</string>
-    <string name="content_desc_image_view_shop_reputation_badge">text reputasi toko</string>
-    <string name="content_desc_shop_page_follow_unfollow_button">button follow unfollow</string>
+    <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
-    <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
     <string name="content_desc_button_chat">button chat</string>
 
 </resources>
