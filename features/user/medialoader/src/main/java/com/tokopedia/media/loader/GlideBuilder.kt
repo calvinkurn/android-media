@@ -69,7 +69,12 @@ object GlideBuilder {
             imageView.setImageDrawable(drawableError)
         } else {
             GlideApp.with(imageView.context).load(url).apply {
-                if (!isAnimate) dontAnimate()
+                when (imageView.scaleType) {
+                    ImageView.ScaleType.FIT_CENTER -> fitCenter()
+                    ImageView.ScaleType.CENTER_CROP -> centerCrop()
+                    ImageView.ScaleType.CENTER_INSIDE -> centerInside()
+                    else -> {}
+                }
 
                 if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
@@ -77,8 +82,9 @@ object GlideBuilder {
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
                 if (transform != null) localTransform.add(transform)
                 if (signatureKey != null) signature(signatureKey)
-                if (placeHolder != 0) placeholder(placeHolder)
                 if (isCircular) localTransform.add(CircleCrop())
+                if (placeHolder != 0) placeholder(placeHolder)
+                if (!isAnimate) dontAnimate()
 
                 drawableError?.let { drawable -> error(drawable) }
                 cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
@@ -86,13 +92,6 @@ object GlideBuilder {
 
                 if (localTransform.isNotEmpty()) {
                     transform(MultiTransformation(localTransform))
-                }
-
-                when (imageView.scaleType) {
-                    ImageView.ScaleType.FIT_CENTER -> fitCenter()
-                    ImageView.ScaleType.CENTER_CROP -> centerCrop()
-                    ImageView.ScaleType.CENTER_INSIDE -> centerInside()
-                    else -> {}
                 }
 
                 if (stateListener != null) {
