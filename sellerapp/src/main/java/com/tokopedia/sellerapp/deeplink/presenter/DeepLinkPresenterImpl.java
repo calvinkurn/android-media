@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
+import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -21,12 +21,15 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActiv
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
@@ -135,6 +138,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(context, campaign);
         UnifyTracking.eventCampaign(context, campaignUri);
+
+        sendScreen(campaignUri, screenName, campaign);
+    }
+
+    private void sendScreen(String campaignUri, String screenName, Campaign campaign) {
+        Map<String, Object> campaignMap = campaign.getCampaign();
+        Map<String, String> customDimension = new HashMap<>();
+        customDimension.put(Authenticated.KEY_DEEPLINK_URL, campaignUri);
+        String utmSource = (String) campaignMap.get(AppEventTracking.GTM.UTM_SOURCE);
+        String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
+        customDimension.put("utmSource", utmSource);
+        customDimension.put("utmMedium", utmMedium);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
