@@ -24,7 +24,6 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
         @LayoutRes
         val LAYOUT = R.layout.home_dc_topads_banner
         private const val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel"
-        private const val componentName = "top_ads_banner"
     }
 
     override fun bind(element: HomeTopAdsBannerDataModel) {
@@ -67,13 +66,12 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         adapterPosition
                 )
 
-                TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                        className,
+                TopAdsUrlHitter(className).hitImpressionUrl(
+                        itemView.context,
                         viewUrl,
                         "",
                         "",
-                        "",
-                        componentName
+                        ""
                 )
             }
         })
