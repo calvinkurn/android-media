@@ -110,16 +110,7 @@ class SellerHomeRobot {
         val layoutManager = recyclerView.layoutManager
         val adapter = recyclerView.adapter
         if (layoutManager is LinearLayoutManager) {
-            val data: List<Any> = (when (adapter) {
-                is BaseListAdapter<*, *> -> adapter.data
-                is CarouselBannerAdapter -> {
-                    val field = CarouselBannerAdapter::class.memberProperties.find { it.name == "items" }?.apply {
-                        isAccessible = true
-                    }
-                    field?.get(adapter) as List<Any>
-                }
-                else -> null
-            }) ?: return
+            val data: List<Any> = (adapter as BaseListAdapter<*, *>).data
             var firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
             var lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
@@ -136,7 +127,7 @@ class SellerHomeRobot {
     }
 
     inline fun <reified W> clickAllVisibleWidgets(from: Int, to: Int, data: List<Any>, activity: Activity, layoutManager: RecyclerView.LayoutManager) {
-        for (i in from + 1..to) {
+        for (i in from..to) {
             val view = layoutManager.findViewByPosition(i)
             if (data.getOrNull(i) is W && view != null) {
                 activity.runOnUiThread {
