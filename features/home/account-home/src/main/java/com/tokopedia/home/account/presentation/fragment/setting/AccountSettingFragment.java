@@ -35,6 +35,7 @@ import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -52,6 +53,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
+    private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
@@ -110,6 +112,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         setMenuClickListener(view);
         getMenuToggle();
+        showSignInNotif();
     }
 
     @Override
@@ -296,7 +299,15 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
         sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
                 isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+
+        showSignInNotif();
         hideLoading();
+    }
+
+    private void showSignInNotif() {
+        FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        boolean isShowSignInNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false);
+        pushNotifMenu.setVisibility(isShowSignInNotif ? View.VISIBLE : View.GONE);
     }
 
     @Override

@@ -97,12 +97,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
             )
             dataView.createNewFragmentInstance()
         } else {
-            SettingTypeFragment()
+            SettingTypeFragment.createInstance()
         }
     }
 
     companion object {
-        private const val PUSH_NOTIFICATION_PAGE = "push_notification"
+        const val PUSH_NOTIFICATION_PAGE = "push_notification"
         private const val EXTRA_OPEN_SELLER_NOTIF = "extra_open_seller_notif"
     }
 }
