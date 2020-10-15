@@ -231,7 +231,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        removeObservers(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse)
+        removeObservers(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse)
         removeObservers(shopShowcasePickerViewModel.getShopProductResponse)
         removeObservers(shopShowcasePickerViewModel.createShopShowcase)
     }
@@ -425,7 +425,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     private fun loadShowcaseList() {
         if(isMyShop) {
             showLoading(true)
-            shopShowcasePickerViewModel.getShopShowcaseListAsBuyer(shopId, isOwner = isMyShop)
+            shopShowcasePickerViewModel.getShopShowcaseListAsSeller()
         }
     }
 
@@ -470,12 +470,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun observeGetShowcaseList() {
-        observe(shopShowcasePickerViewModel.getListBuyerShopShowcaseResponse) {
+        observe(shopShowcasePickerViewModel.getListSellerShopShowcaseResponse) {
             when(it) {
                is Success -> {
                    showLoading(false)
-                   val errorMessage = it.data.shopShowcasesByShopID.error.message
-                   showcaseList = it.data.shopShowcasesByShopID.result
+                   val errorMessage = it.data.shopShowcases.error.message
+                   showcaseList = it.data.shopShowcases.result
                    if(errorMessage.isNotEmpty()) {
                        showToaster(errorMessage, Toaster.TYPE_ERROR)
                    } else {
@@ -497,8 +497,11 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                            if(selectedShowcaseList?.size.isMoreThanZero()) {
                                showcaseList.forEach { item ->
                                    selectedShowcaseList?.forEach { selectedItem ->
-                                       if(item.id == selectedItem.showcaseId)
+                                       if(item.id == selectedItem.showcaseId) {
+                                           // assign new showcase name from cloud, to prevent empty showcase from edit product
+                                           selectedItem.showcaseName = item.name
                                            item.isChecked = true
+                                       }
                                    }
                                }
                            }
