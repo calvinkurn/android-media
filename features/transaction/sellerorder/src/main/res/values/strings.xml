@@ -14,6 +14,7 @@
     <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
     <string name="seller_filter">Filter</string>
+    <string name="title_logistic_info">Informasi Terkait Kurir</string>
 
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>

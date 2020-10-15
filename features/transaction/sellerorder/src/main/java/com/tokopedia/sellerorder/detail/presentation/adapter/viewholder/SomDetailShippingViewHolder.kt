@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
@@ -19,7 +20,18 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
-            itemView.tv_shipping_name.text = item.dataObject.shippingName
+            if(item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
+                itemView.tv_shipping_name.apply {
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                    setOnClickListener {
+                        actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                    }
+                    itemView.tv_shipping_name.text = StringBuilder("${item.dataObject.shippingName} >")
+                }
+            } else {
+                itemView.tv_shipping_name.text = item.dataObject.shippingName
+                itemView.tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
+            }
             itemView.tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} (${item.dataObject.receiverPhone})")
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
@@ -105,18 +117,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 } else {
                     itemView.rl_booking_code.visibility = View.VISIBLE
 
-//                    itemView.rl_wajib_dicantumkan.setOnClickListener {
-//                        actionListener?.onShowBottomSheetInfo(
-//                                itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
-//                                R.string.wajib_tulis_kode_booking_desc)
-//                    }
-
                     if (item.dataObject.onlineBookingCode.isEmpty()) {
-//                        itemView.booking_code_see_btn.visibility = View.GONE
-//                        itemView.booking_code_value.apply {
-//                            text = itemView.context.getString(R.string.placeholder_kode_booking)
-//                            setTypeface(this.typeface, Typeface.ITALIC)
-//                        }
                         itemView.booking_code_value?.hide()
                     } else {
                         itemView.booking_code_value?.show()
@@ -129,17 +130,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                                         item.dataObject.onlineBookingType)
                             }
                         }
-
-                        //temporary comment
-//                        itemView.booking_code_see_btn.apply {
-//                            visibility = View.VISIBLE
-//                            setOnClickListener {
-//                                actionListener?.onShowBookingCode(
-//                                        item.dataObject.onlineBookingCode,
-//                                        item.dataObject.onlineBookingType)
-//                            }
-//                        }
-
                     }
                 }
             }

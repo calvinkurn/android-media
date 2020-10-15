@@ -1,8 +1,10 @@
 package com.tokopedia.sellerorder.detail.data.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -105,6 +107,10 @@ data class SomDetailOrder(
                 @SerializedName("payment_summary")
                 @Expose
                 val paymentSummary: PaymentSummary = PaymentSummary(),
+
+                @SerializedName("logistic_info")
+                @Expose
+                val logisticInfo: LogisticInfo = LogisticInfo(),
 
                 @SerializedName("button")
                 @Expose
@@ -428,6 +434,51 @@ data class SomDetailOrder(
                     @SerializedName("total_price_text")
                     @Expose
                     val totalPriceText: String = "")
+
+            data class LogisticInfo(
+                    @SerializedName("all")
+                    @Expose
+                    val logisticInfoAllList: List<All> = listOf(),
+                    @SerializedName("priority")
+                    @Expose
+                    val logisticInfoPriorityList: List<Priority> = listOf()
+            ) {
+                    @Parcelize
+                    data class All(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    ): Parcelable
+                    data class Priority(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    )
+            }
 
             data class Button(
                     @SerializedName("key")
