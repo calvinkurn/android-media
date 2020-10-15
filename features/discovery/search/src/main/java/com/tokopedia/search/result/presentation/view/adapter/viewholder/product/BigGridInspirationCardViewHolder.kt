@@ -5,10 +5,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel
@@ -70,7 +71,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImage(element.img) { transform = FitCenter() }
         }
     }
 
