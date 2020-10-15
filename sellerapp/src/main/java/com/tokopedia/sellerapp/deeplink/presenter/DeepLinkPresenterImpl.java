@@ -18,10 +18,9 @@ import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
-import com.tokopedia.topads.TopAdsManagementInternalRouter;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.topads.view.activity.CreationOnboardingActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
@@ -188,18 +187,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!userSession.hasShop()) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
-        } else if (TextUtils.isEmpty(type)) {
+        } else if (TextUtils.isEmpty(type) || TOPADS_VIEW_TYPE.equals(type)) {
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);
-        } else if (TOPADS_VIEW_TYPE.equals(type)) {
-            String adId = uriData.getQueryParameter(PARAM_AD_ID);
-            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsDetailProductIntent(context);
-            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
-            intentToLaunch.setData(uriData);
         } else if (TOPADS_CREATE_TYPE.equals(type)) {
-            String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
-            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
-            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            intentToLaunch = new Intent(context, CreationOnboardingActivity.class);
             intentToLaunch.setData(uriData);
         }
         context.startActivity(intentToLaunch);

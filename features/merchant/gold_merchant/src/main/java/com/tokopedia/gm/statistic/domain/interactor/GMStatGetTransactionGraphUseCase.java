@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.domain.GMStatRepository;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 import javax.inject.Inject;
 
