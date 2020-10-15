@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
@@ -42,6 +43,8 @@ interface PlayBroadcastComponent {
     fun inject(activity: PlayCoverCameraActivity)
 
     fun analytic(): PlayBroadcastAnalytic
+
+    fun mapper(): PlayBroadcastMapper
 
     fun coroutineDispatcher(): CoroutineDispatcherProvider
 
