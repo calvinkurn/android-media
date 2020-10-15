@@ -165,7 +165,7 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_yellow))
                     }
                     5 -> {
-                        MethodChecker.setBackground(tagLine, findMyDrawable(R.drawable.bg_rounded_grey_label))
+                        MethodChecker.setBackground(tagLine, findMyDrawable(R.drawable.bg_rounded_grey_label_buyer))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_grey))
                     }
                     else -> {

@@ -154,7 +154,7 @@ public class RedeemVoucherView extends LinearLayout {
         } else {
             if (actionButton.getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
                 voucherNumber.setText(context.getResources().getString(R.string.tkpdtransaction_oms_retry_text));
-                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label));
+                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label_buyer));
                 redeemVoucher.setTextColor(context.getResources().getColor(R.color.tkpd_transaction_retry_failed_button));
                 redeemVoucher.setEnabled(false);
                 redeemVoucher.postDelayed(new Runnable() {
