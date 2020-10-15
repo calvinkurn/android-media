@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.attachcommon)
+//    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.atc_common)
