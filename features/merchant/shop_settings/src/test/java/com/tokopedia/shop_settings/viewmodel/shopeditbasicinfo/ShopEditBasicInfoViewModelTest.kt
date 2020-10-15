@@ -164,7 +164,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             name = "shop"
         }
         val shopName = "shop"
-        privateCurrentShopField.set(shopEditBasicInfoViewModel, shopBasicDataModel)
+        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
         shopEditBasicInfoViewModel.validateShopName(shopName)
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
     }
@@ -175,20 +175,9 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             domain = "domain"
         }
         val shopDomain = "domain"
-        privateCurrentShopField.set(shopEditBasicInfoViewModel, shopBasicDataModel)
+        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
         shopEditBasicInfoViewModel.validateShopDomain(shopDomain)
         assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
-    }
-
-    @Test
-    fun `when set current shop data should have the same data`() {
-        val shopBasicDataModel = ShopBasicDataModel().apply {
-            name = "shopName"
-        }
-        privateCurrentShopField.set(shopEditBasicInfoViewModel, shopBasicDataModel)
-        shopBasicDataModel.name = "shop"
-        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
-        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel) == shopBasicDataModel)
     }
 
     @Test
