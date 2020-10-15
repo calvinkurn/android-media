@@ -132,7 +132,6 @@ dependencies {
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.notifTroubleshooter)
-    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
 
     //Entertainment
