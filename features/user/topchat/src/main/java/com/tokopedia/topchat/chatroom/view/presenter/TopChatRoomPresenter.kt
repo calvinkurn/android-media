@@ -18,7 +18,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-//import com.tokopedia.attachcommon.data.VoucherPreview
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
@@ -732,10 +732,10 @@ class TopChatRoomPresenter @Inject constructor(
 
         if (stringVoucherPreview == null || stringVoucherPreview.isEmpty()) return
 
-//        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
-//        val sendableVoucher = SendableVoucherPreview(voucherPreview)
-//        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
-//        attachmentsPreview.add(sendableVoucher)
+        val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
+        val sendableVoucher = SendableVoucherPreview(voucherPreview)
+        if (attachmentsPreview.isNotEmpty()) clearAttachmentPreview()
+        attachmentsPreview.add(sendableVoucher)
     }
 
     override fun onClickBannedProduct(liteUrl: String) {
