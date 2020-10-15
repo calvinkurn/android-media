@@ -30,7 +30,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun initView() {
-        productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
@@ -69,7 +68,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         when (view) {
             productCardView -> {
                 productCardItemViewModel.sendTopAdsClick()
-                productCardItemViewModel.handleNavigation()
+                productCardItemViewModel.navigate(fragment.context, dataItem?.applinks)
                 sendClickEvent()
             }
         }

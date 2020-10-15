@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -22,7 +21,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val productCardModelLiveData: MutableLiveData<ProductCardModel> = MutableLiveData()
-    private lateinit var context: Context
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
@@ -30,13 +28,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     init {
         initDaggerInject()
-    }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -46,11 +37,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
     }
 
-    fun getComponentPosition() = componentPosition
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + SupervisorJob()
 
-    fun setContext(context: Context) {
-        this.context = context
-    }
+    fun getComponentPosition() = componentPosition
 
     fun getComponentName(): String {
         var componentName = ""
@@ -66,12 +56,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun getDataItemValue() = dataItem
     fun getProductModelValue() = productCardModelLiveData
-
-    fun handleNavigation() {
-        dataItem.value?.applinks?.let { applink ->
-            navigate(context, applink)
-        }
-    }
 
     fun sendTopAdsClick() {
         dataItem.value?.let {
