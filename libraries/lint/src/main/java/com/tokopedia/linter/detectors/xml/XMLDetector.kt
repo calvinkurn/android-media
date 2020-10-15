@@ -12,7 +12,7 @@ class XMLDetector : Detector(), XmlScanner {
         )
     }
     override fun getApplicableElements(): Collection<String>? {
-        return UnifyDetector.unifyMap.keys
+        return UnifyDetector.unifyMapKeys.keys
     }
 
     override fun visitElement(context: XmlContext, element: Element) {
