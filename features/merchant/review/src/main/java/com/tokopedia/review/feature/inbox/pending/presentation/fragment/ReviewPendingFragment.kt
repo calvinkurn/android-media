@@ -364,6 +364,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 setShowListener {
                     bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
                     bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                    bottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                        override fun onSlide(p0: View, p1: Float) {
+                        }
+                        override fun onStateChanged(p0: View, p1: Int) {
+                            if(p1 == BottomSheetBehavior.STATE_COLLAPSED){
+                                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                            }
+                        }
+                    })
                 }
                 initView(view, productRevIncentiveOvoDomain, ovoIncentiveBottomSheet)
             }
@@ -402,6 +411,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             showHeader = false
             isHideable = true
             isDragable = true
+
         }
     }
 

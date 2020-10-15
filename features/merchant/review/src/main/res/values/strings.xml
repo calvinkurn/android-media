@@ -177,7 +177,7 @@
     <string name="set_date">Atur Tanggal</string>
 
     <!-- ovo incentive -->
-    <string name="ovo_incentive_review_pending">Kasih ulasan, dapat OVO Points</string>
+    <string name="ovo_incentive_review_pending">Dapatkan OVO Points</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
     <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu calon pembeli lain &amp; dapat OVO Points.</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
@@ -189,9 +189,9 @@
     <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
     <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
-    <string name="review_create_later">Nanti Aja, Deh</string>
+    <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
-    <string name="review_create_thank_you_subtitle">Satu ulasanmu berarti bagi penjual. %d OVO Points akan dikirim ke saldomu maks. 24 jam.</string>
+    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
 </resources>

@@ -609,6 +609,15 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                     setShowListener {
                                         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
                                         bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                                        bottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                                            override fun onSlide(p0: View, p1: Float) {
+                                            }
+                                            override fun onStateChanged(p0: View, p1: Int) {
+                                                if(p1 == BottomSheetBehavior.STATE_COLLAPSED){
+                                                    bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+                                                }
+                                            }
+                                        })
                                     }
                                 }
                             }
@@ -687,21 +696,24 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)
             val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
             val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
+            val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
             view.apply {
                 incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
-                incentiveOvoSubmittedTitle?.text = context.getString(R.string.review_create_thank_you_title)
+                incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
                 productRevIncentiveOvoDomain?.let {
                     incentiveOvoSendAnother?.apply {
                         setOnClickListener {
                             dismiss()
                             goToReviewPending()
+                            CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
                         }
                     }
                     incentiveOvoLater?.apply {
                         setOnClickListener {
                             dismiss()
                             finishIfRoot(true)
+                            CreateReviewTracking.eventClickLater(defaultTitle, true)
                         }
                         show()
                     }
@@ -712,6 +724,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         dismiss()
                         finishIfRoot(true)
+                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
                     }
                 }
             }
