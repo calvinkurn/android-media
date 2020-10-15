@@ -75,6 +75,7 @@ object TrackingOtpConstant{
         const val ACTION_CLICK_MASUK_LEWAT_NOTIFIKASI = "click masuk lewat notifikasi"
         const val ACTION_VIEW_OTP_PUSH_NOTIF_RECEIVE_SETTING_PAGE = "view otp push notif - setting page"
         const val ACTION_CLICK_PUSH_NOTIF = "click push notification tokopedia"
+        const val ACTION_CLICK_ATUR_ULANG_KATA_SANDI = "click atur ulang kata sandi"
         const val ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF = "click on button aktifkan masuk lewat notifikasi"
     }
 

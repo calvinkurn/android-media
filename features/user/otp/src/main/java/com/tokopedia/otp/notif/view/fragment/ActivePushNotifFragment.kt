@@ -56,6 +56,7 @@ class ActivePushNotifFragment : BaseOtpFragment() {
             viewBound.ticker?.setHtmlDescription(getString(R.string.remove_device_ticker))
             viewBound.ticker?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    analytics.trackClickChangePasswordSettingButton()
                     context?.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.HAS_PASSWORD))
                 }
 

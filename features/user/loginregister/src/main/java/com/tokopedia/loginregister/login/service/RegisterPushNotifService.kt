@@ -112,7 +112,7 @@ class RegisterPushNotifService : JobIntentService() {
             }
 
         } catch (e: Exception) {
-            throw RuntimeException(e)
+            e.printStackTrace()
         }
 
         return signResult

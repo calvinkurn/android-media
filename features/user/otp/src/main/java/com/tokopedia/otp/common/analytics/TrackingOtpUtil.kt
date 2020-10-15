@@ -396,6 +396,15 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
+    fun trackClickChangePasswordSettingButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_SETTING_PAGE,
+                Action.ACTION_CLICK_ATUR_ULANG_KATA_SANDI,
+                Label.LABEL_EMPTY
+        ))
+    }
+
     fun trackClickSignInFromNotifSettingButton(status: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
