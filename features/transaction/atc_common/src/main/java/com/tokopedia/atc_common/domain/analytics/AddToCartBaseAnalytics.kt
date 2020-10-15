@@ -20,6 +20,8 @@ object AddToCartBaseAnalytics {
 
     private const val CONTENT_TYPE = "product"
 
+    private const val CATEGORY_SPLITTER = "/"
+
     const val VALUE_CURRENCY = "IDR"
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
@@ -52,20 +54,22 @@ object AddToCartBaseAnalytics {
                              level1Id: String, level1Name: String, level2Id: String, level2Name: String, level3Id: String, level3Name: String,
                              userId: String) {
         try {
+            val splitCategory = catLvl1.split(CATEGORY_SPLITTER)
+            val isCategoryHasAllLevel = splitCategory.size == 3
             val data = LinkerData().apply {
                 this.id = productId
                 this.productName = productName
                 this.price = convertPriceToIntString(price)
                 this.quantity = quantity
-                this.catLvl1 = catLvl1
+                this.catLvl1 = if (isCategoryHasAllLevel) splitCategory[2] else catLvl1
                 this.contentType = CONTENT_TYPE
                 this.level1Id = level1Id
-                this.level1Name = level1Name
+                this.level1Name = if (level1Name.isEmpty() && isCategoryHasAllLevel) splitCategory[0] else level1Name
                 this.level2Id = level2Id
-                this.level2Name = level2Name
+                this.level2Name = if (level2Name.isEmpty() && isCategoryHasAllLevel) splitCategory[1] else level2Name
                 this.level3Id = level3Id
-                // level 3 name should always be the same with catlvl1
-                this.level3Name = catLvl1
+                // level3Name should use catLvl1 value if empty
+                this.level3Name = if (level3Name.isEmpty() && isCategoryHasAllLevel) splitCategory[2] else if (level3Name.isEmpty()) catLvl1 else level3Name
                 this.userId = userId
                 this.content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity)).toString()
             }
