@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.data.model.ShowcaseItem
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetShopShowCasesUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -34,7 +36,8 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        private val getShopShowCasesUseCase: GetShopShowCasesUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -42,6 +45,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAdding = false
 
     var isDrafting = false
+
+    var isReloadingShowCase = false
 
     var isFirstMoved = false
 
@@ -137,6 +142,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
+
+    private val mShopShowCases = MutableLiveData<Result<List<ShowcaseItem>>>()
+    val shopShowCases: LiveData<Result<List<ShowcaseItem>>>
+        get() = mShopShowCases
 
     private fun isInputValid(): Boolean {
 
@@ -384,6 +393,16 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
+        })
+    }
+
+    fun getShopShowCasesUseCase() {
+        launchCatchError(block = {
+            mShopShowCases.value = Success(withContext(Dispatchers.IO) {
+                getShopShowCasesUseCase.executeOnBackground()
+            })
+        }, onError = {
+            mShopShowCases.value = Fail(it)
         })
     }
 }

@@ -33,10 +33,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -190,6 +187,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product show case
     private var productShowCasesView: Typography? = null
     private var addProductShowCaseButton: Typography? = null
+    private var productShowCasesReloadLayout: View? = null
+    private var productShowCasesReloadButton: Typography? = null
 
     // button continue
     private var submitButton: ViewGroup? = null
@@ -223,16 +222,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             // set detail and variant input model
             cacheManagerId.run {
-                viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+                viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
+                        ?: ProductInputModel()
                 var pictureIndex = 0
                 viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                     if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
                     else urlOrPath
                 }.toMutableList()
-                viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java) ?: false
-                viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java) ?: false
-                viewModel.isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
-                viewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
+                viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java)
+                        ?: false
+                viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
+                        ?: false
+                viewModel.isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
+                        ?: false
+                viewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java)
+                        ?: false
             }
         }
         userSession = UserSession(requireContext())
@@ -330,9 +334,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
-                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1,  deletePosition ?: -1)
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1, deletePosition
+                                ?: -1)
                         // to avoid enable button submit when we delete the last of whole sale
-                        if(deletePosition == it - 1) {
+                        if (deletePosition == it - 1) {
                             viewModel.isTheLastOfWholeSale.value = false
                         }
                     }
@@ -420,8 +425,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productSkuField = view.findViewById(R.id.tfu_sku)
 
         // add product showcase button
-        productShowCasesView = view.findViewById(R.id.tv_product_showcase)
-        addProductShowCaseButton = view.findViewById(R.id.tv_add_product_showcase)
+        productShowCasesView = view.findViewById(R.id.tv_product_showcases)
+        addProductShowCaseButton = view.findViewById(R.id.tv_add_product_showcases)
+        productShowCasesReloadLayout = view.findViewById(R.id.reload_product_showcase_layout)
+        productShowCasesReloadButton = view.findViewById(R.id.tv_reload_showcases_button)
 
         // submit button
         submitButton = view.findViewById(R.id.btn_submit)
@@ -435,6 +442,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
+
+        //
+        val productShowCases = viewModel.productShowCases.map { it.showcaseName }
+        if (productShowCases.contains("")) viewModel.getShopShowCasesUseCase()
 
         addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
 
@@ -570,6 +581,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         })
 
+        // product showcase refresh button
+        productShowCasesReloadButton?.setOnClickListener {
+            // prevent rapid reloading with isReloadingShowCase flag in view model
+            if(!viewModel.isReloadingShowCase) {
+                viewModel.getShopShowCasesUseCase()
+                viewModel.isReloadingShowCase = true
+            }
+        }
+
         // Continue to add product description
         submitButton?.setOnClickListener {
             submitTextView?.hide()
@@ -602,6 +622,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToOrderQuantityInputStatus()
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
+        subscribeToShopShowCases()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
@@ -791,11 +812,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                             ?: ArrayList()
                     // update the view model state
                     viewModel.updateProductShowCases(selectedShowcaseList)
-                    val showCases = mutableListOf<String>()
-                    selectedShowcaseList.forEach {
-                        showCases.add(it.showcaseName)
-                    }
-                    productShowCasesView?.text = showCases.joinToString()
+                    // display the show case names with comma separator
+                    displayProductShowCaseNames(selectedShowcaseList.map { it.showcaseName })
                 }
             }
         }
@@ -854,14 +872,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onWholeSaleQuantityItemTextChanged(position: Int, input: String) {
-        if ( productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
+        if (productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
             val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
             val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
             val minOrderInput = productMinOrderField.getTextIntOrZero().toString()
             val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position) ?: ""
             val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, minOrderInput, previousQuantity)
             // to avoid enable button submit when we edit the last of whole sale
-            if(position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
+            if (position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
                 viewModel.isTheLastOfWholeSale.value = errorMessage.isNotEmpty()
             }
             quantityField?.setError(errorMessage.isNotEmpty())
@@ -874,24 +892,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onWholeSalePriceItemTextChanged(position: Int, input: String) {
-       if (productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
-           val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
-           val priceField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_price)
-           val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-           val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position)?.replace(".", "")
-                   ?: ""
-           val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput, previousPrice)
-           // to avoid enable button submit when we edit the last of whole sale
-           if(position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
-               viewModel.isTheLastOfWholeSale.value = errorMessage.isNotEmpty()
-           }
-           priceField?.setError(errorMessage.isNotEmpty())
-           priceField?.setMessage(errorMessage)
-           updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
-           wholeSaleInputFormsAdapter?.run {
-               if (input.isNotBlank()) this.updateWholeSalePriceInputModel(position, input)
-           }
-       }
+        if (productWholeSaleInputFormsView?.layoutManager?.itemCount == wholeSaleInputFormsAdapter?.itemCount) {
+            val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
+            val priceField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_price)
+            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+            val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position)?.replace(".", "")
+                    ?: ""
+            val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput, previousPrice)
+            // to avoid enable button submit when we edit the last of whole sale
+            if (position == wholeSaleInputFormsAdapter?.itemCount?.minus(1)) {
+                viewModel.isTheLastOfWholeSale.value = errorMessage.isNotEmpty()
+            }
+            priceField?.setError(errorMessage.isNotEmpty())
+            priceField?.setMessage(errorMessage)
+            updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+            wholeSaleInputFormsAdapter?.run {
+                if (input.isNotBlank()) this.updateWholeSalePriceInputModel(position, input)
+            }
+        }
     }
 
     private fun onFragmentResult() {
@@ -917,7 +935,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 sendDataBack()
 
@@ -935,7 +953,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productName = productNameField.getText()
             price = productPriceField.getTextBigIntegerOrZero()
             stock = productStockField.getTextIntOrZero()
-            condition = if (isProductConditionNew)  CONDITION_NEW else CONDITION_USED
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
             minOrder = productMinOrderField.getTextIntOrZero()
             sku = productSkuField.getText()
             imageUrlOrPathList = viewModel.productPhotoPaths
@@ -1118,7 +1136,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product showcases
         viewModel.updateProductShowCases(ArrayList(detailInputModel.productShowCases))
         val productShowCases = viewModel.productShowCases.map { it.showcaseName }
-        if (productShowCases.isNotEmpty()) productShowCasesView?.text = productShowCases.joinToString()
+        if (!productShowCases.contains("")) displayProductShowCaseNames(productShowCases)
     }
 
     private fun subscribeToProductNameInputStatus() {
@@ -1188,6 +1206,47 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, Observer {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
+        })
+    }
+
+    private fun subscribeToShopShowCases() {
+        viewModel.shopShowCases.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    // shop show cases; the source of truth
+                    val shopShowCases = result.data
+                    // show case ids from getProductV3 response
+                    val selectedShowCaseIds = viewModel.productShowCases.map { it.showcaseId }
+                    val selectedShowCases = shopShowCases.filter { showCase ->
+                        selectedShowCaseIds.contains(showCase.id)
+                    }
+                    // convert ShowCaseItems to ShowCaseItemPicker collections
+                    val selectedProductShowCases = selectedShowCases.map { showCaseItem ->
+                        ShowcaseItemPicker(showcaseId = showCaseItem.id, showcaseName = showCaseItem.name)
+                    }
+                    // update the show case item picker collections in view model
+                    viewModel.updateProductShowCases(ArrayList(selectedProductShowCases))
+                    // display the show case names with comma separator
+                    displayProductShowCaseNames(selectedProductShowCases.map { it.showcaseName })
+                    // hide the reload layout only when the view is visible
+                    productShowCasesReloadLayout?.run {
+                        if(this.isVisible) {
+                            productShowCasesReloadLayout?.hide()
+                            productShowCasesView?.show()
+                            // update the reloading state in view model
+                            viewModel.isReloadingShowCase = false
+                        }
+                    }
+
+                }
+                is Fail -> {
+                    // hide the tips and show the reload button
+                    productShowCasesView?.hide()
+                    productShowCasesReloadLayout?.show()
+                    // update the reloading state in view model
+                    viewModel.isReloadingShowCase = false
+                }
+            }
         })
     }
 
@@ -1428,6 +1487,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         categoryAlertDialog?.show()
     }
 
+    private fun displayProductShowCaseNames(productShowCaseNames: List<String>) {
+        productShowCasesView?.text = productShowCaseNames.joinToString()
+    }
+
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
         hasCategoryFromPicker = false
         productCategoryLayout?.show()
@@ -1552,7 +1615,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun getValidationCurrentWholeSalePrice(price: String, position: Int): String {
         val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "") ?: ""
+        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "")
+                ?: ""
         val validation = viewModel.validateProductWholeSalePriceInput(price, productPriceInput, previousPrice)
         viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()
         return validation

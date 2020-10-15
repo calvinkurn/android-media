@@ -127,7 +127,9 @@
     <!-- add edit product showcase -->
     <string name="label_product_showcase">Etalase</string>
     <string name="label_product_showcase_tips">Gunakan etalase agar pembeli mudah\nmencari produk di tokomu.</string>
+    <string name="label_refresh_showcases">Data tidak berhasil ditampilkan,\nklik <b>Muat Ulang</b> untuk coba lagi</string>
     <string name="action_add_product_showcase">Tambah</string>
+    <string name="action_refresh_showcases">Muat Ulang</string>
 
     <!--Description-->
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
