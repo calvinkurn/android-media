@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.travel_slice">
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
+
+    <application>
+        <provider
+            android:name="com.tokopedia.travel_slice.ui.provider.MainSliceProvider"
+            android:authorities="com.tokopedia.tkpd.travel_slice"
+            android:exported="true"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.app.slice.category.SLICE" />
+            </intent-filter>
+        </provider>
+    </application>
+</manifest>
