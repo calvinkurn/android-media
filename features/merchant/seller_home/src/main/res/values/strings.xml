@@ -1,4 +1,8 @@
 <resources>
+    <string name="tag_lottie_animation_view">lottieAnimationView</string>
+    <string name="tag_title_textview">titleTextView</string>
+    <string name="tag_badge_textview">badgeTextView</string>
+
     <string name="app_name">Seller Home</string>
     <string name="sah_more">Selengkapnya</string>
     <string name="sah_line_graph_error_message">Oops, informasi gagal ditampilkan</string>

@@ -7,13 +7,13 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -47,6 +47,8 @@ import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
+import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
+import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.usecase.coroutines.Success
@@ -54,7 +56,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener {
 
     companion object {
         @JvmStatic
@@ -80,6 +82,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             null
     }
 
+    private val menu = mutableListOf<BottomMenu>()
+
     private var canExitApp = false
     private var lastProductManagePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
@@ -100,6 +104,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         setupBackground()
         setupToolbar()
         setupStatusBar()
+        setupBottomNav()
         setupNavigator()
 
         val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
@@ -108,7 +113,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         // if redirected from any seller migration entry point, no need to show the update dialog
         val isRedirectedFromSellerMigrationEntryPoint = !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank()
 
-        setupBottomNav()
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -153,6 +157,37 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         navigator?.cleanupNavigator()
     }
 
+    override fun menuClicked(position: Int, id: Int): Boolean {
+        when (position) {
+            FragmentType.HOME -> {
+                UpdateShopActiveService.startService(this)
+                onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                showToolbarNotificationBadge()
+            }
+            FragmentType.PRODUCT -> {
+                UpdateShopActiveService.startService(this)
+                onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
+            }
+            FragmentType.CHAT -> {
+                UpdateShopActiveService.startService(this)
+                onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+            }
+            FragmentType.ORDER -> {
+                UpdateShopActiveService.startService(this)
+                onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
+            }
+            FragmentType.OTHER -> {
+                UpdateShopActiveService.startService(this)
+                showOtherSettingsFragment()
+            }
+        }
+        return true
+    }
+
+    override fun menuReselected(position: Int, id: Int) {
+
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -182,7 +217,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupDefaultPage(@FragmentType initialPageType: Int) {
-        if(intent?.data == null) {
+        if (intent?.data == null) {
             showToolbar(initialPageType)
             showInitialPage(initialPageType)
         } else {
@@ -192,7 +227,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun showInitialPage(pageType: Int) {
         setCurrentFragmentType(pageType)
-        sahBottomNav.currentItem = pageType
+        sahBottomNav.setSelected(pageType)
 
         if (pageType == FragmentType.OTHER) {
             hideToolbarAndStatusBar()
@@ -211,7 +246,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
             showToolbar(pageType)
             setCurrentFragmentType(pageType)
-            sahBottomNav.currentItem = pageType
+            sahBottomNav.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
         }
     }
@@ -237,38 +272,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun setupNavigator() {
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter)
-    }
-
-    private fun setupBottomNav() {
-        sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
-        sahBottomNav.itemIconTintList = null
-        sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
-        sahBottomNav.setOnNavigationItemSelectedListener { menu ->
-            when (menu.itemId) {
-                R.id.menu_sah_home -> {
-                    UpdateShopActiveService.startService(this)
-                    onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
-                    showToolbarNotificationBadge()
-                }
-                R.id.menu_sah_product -> {
-                    UpdateShopActiveService.startService(this)
-                    onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
-                }
-                R.id.menu_sah_chat -> {
-                    UpdateShopActiveService.startService(this)
-                    onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
-                }
-                R.id.menu_sah_order -> {
-                    UpdateShopActiveService.startService(this)
-                    onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
-                }
-                R.id.menu_sah_other -> {
-                    UpdateShopActiveService.startService(this)
-                    showOtherSettingsFragment()
-                }
-            }
-            return@setOnNavigationItemSelectedListener true
-        }
     }
 
     private fun showToolbarNotificationBadge() {
@@ -304,7 +307,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun resetPages(page: PageFragment) {
-        when(page.type) {
+        when (page.type) {
             FragmentType.PRODUCT -> lastProductManagePage = PageFragment(FragmentType.PRODUCT)
             FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
         }
@@ -352,7 +355,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                     userSession.shopName = shopName
                     userSession.shopAvatar = shopAvatar
 
-                    if(isHomePageSelected()) {
+                    if (isHomePageSelected()) {
                         supportActionBar?.title = shopName
                     }
 
@@ -369,12 +372,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
-        sahBottomNav.setNotification(chat.unreadsSeller, FragmentType.CHAT)
+        val badgeVisibility = if (chat.unreadsSeller <= 0) View.INVISIBLE else View.VISIBLE
+        sahBottomNav.setBadge(chat.unreadsSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
-        sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
+        val badgeVisibility = if (notificationCount <= 0) View.INVISIBLE else View.VISIBLE
+        sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
     private fun setupStatusBar() {
@@ -390,6 +395,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
             statusBarCallback?.setStatusBar()
         }
         sahToolbar?.hide()
+    }
+
+    private fun setupBottomNav() {
+        sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
+
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        sahBottomNav.setMenu(menu)
+
+        sahBottomNav.setMenuClickListener(this)
     }
 
     private fun initSellerHomePlt() {
