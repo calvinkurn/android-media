@@ -212,6 +212,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             RewardContainer.RewardState.POINTS_ONLY -> {
                                 val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
+                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
+                                ovoPointsTextAnim.startDelay = startDelay + 100L
+                                ovoPointsTextAnim.start()
+
                                 val animatorSet = AnimatorSet()
                                 animatorSet.playTogether(stageLightAnim, rewardAnim)
                                 animatorSet.startDelay = startDelay

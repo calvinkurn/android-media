@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.CouponType
@@ -157,8 +158,8 @@ class RewardContainer : FrameLayout {
             //only points
             rewardState = RewardState.POINTS_ONLY
             if (!iconUrl.isNullOrEmpty()) {
-                ImageUtils.loadImage(imageSmallReward, iconUrl!!)
-                ImageUtils.loadImage(imageCircleReward, iconUrl!!)
+                imageSmallReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
+                imageCircleReward.loadRemoteImageDrawable("ic_ovo.png", ImageDensityType.SUPPORT_MULTIPLE_DPI)
             }
         } else if (hasCoupons) {
             rewardState = RewardState.COUPON_ONLY
