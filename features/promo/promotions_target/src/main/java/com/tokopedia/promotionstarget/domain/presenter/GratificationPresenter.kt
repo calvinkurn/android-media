@@ -108,6 +108,8 @@ class GratificationPresenter @Inject constructor(val context: Context) {
             //todo Rahul refactor later
             val code = notifResponse.response.promoCode
 //                    val code = "NUPLBDAY5D7RUU5M329"
+//                    val code = "UNDIANMITRA05D7RUC66K7ZJDG8JA"  //expired
+//                    val code = "UNDIANMITRA205D7RUC66K7ZJ9QUR9"  //used
             if (!code.isNullOrEmpty()) {
                 val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
