@@ -8,11 +8,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi
+import com.tokopedia.entertainment.pdp.network_api.*
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi.Companion.BASE_URL
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepositoryImpl
-import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
@@ -164,6 +161,18 @@ class EventPDPModule {
     @EventPDPScope
     fun provideGetWhiteListValidationUseCase(repository: RestRepository): GetWhiteListValidationUseCase {
         return GetWhiteListValidationUseCase(repository)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideGetEventRedeemUseCase(repository: RestRepository): GetEventRedeemUseCase {
+        return GetEventRedeemUseCase(repository)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideRedeemTicketEventUseCase(repository: RestRepository): RedeemTicketEventUseCase {
+        return RedeemTicketEventUseCase(repository)
     }
 
 }
