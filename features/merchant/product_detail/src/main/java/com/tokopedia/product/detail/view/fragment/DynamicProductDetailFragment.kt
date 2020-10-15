@@ -1567,6 +1567,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
+        nplFollowersButton?.setupVisibility = !alreadyFollowShop
     }
 
     override fun onButtonFollowNplClick() {
