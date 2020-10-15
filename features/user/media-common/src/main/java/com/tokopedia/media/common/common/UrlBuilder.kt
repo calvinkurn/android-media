@@ -1,11 +1,11 @@
-package com.tokopedia.media.loader.common
+package com.tokopedia.media.common.common
 
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.tokopedia.media.loader.utils.HEADER_ECT
-import com.tokopedia.media.loader.utils.HIGH_QUALITY
-import com.tokopedia.media.loader.utils.LOW_QUALITY
-import com.tokopedia.media.loader.utils.MediaSettingPreferences
+import com.tokopedia.media.common.data.HEADER_ECT
+import com.tokopedia.media.common.data.HIGH_QUALITY
+import com.tokopedia.media.common.data.LOW_QUALITY
+import com.tokopedia.media.common.data.MediaSettingPreferences
 
 object UrlBuilder {
 

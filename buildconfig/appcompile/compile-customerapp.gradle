@@ -204,6 +204,7 @@ include "features:user:loginregister"
 include "features:user:logout"
 include "features:user:managename"
 include "features:user:managepassword"
+include 'features:user:media-common'
 include "features:user:medialoader"
 include "features:user:notif-troubleshooter"
 include "features:user:notifcenter"

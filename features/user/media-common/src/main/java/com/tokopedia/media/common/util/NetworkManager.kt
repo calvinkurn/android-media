@@ -1,4 +1,4 @@
-package com.tokopedia.media.loader.network
+package com.tokopedia.media.common.util
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -7,10 +7,10 @@ import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import android.net.NetworkInfo
 import android.os.Build
 import android.telephony.TelephonyManager
-import com.tokopedia.media.loader.utils.Fast
-import com.tokopedia.media.loader.utils.Low
-import com.tokopedia.media.loader.utils.NetworkState
-import com.tokopedia.media.loader.utils.Undefined
+import com.tokopedia.media.common.state.Fast
+import com.tokopedia.media.common.state.Low
+import com.tokopedia.media.common.state.NetworkState
+import com.tokopedia.media.common.state.Undefined
 
 object NetworkManager {
 

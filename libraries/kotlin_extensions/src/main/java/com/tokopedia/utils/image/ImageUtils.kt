@@ -17,7 +17,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.R
-import com.tokopedia.utils.image.AdaptiveImage.glideUrl
 
 object ImageUtils {
 
@@ -48,12 +47,10 @@ object ImageUtils {
     fun loadImage2(imageview: ImageView, url: String?, resId: Int) {
         val error = AppCompatResources.getDrawable(imageview.context, resId)
         if (url != null && !TextUtils.isEmpty(url)) {
-            val glideUrl = glideUrl(imageview.context, url)
             Glide.with(imageview.context)
-                    .load(glideUrl)
+                    .load(url)
                     .placeholder(R.drawable.ic_loading_placeholder)
                     .dontAnimate()
-                    .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .error(error)
                     .into(imageview)
         } else {

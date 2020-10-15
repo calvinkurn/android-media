@@ -1,20 +1,20 @@
-package com.tokopedia.utils.image
+package com.tokopedia.media.common.data
 
 import android.content.Context
 import android.content.SharedPreferences
 
-class MediaQualityCacheManager constructor(val context: Context) {
+class MediaSettingPreferences constructor(val context: Context) {
 
     private fun pref(): SharedPreferences {
         return context.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
     }
 
-    fun setQualitySettings(value: Int) {
-        pref().edit().putInt(KEY_QUALITY_SETTING, value).apply()
+    fun qualitySettings(): Int {
+        return if (isExist()) pref().getInt(KEY_QUALITY_SETTING, 0) else 0
     }
 
-    fun indexQuality(): Int {
-        return if (isExist()) pref().getInt(KEY_QUALITY_SETTING, 0) else 0
+    fun setQualitySettings(value: Int) {
+        pref().edit().putInt(KEY_QUALITY_SETTING, value).apply()
     }
 
     private fun isExist(): Boolean {

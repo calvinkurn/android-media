@@ -42,8 +42,6 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.Headers;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestListener;
@@ -53,8 +51,6 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.AdaptiveImage;
-import com.tokopedia.abstraction.common.utils.NetworkManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,8 +60,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -301,15 +295,12 @@ public class ImageHandler {
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {
-        // adaptive image
         Drawable error = AppCompatResources.getDrawable(imageview.getContext(), resId);
         if (url != null && !TextUtils.isEmpty(url)) {
-            GlideUrl glideUrl = AdaptiveImage.INSTANCE.glideUrl(imageview.getContext(), url);
             Glide.with(imageview.getContext())
-                    .load(glideUrl)
+                    .load(url)
                     .placeholder(R.drawable.loading_page)
                     .dontAnimate()
-                    .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                     .error(error)
                     .into(imageview);
         } else {
@@ -641,8 +632,8 @@ public class ImageHandler {
     }
 
     public static void loadImageBlurWithViewTarget(final Context context,
-                                     String imageUrl,
-                                     CustomTarget<Bitmap> simpleTarget) {
+                                                   String imageUrl,
+                                                   CustomTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .asBitmap()

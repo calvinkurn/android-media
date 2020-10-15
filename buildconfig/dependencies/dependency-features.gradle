@@ -221,6 +221,7 @@ ext {
             loginfingerprint                : ":features:user:loginfingerprint",
             managename                      : ":features:user:managename",
             managepassword                  : ":features:user:managepassword",
+            mediaCommon                     : ":features:user:media-common",
             medialoader                     : ":features:user:medialoader",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
             notifCenter                     : ":features:user:notifcenter",

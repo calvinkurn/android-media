@@ -9,17 +9,16 @@ import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.adapter.setting.ImageQualitySettingAdapter
 import com.tokopedia.home.account.presentation.listener.ImageQualitySettingListener
 import com.tokopedia.home.account.presentation.uimodel.MediaQualityUIModel.Companion.settingsMenu
-import com.tokopedia.home.account.presentation.util.MediaQualityCacheManager
+import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_image_quality_setting.*
-import javax.inject.Inject
 import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT as LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL as TYPE_NORMAL
 
 class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingListener {
 
     private val _adapter by lazy { ImageQualitySettingAdapter(settingsMenu(), this) }
-    private val settings by lazy { MediaQualityCacheManager(requireContext()) }
+    private val settings by lazy { MediaSettingPreferences(requireContext()) }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -39,8 +38,10 @@ class ImageQualitySettingFragment: BaseDaggerFragment(), ImageQualitySettingList
     }
 
     private fun setupRecyclerView() {
-        recyclerview?.adapter = _adapter
-        _adapter.previousPosition = settings.indexQuality()
+        with(_adapter) {
+            recyclerview?.adapter = this
+            previousPosition = settings.qualitySettings()
+        }
     }
 
     private fun toastMessage(quality: Int): Int {

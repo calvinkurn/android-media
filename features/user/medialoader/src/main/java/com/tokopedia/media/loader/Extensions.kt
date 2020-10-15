@@ -4,8 +4,8 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
-import com.tokopedia.media.loader.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
