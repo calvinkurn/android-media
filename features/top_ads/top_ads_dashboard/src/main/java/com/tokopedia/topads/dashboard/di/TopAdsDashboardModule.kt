@@ -13,7 +13,6 @@ import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.common.data.api.TopAdsManagementApi
 import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl
 import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource
 import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud
@@ -45,11 +44,6 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = com.tokopedia.user.session.UserSession(context)
 
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsManagementApi(@TopAdsDashboardQualifier retrofit: Retrofit): TopAdsManagementApi {
-        return retrofit.create(TopAdsManagementApi::class.java)
-    }
 
     @ShopWsQualifier
     @TopAdsDashboardScope

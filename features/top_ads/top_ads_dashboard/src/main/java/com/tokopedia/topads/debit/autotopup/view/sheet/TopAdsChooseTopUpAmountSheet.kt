@@ -24,6 +24,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     var onCancel: (() -> Unit)? = null
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var bonus: Int = 0
+    private val defIndex = 3
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -78,10 +79,12 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     }
 
     private fun setInitialState() {
-        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.firstOrNull()?.priceFmt
+        /*def should be 200k*/
+        adapter?.setSelected()
+        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.get(defIndex)?.priceFmt
                 ?: "1", bonus)
                 .toLong())))
-        dedAmount?.text = data?.availableNominals?.firstOrNull()?.minCreditFmt
+        dedAmount?.text = data?.availableNominals?.get(defIndex)?.minCreditFmt
 
     }
 }
