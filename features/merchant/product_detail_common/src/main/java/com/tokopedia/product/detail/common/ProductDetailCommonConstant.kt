@@ -16,7 +16,6 @@ object ProductDetailCommonConstant{
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
 
     const val PARAM_SHOP_IDS = "shopIds"
-    const val PARAM_NEED_REQUEST_COD = "needRequestCod"
 
     const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
     const val PARAM_RATE_EST_WEIGHT = "weight"
@@ -24,11 +23,11 @@ object ProductDetailCommonConstant{
     const val PARAM_PAGE = "page"
     const val PARAM_TOTAL = "total"
     const val PARAM_PRODUCT_ORIGIN = "origin"
-    const val PARAM_IS_PDP = "isPDP"
 
     const val DEFAULT_NUM_IMAGE_REVIEW = 5
 
     const val SHOP_ID_PARAM = "shopId"
+    const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
     const val INCLUDE_UI_PARAM = "includeUI"
 

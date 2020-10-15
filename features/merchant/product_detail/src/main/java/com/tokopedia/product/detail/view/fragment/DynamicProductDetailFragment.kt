@@ -1212,10 +1212,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             } else {
                 pdpUiUpdater?.updateByMeData(context)
             }
+
+            pdpUiUpdater?.updateShopFollow(it.isFollow)
+            pdpUiUpdater?.updateWishlistData(it.isWishlisted)
+
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
-            pdpUiUpdater?.updateWishlistData(it.isWishlisted)
+
+            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+            dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
             dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+
             openBottomSheetTopAds()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
@@ -1560,6 +1567,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
+        nplFollowersButton?.setupVisibility = !alreadyFollowShop
     }
 
     override fun onButtonFollowNplClick() {
