@@ -121,7 +121,7 @@
                             android:background="@drawable/bg_hotel_property_tag_half_radius"
                             android:ellipsize="end"
                             android:lines="1"
-                            android:maxWidth="@dimen/dp_300"
+                            android:maxWidth="@dimen/hotel_300dp"
                             android:maxLines="1"
                             android:paddingStart="@dimen/hotel_12dp"
                             android:paddingLeft="@dimen/hotel_12dp"
@@ -180,7 +180,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingBottom="@dimen/dp_100">
+                    android:paddingBottom="@dimen/hotel_100dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -205,7 +205,7 @@
                             android:layout_marginLeft="@dimen/layout_lvl2"
                             android:layout_marginTop="@dimen/layout_lvl1"
                             android:layout_marginRight="@dimen/layout_lvl2"
-                            android:layout_marginBottom="@dimen/dp_12"
+                            android:layout_marginBottom="@dimen/hotel_12dp"
                             android:orientation="horizontal">
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -232,7 +232,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_lvl4"
                             android:layout_marginRight="@dimen/spacing_lvl4"
-                            android:layout_marginBottom="@dimen/dp_12"
+                            android:layout_marginBottom="@dimen/hotel_12dp"
                             android:orientation="vertical"
                             android:visibility="gone"
                             tools:visibility="visible">
@@ -390,7 +390,7 @@
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_hotel_detail_location"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dp_100"
+                                    android:layout_height="@dimen/hotel_100dp"
                                     android:scaleType="centerCrop" />
 
                                 <LinearLayout
