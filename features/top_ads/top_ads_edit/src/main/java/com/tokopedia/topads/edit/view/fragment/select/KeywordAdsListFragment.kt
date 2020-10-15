@@ -163,14 +163,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
 
@@ -409,7 +408,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition ?: ""))
+                        ?: "", item.source ?: "", item.competition ?: "",true, fromSearch = true))
             }
         }
         return list

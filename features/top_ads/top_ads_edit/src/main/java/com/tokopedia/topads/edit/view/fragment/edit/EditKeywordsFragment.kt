@@ -354,6 +354,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
+                if(it.bidSuggest == 0)
+                    it.bidSuggest = minSuggestKeyword
                 adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS,
                         "0", it.bidSuggest, false, it.keyword, it.source)))
                 initialBudget.add(it.bidSuggest)

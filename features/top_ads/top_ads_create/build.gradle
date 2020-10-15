@@ -13,7 +13,6 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -41,6 +40,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
