@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -12,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
 
@@ -105,7 +105,7 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun setSinglePillContent(item: GlobalNavWidgetModel.Item) {
         setSinglePillTypography()
-        setSingleGlobalNavIconWithLogoUrl(item)
+        setSingleGlobalNavIconPill(item)
         hideContentForPill()
     }
 
@@ -113,10 +113,15 @@ class GlobalNavWidget: BaseCustomView {
         singleGlobalNavTitle?.setType(Typography.HEADING_5)
     }
 
-    private fun setSingleGlobalNavIconWithLogoUrl(item: GlobalNavWidgetModel.Item) {
-        singleGlobalNavIcon?.shouldShowWithAction(item.logoUrl.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(context, it, item.logoUrl)
-            singleGlobalNavImage?.visibility = View.GONE
+    private fun setSingleGlobalNavIconPill(item: GlobalNavWidgetModel.Item) {
+        if (item.logoUrl.isNotEmpty()) singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
+        else singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavImage)
+    }
+
+    private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
+        shouldShowWithAction(url.isNotEmpty()) {
+            ImageHandler.loadImageFitCenter(context, it, url)
+            hiddenView?.visibility = View.GONE
         }
     }
 
@@ -138,15 +143,8 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun setSingleGlobalNavIconCard(item: GlobalNavWidgetModel.Item) {
-        if (item.imageUrl.isNotEmpty()) setSingleGlobalNavImageWithImageUrl(item)
-        else setSingleGlobalNavIconWithLogoUrl(item)
-    }
-
-    private fun setSingleGlobalNavImageWithImageUrl(item: GlobalNavWidgetModel.Item) {
-        singleGlobalNavImage?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-            ImageHandler.loadImageRounded(context, it, item.imageUrl, 8.toDp().toFloat())
-            singleGlobalNavIcon?.visibility = View.GONE
-        }
+        if (item.imageUrl.isNotEmpty()) singleGlobalNavImage.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavIcon)
+        else singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
     }
 
     private fun setSingleGlobalNavCategory(item: GlobalNavWidgetModel.Item) {
