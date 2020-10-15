@@ -40,7 +40,8 @@ object CreateReviewTracking {
             imageNum: String,
             isAnonymous: Boolean,
             isEditReview: Boolean,
-            feedbackId: String
+            feedbackId: String,
+            isEligible: Boolean
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         val anonymousState = if (isAnonymous) "true" else "false"
@@ -53,7 +54,8 @@ object CreateReviewTracking {
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +
                         " - gambar : " + imageNum +
-                        " - anonim : " + anonymousState
+                        " - anonim : " + anonymousState +
+                        " - feedback is incentive eligible : " + isEligible
         ))
     }
 
@@ -151,6 +153,62 @@ object CreateReviewTracking {
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
+
+    fun eventViewDialog(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickContinueWrite(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_CONTINUE_IN_DIALOG, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickLeavePage(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_LEAVE_PAGE, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickCompleteReviewFirst(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                CreateReviewTrackingConstants.EMPTY_LABEL,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickSendNow(dialogTitle: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                CreateReviewTrackingConstants.EMPTY_LABEL,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
+                CreateReviewTrackingConstants.EMPTY_LABEL
+        ))
+    }
+
+    fun eventClickSendAnother() {
+
+    }
+
+    fun eventClickOk() {
+
+    }
+
+
+
 
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()

@@ -487,7 +487,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewViewModel.getSelectedImagesUrl().size.toString(10),
                 createReviewAnonymousCheckbox.isChecked,
                 isEditMode,
-                feedbackId.toString()
+                feedbackId.toString(),
+                createReviewViewModel.isUserEligible()
         )
         if (isEditMode) {
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
@@ -519,15 +520,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun showReviewIncompleteDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.review_create_incomplete_title))
+                val title = getString(R.string.review_create_incomplete_title)
+                setTitle(title)
                 setDescription(getString(R.string.review_create_incomplete_subtitle))
                 setPrimaryCTAText(getString(R.string.review_create_incomplete_cancel))
                 setPrimaryCTAClickListener {
                     dismiss()
+                    CreateReviewTracking.eventClickCompleteReviewFirst(title)
                 }
                 setSecondaryCTAText(getString(R.string.review_create_incomplete_send_anyways))
                 setSecondaryCTAClickListener {
                     submitNewReview()
+                    CreateReviewTracking.eventClickSendNow(title)
                 }
                 show()
             }
@@ -621,7 +625,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     ReviewTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
                 }
             }
+            return
         }
+        ovoPointsTicker.hide()
     }
 
     private fun onErrorGetIncentiveOvo() {

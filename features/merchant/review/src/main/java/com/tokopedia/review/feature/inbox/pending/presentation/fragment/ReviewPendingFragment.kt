@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -36,7 +37,9 @@ import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTrackin
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
@@ -221,6 +224,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         }
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory> {
+        return ReviewPendingAdapter(adapterTypeFactory)
+    }
+
     private fun initView() {
         setupErrorPage()
         setupEmptyState()
@@ -335,29 +342,16 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         data?.productrevIncentiveOvo?.ticker?.let {
             ReviewTracking.onSuccessGetIncentiveOvoTracker(it.title, ReviewInboxTrackingConstants.PENDING_TAB)
-            it.let {
-                ovoPointsTicker.apply {
-                    setHtmlDescription(it.subtitle)
-                    setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            onClickOvoIncentiveTickerDescription(data)
-                        }
-
-                        override fun onDismiss() {
-                            onDismissOvoIncentiveTicker(it.title)
-                        }
-                    })
-                    show()
-                }
-            }
+            (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
+            return
         }
     }
 
     private fun onErrorGetIncentiveOvo() {
-        ovoPointsTicker.hide()
+        // No Op
     }
 
-    private fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
+    override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         if(ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = BottomSheetUnify()
             val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
@@ -411,7 +405,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         }
     }
 
-    private fun onDismissOvoIncentiveTicker(title: String) {
+    override fun onDismissOvoIncentiveTicker(title: String) {
         ReviewTracking.onClickDismissIncentiveOvoTracker(title, ReviewInboxTrackingConstants.PENDING_TAB)
     }
 

@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
@@ -37,7 +38,7 @@ class IncentiveOvoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
                             val link = buffer.getSpans(off, off, URLSpan::class.java)
                             if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                return RouteManager.route(context, link.first().url.toString())
+                                return RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link.first().url.toString()))
                             }
                         }
                         return super.onTouchEvent(widget, buffer, event);
