@@ -26,8 +26,6 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.mediaCommon)
-
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
