@@ -12,4 +12,8 @@ object CreateReviewTrackingConstants {
     const val CLICK_LEAVE_PAGE = "click - ya keluar on %s"
     const val CLICK_COMPLETE_REVIEW_FIRST = "click - lengkapi ulasan dulu on %s"
     const val CLICK_SEND_NOW = "click - kirim sekarang aja on %s"
+    const val CLICK_SEND_ANOTHER = "click - kirim ulasan lagi on %s"
+    const val EVENT_LABEL_PENDING_INCENTIVE_QUEUE = "has pending incentive review queue:%s;"
+    const val CLICK_LATER = "click - nanti aja deh on %s"
+    const val CLICK_OK = "click - ok sip on %s"
 }

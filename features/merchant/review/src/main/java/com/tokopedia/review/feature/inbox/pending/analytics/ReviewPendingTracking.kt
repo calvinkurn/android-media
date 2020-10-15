@@ -6,10 +6,10 @@ import com.tokopedia.track.TrackApp
 
 object ReviewPendingTracking {
 
-    fun eventClickCard(reputationId: Int, productId: Int, userId: String) {
+    fun eventClickCard(reputationId: Int, productId: Int, userId: String, isEligible: Boolean) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId.toString(), productId.toString()),
+                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_INCENTIVE, reputationId.toString(), productId.toString(), isEligible.toString()),
                         ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_CARD,
                         userId
                 )

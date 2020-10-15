@@ -94,8 +94,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun trackCardClicked(reputationId: Int, productId: Int) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId())
+    override fun trackCardClicked(reputationId: Int, productId: Int, isEligible: Boolean) {
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible)
     }
 
     override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int) {
@@ -341,7 +341,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         data?.productrevIncentiveOvo?.ticker?.let {
-            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.title, ReviewInboxTrackingConstants.PENDING_TAB)
+            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
             (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
             return
         }
@@ -357,7 +357,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
             ovoIncentiveBottomSheet?.apply {
                 setChild(view)
-                setCloseClickListener {
+                setOnDismissListener {
                     ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
                     dismiss()
                 }
@@ -370,7 +370,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         }
         ovoIncentiveBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-            ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.title, ReviewInboxTrackingConstants.PENDING_TAB)
+            ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
         }
     }
 
@@ -405,8 +405,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         }
     }
 
-    override fun onDismissOvoIncentiveTicker(title: String) {
-        ReviewTracking.onClickDismissIncentiveOvoTracker(title, ReviewInboxTrackingConstants.PENDING_TAB)
+    override fun onDismissOvoIncentiveTicker(subtitle: String) {
+        ReviewTracking.onClickDismissIncentiveOvoTracker(subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
     }
 
     private fun onSuccessCreateReview() {

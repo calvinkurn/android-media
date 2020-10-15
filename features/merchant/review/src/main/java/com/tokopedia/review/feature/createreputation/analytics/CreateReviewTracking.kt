@@ -6,7 +6,7 @@ import java.util.HashMap
 
 object CreateReviewTracking {
 
-    val tracker = TrackApp.getInstance().gtm
+    private val tracker = TrackApp.getInstance().gtm
 
     fun reviewOnAnonymousClickTracker(
             orderId: String,
@@ -156,7 +156,7 @@ object CreateReviewTracking {
 
     fun eventViewDialog(dialogTitle: String) {
         tracker.sendGeneralEvent(createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
@@ -181,9 +181,36 @@ object CreateReviewTracking {
         ))
     }
 
+    fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_SEND_ANOTHER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickLater(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_LATER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
+    fun eventClickOk(title: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.CLICK_OK, title),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
     fun eventClickCompleteReviewFirst(dialogTitle: String) {
         tracker.sendGeneralEvent(createEventMap(
-                CreateReviewTrackingConstants.EMPTY_LABEL,
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 String.format(CreateReviewTrackingConstants.CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
@@ -192,23 +219,12 @@ object CreateReviewTracking {
 
     fun eventClickSendNow(dialogTitle: String) {
         tracker.sendGeneralEvent(createEventMap(
-                CreateReviewTrackingConstants.EMPTY_LABEL,
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
-
-    fun eventClickSendAnother() {
-
-    }
-
-    fun eventClickOk() {
-
-    }
-
-
-
 
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()

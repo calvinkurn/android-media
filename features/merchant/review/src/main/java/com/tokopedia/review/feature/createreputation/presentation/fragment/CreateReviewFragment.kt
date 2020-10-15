@@ -534,6 +534,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     CreateReviewTracking.eventClickSendNow(title)
                 }
                 show()
+                CreateReviewTracking.eventViewDialog(title)
             }
         }
     }
@@ -601,7 +602,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                 ovoIncentiveBottomSheet?.apply {
                                     setChild(view)
                                     initView(view, data, ovoIncentiveBottomSheet)
-                                    setCloseClickListener {
+                                    setOnDismissListener {
                                         ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
                                         dismiss()
                                     }
@@ -613,16 +614,16 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             }
                             ovoIncentiveBottomSheet?.let { bottomSheet ->
                                 activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
-                                ReviewTracking.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
+                                ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                             }
 
                         }
 
                         override fun onDismiss() {
-                            ReviewTracking.onClickDismissIncentiveOvoTracker(tickerTitle, "")
+                            ReviewTracking.onClickDismissIncentiveOvoTracker(it.subtitle, "")
                         }
                     })
-                    ReviewTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
+                    ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
                 }
             }
             return
@@ -1057,19 +1058,22 @@ class CreateReviewFragment : BaseDaggerFragment(),
     fun showCancelDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val defaultTitle = getString(R.string.review_create_dialog_title)
                 if (isEditMode) {
                     setTitle(getString(R.string.review_edit_dialog_title))
                     setDescription(getString(R.string.review_edit_dialog_subtitle))
                 } else {
-                    setTitle(getString(R.string.review_create_dialog_title))
+                    setTitle(defaultTitle)
                     setDescription(getString(R.string.review_create_dialog_body))
                 }
                 setPrimaryCTAText(getString(R.string.review_edit_dialog_continue_writing))
                 setPrimaryCTAClickListener {
                     dismiss()
+                    CreateReviewTracking.eventClickContinueWrite(defaultTitle)
                 }
                 setSecondaryCTAText(getString(R.string.review_edit_dialog_exit))
                 setSecondaryCTAClickListener {
+                    CreateReviewTracking.eventClickLeavePage(defaultTitle)
                     if (activity?.isTaskRoot == true) {
                         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
                         startActivity(intent)
@@ -1079,6 +1083,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     activity?.finish()
                 }
                 show()
+                CreateReviewTracking.eventViewDialog(defaultTitle)
             }
         }
     }
