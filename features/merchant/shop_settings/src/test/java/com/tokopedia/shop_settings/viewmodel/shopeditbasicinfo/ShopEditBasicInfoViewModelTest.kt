@@ -208,14 +208,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     }
 
     @Test
-    fun `when validate shop name should activate job then call validation again to cancel job after completion validation it will be active again`() {
+    fun `when validate shop name should activate job and call validation again to cancel job then completion validation it will be active again`() {
         shopEditBasicInfoViewModel.validateShopName("shop")
         shopEditBasicInfoViewModel.validateShopName("shopName")
         assertTrue(shopEditBasicInfoViewModel.validateShopNameJob?.isActive == true)
     }
 
     @Test
-    fun `when validate shop domain should activate job then call validation again to cancel job after completion validation it will be active again`() {
+    fun `when validate shop domain should activate job and call validation again to cancel job then completion validation it will be active again`() {
         shopEditBasicInfoViewModel.validateShopDomain("domain")
         shopEditBasicInfoViewModel.validateShopDomain("shopDomain")
         assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob?.isActive == true)
