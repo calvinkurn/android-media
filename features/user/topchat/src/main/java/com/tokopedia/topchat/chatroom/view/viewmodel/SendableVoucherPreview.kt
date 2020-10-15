@@ -15,9 +15,7 @@ class SendableVoucherPreview(
 //        private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
-    val voucherViewModel = MerchantVoucherModel(
-            123,
-            merchantVoucherOwner = MerchantVoucherOwner()
+//    val voucherViewModel = MerchantVoucherModel(
 //            voucherPreview.voucherId,
 //            voucherPreview.voucherName,
 //            voucherPreview.voucherCode,
@@ -29,7 +27,7 @@ class SendableVoucherPreview(
 //            voucherPreview.tnc,
 //            MerchantVoucherBanner(voucherPreview.desktopUrl, voucherPreview.mobileUrl),
 //            MerchantVoucherStatus()
-    )
+//    )
 
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
         return attachmentPreviewFactory.type(this)
