@@ -24,7 +24,7 @@ class NotificationUseCase @Inject constructor(@Named(GRATIFF_NOTIFICATION) val q
         return gqlWrapper.getResponse(GratifNotificationResponse::class.java, queryString, map)
     }
 
-    fun getQueryParams(notificationID: Int, notificationEntryType: Int, paymentID: Int): HashMap<String, Any> {
+    fun getQueryParams(notificationID: Int, notificationEntryType: Int, paymentID: Long): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         variables[PARAMS.NOTIFICATION_ID] = notificationID
         variables[PARAMS.NOTIFICATION_ENTRY_TYPE] = notificationEntryType

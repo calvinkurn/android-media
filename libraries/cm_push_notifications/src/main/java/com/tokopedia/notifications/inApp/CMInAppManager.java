@@ -158,7 +158,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             public void onIgnored(@GratifPopupIngoreType int reason) {
                 Log.d("NOOB", "Gratif Dialog - push - ignore - reason" + String.valueOf(reason));
             }
-        }, name);
+        }, name, 0, 0L);
     }
 
     private void showIgnoreToast(String type, @GratifPopupIngoreType int reason) {
@@ -275,7 +275,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                     showIgnoreToast("organic", reason);
                     Timber.d(TEMP_TAG + " Dialog - organic - ignored- reason - " + String.valueOf(reason));
                 }
-            }, screenName);
+            }, screenName, 0, 0L);
 
             if (job != null) {
                 mapOfGratifJobs.put(entityHashCode, job);

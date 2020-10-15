@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,16 +15,19 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
+import com.tokopedia.thankyou_native.presentation.DialogController
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
+import java.lang.ref.WeakReference
 import java.util.zip.ZipInputStream
 
 
@@ -32,6 +36,12 @@ const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
 class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
+
+    private val dialogController: DialogController? by lazy {
+        activity?.let {
+            DialogController(GratificationPresenter(it.application))
+        }
+    }
 
     private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -69,6 +79,28 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
+//        showDialog()
+    }
+
+    private fun showDialog() {
+        activity?.let {
+            dialogController?.showGratifDialog(WeakReference(it),
+                    thanksPageData.paymentID,
+                    object : GratificationPresenter.GratifPopupCallback {
+
+                        override fun onShow(dialog: DialogInterface) {
+
+                        }
+
+                        override fun onDismiss(dialog: DialogInterface) {
+                        }
+
+                        override fun onIgnored(reason: Int) {
+                        }
+
+                    },
+                    this.javaClass.name)
+        }
     }
 
     private fun showCharacterAnimation() {
@@ -84,6 +116,15 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        dialogController?.cancelJob()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dialogController?.cancelJob()
+    }
 
     private fun setActionMenu() {
         val headerUnify = (activity as ThankYouPageActivity).getHeader()
