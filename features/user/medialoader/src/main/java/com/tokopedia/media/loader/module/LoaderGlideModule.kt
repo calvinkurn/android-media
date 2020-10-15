@@ -22,10 +22,6 @@ class LoaderGlideModule: AppGlideModule() {
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         super.applyOptions(context, builder)
-        // showing glide log in debug app
-        if (BuildConfig.DEBUG) {
-            builder.setLogLevel(Log.VERBOSE)
-        }
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
