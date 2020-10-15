@@ -6,7 +6,10 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.*
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.Key
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
@@ -21,11 +24,10 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
-import timber.log.Timber
 
 object GlideBuilder {
 
-    private fun glideListener(listener: LoaderStateListener?, onSuccess: () -> Unit) = object : RequestListener<Drawable> {
+    private fun glideListener(listener: LoaderStateListener?) = object : RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             listener?.failedLoad(e)
             return false
@@ -33,7 +35,6 @@ object GlideBuilder {
 
         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
             listener?.successLoad(resource, dataSource)
-            onSuccess()
             return false
         }
     }
@@ -57,7 +58,6 @@ object GlideBuilder {
             transforms: List<Transformation<Bitmap>>? = null
     ) {
         val localTransform = mutableListOf<Transformation<Bitmap>>()
-        val startTime = System.currentTimeMillis()
 
         val drawableError = if (resOnError != 0) {
             getDrawable(imageView.context, resOnError)
@@ -95,12 +95,7 @@ object GlideBuilder {
                 }
 
                 if (stateListener != null) {
-                    listener(glideListener(stateListener) {
-                        val endTime = System.currentTimeMillis()
-                        val requestTime = endTime - startTime
-
-                        Timber.d("MediaLoader#URL=${url.toStringUrl()}#requestTime=$requestTime")
-                    })
+                    listener(glideListener(stateListener))
                 }
 
                 into(imageView)
