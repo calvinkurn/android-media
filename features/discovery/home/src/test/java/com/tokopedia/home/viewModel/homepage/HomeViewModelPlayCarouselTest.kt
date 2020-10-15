@@ -15,8 +15,7 @@ import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeoutException
@@ -33,6 +32,53 @@ class HomeViewModelPlayCarouselTest{
     private val getPlayWidgetUseCase = mockk<GetPlayWidgetUseCase>(relaxed = true)
     private val playToggleChannelReminderUseCase = mockk<PlayToggleChannelReminderUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeViewModel
+
+    @Test
+    fun `Get play data from home skeleton`(){
+        val playDataModel = PlayCarouselCardDataModel(DynamicHomeChannel.Channels())
+        val playCardHome = PlayBannerCarouselDataModel(title = "title", channelList = listOf(
+                PlayBannerCarouselItemDataModel(channelId = "0")
+        ))
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(playDataModel),
+                        isCache = false
+                )
+        )
+
+        // play data returns success
+        getPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playCardHome)
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayBannerUseCase = getPlayWidgetUseCase)
+
+        coVerify (atLeast = 2){ getPlayWidgetUseCase.executeOnBackground() }
+        confirmVerified(getPlayWidgetUseCase)
+    }
+
+    @Test
+    fun `Get play data from home skeleton not available`(){
+        val playCardHome = PlayBannerCarouselDataModel(title = "title", channelList = listOf(
+                PlayBannerCarouselItemDataModel(channelId = "0")
+        ))
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDataModel(
+                        list = listOf(),
+                        isCache = false
+                )
+        )
+
+        // play data returns success
+        getPlayWidgetUseCase.givenGetPlayCarouselUseCaseReturn(playCardHome)
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayBannerUseCase = getPlayWidgetUseCase)
+
+        coVerify(exactly = 0) { getPlayWidgetUseCase.executeOnBackground() }
+        confirmVerified(getPlayWidgetUseCase)
+    }
 
     @Test
     fun `Get play data success`() {
@@ -107,14 +153,12 @@ class HomeViewModelPlayCarouselTest{
     @Test
     fun `Get play data error`() {
         val playDataModel = PlayCarouselCardDataModel(DynamicHomeChannel.Channels())
-        val playCardHome = PlayBannerCarouselDataModel(title = "title", channelList = listOf(
-                PlayBannerCarouselItemDataModel(channelId = "0")
-        ))
 
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
-                        list = listOf(playDataModel)
+                        list = listOf(playDataModel),
+                        isCache = false
                 )
         )
 
@@ -123,10 +167,10 @@ class HomeViewModelPlayCarouselTest{
 
         // viewModel load play data
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayBannerUseCase = getPlayWidgetUseCase, playToggleChannelReminderUseCase = playToggleChannelReminderUseCase)
-        homeViewModel.getPlayBannerCarousel(-1)
+
         // Expect the event on live data available
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
-            assert(homeDataModel.list.find { it::class.java == playDataModel::class.java } == null)
+            assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCarouselCardDataModel)?.playBannerCarouselDataModel == null)
         }
     }
 
