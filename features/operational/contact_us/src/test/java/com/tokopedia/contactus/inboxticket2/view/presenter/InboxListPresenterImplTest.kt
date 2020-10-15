@@ -1,10 +1,10 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter
 
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
-import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse
-import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
+import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
+import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import io.mockk.*
@@ -26,10 +26,10 @@ class InboxListPresenterImplTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private lateinit var getTicketListUseCase:GetTicketListUseCase
+    private lateinit var getTicketListUseCase: GetTicketListUseCase
 
-    private lateinit var presenter:InboxListPresenterImpl
-    private lateinit var view:InboxListContract.InboxListView
+    private lateinit var presenter: InboxListPresenterImpl
+    private lateinit var view: InboxListContract.InboxListView
 
 
     @Before
@@ -38,7 +38,7 @@ class InboxListPresenterImplTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
         getTicketListUseCase = mockk(relaxed = true)
-        presenter = spyk(InboxListPresenterImpl(getTicketListUseCase))
+        presenter = spyk(InboxListPresenterImpl(getTicketListUseCase, mockk(relaxed = true)))
         view = mockk(relaxed = true)
         presenter.attachView(view)
     }
@@ -50,13 +50,13 @@ class InboxListPresenterImplTest {
         Dispatchers.resetMain()
     }
 
-    /***************************************ticketList*********************************************/
+    /***********************************getTicketList()*********************************************/
 
     @Test
     fun `check invocation of showProgressBar on invocation of ticketList`() {
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns mockk(relaxed = true)
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns mockk(relaxed = true)
 
-        presenter.ticketList
+        presenter.getTicketList(mockk(relaxed = true))
 
         verify { view.showProgressBar() }
     }
@@ -64,29 +64,30 @@ class InboxListPresenterImplTest {
     @Test
     fun `check invocation of toggleEmptyLayout on invocation of ticketList`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
-        val tickets = listOf(TicketsItem())
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem(caseNumber = "caseNumber"))
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        every { response.tickets } returns tickets
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
 
-        presenter.ticketList
+        presenter.getTicketList(mockk(relaxed = true))
 
-        verify { view.toggleEmptyLayout(any()) }
+        verify { view.toggleEmptyLayout(8) }
     }
 
     @Test
     fun `check invocation of renderTicketList on invocation of ticketList`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
-        val tickets = listOf(TicketsItem())
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem(caseNumber = "caseNumber"))
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns tickets
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        presenter.ticketList
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
+
+        presenter.getTicketList(mockk(relaxed = true))
 
         verify { view.renderTicketList(any()) }
     }
@@ -94,52 +95,56 @@ class InboxListPresenterImplTest {
     @Test
     fun `check invocation of showFilter on invocation of ticketList`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
-        val tickets = listOf(TicketsItem())
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem(caseNumber = "caseNumber"))
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        every { response.tickets } returns tickets
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
 
-        presenter.ticketList
+        presenter.getTicketList(mockk(relaxed = true))
 
         verify { view.showFilter() }
     }
 
     @Test
-    fun `check invocation of toggleEmptyLayout and showFilter on invocation of ticketList when showFilter is true`() {
+    fun `check invocation of toggleEmptyLayout and showFilter on invocation of ticketList when fromFilter is true`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
-        val tickets = listOf<TicketsItem>()
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf<InboxTicketListResponse.Ticket.Data.TicketItem>()
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns tickets
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
+
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
 
         presenter.fromFilter = true
-        presenter.ticketList
+        presenter.getTicketList(mockk(relaxed = true))
 
-        verify { view.toggleEmptyLayout(any()) }
+        verify { view.toggleEmptyLayout(View.VISIBLE) }
 
-        every { view.showFilter() }
+        verify { view.showFilter() }
     }
 
     @Test
-    fun `check invocation of toggleEmptyLayout and showFilter on invocation of ticketList for default case`() {
+    fun `check invocation of toggleNoTicketLayout and showFilter on invocation of ticketList for default case`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf<InboxTicketListResponse.Ticket.Data.TicketItem>()
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        presenter.ticketList
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
 
-        verify { view.toggleEmptyLayout(any()) }
+        presenter.getTicketList(mockk(relaxed = true))
 
-        every { view.hideFilter() }
+        verify { view.toggleNoTicketLayout(View.VISIBLE, any()) }
+
+        verify { view.hideFilter() }
 
     }
 
-    /***************************************ticketList*********************************************/
+    /***************************************getTicketList()*****************************************/
 
 
     /******************************************setFilter()*****************************************/
@@ -148,12 +153,12 @@ class InboxListPresenterImplTest {
     fun `check fromFilter value on invocation of setFilter`() {
 
         every {
-            presenter.ticketList
+            presenter.getTicketList(mockk(relaxed = true))
         } just runs
 
         mockkStatic(ContactUsTracking::class)
         every {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
         } just runs
 
         presenter.setFilter(ALL)
@@ -162,68 +167,42 @@ class InboxListPresenterImplTest {
     }
 
     @Test
-    fun `check invocation ticketList on invocation of setFilter when selection is UNREAD`() {
+    fun `check invocation getTicketList on invocation of setFilter when selection is IN_PROGRESS`() {
 
-        every { presenter.ticketList } just runs
+        every { presenter.getTicketList(mockk(relaxed = true)) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
-        presenter.setFilter(UNREAD)
+        presenter.setFilter(IN_PROGRESS)
 
-        verify { presenter.ticketList }
+        verify { presenter.getTicketList(any()) }
     }
 
     @Test
-    fun `check invocation ticketList on invocation of setFilter when selection is NEEDRATING`() {
+    fun `check invocation getTicketList on invocation of setFilter when selection is NEED_RATING`() {
 
-        every { presenter.ticketList } just runs
+        every { presenter.getTicketList(any()) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
-        presenter.setFilter(NEEDRATING)
+        presenter.setFilter(NEED_RATING)
 
-        verify { presenter.ticketList }
+        verify { presenter.getTicketList(any()) }
     }
 
     @Test
-    fun `check invocation ticketList on invocation of setFilter when selection is INPROGRESS`() {
+    fun `check invocation getTicketList on invocation of setFilter when selection is CLOSED`() {
 
-        every { presenter.ticketList } just runs
-
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
-
-        presenter.setFilter(INPROGRESS)
-
-        verify { presenter.ticketList }
-    }
-
-    @Test
-    fun `check invocation ticketList on invocation of setFilter when selection is READ`() {
-
-        every { presenter.ticketList } just runs
+        every { presenter.getTicketList(any()) } just runs
 
         mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
-
-        presenter.setFilter(READ)
-
-        verify { presenter.ticketList }
-    }
-
-    @Test
-    fun `check invocation ticketList on invocation of setFilter when selection is CLOSED`() {
-
-        every { presenter.ticketList } just runs
-
-        mockkStatic(ContactUsTracking::class)
-        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
         presenter.setFilter(CLOSED)
 
-        verify { presenter.ticketList }
+        verify { presenter.getTicketList(any()) }
     }
 
     /******************************************setFilter()*****************************************/
@@ -284,37 +263,7 @@ class InboxListPresenterImplTest {
 
         presenter.checkIfToLoad(layoutManager)
 
-        verify { presenter.loadMoreItems() }
-    }
-
-    @Test
-    fun `check invocation of addFooter on invocation of checkIfToLoad`() {
-
-        val layoutManager = mockk<LinearLayoutManager>()
-
-        every { layoutManager.childCount } returns 8
-        every { layoutManager.itemCount } returns 10
-        every { layoutManager.findFirstVisibleItemPosition() } returns 1
-
-        presenter.isLoading = false
-        presenter.isLastPage = false
-
-        presenter.checkIfToLoad(layoutManager)
-
-        verify { view.addFooter() }
-    }
-
-    @Test
-    fun `check invocation of removeFooter on invocation of checkIfToLoad`() {
-
-        val layoutManager = mockk<LinearLayoutManager>(relaxed = true)
-
-        presenter.isLoading = true
-        presenter.isLastPage = false
-
-        presenter.checkIfToLoad(layoutManager)
-
-        verify { view.removeFooter() }
+        verify { presenter.loadMoreItems(any()) }
     }
 
     /**************************************checkIfToLoad()*****************************************/
@@ -325,16 +274,16 @@ class InboxListPresenterImplTest {
     @Test
     fun `check value of isLastPage on invocation of loadMoreItems when next page returns nonEmpty value`() {
 
-        val response = mockk<TicketListResponse>()
-
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
-
-        every { response.tickets } returns listOf(TicketsItem())
-
-        every { response.nextPage } returns "dummy url"
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem())
 
 
-        presenter.loadMoreItems()
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
+
+        every { response.ticket?.TicketData?.nextPage } returns "dummy url"
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
+
+        presenter.loadMoreItems(1)
 
         assertFalse(presenter.isLastPage)
 
@@ -343,15 +292,16 @@ class InboxListPresenterImplTest {
     @Test
     fun `check value of isLastPage on invocation of loadMoreItems when next page returns Empty value`() {
 
-        val response = mockk<TicketListResponse>()
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem())
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns listOf(TicketsItem())
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        every { response.nextPage } returns ""
+        every { response.ticket?.TicketData?.nextPage } returns ""
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
 
-        presenter.loadMoreItems()
+        presenter.loadMoreItems(1)
 
         assertTrue(presenter.isLastPage)
 
@@ -360,13 +310,15 @@ class InboxListPresenterImplTest {
     @Test
     fun `check invocation of updateDataSet on invocation of loadMoreItems`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem())
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns listOf(TicketsItem())
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        presenter.loadMoreItems()
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
+
+        presenter.loadMoreItems(1)
 
         verify { view.updateDataSet() }
 
@@ -375,13 +327,15 @@ class InboxListPresenterImplTest {
     @Test
     fun `check value of isLoading on invocation of loadMoreItems`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem())
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns listOf(TicketsItem())
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        presenter.loadMoreItems()
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
+
+        presenter.loadMoreItems(1)
 
         assertFalse(presenter.isLoading)
 
@@ -390,13 +344,15 @@ class InboxListPresenterImplTest {
     @Test
     fun `check invocation of removeFooter on invocation of loadMoreItems`() {
 
-        val response = mockk<TicketListResponse>(relaxed = true)
+        val response = mockk<InboxTicketListResponse>(relaxed = true)
+        val tickets = listOf(InboxTicketListResponse.Ticket.Data.TicketItem())
 
-        coEvery { getTicketListUseCase.getTicketListResponse(any(), any()) } returns response
 
-        every { response.tickets } returns listOf(TicketsItem())
+        coEvery { getTicketListUseCase.getTicketListResponse(any()) } returns response
 
-        presenter.loadMoreItems()
+        every { response.ticket?.TicketData?.ticketItems } returns tickets
+
+        presenter.loadMoreItems(1)
 
         verify { view.removeFooter() }
 
@@ -447,11 +403,11 @@ class InboxListPresenterImplTest {
     @Test
     fun `check reAttachView`() {
 
-        every { presenter.ticketList } just runs
+        every { presenter.getTicketList(any()) } just runs
 
         presenter.reAttachView()
 
-        verify { presenter.ticketList }
+        verify { presenter.getTicketList(any()) }
     }
 
     /**************************************reAttachView()******************************************/
