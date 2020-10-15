@@ -52,6 +52,7 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -210,11 +211,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @NotNull
     private Boolean executePreCreateSequence() {
         initReact();
-        Loader.initialize(getApplicationContext());
+        initMedialoader();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
+    }
+
+    private void initMedialoader() {
+        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle());
+        Loader.initialize(getApplicationContext());
     }
 
     private void setVersionName(){
