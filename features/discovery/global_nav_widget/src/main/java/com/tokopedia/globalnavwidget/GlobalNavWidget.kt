@@ -114,8 +114,8 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun setSingleGlobalNavIconPill(item: GlobalNavWidgetModel.Item) {
-        if (item.logoUrl.isNotEmpty()) singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
-        else singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavImage)
+        if (item.logoUrl.isNotEmpty()) singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
+        else singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavImage)
     }
 
     private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
@@ -143,8 +143,8 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     private fun setSingleGlobalNavIconCard(item: GlobalNavWidgetModel.Item) {
-        if (item.imageUrl.isNotEmpty()) singleGlobalNavImage.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavIcon)
-        else singleGlobalNavIcon.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
+        if (item.imageUrl.isNotEmpty()) singleGlobalNavImage?.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavIcon)
+        else singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
     }
 
     private fun setSingleGlobalNavCategory(item: GlobalNavWidgetModel.Item) {
