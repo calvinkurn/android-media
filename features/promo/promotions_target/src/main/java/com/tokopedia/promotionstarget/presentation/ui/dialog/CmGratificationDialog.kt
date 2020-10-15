@@ -233,6 +233,9 @@ class CmGratificationDialog {
                         }
                     }
                 }
+
+                val userId = UserSession(btnAction.context).userId
+                GratificationAnalyticsHelper.handleClickSecondaryCta(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName)
             }
             btnAction2.post { expandBottomSheet() }
         }
@@ -266,6 +269,9 @@ class CmGratificationDialog {
                     LiveDataResult.STATUS.ERROR -> {
                         btnAction.text = buttonText
                         toggleProgressBar(false)
+
+                        val userId = UserSession(btnAction.context).userId
+                        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, "fail")
                     }
                     LiveDataResult.STATUS.LOADING -> {
                         btnAction.text = ""
@@ -282,6 +288,11 @@ class CmGratificationDialog {
         if (code == "200") {
             handleGreenBtnRedirection()
         }
+
+        val userId = UserSession(btnAction.context).userId
+        val autoApplyStatusCode = if (code == "200") "success" else "fail"
+        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, autoApplyStatusCode)
+
         toggleProgressBar(false)
         btnAction.text = buttonText
     }
@@ -289,8 +300,6 @@ class CmGratificationDialog {
     private fun setClickEvent(couponStatus: Int?) {
         btnAction.setOnClickListener {
             handleButtonAction(couponStatus)
-            val userId = UserSession(it.context).userId
-            GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName)
         }
     }
 
@@ -301,10 +310,17 @@ class CmGratificationDialog {
                 viewModel.autoApply(code)
             } else {
                 handleGreenBtnRedirection()
+                sendGreenButtonClickEventForNoAutoApply()
             }
         } else {
             handleGreenBtnRedirection()
+            sendGreenButtonClickEventForNoAutoApply()
         }
+    }
+
+    private fun sendGreenButtonClickEventForNoAutoApply(){
+        val userId = UserSession(btnAction.context).userId
+        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, null)
     }
 
     private fun toggleSecondButton(toggle: Boolean) {

@@ -53,12 +53,6 @@ class CouponListTokopointsVH(itemView: View) : CouponListVH(itemView) {
         }
 
         //Because we only have 1 viewholder - so no need to undim, its by default undim
-        if(data.isApplicable == true){
-            //do nothing
-        }else {
-            imageView.dim()
-        }
-
         when (data.couponStatus) {
             CouponStatusType.ACTIVE -> {
                 ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(ContextCompat.getColor(icon.context, R.color.t_promo_active_green)))
@@ -67,6 +61,7 @@ class CouponListTokopointsVH(itemView: View) : CouponListVH(itemView) {
             else -> {
                 ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(ContextCompat.getColor(icon.context, R.color.t_promo_inactive_green)))
                 ImageViewCompat.setImageTintList(iconRight, ColorStateList.valueOf(ContextCompat.getColor(icon.context, R.color.t_promo_inactive_green)))
+                imageView.dim()
             }
         }
     }

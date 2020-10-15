@@ -43,19 +43,16 @@ object GratificationAnalytics {
 
     //5,7,10,12,14
     fun userClickMainCtaPush(userId: String,
-                             entryPoint: Int,
-                             popupType: String,
-                             baseCode: String?,
-                             eventId: String?,
                              screenName: String,
-                             action: String
+                             action: String,
+                             label:String
     ) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
         map[KEY_EVENT_CATEGORY] = GratifCategory.BOTTOM_SHEET_GRATIFICATION
         map[KEY_EVENT_ACTION] = action
-        map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId"
+        map[KEY_EVENT_LABEL] = label
         map[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId

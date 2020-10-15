@@ -10,18 +10,21 @@ object GratificationAnalyticsHelper {
     fun handleMainCtaClick(userId: String, entryPoint: Int,
                            gratifNotification: GratifNotification?,
                            couponDetailResponse: TokopointsCouponDetailResponse?,
-                           screenName: String
+                           screenName: String,
+                           autoApplyStatusCode: String?
     ) {
         if (gratifNotification == null || couponDetailResponse == null) return
 
-        GratificationAnalytics.userClickMainCtaPush(userId,
-                entryPoint,
+        val label = createLabel(entryPoint,
                 getPopupType(gratifNotification, couponDetailResponse),
                 gratifNotification.promoCode,
                 gratifNotification.eventID,
+                autoApplyStatusCode)
+
+        GratificationAnalytics.userClickMainCtaPush(userId,
                 screenName,
-                getActionForDisplay(gratifNotification, couponDetailResponse)
-        )
+                getActionForDisplay(gratifNotification, couponDetailResponse),
+                label)
     }
 
     fun handleDismiss(userId: String, entryPoint: Int,
@@ -39,10 +42,10 @@ object GratificationAnalyticsHelper {
         )
     }
 
-    fun handleClickSecondaryCtaPush(userId: String, entryPoint: Int,
+    fun handleClickSecondaryCta(userId: String, entryPoint: Int,
                                     gratifNotification: GratifNotification?,
                                     couponDetailResponse: TokopointsCouponDetailResponse?,
-                                    screenName: String){
+                                    screenName: String) {
         if (gratifNotification == null || couponDetailResponse == null) return
 
         GratificationAnalytics.userClickSecondaryCtaPush(userId,
@@ -80,6 +83,20 @@ object GratificationAnalyticsHelper {
         }
 
         return ""
+
+    }
+
+    private fun createLabel(entryPoint: Int,
+                            popupType: String,
+                            baseCode: String?,
+                            eventId: String?,
+                            autoApplyStatus: String?
+    ): String {
+        if (autoApplyStatus.isNullOrEmpty()) {
+            return "$entryPoint - $popupType - $baseCode - $eventId"
+        } else {
+            return "$entryPoint - $popupType - $baseCode - $eventId -$autoApplyStatus"
+        }
 
     }
 }
