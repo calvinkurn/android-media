@@ -185,7 +185,7 @@
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_seller">Belum ada produk terjual nih</string>
     <string name="text_shop_no_product_follow">Mulai follow untuk mendapatkan update dari toko ini</string>
-    <string name="text_success_follow_shop">Kamu berhasil follow toko. Pantau biar nggak ketinggalan tanggal rilisnya, ya!</string>
+    <string name="text_success_follow_shop">Kamu berhasil follow toko. Jangan lupa beli sebelum barang incaranmu habis!</string>
     <string name="text_shop_no_product_description_seller">Mulai detik ini, tekadkan semangatmu untuk cetak penjualan pertama</string>
     <string name="shop_menu_action_cart">Cart</string>
     <string name="shop_menu_action_share">Share</string>
