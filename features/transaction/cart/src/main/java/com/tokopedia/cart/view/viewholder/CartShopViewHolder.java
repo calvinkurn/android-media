@@ -14,13 +14,12 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.cart.R;
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.purchase_platform.common.utils.CheckboxWatcher;
 import com.tokopedia.cart.view.ActionListener;
 import com.tokopedia.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 import com.tokopedia.cart.view.uimodel.CartShopHolderData;
-import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.purchase_platform.common.utils.CheckboxWatcher;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
@@ -64,6 +63,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private Typography separatorFreeShipping;
     private ImageView imgFreeShipping;
     private Label labelFulfillment;
+    private Typography separatorEstimatedTimeArrival;
+    private Typography textEstimatedTimeArrival;
 
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -102,6 +103,8 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
+        separatorEstimatedTimeArrival = itemView.findViewById(R.id.separator_estimated_time_arrival);
+        textEstimatedTimeArrival = itemView.findViewById(R.id.text_estimated_time_arrival);
 
         initCheckboxWatcherDebouncer(compositeSubscription);
     }
@@ -142,22 +145,39 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         actionListener.onCartShopNameChecked(isChecked);
     }
 
-    public void bindData(CartShopHolderData cartShopHolderData, final int position) {
+    public void bindData(CartShopHolderData cartShopHolderData) {
+        renderWarningAndError(cartShopHolderData);
+        renderErrorItemHeader(cartShopHolderData);
+        renderWarningItemHeader(cartShopHolderData);
+        renderShopName(cartShopHolderData);
+        renderShopBadge(cartShopHolderData);
+        renderCartItems(cartShopHolderData);
+        renderShopCheckBox(cartShopHolderData);
+        renderFulfillment(cartShopHolderData);
+        renderPreOrder(cartShopHolderData);
+        renderIncidentLabel(cartShopHolderData);
+        renderFreeShipping(cartShopHolderData);
+        renderEstimatedTimeArrival(cartShopHolderData);
+    }
+
+    private void renderWarningAndError(CartShopHolderData cartShopHolderData) {
         if (cartShopHolderData.getShopGroupAvailableData().isError() || cartShopHolderData.getShopGroupAvailableData().isWarning()) {
             llWarningAndError.setVisibility(View.VISIBLE);
         } else {
             llWarningAndError.setVisibility(View.GONE);
         }
-        renderErrorItemHeader(cartShopHolderData);
-        renderWarningItemHeader(cartShopHolderData);
+    }
 
+    private void renderShopName(CartShopHolderData cartShopHolderData) {
         String shopName = cartShopHolderData.getShopGroupAvailableData().getShopName();
         tvShopName.setText(shopName);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(
                 cartShopHolderData.getShopGroupAvailableData().getShopId(),
                 cartShopHolderData.getShopGroupAvailableData().getShopName())
         );
+    }
 
+    private void renderShopBadge(CartShopHolderData cartShopHolderData) {
         if (cartShopHolderData.getShopGroupAvailableData().isOfficialStore() || cartShopHolderData.getShopGroupAvailableData().isGoldMerchant()) {
             if (!cartShopHolderData.getShopGroupAvailableData().getShopBadge().isEmpty()) {
                 ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, cartShopHolderData.getShopGroupAvailableData().getShopBadge());
@@ -166,18 +186,25 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }
+    }
 
+    private void renderCartItems(CartShopHolderData cartShopHolderData) {
         cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, compositeSubscription, getAdapterPosition());
         cartItemAdapter.addDataList(cartShopHolderData.getShopGroupAvailableData().getCartItemDataList());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rvCartItem.getContext());
         rvCartItem.setLayoutManager(linearLayoutManager);
         rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
+    }
 
+    private void renderShopCheckBox(CartShopHolderData cartShopHolderData) {
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupAvailableData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
         cbSelectShop.setOnCheckedChangeListener(new CheckboxWatcher(checkboxWatcherListener));
+    }
+
+    private void renderFulfillment(CartShopHolderData cartShopHolderData) {
         labelFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
                 View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFulfillmentName())) {
@@ -186,10 +213,14 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         } else {
             tvFulfillDistrict.setVisibility(View.GONE);
         }
+    }
 
-        renderPreOrder(cartShopHolderData);
-        renderIncidentLabel(cartShopHolderData);
-        renderFreeShipping(cartShopHolderData);
+    private void renderEstimatedTimeArrival(CartShopHolderData cartShopHolderData) {
+        String eta = cartShopHolderData.getShopGroupAvailableData().getEstimatedTimeArrival();
+        if (!TextUtils.isEmpty(eta)) {
+            textEstimatedTimeArrival.setText(eta);
+            separatorEstimatedTimeArrival.setVisibility(View.VISIBLE);
+        }
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {

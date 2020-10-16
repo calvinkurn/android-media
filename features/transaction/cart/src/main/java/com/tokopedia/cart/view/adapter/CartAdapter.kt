@@ -430,7 +430,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         when {
             viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
-                (holder as CartShopViewHolder).bindData(data, position)
+                (holder as CartShopViewHolder).bindData(data)
             }
             viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
