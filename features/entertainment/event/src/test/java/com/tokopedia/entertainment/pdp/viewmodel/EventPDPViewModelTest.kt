@@ -6,30 +6,27 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.*
-import com.tokopedia.entertainment.pdp.data.pdp.*
-import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPAboutEntity
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPHighlightEntity
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPInformationEntity
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPLocationDetailEntity
 import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
 import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Test
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coVerify
-import kotlinx.coroutines.Job
-
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.lang.reflect.Type
@@ -46,7 +43,7 @@ class EventPDPViewModelTest {
     @MockK
     lateinit var eventProductDetailUseCase: EventProductDetailUseCase
 
-    @MockK
+    @RelaxedMockK
     lateinit var getEventWhiteListValidationUseCase: GetWhiteListValidationUseCase
 
     @MockK
@@ -221,7 +218,7 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPWhiteList_ShouldReturnWhiteListTrue_ShowActualResult`(){
         //given
-        val whiteListMock = Gson().fromJson(getJson("whitelist_mock.json"), EventRedeem::class.java)
+        val whiteListMock = Gson().fromJson(getJson("whitelist_mock.json"), EventValidateResponse::class.java)
         val restResponse = RestResponse(whiteListMock, 200, false)
         val whiteListMapped = mapOf<Type, RestResponse>(
                 EventValidateResponse::class.java to restResponse
@@ -246,7 +243,7 @@ class EventPDPViewModelTest {
         //given
         val restResponse = RestResponse(EventValidateResponse(), 400, false)
         val whiteListMapped = mapOf<Type, RestResponse>(
-                EventRedeem::class.java to restResponse
+                EventValidateResponse::class.java to restResponse
         )
 
         coEvery {
