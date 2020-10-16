@@ -40,6 +40,7 @@ class PltHomeDynamicChannelPerformanceTest {
             setupTotalSizeInterceptor(listOf("homeData", "getDynamicChannel"))
             setupRemoteConfig()
             setupIdlingResource()
+            Thread.sleep(2000)
         }
     }
 

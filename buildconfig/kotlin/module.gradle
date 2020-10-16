@@ -119,5 +119,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 
-    lintChecks project(rootProject.ext.libraries.lint)
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

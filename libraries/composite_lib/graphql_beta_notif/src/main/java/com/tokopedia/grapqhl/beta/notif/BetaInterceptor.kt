@@ -8,6 +8,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.beta.notif.R
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -31,16 +32,15 @@ class BetaInterceptor(private val context: Context) : Interceptor {
         val HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "x-tkpd-beta"
         val BETA_INTERCEPTOR_PREF_NAME = "BetaInterceptor"
         val IS_BETA_TOKOPEDIA = "IS_BETA_TOKOPEDIA"
-        
+
         @JvmStatic
-        fun isBeta(context: Context) : Boolean{
+        fun isBeta(context: Context): Boolean {
             val sharedPreferences = context
                     .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
-           return sharedPreferences.getBoolean(IS_BETA_TOKOPEDIA, false)
+            return sharedPreferences.getBoolean(IS_BETA_TOKOPEDIA, false)
         }
-        
-    }
 
+    }
 
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -51,7 +51,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
         } catch (e: IOException) {
             throw e
         }
-        
+
         val saveBeta = fun(context: Context, isBeta: Boolean) {
             val sharedPreferences = context
                     .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
@@ -75,8 +75,17 @@ class BetaInterceptor(private val context: Context) : Interceptor {
             if (get.equals(URL_BETA)) {
                 context.let {
                     saveBeta(it, true)
-                    
+
                     val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
+                    var appName = context.getString(R.string.tokopedia_beta)
+                    when (GlobalConfig.APPLICATION_TYPE) {
+                        GlobalConfig.SELLER_APPLICATION ->
+                            appName = "sellerapp"
+                        GlobalConfig.CONSUMER_PRO_APPLICATION ->
+                            appName = "Tokopedia Pro"
+                    }
+
+                    remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
 
                     val mBuilder =
                             NotificationCompat.Builder(context, CHANNEL_ID)

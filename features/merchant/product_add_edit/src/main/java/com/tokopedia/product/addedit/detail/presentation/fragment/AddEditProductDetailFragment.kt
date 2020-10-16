@@ -1363,7 +1363,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             val destination = AddEditProductDetailFragmentDirections.actionAddEditProductDetailFragmentToAddEditProductDescriptionFragment()
             destination.cacheManagerId = cacheManagerId
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductDetailFragment, destination)
         }
     }
 
