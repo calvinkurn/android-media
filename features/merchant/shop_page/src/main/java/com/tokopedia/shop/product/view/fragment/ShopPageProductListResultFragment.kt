@@ -795,6 +795,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductAdapter.changeSelectedEtalaseFilter(selectedEtalaseId, selectedEtalaseName)
                     shopProductAdapter.refreshSticky()
                     if (needReloadData) {
+                        isNeedToReloadData = true
                         loadInitialData()
                         needReloadData = false
                     }
