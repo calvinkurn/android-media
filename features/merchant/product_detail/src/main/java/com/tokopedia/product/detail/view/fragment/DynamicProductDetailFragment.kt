@@ -482,7 +482,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         updateStickyState()
                         updateActionButtonShadow()
                     }
-                    if (isFavoriteFromShopPage != wasFavorite) onSuccessFavoriteShop(true)
+                    if (isFavoriteFromShopPage != wasFavorite) {
+                        onSuccessFavoriteShop(true)
+                        nplFollowersButton?.setupVisibility = wasFavorite
+                    }
                 }
             }
             ProductDetailConstant.REQUEST_CODE_TOP_CHAT -> {
@@ -493,7 +496,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
                                 ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
-                        if (isFavoriteFromTopChat != wasFavorite) onSuccessFavoriteShop(true)
+                        if (isFavoriteFromTopChat != wasFavorite) {
+                            onSuccessFavoriteShop(true)
+                            nplFollowersButton?.setupVisibility = wasFavorite
+                        }
                     }
                 }
             }
@@ -1266,9 +1272,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
             data.doSuccessOrFail({
-                viewModel.clearCacheP2Data()
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
+                nplFollowersButton?.setupVisibility = false
             }, {
                 nplFollowersButton?.stopLoading()
                 onFailFavoriteShop(it)
@@ -1556,18 +1562,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
-
-        if (alreadyFollowShop.not() && !viewModel.isShopOwner()) {
+        val shouldShowRe = !alreadyFollowShop
+        if (shouldShowRe && !viewModel.isShopOwner()) {
             base_btn_follow?.run {
                 if (nplFollowersButton == null) {
                     nplFollowersButton = PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
                 }
             }
-            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title ?: ""
-            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
+            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title
+                    ?: ""
+            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description
+                    ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
-        nplFollowersButton?.setupVisibility = !alreadyFollowShop
+        nplFollowersButton?.setupVisibility = shouldShowRe
     }
 
     override fun onButtonFollowNplClick() {
@@ -2569,11 +2577,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessFavoriteShop(isSuccess: Boolean, isNplFollowerType: Boolean = false) {
         val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
+            viewModel.clearCacheP2Data()
             pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
-        nplFollowersButton?.setupVisibility = false
     }
 
     private fun onFailFavoriteShop(t: Throwable) {
