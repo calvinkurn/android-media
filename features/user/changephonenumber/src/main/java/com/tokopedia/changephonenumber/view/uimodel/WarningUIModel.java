@@ -1,4 +1,4 @@
-package com.tokopedia.changephonenumber.view.viewmodel;
+package com.tokopedia.changephonenumber.view.uimodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by milhamj on 19/12/17.
  */
 
-public class WarningViewModel implements Parcelable {
+public class WarningUIModel implements Parcelable {
     public static final String EMPTY_BALANCE = "Rp  0";
     public static final int BALANCE_THRESHOLD_FOR_WARNING = 15000;
     public static final String ACTION_EMAIL = "send_email";
@@ -26,7 +26,7 @@ public class WarningViewModel implements Parcelable {
     private boolean isOvoEligible;
     private String urlOvo;
 
-    public WarningViewModel() {
+    public WarningUIModel() {
     }
 
     public String getTokopediaBalance() {
@@ -127,7 +127,7 @@ public class WarningViewModel implements Parcelable {
         dest.writeString(this.urlOvo);
     }
 
-    protected WarningViewModel(Parcel in) {
+    protected WarningUIModel(Parcel in) {
         this.tokopediaBalance = in.readString();
         this.tokocash = in.readString();
         this.tokopediaBalanceNumber = in.readLong();
@@ -140,15 +140,15 @@ public class WarningViewModel implements Parcelable {
         this.urlOvo = in.readString();
     }
 
-    public static final Creator<WarningViewModel> CREATOR = new Creator<WarningViewModel>() {
+    public static final Creator<WarningUIModel> CREATOR = new Creator<WarningUIModel>() {
         @Override
-        public WarningViewModel createFromParcel(Parcel source) {
-            return new WarningViewModel(source);
+        public WarningUIModel createFromParcel(Parcel source) {
+            return new WarningUIModel(source);
         }
 
         @Override
-        public WarningViewModel[] newArray(int size) {
-            return new WarningViewModel[size];
+        public WarningUIModel[] newArray(int size) {
+            return new WarningUIModel[size];
         }
     };
 }
