@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -32,7 +33,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
-import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
@@ -140,6 +140,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeFilters()
         observeWaitingPaymentCounter()
         observeOrderList()
+        observeAcceptOrder()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -168,7 +169,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden && !isUserRoleFetched()) viewModel.loadUserRoles()
+        if (!hidden && !isUserRoleFetched()) viewModel.getUserRoles()
         else if (hidden && isUserRoleFetched()) viewModel.clearUserRoles()
     }
 
@@ -188,7 +189,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             multiEditViews.gone()
             shimmerViews.show()
             showWaitingPaymentOrderListMenuShimmer()
-            viewModel.loadUserRoles()
+            viewModel.getUserRoles()
             viewModel.getTopAdsCategory()
             viewModel.getTickers()
             viewModel.getFilters()
@@ -270,6 +271,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onConfirmShippingButtonClicked(orderId: String) {
         goToConfirmShippingPage(orderId)
+    }
+
+    override fun onAcceptOrderButtonClicked(orderId: String) {
+        viewModel.acceptOrder(orderId)
     }
 
     private fun inject() {
@@ -372,6 +377,24 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         })
     }
 
+    private fun observeAcceptOrder() {
+        viewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onAcceptOrderSuccess(result.data.acceptOrder)
+                is Fail -> showToasterError("Terima pesanan gagal")
+            }
+        })
+    }
+
+    private fun onAcceptOrderSuccess(acceptOrder: SomAcceptOrder.Data.AcceptOrder) {
+        if (acceptOrder.success == 1) {
+            showCommonToaster(acceptOrder.listMessage.firstOrNull())
+            refreshOrderList()
+        } else {
+            showToasterError(acceptOrder.listMessage.firstOrNull().orEmpty())
+        }
+    }
+
     private fun setupListeners() {
         tickerSomList.setDescriptionClickEvent(this)
         searchBarSomList.setListener(this)
@@ -411,8 +434,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 data.hasExtra(SomConsts.RESULT_CONFIRM_SHIPPING) -> handleConfirmShippingResult(data.getStringExtra(SomConsts.RESULT_CONFIRM_SHIPPING))
                 data.hasExtra(SomConsts.RESULT_ACCEPT_ORDER) -> {
                     data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(SomConsts.RESULT_ACCEPT_ORDER)?.let { resultAcceptOrder ->
-                        showCommonToaster(resultAcceptOrder.listMessage.firstOrNull())
-                        refreshOrderList()
+                        onAcceptOrderSuccess(resultAcceptOrder)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
@@ -594,12 +616,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getOrderList()
     }
 
-    private fun showToasterError() {
+    private fun showToasterError(message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded)) {
         if (errorToaster == null) {
             view?.let {
                 errorToaster = Toaster.build(
                         it,
-                        getString(R.string.som_list_error_some_information_cannot_be_loaded),
+                        message,
                         Toaster.LENGTH_INDEFINITE,
                         Toaster.TYPE_ERROR,
                         getString(R.string.btn_reload),
@@ -636,7 +658,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.getTickers()
         }
         if (viewModel.userRoleResult.value is Fail) {
-            viewModel.loadUserRoles()
+            viewModel.getUserRoles()
         }
     }
 

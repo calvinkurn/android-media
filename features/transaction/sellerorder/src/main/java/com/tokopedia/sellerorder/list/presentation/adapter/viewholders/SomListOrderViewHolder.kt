@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.Utils
@@ -166,6 +167,7 @@ class SomListOrderViewHolder(
             when (button.key) {
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(element.orderId)
+                KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(element.orderId)
             }
         }
     }
@@ -174,5 +176,6 @@ class SomListOrderViewHolder(
         fun onCheckChanged()
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(orderId: String)
+        fun onAcceptOrderButtonClicked(orderId: String)
     }
 }

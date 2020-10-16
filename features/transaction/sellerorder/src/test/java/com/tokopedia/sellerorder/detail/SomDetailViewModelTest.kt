@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -125,11 +127,11 @@ class SomDetailViewModelTest {
     fun acceptOrder_shouldReturnSuccess() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
+            somAcceptOrderUseCase.execute(any(), any())
         } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(success = 1)))
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("", "")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)
@@ -140,11 +142,11 @@ class SomDetailViewModelTest {
     fun acceptOrder_shouldReturnFail() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
+            somAcceptOrderUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("", "")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Fail)
@@ -154,11 +156,11 @@ class SomDetailViewModelTest {
     fun acceptOrder_msgShouldNotReturnEmpty() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
+            somAcceptOrderUseCase.execute(any(), any())
         } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("", "")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)

@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -32,6 +34,7 @@ class SomListViewModel @Inject constructor(
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
+        private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: SomDispatcherProvider) : BaseViewModel(dispatcher.io()
 ) {
@@ -63,6 +66,10 @@ class SomListViewModel @Inject constructor(
     private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
     val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
         get() = _userRoleResult
+
+    private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
+    val acceptOrderResult: LiveData<Result<SomAcceptOrder.Data>>
+        get() = _acceptOrderResult
 
     private var getUserRolesJob: Job? = null
 
@@ -117,7 +124,7 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun loadUserRoles() {
+    fun getUserRoles() {
         if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
             getUserRolesJob = launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
@@ -126,6 +133,14 @@ class SomListViewModel @Inject constructor(
                 _userRoleResult.postValue(Fail(it))
             })
         }
+    }
+
+    fun acceptOrder(orderId: String) {
+        launchCatchError(block = {
+            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, userSession.shopId ?: "0"))
+        }, onError = {
+            _acceptOrderResult.postValue(Fail(it))
+        })
     }
 
     fun clearUserRoles() {
