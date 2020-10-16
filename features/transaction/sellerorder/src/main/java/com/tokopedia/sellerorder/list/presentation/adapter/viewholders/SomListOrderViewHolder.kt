@@ -38,6 +38,7 @@ class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
+            itemView.setOnClickListener { listener.onOrderClicked(element) }
             itemView.alpha = if (multiEditEnabled && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)
@@ -174,6 +175,7 @@ class SomListOrderViewHolder(
 
     interface SomListOrderItemListener {
         fun onCheckChanged()
+        fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(orderId: String)
         fun onAcceptOrderButtonClicked(orderId: String)

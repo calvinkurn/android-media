@@ -111,6 +111,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun getSwipeRefreshLayout(view: View?) = view?.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayoutSomList)
     override fun createAdapterInstance() = SomListOrderAdapter(adapterTypeFactory)
+    override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
     override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this)
     override fun getRecyclerViewResourceId() = R.id.rvSomList
     override fun getScreenName(): String = ""
@@ -202,12 +203,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    override fun onItemClicked(item: Visitable<SomListAdapterTypeFactory>?) {
-        when (item) {
-            is SomListOrderUiModel -> goToSomOrderDetail(item)
-        }
-    }
-
     override fun onTabClicked(status: SomListFilterUiModel.Status) {
         if (status.isChecked) {
             viewModel.setStatusOrderFilter(status.id)
@@ -265,6 +260,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         updateBulkActionCheckboxStatus()
     }
 
+    override fun onOrderClicked(order: SomListOrderUiModel) {
+        goToSomOrderDetail(order)
+    }
+
     override fun onTrackButtonClicked(orderId: String, url: String) {
         goToTrackingPage(orderId, url)
     }
@@ -287,7 +286,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun setupViews() {
-        adapter.setOnAdapterInteractionListener(this)
         showWaitingPaymentOrderListMenuShimmer()
         setupListeners()
     }
