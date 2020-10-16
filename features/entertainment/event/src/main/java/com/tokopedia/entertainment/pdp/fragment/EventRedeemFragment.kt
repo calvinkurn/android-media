@@ -44,8 +44,18 @@ class EventRedeemFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initProgressDialog()
-        requestData()
+        if(userSessionInterface.isLoggedIn && urlRedeem != "") {
+            initProgressDialog()
+            requestData()
+        } else if (!userSessionInterface.isLoggedIn) {
+            renderNotLogin()
+        } else if (urlRedeem == ""){
+            renderUrlNull()
+        }
+
+        btn_redeem_back.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,9 +122,6 @@ class EventRedeemFragment : BaseDaggerFragment() {
             tg_event_redeem_product.text = product.displayName
             tg_event_redeem_package.text = schedule.name
             tg_event_redeem_schedule.text = schedule.showData
-            btn_redeem_back.setOnClickListener {
-                activity?.onBackPressed()
-            }
 
             btn_redeem_ticket.apply {
                 setOnClickListener {
@@ -124,6 +131,28 @@ class EventRedeemFragment : BaseDaggerFragment() {
             }
 
         }
+    }
+
+    private fun renderError(){
+        pg_event_redeem.gone()
+        ll_parent_redeem.show()
+        btn_redeem_ticket.gone()
+        tg_url_redeem_name.gone()
+        tg_event_redeem_total.gone()
+        tg_event_redeem_package.gone()
+        tg_event_redeem_schedule.gone()
+        tg_event_redeem_title.gone()
+        tg_event_redeem_total_title.gone()
+    }
+
+    private fun renderNotLogin(){
+        renderError()
+        tg_event_redeem_product.text = resources.getString(R.string.ent_redeem_not_login)
+    }
+
+    private fun renderUrlNull(){
+        renderError()
+        tg_event_redeem_product.text = resources.getString(R.string.ent_redeem_url_null)
     }
 
     companion object {

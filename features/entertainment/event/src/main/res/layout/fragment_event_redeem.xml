@@ -33,6 +33,7 @@
                     app:srcCompat="@drawable/ic_event_redeem" />
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_event_redeem_redeemed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
