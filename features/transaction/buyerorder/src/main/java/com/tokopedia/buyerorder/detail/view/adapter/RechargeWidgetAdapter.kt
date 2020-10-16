@@ -152,11 +152,11 @@ class RechargeWidgetAdapter(private val recommendationItems: List<WidgetGridItem
                 tagLine.text = MethodChecker.fromHtml(element.tagName)
                 when (element.tagType) {
                     1 -> {
-                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_pink_label))
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_pink_label_buyer))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_pink))
                     }
                     2 -> {
-                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_green_label))
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_green_label_buyer))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_green))
                     }
                     3 -> {
@@ -164,7 +164,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<WidgetGridItem
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_blue))
                     }
                     4 -> {
-                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_yellow_label))
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_yellow_label_buyer))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_yellow))
                     }
                     5 -> {

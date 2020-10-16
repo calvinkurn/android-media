@@ -24,7 +24,7 @@
         tools:text="Terlambat Bayar"
         tools:textColor="@color/tkpd_transaction_label_pink"
         tools:visibility="gone"
-        tools:background="@drawable/bg_rounded_pink_label"
+        tools:background="@drawable/bg_rounded_pink_label_buyer"
         />
 
     <TextView
