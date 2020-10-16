@@ -47,8 +47,6 @@ object FlightOrderDetailGqlConst {
                   adminFeeAmtStr
                   voucherAmt
                   voucherAmtStr
-                  tokocashAmt
-                  tokocashAmtStr
                   saldoAmt
                   saldoAmtStr
                   totalAmt
