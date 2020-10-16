@@ -49,7 +49,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     val isUserLoggedIn: Boolean
         get() = userSessionInterface.isLoggedIn
 
-    fun getTncBottomSheetData(campaignId: String, shopId: String) {
+    fun getTncBottomSheetData(campaignId: String, shopId: String, isOwner: Boolean) {
         launchCatchError(block = {
             val tncDataAsync = asyncCatchError(dispatcherProvider.io(), block = {
                 getTncResponse(campaignId)
@@ -59,9 +59,10 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
             })
 
             val shopFollowStatusAsync = asyncCatchError(dispatcherProvider.io(), block = {
-                getShopFavoriteStatus(shopId)
+                getShopFavoriteStatus(shopId).takeIf { !isOwner }
             }, onError = {
-                _campaignTncLiveData.postValue(Fail(it))
+                if(!isOwner)
+                    _campaignTncLiveData.postValue(Fail(it))
                 null
             })
 
