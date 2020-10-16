@@ -51,26 +51,16 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
-    private var isOrderListHasLoaded = false
-    private var isReviewStarsListHasLoaded = false
-    private var isSellerBalanceHasLoaded = false
-
     private val sellerOrderObserver = Observer<Result<Pair<Uri, List<Order>>>> { result ->
-        result.observeResult {
-            isOrderListHasLoaded = true
-        }
+        result.observeResult {}
     }
 
     private val sellerReviewStarsObserver = Observer<Result<Pair<Uri, List<InboxReviewList>>>> { result ->
-        result.observeResult {
-            isReviewStarsListHasLoaded = true
-        }
+        result.observeResult {}
     }
 
     private val sellerBalanceObserver = Observer<Result<Pair<Uri, List<SellerActionBalance>>>> { result ->
-        result.observeResult {
-            isSellerBalanceHasLoaded = true
-        }
+        result.observeResult {}
     }
 
     private var orderListLiveData: LiveData<Result<Pair<Uri, List<Order>>>>? = null
@@ -88,26 +78,17 @@ class SellerActionSliceProvider: SliceProvider(){
             if (userSession.isLoggedIn) {
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
-                        if (!isOrderListHasLoaded) {
-                            (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_TYPE) ?: SellerActionOrderType.ORDER_DEFAULT).let { orderType ->
-                                orderListLiveData = getOrderListLiveData(sliceUri, orderType)
-                                isOrderListHasLoaded = false
-                            }
+                        (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_TYPE) ?: SellerActionOrderType.ORDER_DEFAULT).let { orderType ->
+                            orderListLiveData = getOrderListLiveData(sliceUri, orderType)
                         }
                     }
                     SellerActionConst.Deeplink.STARS -> {
-                        if (!isReviewStarsListHasLoaded) {
-                            sliceUri.getQueryParameter(SellerActionConst.Params.RATING).let { ratingStar ->
-                                reviewStarsListLiveData = getReviewStarsListLiveData(sliceUri, ratingStar.toIntOrZero())
-                                isReviewStarsListHasLoaded = false
-                            }
+                        sliceUri.getQueryParameter(SellerActionConst.Params.RATING).let { ratingStar ->
+                            reviewStarsListLiveData = getReviewStarsListLiveData(sliceUri, ratingStar.toIntOrZero())
                         }
                     }
                     SellerActionConst.Deeplink.BALANCE -> {
-                        if (!isSellerBalanceHasLoaded) {
-                            sellerBalanceLiveData = getSellerBalanceLiveData(sliceUri)
-                            isSellerBalanceHasLoaded = false
-                        }
+                        sellerBalanceLiveData = getSellerBalanceLiveData(sliceUri)
                     }
                 }
             }
