@@ -374,6 +374,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
             stopPerformanceMonitor()
+            Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} initialProductListData - after stopPerformanceMonitor")
         })
 
         viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {
