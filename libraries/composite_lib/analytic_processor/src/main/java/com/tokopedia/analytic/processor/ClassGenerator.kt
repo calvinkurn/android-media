@@ -96,14 +96,13 @@ abstract class ClassGenerator(
 
     open fun addCheckerStatement(field: ModelClassField, putStatement: CodeBlock): CodeBlock.Builder {
         val checkerStatement = CodeBlock.builder()
+        // just put code outside checjer
+        checkerStatement.add(putStatement)
         if (field.element.getAnnotation(CustomChecker::class.java) != null) {
             createCustomCheckerCondition(field, checkerStatement, false)
-            checkerStatement.add(putStatement)
             createCheckerSuccessBlock(field, checkerStatement)
             createCheckerFailedBlock(field, checkerStatement)
             checkerStatement.endControlFlow()
-        } else {
-            checkerStatement.add(putStatement)
         }
         return checkerStatement
     }
