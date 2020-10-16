@@ -179,7 +179,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
-        inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
+        inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
         this.menu = menu
         showGlobalSearchIcon()
         showNotificationBadge()

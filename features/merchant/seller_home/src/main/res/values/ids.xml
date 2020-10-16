@@ -5,4 +5,7 @@
     <item name="menu_chat" type="id"/>
     <item name="menu_order" type="id"/>
     <item name="menu_other" type="id"/>
+
+    <item name="menu_sah_search" type="id"/>
+    <item name="menu_sah_notification" type="id"/>
 </resources>
