@@ -124,25 +124,28 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        eventPDPViewModel.eventProductDetailList.observe(this, Observer {
+        eventPDPViewModel.eventProductDetailList.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 renderList(this)
             }
         })
 
-        eventPDPViewModel.eventProductDetail.observe(this, Observer {
+        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
             productDetailData = it.eventProductDetail.productDetailData
             context?.let {
                 renderView(it, productDetailData)
+                if(userSession.isLoggedIn){
+                    eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
+                }
             }
         })
 
-        eventPDPViewModel.validateScanner.observe(this, Observer {
+        eventPDPViewModel.validateScanner.observe(viewLifecycleOwner, Observer {
             renderScanner(it)
         })
 
-        eventPDPViewModel.isError.observe(this, Observer {
+        eventPDPViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.error) {
                     NetworkErrorHelper.showEmptyState(context, view?.rootView) {
@@ -153,7 +156,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
-        eventPDPViewModel.eventHoliday.observe(this, Observer {
+        eventPDPViewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
         })
     }
@@ -166,7 +169,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         urlPDP?.let {
             val userId = if(!userSession.userId.isNullOrEmpty()) userSession.userId.toInt() else 0
             eventPDPViewModel.getDataProductDetail(EventQuery.eventPDPV3(),
-                    eventContentById(), it, userId, userSession.email)
+                    eventContentById(), it)
         }
 
     }

@@ -18,6 +18,7 @@ import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -53,9 +54,8 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         eventProductDetaiListlMutable.value = list
     }
 
-    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String,
-                             userId: Int = 0, email: String = "") {
-        launchCatchError(block = {
+    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
+        launch{
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             val resultHoliday = useCaseHoliday.execute()
             when (result) {
@@ -66,19 +66,10 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     getDataFacilities(mapperFacilities(result.data))
                     getDataLocationDetail(mapperLocationDetail(result.data))
                     getDataInformation(mapperInformation(result.data))
-
-                    val userValidated = EventValidateUser(result.data.eventProductDetailEntity.eventProductDetail.productDetailData.id.toInt(),
-                            userId, email)
-                    useCaseWhiteListValidation.setValidateUser(userValidated)
-                    val result = withContext(dispatcher) {
-                        convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
-                    }
-                    validateScannerMutable.value = result.data.success
                 }
 
                 is Fail -> {
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable.message)
-                    validateScannerMutable.value = false
                 }
             }
 
@@ -91,9 +82,22 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     eventHolidayMutable.value = arrayListOf()
                 }
             }
+        }
+    }
+
+    fun getWhiteListUser(userId: Int, email: String, pdpData: ProductDetailData){
+        launchCatchError(block={
+            val userValidated = EventValidateUser(pdpData.id.toInt(),
+                    userId, email)
+            useCaseWhiteListValidation.setValidateUser(userValidated)
+            val result = withContext(dispatcher) {
+                convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
+            }
+            validateScannerMutable.value = result.data.success
         }, onError = {
-           validateScannerMutable.value = false
+            validateScannerMutable.value = false
         })
+
     }
 
     private fun convertToValidateResponse(typeRestResponseMap: Map<Type, RestResponse>): EventValidateResponse {
