@@ -40,7 +40,9 @@
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_keyword">Kata Kunci</string>
     <string name="title_top_ads_store">Toko</string>
-    <string name="toapds_dash_tooltip_text">Batas bawah untuk menjaga iklan mu terus aktif.</string>
+    <string name="toapds_dash_tooltip_text">Untuk menjaga iklanmu tetap aktif.</string>
+    <string name="toapds_dash_tooltip_title">Batas Kredit Minimum</string>
+
     <string name="label_add_promo">Tambah Iklan</string>
     <string name="label_add_ad_creation">Buat Iklan</string>
 

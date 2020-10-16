@@ -85,8 +85,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         tooltip?.setOnClickListener {
             val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)
             val bottomSheet = BottomSheetUnify()
-            bottomSheet.showCloseIcon = false
-            bottomSheet.showHeader = false
+            bottomSheet.setTitle(getString(R.string.toapds_dash_tooltip_title))
             bottomSheet.setChild(view1)
             bottomSheet.show(childFragmentManager, "")
         }
