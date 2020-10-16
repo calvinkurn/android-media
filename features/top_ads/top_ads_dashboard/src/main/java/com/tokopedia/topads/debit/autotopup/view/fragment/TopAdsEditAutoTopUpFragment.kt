@@ -7,7 +7,6 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,9 +29,11 @@ import com.tokopedia.topads.debit.autotopup.data.model.ResponseSaving
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseTopUpAmountSheet
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import kotlinx.android.synthetic.main.topads_dash_auto_topup_off_layout.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_edit_auto_topup.*
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     private var selectedItem = AutoTopUpItem()
     private var bonus = 1
     private var autoTopupStatus: AutoTopUpStatus? = null
+    private val COACH_MARK_TAG = "info"
 
     private val enableAutoAdssheet: TopAdsChooseTopUpAmountSheet? by lazy {
         TopAdsChooseTopUpAmountSheet.newInstance()
@@ -119,7 +121,12 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
             }
         }
         tooltip?.setOnClickListener {
-            Toaster.make(it, resources.getString(R.string.toapds_dash_tooltip_text), Toast.LENGTH_SHORT)
+            val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)
+            val bottomSheet = BottomSheetUnify()
+            bottomSheet.showHeader = false
+            bottomSheet.showCloseIcon = false
+            bottomSheet.setChild(view1)
+            bottomSheet.show(childFragmentManager, "")
         }
     }
 

@@ -43,5 +43,4 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

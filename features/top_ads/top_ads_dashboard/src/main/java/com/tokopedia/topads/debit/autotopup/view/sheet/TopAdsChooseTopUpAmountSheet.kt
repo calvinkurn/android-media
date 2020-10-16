@@ -25,6 +25,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var bonus: Int = 0
     private val defIndex = 3
+    private var dismissedSaved = false
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -58,30 +59,43 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         creditOptionsRV?.adapter = adapter
         creditOptionsRV?.layoutManager = GridLayoutManager(context, SPAN_COUNT)
         setOnDismissListener {
-            onCancel?.invoke()
+            if (!dismissedSaved) {
+                dismissedSaved = false
+                onCancel?.invoke()
+            }
         }
         cancelBtn?.setOnClickListener {
             dismiss()
             onCancel?.invoke()
         }
         saveBtn?.setOnClickListener {
+            dismissedSaved = true
             dismiss()
             onSaved?.invoke(adapter?.getSelected() ?: 0)
         }
         adapter?.setListener(object : TopAdsAutoTopUpChipsAdapter.OnCreditOptionItemClicked {
             override fun onItemClicked(position: Int) {
                 data?.let {
-                    bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(it?.availableNominals[position].priceFmt, bonus).toLong())))
+                    bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_bonus_String_bottomsheet), bonus.toString(), Utils.convertToCurrency(calculatePercentage(it?.availableNominals[position].priceFmt, bonus).toLong())))
                     dedAmount?.text = it.availableNominals[position].minCreditFmt
                 }
             }
         })
+
+        tooltip?.setOnClickListener {
+            val view1 = View.inflate(context, R.layout.topads_dash_sheet_info, null)
+            val bottomSheet = BottomSheetUnify()
+            bottomSheet.showCloseIcon = false
+            bottomSheet.showHeader = false
+            bottomSheet.setChild(view1)
+            bottomSheet.show(childFragmentManager, "")
+        }
     }
 
     private fun setInitialState() {
         /*def should be 200k*/
         adapter?.setSelected()
-        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_auto_topup_bonus_amount), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.get(defIndex)?.priceFmt
+        bonusTxt.text = Html.fromHtml(String.format(getString(R.string.topads_dash_bonus_String_bottomsheet), bonus.toString(), Utils.convertToCurrency(calculatePercentage(data?.availableNominals?.get(defIndex)?.priceFmt
                 ?: "1", bonus)
                 .toLong())))
         dedAmount?.text = data?.availableNominals?.get(defIndex)?.minCreditFmt
