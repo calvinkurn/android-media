@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -28,6 +29,9 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+private const val CLICK_PRODUK_TAB = "click - tab produk"
+private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
+private const val CLICK_ATUR_TAB = "click - tab atur"
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
     @Inject
@@ -101,6 +105,11 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
             }
 
             override fun onTabSelected(p0: TabLayout.Tab) {
+                when(p0.position) {
+                    0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_PRODUK_TAB, "")
+                    1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_TAB, "")
+                    2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_ATUR_TAB, "")
+                }
                 view_pager.setCurrentItem(p0.position, true)
             }
 

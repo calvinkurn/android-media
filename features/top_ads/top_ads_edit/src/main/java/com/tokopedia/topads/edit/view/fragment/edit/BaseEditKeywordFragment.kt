@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -22,6 +23,8 @@ import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
+private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
+private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
@@ -44,11 +47,13 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         renderViewPager()
         keyword.chipType = ChipsUnify.TYPE_SELECTED
         keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_POSITIF, "")
             keyword.chipType = ChipsUnify.TYPE_SELECTED
             neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
             view_pager.currentItem = POSITION0
         }
         neg_keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_NEGATIF, "")
             neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
             keyword.chipType = ChipsUnify.TYPE_NORMAL
             view_pager.currentItem = POSITION1

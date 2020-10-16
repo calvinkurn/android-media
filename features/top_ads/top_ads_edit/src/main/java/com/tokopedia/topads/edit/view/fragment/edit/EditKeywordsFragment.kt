@@ -61,7 +61,7 @@ import javax.inject.Inject
 
 
 private const val CLICK_SETUP_KEY = "click - setup keyword"
-
+private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
@@ -290,6 +290,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_KATA_KUNCI, "")
             onAddKeyword()
         }
     }
