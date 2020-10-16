@@ -76,7 +76,7 @@ object IncentiveOvoBottomSheetBuilder {
                 incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, amount)
-                productRevIncentiveOvoDomain?.let {
+                productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {
                     incentiveOvoSendAnother?.apply {
                         setOnClickListener {
                             dismiss()
