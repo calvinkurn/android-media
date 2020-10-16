@@ -43,7 +43,7 @@ sealed class LinterConstants {
         const val TAB = "com.tokopedia.unifycomponents.TabsUnify"
         const val SEARCH_BAR = "com.tokopedia.unifycomponents.SearchBarUnify"
         const val PROGRESS_BAR = "com.tokopedia.unifycomponents.LoaderUnify"
-        const val BOTTOM_SHEET = "BottomSheetUnify"
+        const val BOTTOM_SHEET = "com.tokopedia.unifycomponents.BottomSheetUnify"
     }
 
 }
