@@ -63,13 +63,8 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
      * */
     private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
-        if (isAkamai(requests.get(0).getQuery())) {
-            Map<String, String> header = new HashMap<>();
-            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
-            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
-        }
-        else if(requests.get(0).isDoQueryHash()){
-            Map<String, String> header = new HashMap<>();
+        Map<String, String> header = new HashMap<>();
+        if(requests.get(0).isDoQueryHash()){
             StringBuilder queryHashingHeaderValue = new StringBuilder();
             for (GraphqlRequest graphqlRequest:requests) {
                 String queryHashValue = mCacheManager.getQueryHashValue(graphqlRequest.getMd5());
@@ -92,11 +87,11 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                 queryHashingHeaderValue.append(";false");
             }
             header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
-            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
         }
-        else {
-            return mApi.getResponse(requests, new HashMap<>(), FingerprintManager.getQueryDigest(requests));
+        if (isAkamai(requests.get(0).getQuery())) {
+            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
         }
+        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
     }
 
     @Override
@@ -126,7 +121,13 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             }
                         }
                         Map<String, String> header = new HashMap<>();
-                        header.put(QUERY_HASHING_HEADER, ";false");
+                        if(requests.get(0).getQueryHashRetryCount() > 0) {
+                            header.put(QUERY_HASHING_HEADER, ";true");
+                            requests.get(0).setQueryHashRetryCount(requests.get(0).getQueryHashRetryCount()-1);
+                        }
+                        else {
+                            header.put(QUERY_HASHING_HEADER, "");
+                        }
                         mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {

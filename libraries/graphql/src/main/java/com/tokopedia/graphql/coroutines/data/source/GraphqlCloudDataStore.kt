@@ -43,11 +43,11 @@ class GraphqlCloudDataStore @Inject constructor(
    * */
     private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
-        return if (isAkamai(requests.first().query)) {
-            val header = mutableMapOf<String, String>()
+        val header = mutableMapOf<String, String>()
+        if (isAkamai(requests.first().query)) {
             header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
-            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
-        } else if (requests[0].isDoQueryHash) {
+        }
+        if (requests[0].isDoQueryHash) {
             val header: MutableMap<String, String> = HashMap()
             val queryHashingHeaderValue = StringBuilder()
             for (graphqlRequest in requests) {
@@ -70,10 +70,8 @@ class GraphqlCloudDataStore @Inject constructor(
                 queryHashingHeaderValue.append(";false")
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
-            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
-        }else {
-            api.getResponseSuspend(requests.toMutableList(), mapOf(), FingerprintManager.getQueryDigest(requests))
         }
+        return api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
     }
 
     override suspend fun getResponse(
@@ -126,7 +124,13 @@ class GraphqlCloudDataStore @Inject constructor(
                                 }
                             }
                             val header: MutableMap<String, String> = HashMap()
-                            header[QUERY_HASHING_HEADER] = ";false"
+                            if(requests.get(0).queryHashRetryCount > 0){
+                                header[QUERY_HASHING_HEADER] = ";true"
+                                requests.get(0).queryHashRetryCount = requests.get(0).queryHashRetryCount - 1
+                            }
+                            else{
+                                header[QUERY_HASHING_HEADER] = ""
+                            }
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {

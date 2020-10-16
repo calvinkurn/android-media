@@ -29,6 +29,8 @@ public class GraphqlRequest {
 
     private transient String queryCopy;
 
+    private transient int queryHashRetryCount = 1;
+
     private transient boolean doQueryHash = false;
 
     /*transient by nature hence it will not be part of request body*/
@@ -58,6 +60,14 @@ public class GraphqlRequest {
 
     public void setDoQueryHash(boolean doQueryHash) {
         this.doQueryHash = doQueryHash;
+    }
+
+    public int getQueryHashRetryCount() {
+        return queryHashRetryCount;
+    }
+
+    public void setQueryHashRetryCount(int queryHashRetryCount) {
+        this.queryHashRetryCount = queryHashRetryCount;
     }
 
     public GraphqlRequest(String query, Type typeOfT) {
