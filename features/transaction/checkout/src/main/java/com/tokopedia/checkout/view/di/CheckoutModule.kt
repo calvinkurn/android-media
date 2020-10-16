@@ -125,7 +125,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -134,7 +135,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase,
+                executorSchedulers)
     }
 
     @Provides

@@ -110,6 +110,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -128,8 +129,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -158,6 +157,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
     private final ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
+    private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -215,7 +215,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
-                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
+                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
+                             ExecutorSchedulers executorSchedulers) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
@@ -238,6 +239,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
+        this.executorSchedulers = executorSchedulers;
     }
 
     @Override
@@ -796,8 +798,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                        @Override
                                        public void onCompleted() {
@@ -1033,8 +1035,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                             @Override
                             public void onCompleted() {
@@ -1124,8 +1126,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
                         .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                             @Override
                             public void onCompleted() {
@@ -1436,9 +1438,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
             compositeSubscription.add(
                     editAddressUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
+                            .subscribeOn(executorSchedulers.getIo())
+                            .observeOn(executorSchedulers.getMain())
+                            .unsubscribeOn(executorSchedulers.getIo())
                             .subscribe(new Subscriber<String>() {
                                 @Override
                                 public void onCompleted() {
@@ -1669,9 +1671,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 changeShippingAddressGqlUseCase.createObservable(requestParam)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
+                        .subscribeOn(executorSchedulers.getIo())
+                        .observeOn(executorSchedulers.getMain())
+                        .unsubscribeOn(executorSchedulers.getIo())
                         .subscribe(new Subscriber<SetShippingAddressData>() {
                             @Override
                             public void onCompleted() {

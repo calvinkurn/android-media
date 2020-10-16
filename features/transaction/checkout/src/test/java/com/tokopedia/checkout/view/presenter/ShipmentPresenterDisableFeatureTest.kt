@@ -35,11 +35,6 @@ import org.junit.Assert.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Scheduler
-import rx.android.plugins.RxAndroidPlugins
-import rx.android.plugins.RxAndroidSchedulersHook
-import rx.plugins.RxJavaHooks
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.lang.reflect.Type
 import java.util.*
@@ -73,13 +68,13 @@ object ShipmentPresenterDisableFeatureTest : Spek({
     val gson = Gson()
     val unitTestFileUtils = UnitTestFileUtils()
 
-    RxAndroidPlugins.getInstance().reset()
-    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-        override fun getMainThreadScheduler(): Scheduler {
-            return Schedulers.trampoline()
-        }
-    })
-    RxJavaHooks.setOnIOScheduler { Schedulers.trampoline() }
+//    RxAndroidPlugins.getInstance().reset()
+//    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+//        override fun getMainThreadScheduler(): Scheduler {
+//            return Schedulers.trampoline()
+//        }
+//    })
+//    RxJavaHooks.setOnIOScheduler { Schedulers.trampoline() }
 
 
     Feature("Disable Features") {
@@ -94,7 +89,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                     analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                     getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                    validateUsePromoRevampUseCase)
+                    validateUsePromoRevampUseCase, TestSchedulers)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }

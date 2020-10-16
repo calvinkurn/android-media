@@ -22,6 +22,7 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.Su
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
@@ -29,11 +30,6 @@ import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Scheduler
-import rx.android.plugins.RxAndroidPlugins
-import rx.android.plugins.RxAndroidSchedulersHook
-import rx.plugins.RxJavaHooks
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
 object ShipmentPresenterHelpTicketTest : Spek({
@@ -61,13 +57,13 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val shipmentDataConverter = ShipmentDataConverter()
     val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
 
-    RxAndroidPlugins.getInstance().reset()
-    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-        override fun getMainThreadScheduler(): Scheduler {
-            return Schedulers.trampoline()
-        }
-    })
-    RxJavaHooks.setOnIOScheduler { Schedulers.trampoline() }
+//    RxAndroidPlugins.getInstance().reset()
+//    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+//        override fun getMainThreadScheduler(): Scheduler {
+//            return Schedulers.trampoline()
+//        }
+//    })
+//    RxJavaHooks.setOnIOScheduler { Schedulers.trampoline() }
 
     Feature("Submit Help Ticket") {
 
@@ -80,7 +76,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,
                     checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter,
-                    releaseBookingUseCase, validateUsePromoRevampUseCase)
+                    releaseBookingUseCase, validateUsePromoRevampUseCase, TestSchedulers)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
