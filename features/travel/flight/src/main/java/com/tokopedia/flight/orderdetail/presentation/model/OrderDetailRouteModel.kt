@@ -32,11 +32,11 @@ data class OrderDetailRouteModel(
         val stop: Int,
         val carrier: String,
         val stopDetails: List<String>,
-        val ticketNumbers: List<OrderDetailTicketNumber>,
+        val ticketNumbers: List<OrderDetailTicketNumberModel>,
         val freeAmenities: OrderDetailFreeAmenityModel
 ) : Parcelable {
     @Parcelize
-    data class OrderDetailTicketNumber(
+    data class OrderDetailTicketNumberModel(
             val passengerId: Int,
             val ticketNumber: String
     ) : Parcelable

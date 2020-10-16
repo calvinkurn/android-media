@@ -448,7 +448,7 @@ class OrderDetailFreeAmenity(
 class OrderDetailPassenger(
         @SerializedName("id")
         @Expose
-        val id: Long = 0,
+        val id: Int = 0,
         @SerializedName("type")
         @Expose
         val type: Int = 0,
