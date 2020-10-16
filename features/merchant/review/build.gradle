@@ -52,6 +52,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePreviewSlider)
+    implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.mediauploader)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -119,7 +120,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation project(path: ':libraries:image_preview')
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
