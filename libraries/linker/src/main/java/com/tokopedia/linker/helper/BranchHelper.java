@@ -1,7 +1,9 @@
-package com.tokopedia.linker;
+package com.tokopedia.linker.helper;
 
 import android.content.Context;
 
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;

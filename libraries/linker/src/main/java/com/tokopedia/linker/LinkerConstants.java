@@ -50,7 +50,8 @@ public interface LinkerConstants {
     int EVENT_ADD_TO_WHISHLIST =7;
     int EVENT_ADD_TO_CART = 8;
     int EVENT_PURCHASE_FLIGHT = 9;
-
+    int EVENT_DIGITAL_HOMEPAGE = 10;
+    int EVENT_DIGITAL_SCREEN_LAUNCH = 11;
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
@@ -74,6 +75,10 @@ public interface LinkerConstants {
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
     String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
 
+    // Recharge Events
+    String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";
+    String EVENT_DIGITAL_PURCHASE = "purchase_start";
+
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
     int ERROR_SOMETHING_WENT_WRONG = 103;
@@ -89,6 +94,10 @@ public interface LinkerConstants {
     String PRODUCT_NAME = "product_name";
     String JOURNEY_ID = "journey_id";
     String INVOICE_ID = "invoice_id";
+    String PRODUCT_TYPE = "product_type";
+
+    // Recharge Constants
+    String PRODUCT_TYPE_DIGITAL = "Digital";
 
     String BRANCH_UTM_SOURCE = "~channel";
     String BRANCH_UTM_MEDIUM = "~feature";
