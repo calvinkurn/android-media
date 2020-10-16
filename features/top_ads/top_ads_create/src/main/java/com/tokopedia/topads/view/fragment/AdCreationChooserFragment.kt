@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.topads.auto.view.activity.EditBudgetAutoAdsActivity
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
@@ -106,7 +105,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         icon2.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_gear))
         auto_ads.setOnClickListener {
             if (adStatus == AUTO) {
-                val intent = Intent(context, EditBudgetAutoAdsActivity::class.java)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
                 startActivityForResult(intent, AUTO_ADS_DISABLED)
             }
             if (adStatus == MANAUAL || adStatus == NO_ADS) {

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
@@ -32,6 +33,7 @@ import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -60,7 +62,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         LoginEmailPhoneContract.Presenter {
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
-
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
@@ -327,4 +328,5 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         getProfileUseCase.unsubscribe()
         tickerInfoUseCase.unsubscribe()
     }
+
 }

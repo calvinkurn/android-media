@@ -172,10 +172,4 @@ class TopAdsImageView : AppCompatImageView {
         return (widthRatio * height).toInt()
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        if (::topAdsImageViewViewModel.isInitialized) {
-            topAdsImageViewViewModel.onClear()
-        }
-    }
 }

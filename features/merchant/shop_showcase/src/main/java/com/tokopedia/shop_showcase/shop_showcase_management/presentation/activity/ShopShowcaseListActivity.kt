@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
@@ -46,7 +47,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
     private var productId: String = ""
     private var productName: String = ""
-    private var listShowcase: ArrayList<ShowcaseItem>? = arrayListOf()
+    private var listShowcase: ArrayList<ShopEtalaseModel>? = arrayListOf()
     private var preSelectedShowcaseListPicker: ArrayList<ShowcaseItemPicker>? = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,7 +115,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
-    override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {
+    override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShopEtalaseModel>?) {
         when (page) {
             PageNameConstant.SHOWCASE_LIST_PAGE -> {
                 isNeedToGoToAddShowcase = false

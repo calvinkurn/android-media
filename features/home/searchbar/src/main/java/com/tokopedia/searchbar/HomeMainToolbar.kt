@@ -199,23 +199,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         toolbar!!.background = drawable
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState()
-        val bundle = Bundle()
-        bundle.putInt(KEY_BUNDLE_TOOLBAR_TYPE, toolbarType)
-        return bundle
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
-        if (state is Bundle) // implicit null check
-        {
-            val bundle = state
-            this.toolbarType = bundle.getInt(KEY_BUNDLE_TOOLBAR_TYPE) // ... load stuff
-        }
-        super.onRestoreInstanceState(state)
-    }
-
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
