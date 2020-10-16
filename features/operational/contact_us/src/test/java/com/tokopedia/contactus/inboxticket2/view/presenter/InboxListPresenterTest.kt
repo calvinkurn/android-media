@@ -21,14 +21,14 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class InboxListPresenterImplTest {
+class InboxListPresenterTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
     private lateinit var getTicketListUseCase: GetTicketListUseCase
 
-    private lateinit var presenter: InboxListPresenterImpl
+    private lateinit var presenter: InboxListPresenter
     private lateinit var view: InboxListContract.InboxListView
 
 
@@ -38,7 +38,7 @@ class InboxListPresenterImplTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
         getTicketListUseCase = mockk(relaxed = true)
-        presenter = spyk(InboxListPresenterImpl(getTicketListUseCase, mockk(relaxed = true)))
+        presenter = spyk(InboxListPresenter(getTicketListUseCase, mockk(relaxed = true)))
         view = mockk(relaxed = true)
         presenter.attachView(view)
     }

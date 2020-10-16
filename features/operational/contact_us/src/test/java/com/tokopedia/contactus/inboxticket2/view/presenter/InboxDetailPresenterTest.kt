@@ -14,7 +14,7 @@ import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl.Companion.KEY_LIKED
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenter.Companion.KEY_LIKED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -31,7 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class InboxDetailPresenterImplTest {
+class InboxDetailPresenterTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -46,7 +46,7 @@ class InboxDetailPresenterImplTest {
     private lateinit var dispatcher: TestCoroutineDispatcher
     private lateinit var userSession: UserSessionInterface
 
-    private lateinit var presenter: InboxDetailPresenterImpl
+    private lateinit var presenter: InboxDetailPresenter
 
     private lateinit var view: InboxDetailContract.InboxDetailView
 
@@ -66,7 +66,7 @@ class InboxDetailPresenterImplTest {
         uploadImageUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
-        presenter = spyk(InboxDetailPresenterImpl(postMessageUseCase,
+        presenter = spyk(InboxDetailPresenter(postMessageUseCase,
                 postMessageUseCase2,
                 postRatingUseCase,
                 inboxOptionUseCase,
