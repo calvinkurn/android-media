@@ -23,7 +23,7 @@ object DeprecatedDependencyDetector {
             ISSUE_GRADLE_DEPRECATED_BRIEF,
             ISSUE_GRADLE_DEPRECATED_EXPLANATION,
             Category.CORRECTNESS,
-            Priority.Medium.priority,
+            Priority.Medium.value,
             Severity.ERROR,
             GradleDetector.IMPLEMENTATION
     )

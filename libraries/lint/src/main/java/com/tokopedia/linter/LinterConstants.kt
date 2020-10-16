@@ -1,7 +1,7 @@
 package com.tokopedia.linter
 
 
-enum class Priority(var priority: Int) {
+enum class Priority(var value: Int) {
     Low(1),
     Medium(5),
     High(10)

@@ -2,6 +2,7 @@ package com.tokopedia.linter.detectors
 
 import com.android.tools.lint.detector.api.*
 import com.intellij.psi.PsiMethod
+import com.tokopedia.linter.Priority
 import org.jetbrains.uast.UCallExpression
 
 @Suppress("UnstableApiUsage")
@@ -55,7 +56,7 @@ class SetColourDetector : Detector(), SourceCodeScanner {
                     This lint check prevents usage of `ContextCompact.getColour() & resources.getColour()`.
                 """.trimIndent(),
                 category = Category.CORRECTNESS,
-                priority = 3,
+                priority = Priority.Low.value,
                 severity = Severity.WARNING,
                 implementation = IMPLEMENTATION
         ).setAndroidSpecific(true)

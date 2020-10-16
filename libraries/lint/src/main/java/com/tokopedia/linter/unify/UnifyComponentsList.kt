@@ -10,6 +10,7 @@ import com.tokopedia.linter.LinterConstants.Classes.SEARCH_BAR_VIEW
 import com.tokopedia.linter.LinterConstants.Classes.SNACK_BAR
 import com.tokopedia.linter.LinterConstants.UnifyClasses.BOTTOM_SHEET
 import com.tokopedia.linter.LinterConstants.UnifyClasses.BUTTON
+import com.tokopedia.linter.LinterConstants.UnifyClasses.DATE_PICKER_UNIFY
 import com.tokopedia.linter.LinterConstants.UnifyClasses.DIALOG
 import com.tokopedia.linter.LinterConstants.UnifyClasses.IMAGE_BUTTON
 import com.tokopedia.linter.LinterConstants.UnifyClasses.PROGRESS_BAR
@@ -38,6 +39,7 @@ object UnifyComponentsList {
                 SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),
                 BOTTOM_SHEET_DIALOG to UnifyMapping(BOTTOM_SHEET),
                 LinterConstants.Classes.DATE_PICKER to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
+                DATE_PICKER_UNIFY to UnifyMapping(LinterConstants.UnifyClasses.DATE_PICKER),
                 DIALOG_CLASS_NAME to UnifyMapping(DIALOG),
                 SNACK_BAR to UnifyMapping(TOASTER)
 

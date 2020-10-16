@@ -20,7 +20,7 @@ object BannedDependencyDetector {
             ISSUE_GRADLE_NOT_ALLOWED_BRIEF,
             ISSUE_GRADLE_NOT_ALLOWED_EXPLAINATION,
             Category.CORRECTNESS,
-            Priority.High.priority,
+            Priority.High.value,
             Severity.ERROR,
             GradleDetector.IMPLEMENTATION
     )

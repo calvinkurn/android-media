@@ -7,6 +7,7 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Severity
 import com.tokopedia.linter.LinterConstants
+import com.tokopedia.linter.Priority
 import com.tokopedia.linter.detectors.sourcescanner.SourceCodeDetector
 import org.jetbrains.uast.UImportStatement
 
@@ -22,7 +23,7 @@ object ImportDetector {
             briefDescription = BRIEF_DESCRIPTION,
             explanation = EXPLANATION,
             category = Category.CORRECTNESS,
-            priority = 3,
+            priority = Priority.Low.value,
             severity = Severity.WARNING,
             implementation = SourceCodeDetector.IMPLEMENTATION
     ).setAndroidSpecific(true)
