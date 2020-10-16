@@ -44,6 +44,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("order_priority")
     @Expose
     private OrderPriority orderPriority;
+    @SerializedName("mvc")
+    @Expose
+    private MerchantVoucherData merchantVoucherData;
 
     public ServiceData() {
     }
@@ -166,5 +169,13 @@ public class ServiceData implements Parcelable {
 
     public void setOrderPriority(OrderPriority orderPriority) {
         this.orderPriority = orderPriority;
+    }
+
+    public MerchantVoucherData getMerchantVoucherData() {
+        return merchantVoucherData;
+    }
+
+    public void setMerchantVoucherData(MerchantVoucherData merchantVoucherData) {
+        this.merchantVoucherData = merchantVoucherData;
     }
 }

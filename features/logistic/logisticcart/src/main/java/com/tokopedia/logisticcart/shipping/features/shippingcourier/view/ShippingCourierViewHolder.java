@@ -13,6 +13,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
@@ -31,6 +32,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private View separator;
     private Label codLabel;
     private Label otdLabel;
+    private ImageView imgMvc;
+    private Typography tvMvc;
 
     private int cartPosition;
 
@@ -45,6 +48,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         separator = itemView.findViewById(R.id.separator);
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
+        imgMvc = itemView.findViewById(R.id.img_mvc);
+        tvMvc = itemView.findViewById(R.id.tv_mvc_text);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -76,6 +81,11 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             OntimeDeliveryGuarantee otd = shippingCourierUiModel
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
+        }
+
+        if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null) {
+            imgMvc.setVisibility(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() ? View.VISIBLE : View.GONE);
+            tvMvc.setVisibility(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() ? View.VISIBLE : View.GONE);
         }
 
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));

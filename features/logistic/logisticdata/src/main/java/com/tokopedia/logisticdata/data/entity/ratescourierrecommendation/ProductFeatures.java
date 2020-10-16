@@ -11,6 +11,9 @@ public class ProductFeatures implements Parcelable {
     @SerializedName("ontime_delivery_guarantee")
     @Expose
     private OntimeDeliveryGuarantee ontimeDeliveryGuarantee;
+    @SerializedName("mvc")
+    @Expose
+    private MerchantVoucherProductData merchantVoucherProductData;
 
     public OntimeDeliveryGuarantee getOntimeDeliveryGuarantee() {
         return ontimeDeliveryGuarantee;
@@ -48,4 +51,12 @@ public class ProductFeatures implements Parcelable {
             return new ProductFeatures[size];
         }
     };
+
+    public MerchantVoucherProductData getMerchantVoucherProductData() {
+        return merchantVoucherProductData;
+    }
+
+    public void setMerchantVoucherProductData(MerchantVoucherProductData merchantVoucherProductData) {
+        this.merchantVoucherProductData = merchantVoucherProductData;
+    }
 }

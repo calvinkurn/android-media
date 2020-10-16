@@ -58,6 +58,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String priorityPdpMessage;
     private OntimeDelivery ontimeDelivery;
     private CashOnDeliveryProduct codProductData;
+    private MerchantVoucherProductModel merchantVoucherProductModel;
 
     public CourierItemData() {
     }
@@ -540,5 +541,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setCodProductData(CashOnDeliveryProduct codProductData) {
         this.codProductData = codProductData;
+    }
+
+    public MerchantVoucherProductModel getMerchantVoucherProductModel() {
+        return merchantVoucherProductModel;
+    }
+
+    public void setMerchantVoucherProductModel(MerchantVoucherProductModel merchantVoucherProductModel) {
+        this.merchantVoucherProductModel = merchantVoucherProductModel;
     }
 }

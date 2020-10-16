@@ -12,14 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:paddingTop="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/img_mvc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_kebab"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:visibility="gone"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_mvc_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/img_mvc"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:lineSpacingExtra="@dimen/sp_4"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="@string/tv_mvc_text"
+            android:visibility="gone"
+            android:textColor="@color/text_mvc"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_below="@id/img_mvc"
             android:lineSpacingExtra="@dimen/sp_4"
             app:typographyType="body_2"
             app:typographyWeight="bold"

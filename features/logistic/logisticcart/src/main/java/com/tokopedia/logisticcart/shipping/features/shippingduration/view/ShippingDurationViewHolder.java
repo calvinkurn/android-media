@@ -41,6 +41,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPrice;
     private TextView tvTextDesc;
     private ImageView imgCheck;
+    private ImageView imgMvc;
+    private Typography tvMvc;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
@@ -63,6 +65,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
+        imgMvc = itemView.findViewById(R.id.img_mvc);
+        tvMvc = itemView.findViewById(R.id.tv_mvc_text);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -115,6 +119,15 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+
+        if (shippingDurationUiModel.getMerchantVoucherModel() != null) {
+            imgMvc.setVisibility(shippingDurationUiModel.getMerchantVoucherModel().isMvc() ? View.VISIBLE : View.GONE);
+            tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+        } else {
+            tvMvc.setVisibility(View.GONE);
+        }
+
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
