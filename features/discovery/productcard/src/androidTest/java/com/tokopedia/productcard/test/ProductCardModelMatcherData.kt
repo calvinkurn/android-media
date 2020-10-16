@@ -987,7 +987,7 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
 
 private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Product with rating float",
+            productName = "Product with count sold rating but no label integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
             countSoldRating = "4.6",
