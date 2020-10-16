@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
@@ -107,7 +106,7 @@ class SomListSortFilterTab(
         }
     }
 
-    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER || selectedTab?.key == KEY_CONFIRM_SHIPPING
+    fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
 
