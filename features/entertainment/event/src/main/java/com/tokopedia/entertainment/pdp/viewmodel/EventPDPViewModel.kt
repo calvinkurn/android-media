@@ -55,7 +55,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
     }
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
-        launch{
+        launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             val resultHoliday = useCaseHoliday.execute()
             when (result) {
@@ -73,7 +73,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                 }
             }
 
-            when (resultHoliday) {
+            when(resultHoliday){
                 is Success -> {
                     eventHolidayMutable.value = mappingHolidayData(resultHoliday.data)
                 }
@@ -202,7 +202,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         var section = SectionData()
         var outlet = Outlet()
         val sectionsData = result.eventContentByIds.eventContentById.data.sectionData
-        if (result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets.isNotEmpty()) {
+        if(result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets.isNotEmpty()){
             outlet = result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets[0]
             for (i in sectionsData.indices) {
                 if (sectionsData[i].section.equals(SECTION_LOCATION))

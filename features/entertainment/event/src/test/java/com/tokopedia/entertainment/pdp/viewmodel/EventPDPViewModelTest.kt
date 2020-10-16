@@ -24,6 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coVerify
+import kotlinx.coroutines.Job
 
 import org.junit.Assert.*
 import org.junit.Before

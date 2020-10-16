@@ -167,7 +167,6 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun requestData() {
         urlPDP?.let {
-            val userId = if(!userSession.userId.isNullOrEmpty()) userSession.userId.toInt() else 0
             eventPDPViewModel.getDataProductDetail(EventQuery.eventPDPV3(),
                     eventContentById(), it)
         }
