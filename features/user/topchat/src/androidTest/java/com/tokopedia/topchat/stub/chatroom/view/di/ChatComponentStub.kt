@@ -11,7 +11,12 @@ import dagger.Component
 
 @ChatScope
 @Component(
-        modules = [ChatModuleStub::class, ChatRoomContextModule::class, ChatRoomViewModelModule::class],
+        modules = [
+            ChatModuleStub::class,
+            ChatRoomContextModule::class,
+            ChatRoomViewModelModule::class,
+            ChatListFakeUseCaseModule::class
+        ],
         dependencies = [BaseAppComponent::class]
 )
 interface ChatComponentStub {

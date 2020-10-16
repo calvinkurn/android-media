@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivityTest.Dummy.exMessageId
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,10 @@ class TopChatRoomActivityTest {
 
     private lateinit var activity: TopChatRoomActivityStub
 
+    object Dummy {
+        val exMessageId = "66961"
+    }
+
     @ExperimentalCoroutinesApi
     @Before
     fun before() {
@@ -39,10 +45,15 @@ class TopChatRoomActivityTest {
         // Given
 
         // When
+        setupActivityIntent(exMessageId)
         activity.setupTestFragment()
 
         // Then
         assertTrue(true)
+    }
+
+    private fun setupActivityIntent(messageId: String = "") {
+        mActivityTestRule.activity.intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
     }
 
 }
