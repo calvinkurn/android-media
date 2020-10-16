@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -38,7 +39,7 @@ class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
-            itemView.setOnClickListener { listener.onOrderClicked(element) }
+            itemView.setOnClickListener { if (!multiEditEnabled) listener.onOrderClicked(element) }
             itemView.alpha = if (multiEditEnabled && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)
@@ -60,7 +61,7 @@ class SomListOrderViewHolder(
     private fun setupQuickActionButton(element: SomListOrderUiModel) {
         with(itemView) {
             val firstButton = element.buttons.firstOrNull()
-            if (firstButton != null) {
+            if (firstButton != null && !multiEditEnabled) {
                 btnQuickAction.text = firstButton.displayName
                 btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_SECONDARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction.setOnClickListener { onQuickActionButtonClicked(element) }
@@ -134,11 +135,20 @@ class SomListOrderViewHolder(
     private fun setupCheckBox(element: SomListOrderUiModel) {
         with(itemView) {
             checkBoxSomListMultiSelect.showWithCondition(multiEditEnabled)
-            checkBoxSomListMultiSelect.isEnabled = element.cancelRequest == 0
             checkBoxSomListMultiSelect.isChecked = element.isChecked
-            checkBoxSomListMultiSelect.setOnClickListener {
-                element.isChecked = checkBoxSomListMultiSelect.isChecked
-                listener.onCheckChanged()
+            checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    if (element.cancelRequest == 0) {
+                        element.isChecked = !checkBoxSomListMultiSelect.isChecked
+                        listener.onCheckChanged()
+                        false
+                    } else {
+                        listener.onCheckBoxClickedWhenDisabled()
+                        true
+                    }
+                } else {
+                    false
+                }
             }
         }
     }
@@ -175,6 +185,7 @@ class SomListOrderViewHolder(
 
     interface SomListOrderItemListener {
         fun onCheckChanged()
+        fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(orderId: String)

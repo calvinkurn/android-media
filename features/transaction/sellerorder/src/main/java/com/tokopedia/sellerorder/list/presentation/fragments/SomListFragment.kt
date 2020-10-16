@@ -204,9 +204,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onTabClicked(status: SomListFilterUiModel.Status) {
-        if (status.isChecked) {
+        tabActive = if (status.isChecked) {
             viewModel.setStatusOrderFilter(status.id)
-        } else viewModel.setStatusOrderFilter(emptyList())
+            status.key
+        } else {
+            viewModel.setStatusOrderFilter(emptyList())
+            ""
+        }
         if (SomListOrderViewHolder.multiEditEnabled) {
             SomListOrderViewHolder.multiEditEnabled = false
             resetOrderSelectedStatus()
@@ -258,6 +262,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCheckChanged() {
         updateBulkActionCheckboxStatus()
+        toggleBulkActionCheckboxVisibility()
+    }
+
+    override fun onCheckBoxClickedWhenDisabled() {
+        showCommonToaster("Oops, pesanan tidak dapat dipilih", Toaster.TYPE_ERROR)
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
@@ -405,7 +414,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             toggleBulkActionButtonVisibility()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
-            toggleBulkActionCheckboxVisibility()
         }
 
         checkBoxBulkAction.setOnClickListener {
@@ -497,7 +505,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun toggleBulkActionCheckboxVisibility() {
-        checkBoxBulkAction.showWithCondition(SomListOrderViewHolder.multiEditEnabled)
+        val checkedOrders = adapter.data
+                .filter { it is SomListOrderUiModel && it.cancelRequest == 0 && it.isChecked }
+        checkBoxBulkAction.showWithCondition(checkedOrders.isNotEmpty())
     }
 
     private fun updateBulkActionCheckboxStatus() {
@@ -633,11 +643,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    private fun showCommonToaster(message: String?) {
+    private fun showCommonToaster(message: String?, toasterType: Int = Toaster.TYPE_NORMAL) {
         message?.run {
             if (commonToaster == null) {
                 view?.let {
-                    commonToaster = Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "")
+                    commonToaster = Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType, "")
                 }
             }
             if (commonToaster?.isShown == false) {
