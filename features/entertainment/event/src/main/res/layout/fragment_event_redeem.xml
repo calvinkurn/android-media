@@ -33,7 +33,7 @@
                     app:srcCompat="@drawable/ic_event_redeem" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tg_event_redeem_redeemed"
+                    android:id="@+id/tg_event_redeem_redeemed_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
@@ -43,6 +43,18 @@
                     android:textColor="@color/Neutral_N0"
                     app:typographyType="heading_2"
                     app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_event_redeem_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:gravity="center"
+                    android:textColor="@color/Neutral_N0"
+                    app:typographyType="heading_3"
+                    app:typographyWeight="bold" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

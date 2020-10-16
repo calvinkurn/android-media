@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
+import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
+import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.stringToDateRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemViewModel
@@ -30,6 +32,7 @@ class EventRedeemFragment : BaseDaggerFragment() {
     lateinit var progressDialog: ProgressDialog
 
     private var urlRedeem: String? = ""
+    private var isSuccessRedeem: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -72,6 +75,7 @@ class EventRedeemFragment : BaseDaggerFragment() {
                 progressDialog.dismiss()
                 if(it.data.invoice.providerInvoiceStatus.equals("SUCCESS")){
                     urlRedeem?.let {
+                        isSuccessRedeem = true
                         eventRedeemViewModel.getDataRedeem(it)
                     }
                 }
@@ -115,6 +119,9 @@ class EventRedeemFragment : BaseDaggerFragment() {
             if (action.isNotEmpty()) {
                 if (action.first().urlParams.appUrl.isEmpty()) {
                     card_redeemed.show()
+                    tg_event_redeem_redeemed_title.text = if(isSuccessRedeem) resources.getString(R.string.ent_redeem_data_redeemed)
+                                                            else resources.getString(R.string.ent_redeem_data_already_redeemed)
+                    tg_event_redeem_time.text =  resources.getString(R.string.ent_redeemed_time, stringToDateRedeem(product.updatedAt))
                     btn_redeem_ticket.gone()
                 }
             }
