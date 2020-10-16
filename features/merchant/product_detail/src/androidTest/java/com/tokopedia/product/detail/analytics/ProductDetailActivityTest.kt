@@ -25,6 +25,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
+import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +42,10 @@ class ProductDetailActivityTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ProductDetailActivity> = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            clearLogin()
+        }
         override fun getActivityIntent(): Intent {
             return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         }
@@ -92,12 +97,12 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
-            clearLogin()
             intendingIntent()
             waitForData()
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            intendingIntent()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
@@ -108,7 +113,6 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
-            clearLogin()
             intendingIntent()
             waitForData()
             clickVariantTest()
@@ -152,7 +156,7 @@ class ProductDetailActivityTest {
         Thread.sleep(1000)
 
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(0, clickChildViewWithId(R.id.containerChipVariant)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
 
         Thread.sleep(1000)
@@ -188,7 +192,7 @@ class ProductDetailActivityTest {
     }
 
     companion object {
-        const val PRODUCT_ID = "890495024"
+        const val PRODUCT_ID = "662316603"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
