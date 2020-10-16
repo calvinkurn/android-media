@@ -16,4 +16,5 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_PENDING_INCENTIVE_QUEUE = "has pending incentive review queue:%s;"
     const val CLICK_LATER = "click - nanti aja deh on %s"
     const val CLICK_OK = "click - ok sip on %s"
+    const val SCREEN_NAME = "/create-review-form"
 }

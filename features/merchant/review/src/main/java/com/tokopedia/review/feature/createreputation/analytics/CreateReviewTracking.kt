@@ -23,12 +23,12 @@ object CreateReviewTracking {
     }
 
 
-    fun reviewOnCloseTracker(orderId: String, productId: String) {
+    fun reviewOnCloseTracker(orderId: String, productId: String, isEligible: Boolean) {
         tracker.sendGeneralEvent(createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
                 "click - back button on product review detail page",
-                "$orderId - $productId"
+                "$orderId - $productId - product_is_incentive_eligible: $isEligible;"
         ))
     }
 
@@ -181,6 +181,15 @@ object CreateReviewTracking {
         ))
     }
 
+    fun eventViewThankYouBottomSheet(bottomSheetTitle: String, hasPendingIncentive: Boolean) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, bottomSheetTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
+        ))
+    }
+
     fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
@@ -224,6 +233,10 @@ object CreateReviewTracking {
                 String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
+    }
+
+    fun openScreen(screenName: String) {
+        tracker.sendScreenAuthenticated(screenName)
     }
 
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {

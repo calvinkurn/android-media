@@ -48,6 +48,7 @@ import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
@@ -178,7 +179,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = CreateReviewTrackingConstants.SCREEN_NAME
 
     override fun initInjector() {
         activity?.let {
@@ -197,6 +198,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
             productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
@@ -708,7 +710,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
             val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
             val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
             view.apply {
-                val defaultTitle = context?.getString(R.string.review_create_thank_you_title)
+                val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
+                bottomSheet.setShowListener {
+                    CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, productRevIncentiveOvoDomain != null)
+                }
                 incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                 incentiveOvoSubmittedTitle?.text = defaultTitle
                 incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
@@ -717,14 +722,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
                         setOnClickListener {
                             dismiss()
                             goToReviewPending()
-                            CreateReviewTracking.eventClickSendAnother(defaultTitle ?: "", true)
+                            CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
                         }
                     }
                     incentiveOvoLater?.apply {
                         setOnClickListener {
                             dismiss()
                             finishIfRoot(true)
-                            CreateReviewTracking.eventClickLater(defaultTitle ?: "", true)
+                            CreateReviewTracking.eventClickLater(defaultTitle, true)
                         }
                         show()
                     }
@@ -735,7 +740,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         dismiss()
                         finishIfRoot(true)
-                        CreateReviewTracking.eventClickOk(defaultTitle ?: "", productRevIncentiveOvoDomain != null)
+                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
                     }
                 }
                 overlayClickDismiss = false
