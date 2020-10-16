@@ -5,6 +5,16 @@ package com.tokopedia.travel_slice.ui.provider
  */
 
 object TravelSliceQuery {
+    const val SEARCH_SUGGESTION = """
+        query suggestion(${'$'}data: PropertySuggestionSearchParam!) {
+          propertySearchSuggestion(input: ${'$'}data) {
+            data {
+              searchType
+              searchID
+            }
+          }
+        }
+    """
     const val GET_HOTEL_PROPERTY_QUERY = """
         query PropertySearch(${'$'}data:PropertySearchRequest!){
             propertySearch(input: ${'$'}data){

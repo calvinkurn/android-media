@@ -34,7 +34,7 @@ data class HotelParam(
 
         @SerializedName("room")
         @Expose
-        var room: Int = 0,
+        var room: Int = 1,
 
         @SerializedName("guest")
         @Expose
@@ -79,29 +79,53 @@ data class HotelParam(
     )
 
     data class ParamFilter(
-            @SerializedName("departurePeriod")
+            @SerializedName("maxPrice")
             @Expose
-            var departurePeriod: String = "-",
-
-            @SerializedName("departureCity")
-            @Expose
-            var departureCity: String = "-",
-
-            @SerializedName("minPeriod")
-            @Expose
-            var durationDaysMinimum: Int = 0,
-
-            @SerializedName("maxPeriod")
-            @Expose
-            var durationDaysMaximum: Int = 0,
+            var maxPrice: Int = 0,
 
             @SerializedName("minPrice")
             @Expose
-            var priceMinimum: Int = 0,
+            var minPrice: Int = 0,
 
-            @SerializedName("maxPrice")
+            @SerializedName("star")
             @Expose
-            var priceMaximum: Int = 0
+            var star: List<Int> = listOf(),
+
+            @SerializedName("paymentType")
+            @Expose
+            var paymentType: Int = 0,
+
+            @SerializedName("mealPlan")
+            @Expose
+            var mealPlan: Int = 0,
+
+            @SerializedName("reviewScore")
+            @Expose
+            var reviewScore: Int = 0,
+
+            @SerializedName("hotelFacilities")
+            @Expose
+            var hotelFacilities: List<Int> = listOf(),
+
+            @SerializedName("roomFacilities")
+            @Expose
+            var roomFacilities: List<Int> = listOf(),
+
+            @SerializedName("dealType")
+            @Expose
+            var dealType: List<Int> = listOf(),
+
+            @SerializedName("platformType")
+            @Expose
+            var platformType: Int = 0,
+
+            @SerializedName("propertyType")
+            @Expose
+            var propertyType: List<Int> = listOf(),
+
+            @SerializedName("cancellationPolicy")
+            @Expose
+            var cancellationPolicies: List<Int> = listOf()
     )
 
     data class ParamSort(
@@ -140,3 +164,9 @@ data class HotelParam(
             var childAge: List<Int> = listOf()
     )
 }
+
+data class SearchSuggestionParam(
+        @SerializedName("searchKey")
+        @Expose
+        val searchKey: String = ""
+)
