@@ -3,8 +3,11 @@
   "mode": "exact",
   "query": [
     {
+      "businessUnit": "home & browse",
       "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
       "item_list": "{{.*}}",
+      "screenName": "/",
       "event": "select_content",
       "eventAction": "click on product dynamic channel left carousel",
       "sessionIris": "{{.*}}",
@@ -86,7 +89,8 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel left carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "userId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",
@@ -109,7 +113,8 @@
       "event": "select_content",
       "categoryId": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "userId": "{{.*}}"
     }
   ]
 }

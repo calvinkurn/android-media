@@ -25,12 +25,11 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_EDIT_FORM_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.groupitem.GetTopadsDashboardGroupStatistics
-import com.tokopedia.topads.dashboard.data.model.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -105,7 +104,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                 putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
-                component = ComponentName(SELLER_PACKAGENAME, SELLER_EDIT_FORM_PATH)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
 

@@ -72,6 +72,7 @@ class AddEditAddressPresenter
     }
 
     fun getZipCodes(districtId: String) {
+        SimpleIdlingResource.increment()
         zipCodeUseCase.execute(districtId)
                 .subscribe(
                         { response ->
@@ -84,7 +85,7 @@ class AddEditAddressPresenter
                                     }
                                 }
                             }
-                        }, {}, {}
+                        }, {}, { SimpleIdlingResource.decrement() }
                 )
     }
 
@@ -92,7 +93,7 @@ class AddEditAddressPresenter
         autoCompleteUseCase.execute(query)
                 .subscribe(
                         { modelList ->
-                            getDistrict(modelList.first().placeId)
+                            getDistrict(modelList.data.first().placeId)
                         }, { t -> Timber.d(t) }, {})
     }
 

@@ -64,7 +64,6 @@
     <string name="path_product_draft_list" translatable="false">/product-draft-list</string>
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
-    <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
     <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
@@ -79,6 +78,7 @@
     <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-settings-shipping</string>
+    <string name="path_shop_setting_cod_activation" translatable="false">/shop-settings-cod</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
@@ -91,6 +91,7 @@
 
     <string name="path_chat_search">/chat-search</string>
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
+    <string name="path_chat_setting">/chat/settings</string>
     <string name="path_notification">/notification</string>
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>

@@ -208,13 +208,10 @@ class VoucherListViewModelTest {
 
             getActiveVoucherList(false)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 shopBasicDataUseCase wasNot Called
                 getVoucherListUseCase.executeOnBackground()
             }
-
             assert(voucherList.value is Fail)
         }
     }

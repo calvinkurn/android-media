@@ -29,6 +29,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.list
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

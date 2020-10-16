@@ -50,11 +50,13 @@ class ShopProductViewHolder(
                 ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
         )
 
-        productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
-            override fun onViewHint() {
-                shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
-            }
-        })
+        if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {
+            productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
+                override fun onViewHint() {
+                    shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, adapterPosition)
+                }
+            })
+        }
 
         if (isFixWidth && deviceWidth > 0 && layoutType == ShopProductViewHolder.GRID_LAYOUT) {
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()

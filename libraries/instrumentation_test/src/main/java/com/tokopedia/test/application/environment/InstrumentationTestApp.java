@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -29,7 +28,6 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -47,10 +45,11 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +77,9 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public void onCreate() {
+        GlobalConfig.DEBUG = true;
+        GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
-        FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -128,7 +128,10 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
+            GqlNetworkAnalyzerInterceptor.reset();
+            GqlNetworkAnalyzerInterceptor.addGqlQueryListToAnalyze(listToAnalyze);
+
+            addInterceptor(new GqlNetworkAnalyzerInterceptor());
         }
     }
 
@@ -138,6 +141,10 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void setInterceptor(Interceptor interceptor) {
+        GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override
@@ -263,23 +270,6 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this) {
-
-            @Override
-            public String getLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getRefreshToken() {
-                return "null";
-            }
-
-        };
-    }
-
-    @Override
     public GCMHandler legacyGCMHandler() {
         return new GCMHandler(this);
     }
@@ -310,7 +300,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 

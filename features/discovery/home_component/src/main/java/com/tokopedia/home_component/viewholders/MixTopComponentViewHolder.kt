@@ -26,6 +26,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselPr
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -55,6 +57,7 @@ class MixTopComponentViewHolder(
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
     private var adapter: MixTopComponentAdapter? = null
+    private var isCacheData = false
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_top
@@ -76,10 +79,13 @@ class MixTopComponentViewHolder(
     override val coroutineContext = masterJob + Dispatchers.Main
 
     override fun bind(element: MixTopDataModel) {
+        isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
-        itemView.addOnImpressionListener(element.channelModel) {
-            mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -88,7 +94,8 @@ class MixTopComponentViewHolder(
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
+        if (!isCacheData)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, adapterPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -262,8 +269,9 @@ class MixTopComponentViewHolder(
                                     element.freeOngkirImageUrl
                             ),
                             isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            reviewCount = element.countReview
+                            ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
+                            reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat else ""
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

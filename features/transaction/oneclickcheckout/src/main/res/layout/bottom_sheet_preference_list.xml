@@ -10,6 +10,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_preference_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement" />
+
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/global_error"
             android:layout_width="match_parent"
