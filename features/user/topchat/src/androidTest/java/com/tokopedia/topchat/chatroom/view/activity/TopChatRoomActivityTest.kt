@@ -5,7 +5,10 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivityTest.Dummy.exMessageId
+import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +30,14 @@ class TopChatRoomActivityTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private lateinit var getChatUseCase: GetChatUseCaseStub
+
     private lateinit var activity: TopChatRoomActivityStub
+
+    private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
+            "success_get_chat_first_page.json",
+            GetExistingChatPojo::class.java
+    )
 
     object Dummy {
         val exMessageId = "66961"
@@ -38,6 +48,7 @@ class TopChatRoomActivityTest {
     fun before() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         activity = mActivityTestRule.activity
+        getChatUseCase = GetChatUseCaseStub()
     }
 
     @Test
@@ -46,7 +57,9 @@ class TopChatRoomActivityTest {
 
         // When
         setupActivityIntent(exMessageId)
-        activity.setupTestFragment()
+        getChatUseCase.response = firstPageChat
+        activity.setupTestFragment(getChatUseCase)
+        Thread.sleep(5000)
 
         // Then
         assertTrue(true)
