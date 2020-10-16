@@ -102,7 +102,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
                 ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
                 setCompoundDrawables(ovoIncentiveIcon, null, null, null)
-                compoundDrawablePadding = 8.toPx()
+                compoundDrawablePadding = 4.toPx()
                 show()
             }
             return

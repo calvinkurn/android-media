@@ -142,6 +142,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var incentiveHelper = ""
+    private var isReviewIncomplete = false
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -516,6 +517,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 showReviewIncompleteDialog()
                 return
             }
+            isReviewIncomplete = false
             submitNewReview()
         }
     }
@@ -548,6 +550,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 }
                 setSecondaryCTAText(getString(R.string.review_create_incomplete_send_anyways))
                 setSecondaryCTAClickListener {
+                    isReviewIncomplete = true
                     dismiss()
                     submitNewReview()
                     CreateReviewTracking.eventClickSendNow(title)
@@ -794,7 +797,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         showLayout()
         if (isUserEligible()) {
             getIncentiveOvoData()
-            shouldShowThankYouBottomSheet = true
+            shouldShowThankYouBottomSheet = true && !isReviewIncomplete
             return
         }
         finishIfRoot(true)

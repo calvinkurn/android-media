@@ -54,9 +54,6 @@ object IncentiveOvoBottomSheetBuilder {
         val bottomSheetUnify = BottomSheetUnify()
         val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
         bottomSheetUnify.setChild(child)
-        bottomSheetUnify.setCloseClickListener {
-            incentiveOvoListener.onClickCloseThankYouBottomSheet()
-        }
         setupThankYouView(child, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, amount)
         return bottomSheetUnify
     }
@@ -103,6 +100,7 @@ object IncentiveOvoBottomSheetBuilder {
                     }
                 }
                 overlayClickDismiss = false
+                showCloseIcon = false
             }
         }
     }
