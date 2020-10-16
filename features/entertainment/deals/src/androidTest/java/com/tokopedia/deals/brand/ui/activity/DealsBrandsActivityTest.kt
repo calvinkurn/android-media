@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -36,7 +37,6 @@ class DealsBrandsActivityTest {
     private val gtmLogDbSource = GtmLogDBSource(context)
 
     private val TAB_RELAKSASI = "Relaksasi"
-    private val TAB_SEMUA = "Semua"
     private val QUERY = "Alfa"
 
     @get: Rule
@@ -69,11 +69,7 @@ class DealsBrandsActivityTest {
 
     private fun actionOnDealsBrandViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(QUERY))
-
-        Thread.sleep(2000)
-        onView(CommonMatcher.firstView(withId(R.id.deals_brand_recycler_view)))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(QUERY), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
         onView(getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
