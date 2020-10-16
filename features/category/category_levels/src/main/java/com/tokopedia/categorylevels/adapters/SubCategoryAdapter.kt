@@ -1,9 +1,9 @@
 package com.tokopedia.categorylevels.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.categorylevels.R
 import com.tokopedia.categorylevels.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
@@ -93,7 +93,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             viewMap[position] = true
 
             val item = subCategoryList[position]
-            val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
+            val id = ((holder.itemView.context) as? CategoryNavActivity)?.getCategoryId() ?: "0"
 
             catAnalyticsInstance.eventSubCategoryImpression(id,
                     item.id.toString(),

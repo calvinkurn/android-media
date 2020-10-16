@@ -3,7 +3,7 @@ package com.tokopedia.seller.active.common.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.seller.active.common.di.DaggerUpdateShopActiveComponent
 import com.tokopedia.seller.active.common.di.UpdateShopActiveModule
 import com.tokopedia.seller.active.common.domain.usecase.UpdateShopActiveUseCase
@@ -29,7 +29,7 @@ class UpdateShopActiveService: JobIntentService(), CoroutineScope  {
 
         private fun logExceptionToCrashlytics(t: Throwable) {
             try {
-                Crashlytics.logException(t)
+                FirebaseCrashlytics.getInstance().recordException(t)
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }

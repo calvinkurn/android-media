@@ -13,8 +13,8 @@ import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
+import com.tokopedia.seller.manageitem.data.cloud.model.category.ProductManageCategoryViewModel;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageCategoryPickerAdapter;
-import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
