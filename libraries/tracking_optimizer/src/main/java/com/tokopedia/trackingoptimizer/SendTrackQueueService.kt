@@ -70,15 +70,15 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-//        if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
+        if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
             sendTrackNew(this, newTrackingRepository) {
                 stopSelf()
             }
-//        } else {
-//            sendTrack(this, trackingRepository) {
-//                stopSelf()
-//            }
-//        }
+        } else {
+            sendTrack(this, trackingRepository) {
+                stopSelf()
+            }
+        }
         return Service.START_NOT_STICKY
     }
 }

@@ -76,11 +76,11 @@ class TrackingQueue(val context: Context) : CoroutineScope {
             return
         }
         launch {
-//            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
+            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
                 newTrackingRepository.put(map)
-//            } else {
-//                trackingRepository.put(map)
-//            }
+            } else {
+                trackingRepository.put(map)
+            }
         }
     }
 
@@ -92,11 +92,11 @@ class TrackingQueue(val context: Context) : CoroutineScope {
                       enhanceECommerceMap: HashMap<String, Any>,
                       customDimension: HashMap<String, Any>? = null) {
         launch {
-//            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
+            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
                 newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-//            } else {
-//                trackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-//            }
+            } else {
+                trackingRepository.putEE(event, customDimension, enhanceECommerceMap)
+            }
         }
     }
 
@@ -107,11 +107,11 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     fun putEETracking(map: HashMap<String, Any>? = null,
                       enhanceECommerceMap: HashMap<String, Any>?) {
         launch {
-//            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
+            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
                 newTrackingRepository.putEE(map, enhanceECommerceMap)
-//            } else {
-//                trackingRepository.putEE(map, enhanceECommerceMap)
-//            }
+            } else {
+                trackingRepository.putEE(map, enhanceECommerceMap)
+            }
         }
     }
 
