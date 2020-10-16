@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
@@ -8,7 +7,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,7 +31,6 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -43,10 +40,7 @@ import kotlinx.android.synthetic.main.detail_header_item.view.*
  * Created by fwidjaja on 2019-10-03.
  */
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
-    private val viewPool = RecyclerView.RecycledViewPool()
 
-    @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
