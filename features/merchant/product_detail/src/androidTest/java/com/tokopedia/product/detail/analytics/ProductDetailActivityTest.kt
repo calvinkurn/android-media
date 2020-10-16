@@ -25,7 +25,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
-import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Before
 import org.junit.Rule
@@ -153,7 +152,7 @@ class ProductDetailActivityTest {
         Thread.sleep(1000)
 
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(0, clickChildViewWithId(R.id.containerChipVariant)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
 
         Thread.sleep(1000)
