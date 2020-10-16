@@ -17,6 +17,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
@@ -179,6 +180,7 @@ class SomListOrderViewHolder(
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(element.orderId)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(element.orderId)
+                KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(element.orderId)
             }
         }
     }
@@ -190,5 +192,6 @@ class SomListOrderViewHolder(
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(orderId: String)
         fun onAcceptOrderButtonClicked(orderId: String)
+        fun onRequestPickupButtonClicked(orderId: String)
     }
 }

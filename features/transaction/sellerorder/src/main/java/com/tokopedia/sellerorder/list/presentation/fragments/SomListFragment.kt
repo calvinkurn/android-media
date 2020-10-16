@@ -46,6 +46,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -68,6 +69,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val REQEUST_DETAIL = 999
         private const val REQUEST_FILTER = 998
         private const val REQUEST_CONFIRM_SHIPPING = 997
+        private const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -179,6 +181,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             REQEUST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
             REQUEST_FILTER -> handleSomFilterActivityResult(resultCode, data)
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
+            REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -283,6 +286,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onAcceptOrderButtonClicked(orderId: String) {
         viewModel.acceptOrder(orderId)
+    }
+
+    override fun onRequestPickupButtonClicked(orderId: String) {
+        goToRequestPickupPage(orderId)
     }
 
     private fun inject() {
@@ -443,6 +450,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         onAcceptOrderSuccess(resultAcceptOrder)
                     }
                 }
+                data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
+                    data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { resultProcessReqPickup ->
+                        handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
+                    }
+                }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
                     data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(SomConsts.RESULT_REJECT_ORDER)?.let { resultRejectOrder ->
                         showCommonToaster(resultRejectOrder.message.firstOrNull())
@@ -461,19 +473,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         refreshOrderList()
                     }
                 }
-                data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
-                    data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { resultProcessReqPickup ->
-                        showCommonToaster(resultProcessReqPickup.listMessage.firstOrNull())
-                        refreshOrderList()
-                    }
-                }
             }
         }
-    }
-
-    private fun handleConfirmShippingResult(message: String?) {
-        showCommonToaster(message)
-        refreshOrderList()
     }
 
     private fun handleSomConfirmShippingActivityResult(resultCode: Int, data: Intent?) {
@@ -482,6 +483,24 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 handleConfirmShippingResult(data.getStringExtra(SomConsts.RESULT_CONFIRM_SHIPPING))
             }
         }
+    }
+
+    private fun handleSomRequestPickUpActivityResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { resultProcessReqPickup ->
+                handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
+            }
+        }
+    }
+
+    private fun handleRequestPickUpResult(message: String?) {
+        showCommonToaster(message)
+        refreshOrderList()
+    }
+
+    private fun handleConfirmShippingResult(message: String?) {
+        showCommonToaster(message)
+        refreshOrderList()
     }
 
     private fun toggleBulkAction() {
@@ -696,6 +715,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             putExtra(PARAM_ORDER_ID, orderId)
             putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, false)
             startActivityForResult(this, REQUEST_CONFIRM_SHIPPING)
+        }
+    }
+
+    private fun goToRequestPickupPage(orderId: String) {
+        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+            putExtra(PARAM_ORDER_ID, orderId)
+            startActivityForResult(this, REQUEST_CONFIRM_REQUEST_PICKUP)
         }
     }
 
