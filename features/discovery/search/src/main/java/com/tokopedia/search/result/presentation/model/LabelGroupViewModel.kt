@@ -8,7 +8,7 @@ data class LabelGroupViewModel(
     val position: String,
     val type: String,
     val title: String,
-    val imageUrl: String
+    val imageUrl: String = ""
 ) : Parcelable {
 
     fun isLabelIntegrity() = position == LABEL_INTEGRITY
