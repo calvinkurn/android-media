@@ -115,7 +115,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.json
 
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

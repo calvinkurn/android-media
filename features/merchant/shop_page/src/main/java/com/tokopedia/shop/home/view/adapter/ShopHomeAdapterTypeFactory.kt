@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -20,10 +21,8 @@ import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 
@@ -33,10 +32,12 @@ class ShopHomeAdapterTypeFactory(
         private val shopPageHomePlayCarouselListener: ShopPageHomePlayCarouselListener,
         private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener?,
-        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
+        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
+    var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -66,11 +67,25 @@ class ShopHomeAdapterTypeFactory(
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
-        return ShopHomeProductViewHolder.LAYOUT
+        return when(productCardType) {
+            ShopProductViewGridType.SMALL_GRID -> {
+                ShopHomeProductViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.BIG_GRID -> {
+                ShopHomeProductItemBigGridViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.LIST -> {
+                ShopHomeProductItemListViewHolder.LAYOUT
+            }
+        }
     }
 
     override fun type(viewModel: LoadingModel?): Int {
         return ShopHomeLoadingShimmerViewHolder.LAYOUT
+    }
+
+    fun type(shopHomeProductChangeGridSectionUiModel: ShopHomeProductChangeGridSectionUiModel): Int {
+        return ShopHomeProductChangeGridSectionViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -98,6 +113,12 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeProductViewHolder.LAYOUT -> {
                 ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener)
             }
+            ShopHomeProductItemBigGridViewHolder.LAYOUT -> {
+                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener)
+            }
+            ShopHomeProductItemListViewHolder.LAYOUT -> {
+                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener)
+            }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)
             }
@@ -118,7 +139,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
-
+            ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

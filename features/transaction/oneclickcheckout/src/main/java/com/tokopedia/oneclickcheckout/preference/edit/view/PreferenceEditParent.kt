@@ -50,4 +50,6 @@ interface PreferenceEditParent {
     fun setDeleteButtonOnClickListener(onClick: () -> Unit)
 
     fun getFromFlow(): Int
+
+    fun getPaymentProfile(): String
 }

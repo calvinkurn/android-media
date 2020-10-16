@@ -6,6 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.UpdateQuotaUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -14,7 +15,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -39,19 +39,13 @@ class EditQuotaViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = EditQuotaViewModel(testDispatcher, updateQuotaUseCase)
+        mViewModel = EditQuotaViewModel(TestCoroutineDispatchers, updateQuotaUseCase)
         mViewModel.editQuotaSuccessLiveData.observeForever(editQuotaSuccessObserver)
     }
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-
         mViewModel.editQuotaSuccessLiveData.removeObserver(editQuotaSuccessObserver)
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test

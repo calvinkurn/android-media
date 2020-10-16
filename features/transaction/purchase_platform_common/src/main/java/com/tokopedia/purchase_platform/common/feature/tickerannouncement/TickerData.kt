@@ -6,11 +6,13 @@ import android.os.Parcelable
 data class TickerData(
         var id: Int = 0,
         var message: String = "",
-        var page: String = ""
+        var page: String = "",
+        var title: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "")
 
@@ -18,6 +20,7 @@ data class TickerData(
         parcel.writeInt(id)
         parcel.writeString(message)
         parcel.writeString(page)
+        parcel.writeString(title)
     }
 
     override fun describeContents(): Int {

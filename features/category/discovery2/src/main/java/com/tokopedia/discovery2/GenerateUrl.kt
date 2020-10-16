@@ -1,7 +1,5 @@
 package com.tokopedia.discovery2
 
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DIKLAIM
-
 class GenerateUrl {
 
     companion object {

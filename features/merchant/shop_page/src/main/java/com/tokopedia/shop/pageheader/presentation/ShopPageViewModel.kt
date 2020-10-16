@@ -11,11 +11,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -40,13 +35,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isHasNextPage
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -87,10 +83,13 @@ class ShopPageViewModel @Inject constructor(
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
 
+    val ownerShopName: String
+        get() = userSessionInterface.shopName
+
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
-    var productListData: Pair<Boolean, List<ShopProductViewModel>> = Pair(false, listOf())
+    var productListData: GetShopProductUiModel = GetShopProductUiModel()
     val shopImagePath = MutableLiveData<String>()
 
     fun getShopPageTabData(
@@ -98,7 +97,7 @@ class ShopPageViewModel @Inject constructor(
             shopDomain: String,
             page: Int,
             itemPerPage: Int,
-            sortId: Int,
+            shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean
@@ -113,7 +112,7 @@ class ShopPageViewModel @Inject constructor(
                                 shopDomain,
                                 page,
                                 itemPerPage,
-                                sortId,
+                                shopProductFilterParameter,
                                 keyword,
                                 etalaseId,
                                 isRefresh
@@ -124,11 +123,12 @@ class ShopPageViewModel @Inject constructor(
                         null
                     })
             shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
-                productListData = Pair(
+                productListData = GetShopProductUiModel(
                         isHasNextPage(page, itemPerPage, shopPageHeaderP1Data.productList.totalData),
                         shopPageHeaderP1Data.productList.data.map {
                             ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId.toString()), etalaseId)
-                        }
+                        },
+                        shopPageHeaderP1Data.productList.totalData
                 )
                 shopPageP1Data.postValue(Success(ShopPageHeaderMapper.mapToShopPageP1HeaderData(
                         shopPageHeaderP1Data.isShopOfficialStore,
@@ -149,7 +149,7 @@ class ShopPageViewModel @Inject constructor(
             shopDomain: String,
             page: Int,
             itemPerPage: Int,
-            sortId: Int,
+            shopProductFilterParameter: ShopProductFilterParameter,
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean
@@ -161,7 +161,7 @@ class ShopPageViewModel @Inject constructor(
                 shopDomain,
                 page,
                 itemPerPage,
-                sortId,
+                shopProductFilterParameter,
                 keyword,
                 etalaseId
         )

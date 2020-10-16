@@ -36,6 +36,8 @@ public class GroupShop implements Parcelable {
     private int bookingFee;
     private List<String> listPromoCodes;
 
+    private ShipmentInformationData shipmentInformationData;
+
     public Shop getShop() {
         return shop;
     }
@@ -171,6 +173,14 @@ public class GroupShop implements Parcelable {
 
     public void setListPromoCodes(List<String> listPromoCodes) { this.listPromoCodes = listPromoCodes; }
 
+    public ShipmentInformationData getShipmentInformationData() {
+        return shipmentInformationData;
+    }
+
+    public void setShipmentInformationData(ShipmentInformationData shipmentInformationData) {
+        this.shipmentInformationData = shipmentInformationData;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -197,6 +207,7 @@ public class GroupShop implements Parcelable {
         dest.writeByte(this.isLeasingProduct ? (byte) 1 : (byte) 0);
         dest.writeInt(this.bookingFee);
         dest.writeStringList(this.listPromoCodes);
+        dest.writeParcelable(this.shipmentInformationData, flags);
     }
 
     protected GroupShop(Parcel in) {
@@ -219,6 +230,7 @@ public class GroupShop implements Parcelable {
         this.isLeasingProduct = in.readByte() != 0;
         this.bookingFee = in.readInt();
         this.listPromoCodes = in.createStringArrayList();
+        this.shipmentInformationData = in.readParcelable(ShipmentInformationData.class.getClassLoader());
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {

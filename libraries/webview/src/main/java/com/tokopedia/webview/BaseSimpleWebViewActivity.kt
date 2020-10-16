@@ -25,11 +25,12 @@ import java.net.URLDecoder
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
-    private lateinit var url: String
+    protected lateinit var url: String
     var showTitleBar = true
+    var pullToRefresh = false
     private set
-    private var allowOverride = true
-    private var needLogin = false
+    protected var allowOverride = true
+    protected var needLogin = false
     var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
+            pullToRefresh = getBoolean(KEY_PULL_TO_REFRESH, false)
             webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
 
@@ -71,6 +73,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
             isLoginRequire?.let { needLogin = it.toBoolean() }
+
+            val isPullToRefreshEnabled = getQueryParameter(KEY_PULL_TO_REFRESH)
+            isPullToRefreshEnabled?.let { pullToRefresh = it.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
@@ -96,11 +101,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         if (::url.isInitialized) {
-            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+            return createFragmentInstance()
         } else {
             this.finish()
             return Fragment()
         }
+    }
+
+    protected open fun createFragmentInstance(): Fragment {
+        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride, pullToRefresh)
     }
 
     override fun onResume() {
