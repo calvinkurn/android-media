@@ -50,7 +50,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
-            if(item.dataObject.fullFillBy == IS_WAREHOUSE) {
+            if (item.dataObject.fullFillBy == IS_WAREHOUSE) {
                 itemView.warehouseLabel.show()
             } else {
                 itemView.warehouseLabel.hide()
@@ -92,18 +92,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 itemView.due_label?.visibility = View.GONE
             }
 
-//            if (item.dataObject.listLabelOrder.isNotEmpty()) {
-//                itemView.rv_detail_order_label?.visibility = View.VISIBLE
-//                itemView.rv_detail_order_label?.apply {
-//                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-//                    adapter = somDetailLabelInfoAdapter
-//                    setRecycledViewPool(viewPool)
-//                }
-//                somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
-//            } else {
-//                itemView.rv_detail_order_label?.visibility = View.GONE
-//            }
-
             itemView.header_invoice?.text = item.dataObject.invoice
 
             itemView.header_invoice_copy?.setOnClickListener {
@@ -113,28 +101,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             itemView.header_see_invoice?.setOnClickListener {
                 actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
             }
-
-
-//            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
-//                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
-//                itemView.ticker_invalid_resi?.apply {
-//                    visibility = View.VISIBLE
-//                    setHtmlDescription(completeDesc)
-//                    tickerShape = Ticker.SHAPE_FULL
-//                    tickerType = Ticker.TYPE_ERROR
-//                    closeButtonVisibility = View.GONE
-//                    post {
-//                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-//                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-//                        requestLayout()
-//                    }
-//                    if (item.dataObject.awbUploadUrl.isNotEmpty()) {
-//                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
-//                    }
-//                }
-//            } else {
-//                itemView.ticker_invalid_resi?.visibility = View.GONE
-//            }
         }
 
         val coachmarkHeader = CoachMarkItem(itemView,
