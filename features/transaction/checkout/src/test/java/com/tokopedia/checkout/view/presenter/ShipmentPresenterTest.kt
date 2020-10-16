@@ -3,17 +3,12 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormResponse
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.usecase.*
-import com.tokopedia.checkout.domain.usecase.saf.PATH_JSON_SAF_DISABLE_DROPSHIPPER
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -36,8 +31,6 @@ import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
-import java.lang.reflect.Type
-import java.util.*
 
 class ShipmentPresenterTest {
 
@@ -107,18 +100,21 @@ class ShipmentPresenterTest {
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
+    @MockK(relaxed = true)
+    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private val gson = Gson()
     private val unitTestFileUtils = UnitTestFileUtils()
 
-    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
+//    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
 
     private lateinit var presenter: ShipmentPresenter
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
+//        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
         presenter = ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -134,11 +130,7 @@ class ShipmentPresenterTest {
     @Test
     fun firstLoadCheckoutPage_ShouldHideInitialLoadingAndRenderPage() {
         // Given
-        val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java)
-        val result = hashMapOf<Type, Any>(
-                ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-        )
-        every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
         presenter.attachView(view)
 
         // When
