@@ -199,7 +199,7 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_toEndOf="@id/no_resi_title"
             app:srcCompat="@drawable/ic_copy" />
 

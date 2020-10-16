@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logistic_info_toolbar"
         tools:listitem="@layout/item_logistic_info"/>
 

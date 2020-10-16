@@ -28,14 +28,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700"
             tools:text="Bonusin apa aja yak bang" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_product"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N75"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_product_notes"
@@ -65,15 +64,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
+            app:typographyType="heading_6"
+            app:typographyWeight="reguler"
             tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -84,8 +83,8 @@
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintBottom_toTopOf="@id/divider_product"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_96"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Unify_N700"
             tools:text="1 x Rp 2.913.000"
             android:layout_marginStart="@dimen/dp_8" />
 
