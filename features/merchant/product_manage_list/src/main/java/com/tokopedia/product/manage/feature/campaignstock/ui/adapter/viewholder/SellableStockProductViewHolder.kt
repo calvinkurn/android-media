@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.manage.R
@@ -40,7 +39,7 @@ class SellableStockProductViewHolder(itemView: View?,
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
             if (element.isActive) {
-                label_campaign_stock_inactive?.gone()
+                label_campaign_stock_inactive?.visibility = View.INVISIBLE
             } else {
                 label_campaign_stock_inactive?.visible()
             }
@@ -50,7 +49,7 @@ class SellableStockProductViewHolder(itemView: View?,
                     element.isActive = isChecked
                     val status =
                             if (isChecked) {
-                                this@with.label_campaign_stock_inactive?.gone()
+                                this@with.label_campaign_stock_inactive?.visibility = View.INVISIBLE
                                 ProductStatus.ACTIVE
                             } else {
                                 this@with.label_campaign_stock_inactive?.visible()
