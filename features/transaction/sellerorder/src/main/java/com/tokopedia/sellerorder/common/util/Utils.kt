@@ -13,6 +13,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_INFO
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_WARNING
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by fwidjaja on 2019-11-21.
@@ -74,4 +77,23 @@ object Utils {
             text
         }
     }
+
+    fun getLocale(): Locale {
+        return Locale("id")
+    }
+
+    fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
+        val sdf = SimpleDateFormat(pattern, locale)
+        return sdf.format(timeMillis)
+    }
+
+    fun getNPastDaysTimestamp(daysBefore: Long): Long {
+        return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
+    }
+
+    fun getNNextDaysTimestamp(days: Long): Long {
+        return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(days))
+    }
+
+    fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
 }

@@ -91,7 +91,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.empty_list.*
-import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.android.synthetic.main.old_fragment_som_list.*
 import kotlinx.android.synthetic.main.partial_som_list_waiting_payment.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -238,7 +238,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_som_list, container, false)
+        return inflater.inflate(R.layout.old_fragment_som_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

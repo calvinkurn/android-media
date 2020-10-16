@@ -66,7 +66,7 @@ import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
-import com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment;
+import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
