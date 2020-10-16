@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.favorite.data.source.local;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
@@ -26,7 +26,7 @@ public class LocalFavoriteShopDataSourceTest {
     @Mock
     private Context context;
     @Mock
-    private GlobalCacheManager cacheManager;
+    private CacheManager cacheManager;
 
     private LocalFavoriteShopDataSource localFavoriteShopDataSource;
 
@@ -42,7 +42,7 @@ public class LocalFavoriteShopDataSourceTest {
 
         String invalidResponse = "mockString";
 
-        given(cacheManager.getValueString(TkpdCache.Key.FAVORITE_SHOP)).willReturn(invalidResponse);
+        given(cacheManager.getString(TkpdCache.Key.FAVORITE_SHOP)).willReturn(invalidResponse);
 
         TestSubscriber<FavoriteShop> subscriber = new TestSubscriber<>();
         localFavoriteShopDataSource.getFavorite().subscribe(subscriber);

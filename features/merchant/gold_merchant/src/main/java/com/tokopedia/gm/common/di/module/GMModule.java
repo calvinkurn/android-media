@@ -2,8 +2,9 @@ package com.tokopedia.gm.common.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.datepicker.range.data.repository.DatePickerRepositoryImpl;
@@ -48,8 +49,8 @@ public class GMModule {
 
     @GMScope
     @Provides
-    GlobalCacheManager provideGlobalCacheManager(){
-        return new GlobalCacheManager();
+    CacheManager provideGlobalCacheManager(){
+        return PersistentCacheManager.instance;
     }
 
     @GMScope

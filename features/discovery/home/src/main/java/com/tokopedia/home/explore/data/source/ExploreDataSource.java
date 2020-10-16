@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -105,7 +105,7 @@ public class ExploreDataSource {
             public void call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
                     DataResponseModel data = response.body().getData();
-                    cacheManager.save(
+                    cacheManager.put(
                             ConstantKey.TkpdCache.EXPLORE_DATA_CACHE,
                             gson.toJson(data),
                             0
@@ -216,7 +216,7 @@ public class ExploreDataSource {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<DataResponseModel>>>() {
             @Override
             public Response<GraphqlResponse<DataResponseModel>> call(Boolean aBoolean) {
-                String cache = cacheManager.get(ConstantKey.TkpdCache.EXPLORE_DATA_CACHE);
+                String cache = cacheManager.getString(ConstantKey.TkpdCache.EXPLORE_DATA_CACHE);
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
                     String cachedShopDomain = data.getShopInfo().getData().getDomain();

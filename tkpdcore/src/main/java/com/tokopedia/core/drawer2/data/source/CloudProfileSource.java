@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
@@ -28,13 +28,13 @@ public class CloudProfileSource {
     private final Context context;
     private final PeopleService peopleService;
     private final ProfileMapper profileMapper;
-    private final GlobalCacheManager peopleCache;
+    private final CacheManager peopleCache;
     private final UserSessionInterface userSession;
 
     public CloudProfileSource(Context context,
                               PeopleService peopleService,
                               ProfileMapper profileMapper,
-                              GlobalCacheManager peopleCache,
+                              CacheManager peopleCache,
                               UserSessionInterface userSessionInterface) {
         this.context = context;
         this.peopleService = peopleService;
@@ -56,13 +56,9 @@ public class CloudProfileSource {
             @Override
             public void call(ProfileModel profileModel) {
                 if (profileModel != null && profileModel.isSuccess()) {
-                    peopleCache.setKey(KEY_PROFILE_DATA);
-                    peopleCache.setValue(CacheUtil.convertModelToString(profileModel,
+                    peopleCache.put(KEY_PROFILE_DATA,CacheUtil.convertModelToString(profileModel,
                             new TypeToken<ProfileModel>() {
-                            }.getType()));
-                    peopleCache.setCacheDuration(18000);
-                    peopleCache.store();
-
+                            }.getType()),18000L);
 
                     if (profileModel.getProfileData().getShopInfo() != null &&
                             profileModel.getProfileData().getShopInfo().getShopId() != null) {

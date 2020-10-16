@@ -5,9 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.seller.manageitem.data.cloud.api.ShopApi;
@@ -36,8 +37,8 @@ public class ProductModule {
 
     @ProductScope
     @Provides
-    GlobalCacheManager provideGlobalCacheManager(){
-        return new GlobalCacheManager();
+    CacheManager provideCacheManager(){
+        return PersistentCacheManager.instance;
     }
 
     @ProductScope

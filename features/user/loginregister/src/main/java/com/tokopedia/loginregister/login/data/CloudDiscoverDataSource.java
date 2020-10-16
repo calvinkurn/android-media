@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.login.data;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
 import com.tokopedia.loginregister.discover.mapper.DiscoverMapper;
@@ -20,15 +20,15 @@ import rx.functions.Action1;
 
 public class CloudDiscoverDataSource {
 
-    private final CacheManager globalCacheManager;
+    private final CacheManager cacheManager;
     private LoginRegisterApi loginRegisterApi;
     private DiscoverMapper discoverMapper;
 
     @Inject
-    public CloudDiscoverDataSource(CacheManager globalCacheManager,
+    public CloudDiscoverDataSource(CacheManager cacheManager,
                                    LoginRegisterApi loginRegisterApi,
                                    DiscoverMapper discoverMapper) {
-        this.globalCacheManager = globalCacheManager;
+        this.cacheManager = cacheManager;
         this.loginRegisterApi = loginRegisterApi;
         this.discoverMapper = discoverMapper;
     }
@@ -43,7 +43,7 @@ public class CloudDiscoverDataSource {
     private Action1<DiscoverViewModel> saveToCache(final String source) {
         return discoverViewModel -> {
             if (discoverViewModel != null) {
-                globalCacheManager.save(LocalDiscoverDataSource.KEY_DISCOVER + source,
+                cacheManager.put(LocalDiscoverDataSource.KEY_DISCOVER + source,
                         CacheUtil.convertModelToString(discoverViewModel,
                                 new TypeToken<DiscoverViewModel>() {
                                 }.getType()), LocalDiscoverDataSource.CACHE_DURATION);

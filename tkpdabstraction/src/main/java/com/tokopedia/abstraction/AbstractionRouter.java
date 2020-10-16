@@ -3,9 +3,8 @@ package com.tokopedia.abstraction;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.view.MotionEvent;
 
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.CacheManager;
 
 import java.io.IOException;
 
@@ -29,12 +28,7 @@ public interface AbstractionRouter {
 
     void refreshToken() throws IOException;
 
-    /**
-     * Use PersistentCacheManager library
-     * @return
-     */
-    @Deprecated
-    CacheManager getGlobalCacheManager();
+    CacheManager getPersistentCacheManager();
 
     void logInvalidGrant(Response response);
 
