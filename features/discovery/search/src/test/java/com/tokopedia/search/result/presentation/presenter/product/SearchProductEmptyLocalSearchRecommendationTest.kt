@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
@@ -22,12 +21,13 @@ private const val emptyLocalSearchRecommendationPage1JSON = "searchproduct/local
 internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPresenterTestFixtures() {
 
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
+    private val searchProductPageId = "1234"
     private val keyword = "asus"
     private val searchParameter = mapOf(
             SearchApiConst.Q to keyword,
             SearchApiConst.NAVSOURCE to "campaign",
             SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
-            SearchApiConst.SRP_PAGE_ID to "1234"
+            SearchApiConst.SRP_PAGE_ID to searchProductPageId
     )
 
     private val localSearchRecomRequestParamsSlot = mutableListOf<RequestParams>()
@@ -74,12 +74,13 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         localSearchRecomRequestParamsSlot.forEachIndexed { index, requestParams ->
             val parameters = requestParams.parameters
 
-            searchParameter.filter { it.key != SearchApiConst.Q }.forEach { (key, value) ->
-                parameters[key] shouldBe value
-            }
-
-            parameters.containsKey(SearchApiConst.Q) shouldBe false
+            parameters[SearchApiConst.SOURCE] shouldBe SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+            parameters[SearchApiConst.DEVICE] shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+            parameters[SearchApiConst.NAVSOURCE] shouldBe SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN
+            parameters[SearchApiConst.SRP_PAGE_TITLE] shouldBe searchProductPageTitle
+            parameters[SearchApiConst.SRP_PAGE_ID] shouldBe searchProductPageId
             parameters[SearchApiConst.START] shouldBe expectedStart[index].toString()
+            parameters[SearchApiConst.ROWS] shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS
         }
     }
 

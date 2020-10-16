@@ -91,6 +91,7 @@ import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
@@ -318,7 +319,7 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter) {
-        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation(searchParameter);
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation();
         else searchProductLoadMore(searchParameter);
     }
 
@@ -573,7 +574,7 @@ final class ProductListPresenter
 
     private boolean isLocalSearch() {
         return navSource != null
-                && navSource.equals("campaign")
+                && navSource.equals(VALUE_OF_NAVSOURCE_CAMPAIGN)
                 && !textIsEmpty(pageId);
     }
 
@@ -851,7 +852,7 @@ final class ProductListPresenter
                 getViewToShowEmptySearch(productViewModel);
             }
 
-            getViewToShowRecommendationItem(searchParameter);
+            getViewToShowRecommendationItem();
         }
     }
 
@@ -949,27 +950,33 @@ final class ProductListPresenter
         return isLocalSearch() && responseCode.equals(EMPTY_LOCAL_SEARCH_RESPONSE_CODE);
     }
 
-    private void getViewToShowRecommendationItem(Map<String, Object> searchParameter) {
+    private void getViewToShowRecommendationItem() {
         getView().addLoading();
 
-        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation(searchParameter);
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation();
         else getGlobalSearchRecommendation();
     }
 
-    private void getLocalSearchRecommendation(Map<String, Object> searchParameter) {
-        if (searchParameter == null) return;
-        Map<String, String> additionalParams = getAdditionalParamsMap();
+    private void getLocalSearchRecommendation() {
+        getLocalSearchRecommendationUseCase.get().execute(
+                createLocalSearchRequestParams(),
+                createLocalSearchRecommenationSubscriber()
+        );
+    }
 
-        RequestParams requestParams = createInitializeSearchParam(searchParameter);
-        enrichWithRelatedSearchParam(requestParams);
+    @NotNull
+    private RequestParams createLocalSearchRequestParams() {
+        RequestParams requestParams = RequestParams.create();
 
-        if (checkShouldEnrichWithAdditionalParams(additionalParams)) {
-            enrichWithAdditionalParams(requestParams, additionalParams);
-        }
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.NAVSOURCE, VALUE_OF_NAVSOURCE_CAMPAIGN);
+        requestParams.putString(SearchApiConst.SRP_PAGE_TITLE, pageTitle);
+        requestParams.putString(SearchApiConst.SRP_PAGE_ID, pageId);
+        requestParams.putString(SearchApiConst.START, String.valueOf(getStartFrom()));
+        requestParams.putString(SearchApiConst.ROWS, getSearchRows());
 
-        requestParams.clearValue(SearchApiConst.Q);
-
-        getLocalSearchRecommendationUseCase.get().execute(requestParams, createLocalSearchRecommenationSubscriber());
+        return requestParams;
     }
 
     @NotNull

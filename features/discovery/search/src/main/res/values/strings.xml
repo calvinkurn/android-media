@@ -46,6 +46,7 @@
     <string name="empty_search_shop_recommendation_title">Toko rekomendasi</string>
 
     <string name="msg_empty_search_product_title">Oops, Produk Nggak Ditemukan</string>
+    <string name="msg_empty_search_product_title_local">Oops, barangnya nggak ketemu</string>
     <string name="msg_empty_search_product_content">Coba kata kunci lain atau cek produk rekomendasi di bawah.</string>
     <string name="msg_empty_search_product_content_with_filter">Coba kurangi salah satu filter yang kamu gunakan :</string>
     <string name="msg_empty_search_product_button">Ganti Kata Kunci</string>

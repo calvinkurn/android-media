@@ -49,6 +49,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     private TopAdsParams topAdsParams;
     private Context context;
     private ImageView noResultImage;
+    private TextView textViewEmptyTitleText;
     private TextView emptyContentTextView;
     private TextView emptyButtonItemButton;
     protected final EmptyStateListener emptyStateListener;
@@ -62,6 +63,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     public ProductEmptySearchViewHolder(View view, EmptyStateListener emptyStateListener, BannerAdsListener bannerAdsListener, Config topAdsConfig) {
         super(view);
         noResultImage = view.findViewById(R.id.no_result_image);
+        textViewEmptyTitleText = view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
         buttonEmptySearchToGlobalSearch = view.findViewById(R.id.buttonEmptySearchToGlobalSearch);
@@ -144,6 +146,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         boundedEmptySearchModel = model;
 
         bindNoResultImage();
+        bindTitleTextView();
         bindContentTextView();
         bindNewSearchButton();
         bindRecylerView();
@@ -153,6 +156,15 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
 
     private void bindNoResultImage() {
         noResultImage.setImageResource(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
+    }
+
+    private void bindTitleTextView() {
+        if (textViewEmptyTitleText == null) return;
+
+        if (boundedEmptySearchModel.isLocalSearch())
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_title_local));
+        else
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_title));
     }
 
     private void bindContentTextView() {
