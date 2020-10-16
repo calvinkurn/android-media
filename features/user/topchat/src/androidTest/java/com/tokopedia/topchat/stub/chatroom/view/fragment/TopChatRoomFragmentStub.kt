@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.di.ChatListFakeUseCaseModule
@@ -14,6 +15,7 @@ import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     private lateinit var getChatUseCase: GetChatUseCase
+    private lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
 
     override fun initInjector() {
         DaggerChatComponentStub
@@ -29,7 +31,8 @@ class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     private fun createChatListFakeUseCaseModule(): ChatListFakeUseCaseModule {
         return ChatListFakeUseCaseModule(
-                getChatUseCase
+                getChatUseCase,
+                chatAttachmentUseCase
         )
     }
 
@@ -44,11 +47,13 @@ class TopChatRoomFragmentStub : TopChatRoomFragment() {
     companion object {
         fun createInstance(
                 bundle: Bundle,
-                getChatUseCase: GetChatUseCase
+                getChatUseCase: GetChatUseCase,
+                chatAttachmentUseCase: ChatAttachmentUseCase
         ): BaseChatFragment {
             return TopChatRoomFragmentStub().apply {
                 arguments = bundle
                 this.getChatUseCase = getChatUseCase
+                this.chatAttachmentUseCase = chatAttachmentUseCase
             }
         }
     }

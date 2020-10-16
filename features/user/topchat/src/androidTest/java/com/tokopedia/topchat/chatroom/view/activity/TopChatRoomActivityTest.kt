@@ -7,7 +7,9 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivityTest.Dummy.exMessageId
+import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import junit.framework.Assert.assertTrue
@@ -31,12 +33,17 @@ class TopChatRoomActivityTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var getChatUseCase: GetChatUseCaseStub
+    private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
 
     private lateinit var activity: TopChatRoomActivityStub
 
     private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
             "success_get_chat_first_page.json",
             GetExistingChatPojo::class.java
+    )
+    private var chatAttachmentResponse: ChatAttachmentResponse = AndroidFileUtil.parse(
+            "success_get_chat_attachments.json",
+            ChatAttachmentResponse::class.java
     )
 
     object Dummy {
@@ -49,6 +56,7 @@ class TopChatRoomActivityTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
         activity = mActivityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
+        chatAttachmentUseCase = ChatAttachmentUseCaseStub()
     }
 
     @Test
@@ -58,7 +66,8 @@ class TopChatRoomActivityTest {
         // When
         setupActivityIntent(exMessageId)
         getChatUseCase.response = firstPageChat
-        activity.setupTestFragment(getChatUseCase)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
         Thread.sleep(5000)
 
         // Then
