@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
-import com.tokopedia.topchat.stub.chatroom.view.di.ChatListFakeUseCaseModule
-import com.tokopedia.topchat.stub.chatroom.view.di.ChatModuleStub
-import com.tokopedia.topchat.stub.chatroom.view.di.ChatNetworkModuleStub
-import com.tokopedia.topchat.stub.chatroom.view.di.DaggerChatComponentStub
+import com.tokopedia.topchat.stub.chatroom.di.ChatListFakeUseCaseModule
+import com.tokopedia.topchat.stub.chatroom.di.ChatModuleStub
+import com.tokopedia.topchat.stub.chatroom.di.ChatNetworkModuleStub
+import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 
 class TopChatRoomFragmentStub : TopChatRoomFragment() {
 

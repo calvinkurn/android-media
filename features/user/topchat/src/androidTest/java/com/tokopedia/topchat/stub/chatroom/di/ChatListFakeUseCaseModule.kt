@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.stub.chatroom.view.di
+package com.tokopedia.topchat.stub.chatroom.di
 
 import dagger.Module
 

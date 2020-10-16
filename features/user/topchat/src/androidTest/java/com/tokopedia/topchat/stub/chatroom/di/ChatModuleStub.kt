@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.stub.chatroom.view.di
+package com.tokopedia.topchat.stub.chatroom.di
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -26,7 +26,6 @@ import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
-import com.tokopedia.topchat.chatroom.di.ChatNetworkModule
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
