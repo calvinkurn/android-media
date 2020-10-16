@@ -17,6 +17,7 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
+import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
@@ -109,16 +110,19 @@ class CartShopViewHolder(itemView: View,
     private fun renderShopCheckBox(cartShopHolderData: CartShopHolderData) {
         cbSelectShop.isEnabled = !cartShopHolderData.shopGroupAvailableData.isError
         cbSelectShop.isChecked = cartShopHolderData.isAllSelected
-        cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData))
-        initCheckboxWatcherDebouncer(compositeSubscription)
+        initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
     }
 
-    private fun initCheckboxWatcherDebouncer(compositeSubscription: CompositeSubscription) {
+    private fun initCheckboxWatcherDebouncer(cartShopHolderData: CartShopHolderData, compositeSubscription: CompositeSubscription) {
         cbSelectShop.let {
             compositeSubscription.add(
                     rxCompoundButtonCheckDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
-                            actionListener.onCartShopNameChecked(isChecked)
+                            var checked = isChecked
+                            if (cartShopHolderData.isPartialSelected) {
+                                checked = true
+                            }
+                            actionListener.onCartShopNameChecked(checked)
                         }
 
                         override fun onCompleted() {
@@ -128,6 +132,21 @@ class CartShopViewHolder(itemView: View,
                         }
                     })
             )
+
+            compositeSubscription.add(
+                    rxViewClickDebounce(it, CHECKBOX_WATCHER_DEBOUNCE_TIME).subscribe(object : Subscriber<Boolean>() {
+                        override fun onNext(isChecked: Boolean) {
+                            cbSelectShopClickListener(cartShopHolderData)
+                        }
+
+                        override fun onCompleted() {
+                        }
+
+                        override fun onError(e: Throwable?) {
+                        }
+                    })
+            )
+
         }
     }
 
@@ -214,29 +233,27 @@ class CartShopViewHolder(itemView: View,
         }
     }
 
-    private fun cbSelectShopClickListener(cartShopHolderData: CartShopHolderData): View.OnClickListener {
-        return View.OnClickListener {
-            if (!cartShopHolderData.shopGroupAvailableData.isError) {
-                val isChecked: Boolean
-                if (cartShopHolderData.isPartialSelected) {
-                    isChecked = false
-                    cartShopHolderData.isAllSelected = false
-                    cartShopHolderData.isPartialSelected = false
-                } else {
-                    isChecked = !cartShopHolderData.isAllSelected
+    private fun cbSelectShopClickListener(cartShopHolderData: CartShopHolderData) {
+        if (!cartShopHolderData.shopGroupAvailableData.isError) {
+            val isChecked: Boolean
+            if (cartShopHolderData.isPartialSelected) {
+                isChecked = false
+                cartShopHolderData.isAllSelected = false
+                cartShopHolderData.isPartialSelected = false
+            } else {
+                isChecked = !cartShopHolderData.isAllSelected
+            }
+            cbSelectShop.isChecked = isChecked
+            var isAllSelected = true
+            cartShopHolderData.shopGroupAvailableData.cartItemDataList?.forEach {
+                if (it.cartItemData?.isError == true && it.cartItemData?.isSingleChild == true) {
+                    isAllSelected = false
+                    return@forEach
                 }
-                cbSelectShop.isChecked = isChecked
-                var isAllSelected = true
-                cartShopHolderData.shopGroupAvailableData.cartItemDataList?.forEach {
-                    if (it.cartItemData?.isError == true && it.cartItemData?.isSingleChild == true) {
-                        isAllSelected = false
-                        return@forEach
-                    }
-                }
-                cartShopHolderData.isAllSelected = isAllSelected
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
-                }
+            }
+            cartShopHolderData.isAllSelected = isAllSelected
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
             }
         }
     }
