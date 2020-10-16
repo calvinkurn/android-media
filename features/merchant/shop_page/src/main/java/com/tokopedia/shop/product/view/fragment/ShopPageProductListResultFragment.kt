@@ -942,6 +942,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun redirectToEtalasePicker() {
+        // hide partial shop followers
+        partialShopNplFollowersView?.setupVisibility = false
         context?.let {
             val bundle = Bundle()
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
