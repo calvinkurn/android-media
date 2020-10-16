@@ -503,6 +503,7 @@ Anda di sini.</string>
     <string name="btn_send_email_label">Kirim</string>
     <string name="toaster_succeed_send_email">Hore! E-mail berhasil dikirim.</string>
     <string name="toaster_failed_send_email">E-mail gagal dikirim, coba kirim ulang ya</string>
+    <string name="img_content_desc">img_content_desc</string>
 
     <string name="ticker_info_selengkapnya">
         <![CDATA[

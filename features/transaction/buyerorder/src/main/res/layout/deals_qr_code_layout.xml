@@ -46,7 +46,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/bg_rounded_white_buyer"
-            tools:srcCompat="@drawable/ic_good_rating" />
+            tools:srcCompat="@drawable/ic_good_rating"
+            android:contentDescription="@string/img_content_desc" />
 
         <View
             android:layout_width="match_parent"

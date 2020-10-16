@@ -275,7 +275,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
 
     }
@@ -381,7 +381,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
     }
 

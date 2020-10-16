@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
@@ -273,9 +275,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Map.Entry<String, String> entry = it.next();
                 DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
                 doubleTextView.setTopText(entry.getKey());
-                doubleTextView.setTopTextColor(context.getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.font_black_secondary_54));
                 doubleTextView.setBottomText(entry.getValue());
-                doubleTextView.setBottomTextColor(context.getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.black_70_new));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
                 statusDetail.addView(doubleTextView);
@@ -283,6 +285,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
 
+        @SuppressLint("SetTextI18n")
         void bindData(final OrderDetails details, final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
@@ -581,7 +584,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!actionButton.getActionColor().getBackground().equals("")) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
             }
             if (!actionButton.getActionColor().getBorder().equals("")) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -831,7 +834,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
             }
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));

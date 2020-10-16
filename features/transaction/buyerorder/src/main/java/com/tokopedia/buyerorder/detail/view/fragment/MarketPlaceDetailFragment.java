@@ -46,6 +46,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -339,7 +340,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         if (!TextUtils.isEmpty(title.textColor())) {
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         } else {
@@ -398,16 +399,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         if (!detail.label().equalsIgnoreCase(NAMA_TOKO)) {
             if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
                 doubleTextView.setTopText(detail.label());
-                doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.font_black_secondary_54));
                 doubleTextView.setBottomText(detail.value());
-                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.black_70_new));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
             } else {
                 doubleTextView.setTopText(detail.label());
                 String text = detail.value() + NO_SANIN_NEXT_LINE;
                 SpannableString spannableString = new SpannableString(text);
-                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.black_70_new));
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
                 int startIndexOfLink = text.indexOf("Salin");
                 spannableString.setSpan(new ClickableSpan() {
@@ -494,15 +495,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPricing(Pricing pricing) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.font_black_secondary_54));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         if (pricing.label().contains(TOTAL_SHIPPING_PRICE) && pricing.value().contains("Rp 0"))
             doubleTextView.setBottomText(getResources().getString(R.string.tkpdtransaction_bebas_ongkir));
         else
             doubleTextView.setBottomText(pricing.value());
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.black_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
     }
 
@@ -510,12 +511,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.font_black_secondary_54));
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.black_70));
+        doubleTextView.setBottomGravity(Gravity.END);
         paymentMethod.addView(doubleTextView);
     }
 
@@ -1019,15 +1020,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.black_70_new));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.black_70_new));
         doubleTextView.setTopTextSize(TEXT_SIZE_LARGE);
         doubleTextView.setTopTextStyle("bold");
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
-        doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.orange));
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.orange));
+        doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
     }
 

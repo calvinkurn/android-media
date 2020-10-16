@@ -37,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
@@ -459,7 +460,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         paymentMethodInfo.addView(doubleTextView);
     }
 
@@ -633,9 +634,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                     DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                     doubleTextView.setTopText(entityPessenger.getTitle());
-                    doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
+                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.subtitle_gray_color));
                     doubleTextView.setBottomText(entityPessenger.getValue());
-                    doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
+                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.title_gray_color));
                     doubleTextView.setBottomTextStyle("bold");
 
                     userInfo.addView(doubleTextView);
@@ -687,9 +688,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                             DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                             doubleTextView.setTopText(passengerInformation.getTitle());
-                            doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
+                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.subtitle_gray_color));
                             doubleTextView.setBottomText(passengerInformation.getValue());
-                            doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
+                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.title_gray_color));
                             doubleTextView.setBottomTextStyle("bold");
 
                             userInfo.addView(doubleTextView);
