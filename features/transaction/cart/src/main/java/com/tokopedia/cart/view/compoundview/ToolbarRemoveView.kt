@@ -16,7 +16,7 @@ class ToolbarRemoveView : BaseCustomView {
     lateinit var textView: TextView
 
     interface ToolbarCartListener {
-        fun onToolbarRemoveAllCart()
+        // Todo : add wishlist icon
     }
 
     constructor(context: Context) : super(context) {

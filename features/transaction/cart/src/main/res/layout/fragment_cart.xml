@@ -56,20 +56,6 @@
                     android:layout_above="@+id/bottom_layout"
                     android:layout_alignParentTop="true" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:clickable="false"
-                    android:visibility="gone"
-                    app:cardElevation="@dimen/dp_3"
-                    tools:visibility="visible">
-
-                    <include layout="@layout/item_select_all" />
-
-                </androidx.cardview.widget.CardView>
-
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"

@@ -141,10 +141,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var btnToShipment: UnifyButton
     lateinit var tvTotalPrice: TextView
     lateinit var rlContent: RelativeLayout
-    lateinit var cbSelectAll: CheckBox
-    lateinit var llHeader: LinearLayout
-    lateinit var btnRemove: Typography
-    lateinit var cardHeader: CardView
     lateinit var bottomLayout: LinearLayout
     lateinit var bottomLayoutShadow: View
     lateinit var layoutGlobalError: GlobalError
@@ -225,7 +221,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
 
-        const val HAS_ELEVATION = 12
+        const val HAS_ELEVATION = 9
         const val NO_ELEVATION = 0
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
@@ -470,12 +466,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
         rlContent = view.findViewById(R.id.rl_content)
         layoutGlobalError = view.findViewById(R.id.layout_global_error)
-        cardHeader = view.findViewById(R.id.card_header)
         bottomLayout = view.findViewById(R.id.bottom_layout)
         bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow)
-        cbSelectAll = view.findViewById(R.id.cb_select_all)
-        llHeader = view.findViewById(R.id.ll_header)
-        btnRemove = view.findViewById(R.id.btn_delete_all_cart)
         llCartContainer = view.findViewById(R.id.ll_cart_container)
         llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
         promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
@@ -490,31 +482,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     .create()
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            // Remove default cardview margin on Kitkat or lower
-            activity?.let {
-                val pixel = Utils.convertDpToPixel(-6f, it)
-                (cardHeader.layoutParams as ViewGroup.MarginLayoutParams).setMargins(pixel, pixel, pixel, pixel)
-            }
-        }
-
         initViewListener()
         setupRecyclerView()
     }
 
     private fun initViewListener() {
         btnToShipment.setOnClickListener { checkGoToShipment("") }
-        cbSelectAll.setOnClickListener { onSelectAllClicked() }
-        llHeader.setOnClickListener { onSelectAllClicked() }
         imgChevronSummary.setOnClickListener { onClickChevronSummaryTransaction() }
         textTotalPaymentLabel.setOnClickListener { onClickChevronSummaryTransaction() }
         tvTotalPrice.setOnClickListener { onClickChevronSummaryTransaction() }
-        btnRemove.setOnClickListener {
-            if (btnRemove.isVisible) {
-                onToolbarRemoveAllCart()
-            }
-        }
-        setCbSelectAllOnCheckedChangeListener()
     }
 
     private fun onClickChevronSummaryTransaction() {
@@ -525,25 +501,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun showBottomSheetSummaryTransaction() {
         if (cartListData != null && fragmentManager != null && context != null) {
             showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
-        }
-    }
-
-    private fun setCbSelectAllOnCheckedChangeListener() {
-        var prevIsChecked = cartListData?.isAllSelected
-        cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked != prevIsChecked) {
-                prevIsChecked = isChecked
-
-                delayCbChangeJob?.cancel()
-                delayCbChangeJob = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
-                    if (isChecked == prevIsChecked) {
-                        if (isChecked != cartListData?.isAllSelected) {
-                            onSelectAllClicked()
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -559,13 +516,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     val firstCartSectionHeaderPosition = cartAdapter.firstCartSectionHeaderPosition
                     if (firstCartSectionHeaderPosition > -1 && parent.layoutManager is GridLayoutManager) {
                         if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
-                            if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
-                                cardHeader.gone()
+                            if (!noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                                 setToolbarShadowVisibility(true)
                             }
-                        } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE && bottomLayout.visibility == View.VISIBLE) {
-                            cardHeader.show()
-                            setToolbarShadowVisibility(false)
+//                        } else if (!noAvailableItems && bottomLayout.visibility == View.VISIBLE && bottomLayout.visibility == View.VISIBLE) {
+//                            setToolbarShadowVisibility(false)
                         }
                     }
                 }
@@ -588,8 +543,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                     if (recyclerView.canScrollVertically(-1)) {
                         disableSwipeRefresh()
+                        setToolbarShadowVisibility(true)
                     } else {
                         enableSwipeRefresh()
+                        setToolbarShadowVisibility(false)
                     }
 
                     handlePromoButtonVisibilityOnScroll(dy)
@@ -718,30 +675,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         return null
-    }
-
-    override fun onToolbarRemoveAllCart() {
-        sendAnalyticsOnClickRemoveButtonHeader()
-        val toBeDeletedCartItemDataList = getAllSelectedCartDataList()
-        val allCartItemDataList = cartAdapter.allCartItemData
-        if (toBeDeletedCartItemDataList?.isNotEmpty() == true) {
-            val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
-            dialog?.setPrimaryCTAClickListener {
-                if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
-                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
-                    )
-                }
-                dialog.dismiss()
-            }
-            dialog?.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog?.show()
-        } else {
-            showToastMessageRed(getString(R.string.message_delete_empty_selection))
-        }
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -1362,22 +1295,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickMoreLikeThis()
     }
 
-    override fun onSelectAllClicked() {
-        val checked = dPresenter.getCartListData()?.isAllSelected == false
-        if (checked) {
-            sendAnalyticsOnButtonSelectAllChecked()
-        } else {
-            sendAnalyticsOnButtonSelectAllUnchecked()
-        }
-        dPresenter.getCartListData()?.isAllSelected = checked
-        cbSelectAll.isChecked = checked
-        cartAdapter.setAllShopSelected(checked)
-        dPresenter.setAllInsuranceProductsChecked(cartAdapter.insuranceCartShops, checked)
-        cartAdapter.notifyDataSetChanged()
-        dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        cartAdapter.checkForShipmentForm()
-    }
-
     override fun onSeeErrorProductsClicked() {
         cartRecyclerView.layoutManager?.let {
             val linearSmoothScroller = object : LinearSmoothScroller(cartRecyclerView.context) {
@@ -1651,7 +1568,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         loadMacroInsurance(cartListData)
 
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        cbSelectAll.isChecked = cartListData.isAllSelected
 
         cartAdapter.checkForShipmentForm()
 
@@ -2270,7 +2186,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         rlContent.show()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
-        cardHeader.gone()
         llPromoCheckout.gone()
     }
 
@@ -2279,7 +2194,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         rlContent.show()
         bottomLayout.show()
         bottomLayoutShadow.show()
-        cardHeader.show()
         llPromoCheckout.show()
         llPromoCheckout.post {
             if (initialPromoButtonPosition == 0f) {
@@ -2293,7 +2207,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         layoutGlobalError.show()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
-        cardHeader.gone()
         llPromoCheckout.gone()
     }
 
@@ -2301,7 +2214,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         layoutGlobalError.gone()
         bottomLayout.gone()
         bottomLayoutShadow.gone()
-        cardHeader.gone()
         llPromoCheckout.gone()
     }
 
@@ -2434,21 +2346,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                           unselectAllItem: Boolean,
                                           noAvailableItems: Boolean) {
         dPresenter.getCartListData()?.isAllSelected = selectAllItem
-        if (cbSelectAll.isChecked != selectAllItem) {
-            cbSelectAll.isChecked = selectAllItem
-        }
-        btnRemove.visibility = if (unselectAllItem) View.INVISIBLE else View.VISIBLE
         this.noAvailableItems = noAvailableItems
         if (noAvailableItems) {
-            cardHeader.visibility = View.GONE
             llPromoCheckout.gone()
             cartAdapter.removeCartSelectAll()
         } else {
-            cardHeader.visibility = View.VISIBLE
             if (bottomLayout.visibility == View.VISIBLE) {
                 llPromoCheckout.show()
             }
-            cartAdapter.addCartSelectAll()
         }
 
         renderTotalPrice(subtotalPrice, qty)

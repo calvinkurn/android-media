@@ -32,10 +32,10 @@ import kotlin.math.min
  * @author anggaprasetiyo on 18/01/18.
  */
 
-class CartAdapter @Inject constructor(private val actionListener: ActionListener?,
-                                      private val cartItemActionListener: CartItemAdapter.ActionListener?,
-                                      private val insuranceItemActionlistener: InsuranceItemActionListener?,
-                                      private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?,
+class CartAdapter @Inject constructor(private val actionListener: ActionListener,
+                                      private val cartItemActionListener: CartItemAdapter.ActionListener,
+                                      private val insuranceItemActionlistener: InsuranceItemActionListener,
+                                      private val tickerAnnouncementActionListener: TickerAnnouncementActionListener,
                                       private val sellerCashbackListener: SellerCashbackListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val cartDataList = ArrayList<Any>()
@@ -318,7 +318,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is CartRecommendationItemHolderData -> CartRecommendationViewHolder.LAYOUT
             is CartLoadingHolderData -> CartLoadingViewHolder.LAYOUT
             is TickerAnnouncementHolderData -> TickerAnnouncementViewHolder.LAYOUT
-            is Boolean -> CartSelectAllViewHolder.LAYOUT
             is InsuranceCartShops -> InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP
             is DisabledCartItemHolderData -> DisabledCartItemViewHolder.LAYOUT
             is DisabledItemHeaderHolderData -> DisabledItemHeaderViewHolder.LAYOUT
@@ -378,11 +377,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartLoadingViewHolder.LAYOUT, parent, false)
                 return CartLoadingViewHolder(view)
-            }
-            CartSelectAllViewHolder.LAYOUT -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(CartSelectAllViewHolder.LAYOUT, parent, false)
-                return CartSelectAllViewHolder(view, actionListener)
             }
             TickerAnnouncementViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
@@ -469,10 +463,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             viewType == TickerAnnouncementViewHolder.LAYOUT -> {
                 val cartTickerData = cartDataList[position] as TickerAnnouncementHolderData
                 (holder as TickerAnnouncementViewHolder).bind(cartTickerData)
-            }
-            viewType == CartSelectAllViewHolder.LAYOUT -> {
-                val isAllSelected = cartDataList[position] as Boolean
-                (holder as CartSelectAllViewHolder).bind(isAllSelected)
             }
             getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP -> {
                 val insuranceCartShops = cartDataList[position] as InsuranceCartShops
@@ -1252,13 +1242,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun addCartTicker(tickerAnnouncementHolderData: TickerAnnouncementHolderData) {
         cartDataList.add(0, tickerAnnouncementHolderData)
-    }
-
-    fun addCartSelectAll() {
-        if (cartDataList.size > 0 && cartDataList[0] !is Boolean) {
-            cartDataList.add(0, true)
-            notifyItemInserted(0)
-        }
     }
 
     fun removeCartSelectAll() {

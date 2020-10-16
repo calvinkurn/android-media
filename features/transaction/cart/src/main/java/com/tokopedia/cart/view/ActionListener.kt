@@ -63,8 +63,6 @@ interface ActionListener {
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
-    fun onSelectAllClicked()
-
     fun onDeleteAllDisabledProduct();
 
     fun onDeleteDisabledItem(data: DisabledCartItemHolderData)

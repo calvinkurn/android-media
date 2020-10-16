@@ -216,11 +216,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
-                    isSelected = if (cartItemData.isError) {
-                        false
-                    } else {
-                        cartItemData.originData?.isCheckboxState ?: true
-                    },
+                    isSelected = cartItemData.originData?.isCheckboxState ?: true,
                     actionsData = actionsData,
                     errorType = errorType
             )
@@ -275,10 +271,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder
+                        ?: 0
             }
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder ?: 0
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder
+                        ?: 0
             }
         }
     }
