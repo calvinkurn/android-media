@@ -171,6 +171,7 @@ class ShopHomeViewModel @Inject constructor(
             )
 
             shopLayoutWidget.await()?.let { shopPageHomeLayoutUiModel ->
+                val layout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
 
                 val addPlayWidgetCarousel = asyncCatchError(
                         dispatcherProvider.io(),
@@ -178,23 +179,23 @@ class ShopHomeViewModel @Inject constructor(
                         onError = {null}
                 ).await()
 
-                addPlayWidgetCarousel?.let {
-                    shopPageHomeLayoutUiModel.copy(listWidget = it)
-                }
-
                 val addMerchantVoucherLayout = asyncCatchError(
                         dispatcherProvider.io(),
                         block = { getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY, shopPageHomeLayoutUiModel) },
                         onError = {null}
                 ).await()
 
-                addMerchantVoucherLayout?.let {
-                    shopPageHomeLayoutUiModel.copy(listWidget = it)
+                addPlayWidgetCarousel?.let { playCarousel ->
+                    layout[playCarousel.first] = playCarousel.second
                 }
 
-                shopPageHomeLayoutUiModel.let { newShopPageHomeLayoutUiModelData ->
-                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                addMerchantVoucherLayout?.let { voucher ->
+                    layout[voucher.first] = voucher.second
                 }
+
+                val newShopHomeWidgetUiModel = shopPageHomeLayoutUiModel.copy(listWidget = layout)
+                _shopHomeLayoutData.postValue(Success(newShopHomeWidgetUiModel))
+
                 productList.await()?.let { productListData ->
                     _initialProductListData.postValue(Success(productListData))
                 }
@@ -251,37 +252,27 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): List<BaseShopHomeWidgetUiModel>?{
+    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): Pair<Int, ShopHomePlayCarouselUiModel>{
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
-        val layout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
         if(index != -1){
-            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
             getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
             val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
-            if(playBannerDataModel.channelList.isNotEmpty()){
-                layout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
-            }else{
-                layout.remove(data)
-            }
+            return Pair(index, data.copy(playBannerCarouselDataModel = playBannerDataModel))
         }
-        return layout
+        return Pair(index, data)
     }
 
-    private fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): List<BaseShopHomeWidgetUiModel> {
+    private fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): Pair<Int, ShopHomeVoucherUiModel> {
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
-        val layout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
         if (index != 1) {
-            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
                     GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
             ).toBlocking().first()
-            if (merchantVoucherResponse.isNotEmpty()) {
-                layout[index] = data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse))
-            } else {
-                layout.remove(data)
-            }
+            return Pair(index, data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse)))
         }
-        return layout
+        return Pair(index, data)
     }
 
     fun addProductToCart(
