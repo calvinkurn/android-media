@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.view.adapter.etalase.viewholder
+package com.tokopedia.topads.common.view.adapter.etalase.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

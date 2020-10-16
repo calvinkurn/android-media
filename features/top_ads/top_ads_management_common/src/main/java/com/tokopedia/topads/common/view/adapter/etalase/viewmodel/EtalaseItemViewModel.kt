@@ -1,7 +1,7 @@
-package com.tokopedia.topads.view.adapter.etalase.viewmodel
+package com.tokopedia.topads.common.view.adapter.etalase.viewmodel
 
-import com.tokopedia.topads.data.response.ResponseEtalase
-import com.tokopedia.topads.view.adapter.etalase.EtalaseAdapterTypeFactory
+import com.tokopedia.topads.common.data.response.ResponseEtalase
+import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapterTypeFactory
 
 /**
  * Author errysuprayogi on 11,November,2019

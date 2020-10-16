@@ -1,4 +1,4 @@
-package com.tokopedia.topads.view.sheet
+package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,28 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseEtalase
-import com.tokopedia.topads.view.adapter.etalase.EtalaseAdapter
-import com.tokopedia.topads.view.adapter.etalase.EtalaseAdapterTypeFactoryImpl
-import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
-import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.response.ResponseEtalase
+import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapter
+import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapterTypeFactoryImpl
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_filter.*
+import kotlinx.android.synthetic.main.topads_edit_select_fragment_product_list_sheet_filter.*
 
-/**
- * Author errysuprayogi on 07,May,2019
- */
-class ProductFilterSheetList : BottomSheetUnify(){
+class ProductFilterSheetList: BottomSheetUnify() {
 
-    private var adapter: EtalaseAdapter? = null
     var elementList =  mutableListOf<EtalaseViewModel>()
+    private var adapter: EtalaseAdapter? = null
     private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result = ResponseEtalase.Data.ShopShowcasesByShopID.Result()
     var onItemClick: ((ResponseEtalase.Data.ShopShowcasesByShopID.Result) -> Unit)? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var contentView = View.inflate(context, R.layout.topads_create_fragment_product_list_sheet_filter, null)
+        var contentView = View.inflate(context, R.layout.topads_edit_select_fragment_product_list_sheet_filter, null)
         setChild(contentView)
         setTitle(getString(R.string.filter))
         return super.onCreateView(inflater, container, savedInstanceState)

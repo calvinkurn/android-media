@@ -1,11 +1,11 @@
-package com.tokopedia.topads.edit.view.adapter.etalase
+package com.tokopedia.topads.common.view.adapter.etalase
 
 import android.view.View
-import com.tokopedia.topads.edit.view.adapter.etalase.viewholder.EtalaseViewHolder
-import com.tokopedia.topads.edit.view.adapter.etalase.viewholder.EtalaseItemViewHolder
-import com.tokopedia.topads.edit.view.adapter.etalase.viewholder.EtalaseShimerViewHolder
-import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseViewHolder
+import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseItemViewHolder
+import com.tokopedia.topads.common.view.adapter.etalase.viewholder.EtalaseShimerViewHolder
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 
 class EtalaseAdapterTypeFactoryImpl(var actionClick: ((pos:Int) -> Unit)?) : EtalaseAdapterTypeFactory {
 

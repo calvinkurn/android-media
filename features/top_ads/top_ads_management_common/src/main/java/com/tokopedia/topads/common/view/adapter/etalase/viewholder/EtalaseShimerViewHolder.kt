@@ -1,9 +1,9 @@
-package com.tokopedia.topads.edit.view.adapter.etalase.viewholder
+package com.tokopedia.topads.common.view.adapter.etalase.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 
 /**
  * Author errysuprayogi on 11,November,2019
