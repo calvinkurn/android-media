@@ -243,7 +243,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun getTncBottomSheetData() {
         showLoading()
-        viewModel?.getTncBottomSheetData(campaignId, shopId)
+        viewModel?.getTncBottomSheetData(campaignId, shopId, isOwner)
     }
 
     private fun initRecyclerView() {
