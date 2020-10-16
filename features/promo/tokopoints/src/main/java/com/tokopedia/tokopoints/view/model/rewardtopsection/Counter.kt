@@ -8,7 +8,7 @@ data class Counter(
 	val counterStr: String? = null,
 
 	@SerializedName("isShowCounter")
-	val isShowCounter: Boolean? = null,
+    var isShowCounter: Boolean? = null,
 
 	@SerializedName("counter")
 	val counter: Int? = null

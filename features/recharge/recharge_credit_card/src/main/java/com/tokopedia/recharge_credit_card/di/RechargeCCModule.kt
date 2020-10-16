@@ -101,8 +101,10 @@ class RechargeCCModule {
     @Provides
     @RechargeCCScope
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: AbstractionRouter): DigitalInterceptor {
-        return DigitalInterceptor(context, networkRouter)
+                                  networkRouter: NetworkRouter,
+                                  userSession: UserSessionInterface
+                                  ): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @Provides

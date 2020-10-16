@@ -2,6 +2,7 @@ package com.tokopedia.linter
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
+import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
 import com.tokopedia.linter.detectors.sourcescanner.elements.ImportDetector.CLASS_IMPORT
@@ -13,8 +14,8 @@ class IssueRegistry : IssueRegistry() {
                 UnifyDetector.ISSUE,
                 DEPENDENCY_BANNED,
                 DEPENDENCY_DEPRECATED,
-                CLASS_IMPORT
-
+                CLASS_IMPORT,
+                VectorDrawableDetector.ISSUE
         )
 
     override val minApi: Int

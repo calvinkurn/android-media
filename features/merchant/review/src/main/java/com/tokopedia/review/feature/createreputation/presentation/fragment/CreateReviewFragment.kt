@@ -17,7 +17,7 @@ import androidx.lifecycle.Observer
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -730,11 +730,19 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        createReviewSubmitButton.isLoading = true
+        createReviewSubmitButton.apply {
+            isLoading = true
+            setOnClickListener(null)
+        }
     }
 
     private fun stopLoading() {
-        createReviewSubmitButton.isLoading = false
+        createReviewSubmitButton.apply {
+            isLoading = false
+            setOnClickListener {
+                submitReview()
+            }
+        }
     }
 
     private fun showLayout() {
@@ -836,7 +844,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun logToCrashlytics(throwable: Throwable) {
         if (!BuildConfig.DEBUG) {
-            Crashlytics.logException(throwable)
+            FirebaseCrashlytics.getInstance().recordException(throwable)
         } else {
             throwable.printStackTrace()
         }
