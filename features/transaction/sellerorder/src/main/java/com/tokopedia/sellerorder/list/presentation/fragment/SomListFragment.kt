@@ -176,7 +176,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var textChangedJob: Job? = null
     private var waitingPaymentCounterAnimator: ValueAnimator? = null
 
-
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
     }
@@ -184,6 +183,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var userNotAllowedDialog: DialogUnify? = null
 
     companion object {
+        private const val TAG_COACHMARK = "coachMark"
         private const val TAG_COACHMARK_FILTER = "coachMarksFilter"
         private const val TAG_COACHMARK_SEARCH = "coachMarksSearch"
         private const val TAG_COACHMARK_PRODUCTS = "coachMarksProducts"
@@ -729,9 +729,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderCoachMark() {
-        coachMark.show(activity, "", ArrayList(coachMarkToShow))
-        coachMark.onFinishListener = {
-            coachMarkToShow.clear()
+        if (coachMarkToShow.isNotEmpty()) {
+            // CoachMark use fragment manager from activity, so we need to check whether the coachmark is already to prevent exception
+            activity?.fragmentManager?.let { fm ->
+                // Unify use commit which is async, so we need to execute immediately it to make sure that the transaction is commited
+                // so we can check whether coachmark is added or not
+                fm.executePendingTransactions()
+                val coachMarkDialogFragment = fm.findFragmentByTag(CoachMark.TAG)
+                if (coachMarkDialogFragment == null || !coachMarkDialogFragment.isAdded) {
+                    coachMark.show(activity, TAG_COACHMARK, ArrayList(coachMarkToShow))
+                    coachMark.onFinishListener = {
+                        coachMarkToShow.clear()
+                    }
+                }
+            }
         }
     }
 

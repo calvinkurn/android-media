@@ -240,6 +240,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
             }
             else -> {
+                setting.visibility = View.VISIBLE
                 switch.visibility = View.INVISIBLE
                 setting.setOnClickListener {
                     startEditActivity()
@@ -317,7 +318,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             it.btn_switch.isChecked = true
             when (entryPoint) {
                 ENTRY_FROM_EDIT_PAGE -> {
-                    setting.visibility = View.GONE
+                    it.setting.visibility = View.GONE
                     it.btn_switch.visibility = View.VISIBLE
                     it.btn_switch.setOnClickListener {
                         val man = ManualAdsConfirmationCommonSheet.newInstance(context as BaseActivity, ::switchToManual)
@@ -330,6 +331,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                     it.btn_switch.visibility = View.INVISIBLE
                 }
                 else -> {
+                    it.setting.visibility = View.VISIBLE
                     it.btn_switch.visibility = View.INVISIBLE
                     it.setting.setOnClickListener {
                         startEditActivity()

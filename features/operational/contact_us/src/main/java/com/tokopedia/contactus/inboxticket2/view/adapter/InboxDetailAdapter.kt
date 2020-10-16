@@ -37,7 +37,9 @@ class InboxDetailAdapter(private val mContext: Context,
                          private val commentList: MutableList<CommentsItem>,
                          needAttachment: Boolean,
                          private val mPresenter: InboxDetailPresenter,
-                         private val inboxDetailListener: InboxDetailListener) : RecyclerView.Adapter<InboxDetailViewHolder>() {
+                         private val inboxDetailListener: InboxDetailListener,
+                         private val userId: String,
+                         private val caseId: String) : RecyclerView.Adapter<InboxDetailViewHolder>() {
 
     private var needAttachment: Boolean
     private val indexExpanded: Int = -1
@@ -127,7 +129,7 @@ class InboxDetailAdapter(private val mContext: Context,
             if (commentList[position].attachment?.size ?: 0 > 0) {
                 if (attachmentAdapter == null) {
                     attachmentAdapter = AttachmentAdapter(commentList[position].attachment
-                            ?: listOf(), this@InboxDetailAdapter.mPresenter)
+                            ?: listOf(), this@InboxDetailAdapter.mPresenter, userId, caseId)
                 } else {
                     attachmentAdapter?.addAll(commentList[position].attachment
                             ?: listOf())

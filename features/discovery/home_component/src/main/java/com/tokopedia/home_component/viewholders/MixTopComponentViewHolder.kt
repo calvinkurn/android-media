@@ -26,6 +26,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselPr
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -267,8 +269,9 @@ class MixTopComponentViewHolder(
                                     element.freeOngkirImageUrl
                             ),
                             isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            reviewCount = element.countReview
+                            ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
+                            reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat else ""
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
