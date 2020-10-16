@@ -150,6 +150,12 @@
             android:theme="@style/Theme.White" />
 
         <activity
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity"
+            android:label="@string/title_logistic_info"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
             android:name=".waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity"
             android:label="@string/title_som_waiting_payment"
             android:screenOrientation="portrait"

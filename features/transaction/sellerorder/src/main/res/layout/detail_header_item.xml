@@ -13,7 +13,7 @@
         android:layout_height="@dimen/dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/status_color" />
+        android:background="@drawable/status_color" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_title"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/see_detail"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -110,7 +110,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/see_invoice"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"

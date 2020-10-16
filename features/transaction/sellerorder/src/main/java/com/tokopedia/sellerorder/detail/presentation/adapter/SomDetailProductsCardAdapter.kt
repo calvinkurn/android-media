@@ -27,7 +27,7 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
         holder.itemView.iv_product.loadImage(listProducts[position].thumbnail)
         holder.itemView.tv_product_name.text = listProducts[position].name
-        holder.itemView.tv_product_desc.text = StringBuilder("${listProducts[position].quantity} x Rp ${listProducts[position].priceText}")
+        holder.itemView.tv_product_desc.text = StringBuilder("${listProducts[position].quantity} x ${listProducts[position].priceText}")
         if (listProducts[position].note.isNotEmpty()) {
             holder.itemView.divider_product.visibility = View.VISIBLE
             holder.itemView.tv_product_notes.visibility = View.VISIBLE

@@ -26,7 +26,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     setOnClickListener {
                         actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                     }
-                    itemView.tv_shipping_name.text = StringBuilder("${item.dataObject.shippingName} >")
+                    text = StringBuilder("${item.dataObject.shippingName} >")
                 }
             } else {
                 itemView.tv_shipping_name.text = item.dataObject.shippingName
@@ -100,7 +100,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     itemView.rl_booking_code.visibility = View.VISIBLE
 
                     if (item.dataObject.onlineBookingCode.isEmpty()) {
-                        itemView.booking_code_value?.hide()
+                        itemView.rl_booking_code?.hide()
                     } else {
                         itemView.booking_code_value?.show()
 

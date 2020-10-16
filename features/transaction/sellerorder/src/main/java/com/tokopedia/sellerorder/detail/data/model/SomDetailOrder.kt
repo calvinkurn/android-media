@@ -441,7 +441,10 @@ data class SomDetailOrder(
                     val logisticInfoAllList: List<All> = listOf(),
                     @SerializedName("priority")
                     @Expose
-                    val logisticInfoPriorityList: List<Priority> = listOf()
+                    val logisticInfoPriorityList: Priority = Priority(),
+                    @SerializedName("others")
+                    @Expose
+                    val othersLogisticInfoList: List<Others> = listOf()
             ) {
                     @Parcelize
                     data class All(
@@ -461,7 +464,26 @@ data class SomDetailOrder(
                             @Expose
                             val infoTextLong: String? = ""
                     ): Parcelable
+
                     data class Priority(
+                            @SerializedName("id")
+                            @Expose
+                            val id: String? = "",
+                            @SerializedName("priority")
+                            @Expose
+                            val priority: String? = "",
+                            @SerializedName("description")
+                            @Expose
+                            val description: String? = "",
+                            @SerializedName("info_text_short")
+                            @Expose
+                            val infoTextShort: String? = "",
+                            @SerializedName("info_text_long")
+                            @Expose
+                            val infoTextLong: String? = ""
+                    )
+
+                    data class Others(
                             @SerializedName("id")
                             @Expose
                             val id: String? = "",
