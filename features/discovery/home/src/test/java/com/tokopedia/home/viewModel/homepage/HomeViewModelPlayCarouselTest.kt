@@ -53,7 +53,7 @@ class HomeViewModelPlayCarouselTest{
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayBannerUseCase = getPlayWidgetUseCase)
 
-        coVerify (atLeast = 2){ getPlayWidgetUseCase.executeOnBackground() }
+        coVerify (atLeast = 1){ getPlayWidgetUseCase.executeOnBackground() }
         confirmVerified(getPlayWidgetUseCase)
     }
 
