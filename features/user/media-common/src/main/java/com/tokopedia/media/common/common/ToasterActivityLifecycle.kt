@@ -3,36 +3,23 @@ package com.tokopedia.media.common.common
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING
 import com.tokopedia.media.common.R
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.Exception
 
-class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
+class ToasterActivityLifecycle : ActivityLifecycleCallbacks {
 
     override fun onActivityStarted(activity: Activity) {
-        val isCurrentPage = WHITELIST.singleOrNull {
+        if (!WHITELIST.singleOrNull {
             it == activity.javaClass.canonicalName
-        }
-
-        if (!isCurrentPage.isNullOrEmpty()) {
+        }.isNullOrEmpty()) {
             try {
-                activity.window.decorView
-                        .findViewById<ViewGroup>(android.R.id.content)
-                        ?.let {
-                            Toaster.make(
-                                    view = it,
-                                    text = activity.getString(R.string.media_toaster_title),
-                                    actionText = activity.getString(R.string.media_toaster_cta),
-                                    duration = Toaster.LENGTH_LONG,
-                                    type = Toaster.TYPE_NORMAL,
-                                    clickListener = View.OnClickListener {
-                                        RouteManager.getIntent(activity, "")
-                                    }
-                            )
-                }
+                showToaster(activity)
             } catch (ignored: Exception) {}
         }
     }
@@ -49,6 +36,25 @@ class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity) {}
 
+    private fun showToaster(activity: Activity) {
+        Handler().postDelayed({
+            with(activity) {
+                window.decorView.findViewById<ViewGroup>(android.R.id.content)?.let {
+                    Toaster.make(
+                            view = it,
+                            text = getString(R.string.media_toaster_title),
+                            actionText = getString(R.string.media_toaster_cta),
+                            duration = Toaster.LENGTH_LONG,
+                            type = Toaster.TYPE_NORMAL,
+                            clickListener = View.OnClickListener {
+                                startActivity(RouteManager.getIntent(this, IMAGE_QUALITY_SETTING))
+                            }
+                    )
+                }
+            }
+        }, 2000)
+    }
+
     companion object {
         private val WHITELIST = arrayOf(
                 "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
@@ -56,5 +62,5 @@ class ToasterActivityLifecycle: ActivityLifecycleCallbacks {
                 "com.tokopedia.search.result.presentation.view.activity.SearchActivity"
         )
     }
-    
+
 }
