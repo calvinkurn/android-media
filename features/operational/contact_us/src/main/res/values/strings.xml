@@ -122,6 +122,8 @@
     <string name="title_attachment">Lampiran</string>
     <string name="filter">Filter</string>
     <string name="btn_send">Kirim</string>
+    <string name="title_email">Email</string>
+
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>
