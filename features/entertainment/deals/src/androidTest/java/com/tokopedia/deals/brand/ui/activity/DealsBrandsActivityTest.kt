@@ -20,6 +20,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -61,7 +62,6 @@ class DealsBrandsActivityTest {
         actionOnDealsBrandViewHolder()
         clickOnRelaksasiTab()
         changeLocationBrandPage()
-        eventClickSearchBrandPage()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
                 hasAllSuccess())
@@ -72,18 +72,11 @@ class DealsBrandsActivityTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(QUERY))
 
         Thread.sleep(2000)
-        onView(AllOf.allOf(withId(R.id.deals_brand_recycler_view), withTagStringValue(TAB_SEMUA)))
+        onView(CommonMatcher.firstView(withId(R.id.deals_brand_recycler_view)))
                 .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
 
         Thread.sleep(2000)
         onView(getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
-    }
-
-    private fun eventClickSearchBrandPage() {
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
     }
 
     private fun clickOnRelaksasiTab() {
