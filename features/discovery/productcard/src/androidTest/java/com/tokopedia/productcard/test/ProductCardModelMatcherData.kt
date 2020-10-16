@@ -53,6 +53,8 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testShopRatingBlue4())
     it.add(testShopRatingBlue5())
     it.add(testShopRatingYellow())
+    it.add(testHasRatingSales())
+    it.add(testNoLabelIntegrityAndHasRatingFloat())
     it.add(testLabelCampaign())
 }
 
@@ -946,6 +948,59 @@ private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
         it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testHasRatingSales(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Product with rating sales",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            countSoldRating = "4.6",
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelIntegrity)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product with rating float",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            countSoldRating = "4.6",
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }

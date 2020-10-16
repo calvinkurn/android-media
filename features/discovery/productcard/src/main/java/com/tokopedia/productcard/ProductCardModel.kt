@@ -43,7 +43,8 @@ data class ProductCardModel (
         val isOutOfStock: Boolean = false,
         val addToCardText: String = "",
         val shopRating: String = "",
-        val isShopRatingYellow: Boolean = false
+        val isShopRatingYellow: Boolean = false,
+        val countSoldRating: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -112,6 +113,10 @@ data class ProductCardModel (
 
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
+    }
+
+    fun willShowSalesAndRating(): Boolean{
+        return countSoldRating.isNotEmpty() && getLabelIntegrity() != null
     }
 
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()

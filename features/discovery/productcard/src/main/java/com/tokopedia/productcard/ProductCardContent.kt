@@ -4,7 +4,10 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ImageSpan
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,6 +34,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
     renderShopRating(productCardModel)
+    renderSalesAndRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
@@ -156,7 +160,7 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    if (productCardModel.willShowRatingAndReviewCount())
+    if (productCardModel.willShowRatingAndReviewCount() || productCardModel.willShowSalesAndRating())
         textViewIntegrity?.initLabelGroup(null)
     else
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
@@ -173,6 +177,21 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
+    }
+}
+
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
+    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+        textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
+    }
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
+        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
+        drawableStar?.let {
+            drawableStar.setBounds(0, 0, 25, 25)
+            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+        salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
 
