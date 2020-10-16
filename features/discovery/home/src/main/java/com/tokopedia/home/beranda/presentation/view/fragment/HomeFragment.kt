@@ -65,17 +65,9 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
-import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.HOME_CACHE_DATA_VALUE_KEY
-import com.tokopedia.home.beranda.data.datasource.local.HomeCacheDataConst.SHARED_PREF_HOME_DATA_CACHE_KEY
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
-import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -544,7 +536,7 @@ open class HomeFragment : BaseDaggerFragment(),
         registerBroadcastReceiverTokoCash()
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
-            HomePageTracking.eventClickJumpRecomendation(activity)
+            HomePageTracking.eventClickJumpRecomendation()
         }
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, object : OnKeyboardVisibilityChangedListener {
             override fun onKeyboardShown() {
@@ -1197,7 +1189,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo(activity)
+        HomePageTracking.eventClickViewAllPromo()
         HomeTrackingUtils.homeViewAllPromotions(activity, "PromoListActivity")
         val remoteConfigEnable: Boolean
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
@@ -1385,14 +1377,14 @@ open class HomeFragment : BaseDaggerFragment(),
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation(activity)
+                        HomePageTracking.eventClickNotAllowGeolocation()
                         getHomeViewModel().onCloseGeolocation()
                         showNotAllowedGeolocationSnackbar()
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation(activity)
+                        HomePageTracking.eventClickAllowGeolocation()
                         detectAndSendLocation()
                         getHomeViewModel().onCloseGeolocation()
                         showAllowedGeolocationSnackbar()
@@ -1899,7 +1891,7 @@ open class HomeFragment : BaseDaggerFragment(),
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) { view: View? ->
-                    HomePageTracking.eventClickOnAtur(activity)
+                    HomePageTracking.eventClickOnAtur()
                     goToApplicationDetailActivity()
                 }.show()
     }
