@@ -429,7 +429,6 @@
 
 -dontwarn com.tokopedia.empty_state.**
 -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
--dontwarn com.tokopedia.topads.dashboard.data.utils.**
 -dontwarn com.tokopedia.topads.debit.autotopup.view.sheet.**
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
 
