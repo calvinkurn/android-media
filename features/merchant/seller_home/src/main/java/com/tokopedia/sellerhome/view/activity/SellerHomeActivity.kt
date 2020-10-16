@@ -400,7 +400,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun setupBottomNav() {
         sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.bottom_nav_home_exit_animation, R.raw.bottom_nav_home_enter_animation, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_inactive, R.color.color_active_bottom_nav, true, 1f, 3f))
         menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
         menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
         menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
