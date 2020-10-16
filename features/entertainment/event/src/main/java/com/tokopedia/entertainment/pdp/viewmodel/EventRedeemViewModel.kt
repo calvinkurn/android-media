@@ -36,7 +36,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
     fun getDataRedeem(urlRedeem : String) {
         launchCatchError(block = {
             usecase.setUrlRedeem(urlRedeem)
-            val result = withContext(Dispatchers.IO){
+            val result = withContext(dispatcher){
                 convertToRedeemResponse(usecase.executeOnBackground())
             }
             eventRedeemMutable.value = result
@@ -48,7 +48,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
     fun redeemData(urlRedeem: String){
         launchCatchError(block = {
             useCaseRedeem.setUrlRedeem(urlRedeem)
-            val result = withContext(Dispatchers.IO){
+            val result = withContext(dispatcher){
                 convertToRedeemedResponse(useCaseRedeem.executeOnBackground())
             }
             eventRedeemedMutable.value = result

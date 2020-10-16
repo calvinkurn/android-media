@@ -10,7 +10,6 @@ import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.*
 import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateResponse
 import com.tokopedia.entertainment.pdp.data.redeem.validate.EventValidateUser
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,8 +18,6 @@ import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -73,7 +70,9 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     val userValidated = EventValidateUser(result.data.eventProductDetailEntity.eventProductDetail.productDetailData.id.toInt(),
                             userId, email)
                     useCaseWhiteListValidation.setValidateUser(userValidated)
-                    val result = convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
+                    val result = withContext(dispatcher) {
+                        convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
+                    }
                     validateScannerMutable.value = result.data.success
                 }
 
@@ -243,7 +242,6 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         const val SECTION_ABOUT = "Tentang Kegiatan Ini"
         const val SECTION_LOCATION = "Gimana cara ke sana?"
         const val SECTION_INFORMATION = "Informasi Penting"
-        const val SUCCESS_VALIDATE = "OK"
 
     }
 }
