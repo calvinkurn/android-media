@@ -4,7 +4,6 @@ package com.tokopedia.linter.unify
 
 import com.android.SdkConstants
 import com.android.tools.lint.detector.api.*
-import com.tokopedia.linter.UNIFY_USAGE_ISSUE_ID
 import com.tokopedia.linter.detectors.xml.XMLDetector
 import com.tokopedia.linter.unify.UnifyComponentsList.getUnifyMapping
 import com.tokopedia.linter.unify.UnifyComponentsList.widgetViewMapping
@@ -12,16 +11,17 @@ import org.jetbrains.uast.UCallExpression
 import org.w3c.dom.Element
 
 object UnifyDetector {
-    const val BRIEF_DESCRIPTION = "Widget replaced with UnifyComponent";
-    const val EXPLANATION = "We have Unify Components Tokopedia Recommend to use them"
+    const val UNIFY_USAGE_ISSUE_ID = "UnifyComponentUsage"
+    const val UNIFY_USAGE_BRIEF_DESCRIPTION = "Widget replaced with UnifyComponent";
+    const val UNIFY_USAGE_EXPLANATION = "We have Unify Components Tokopedia Recommend to use them"
 
 
     val unifyMapKeys = (widgetViewMapping +  getUnifyMapping());
 
     val ISSUE: Issue = Issue.create(
             UNIFY_USAGE_ISSUE_ID,
-            BRIEF_DESCRIPTION,
-            EXPLANATION,
+            UNIFY_USAGE_BRIEF_DESCRIPTION,
+            UNIFY_USAGE_EXPLANATION,
             Category.CORRECTNESS,
             3,
             Severity.WARNING,

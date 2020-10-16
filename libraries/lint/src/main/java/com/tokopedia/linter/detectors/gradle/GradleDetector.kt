@@ -1,10 +1,12 @@
 package com.tokopedia.linter.detectors.gradle
 
 import com.android.tools.lint.detector.api.*
+import com.tokopedia.linter.LinterConstants
 
+@Suppress("UnstableApiUsage")
 class GradleDetector : Detector(), Detector.GradleScanner {
     companion object {
-        val interstingBlocks = listOf("dependencies")
+        val intersting_blocks = listOf(LinterConstants.GradleConstructs.DEPENDENCIES)
         fun getStringDependency(value: String) = "\":" + value + "\""
 
         val IMPLEMENTATION = Implementation(
@@ -13,10 +15,10 @@ class GradleDetector : Detector(), Detector.GradleScanner {
         )
     }
 
-    protected fun isInterestingBlock(
+    private fun isInterestingBlock(
             parent: String
     ): Boolean {
-        return interstingBlocks.contains(parent)
+        return intersting_blocks.contains(parent)
     }
 
     override fun checkDslPropertyAssignment(
@@ -29,14 +31,14 @@ class GradleDetector : Detector(), Detector.GradleScanner {
             statementCookie: Any
     ) {
         if (isInterestingBlock(parent)) {
-            if (parent == "dependencies" && property == "implementation") {
+            if (parent == LinterConstants.GradleConstructs.DEPENDENCIES && property == LinterConstants.GradleConstructs.IMPLEMENTATION) {
                 var dependency: String = value
                 if (isInternalProjectDependency(value)) {
                     dependency = getInternalDependency(value)
 
                 }
-                checkDeprecatedDependencies(property, context, value, valueCookie, dependency)
-                checkBannedDependencies(property, context, value, valueCookie, dependency)
+                DeprecatedDependencyDetector.checkDeprecatedDependencies(property, context, value, valueCookie, dependency)
+                BannedDependencyDetector.checkBannedDependencies(property, context, value, valueCookie, dependency)
             }
         }
 
