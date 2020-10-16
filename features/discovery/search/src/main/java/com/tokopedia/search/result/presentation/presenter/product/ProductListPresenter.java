@@ -52,6 +52,7 @@ import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.utils.SchedulersProvider;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -89,7 +90,11 @@ import dagger.Lazy;
 import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
@@ -133,6 +138,8 @@ final class ProductListPresenter
     private Lazy<UseCase<String>> getProductCountUseCase;
     private Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
+    private SchedulersProvider schedulersProvider;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private boolean enableGlobalNavWidget = true;
     private String additionalParams = "";
@@ -178,6 +185,7 @@ final class ProductListPresenter
             @Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
             Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
+            SchedulersProvider schedulersProvider,
             Lazy<RemoteConfig> remoteConfig
     ) {
         this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
@@ -191,6 +199,7 @@ final class ProductListPresenter
         this.getProductCountUseCase = getProductCountUseCase;
         this.getLocalSearchRecommendationUseCase = getLocalSearchRecommendationUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
+        this.schedulersProvider = schedulersProvider;
     }
 
     @Override
@@ -765,7 +774,7 @@ final class ProductListPresenter
         setAutoCompleteApplink(productViewModel.getAutocompleteApplink());
         setTotalData(productViewModel.getTotalData());
 
-        sendTrackingNoSearchResult(productViewModel);
+        doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
@@ -1408,6 +1417,21 @@ final class ProductListPresenter
     private void getViewToSendTrackingSearchAttempt(ProductViewModel productViewModel) {
         if (getView() == null) return;
 
+        isFirstTimeLoad = false;
+
+        doInBackground(productViewModel, this::sendGeneralSearchTracking);
+    }
+
+    private <T> void doInBackground(T observable, final Action1<? super T> onNext) {
+        Subscription subscription =
+                Observable.just(observable)
+                        .subscribeOn(schedulersProvider.computation())
+                        .subscribe(onNext, Throwable::printStackTrace);
+
+        compositeSubscription.add(subscription);
+    }
+
+    private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
@@ -1431,8 +1455,6 @@ final class ProductListPresenter
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
         getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
-
-        isFirstTimeLoad = false;
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
@@ -1948,5 +1970,11 @@ final class ProductListPresenter
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
         if (getLocalSearchRecommendationUseCase != null) getLocalSearchRecommendationUseCase.get().unsubscribe();
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) unsubscribeCompositeSubscription();
+    }
+
+    private void unsubscribeCompositeSubscription() {
+        compositeSubscription.unsubscribe();
+        compositeSubscription = null;
     }
 }

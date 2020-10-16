@@ -7,6 +7,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -16,7 +17,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
  * A class for holder view Recommendation Item
  */
 class RecommendationItemViewHolder(
-       private val view: View
+       private val view: View, val listener: RecommendationListener
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
@@ -46,13 +47,13 @@ class RecommendationItemViewHolder(
                                 element.productItem.imageUrl
                         )
                     }
-                    element.listener.onProductImpression(element.productItem)
+                    listener.onProductImpression(element.productItem)
                 }
             })
 
             setOnClickListener {
-                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
+                listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
+                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(
                         this.javaClass.simpleName,
                         element.productItem.clickUrl,
                         element.productItem.productId.toString(),
@@ -62,7 +63,7 @@ class RecommendationItemViewHolder(
             }
 
             setThreeDotsOnClickListener {
-                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
+                listener.onThreeDotsClick(element.productItem, adapterPosition)
             }
         }
     }
