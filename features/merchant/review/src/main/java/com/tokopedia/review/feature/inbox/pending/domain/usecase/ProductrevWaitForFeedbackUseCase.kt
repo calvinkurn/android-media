@@ -13,6 +13,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
     companion object {
         const val PARAM_LIMIT = "limit"
         const val PARAM_PAGE = "page"
+        const val WAIT_FOR_FEEDBACK_QUERY_CLASS_NAME = "WaitForFeedback"
         const val WAIT_FOR_FEEDBACK_QUERY =
                 """
                 query productrevWaitForFeedback(${'$'}limit: Int!, ${'$'}page: Int!) {
@@ -42,7 +43,7 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
             """
     }
 
-    @GqlQuery("WaitForFeedback", WAIT_FOR_FEEDBACK_QUERY)
+    @GqlQuery(WAIT_FOR_FEEDBACK_QUERY_CLASS_NAME, WAIT_FOR_FEEDBACK_QUERY)
     fun setParams(limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int) {
         setGraphqlQuery(WaitForFeedback.GQL_QUERY)
         setTypeClass(ProductrevWaitForFeedbackResponseWrapper::class.java)

@@ -11,6 +11,7 @@ import javax.inject.Inject
 class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     companion object {
+        const val OVO_INCENTIVE_QUERY_CLASS_NAME = "OvoIncentive"
         const val OVO_INCENTIVE_QUERY = """
                 query getProductRevIncentiveOvo{
                     productrevIncentiveOvo{
@@ -28,7 +29,7 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
             """
     }
 
-    @GqlQuery("OvoIncentive", OVO_INCENTIVE_QUERY)
+    @GqlQuery(OVO_INCENTIVE_QUERY_CLASS_NAME, OVO_INCENTIVE_QUERY)
     suspend fun getIncentiveOvo(): ProductRevIncentiveOvoDomain {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val graphqlRequest = GraphqlRequest(OvoIncentive.GQL_QUERY, ProductRevIncentiveOvoDomain::class.java)

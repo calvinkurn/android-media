@@ -17,7 +17,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         private const val SHOP_ID = "shopID"
         private const val TITLE = "title"
         private const val MESSAGE = "message"
-
+        const val INSERT_TEMPLATE_REVIEW_MUTATION_CLASS_NAME = "InsertTemplateReview"
         const val INSERT_TEMPLATE_REVIEW_MUTATION = """
             mutation insert_template_review(${'$'}shopID: Int!, ${'$'}title: String!, ${'$'}message: String!) {
               insertResponseTemplate(shopID: ${'$'}shopID, title: ${'$'}title, message: ${'$'}message) {
@@ -41,7 +41,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("InsertTemplateReview", INSERT_TEMPLATE_REVIEW_MUTATION)
+    @GqlQuery(INSERT_TEMPLATE_REVIEW_MUTATION_CLASS_NAME, INSERT_TEMPLATE_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyInsertTemplateResponse.InsertResponseTemplate {
         val gqlRequest = GraphqlRequest(InsertTemplateReview.GQL_QUERY, ReviewReplyInsertTemplateResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

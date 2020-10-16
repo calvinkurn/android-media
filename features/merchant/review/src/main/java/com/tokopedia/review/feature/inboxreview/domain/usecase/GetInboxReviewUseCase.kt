@@ -18,7 +18,7 @@ class GetInboxReviewUseCase @Inject constructor(
         private const val PAGE = "page"
         private const val LIMIT = "limit"
         private const val MAX_LIMIT = 15
-
+        const val INBOX_REVIEW_QUERY_CLASS_NAME = "InboxReview"
         const val INBOX_REVIEW_QUERY = """
             query productrevGetInboxReviewByShop(${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}filterBy: String!) {
               productrevGetInboxReviewByShop(page: ${'$'}page, limit: ${'$'}limit, filterBy: ${'$'}filterBy) {
@@ -67,7 +67,7 @@ class GetInboxReviewUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("InboxReview", INBOX_REVIEW_QUERY)
+    @GqlQuery(INBOX_REVIEW_QUERY_CLASS_NAME, INBOX_REVIEW_QUERY)
     override suspend fun executeOnBackground(): InboxReviewResponse.ProductGetInboxReviewByShop {
         val gqlRequest = GraphqlRequest(InboxReview.GQL_QUERY, InboxReviewResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

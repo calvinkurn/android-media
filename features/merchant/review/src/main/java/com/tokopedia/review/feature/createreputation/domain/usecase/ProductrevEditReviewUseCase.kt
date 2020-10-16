@@ -23,6 +23,7 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_CURRENT_ATTACHMENT_URL = "currentAttachmentURLs"
         const val PARAM_NEW_ATTACHMENT_ID = "newAttachmentIDs"
+        const val EDIT_REVIEW_QUERY_CLASS_NAME = "EditReview"
         const val EDIT_REVIEW_MUTATION =
             """
                 mutation productrevEditReview(${'$'}feedbackID: String!, ${'$'}reputationID: String!, ${'$'}productID : String!, ${'$'}shopID: String!, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}currentAttachmentURLs: [String],${'$'}newAttachmentIDs: [String]) {
@@ -60,7 +61,7 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
         }
     }
 
-    @GqlQuery("EditReview", EDIT_REVIEW_MUTATION)
+    @GqlQuery(EDIT_REVIEW_QUERY_CLASS_NAME, EDIT_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ProductRevEditReviewResponseWrapper {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(GraphqlRequest(EditReview.GQL_QUERY, ProductRevEditReviewResponseWrapper::class.java, requestParams.parameters))

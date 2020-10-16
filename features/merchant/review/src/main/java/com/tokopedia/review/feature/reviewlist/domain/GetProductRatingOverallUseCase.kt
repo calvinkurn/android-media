@@ -15,6 +15,7 @@ class GetProductRatingOverallUseCase @Inject constructor(
 
     companion object {
         private const val FILTER_BY = "filterBy"
+        const val PRODUCT_RATING_QUERY_CLASS_NAME = "RatingProduct"
         const val PRODUCT_RATING_QUERY = """
             query get_product_rating_overall(${'$'}filterBy: String!) {
               productrevGetProductRatingOverallByShop(filterBy: ${'$'}filterBy) {
@@ -32,7 +33,7 @@ class GetProductRatingOverallUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("RatingProduct", PRODUCT_RATING_QUERY)
+    @GqlQuery(PRODUCT_RATING_QUERY_CLASS_NAME, PRODUCT_RATING_QUERY)
     override suspend fun executeOnBackground(): ProductRatingOverallResponse.ProductGetProductRatingOverallByShop {
         val gqlRequest = GraphqlRequest(RatingProduct.GQL_QUERY, ProductRatingOverallResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

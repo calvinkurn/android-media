@@ -15,6 +15,7 @@ class InboxReviewInsertReputationUseCase @Inject constructor(graphqlRepository: 
         const val PARAM_USERID = "userId"
         const val PARAM_BUYER_SELLER = "buyerSeller"
         const val BUYER_SELLER_VALUE = 1
+        const val INSERT_REPUTATION_QUERY_CLASS_NAME = "InsertReputation"
         const val INSERT_REPUTATION_MUTATION =
             """
                 mutation inboxReviewInsertReputation(${'$'}reputationId: Int,${'$'}reputationScore: Int,${'$'}userId: Int,${'$'}buyerSeller: Int) {
@@ -25,7 +26,7 @@ class InboxReviewInsertReputationUseCase @Inject constructor(graphqlRepository: 
             """
     }
 
-    @GqlQuery("InsertReputation", INSERT_REPUTATION_MUTATION)
+    @GqlQuery(INSERT_REPUTATION_QUERY_CLASS_NAME, INSERT_REPUTATION_MUTATION)
     fun setParams(reputationId: Int, reputationScore: Int, userId: Int) {
         setGraphqlQuery(InsertReputation.GQL_QUERY)
         setTypeClass(InboxReviewInsertReputationResponseWrapper::class.java)

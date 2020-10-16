@@ -18,6 +18,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         const val PARAM_REVIEW_TEXT = "reviewText"
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_ATTACHMENT_ID = "attachmentIDs"
+        const val SUBMIT_REVIEW_QUERY_CLASS_NAME = "SubmitReview"
         const val SUBMIT_REVIEW_MUTATION =
             """
                 mutation productrevSubmitReview(${'$'}reputationID: Int!,${'$'}productID: Int!, ${'$'}shopID: Int!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String]) {
@@ -28,7 +29,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
             """
     }
 
-    @GqlQuery("SubmitReview", SUBMIT_REVIEW_MUTATION)
+    @GqlQuery(SUBMIT_REVIEW_QUERY_CLASS_NAME, SUBMIT_REVIEW_MUTATION)
     fun setParams(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, attachmentIds: List<String> = emptyList()) {
         setTypeClass(ProductrevSubmitReviewResponseWrapper::class.java)
         setGraphqlQuery(SubmitReview.GQL_QUERY)

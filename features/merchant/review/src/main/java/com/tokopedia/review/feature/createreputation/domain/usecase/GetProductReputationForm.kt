@@ -15,6 +15,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
     companion object {
         const val REPUTATION_ID = "reputationId"
         const val PRODUCT_ID = "productId"
+        const val REPUTATION_FORM_QUERY_CLASS_NAME = "ReputationForm"
         const val REPUTATION_FORM_QUERY = """
             query productrevGetForm(${'$'}reputationId:Int!,${'$'}productId:Int!){
               productrevGetForm(reputationID:${'$'}reputationId, productID:${'$'}productId){
@@ -61,7 +62,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
 
     var forceRefresh = true
 
-    @GqlQuery("ReputationForm", REPUTATION_FORM_QUERY)
+    @GqlQuery(REPUTATION_FORM_QUERY_CLASS_NAME, REPUTATION_FORM_QUERY)
     suspend fun getReputationForm(requestParams: RequestParams): ProductRevGetForm {
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val graphqlRequest = GraphqlRequest(ReputationForm.GQL_QUERY, ProductRevGetForm::class.java, requestParams.parameters)

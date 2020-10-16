@@ -15,6 +15,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shopId"
+        const val GET_REVIEW_RESPONSE_CLASS_NAME = "ReviewResponseQuery"
         const val GET_REVIEW_RESPONSE = """
             query get_review_response_template_list(${'$'}shopId: Int!) {
                 reviewResponseTemplateList(shopId: ${'$'}shopId) {
@@ -39,7 +40,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("ReviewResponseQuery", GET_REVIEW_RESPONSE)
+    @GqlQuery(GET_REVIEW_RESPONSE_CLASS_NAME, GET_REVIEW_RESPONSE)
     override suspend fun executeOnBackground(): ReviewReplyTemplateListResponse.ReviewResponseTemplateList {
         val gqlRequest = GraphqlRequest(ReviewResponseQuery.GQL_QUERY, ReviewReplyTemplateListResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

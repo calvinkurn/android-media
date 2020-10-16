@@ -11,6 +11,7 @@ class ProductrevMarkAsSeenUseCase @Inject constructor(graphqlRepository: Graphql
 
     companion object {
         const val PARAM_INBOX_REVIEW_ID = "inboxReviewID"
+        const val MARK_AS_SEEN_MUTATION_CLASS_NAME = "MarkAsSeen"
         const val MARK_AS_SEEN_MUTATION =
             """
                 mutation productrevInboxReviewMarkAsSeen(${'$'}inboxReviewID: String!) {
@@ -21,7 +22,7 @@ class ProductrevMarkAsSeenUseCase @Inject constructor(graphqlRepository: Graphql
             """
     }
 
-    @GqlQuery("MarkAsSeen", MARK_AS_SEEN_MUTATION)
+    @GqlQuery(MARK_AS_SEEN_MUTATION_CLASS_NAME, MARK_AS_SEEN_MUTATION)
     fun setParams(inboxReviewId: Int) {
         setGraphqlQuery(MarkAsSeen.GQL_QUERY)
         setTypeClass(ProductrevInboxReviewMarkAsSeenResponseWrapper::class.java)

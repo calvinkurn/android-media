@@ -14,6 +14,7 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
         const val PARAM_SEARCH_QUERY = "searchQuery"
         const val PARAM_LIMIT = "limit"
         const val PARAM_PAGE = "page"
+        const val HISTORY_QUERY_CLASS_NAME = "ReviewHistory"
         const val HISTORY_QUERY =
             """
                 query productrevFeedbackHistory(${'$'}searchQuery: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
@@ -49,7 +50,7 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
             """
     }
 
-    @GqlQuery("ReviewHistory", HISTORY_QUERY)
+    @GqlQuery(HISTORY_QUERY_CLASS_NAME, HISTORY_QUERY)
     fun setParams(searchQuery: String?, page: Int, limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE){
         setGraphqlQuery(ReviewHistory.GQL_QUERY)
         setTypeClass(ProductrevFeedbackHistoryResponseWrapper::class.java)

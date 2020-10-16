@@ -18,7 +18,7 @@ class GetReviewProductListUseCase @Inject constructor(
         private const val FILTER_BY = "filterBy"
         private const val LIMIT = "limit"
         private const val PAGE = "page"
-
+        const val PRODUCT_REVIEW_LIST_CLASS_NAME = "ProductReviewList"
         const val PRODUCT_REVIEW_LIST = """
             query get_product_review_list(${'$'}sortBy: String!, ${'$'}filterBy: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
             	productrevShopRatingAggregate(sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
@@ -44,7 +44,7 @@ class GetReviewProductListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("ProductReviewList", PRODUCT_REVIEW_LIST)
+    @GqlQuery(PRODUCT_REVIEW_LIST_CLASS_NAME, PRODUCT_REVIEW_LIST)
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
         val gqlRequest = GraphqlRequest(ProductReviewList.GQL_QUERY, ProductReviewListResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

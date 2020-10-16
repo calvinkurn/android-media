@@ -25,7 +25,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         private const val LIMIT = "limit"
         private const val PAGE = "page"
         private const val TIME_FILTER = "timeFilter"
-
+        const val GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME = "ProductFeedbackFilter"
         const val GET_PRODUCT_FEEDBACK_FILTER_QUERY = """
         query get_product_feedback_detail(${'$'}productID: Int!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
           productrevFeedbackDataPerProduct(productID: ${'$'}productID, sortBy: ${'$'}sortBy,
@@ -56,7 +56,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
-    @GqlQuery("ProductFeedbackFilter", GET_PRODUCT_FEEDBACK_FILTER_QUERY)
+    @GqlQuery(GET_PRODUCT_FEEDBACK_FILTER_QUERY_CLASS_NAME, GET_PRODUCT_FEEDBACK_FILTER_QUERY)
     override suspend fun executeOnBackground(): ProductReviewInitialDataResponse {
         val productReviewInitialResponse = ProductReviewInitialDataResponse()
 

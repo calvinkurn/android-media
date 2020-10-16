@@ -16,7 +16,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
     companion object {
         private const val PRODUCT_ID = "productID"
         private const val FILTER_BY = "filterBy"
-
+        const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME = "ReviewDetailOverall"
         const val GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY = """
         query get_product_review_detail_overall(${'$'}productID: Int!, ${'$'}filterBy: String!) {
              productrevGetReviewAggregateByProduct(productID: ${'$'}productID, filterBy: ${'$'}filterBy) {
@@ -34,7 +34,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("ReviewDetailOverall", GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY)
+    @GqlQuery(GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY_CLASS_NAME, GET_PRODUCT_REVIEW_DETAIL_OVERALL_QUERY)
     override suspend fun executeOnBackground(): ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct {
         val gqlRequest = GraphqlRequest(ReviewDetailOverall.GQL_QUERY, ProductReviewDetailOverallResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))

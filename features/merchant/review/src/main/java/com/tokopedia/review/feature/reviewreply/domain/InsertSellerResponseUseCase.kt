@@ -18,7 +18,7 @@ class InsertSellerResponseUseCase @Inject constructor(
         private const val REVIEW_ID = "reviewId"
         private const val PRODUCT_ID = "productId"
         private const val RESPONSE_MESSAGE = "responseMessage"
-
+        const val INSERT_REVIEW_MUTATION_CLASS_NAME = "InsertReview"
         const val INSERT_REVIEW_MUTATION = """
             mutation insert_review_reply(${'$'}reviewId: Int!, ${'$'}productId: Int!, ${'$'}shopId: Int!, ${'$'}responseMessage: String!) {
                   inboxReviewInsertReviewResponse(reviewId: ${'$'}reviewId, productId: ${'$'}productId, shopId: ${'$'}shopId,
@@ -35,7 +35,7 @@ class InsertSellerResponseUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-    @GqlQuery("InsertReview", INSERT_REVIEW_MUTATION)
+    @GqlQuery(INSERT_REVIEW_MUTATION_CLASS_NAME, INSERT_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyInsertResponse.InboxReviewInsertReviewResponse {
         val gqlRequest = GraphqlRequest(InsertReview.GQL_QUERY, ReviewReplyInsertResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
