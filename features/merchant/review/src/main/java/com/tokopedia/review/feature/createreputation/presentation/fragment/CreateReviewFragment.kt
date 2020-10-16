@@ -62,6 +62,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.unifycomponents.*
@@ -104,7 +105,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
         private const val SAME_ARGS_ERROR = 3
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
-        private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
 
         fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Int) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
@@ -280,7 +280,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             getReviewDetailData()
         } else {
             getReviewData()
-            getIncentiveOvoData()
+            getIncentiveOvoData(productId, reputationId)
         }
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
@@ -442,6 +442,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
         return RouteManager.route(context, webviewUrl)
     }
 
+    override fun onClickCloseThankYouBottomSheet() {
+        finishIfRoot(true)
+    }
+
+    override fun onClickReviewAnother() {
+        goToReviewPending()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
@@ -483,7 +491,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewViewModel.getReviewDetails(feedbackId)
     }
 
-    private fun getIncentiveOvoData() {
+    private fun getIncentiveOvoData(productId: Int = 0, reputationId: Int = 0) {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -595,7 +603,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet()
+            showThankYouBottomSheet(data)
         }
         data?.productrevIncentiveOvo?.let {
             if (ovoIncentiveAmount == 0) {
@@ -608,36 +616,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             if (ovoIncentiveBottomSheet == null) {
-                                ovoIncentiveBottomSheet = BottomSheetUnify()
-                                val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
-                                ovoIncentiveBottomSheet?.apply {
-                                    setChild(view)
-                                    initView(view, data, ovoIncentiveBottomSheet)
-                                    setOnDismissListener {
-                                        ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
-                                    }
-                                    setShowListener {
-                                        bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
-                                        bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-                                        bottomSheet.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
-                                            override fun onSlide(p0: View, p1: Float) {
-                                            }
-                                            override fun onStateChanged(p0: View, p1: Int) {
-                                                if(p1 == BottomSheetBehavior.STATE_COLLAPSED){
-                                                    dismiss()
-                                                }
-                                            }
-                                        })
-                                    }
-                                }
+                                ovoIncentiveBottomSheet = IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, data, this@CreateReviewFragment)
                             }
                             ovoIncentiveBottomSheet?.let { bottomSheet ->
                                 activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
                                 ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                             }
-
                         }
-
                         override fun onDismiss() {
                             ReviewTracking.onClickDismissIncentiveOvoTracker(it.subtitle, "")
                         }
@@ -654,97 +639,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         ovoPointsTicker.visibility = View.GONE
     }
 
-    private fun showThankYouBottomSheet() {
-        (createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data?.let {
-            if (thankYouBottomSheet == null) {
-                thankYouBottomSheet = BottomSheetUnify()
-                val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
-                thankYouBottomSheet?.setChild(child)
-                thankYouBottomSheet?.setCloseClickListener {
-                    finishIfRoot(true)
-                }
-                initThankYouView(child, it, thankYouBottomSheet)
-            }
-            thankYouBottomSheet?.let { bottomSheet ->
-                activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-            }
+    private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
+        if (thankYouBottomSheet == null) {
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, ovoIncentiveAmount) }
         }
-    }
-
-    private fun initView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify?) {
-        bottomSheet?.run {
-            view.apply {
-                tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
-                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
-                        ?: "").spannedString
-                incentiveOvoBtnContinueReview.apply {
-                    setOnClickListener {
-                        dismiss()
-                        ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
-                    }
-                    text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
-                }
-            }
-
-            view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
-
-            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
-                    ?: emptyList(), this@CreateReviewFragment)
-            view.rvIncentiveOvoExplain.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = adapterIncentiveOvo
-            }
-            showKnob = true
-            showCloseIcon = false
-            showHeader = false
-            isHideable = true
-            isDragable = true
-        }
-    }
-
-    private fun initThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, bottomSheet: BottomSheetUnify?) {
-        bottomSheet?.run {
-            val incentiveOvoSubmittedImage = view.findViewById<AppCompatImageView>(R.id.incentiveOvoSubmittedImage)
-            val incentiveOvoSubmittedTitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedTitle)
-            val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)
-            val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
-            val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
-            view.apply {
-                val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
-                bottomSheet.setShowListener {
-                    CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, productRevIncentiveOvoDomain != null)
-                }
-                incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
-                incentiveOvoSubmittedTitle?.text = defaultTitle
-                incentiveOvoSubmittedSubtitle?.text = context.getString(R.string.review_create_thank_you_subtitle, ovoIncentiveAmount)
-                productRevIncentiveOvoDomain?.let {
-                    incentiveOvoSendAnother?.apply {
-                        setOnClickListener {
-                            dismiss()
-                            goToReviewPending()
-                            CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
-                        }
-                    }
-                    incentiveOvoLater?.apply {
-                        setOnClickListener {
-                            dismiss()
-                            finishIfRoot(true)
-                            CreateReviewTracking.eventClickLater(defaultTitle, true)
-                        }
-                        show()
-                    }
-                    return
-                }
-                incentiveOvoSendAnother?.apply {
-                    text = context.getString(R.string.review_create_thank_you_default_button)
-                    setOnClickListener {
-                        dismiss()
-                        finishIfRoot(true)
-                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
-                    }
-                }
-                overlayClickDismiss = false
-            }
+        thankYouBottomSheet?.let { bottomSheet ->
+            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         }
     }
 
