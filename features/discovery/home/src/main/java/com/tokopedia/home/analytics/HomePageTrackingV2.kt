@@ -133,7 +133,9 @@ object HomePageTrackingV2 : BaseTracking() {
                             categoryId = channel.categoryID,
                             recommendationType = grid.recommendationType,
                             pageName = channel.pageName,
-                            isTopAds = grid.isTopads
+                            isTopAds = grid.isTopads,
+                            isCarousel = false,
+                            headerName = channel.header.name
                     )
                 },
                 list = String.format(

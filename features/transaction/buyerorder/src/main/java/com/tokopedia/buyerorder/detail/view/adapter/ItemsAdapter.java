@@ -359,6 +359,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
+                    setEventDetails.setDealsBanner(item);
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
@@ -640,6 +641,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setPassengerEvent(Items item);
 
         void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
+
+        void setDealsBanner(Items item);
 
     }
 

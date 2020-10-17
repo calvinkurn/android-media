@@ -226,12 +226,12 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(VIDEO_DETAIL) }, DF_BASE, R.string.applink_kol_title_video_detail))
             add(DFP({ it.startsWithPattern(MEDIA_PREVIEW) }, DF_BASE, R.string.applink_kol_title_media_preview))
             add(DFP({ it.startsWithPattern(INTEREST_PICK) }, DF_BASE, R.string.applink_ip_title))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_BASE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_BASE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_BASE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_BASE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_BASE, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_CREATE_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE_DRAFT_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(AFFILIATE_EDIT) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_CONTENT_AFFILIATE, R.string.applink_af_title_create_post))
 
             // Digital
             add(DFP({
