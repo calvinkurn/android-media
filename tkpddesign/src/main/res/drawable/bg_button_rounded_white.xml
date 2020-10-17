@@ -9,7 +9,7 @@
             </item>
             <item>
                 <shape>
-                    <solid android:color="@color/white"/>
+                    <solid android:color="@color/Unify_N0"/>
                     <corners
                         android:radius="@dimen/dp_56"/>
                     <padding

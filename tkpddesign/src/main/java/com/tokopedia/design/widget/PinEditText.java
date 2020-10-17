@@ -14,10 +14,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.core.content.ContextCompat;
-import androidx.core.text.TextUtilsCompat;
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.widget.AppCompatEditText;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -28,6 +24,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
 
 import com.tokopedia.design.R;
 
@@ -63,6 +64,8 @@ public class PinEditText extends AppCompatEditText {
     private boolean mAnimate = false;
     private boolean mHasError = false;
     private ColorStateList mOriginalTextColors;
+    private Context context;
+
     private int[][] mStates = new int[][]{
             new int[]{android.R.attr.state_selected}, // selected
             new int[]{android.R.attr.state_active}, // error
@@ -100,6 +103,7 @@ public class PinEditText extends AppCompatEditText {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        this.context = context;
         float multi = context.getResources().getDisplayMetrics().density;
         mLineStroke = multi * mLineStroke;
         mLineStrokeSelected = multi * mLineStrokeSelected;
@@ -139,10 +143,10 @@ public class PinEditText extends AppCompatEditText {
         int colorSelected = outValue.data;
         mColors[0] = colorSelected;
 
-        int colorFocused = isInEditMode() ? Color.GRAY : ContextCompat.getColor(context, R.color.pin_normal);
+        int colorFocused = isInEditMode() ? androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300) : ContextCompat.getColor(context, R.color.pin_normal);
         mColors[1] = colorFocused;
 
-        int colorUnfocused = isInEditMode() ? Color.GRAY : ContextCompat.getColor(context, R.color.pin_normal);
+        int colorUnfocused = isInEditMode() ? androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300) : ContextCompat.getColor(context, R.color.pin_normal);
         mColors[2] = colorUnfocused;
 
         setBackgroundResource(0);
@@ -327,7 +331,11 @@ public class PinEditText extends AppCompatEditText {
 
 
     private int getColorForState(int... states) {
-        return mColorStates.getColorForState(states, Color.GRAY);
+        if (context != null) {
+            return mColorStates.getColorForState(states, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300));
+        } else {
+            return mColorStates.getColorForState(states, Color.GRAY);
+        }
     }
 
     /**

@@ -103,7 +103,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_weight="1"
                 tools:text="Baru! Selesaikan transaksimu dalam 1 langkah saja."
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 app:typographyType="body_3" />
 
             <ImageView
@@ -223,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 tools:visibility="gone"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
                 <ProgressBar
                     android:layout_width="wrap_content"

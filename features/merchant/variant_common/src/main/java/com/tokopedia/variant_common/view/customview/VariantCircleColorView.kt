@@ -47,7 +47,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.FILL
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.light_N700_68)
+                color = MethodChecker.getColor(context, R.color.Unify_N700_68)
             }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -134,7 +134,7 @@ class VariantCircleColorView @JvmOverloads constructor(
         try {
             innerCirclePaint.color = Color.parseColor(hex)
         } catch (t: Throwable) {
-            innerCirclePaint.color = Color.WHITE
+            innerCirclePaint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         invalidate()
@@ -171,7 +171,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.light_N700_68)
+        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.Unify_N700_68)
     }
 
     interface CircleDrawInterface {

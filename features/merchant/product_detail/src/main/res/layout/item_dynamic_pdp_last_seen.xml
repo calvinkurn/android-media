@@ -5,7 +5,7 @@
     android:id="@+id/txt_last_update"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center"
     android:padding="@dimen/dp_12"
     android:visibility="gone"

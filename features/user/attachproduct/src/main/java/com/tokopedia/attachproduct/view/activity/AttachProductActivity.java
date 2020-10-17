@@ -51,7 +51,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.Unify_N0));
     }
 
     @Override

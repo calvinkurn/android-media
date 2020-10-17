@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/product_detail_discussion_see_all"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"

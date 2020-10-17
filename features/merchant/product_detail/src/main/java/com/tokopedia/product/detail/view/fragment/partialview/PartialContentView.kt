@@ -160,7 +160,7 @@ class PartialContentView(private val view: View,
 
     private fun renderStockBarFlashSale(campaign: CampaignModular, stockWording: String) = with(view) {
         showStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Neutral_N50))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N50))
         setProgressStockBar(campaign, stockWording)
     }
 
@@ -262,6 +262,6 @@ class PartialContentView(private val view: View,
 
     private fun hideStockBarAndBackgroundColor() = with(view) {
         hideStockBarFlashSale()
-        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.white))
+        discount_timer_holder.setBackgroundColor(MethodChecker.getColor(view.context, R.color.Unify_N0))
     }
 }

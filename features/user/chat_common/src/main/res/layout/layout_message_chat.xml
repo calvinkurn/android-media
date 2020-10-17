@@ -79,8 +79,8 @@
             android:linksClickable="true"
             android:maxWidth="@dimen/chat_width"
             android:padding="@dimen/dp_10"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white"
+            android:textColor="@color/Unify_N0"
+            android:textColorLink="@color/Unify_N0"
             android:textIsSelectable="true"
             android:textSize="@dimen/sp_14"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>

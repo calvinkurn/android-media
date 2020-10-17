@@ -42,7 +42,7 @@
             app:nail_color="@color/grey_700"
             app:nail_radius="@dimen/dp_0"
             app:nail_stroke_width="@dimen/dp_0"
-            app:thumb_color="@color/white"
+            app:thumb_color="@color/Unify_N0"
             app:thumb_radius="@dimen/dp_12" />
 
         <TextView

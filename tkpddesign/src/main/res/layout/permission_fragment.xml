@@ -72,7 +72,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/tkpd_design_accept"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         app:layout_goneMarginTop="@dimen/dp_16"

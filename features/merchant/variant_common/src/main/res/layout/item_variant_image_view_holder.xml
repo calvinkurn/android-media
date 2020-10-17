@@ -44,7 +44,7 @@
             android:gravity="center"
             android:background="@drawable/bg_round_corner_variant_overlay"
             android:text="@string/variant_empty"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

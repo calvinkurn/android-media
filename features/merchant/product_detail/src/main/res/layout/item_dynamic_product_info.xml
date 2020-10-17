@@ -101,7 +101,7 @@
         android:ellipsize="end"
         android:longClickable="false"
         app:typographyType="body_2"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:maxLines="@integer/default_description_lines"
         android:transitionName="@string/transition_description"
         android:textIsSelectable="false"

@@ -68,7 +68,7 @@
                 android:paddingLeft="@dimen/dp_3"
                 android:paddingEnd="@dimen/dp_3"
                 android:paddingRight="@dimen/dp_3"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 android:textSize="@dimen/sp_10" />
 
         </LinearLayout>
@@ -189,7 +189,7 @@
                     android:layout_alignBottom="@+id/layout_content"
                     android:layout_centerInParent="true"
                     android:alpha="0.6"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:visibility="gone">
 
                     <com.tokopedia.unifycomponents.LoaderUnify

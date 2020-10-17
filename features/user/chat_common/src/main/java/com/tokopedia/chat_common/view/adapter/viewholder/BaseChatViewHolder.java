@@ -1,6 +1,5 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -176,7 +175,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             Drawable drawable = MethodChecker.getDrawable(chatReadStatus.getContext(), imageResource);
             if (useWhiteReadStatus() && !element.isRead()) {
                 drawable.mutate();
-                drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(androidx.core.content.ContextCompat.getColor(chatReadStatus.getContext(),com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP);
             } else {
                 drawable.clearColorFilter();
             }

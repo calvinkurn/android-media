@@ -49,7 +49,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/white"
+            app:tabBackground="@color/Unify_N0"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/tkpd_green_header"
             app:tabMode="fixed"

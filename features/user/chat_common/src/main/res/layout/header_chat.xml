@@ -40,7 +40,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
         tools:visibility="visible" />

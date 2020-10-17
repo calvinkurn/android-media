@@ -62,8 +62,8 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
                 .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-        message.setTextColor(MethodChecker.getColor(context, R.color.white));
-        message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
+        message.setTextColor(MethodChecker.getColor(context, R.color.Unify_N0));
+        message.setLinkTextColor(MethodChecker.getColor(context, R.color.Unify_N0));
     }
 
     private void setAlignParent(int alignment, View view) {

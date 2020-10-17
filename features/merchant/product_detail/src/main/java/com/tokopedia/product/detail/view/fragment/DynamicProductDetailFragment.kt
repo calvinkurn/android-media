@@ -293,7 +293,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
         }
 
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         setHasOptionsMenu(true)
         assignDeviceId()
         setupRemoteConfig()
@@ -1571,7 +1573,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         view?.let {
             Snackbar.make(it, string, Snackbar.LENGTH_LONG).apply {
                 setAction(getString(R.string.close)) { dismiss() }
-                setActionTextColor(Color.WHITE)
+                setActionTextColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }.show()
         }
     }
@@ -2091,7 +2093,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         varToolbar = search_pdp_toolbar
         initToolBarMethod = ::initToolbarLight
         activity?.let {
-            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
             (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -2555,7 +2557,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             if (isAdded) {
                 varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.Unify_N0))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -2669,7 +2671,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun updateActionButtonShadow() {
         if (::actionButtonView.isInitialized) {
             if (stickyLoginView.isShowing()) {
-                actionButtonView.setBackground(R.color.white)
+                actionButtonView.setBackground(R.color.Unify_N0)
             } else {
                 val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
                 drawable?.let { actionButtonView.setBackground(it) }

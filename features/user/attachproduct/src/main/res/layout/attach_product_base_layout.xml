@@ -87,7 +87,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Neutral_N200"
+                        android:textColor="@color/Unify_N200"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Hitam" />
@@ -110,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Neutral_N200"
+                        android:textColor="@color/Unify_N200"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Besar" />
@@ -147,7 +147,7 @@
                 android:layout_toEndOf="@+id/discount"
                 android:layout_toRightOf="@+id/discount"
                 android:gravity="center_vertical"
-                android:textColor="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 android:visibility="gone"
                 app:typographyType="small"
                 tools:text="Rp 2.099.000"
@@ -273,7 +273,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
