@@ -19,7 +19,7 @@ class ProductMenuViewHolder(
 
     override fun bind(menu: ProductMenuViewModel) {
         itemView.textMenu.text = itemView.context.getString(menu.title)
-        itemView.textMenu.setCompoundDrawablesWithIntrinsicBounds(menu.icon, 0, 0, 0)
+        itemView.icuPmlMoreMenu.setImage(menu.icon)
         itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
     }
 
