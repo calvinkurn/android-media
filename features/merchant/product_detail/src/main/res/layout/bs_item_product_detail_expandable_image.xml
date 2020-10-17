@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_16">
 
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
         android:id="@+id/expandable_title_chevron"
@@ -16,10 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_13"
         android:scaleType="fitXY"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         tools:src="@tools:sample/avatars" />
 
     <View

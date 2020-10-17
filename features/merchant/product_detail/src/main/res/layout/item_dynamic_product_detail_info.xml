@@ -23,6 +23,12 @@
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <LinearLayout
+        android:id="@+id/product_detail_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_info_description"
         android:layout_width="match_parent"
@@ -37,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/label_read_detail"
-        android:textColor="@color/g_500"
+        android:textColor="@color/light_G500"
         android:visibility="visible"
         app:typographyType="body_3"
         app:typographyWeight="bold" />

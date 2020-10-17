@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_13"
     android:orientation="vertical">
 
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
@@ -15,19 +16,18 @@
         android:id="@+id/expandable_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
+        android:layout_marginTop="@dimen/dp_13"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_12"
+        tools:src="@tools:sample/avatars"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:src="@tools:sample/avatars">
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
+            tools:text="Baca info penting terkait pembelian dari toko ini."
             android:textColor="@color/Unify_N700_96"
-            android:text="Baca info penting terkait pembelian dari toko ini." />
+            app:typographyType="body_2" />
 
     </LinearLayout>
 

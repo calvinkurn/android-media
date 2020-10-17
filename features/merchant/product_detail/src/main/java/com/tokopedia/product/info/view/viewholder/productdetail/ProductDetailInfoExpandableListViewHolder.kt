@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bs_item_product_detail_expandable_list.view.*
@@ -36,7 +37,6 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
         }
 
         expandable_title_chevron?.isExpand = element.isShowable
-
         expandable_container?.showWithCondition(element.isShowable)
 
         setOnClickListener {
@@ -59,7 +59,11 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
             val bundle = payloads[0] as Bundle
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
-                view.expandable_container?.showWithCondition(toggle)
+                if (toggle) {
+                    ExpandableAnimation.expand(view.expandable_container)
+                } else {
+                    ExpandableAnimation.collapse(view.expandable_container)
+                }
                 view.expandable_title_chevron?.isExpand = toggle
             }
         }

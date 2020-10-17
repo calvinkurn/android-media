@@ -13,5 +13,6 @@ interface ProductDetailInfoAdapterFactory {
     fun type(data: ProductDetailInfoExpandableDataModel): Int
     fun type(data: ProductDetailInfoExpandableImageDataModel): Int
     fun type(data: ProductDetailInfoExpandableListDataModel): Int
+    fun type(data: ProductDetailInfoDiscussionDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

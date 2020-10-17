@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.info.model.productdetail.uidata.*
@@ -39,6 +40,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var itemList: List<ProductDetailInfoContent> = listOf()
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
@@ -49,10 +51,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun setDaggerComponent(productId: String, shopId: String, daggerProductDetailComponent: ProductDetailComponent?) {
+    fun setDaggerComponent(productId: String, shopId: String, listItem: List<ProductDetailInfoContent>, daggerProductDetailComponent: ProductDetailComponent?) {
         this.productDetailComponent = daggerProductDetailComponent
         this.productId = productId
         this.shopId = shopId
+        this.itemList = listItem
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -79,7 +82,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun onLoadingClick() {
-        currentList = listOf(ProductDetailInfoExpandableDataModel(componentName = 1, isShowable = true), ProductDetailInfoExpandableListDataModel(componentName = 2), ProductDetailInfoExpandableImageDataModel(componentName = 3))
+        currentList = listOf(ProductDetailInfoHeaderDataModel(componentId = 0, listOfInfo = itemList), ProductDetailInfoExpandableDataModel(componentName = 1, isShowable = true), ProductDetailInfoExpandableListDataModel(componentName = 2), ProductDetailInfoExpandableImageDataModel(componentName = 3), ProductDetailInfoDiscussionDataModel(componentName = 4, title = "Diskusi bro?", buttonValue = "Cek Diskusi"))
         productDetailInfoAdapter.submitList(currentList)
     }
 

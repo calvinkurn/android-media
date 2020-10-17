@@ -376,11 +376,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onSeeMoreDescriptionClicked() {
+    override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
         activity?.let {
             val data = viewModel.getDynamicProductInfoP1?.basic
             productDetailInfoSheet.setDaggerComponent(data?.productID ?: "", data?.shopID
-                    ?: "", productDaggerComponent)
+                    ?: "", dataContent, productDaggerComponent)
             productDetailInfoSheet.show(it.supportFragmentManager, "bs product detail")
         }
     }

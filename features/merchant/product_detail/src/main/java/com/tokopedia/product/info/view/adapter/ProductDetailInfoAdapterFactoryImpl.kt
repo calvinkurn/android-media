@@ -32,6 +32,10 @@ class ProductDetailInfoAdapterFactoryImpl(private val listener: ProductDetailInf
         return ProductDetailInfoExpandableListViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductDetailInfoDiscussionDataModel): Int {
+        return ProductDetailInfoDiscussionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductDetailInfoHeaderViewHolder.LAYOUT -> ProductDetailInfoHeaderViewHolder(view)
@@ -39,6 +43,7 @@ class ProductDetailInfoAdapterFactoryImpl(private val listener: ProductDetailInf
             ProductDetailInfoExpandableViewHolder.LAYOUT -> ProductDetailInfoExpandableViewHolder(view, listener)
             ProductDetailInfoExpandableImageViewHolder.LAYOUT -> ProductDetailInfoExpandableImageViewHolder(view, listener)
             ProductDetailInfoExpandableListViewHolder.LAYOUT -> ProductDetailInfoExpandableListViewHolder(view, listener)
+            ProductDetailInfoDiscussionViewHolder.LAYOUT -> ProductDetailInfoDiscussionViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

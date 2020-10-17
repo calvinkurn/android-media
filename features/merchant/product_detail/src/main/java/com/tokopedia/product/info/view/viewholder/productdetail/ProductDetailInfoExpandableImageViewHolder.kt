@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableImageDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.widget.ExpandableAnimation
 import kotlinx.android.synthetic.main.bs_item_product_detail_expandable_image.view.*
 
 /**
@@ -42,7 +43,11 @@ class ProductDetailInfoExpandableImageViewHolder(private val view: View, private
             val bundle = payloads[0] as Bundle
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
-                view.expandable_image?.showWithCondition(element.isShowable)
+                if (toggle) {
+                    ExpandableAnimation.expand(view.expandable_image)
+                } else {
+                    ExpandableAnimation.collapse(view.expandable_image)
+                }
                 view.expandable_title_chevron?.isExpand = toggle
             }
         }
