@@ -13,13 +13,13 @@ import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
