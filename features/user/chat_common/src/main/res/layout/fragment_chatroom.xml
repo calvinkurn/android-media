@@ -252,7 +252,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#333333"
+        android:background="@color/Unify_N700"
         android:gravity="center_vertical"
         android:minHeight="56dp"
         android:orientation="horizontal"

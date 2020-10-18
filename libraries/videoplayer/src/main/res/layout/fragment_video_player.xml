@@ -16,7 +16,7 @@
         android:id="@+id/dimBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ae31353b" />
+        android:background="@color/Unify_N700_68" />
 
     <ProgressBar
         android:id="@+id/pgLoader"

@@ -9,7 +9,7 @@
 
             <stroke
                 android:width="0.1dp"
-                android:color="#e3e2e2" />
+                android:color="@color/Unify_N75" />
 
             <padding
                 android:bottom="@dimen/dp_10"

@@ -26,7 +26,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl3"
         android:gravity="center"
-        android:textColor="#ae31353b"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         tools:text="Segera top-up biar ngga kehabisan dan gunakan pengiriman Bebas Ongkir." />
 
