@@ -22,4 +22,41 @@ open class Properties(
         var loaderListener: LoaderStateListener? = null,
         var transform: Transformation<Bitmap>? = null,
         var transforms: List<Transformation<Bitmap>>? = null
-)
+) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other is Properties &&
+                thumbnailUrl == other.thumbnailUrl &&
+                isAnimate == other.isAnimate &&
+                isCircular == other.isCircular &&
+                roundedRadius == other.roundedRadius &&
+                signature == other.signature &&
+                error == other.error &&
+                placeHolder == other.placeHolder &&
+                cacheStrategy == other.cacheStrategy &&
+                overrideSize == other.overrideSize &&
+                decodeFormat == other.decodeFormat &&
+                loaderListener == other.loaderListener &&
+                transform == other.transform &&
+                transforms == other.transforms
+    }
+
+    override fun hashCode(): Int {
+        var result = thumbnailUrl.hashCode()
+        result = 31 * result + isAnimate.hashCode()
+        result = 31 * result + isCircular.hashCode()
+        result = 31 * result + roundedRadius.hashCode()
+        result = 31 * result + signature.hashCode()
+        result = 31 * result + error.hashCode()
+        result = 31 * result + placeHolder.hashCode()
+        result = 31 * result + cacheStrategy.hashCode()
+        result = 31 * result + overrideSize.hashCode()
+        result = 31 * result + decodeFormat.hashCode()
+        result = 31 * result + loaderListener.hashCode()
+        result = 31 * result + transform.hashCode()
+        result = 31 * result + transforms.hashCode()
+        return result
+    }
+
+}
