@@ -2,17 +2,17 @@ package com.tokopedia.home.beranda.helper.glide
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.media.loader.common.LoaderStateListener
+import com.tokopedia.media.loader.common.MediaDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.transform.FitCenter
 import com.tokopedia.media.loader.transform.RoundedCorners
+import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
@@ -34,12 +34,12 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: Loader
     this.loadImage(url) {
         cacheStrategy = MediaCacheStrategy.RESOURCE
         loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
                 listener?.successLoad(resource, dataSource)
             }
 
-            override fun failedLoad(error: GlideException?) {
+            override fun failedLoad(error: MediaException?) {
                 GlideErrorLogHelper().logError(context, error, url)
                 listener?.failedLoad(error)
             }
@@ -56,11 +56,11 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
         cacheStrategy = MediaCacheStrategy.RESOURCE
         transform = FitCenter()
         loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
 
-            override fun failedLoad(error: GlideException?) {
+            override fun failedLoad(error: MediaException?) {
                 GlideErrorLogHelper().logError(context, error, url)
             }
 
@@ -75,9 +75,9 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
         cacheStrategy = MediaCacheStrategy.RESOURCE
         transforms = listOf(RoundedCorners(roundedRadius), CenterCrop())
         loaderListener = object : LoaderStateListener {
-            override fun failedLoad(error: GlideException?) {}
+            override fun failedLoad(error: MediaException?) {}
 
-            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
         }
@@ -91,11 +91,11 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
         decodeFormat = MediaDecodeFormat.PREFER_ARGB_8888
         overrideSize = Resize(width, height)
         loaderListener = object : LoaderStateListener {
-            override fun failedLoad(error: GlideException?) {
+            override fun failedLoad(error: MediaException?) {
                 listener?.failedLoad(error)
             }
 
-            override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
                 listener?.successLoad(resource, dataSource)
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
@@ -142,8 +142,8 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     return performanceMonitoring
 }
 
-fun handleOnResourceReady(dataSource: DataSource?, resource: Drawable?, performanceMonitoring: PerformanceMonitoring?) {
-    if (dataSource == DataSource.REMOTE) {
+fun handleOnResourceReady(dataSource: MediaDataSource?, resource: Drawable?, performanceMonitoring: PerformanceMonitoring?) {
+    if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
     }
 }

@@ -1,8 +1,12 @@
 package com.tokopedia.media.loader.utils
 
 import com.bumptech.glide.load.Key
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.signature.ObjectKey
+
+// wrapper of GlideException
+typealias MediaException = GlideException
 
 /*
 * Client hints: ECT
