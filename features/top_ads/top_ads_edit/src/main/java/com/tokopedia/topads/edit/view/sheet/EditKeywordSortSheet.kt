@@ -1,60 +1,116 @@
 package com.tokopedia.topads.edit.view.sheet
 
 
-import android.content.Context
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import android.widget.FrameLayout
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ListView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.edit.R
-import kotlinx.android.synthetic.main.topads_edit_keyword_edit_sort_sheet.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
+import kotlinx.android.synthetic.main.topads_edit_keyword_edit_sort_sheet.view.*
+import java.util.*
 
-class EditKeywordSortSheet {
+class EditKeywordSortSheet : BottomSheetUnify() {
 
-    private var dialog: BottomSheetDialog? = null
     var onItemClick: ((sortId: String) -> Unit)? = null
+    var selectedSortText = 0
+    var positionSort = 0
 
-    private fun setupView() {
-        dialog?.let {
-            it.setOnShowListener { dialogInterface ->
-                val dialog = dialogInterface as BottomSheetDialog
-                val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                frameLayout?.let {
-                    val behavior = BottomSheetBehavior.from(frameLayout)
-                    behavior.isHideable = false
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var contentView = View.inflate(context, R.layout.topads_edit_keyword_edit_sort_sheet, null)
+        setChild(contentView)
+        setTitle(getString(R.string.topads_edit_info_sheet_title))
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val sortListItemUnify = mapToItemUnifyList()
+
+        view.sortList.setData(sortListItemUnify)
+
+        view.sortList?.let {
+            it.onLoadFinish {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+                }
+
+                it.setOnItemClickListener { adapterView, view, index, l ->
+                    onItemSortClickedBottomSheet(index, sortListItemUnify, it)
+                }
+                sortListItemUnify.forEachIndexed { index, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                        onItemSortClickedBottomSheet(index, sortListItemUnify, it)
+                    }
                 }
             }
-            it.btn_close.setOnClickListener {
-                dismissDialog()
-            }
+        }
 
-            it.radio_group.setOnCheckedChangeListener { _, checkedId ->
-                onItemClick?.invoke(checkedId.toString())
-                dismissDialog()
+    }
+
+
+    private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
+        try {
+            positionSort = position
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             }
+            selectedSortText = position
+            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
+            onItemClick?.invoke(sortListItemUnify[position].listTitleText)
+            dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    fun getSelectedSortId(): String {
-        return when (dialog?.radio_group?.checkedRadioButtonId) {
-            R.id.title_1 -> TITLE_1
-            R.id.title_2 -> TITLE_2
-            else -> TITLE_1
+    private fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
+        val clickedItem = this.getItemAtPosition(position) as ListItemUnify
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            when (choiceMode) {
+                ListView.CHOICE_MODE_SINGLE -> {
+                    items.filter {
+                        it.listRightRadiobtn?.isChecked ?: false
+                    }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+
+                    clickedItem.listRightRadiobtn?.isChecked = true
+                }
+            }
         }
-    }
-
-    fun show() {
-        dialog?.show()
-    }
-
-    private fun dismissDialog() {
-        dialog?.dismiss()
     }
 
     fun setChecked(current: String) {
-        if (current == TITLE_1)
-            dialog?.radio_group?.check(R.id.title_1)
-        else
-            dialog?.radio_group?.check(R.id.title_2)
+        if(current == TITLE_1) {
+            positionSort = 0
+        } else {
+            positionSort = 1
+        }
+    }
+
+    private fun mapToItemUnifyList(): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        var item1 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_1), getString(R.string.topads_edit_keyword_edit_info_sheet_desc_1))
+        var item2 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_2), getString(R.string.topads_edit_keyword_edit_info_sheet_desc_2))
+
+        item1.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+        item2.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+        itemUnifyList.add(0, item1)
+        itemUnifyList.add(1, item2)
+        return itemUnifyList
+    }
+
+    fun getSelectedSortId(): String {
+        return when (selectedSortText) {
+            0 -> TITLE_1
+            1 -> TITLE_2
+            else -> TITLE_2
+        }
     }
 
     companion object {
@@ -62,12 +118,8 @@ class EditKeywordSortSheet {
         const val TITLE_1 = "Pencarian luas"
         const val TITLE_2 = "Pencarian Spesifik"
 
-        fun newInstance(context: Context): EditKeywordSortSheet {
-            val fragment = EditKeywordSortSheet()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog?.setContentView(R.layout.topads_edit_keyword_edit_sort_sheet)
-            fragment.setupView()
-            return fragment
+        fun newInstance(): EditKeywordSortSheet {
+            return EditKeywordSortSheet()
         }
     }
 }

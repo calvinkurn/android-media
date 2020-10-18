@@ -676,7 +676,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         view?.addOneTimeGlobalLayoutListener {
-            requestVisibleWidgetsData()
+            recyclerView.post { requestVisibleWidgetsData() }
         }
     }
 

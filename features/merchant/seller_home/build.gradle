@@ -103,6 +103,12 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

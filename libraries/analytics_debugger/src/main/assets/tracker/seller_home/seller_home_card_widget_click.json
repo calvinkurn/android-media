@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - card widget click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget card - .{1,} (GOOD|WARNING|DANGER)}}",
+      "eventLabel": "{{.{1,}}}",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

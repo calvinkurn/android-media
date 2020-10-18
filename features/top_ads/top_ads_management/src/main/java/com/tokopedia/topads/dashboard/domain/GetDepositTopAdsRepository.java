@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.domain;
 
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 import java.util.HashMap;
 
