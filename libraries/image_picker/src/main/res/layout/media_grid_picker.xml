@@ -16,7 +16,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="12sp"
         style="@style/TextView.Micro"
         android:visibility="gone" />

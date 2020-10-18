@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:foreground="?android:attr/selectableItemBackground"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:paddingLeft="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"

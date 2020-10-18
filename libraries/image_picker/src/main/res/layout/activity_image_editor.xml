@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="@dimen/sp_16"
-                android:textColor="@android:color/black"
+                android:textColor="@color/Unify_N700"
                 tools:text="@string/crop"/>
 
         </androidx.appcompat.widget.Toolbar>
