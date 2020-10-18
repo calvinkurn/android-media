@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_16"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/Unify_N200"
         android:textSize="@dimen/sp_12"
         tools:text="13:16 wib"/>
 
@@ -29,7 +29,7 @@
         android:layout_marginLeft="3dp"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
-        android:textColor="@color/black_38"
+        android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/sp_11"
         android:textStyle="normal"
         tools:text="Pengguna"/>
@@ -47,7 +47,7 @@
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
         android:text="●"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/Unify_N200"
         android:textSize="@dimen/sp_5"
         android:textStyle="normal"/>
 
@@ -60,7 +60,7 @@
         android:layout_toLeftOf="@id/dot"
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="3sp"
-        android:textColor="@color/black_54"
+        android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_11"
         android:textStyle="normal"
         tools:text="AHAJA"/>
@@ -121,7 +121,7 @@
         android:layout_alignRight="@id/card_group_chat_message"
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/dp_3"
-        android:textColor="@color/time_color"
+        android:textColor="@color/Unify_N300"
         android:textSize="@dimen/sp_10"
         tools:text="10:13 pm"
         tools:visibility="visible"

@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/variant_guideline"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintEnd_toEndOf="parent"

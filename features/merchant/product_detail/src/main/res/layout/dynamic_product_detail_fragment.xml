@@ -50,7 +50,7 @@
                 android:inputType="none"
                 android:lines="1"
                 android:maxLines="1"
-                android:textColorHint="@color/grey_500"
+                android:textColorHint="@color/Unify_N200"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
 
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:sticky_highlight_color="@color/g_500"
+            app:sticky_highlight_color="@color/Unify_G500"
             app:layout_constraintBottom_toTopOf="@+id/base_btn_action"
             app:layout_constraintTop_toBottomOf="@+id/swipeRefresh"
             app:layout_constraintStart_toStartOf="parent"
@@ -185,7 +185,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/btn_affiliate"
                 android:layout_toLeftOf="@+id/btn_affiliate"
-                android:textColor="@color/af_commission_blue"
+                android:textColor="@color/Unify_B500"
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible"

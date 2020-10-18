@@ -57,7 +57,7 @@
                     app:layout_constraintStart_toStartOf="@+id/product_name"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/orange_red"
+                    android:textColor="@color/Unify_Y500"
                     android:layout_marginTop="@dimen/dp_2"
                     tools:text="Rp100.000"
                     app:fontSize="micro"

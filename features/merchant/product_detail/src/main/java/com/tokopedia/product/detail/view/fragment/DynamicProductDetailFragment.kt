@@ -2556,7 +2556,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+                varToolbar.setTitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400))
                 varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.Unify_N0))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {

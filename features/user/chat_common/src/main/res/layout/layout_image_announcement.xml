@@ -57,7 +57,7 @@
         android:layout_gravity="left"
         android:layout_marginTop="@dimen/dp_3"
         android:gravity="left"
-        android:textColor="@color/time_color"
+        android:textColor="@color/Unify_N300"
         android:textSize="@dimen/sp_10"
         tools:text="testtest" />
 

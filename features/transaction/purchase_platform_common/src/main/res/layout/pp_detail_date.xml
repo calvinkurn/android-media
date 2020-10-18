@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         tools:text="Nama Lengkap (Sesuai KTP)" />
 
@@ -24,14 +24,14 @@
         android:layout_marginTop="@dimen/dp_4"
         android:drawableRight="@drawable/ic_arrow_drop_down_grey_checkout_module"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         tools:text="Andrew Ignatius Sugijanto" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_message"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="end"
-        android:textColor="@color/red_500"
+        android:textColor="@color/Unify_R600"
         android:textStyle="normal"
         android:visibility="invisible"
         app:typographyType="body_3"

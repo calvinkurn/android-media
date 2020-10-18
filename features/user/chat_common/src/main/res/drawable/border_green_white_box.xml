@@ -8,7 +8,7 @@
 
             <stroke
                 android:width="0.5dp"
-                android:color="@color/tkpd_main_green"/>
+                android:color="@color/Unify_G400"/>
 
             <corners android:radius="3dp"/>
 

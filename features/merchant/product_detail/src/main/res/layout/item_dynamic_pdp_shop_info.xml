@@ -12,7 +12,7 @@
         android:id="@+id/shop_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
-            tools:src="@color/tkpd_main_green" />
+            tools:src="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/iv_badge"
@@ -85,14 +85,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
-            android:background="@color/green_go_apotik"
+            android:background="@color/Unify_G200"
             android:lines="1"
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_4"
             android:paddingTop="@dimen/dp_2"
             android:paddingRight="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_2"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/Unify_G400"
             android:visibility="visible"
             app:fontSize="micro"
             app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +155,7 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/label_chat_seller"
-            android:textColor="@color/light_primary"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             app:drawableLeftCompat="@drawable/ic_topchat"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -179,7 +179,7 @@
             android:gravity="center"
             android:padding="@dimen/dp_8"
             android:text="@string/label_follow"
-            android:textColor="@color/dark_primary"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_12"
             app:drawableLeftCompat="@drawable/ic_plus_add_white_24"
             app:layout_constraintBottom_toBottomOf="@+id/send_msg_shop"

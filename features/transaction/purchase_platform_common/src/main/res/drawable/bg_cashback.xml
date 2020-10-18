@@ -3,7 +3,7 @@
     <solid android:color="#e3f9e3" />
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/background_cashback_enable" />
+        android:color="@color/Unify_G200" />
     <corners android:radius="@dimen/dp_16" />
     <padding
         android:bottom="0dp"

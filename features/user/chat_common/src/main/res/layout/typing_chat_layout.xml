@@ -13,7 +13,7 @@
         android:id="@+id/image"
         android:layout_height="40dp"
         android:layout_width="40dp"
-        android:src="@color/red_100">
+        android:src="@color/Unify_R200">
     </ImageView>
 
 </LinearLayout>

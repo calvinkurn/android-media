@@ -98,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/light_grey"
+        android:background="@color/Unify_N0"
         android:padding="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

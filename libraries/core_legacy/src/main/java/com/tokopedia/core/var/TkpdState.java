@@ -127,11 +127,11 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState  {
         public static int getColorStatus(int state) {
             switch (state) {
                 case RESOLUTION_FINISHED:
-                    return R.color.tkpd_dark_gray;
+                    return com.tokopedia.unifyprinciples.R.color.Unify_N200;
                 case RESOLUTION_CANCELED:
-                    return R.color.tkpd_dark_gray;
+                    return com.tokopedia.unifyprinciples.R.color.Unify_N200;
                 default:
-                    return R.color.tkpd_dark_orange;
+                    return com.tokopedia.unifyprinciples.R.color.Unify_Y400;
             }
         }
 

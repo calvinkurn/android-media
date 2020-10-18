@@ -44,7 +44,7 @@
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="Pakai Promo Tokopedia"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="@dimen/sp_12" />
 
         <LinearLayout
@@ -83,7 +83,7 @@
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             android:text="Cek"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone" />
 
     </RelativeLayout>

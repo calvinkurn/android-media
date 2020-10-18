@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/dp_7"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="Dimulai dalam"
-        android:textColor="@color/light_N700_AE"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toTopOf="@id/bottom_separator_desc"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_notify_title"
@@ -55,7 +55,7 @@
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginRight="@dimen/dp_13"
         app:coundDownBackgroud="@drawable/bg_countdown_partial_orange"
-        app:countDownSparatorColor="@color/bg_countdown_red"
+        app:countDownSparatorColor="@color/Unify_Y500"
         app:countDownTxtColor="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="@id/product_notify_subtitle"
         app:layout_constraintLeft_toRightOf="@id/product_notify_subtitle"
@@ -103,7 +103,7 @@
         android:id="@+id/bottom_separator_desc"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintBottom_toBottomOf="@+id/layout_notify_me" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

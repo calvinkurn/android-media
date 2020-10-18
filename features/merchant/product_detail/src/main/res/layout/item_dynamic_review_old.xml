@@ -9,7 +9,7 @@
         android:id="@+id/review_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50" />
 
     <include
         android:id="@+id/container_image_review"

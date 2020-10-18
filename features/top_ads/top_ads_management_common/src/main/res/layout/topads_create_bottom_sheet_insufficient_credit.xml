@@ -32,7 +32,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/yuk_isi_kredit_sekarang"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toEndOf="parent"

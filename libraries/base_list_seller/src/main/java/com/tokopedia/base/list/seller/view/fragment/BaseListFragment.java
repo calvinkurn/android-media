@@ -288,7 +288,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         if (snackBarRetry == null) {
             initSnackbarRetry(listener);
             snackBarRetry.showRetrySnackbar();
-            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
         }
     }
 

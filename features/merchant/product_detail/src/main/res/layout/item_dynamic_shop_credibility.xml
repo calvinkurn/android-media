@@ -10,7 +10,7 @@
         android:id="@+id/shop_credibility_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_badge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/tkpd_main_green" />
+            tools:src="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/iv_badge"

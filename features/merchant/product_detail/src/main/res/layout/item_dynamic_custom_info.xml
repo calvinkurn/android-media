@@ -12,7 +12,7 @@
         android:layout_height="@dimen/dp_8"
         tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -87,5 +87,5 @@
         android:layout_height="@dimen/dp_8"
         tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50" />
 </LinearLayout>

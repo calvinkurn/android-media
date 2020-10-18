@@ -102,8 +102,8 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
-        message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
-        message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
+        message.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        message.setLinkTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         chatStatus.setVisibility(View.GONE);
     }
 

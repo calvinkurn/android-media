@@ -44,7 +44,7 @@ public class DatePickerLabelView extends FrameLayout {
         try {
             titleText = styledAttributes.getString(R.styleable.DatePickerLabelView_date_picker_title);
             contentText = styledAttributes.getString(R.styleable.DatePickerLabelView_date_picker_content);
-            colorValue = styledAttributes.getColor(R.styleable.DatePickerLabelView_date_picker_content_color, ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            colorValue = styledAttributes.getColor(R.styleable.DatePickerLabelView_date_picker_content_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } finally {
             styledAttributes.recycle();
         }

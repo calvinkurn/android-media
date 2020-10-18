@@ -17,5 +17,5 @@
     app:lv_content="@string/see_message"
     app:lv_title_text_size="@dimen/sp_14"
     app:lv_content_text_size="@dimen/sp_14"
-    app:lv_content_color="@color/font_black_secondary_54"
+    app:lv_content_color="@color/Unify_N700_44"
     app:lv_content_max_width_percentage="0.5"/>
