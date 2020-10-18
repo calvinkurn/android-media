@@ -52,10 +52,12 @@ class ToasterActivityLifecycle : ActivityLifecycleCallbacks {
                     )
                 }
             }
-        }, 2000)
+        }, DELAY_SHOW_TOAST)
     }
 
     companion object {
+        private const val DELAY_SHOW_TOAST = 2500L
+
         private val WHITELIST = arrayOf(
                 "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
                 "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
