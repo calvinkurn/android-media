@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -295,6 +296,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun buildPassengerTextFormatted(adult: Int, children: Int, infant: Int): String {
         var passengerFmt = ""
         if (adult > 0) {
+            SplitCompat.installActivity(context)
             passengerFmt = adult.toString() + " " + context.getString(R.string.flight_dashboard_adult_passenger)
             if (children > 0) {
                 passengerFmt += ", " + children + " " + context.getString(R.string.flight_dashboard_adult_children)

@@ -36,11 +36,11 @@
     </style>
 
 
-    <style name="invoice_number" parent="Theme.AppCompat.Light">
+    <style name="invoice_number" parent="Theme.AppCompat.DayNight">
         <item name="android:textColor">@color/colorGreen</item>
     </style>
 
-    <style name="text_bold" parent="Theme.AppCompat.Light">
+    <style name="text_bold" parent="Theme.AppCompat.DayNight">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -58,7 +58,7 @@
         <item name="android:queryHint">Search</item>
     </style>
 
-    <style name="green_button" parent="Theme.AppCompat.Light">
+    <style name="green_button" parent="Theme.AppCompat.DayNight">
         <item name="colorButtonNormal">@color/colorGreen</item>
         <item name="android:colorControlHighlight">@color/colorPrimaryDark</item>
         <item name="android:textColor">#FFFFFF</item>
@@ -113,7 +113,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="CheckBoxNotification" parent="Theme.AppCompat.Light">
+    <style name="CheckBoxNotification" parent="Theme.AppCompat.DayNight">
         <item name="colorControlNormal">@color/grey_400</item>
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>

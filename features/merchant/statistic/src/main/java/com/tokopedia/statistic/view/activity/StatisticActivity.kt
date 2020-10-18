@@ -47,9 +47,13 @@ class StatisticActivity : BaseActivity(), StatisticPerformanceMonitoringListener
     }
 
     private fun showFragment() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view_stc, statisticFragment)
-                .commit()
+        val containerViewId = R.id.parent_view_stc
+        val isFragmentNotAttachedYet = supportFragmentManager.findFragmentById(containerViewId) == null
+        if (isFragmentNotAttachedYet) {
+            supportFragmentManager.beginTransaction()
+                    .replace(containerViewId, statisticFragment)
+                    .commit()
+        }
     }
 
     private fun setWhiteStatusBar() {

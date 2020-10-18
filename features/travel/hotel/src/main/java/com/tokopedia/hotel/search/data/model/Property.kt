@@ -3,6 +3,7 @@ package com.tokopedia.hotel.search.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 
 data class Property(
@@ -52,7 +53,11 @@ data class Property(
 
         @SerializedName("isDirectPayment")
         @Expose
-        val isDirectPayment: Boolean = false
+        val isDirectPayment: Boolean = false,
+
+        @SerializedName("safetyBadge")
+        @Expose
+        val propertySafetyBadge: PropertySafetyBadge = PropertySafetyBadge()
 ) : Visitable<PropertyAdapterTypeFactory> {
 
     override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {

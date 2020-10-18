@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 import rx.Observable;
 

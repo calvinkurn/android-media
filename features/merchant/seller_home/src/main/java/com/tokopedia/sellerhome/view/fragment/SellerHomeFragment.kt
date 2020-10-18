@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -676,7 +676,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         view?.addOneTimeGlobalLayoutListener {
-            requestVisibleWidgetsData()
+            recyclerView.post { requestVisibleWidgetsData() }
         }
     }
 
@@ -741,7 +741,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (!BuildConfig.DEBUG) {
             val exceptionMessage = "$message - ${throwable.localizedMessage}"
 
-            Crashlytics.logException(SellerHomeException(
+            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
                     message = exceptionMessage,
                     cause = throwable
             ))
