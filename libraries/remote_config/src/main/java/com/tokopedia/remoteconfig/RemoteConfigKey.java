@@ -147,8 +147,6 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
-    public static final String APP_SEMUA_CATEGORY_ENABLE = "app_semua_category_enable";
-
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
@@ -229,6 +227,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
+    public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 

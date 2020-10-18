@@ -20,6 +20,7 @@ include "libraries:common_network"
 include "libraries:core_legacy"
 include "libraries:core_network"
 include 'libraries:date_picker_range'
+include 'libraries:device_fingerprint'
 include 'libraries:device_info'
 include 'libraries:dev_monitoring_tools'
 include 'libraries:dynamic_features'
@@ -62,7 +63,6 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
-include "libraries:lint"
 include "libraries:utils"
 include "libraries:pre_release_inspector"
 include "libraries:pre_release_inspector_no_op"
