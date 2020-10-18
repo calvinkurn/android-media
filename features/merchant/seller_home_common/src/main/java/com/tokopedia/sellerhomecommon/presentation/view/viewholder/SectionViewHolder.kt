@@ -1,11 +1,12 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.graphics.Color
+import android.graphics.drawable.ScaleDrawable
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.asUpperCase
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
@@ -34,15 +35,17 @@ class SectionViewHolder(
             element.tooltip?.let { tooltip ->
                 val shouldShowTooltip = tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
                 if (shouldShowTooltip) {
-                    btnSectionInfo.visible()
-                    btnSectionInfo.setOnClickListener {
-                        showSectionTooltip(element, tooltip)
-                    }
+                    val icon = getIconUnifyDrawable(context, IconUnify.INFORMATION, Color.parseColor("#525A67"))
+                    val dp16 = context.dpToPx(16)
+                    val drawable = ScaleDrawable(icon, 0, dp16, dp16).drawable
+                    drawable?.setBounds(0, 0, dp16.toInt(), dp16.toInt())
+                    tvSectionTitle.setCompoundDrawables(null, null, drawable, null)
                     tvSectionTitle.setOnClickListener {
                         showSectionTooltip(element, tooltip)
                     }
-                } else
-                    btnSectionInfo.gone()
+                } else {
+                    tvSectionTitle.setCompoundDrawables(null, null, null, null)
+                }
             }
         }
     }
