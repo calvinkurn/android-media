@@ -29,7 +29,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
         fun newInstance(): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
                 clearContentPadding = true
             }
         }
@@ -52,6 +51,11 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
                 getFilterPerMonth(),
                 DateFilterItem.ApplyButton
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
