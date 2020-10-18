@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.common.LoaderStateListener
+import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.CircleCrop
@@ -34,7 +35,7 @@ object GlideBuilder {
         }
 
         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-            listener?.successLoad(resource, dataSource)
+            listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
     }

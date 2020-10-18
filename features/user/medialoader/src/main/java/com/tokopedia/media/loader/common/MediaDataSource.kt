@@ -19,5 +19,16 @@ enum class MediaDataSource {
                 MEMORY_CACHE -> DataSource.MEMORY_CACHE
             }
         }
+
+        fun mapToDataSource(dataSource: DataSource?): MediaDataSource {
+            if (dataSource == null) return REMOTE
+            return when (dataSource) {
+                DataSource.LOCAL -> LOCAL
+                DataSource.REMOTE -> REMOTE
+                DataSource.DATA_DISK_CACHE -> DATA_DISK_CACHE
+                DataSource.RESOURCE_DISK_CACHE -> RESOURCE_DISK_CACHE
+                DataSource.MEMORY_CACHE -> MEMORY_CACHE
+            }
+        }
     }
 }
