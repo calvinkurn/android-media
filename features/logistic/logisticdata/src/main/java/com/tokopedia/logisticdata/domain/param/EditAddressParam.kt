@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.editaddress.domain.param
+package com.tokopedia.logisticdata.domain.param
 
 object EditAddressParam {
     const val ADDRESS_ID = "address_id"
