@@ -275,9 +275,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun showToolbarNotificationBadge() {
-        sahToolbar?.menu?.findItem(SellerHomeFragment.NOTIFICATION_MENU_ID)?.let {
-            NotificationDotBadge(this).showBadge(it)
-        }
+        val homeFragment = navigator?.getHomeFragment()
+        homeFragment?.showNotificationBadge()
     }
 
     private fun onBottomNavSelected(page: PageFragment, trackingAction: String) {
