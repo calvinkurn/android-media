@@ -113,5 +113,14 @@
     <string name="topads_common_gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="topads_common_anggaran_harian">Anggaran harian</string>
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
+    <string name="filter">Filter</string>
+    <string name="topads_edit_urutkan">Urutkan</string>
+
+    <string-array name="sort_product_list_array">
+        <item>Terlaris</item>
+        <item>Terbaru</item>
+        <item>Harga Tertinggi</item>
+        <item>Harga Terendah</item>
+    </string-array>
 
 </resources>

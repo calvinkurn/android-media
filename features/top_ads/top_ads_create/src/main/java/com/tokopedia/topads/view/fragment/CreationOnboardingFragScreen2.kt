@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.create.R
@@ -22,6 +22,10 @@ class CreationOnboardingFragScreen2 : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    companion object{
+        private const val IMAGE_PATH = "topads_onboard_slide2.png"
+    }
 
     override fun getScreenName(): String {
         return CreationOnboardingFragScreen2::class.java.name
@@ -40,11 +44,10 @@ class CreationOnboardingFragScreen2 : BaseDaggerFragment() {
         val title = view.findViewById<TextView>(R.id.title)
         val desc = view.findViewById<TextView>(R.id.desc)
         val dotImage = view.findViewById<ImageButton>(R.id.dotImage)
-        val slideImage = view.findViewById<ImageView>(R.id.slideImage)
+        val slideImage = view.findViewById<DeferredImageView>(R.id.slideImage)
         title?.text = getString(R.string.topads_create_onboarding_screen_title2)
         desc?.text = getString(R.string.topads_create_onboarding_screen_desc2)
         dotImage?.setImageDrawable(context?.getResDrawable(R.drawable.topads_indi_2))
-        slideImage?.setImageDrawable(context?.getResDrawable(R.drawable.topads_onboard_slide2))
-
+        slideImage?.loadRemoteImageDrawable(IMAGE_PATH)
     }
 }
