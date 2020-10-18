@@ -301,7 +301,7 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE, R.string.title_shop_page))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
-                (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW)
+                (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
             }, DF_BASE, R.string.title_product_review))
 
             // Operational
