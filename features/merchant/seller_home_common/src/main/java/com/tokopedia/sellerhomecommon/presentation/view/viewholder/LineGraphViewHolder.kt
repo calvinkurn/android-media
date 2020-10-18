@@ -8,12 +8,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -86,15 +89,12 @@ class LineGraphViewHolder(
         val tooltip = element.tooltip
         val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
-            btnLineGraphInformation.visible()
+            tvLineGraphTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvLineGraphTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
             }
-            btnLineGraphInformation.setOnClickListener {
-                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
-            }
         } else {
-            btnLineGraphInformation.gone()
+            tvLineGraphTitle.clearUnifyDrawableEnd()
         }
     }
 
@@ -105,7 +105,6 @@ class LineGraphViewHolder(
     private fun onStateError(isShown: Boolean) = with(itemView) {
         ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
         commonWidgetErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
-        btnLineGraphInformation.visibility = if (isShown) View.VISIBLE else View.INVISIBLE
     }
 
     private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {

@@ -4,4 +4,5 @@
     <color name="shc_max_progress">#5131353b</color>
     <color name="shc_description">#ae31353b</color>
 
+    <color name="shc_icon_color">#525A67</color>
 </resources>

@@ -11,6 +11,8 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
 
 /**
@@ -35,16 +37,12 @@ class SectionViewHolder(
             element.tooltip?.let { tooltip ->
                 val shouldShowTooltip = tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
                 if (shouldShowTooltip) {
-                    val icon = getIconUnifyDrawable(context, IconUnify.INFORMATION, Color.parseColor("#525A67"))
-                    val dp16 = context.dpToPx(16)
-                    val drawable = ScaleDrawable(icon, 0, dp16, dp16).drawable
-                    drawable?.setBounds(0, 0, dp16.toInt(), dp16.toInt())
-                    tvSectionTitle.setCompoundDrawables(null, null, drawable, null)
+                    tvSectionTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
                     tvSectionTitle.setOnClickListener {
                         showSectionTooltip(element, tooltip)
                     }
                 } else {
-                    tvSectionTitle.setCompoundDrawables(null, null, null, null)
+                    tvSectionTitle.clearUnifyDrawableEnd()
                 }
             }
         }
