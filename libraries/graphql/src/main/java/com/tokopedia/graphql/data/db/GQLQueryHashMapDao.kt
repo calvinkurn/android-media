@@ -13,6 +13,6 @@ interface GQLQueryHashMapDao {
     @Query("SELECT * FROM query_hash_map WHERE `key` LIKE :key LIMIT 1")
     fun getGraphqlModel(key: String): GQLQueryHashModel?
 
-    @Query("DELETE FROM query_hash_map WHERE `key` LIKE :key LIMIT 1")
+    @Query("DELETE FROM query_hash_map WHERE `key` LIKE :key")
     fun deleteQueryHash(key: String)
 }
