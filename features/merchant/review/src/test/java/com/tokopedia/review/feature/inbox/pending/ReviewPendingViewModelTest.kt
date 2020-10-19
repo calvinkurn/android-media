@@ -19,6 +19,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 import java.lang.Exception
 
 class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
@@ -45,7 +46,7 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         onGetReviewFail_thenReturn(exception)
 
-        viewModel.getReviewData(page)
+        viewModel.getReviewData(page, isRefresh = true)
 
         verifyGetReviewUseCaseExecuted()
         verifyReviewListErrorEquals(Fail(exception, page))
@@ -102,6 +103,25 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
     fun `when getUserId should return valid userId`() {
         val actualUserId = viewModel.getUserId()
         Assert.assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when getUserName should return valid userName`() {
+        val actualUserId = viewModel.getUserName()
+        Assert.assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when markAsSeen should execute expected usecase`() {
+        val inboxReviewId = anyInt()
+
+        viewModel.markAsSeen(inboxReviewId)
+
+        verifyMarkAsSeenUseCaseExecuted()
+    }
+
+    private fun verifyMarkAsSeenUseCaseExecuted() {
+        coVerify { markAsSeenUseCase.executeOnBackground() }
     }
 
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
