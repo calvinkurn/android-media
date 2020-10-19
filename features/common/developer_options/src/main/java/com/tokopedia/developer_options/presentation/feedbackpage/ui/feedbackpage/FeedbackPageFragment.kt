@@ -81,7 +81,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var loginState: String = ""
     private var emailTokopedia: String = ""
     private var uriImage: Uri? = null
-    private var className: String? = ""
+    private var lastAccessedPage: String? = ""
     private var resizedUriImage: Uri? = null
     private var categoryItem: Int = -1
 
@@ -149,7 +149,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
-                    selectedImage.add(arrayListOf(uriImage).toString())
+                    selectedImage = arrayListOf(newUri.toString())
+//                    selectedImage.add(arrayListOf(uriImage).toString())
                 }
             }
            else -> super.onActivityResult(requestCode, resultCode, data)
@@ -164,8 +165,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         loadingDialog = context?.let { LoadingDialog(it) }
 
         uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
-        className = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
-        Log.d("Class_name", className)
+        lastAccessedPage = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
+        Log.d("Class_name", lastAccessedPage)
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
