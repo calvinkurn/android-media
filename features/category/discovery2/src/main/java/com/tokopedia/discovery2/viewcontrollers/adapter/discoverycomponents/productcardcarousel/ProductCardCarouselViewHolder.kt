@@ -57,6 +57,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
+        mHeaderView.removeAllViews()
         mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
     }
 
@@ -100,12 +101,11 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        if (mProductCarouselComponentViewModel.getProductCarouselItemsListData().hasObservers()) {
-            lifecycleOwner?.let {
-                mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(it)
-                mProductCarouselComponentViewModel.getProductCardMaxHeight().removeObservers(it)
-                mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
-            }
+        lifecycleOwner?.let {
+            mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(it)
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().removeObservers(it)
+            mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
+            mProductCarouselComponentViewModel.getProductCardHeaderData().removeObservers(it)
         }
     }
 
