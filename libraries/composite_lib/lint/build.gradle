@@ -26,4 +26,9 @@ project.ext {
     artifactName = "lint"
 }
 
+jar{
+    manifest{
+        attributes 'Lint-Registry-V2': 'com.tokopedia.linter.IssueRegistry'
+    }
+}
 apply from: '../publish_local.gradle'
