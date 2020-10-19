@@ -131,4 +131,14 @@ class TopAdsCreateAnalytics {
 
         getTracker().sendGeneralEvent(map)
     }
+
+    fun sendEditFormSaveEvent(eventAction: String, map: MutableList<MutableMap<String, String>>) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_EDIT_FORM,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_EDIT_FORM,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to map)
+
+        getTracker().sendGeneralEvent(map)
+    }
 }

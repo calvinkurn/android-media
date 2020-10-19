@@ -9,12 +9,15 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
 import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
@@ -32,6 +35,7 @@ import kotlin.collections.ArrayList
 private const val CLICK_PRODUK_TAB = "click - tab produk"
 private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
 private const val CLICK_ATUR_TAB = "click - tab atur"
+private const val CLICK_SIMPAN_BUTTON = "click - simpan"
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
     @Inject
@@ -67,13 +71,34 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
                 is EditGroupAdFragment ->
                     dataGroup = fragment.sendData()
 
-                is BaseEditKeywordFragment ->
+                is BaseEditKeywordFragment -> {
                     dataKeyword = fragment.sendData()
+                    sendSaveDataEvent(fragment.getKeywordNameItems())
+                }
             }
         }
 
+
+
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
                 ::onSuccessGroupEdited, ::finish)
+    }
+
+    private fun sendSaveDataEvent(items: ArrayList<KeywordDataModel>?) {
+
+        val map = mutableListOf<MutableMap<String, String>>()
+
+        items?.forEach {
+            val keywordModel = DataLayer.mapOf(
+                    Constants.KEYWORD_NAME, it.keywordName,
+                    Constants.KEYWORD_ID, it.keywordId,
+                    Constants.KEYWORD_TYPE, it.keywordType
+            )
+            map.add(keywordModel as MutableMap<String, String>)
+        }
+
+
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormSaveEvent(CLICK_SIMPAN_BUTTON, map)
     }
 
     private fun onSuccessGroupEdited() {

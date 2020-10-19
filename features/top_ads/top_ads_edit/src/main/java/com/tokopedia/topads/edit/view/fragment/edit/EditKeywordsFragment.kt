@@ -41,6 +41,7 @@ import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
@@ -397,6 +398,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
         bundle.putParcelableArrayList(POSITIVE_EDIT, editedKeywords)
+        bundle.putParcelableArrayList(POSITIVE_KEYWORD_ALL, list)
         return bundle
     }
 
