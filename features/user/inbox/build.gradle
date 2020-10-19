@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -23,6 +23,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.notifCenter)

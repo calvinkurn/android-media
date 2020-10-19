@@ -224,7 +224,7 @@ include "features:user:updateinactivephone"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
 include "features:user:seamless_login"
-include ":features:user:inbox"
+include "features:user:inbox"
 
 include "features:user:vote"
 
