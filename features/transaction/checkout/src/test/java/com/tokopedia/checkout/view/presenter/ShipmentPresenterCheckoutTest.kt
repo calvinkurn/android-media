@@ -1,20 +1,21 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
@@ -29,9 +30,8 @@ import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
-import java.io.IOException
 
-class ShipmentPresenterInitialLoadTest {
+class ShipmentPresenterCheckoutTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -41,9 +41,6 @@ class ShipmentPresenterInitialLoadTest {
 
     @MockK
     private lateinit var checkoutUseCase: CheckoutGqlUseCase
-
-//    @MockK(relaxUnitFun = true)
-//    private lateinit var graphqlUseCase: GraphqlUseCase
 
     @MockK
     private lateinit var editAddressUseCase: EditAddressUseCase
@@ -104,16 +101,11 @@ class ShipmentPresenterInitialLoadTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-//    private val gson = Gson()
-//    private val unitTestFileUtils = UnitTestFileUtils()
-//    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
-
     private lateinit var presenter: ShipmentPresenter
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-//        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
         presenter = ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -128,98 +120,26 @@ class ShipmentPresenterInitialLoadTest {
     }
 
     @Test
-    fun firstLoadCheckoutPage_ShouldHideInitialLoadingAndRenderPage() {
+    fun checkoutSuccess_ShouldGoToPaymentPage() {
         // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processCheckout(false, false, false, false, "", "", "")
 
         // Then
         verifyOrder {
-            view.hideInitialLoading()
-            view.renderCheckoutPage(any(), any(), any())
-            view.stopTrace()
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageWithNoAddress_ShouldHideInitialLoadingAndRenderNoAddressPage() {
-        // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData())
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.renderNoRecipientAddressShipmentForm(any())
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageError_ShouldHideInitialLoadingAndShowToastError() {
-        // Given
-        val errorMessage = "error"
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(isError = true, errorMessage = errorMessage))
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.showToastError(errorMessage)
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageErrorPrerequisite_ShouldHideInitialLoadingAndShowCacheExpired() {
-        // Given
-        val errorMessage = "error"
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(isError = true, errorMessage = errorMessage, isOpenPrerequisiteSite = true))
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.onCacheExpired(errorMessage)
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageFailedException_ShouldHideInitialLoadingAndShowToastError() {
-        // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.error(IOException())
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.showToastError(any())
-            view.stopTrace()
-        }
-    }
-
-    @Test
-    fun firstLoadCheckoutPageFailedCartException_ShouldHideInitialLoadingAndShowToastError() {
-        // Given
-        val errorMessage = "error"
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
-
-        // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.hideInitialLoading()
-            view.showToastError(errorMessage)
-            view.stopTrace()
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId)
+            view.renderCheckoutCartSuccess(any())
         }
     }
 }
