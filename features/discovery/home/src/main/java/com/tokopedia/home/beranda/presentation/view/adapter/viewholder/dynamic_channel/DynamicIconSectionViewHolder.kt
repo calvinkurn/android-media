@@ -10,8 +10,6 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -31,6 +29,8 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.common.LoaderStateListener
+import com.tokopedia.media.loader.common.MediaDataSource
+import com.tokopedia.media.loader.utils.MediaException
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -106,11 +106,11 @@ class DynamicIconSectionViewHolder(val view: View,
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
             holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : LoaderStateListener {
-                override fun successLoad(resource: Drawable?, dataSource: DataSource?) {
+                override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
                     holder.shimmeringIcon.hide()
                 }
 
-                override fun failedLoad(error: GlideException?) {
+                override fun failedLoad(error: MediaException?) {
                     holder.shimmeringIcon.show()
                 }
             })
