@@ -30,8 +30,8 @@ import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 import javax.inject.Inject;
 

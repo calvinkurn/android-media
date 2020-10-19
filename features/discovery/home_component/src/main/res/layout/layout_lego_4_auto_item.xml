@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_lego_auto"
-    tools:background="@color/black_38">
+    tools:background="@color/Unify_N700_32">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_name"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         app:typographyType="heading_5"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         app:typographyType="body_3"
@@ -47,6 +47,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:background="@color/Neutral_N700"
+        android:alpha="0.06"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,6 +54,7 @@ interface InboxDetailContract {
         fun getTicketStatus(): String
         fun getTicketDetails(ticketId: String?)
         fun getTicketId(): String?
+        fun getUserId():String
 
     }
 }

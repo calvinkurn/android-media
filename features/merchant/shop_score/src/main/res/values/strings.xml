@@ -11,7 +11,7 @@
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
     <string name="shop_score_point_value">%1s poin</string>
 
-    <string name="description_shop_score_percent"> / 100</string>
+    <string name="description_shop_score_percent">&#160;/ %1s</string>
     <string name="subtitle_shop_score_detail_summary_description">Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir</string>
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
@@ -22,4 +22,5 @@
     <string name="shop_score_min_value">0</string>
     <string name="shop_score_max_value">100</string>
 
+    <string name="title_shopscore">Skor Performa Toko</string>
 </resources>

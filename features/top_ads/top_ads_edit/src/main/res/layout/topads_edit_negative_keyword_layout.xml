@@ -23,15 +23,14 @@
         app:typographyType="heading_5"
         tools:visibility="visible" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/add_image"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="@+id/add_keyword"
         app:layout_constraintEnd_toStartOf="@+id/add_keyword"
-        app:layout_constraintTop_toTopOf="@+id/add_keyword"
-        app:srcCompat="@drawable/topads_plus_add_keyword" />
+        app:layout_constraintTop_toTopOf="@+id/add_keyword" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/add_keyword"

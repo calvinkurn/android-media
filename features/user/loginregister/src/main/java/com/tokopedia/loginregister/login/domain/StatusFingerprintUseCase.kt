@@ -2,10 +2,8 @@ package com.tokopedia.loginregister.login.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
+import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginregister.login.di.LoginQueryConstant
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import javax.inject.Inject
 
 /**
@@ -18,7 +16,7 @@ class StatusFingerprintUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<StatusFingerprintpojo>(graphqlRepository) {
 
-    fun executeCoroutines(onSuccess: (StatusFingerprint) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit, signature: FingerprintSignature){
+    fun executeCoroutines(onSuccess: (StatusFingerprint) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit, signature: SignatureData){
         rawQueries[LoginQueryConstant.QUERY_VERIFY_FINGERPRINT]?.let { query ->
             setRequestParams(mapOf(
                     LoginQueryConstant.PARAM_SIGNATURE to signature.signature,
