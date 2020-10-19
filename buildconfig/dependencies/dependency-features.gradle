@@ -227,6 +227,7 @@ ext {
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             topchat                         : ":features:user:topchat",
+            inbox                           : ":features:user:inbox",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
             seamlesslogin                   : ":features:user:seamless_login",
