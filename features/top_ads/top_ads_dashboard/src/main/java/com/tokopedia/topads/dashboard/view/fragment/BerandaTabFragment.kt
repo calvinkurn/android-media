@@ -35,23 +35,19 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniBidFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniProductFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.swipe_refresh_layout
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
 import java.util.*
@@ -157,6 +153,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
+            loadStatisticsData()
         }
     }
 
@@ -214,7 +211,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     private fun loadData() {
         swipe_refresh_layout.isEnabled = true
-        loadStatisticsData()
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
@@ -290,17 +286,16 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         topAdsInsightTabAdapter?.setListener(object : TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 viewPagerInsight.currentItem = position
-                if(position==1||position==2){
+                if (position == 1 || position == 2) {
                     goToInsights.visibility = View.GONE
                     arrow.visibility = View.GONE
-                }
-                else{
+                } else {
                     goToInsights.visibility = View.VISIBLE
                     arrow.visibility = View.VISIBLE
                 }
             }
         })
-        topAdsInsightTabAdapter?.setTabTitles(resources,  response.data.size, 0, 0)
+        topAdsInsightTabAdapter?.setTabTitles(resources, response.data.size, 0, 0)
         rvTabInsight.adapter = topAdsInsightTabAdapter
     }
 
@@ -385,9 +380,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         loadStatisticsData()
     }
 
-    private fun loadStatisticsData() {
+    fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
     }
 
     override fun onDestroy() {
