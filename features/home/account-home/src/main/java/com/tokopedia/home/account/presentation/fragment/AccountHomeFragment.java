@@ -27,6 +27,7 @@ import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
+import com.tokopedia.home_account.view.HomeAccountUserFragment;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -104,7 +105,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private void showBuyerPage() {
         getChildFragmentManager()
             .beginTransaction()
-            .add(R.id.container, BuyerAccountFragment.Companion.newInstance())
+            .add(R.id.container, HomeAccountUserFragment.Companion.newInstance(new Bundle()))
             .commit();
     }
 
