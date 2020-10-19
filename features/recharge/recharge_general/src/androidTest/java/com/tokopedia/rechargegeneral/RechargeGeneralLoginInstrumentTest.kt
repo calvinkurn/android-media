@@ -86,7 +86,7 @@ class RechargeGeneralLoginInstrumentTest {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         Thread.sleep(3000)
-        validate_recent_transaction()
+//        validate_recent_transaction()
         validate_favorite_number()
         validate_promo()
 
