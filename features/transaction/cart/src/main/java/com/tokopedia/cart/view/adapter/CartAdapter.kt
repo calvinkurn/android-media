@@ -599,11 +599,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
-    fun setItemSelected(position: Int, parentPosition: Int, selected: Boolean): Boolean {
-        var needToUpdateParent = false
+    fun setItemSelected(position: Int, parentPosition: Int, selected: Boolean) {
         val any = cartDataList[parentPosition]
         if (any is CartShopHolderData) {
-            val shopAlreadySelected = any.isAllSelected || any.isPartialSelected
             var selectedCount = 0
             any.shopGroupAvailableData.cartItemDataList?.let {
                 for (i in it.indices) {
@@ -620,53 +618,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 if (selectedCount == 0) {
                     any.isAllSelected = false
                     any.isPartialSelected = false
-                    needToUpdateParent = shopAlreadySelected
                 } else if (selectedCount > 0 && selectedCount < it.size) {
                     any.isAllSelected = false
                     any.isPartialSelected = true
-                    needToUpdateParent = !shopAlreadySelected
                 } else {
                     any.isAllSelected = true
                     any.isPartialSelected = false
-                    needToUpdateParent = !shopAlreadySelected
-                }
-
-                // Check does has cash back item
-                var hasCashbackItem = false
-                for ((cartItemData) in it) {
-                    if (cartItemData?.originData?.isCashBack == true) {
-                        hasCashbackItem = true
-                        break
-                    }
-                }
-
-                // Check is it the last cash back item to uncheck & still contain non cash back item
-                var isTheLastCashbackItem = true
-                var hasUncheckedItem = false
-                if (!selected && hasCashbackItem) {
-                    // Check does it still contain unchecked item
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.isSelected && cartItemHolderData.cartItemData?.originData?.isCashBack == false) {
-                            hasUncheckedItem = true
-                            break
-                        }
-                    }
-                    // Check is it the last cash back item to be unchecked
-                    for (j in it.indices) {
-                        val cartItemHolderData = it[j]
-                        if (j != position && cartItemHolderData.isSelected && cartItemHolderData.cartItemData?.originData?.isCashBack == true) {
-                            isTheLastCashbackItem = false
-                            break
-                        }
-                    }
-                }
-                if (hasUncheckedItem && isTheLastCashbackItem) {
-                    needToUpdateParent = true
                 }
             }
         }
-
-        return needToUpdateParent
     }
 
     fun increaseQuantity(position: Int, parentPosition: Int) {
@@ -1338,5 +1298,25 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         return null
+    }
+
+    fun getFirstShopAndShopCount(): Pair<Int, Int> {
+        var firstIndex = 0
+        var count = 0
+        cartDataList.forEachIndexed { index, any ->
+            when (any) {
+                is CartShopHolderData -> {
+                    count++
+                    if (firstIndex == 0) {
+                        firstIndex = index
+                    }
+                }
+                is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
+                    return@forEachIndexed
+                }
+            }
+        }
+
+        return Pair(firstIndex, count)
     }
 }

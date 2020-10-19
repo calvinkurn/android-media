@@ -61,7 +61,7 @@ class CartShopViewHolder(itemView: View,
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
         renderCartItems(cartShopHolderData)
-        renderShopCheckBox(cartShopHolderData)
+        renderCheckBox(cartShopHolderData)
         renderFulfillment(cartShopHolderData)
         renderPreOrder(cartShopHolderData)
         renderIncidentLabel(cartShopHolderData)
@@ -107,7 +107,7 @@ class CartShopViewHolder(itemView: View,
         (rvCartItem.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-    private fun renderShopCheckBox(cartShopHolderData: CartShopHolderData) {
+    private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
         cbSelectShop.isEnabled = !cartShopHolderData.shopGroupAvailableData.isError
         cbSelectShop.isChecked = cartShopHolderData.isAllSelected
         initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
@@ -237,13 +237,12 @@ class CartShopViewHolder(itemView: View,
         if (!cartShopHolderData.shopGroupAvailableData.isError) {
             val isChecked: Boolean
             if (cartShopHolderData.isPartialSelected) {
-                isChecked = false
-                cartShopHolderData.isAllSelected = false
+                isChecked = true
+                cartShopHolderData.isAllSelected = true
                 cartShopHolderData.isPartialSelected = false
             } else {
                 isChecked = !cartShopHolderData.isAllSelected
             }
-            cbSelectShop.isChecked = isChecked
             var isAllSelected = true
             cartShopHolderData.shopGroupAvailableData.cartItemDataList?.forEach {
                 if (it.cartItemData?.isError == true && it.cartItemData?.isSingleChild == true) {
@@ -296,7 +295,7 @@ class CartShopViewHolder(itemView: View,
     companion object {
         val TYPE_VIEW_ITEM_SHOP = R.layout.item_shop
 
-        const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 1000L
+        const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
     }
 
 }

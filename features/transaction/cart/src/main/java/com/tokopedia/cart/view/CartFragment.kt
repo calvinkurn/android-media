@@ -1348,10 +1348,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartItemAfterErrorChecked() {
-        cartAdapter.checkForShipmentForm()
-    }
-
     override fun onCartItemQuantityInputFormClicked(qty: String) {
         sendAnalyticsOnClickQuantityCartItemInput(qty)
     }
@@ -1360,12 +1356,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnClickCreateNoteCartItem()
     }
 
-    override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean): Boolean {
+    override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
 
         cartAdapter.checkForShipmentForm()
-        val isSelected = cartAdapter.setItemSelected(position, parentPosition, checked)
+        cartAdapter.setItemSelected(position, parentPosition, checked)
         val params = generateParamValidateUsePromoRevamp(checked, parentPosition, position, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
@@ -1373,7 +1369,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
-        return isSelected
+        dPresenter.saveCheckboxState(cartAdapter.allCartItemData)
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
@@ -1394,28 +1390,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onNeedToRefreshMultipleShop() {
-        cartAdapter.notifyDataSetChanged()
+        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCount()
+        cartAdapter.notifyItemRangeChanged(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
     override fun onNeedToRecalculate() {
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-    }
-
-    override fun onCartItemShowTickerPriceDecrease(productId: String) {
-        cartPageAnalytics.eventViewTickerPriceDecrease(productId)
-    }
-
-    override fun onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(productId: String) {
-        cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId)
-    }
-
-    override fun onCartItemShowTickerOutOfStock(productId: String) {
-        cartPageAnalytics.eventViewTickerOutOfStock(productId)
-    }
-
-    override fun onCartItemSimilarProductUrlClicked(similarProductUrl: String) {
-        RouteManager.route(context, similarProductUrl)
-        cartPageAnalytics.eventClickMoreLikeThis()
     }
 
     override fun showProgressLoading() {
@@ -3136,10 +3116,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cache.applyEditor()
     }
 
-    override fun onGetCompositeSubscriber(): CompositeSubscription {
-        return compositeSubscription
-    }
-
     override fun onDetach() {
         compositeSubscription.unsubscribe()
         super.onDetach()
@@ -3263,10 +3239,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onEditNoteDone(parentPosition: Int) {
         cartAdapter.notifyItemChanged(parentPosition)
-    }
-
-    override fun getFragmentActivity(): Activity {
-        return activity as Activity
     }
 
     override fun onCashbackUpdated(amount: Int) {

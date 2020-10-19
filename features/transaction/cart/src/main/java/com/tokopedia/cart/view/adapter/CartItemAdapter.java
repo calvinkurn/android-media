@@ -1,16 +1,15 @@
 package com.tokopedia.cart.view.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.cart.domain.model.cartlist.CartItemData;
-import com.tokopedia.cart.view.viewholder.CartItemViewHolder;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
+import com.tokopedia.cart.view.viewholder.CartItemViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +91,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface ActionListener {
 
-        Activity getFragmentActivity();
-
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
         void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
@@ -104,13 +101,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemProductClicked(CartItemData cartItemData);
 
-        void onCartItemAfterErrorChecked();
-
         void onCartItemQuantityInputFormClicked(String qty);
 
         void onCartItemLabelInputRemarkClicked();
 
-        boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked);
+        void onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
         void onWishlistCheckChanged(String productId, int cartId);
 
@@ -119,16 +114,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onNeedToRefreshMultipleShop();
 
         void onNeedToRecalculate();
-
-        void onCartItemShowTickerPriceDecrease(String productId);
-
-        void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId);
-
-        void onCartItemShowTickerOutOfStock(String productId);
-
-        void onCartItemSimilarProductUrlClicked(String similarProductUrl);
-
-        CompositeSubscription onGetCompositeSubscriber();
 
         void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
 

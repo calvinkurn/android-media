@@ -245,7 +245,7 @@ class CartItemViewHolder constructor(itemView: View,
                             data.isSelected = isChecked
                             if (adapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                                viewHolderListener?.onNeedToRefreshAllShop()
+                                viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
                             }
                         }
                     }
