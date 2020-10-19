@@ -15,6 +15,6 @@ data class FeedbackFormRequest(
         var lastAccessedPage: String,
         var category: Int,
         var journey: String,
-        var actual: String,
-        var expected: String
+        var expected: String,
+        var labelsId: ArrayList<String>
 )

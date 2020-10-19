@@ -48,6 +48,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.screenshot_observer.ScreenshotData
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
@@ -105,6 +106,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             requestPermissions(requiredPermissions, 5111)
         }
         initViews()
+        initFilter()
+        initData()
         initListener()
     }
 
@@ -176,7 +179,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             bugType.adapter = adapter
         } }
         userSession = UserSession(activity)
-        initData()
     }
 
     private fun initImageUri() {
@@ -186,6 +188,24 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 imageAdapter.setImageFeedbackData(feedbackPagePresenter.screenshotImageResult(screenshotData))
                 selectedImage = arrayListOf(screenshotData.path)
             }
+        }
+    }
+
+    private fun initFilter() {
+        setActiveFilter(filterBugs, filterFeedback)
+        bugsLayout.visibility = View.VISIBLE
+        feedbackLayout.visibility = View.GONE
+
+        filterBugs.setOnClickListener {
+           setActiveFilter(filterBugs, filterFeedback)
+            bugsLayout.visibility = View.VISIBLE
+            feedbackLayout.visibility = View.GONE
+        }
+
+        filterFeedback.setOnClickListener {
+            setActiveFilter(filterFeedback, filterBugs)
+            feedbackLayout.visibility = View.VISIBLE
+            bugsLayout.visibility = View.GONE
         }
     }
 
@@ -246,7 +266,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val emailText= email.text.toString()
             val affectedPageText = page.text.toString()
             val journeyText = journey.text.toString()
-            val actualResultText = actualResult.text.toString()
             val expectedResultText = expectedResult.text.toString()
             var validate = true
 
@@ -265,20 +284,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 setWrapperError(et_str_wrapper, getString(R.string.warning_str) )
             }
 
-            if(actualResultText.isEmpty()) {
-                validate = false
-                setWrapperError(et_actual_result_wrapper, getString(R.string.warning_actual) )
-            }
-
-            if(expectedResultText.isEmpty()) {
-                validate = false
-                setWrapperError(et_expected_result_wrapper, getString(R.string.warning_expected) )
-            }
 
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, actualResultText, expectedResultText))
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, expectedResultText))
             }
         }
 
@@ -329,7 +339,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return path.toLowerCase().contains(PATH_SCREENSHOT)
     }
 
-    private fun requestMapper(email: String, page: String, journey: String, issueType: String, actualResult: String, expectedResult: String): FeedbackFormRequest {
+    private fun requestMapper(email: String, page: String, journey: String, issueType: String, expectedResult: String): FeedbackFormRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackFormRequest(
                 platformID = 2,
@@ -347,8 +357,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 lastAccessedPage = page,
                 category = categoryItem,
                 journey = journey,
-                actual = actualResult,
-                expected = expectedResult
+                expected = expectedResult,
+                //labelsId here (page name)
+                labelsId = arrayListOf("1")
         )
     }
 
@@ -449,6 +460,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val imageUriClicked = data.imageUrl
         startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
                 REQUEST_CODE_EDIT_IMAGE)
+    }
+
+    private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {
+        selected?.chipType = ChipsUnify.TYPE_SELECTED
+        deselected?.chipType = ChipsUnify.TYPE_DISABLE
     }
 
     companion object {
