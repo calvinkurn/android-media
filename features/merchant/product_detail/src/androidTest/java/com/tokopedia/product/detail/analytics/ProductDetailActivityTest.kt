@@ -32,6 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class ProductDetailActivityTest {
@@ -64,11 +65,11 @@ class ProductDetailActivityTest {
             intendingIntent()
             waitForData()
             clickVariantTest()
+            intendingIntent()
             clickBuyNow()
         } assertTest {
-            intendingIntent()
-            performClose(activityRule)
             waitForTrackerSent()
+            performClose(activityRule)
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
             finishTest()
         }
@@ -191,8 +192,18 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
+//    private fun intendingNotInternalIntent() {
+//        try {
+//            val intent = Intent(targetContext, Class.forName("com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity"))
+//            intent.putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
+//            activityRule.launchActivity(intent)
+//        } catch (e: ClassNotFoundException) {
+//            e.printStackTrace()
+//        }
+//    }
+
     companion object {
-        const val PRODUCT_ID = "662316603"
+        const val PRODUCT_ID = "1267836204"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
