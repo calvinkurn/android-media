@@ -53,7 +53,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             private val topAdsDatePickerInteractor: TopAdsDatePickerInteractor,
             private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
             private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
-            private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
             private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
             private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
@@ -460,7 +459,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetStatisticsUseCase.cancelJobs()
         topAdsAddSourceTaggingUseCase.unsubscribe()
-        deleteTopAdsStatisticsUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.cancelJobs()
         topAdsGetGroupProductDataUseCase.cancelJobs()
         topAdsGetGroupStatisticsUseCase.cancelJobs()
