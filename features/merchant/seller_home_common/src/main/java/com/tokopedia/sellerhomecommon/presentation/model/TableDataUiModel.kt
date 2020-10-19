@@ -12,7 +12,7 @@ data class TableDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         val dataSet: List<TablePageUiModel> = emptyList(),
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ) : BaseDataUiModel
 
 data class TablePageUiModel(
