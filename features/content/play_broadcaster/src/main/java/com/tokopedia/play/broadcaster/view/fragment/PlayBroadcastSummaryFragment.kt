@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
@@ -154,10 +153,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
-                is NetworkResult.Fail -> if (GlobalConfig.DEBUG) showToaster(
-                        it.error.localizedMessage,
-                        type = Toaster.TYPE_ERROR
-                )
             }
         })
     }
@@ -176,12 +171,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     loaderView.gone()
-                    if (GlobalConfig.DEBUG) showToaster(
-                            it.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR
-                    )
                     summaryInfoView.showError { it.onRetry() }
-                    analytic.viewErrorOnReportPage(parentViewModel.channelId, parentViewModel.title, it.error.localizedMessage)
+                    analytic.viewErrorOnReportPage(
+                            channelId = parentViewModel.channelId,
+                            titleChannel = parentViewModel.title,
+                            errorMessage = it.error.localizedMessage?:getString(R.string.play_live_broadcast_system_error)
+                    )
                 }
             }
         })

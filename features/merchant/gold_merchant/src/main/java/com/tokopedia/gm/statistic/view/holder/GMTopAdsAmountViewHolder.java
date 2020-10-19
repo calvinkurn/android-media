@@ -9,7 +9,6 @@ import com.tokopedia.gm.statistic.view.widget.card.EmptyCardContentView;
 import com.tokopedia.gm.statistic.view.widget.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.db.williamchart.Tools;
 import com.db.williamchart.view.LineChartView;
 import com.db.williamchart.base.BaseWilliamChartConfig;
@@ -18,6 +17,7 @@ import com.db.williamchart.util.GMStatisticUtil;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 /**
  * Created by normansyahputa on 7/11/17.
