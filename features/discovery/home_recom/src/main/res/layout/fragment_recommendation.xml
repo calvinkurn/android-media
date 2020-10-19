@@ -2,7 +2,8 @@
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
     <androidx.core.widget.NestedScrollView
         android:id="@+id/recomNestedScrollView"
         android:layout_width="match_parent"
@@ -19,9 +20,7 @@
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:padding="@dimen/dp_12"/>
+                    android:layout_height="wrap_content"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

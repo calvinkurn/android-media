@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1" />
@@ -54,7 +54,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
+        android:layout_height="@dimen/hotel_100dp"
         android:layout_margin="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -65,7 +65,7 @@
         android:layout_marginRight="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
