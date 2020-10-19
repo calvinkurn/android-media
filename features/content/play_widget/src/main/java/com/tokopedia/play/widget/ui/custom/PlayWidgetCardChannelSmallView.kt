@@ -35,6 +35,8 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
     private val tvUpcoming: TextView
     private val ivLiveBadge: ImageView
 
+    private var mListener: Listener? = null
+
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_small, this)
         flBorder = view.findViewById(R.id.fl_border)
@@ -57,7 +59,10 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
 
-        setOnClickListener { RouteManager.route(context, model.appLink) }
+        setOnClickListener {
+            mListener?.onChannelClicked(this, model)
+            RouteManager.route(context, model.appLink)
+        }
 
         if (model.video.isLive) {
             flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_live_border)
@@ -66,6 +71,10 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
             flBorder.setBackgroundResource(R.drawable.bg_play_widget_small_default_border)
             ivLiveBadge.invisible()
         }
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
     }
 
     private fun handleType(type: PlayWidgetChannelType) {
@@ -96,5 +105,10 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout {
             tvTotalView.text = totalViewString
         }
         else clTotalView.gone()
+    }
+
+    interface Listener {
+
+        fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetSmallChannelUiModel)
     }
 }

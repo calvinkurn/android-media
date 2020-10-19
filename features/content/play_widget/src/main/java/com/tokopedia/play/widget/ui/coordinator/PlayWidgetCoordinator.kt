@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.coordinator
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
@@ -25,6 +26,7 @@ class PlayWidgetCoordinator(
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
 
     private var mListener: PlayWidgetListener? = null
+    private var mAnalyticListener: PlayWidgetAnalyticListener? = null
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
@@ -45,10 +47,16 @@ class PlayWidgetCoordinator(
 
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
+        widget.setAnalyticListener(mAnalyticListener)
     }
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
+    }
+
+    fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
+        mAnalyticListener = listener
+        mWidget?.setAnalyticListener(listener)
     }
 
     fun connect(widget: PlayWidgetView, model: PlayWidgetUiModel) {
