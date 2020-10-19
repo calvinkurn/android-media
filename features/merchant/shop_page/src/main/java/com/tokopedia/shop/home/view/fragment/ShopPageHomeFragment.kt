@@ -285,12 +285,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onResume() {
         super.onResume()
         shopHomeAdapter.resumePlayCarousel()
+        shopHomeAdapter.resumeSliderBannerAutoScroll()
     }
 
     override fun onPause() {
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pausePlayCarousel()
+        shopHomeAdapter.pauseSliderBannerAutoScroll()
     }
 
     override fun onDestroy() {
