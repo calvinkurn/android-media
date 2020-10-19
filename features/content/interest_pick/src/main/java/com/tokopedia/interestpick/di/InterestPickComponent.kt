@@ -10,8 +10,8 @@ import dagger.Component
 
 @InterestPickScope
 @Component(
-        modules = arrayOf(InterestPickModule::class),
-        dependencies = arrayOf(BaseAppComponent::class)
+        modules = [InterestPickViewModelModule::class],
+        dependencies = [BaseAppComponent::class]
 )
 interface InterestPickComponent {
     fun inject(fragment: InterestPickFragment)

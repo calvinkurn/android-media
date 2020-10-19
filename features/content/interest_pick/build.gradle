@@ -39,6 +39,10 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+    implementation project(rootProject.ext.features.basemvvm)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 
 project.ext {

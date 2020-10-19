@@ -20,8 +20,6 @@ class GetInterestPickUseCase constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<OnboardingData>() {
 
-    companion object;
-
     override suspend fun executeOnBackground(): OnboardingData = withContext(Dispatchers.IO) {
         val response = graphqlUseCase.executeOnBackground()
         return@withContext response.getData<OnboardingData>(OnboardingData::class.java)
