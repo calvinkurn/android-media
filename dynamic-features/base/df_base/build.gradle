@@ -122,8 +122,6 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
 
     //User
-    implementation project(rootProject.ext.features.attachinvoice)
-    implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -135,9 +133,6 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
-
-    //Entertainment
-    implementation project(rootProject.ext.features.orderhistory)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)
