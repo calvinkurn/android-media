@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     var params: RequestParams = RequestParams.EMPTY
+    var isFirstLoad: Boolean = true
     protected var cacheStrategy: GraphqlCacheStrategy = getCacheFirstCacheStrategy()
 
     inline fun <reified T> GraphqlResponse.getData(): T {

@@ -20,7 +20,6 @@ import dagger.Lazy
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import kotlin.reflect.KMutableProperty0
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -96,20 +95,9 @@ class SellerHomeViewModel @Inject constructor(
     val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
         get() = _barChartWidgetData
 
-    private var isFirstLoadTicker: Boolean = true
-    private var isFirstLoadLayout: Boolean = true
-    private var isFirstLoadCardWidget: Boolean = true
-    private var isFirstLoadLineGraphWidget: Boolean = true
-    private var isFirstLoadProgressWidget: Boolean = true
-    private var isFirstLoadPostListWidget: Boolean = true
-    private var isFirstLoadCarouselWidget: Boolean = true
-    private var isFirstLoadTableWidget: Boolean = true
-    private var isFirstLoadPieChartWidget: Boolean = true
-    private var isFirstLoadBarChartWidget: Boolean = true
-
-    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>, isFirstLoad: KMutableProperty0<Boolean>) {
-        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && isFirstLoad.get()) {
-            isFirstLoad.set(false)
+    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
+        if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
+            useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
                 liveData.postValue(Success(useCase.executeOnBackground()))
@@ -124,7 +112,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
-            getDataFromUseCase(getTickerUseCase.get(), _homeTicker, ::isFirstLoadTicker)
+            getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
         }, onError = {
             _homeTicker.postValue(Fail(it))
         })
@@ -133,7 +121,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getWidgetLayout() {
         launchCatchError(block = {
             getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
-            getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout, ::isFirstLoadLayout)
+            getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
         }, onError = {
             _widgetLayout.postValue(Fail(it))
         })
@@ -142,7 +130,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getCardDataUseCase.get().params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getCardDataUseCase.get(), _cardWidgetData, ::isFirstLoadCardWidget)
+            getDataFromUseCase(getCardDataUseCase.get(), _cardWidgetData)
         }, onError = {
             _cardWidgetData.postValue(Fail(it))
         })
@@ -151,7 +139,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getLineGraphDataUseCase.get(), _lineGraphWidgetData, ::isFirstLoadLineGraphWidget)
+            getDataFromUseCase(getLineGraphDataUseCase.get(), _lineGraphWidgetData)
         }, onError = {
             _lineGraphWidgetData.postValue(Fail(it))
         })
@@ -161,7 +149,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
             getProgressDataUseCase.get().params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
-            getDataFromUseCase(getProgressDataUseCase.get(), _progressWidgetData, ::isFirstLoadProgressWidget)
+            getDataFromUseCase(getProgressDataUseCase.get(), _progressWidgetData)
         }, onError = {
             _progressWidgetData.postValue(Fail(it))
         })
@@ -170,7 +158,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData, ::isFirstLoadPostListWidget)
+            getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
         }, onError = {
             _postListWidgetData.postValue(Fail(it))
         })
@@ -179,7 +167,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getCarouselDataUseCase.get().params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-            getDataFromUseCase(getCarouselDataUseCase.get(), _carouselWidgetData, ::isFirstLoadCarouselWidget)
+            getDataFromUseCase(getCarouselDataUseCase.get(), _carouselWidgetData)
         }, onError = {
             _carouselWidgetData.postValue(Fail(it))
         })
@@ -188,7 +176,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getTableWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getTableDataUseCase.get().params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData, ::isFirstLoadTableWidget)
+            getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData)
         }, onError = {
             _tableWidgetData.postValue(Fail(it))
         })
@@ -197,7 +185,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getPieChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getPieChartDataUseCase.get().params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getPieChartDataUseCase.get(), _pieChartWidgetData, ::isFirstLoadPieChartWidget)
+            getDataFromUseCase(getPieChartDataUseCase.get(), _pieChartWidgetData)
         }, onError = {
             _pieChartWidgetData.postValue(Fail(it))
         })
@@ -206,7 +194,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getBarChartWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             getBarChartDataUseCase.get().params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            getDataFromUseCase(getBarChartDataUseCase.get(), _barChartWidgetData, ::isFirstLoadBarChartWidget)
+            getDataFromUseCase(getBarChartDataUseCase.get(), _barChartWidgetData)
         }, onError = {
             _barChartWidgetData.postValue(Fail(it))
         })
