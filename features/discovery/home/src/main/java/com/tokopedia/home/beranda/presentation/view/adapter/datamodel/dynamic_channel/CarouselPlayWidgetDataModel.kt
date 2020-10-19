@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 
@@ -18,27 +19,24 @@ data class CarouselPlayWidgetDataModel(
     private val visitableId = "play_carousel"
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
-        TODO("Not yet implemented")
     }
 
     override fun getTrackingData(): MutableMap<String, Any> {
-        TODO("Not yet implemented")
+        return mutableMapOf()
     }
 
     override fun getTrackingDataForCombination(): MutableList<Any> {
-        TODO("Not yet implemented")
+        return mutableListOf()
     }
 
     override fun setTrackingDataForCombination(`object`: MutableList<Any>?) {
-        TODO("Not yet implemented")
     }
 
     override fun isTrackingCombined(): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     override fun setTrackingCombined(isCombined: Boolean) {
-        TODO("Not yet implemented")
     }
 
     override fun isCache(): Boolean {
@@ -66,6 +64,6 @@ data class CarouselPlayWidgetDataModel(
     }
 
     override fun type(typeFactory: HomeTypeFactory?): Int {
-        return 0
+        return typeFactory?.type(this).orZero()
     }
 }
