@@ -1066,7 +1066,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         }
     }
 
-
     override fun onGoToReportUser() {
         context?.let {
             analytics.eventClickReportUser(opponentId)
