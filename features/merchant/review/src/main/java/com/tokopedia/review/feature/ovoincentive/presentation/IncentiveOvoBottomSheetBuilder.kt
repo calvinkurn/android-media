@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
+import kotlinx.android.synthetic.main.incentive_ovo_tnc_bottom_sheet.view.*
 
 object IncentiveOvoBottomSheetBuilder {
 
@@ -25,7 +25,7 @@ object IncentiveOvoBottomSheetBuilder {
 
     fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, incentiveOvoListener: IncentiveOvoListener): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
-        val view = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_dialog, null)
+        val view = View.inflate(context, R.layout.incentive_ovo_tnc_bottom_sheet, null)
         bottomSheetUnify.apply {
             setChild(view)
             setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener)
