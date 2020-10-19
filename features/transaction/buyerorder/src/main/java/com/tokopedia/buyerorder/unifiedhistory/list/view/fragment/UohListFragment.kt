@@ -1010,8 +1010,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetKebabMenu() {
+    private fun showBottomSheetKebabMenu(orderIndex: Int) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_kebab_menu_uoh, null)
+        uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
         viewBottomSheet.rv_kebab.adapter = uohBottomSheetKebabMenuAdapter
         viewBottomSheet.rv_kebab.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
@@ -1323,13 +1324,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order) {
-        showBottomSheetKebabMenu()
+    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
+        showBottomSheetKebabMenu(orderIndex)
         uohBottomSheetKebabMenuAdapter.addList(order)
         userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
-    override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order) {
+    override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
         val dotMenu = orderData.metadata.dotMenus[index]
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
@@ -1380,7 +1381,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
-                    showBottomSheetFinishOrder(index, orderData.verticalID, true)
+                    showBottomSheetFinishOrder(orderIndex, orderData.verticalID, true)
                 }
                 dotMenu.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
