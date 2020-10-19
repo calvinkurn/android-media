@@ -114,11 +114,6 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check topads auto ads appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_AUTOADS, "")
-    }
-
-    @Test
     fun `check webview appLink then should return empty in sellerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.WEBVIEW, "")
     }
