@@ -4,13 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.LinearLayout
 
 /**
  * Created by Yehezkiel on 16/10/20
  */
 object ExpandableAnimation {
-    fun expand(view: View, onAnimationEndListener: (() -> Unit)? = null) {
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.AT_MOST)
+    fun expand(view: View, customParentWidth: Int = view.width, onAnimationEndListener: (() -> Unit)? = null) {
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(customParentWidth, View.MeasureSpec.AT_MOST)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         if (view is ViewGroup) {
             view.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

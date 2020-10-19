@@ -60,7 +60,7 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
                 if (toggle) {
-                    ExpandableAnimation.expand(view.product_detail_value) {
+                    ExpandableAnimation.expand(view.product_detail_value, itemView.width) {
                         view.horizontal_scroll_container.showWithCondition(toggle)
                     }
                 } else {

@@ -30,6 +30,7 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
     private fun setupExpandableItem(element: ProductDetailInfoExpandableListDataModel) = with(view) {
         val inflater: LayoutInflater = context.layoutInflater
 
+        expandable_container?.removeAllViews()
         repeat(3) {
             val layoutValuePoint = inflater.inflate(R.layout.partial_item_value_point, null)
             setupPartialView(layoutValuePoint, it)
