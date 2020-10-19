@@ -1497,7 +1497,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun registerPushNotif() {
-        if(isHitRegisterPushNotif) {
+        if(isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }

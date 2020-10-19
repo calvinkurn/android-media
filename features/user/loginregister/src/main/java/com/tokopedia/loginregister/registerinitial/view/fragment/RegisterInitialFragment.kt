@@ -17,6 +17,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -1310,7 +1311,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun registerPushNotif() {
-        if(isHitRegisterPushNotif) {
+        if(isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }

@@ -37,10 +37,9 @@ class RegisterPushNotifService : JobIntentService() {
         initInjector()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onHandleWork(intent: Intent) {
         try {
-            if (userSession.isLoggedIn) {
+            if (userSession.isLoggedIn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
