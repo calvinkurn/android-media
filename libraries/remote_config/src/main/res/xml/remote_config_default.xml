@@ -504,6 +504,6 @@
     </entry>
     <entry>
         <key>seller_home_dashboard_enable_cache</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
 </defaultsMap>
