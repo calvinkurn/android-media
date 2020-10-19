@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
@@ -30,3 +31,20 @@ fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
         px.toFloat(),
         resources.displayMetrics
 )
+
+/**
+ * Extension function to safely pass context to Glide
+ * This should avoid java.lang.IllegalArgumentException when using context as glide context parameter
+ */
+fun Context.isAvailableForGlide(): Context? {
+    return when (this) {
+        is Activity -> {
+            if (!(isDestroyed || isFinishing)) {
+                this
+            } else {
+                null
+            }
+        }
+        else -> this
+    }
+}
