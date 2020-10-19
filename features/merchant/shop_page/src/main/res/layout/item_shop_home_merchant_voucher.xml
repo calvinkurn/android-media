@@ -23,4 +23,7 @@
     <include
         layout="@layout/partial_shop_home_get_failed"/>
 
+    <include
+        layout="@layout/partial_shop_home_voucher_shimmering"/>
+
 </LinearLayout>

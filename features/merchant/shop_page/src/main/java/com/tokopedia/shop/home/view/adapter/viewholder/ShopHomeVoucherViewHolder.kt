@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
@@ -53,6 +54,7 @@ class ShopHomeVoucherViewHolder(
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
+    private var merchantVoucherShimmering: LinearLayout? = null
     private var textReload: Typography? = null
     private var imageReload: ImageView? = null
     private var textReloadDesc: Typography? = null
@@ -60,6 +62,7 @@ class ShopHomeVoucherViewHolder(
     private fun findView(itemView: View) {
         merchantVoucherListWidget = itemView.findViewById(R.id.merchantVoucherListWidget)
         merchantVoucherReload = itemView.findViewById(R.id.merchantVoucherReload)
+        merchantVoucherShimmering = itemView.findViewById(R.id.merchantVoucherShimmering)
         textReload = itemView.findViewById(R.id.textReload)
         imageReload = itemView.findViewById(R.id.imageReload)
         textReloadDesc = itemView.findViewById(R.id.textReloadDesc)
@@ -67,21 +70,24 @@ class ShopHomeVoucherViewHolder(
 
     override fun bind(model: ShopHomeVoucherUiModel) {
         if (model.isError) {
+            merchantVoucherShimmering?.hide()
             merchantVoucherListWidget?.hide()
             merchantVoucherReload?.show()
             textReloadDesc?.text = getReloadDesc()
 
             textReload?.setOnClickListener {
                 shopHomeVoucherViewHolderListener.onVoucherReloaded()
-                merchantVoucherListWidget?.show()
+                merchantVoucherShimmering?.show()
                 merchantVoucherReload?.hide()
+
             }
             imageReload?.setOnClickListener {
                 shopHomeVoucherViewHolderListener.onVoucherReloaded()
-                merchantVoucherListWidget?.show()
+                merchantVoucherShimmering?.show()
                 merchantVoucherReload?.hide()
             }
         } else {
+            merchantVoucherShimmering?.hide()
             merchantVoucherListWidget?.show()
             merchantVoucherReload?.hide()
             merchantVoucherUiModel = model
