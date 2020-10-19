@@ -10,8 +10,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetCardSmallBannerAdapterDelegate
-    : TypedAdapterDelegate<PlayWidgetSmallBannerUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallBannerViewHolder>(
+class PlayWidgetCardSmallBannerAdapterDelegate(
+        private val smallCardBannerListener: PlayWidgetCardSmallBannerViewHolder.Listener
+) : TypedAdapterDelegate<PlayWidgetSmallBannerUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallBannerViewHolder>(
         PlayWidgetCardSmallBannerViewHolder.layout
 ) {
 
@@ -20,6 +21,6 @@ class PlayWidgetCardSmallBannerAdapterDelegate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardSmallBannerViewHolder {
-        return PlayWidgetCardSmallBannerViewHolder(basicView)
+        return PlayWidgetCardSmallBannerViewHolder(basicView, smallCardBannerListener)
     }
 }

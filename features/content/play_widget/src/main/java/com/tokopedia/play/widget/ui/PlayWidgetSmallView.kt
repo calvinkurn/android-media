@@ -6,12 +6,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.analytic.small.PlayWidgetSmallAnalyticListener
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
+import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 
 /**
  * Created by jegul on 07/10/20
@@ -27,9 +32,38 @@ class PlayWidgetSmallView : ConstraintLayout {
     private val tvSeeAll: TextView
     private val rvWidgetCardSmall: RecyclerView
 
-    private val adapter = PlayWidgetCardSmallAdapter()
+    private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
-    private var mListener: PlayWidgetListener? = null
+    private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
+
+    private val smallBannerListener = object : PlayWidgetCardSmallBannerViewHolder.Listener {
+
+        override fun onBannerClicked(view: View) {
+            mAnalyticListener?.onClickBannerCard(this@PlayWidgetSmallView)
+        }
+    }
+
+    private val channelCardListener = object : PlayWidgetCardSmallChannelViewHolder.Listener {
+
+        override fun onChannelImpressed(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
+            mAnalyticListener?.onImpressChannelCard(
+                    this@PlayWidgetSmallView,
+                    position
+            )
+        }
+
+        override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickChannelCard(
+                    this@PlayWidgetSmallView,
+                    position
+            )
+        }
+    }
+
+    private val adapter = PlayWidgetCardSmallAdapter(
+            bannerCardListener = smallBannerListener,
+            channelCardListener = channelCardListener
+    )
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_small, this)
@@ -40,15 +74,18 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
-    fun setListener(listener: PlayWidgetListener?) {
-        mListener = listener
+    fun setAnalyticListener(listener: PlayWidgetSmallAnalyticListener?) {
+        mAnalyticListener = listener
     }
 
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
 
         tvSeeAll.text = data.actionTitle
-        tvSeeAll.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
+        tvSeeAll.setOnClickListener {
+            mAnalyticListener?.onClickViewAll(this)
+            RouteManager.route(context, data.actionAppLink)
+        }
 
         adapter.setItemsAndAnimateChanges(data.items)
     }
@@ -56,5 +93,7 @@ class PlayWidgetSmallView : ConstraintLayout {
     private fun setupView(view: View) {
         rvWidgetCardSmall.adapter = adapter
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
+
+        snapHelper.attachToRecyclerView(rvWidgetCardSmall)
     }
 }

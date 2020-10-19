@@ -35,11 +35,11 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+        if(element?.playBannerCarouselDataModel == null){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
             playBannerCarouselView?.removeRefreshShimmer()
-            element?.playBannerCarouselDataModel?.let {
+            element.playBannerCarouselDataModel.let {
                 if (it.channelList.isNotEmpty()) {
                     playBannerCarouselView?.setItem(it)
                 }
@@ -49,11 +49,11 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+        if(element?.playBannerCarouselDataModel == null){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
             playBannerCarouselView?.removeRefreshShimmer()
-            element?.playBannerCarouselDataModel?.let {
+            element.playBannerCarouselDataModel.let {
                 if(it.channelList.isNotEmpty()){
                     playBannerCarouselView?.setItem(it)
                 }
@@ -76,7 +76,7 @@ class PlayBannerCardViewHolder(
                         positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
                 )
         )
-        listener.onPlayV2Click(dataModel)
+//        listener.onPlayV2Click(dataModel)
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
@@ -110,7 +110,7 @@ class PlayBannerCardViewHolder(
                     )
                 }
         )
-        listener.onPlayBannerReminderClick(dataModel)
+//        listener.onPlayBannerReminderClick(dataModel)
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
@@ -153,7 +153,7 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
-        playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
+//        playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
     }
 
     fun onPause(){

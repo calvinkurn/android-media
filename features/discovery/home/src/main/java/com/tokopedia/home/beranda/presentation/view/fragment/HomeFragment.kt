@@ -83,7 +83,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -112,10 +115,6 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -136,6 +135,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -485,7 +486,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                    ContextCompat.getColor(it, R.color.green_600)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
         //status bar background compability, we show view background for android >= Kitkat
@@ -1549,23 +1550,23 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
-        getHomeViewModel().getPlayBannerCarousel(position)
-    }
+//    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
+//        getHomeViewModel().getPlayBannerCarousel(position)
+//    }
 
-    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(getHomeViewModel().getUserId().isNotEmpty()) getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
-        else RouteManager.route(context, ApplinkConst.LOGIN)
-    }
+//    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+//        if(getHomeViewModel().getUserId().isNotEmpty()) getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+//        else RouteManager.route(context, ApplinkConst.LOGIN)
+//    }
 
-    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
-            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-        } else {
-            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
-        }
-    }
+//    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
+//        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
+//            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
+//            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+//        } else {
+//            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
+//        }
+//    }
 
     override fun getTopAdsBannerNextPageToken(): String {
         return getHomeViewModel().currentTopAdsBannerToken

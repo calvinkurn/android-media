@@ -26,14 +26,10 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -249,6 +245,7 @@ class HomeUseCaseModule {
             "              }\n" +
             "              has_buy_button\n" +
             "              rating\n" +
+            "              ratingAverage\n" +
             "              count_review\n" +
             "              benefit {\n" +
             "                 type\n" +
@@ -532,18 +529,18 @@ class HomeUseCaseModule {
         return CloseChannelUseCase(useCase)
     }
 
-    @Provides
-    @HomeScope
-    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        return GetPlayWidgetUseCase(graphqlRepository)
-    }
-
-    @Provides
-    @HomeScope
-    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
-        return PlayToggleChannelReminderUseCase(useCase)
-    }
+//    @Provides
+//    @HomeScope
+//    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
+//        return GetPlayWidgetUseCase(graphqlRepository)
+//    }
+//
+//    @Provides
+//    @HomeScope
+//    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
+//        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
+//        return PlayToggleChannelReminderUseCase(useCase)
+//    }
 
     @Provides
     @HomeScope
