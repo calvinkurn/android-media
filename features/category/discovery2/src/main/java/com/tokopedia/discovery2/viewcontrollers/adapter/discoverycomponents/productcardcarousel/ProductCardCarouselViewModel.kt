@@ -48,6 +48,12 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     init {
         initDaggerInject()
+        components.lihatSemua?.run {
+            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
+            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
+                    creativeName = components.creativeName)
+            productCarouselHeaderData.value = lihatSemuaComponentData
+        }
     }
 
     override fun initDaggerInject() {
@@ -59,12 +65,6 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-        components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
-            productCarouselHeaderData.value = lihatSemuaComponentData
-        }
         fetchProductCarouselData()
     }
 
