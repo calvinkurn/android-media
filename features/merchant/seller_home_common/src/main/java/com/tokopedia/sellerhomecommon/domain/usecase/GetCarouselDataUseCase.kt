@@ -62,7 +62,7 @@ class GetCarouselDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getCarouselWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchCarouselWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

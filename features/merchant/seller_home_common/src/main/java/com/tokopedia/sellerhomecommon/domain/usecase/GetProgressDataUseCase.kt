@@ -51,7 +51,7 @@ class GetProgressDataUseCase constructor(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getProgressData(${'$'}dataKeys: [dataKey!]!) {
               fetchProgressBarWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

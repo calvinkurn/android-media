@@ -34,6 +34,7 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -75,8 +76,9 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonScope
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: AbstractionRouter): DigitalInterceptor {
-        return DigitalInterceptor(context, networkRouter)
+                                  networkRouter: NetworkRouter,
+                                  userSession : UserSession ): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @Provides

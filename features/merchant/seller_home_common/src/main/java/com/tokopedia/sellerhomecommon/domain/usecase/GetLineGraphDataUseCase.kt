@@ -53,7 +53,7 @@ class GetLineGraphDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getLineGraphData(${'$'}dataKeys: [dataKey!]!) {
               fetchLineGraphWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

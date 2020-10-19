@@ -51,7 +51,7 @@ class GetPieChartDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getPieChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchPieChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

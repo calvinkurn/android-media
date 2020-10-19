@@ -12,23 +12,25 @@ import javax.inject.Inject
 class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) {
 
     fun mapRemoteModelToUiModel(widgetList: List<WidgetModel>, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        return widgetList.filter {
+        val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
+        widgetList.onEach {
             val widgetType = it.widgetType.orEmpty()
-            return@filter WidgetType.isValidWidget(widgetType)
-        }.map {
-            return@map when (it.widgetType.orEmpty()) {
-                WidgetType.CARD -> mapToCardWidget(it, isFromCache)
-                WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
-                WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
-                WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
-                WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
-                WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
-                WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
-                WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
-                WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
-                else -> mapToSectionWidget(it, isFromCache)
+            if (WidgetType.isValidWidget(widgetType)) {
+                mappedList.add(when (widgetType) {
+                    WidgetType.CARD -> mapToCardWidget(it, isFromCache)
+                    WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
+                    WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
+                    WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
+                    WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
+                    WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
+                    WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
+                    WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
+                    WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
+                    else -> mapToSectionWidget(it, isFromCache)
+                })
             }
         }
+        return mappedList
     }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {

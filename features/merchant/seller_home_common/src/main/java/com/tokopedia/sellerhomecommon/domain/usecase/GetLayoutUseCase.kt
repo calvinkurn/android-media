@@ -54,7 +54,7 @@ class GetLayoutUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}shopID: Int!, ${'$'}page: String!) {
+            query GetSellerDashboardLayout(${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
                   widgetType

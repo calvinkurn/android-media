@@ -6,7 +6,9 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.text.*
+import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -47,6 +49,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -124,9 +127,9 @@ class HotelBookingFragment : HotelBaseFragment() {
             stopTrace()
         })
 
-        bookingViewModel.tokopointSumCouponResult.observe(this, androidx.lifecycle.Observer { renderSumCoupon(it) })
+        bookingViewModel.tokopointSumCouponResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { renderSumCoupon(it) })
 
-        bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
+        bookingViewModel.hotelCheckoutResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
@@ -653,8 +656,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
-    private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
-            com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+    private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun stopTrace() {
         if (!isTraceStop) {

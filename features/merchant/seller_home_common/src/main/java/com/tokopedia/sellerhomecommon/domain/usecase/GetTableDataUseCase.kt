@@ -52,7 +52,7 @@ class GetTableDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getTableData(${'$'}dataKeys: [dataKey!]!) {
               fetchSearchTableWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

@@ -52,7 +52,7 @@ class GetBarChartDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getBarChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchBarChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

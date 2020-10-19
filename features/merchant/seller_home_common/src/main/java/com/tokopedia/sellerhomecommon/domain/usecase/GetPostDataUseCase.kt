@@ -55,7 +55,7 @@ class GetPostDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getPostWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchPostWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   datakey
