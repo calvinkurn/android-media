@@ -10,7 +10,7 @@ import dagger.Component
 
 @InterestPickScope
 @Component(
-        modules = [InterestPickViewModelModule::class],
+        modules = [InterestPickModule::class, InterestPickViewModelModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface InterestPickComponent {
