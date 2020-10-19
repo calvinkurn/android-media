@@ -70,7 +70,6 @@ class RechargeGeneralInstrumentTest {
         validate_select_operator()
         validate_select_product()
         validate_manual_input()
-//        validate_back_press()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY),
                 hasAllSuccess())
