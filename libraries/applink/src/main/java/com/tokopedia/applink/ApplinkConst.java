@@ -45,7 +45,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
-    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
+    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
@@ -197,6 +197,7 @@ public interface ApplinkConst {
     String TOKOPEDIA_REWARD = "tokopedia://rewards";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
+    String FEEDBACK_FORM = "tokopedia://internal-feedback";
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
@@ -387,10 +388,7 @@ public interface ApplinkConst {
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
         String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
-        String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
-        String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
-        String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String WEBVIEW = "sellerapp://webview";
         String VOUCHER_LIST = "sellerapp://voucher-list";
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";

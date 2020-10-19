@@ -13,6 +13,8 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticdata.domain.param.EditAddressParam
+import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -43,8 +45,6 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -1602,7 +1602,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun validateSelectedTerm(): Boolean {
         val creditCard = _orderPayment.creditCard
         val selectedTerm = creditCard.selectedTerm
-        if (selectedTerm != null && !selectedTerm.isEnable) {
+        val hasEnableTerm = creditCard.availableTerms.indexOfFirst { it.isEnable } > -1
+        if (selectedTerm != null && !selectedTerm.isEnable && hasEnableTerm) {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach { it.isError = true }
             selectedTerm.isError = true

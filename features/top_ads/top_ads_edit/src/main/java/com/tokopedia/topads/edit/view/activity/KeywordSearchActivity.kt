@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -39,7 +40,9 @@ import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Com
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SEARCH_QUERY
 import com.tokopedia.topads.edit.view.fragment.select.KeywordAdsListFragment.Companion.SELECTED_KEYWORDS
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import javax.inject.Inject
@@ -59,6 +62,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     private var groupId: String = ""
     private var userID: String = ""
     private var manualKeywords:MutableList<SearchData> = mutableListOf()
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
 
     override fun getComponent(): TopAdsEditComponent {
@@ -79,6 +84,15 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         fetchData()
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(this)
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager, KeywordSearchActivity::class.java.name)
         }

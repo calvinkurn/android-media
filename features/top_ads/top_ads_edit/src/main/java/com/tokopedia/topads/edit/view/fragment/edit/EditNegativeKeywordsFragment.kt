@@ -7,6 +7,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -157,6 +158,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             setVisibilityOperation(View.GONE)
 
         }
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
