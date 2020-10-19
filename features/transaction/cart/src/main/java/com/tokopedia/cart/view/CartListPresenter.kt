@@ -77,6 +77,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                             private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                            private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -1390,5 +1391,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun setLastApplyValid() {
         isLastApplyResponseStillValid = true
+    }
+
+    override fun saveCheckboxState(cartItemDataList: List<CartItemData>) {
+        val requestParams = setCartlistCheckboxStateUseCase.buildRequestParams(cartItemDataList)
+        compositeSubscription.add(
+                setCartlistCheckboxStateUseCase.createObservable(requestParams)
+                        .subscribe(SetCartlistCheckboxStateSubscriber())
+        )
     }
 }

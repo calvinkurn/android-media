@@ -177,6 +177,7 @@ class CartModule {
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                  setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
@@ -186,7 +187,7 @@ class CartModule {
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
                 updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                validateUsePromoRevampUseCase, schedulers
+                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, schedulers
         )
     }
 

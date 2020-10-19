@@ -124,4 +124,6 @@ interface ICartListPresenter {
     fun setLastApplyNotValid()
 
     fun setLastApplyValid()
+
+    fun saveCheckboxState(cartItemDataList: List<CartItemData>)
 }
