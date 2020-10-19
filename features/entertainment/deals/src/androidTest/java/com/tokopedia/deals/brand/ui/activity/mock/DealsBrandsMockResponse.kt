@@ -16,6 +16,6 @@ class DealsBrandsMockResponse : MockModelConfig() {
 
 
     companion object {
-        const val KEY_EVENT_BRAND_PAGE = "event_seacrh"
+        const val KEY_EVENT_BRAND_PAGE = "event_search"
     }
 }

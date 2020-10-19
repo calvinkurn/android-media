@@ -3,9 +3,9 @@
   "mode": "exact",
   "query": [
     {
-      "event" : "clickDeals", 
+      "event" : "clickDeals",
       "eventCategory" : "digital - deals",
-      "eventAction" : "change location - brand page",
+        "eventAction" : "change location - brand page",
       "eventLabel" : "{{deals - .+ - .+}}",
       "screenName" : "/deals/",
       "category" : "deals",

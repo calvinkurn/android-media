@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,7 +13,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -20,6 +22,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Assert
 import org.junit.Before
@@ -34,8 +37,10 @@ class DealsSearchActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
 
+    private val query = "tes"
+
     @get: Rule
-    var activtyRule: IntentsTestRule<DealsSearchActivity> = object : IntentsTestRule<DealsSearchActivity>(DealsSearchActivity::class.java) {
+    var activityRule: IntentsTestRule<DealsSearchActivity> = object : IntentsTestRule<DealsSearchActivity>(DealsSearchActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             gtmLogDbSource.deleteAll().subscribe()
@@ -54,109 +59,76 @@ class DealsSearchActivityTest {
 
     @Test
     fun testSearchLayout() {
-        impressionOnSearchResult()
-        impressionOnSearchResulNotFound()
-        onClickSearchResultBrand()
-        onClickOnSearchResultProduct()
         clickChipsLastSeen()
+        clickSearch()
+        clickOnSearchBar()
+        actionOnVoucherViewHolder()
+        actionOnMerchantViewHolder()
+        impressionNotFoundViewHolder()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE),
                 hasAllSuccess())
     }
 
-    private fun impressionOnSearchResult() {
+    private fun clickSearch() {
         Thread.sleep(2000)
-        onView(withId(R.id.search_bar)).check(matches(isDisplayed())).perform(click()).perform(typeText("tes"))
-
-        Thread.sleep(3000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(BRAND_POSITION))
-
-        Thread.sleep(2000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(PRODUCT_POSITION)
-        viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.rv_search_results, 0)
-        }
+        onView(withId(R.id.search_bar)).perform(click())
     }
 
-    private fun onClickSearchResultBrand() {
+    private fun clickOnSearchBar() {
         Thread.sleep(2000)
-        onView(withId(R.id.search_bar)).check(matches(isDisplayed())).perform(click()).perform(typeText("tes"))
-
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         Thread.sleep(2000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(BRAND_POSITION))
-
-        Thread.sleep(2000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(BRAND_POSITION)
-        viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.rv_brands, 0)
-        }
-        Thread.sleep(2000)
-    }
-
-    private fun onClickOnSearchResultProduct() {
-        Thread.sleep(2000)
-        onView(withId(R.id.search_bar)).check(matches(isDisplayed())).perform(click()).perform(typeText("tes"))
-
-        Thread.sleep(2000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(PRODUCT_POSITION))
-
-        Thread.sleep(2000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(PRODUCT_POSITION)
-        viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.rv_search_results, 0)
-        }
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
     }
 
 
-    private fun impressionOnSearchResulNotFound() {
+    private fun actionOnVoucherViewHolder() {
         Thread.sleep(2000)
-        onView(withId(R.id.search_bar)).check(matches(isDisplayed())).perform(typeText("tesasjsagsja"))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(EMPTY_VIEW_POSITION))
-
-        Thread.sleep(2000)
-        onView(withId(R.id.empty_state_content_container_id)).check(matches(isDisplayed())).perform(click())
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.voucher_deals_layout), 1)).perform(click())
     }
 
-    private fun impressionOnChips() {
-        Thread.sleep(3000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(CHIPS_POSITION))
+    private fun actionOnMerchantViewHolder() {
+        Thread.sleep(2000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(CHIPS_POSITION)
-        viewHolder?.let {
-            CommonActions.clickOnEachItemRecyclerView(it.itemView, R.id.rv_search_results, 0)
-        }
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
+    }
+
+    private fun actionOnCuratedViewHolder() {
+        Thread.sleep(2000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.chip_green_item), 0)).perform(click())
+    }
+
+
+    private fun impressionNotFoundViewHolder() {
+        Thread.sleep(2000)
+        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("tesasjsagsja"))
+
+        Thread.sleep(2000)
+        onView(withId(R.id.tv_not_found_title))
     }
 
     private fun clickChipsLastSeen() {
         Thread.sleep(3000)
-        onView(withId(R.id.recycler_view)).check(matches(isDisplayed())).perform(RecyclerViewActions
+        onView(withId(R.id.rv_search_results)).check(matches(isDisplayed())).perform(RecyclerViewActions
                 .scrollToPosition<RecyclerView.ViewHolder>(CHIPS_POSITION))
 
         Thread.sleep(2000)
-        val recyclerView = activtyRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_search_results)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(CHIPS_POSITION)
         viewHolder?.let {
             CommonActions.clickChildViewWithId(R.id.chip_green_item)
         }
     }
 
+
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE = "tracker/entertainment/deals/deals_search_tracking.json"
-        const val BRAND_POSITION = 0
-        const val PRODUCT_POSITION = 1
-        const val EMPTY_VIEW_POSITION = 0
         const val CHIPS_POSITION = 0
     }
 }
