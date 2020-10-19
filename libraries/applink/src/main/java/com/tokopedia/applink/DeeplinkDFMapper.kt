@@ -126,6 +126,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -300,6 +301,10 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
+            }, DF_BASE, R.string.title_product_review))
 
             // Operational
             add(DFP({
@@ -452,6 +457,12 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD)}, DF_BASE_SELLER_APP, R.string.title_statistic))
+
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW)
+            }, DF_BASE, R.string.title_product_review))
+
         }
     }
 
