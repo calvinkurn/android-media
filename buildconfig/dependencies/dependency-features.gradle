@@ -237,6 +237,7 @@ ext {
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:user:fcm_common",
+            homeAccountUser                 : ":features:user:home_account",
             tkpdcore                        : ":tkpdcore",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
