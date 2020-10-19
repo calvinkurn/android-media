@@ -291,7 +291,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
-        onEach {
+        forEach {
             it.isLoading = true
             it.isLoaded = true
         }
