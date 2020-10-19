@@ -399,11 +399,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun setupBottomNav() {
         sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
 
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.bottom_nav_home_exit_animation, R.raw.bottom_nav_home_enter_animation, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_inactive, R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
-        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, R.color.color_active_bottom_nav, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.bottom_nav_home_exit_animation, R.raw.bottom_nav_home_enter_animation, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_inactive, R.color.color_active_bottom_nav, false, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, R.color.color_active_bottom_nav, false, 5f, 5f))
+        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, R.color.color_active_bottom_nav, true, 5f, 5f))
+        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, R.color.color_active_bottom_nav, true, 5f, 5f))
+        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, R.color.color_active_bottom_nav, false, 5f, 5f))
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
