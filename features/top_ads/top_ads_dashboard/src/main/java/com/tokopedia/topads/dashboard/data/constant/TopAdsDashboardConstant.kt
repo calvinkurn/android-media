@@ -6,7 +6,6 @@ object TopAdsDashboardConstant {
     const val PARAM_END_DATE = "end_date"
 
     const val PATH_DASHBOARD_TOTAL_AD = "/v1.1/dashboard/total_ad"
-    const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
     const val PATH_DASHBOARD_CREDIT = "/v1/tkpd_products"
 
     const val SHOP_ID = "shopId"

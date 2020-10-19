@@ -22,11 +22,6 @@ class TopAdsDashboardDataSourceCloud(private val topAdsDashboardApi: TopAdsDashb
                 .map(TopAdsResponseMapper())
     }
 
-    fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
-        return topAdsDashboardApi.getStatistics(requestParams.paramsAllValueInString)
-                .map(TopAdsResponseMapper())
-    }
-
     fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>> {
         return topAdsDashboardApi.getDashboardCredit().map(TopAdsResponseMapper())
     }
