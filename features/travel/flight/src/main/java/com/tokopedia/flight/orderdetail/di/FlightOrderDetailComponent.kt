@@ -1,6 +1,8 @@
 package com.tokopedia.flight.orderdetail.di
 
 import com.tokopedia.flight.common.di.component.FlightComponent
+import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailActivity
+import com.tokopedia.flight.orderdetail.presentation.fragment.FlightOrderDetailFragment
 import dagger.Component
 
 /**
@@ -10,4 +12,6 @@ import dagger.Component
 @Component(modules = [FlightOrderDetailModule::class, FlightOrderDetailViewModelModule::class],
         dependencies = [FlightComponent::class])
 interface FlightOrderDetailComponent {
+    fun inject(flightOrderDetailActivity: FlightOrderDetailActivity)
+    fun inject(flightOrderDetailActivity: FlightOrderDetailFragment)
 }
