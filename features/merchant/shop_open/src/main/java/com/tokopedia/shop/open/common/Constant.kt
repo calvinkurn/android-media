@@ -36,3 +36,9 @@ object ScreenNameTracker {
     const val SCREEN_CONGRATULATION = "/registration page - shop/congratulation"
     const val SCREEN_HOORAY = "/registration page - shop/hooray"
 }
+
+object ErrorConstant {
+    const val ERROR_SAVE_LOCATION_SHIPPING = "error save location shipping"
+    const val ERROR_SEND_SURVEY = "error send survey"
+    const val ERROR_GET_SURVEY_QUESTIONS = "error get survey questions"
+}

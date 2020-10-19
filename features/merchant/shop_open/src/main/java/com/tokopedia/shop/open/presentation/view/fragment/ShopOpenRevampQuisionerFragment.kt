@@ -29,9 +29,13 @@ import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_GET_SURVEY_QUESTIONS
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SAVE_LOCATION_SHIPPING
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SEND_SURVEY
 import com.tokopedia.shop.open.common.ExitDialog
 import com.tokopedia.shop.open.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.common.ScreenNameTracker
+import com.tokopedia.shop.open.common.ShopOpenRevampErrorHandler
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampModule
@@ -46,6 +50,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class ShopOpenRevampQuisionerFragment :
@@ -208,6 +214,9 @@ class ShopOpenRevampQuisionerFragment :
                     showErrorNetwork(it.throwable) {
                         loadDataSurvey()
                     }
+                    it.throwable.message?.let { message ->
+                        ShopOpenRevampErrorHandler.logMessage(ERROR_GET_SURVEY_QUESTIONS, userSession.userId, it.throwable)
+                    }
                 }
             }
         })
@@ -231,6 +240,9 @@ class ShopOpenRevampQuisionerFragment :
                         val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
                         viewModel.sendSurveyData(dataSurveyInput)
                     }
+                    it.throwable.message?.let { message ->
+                        ShopOpenRevampErrorHandler.logMessage(ERROR_SEND_SURVEY, userSession.userId, it.throwable)
+                    }
                 }
             }
         })
@@ -250,10 +262,18 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
-                        if (shopId != 0 && postCode != "" && courierOrigin != 0
-                                && addrStreet != "" && latitude != "" && longitude != "") {
-                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                    it.throwable.let {
+                        showErrorNetwork(it) {
+                            if (shopId != 0 && postCode != "" && courierOrigin != 0
+                                    && addrStreet != "" && latitude != "" && longitude != "") {
+                                saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                            }
+                        }
+
+                        it.message?.let { message ->
+                            ShopOpenRevampErrorHandler.logMessage(ERROR_SAVE_LOCATION_SHIPPING, userSession.userId, it)
+                            ShopOpenRevampErrorHandler.logMessage(message)
+                            ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it)
                         }
                     }
                 }

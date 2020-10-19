@@ -21,6 +21,16 @@ object ShopOpenRevampErrorHandler {
         }
     }
 
+    fun logMessage(title: String, userId: String, throwable: Throwable) {
+        val errorMessage = String.format(
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+                title,
+                userId,
+                throwable.message ?: "")
+
+        Timber.w("P2#SHOP_OPEN#%s", errorMessage)
+    }
+
     fun logExceptionToCrashlytics(t: Throwable) {
         try {
             FirebaseCrashlytics.getInstance().recordException(t)
