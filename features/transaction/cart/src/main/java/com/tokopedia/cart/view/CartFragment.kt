@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -53,8 +54,9 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TI
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
-import com.tokopedia.cart.view.compoundview.ToolbarRemoveView
-import com.tokopedia.cart.view.compoundview.ToolbarRemoveWithBackView
+import com.tokopedia.cart.view.compoundview.CartToolbarListener
+import com.tokopedia.cart.view.compoundview.CartToolbarView
+import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
 import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
@@ -130,7 +132,7 @@ import javax.inject.Inject
  */
 
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, ToolbarRemoveView.ToolbarCartListener,
+        RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, CartToolbarListener,
         InsuranceItemActionListener, TickerAnnouncementActionListener, SellerCashbackListener {
 
     lateinit var appBarLayout: AppBarLayout
@@ -203,7 +205,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
-    private var delayCbChangeJob: Job? = null
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
@@ -245,32 +246,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun getDialogDeleteConfirmation(): DialogUnify? {
-        activity?.apply {
-            return DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.label_dialog_title_delete_item))
-                setDescription(getString(R.string.label_dialog_message_remove_cart_item))
-                setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
-                setSecondaryCTAText(getString(R.string.label_dialog_action_cancel))
-            }
-        }
-
-        return null
-    }
-
-    private fun getDisabledItemDialogDeleteConfirmation(): DialogUnify? {
-        activity?.let {
-            return DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.label_dialog_title_delete_disabled_item))
-                setDescription(getString(R.string.label_dialog_message_remove_cart_item))
-                setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
-                setSecondaryCTAText(getString(R.string.label_dialog_action_cancel))
-            }
-        }
-
-        return null
-    }
-
     private fun getInsuranceDialogDeleteConfirmation(): DialogUnify? {
         activity?.let {
             return DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -278,19 +253,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item_with_insurance))
                 setPrimaryCTAText(getString(R.string.label_dialog_action_delete_and_add_to_wishlist_macro_insurance))
                 setSecondaryCTAText(getString(R.string.label_dialog_action_delete_macro_insurance))
-            }
-        }
-
-        return null
-    }
-
-    private fun getMultipleItemsDialogDeleteConfirmation(count: Int): DialogUnify? {
-        activity?.let {
-            return DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.label_dialog_title_delete_multiple_item, count))
-                setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item))
-                setPrimaryCTAText(getString(R.string.label_dialog_action_delete))
-                setSecondaryCTAText(getString(R.string.label_dialog_action_cancel))
             }
         }
 
@@ -393,7 +355,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    fun onBackPressed() {
+    override fun onBackPressed() {
         sendAnalyticsOnClickBackArrow()
         if (isAtcExternalFlow()) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.HOME)
@@ -401,6 +363,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             startActivity(intent)
         }
         activity?.finish()
+    }
+
+    override fun onWishlistClicked() {
+        activity?.let {
+            RouteManager.route(it, NEW_WISHLIST)
+        }
     }
 
     private fun updateCartAfterDetached() {
@@ -653,10 +621,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun toolbarRemoveWithBackView(): ToolbarRemoveWithBackView? {
+    private fun toolbarRemoveWithBackView(): CartToolbarWithBackView? {
         activity?.let {
-            return ToolbarRemoveWithBackView(it).apply {
-                navigateUp(it)
+            return CartToolbarWithBackView(it).apply {
+                listener = this@CartFragment
                 setTitle(getString(R.string.cart))
             }
         }
@@ -664,9 +632,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
-    private fun toolbarRemoveView(): ToolbarRemoveView? {
+    private fun toolbarRemoveView(): CartToolbarView? {
         activity?.let {
-            return ToolbarRemoveView(it).apply {
+            return CartToolbarView(it).apply {
+                listener = this@CartFragment
                 setTitle(getString(R.string.cart))
             }
         }
@@ -985,31 +954,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
         return recommendationWishlistActionListener as WishListActionListener
-    }
-
-    private fun getCartAvailableWishlistActionListener(): WishListActionListener {
-        if (cartAvailableWishlistActionListener == null) {
-            cartAvailableWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
-                }
-
-                override fun onSuccessAddWishlist(productId: String) {
-                    this@CartFragment.onSuccessAddWishlist(productId)
-                    cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String) {
-                    this@CartFragment.onSuccessRemoveWishlist(productId)
-                    cartPageAnalytics.eventRemoveWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
-                }
-            }
-        }
-        return cartAvailableWishlistActionListener as WishListActionListener
     }
 
     private fun getCartUnavailableWishlistActionListener(): WishListActionListener {

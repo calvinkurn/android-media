@@ -3,21 +3,20 @@ package com.tokopedia.cart.view.compoundview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.cart.R
-
 import com.tokopedia.design.base.BaseCustomView
 
 /**
  * Created by meta on 19/07/18.
  */
-class ToolbarRemoveView : BaseCustomView {
+class CartToolbarWithBackView : BaseCustomView {
 
+    lateinit var btnBack: ImageView
     lateinit var textView: TextView
-
-    interface ToolbarCartListener {
-        // Todo : add wishlist icon
-    }
+    lateinit var btnWishlist: ImageView
+    lateinit var listener: CartToolbarListener
 
     constructor(context: Context) : super(context) {
         init()
@@ -32,8 +31,14 @@ class ToolbarRemoveView : BaseCustomView {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.toolbar_delete, this)
-        textView = view.findViewById(R.id.textview_title)
+        View.inflate(context, R.layout.cart_toolbar_with_back_view, this)?.let {
+            btnBack = it.findViewById(R.id.btn_back)
+            textView = it.findViewById(R.id.textview_title)
+            btnWishlist = it.findViewById(R.id.btn_wishlist)
+
+            btnBack.setOnClickListener { listener.onBackPressed() }
+            btnWishlist.setOnClickListener { listener.onWishlistClicked() }
+        }
     }
 
     fun setTitle(title: CharSequence) {
