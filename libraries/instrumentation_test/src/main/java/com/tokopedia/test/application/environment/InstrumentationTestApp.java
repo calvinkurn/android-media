@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -62,7 +63,7 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class InstrumentationTestApp extends BaseMainApplication
+public class InstrumentationTestApp extends CoreNetworkApplication
         implements AbstractionRouter,
         TkpdCoreRouter,
         NetworkRouter,
@@ -270,6 +271,11 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
+    }
+
+    @Override
+    public Intent getMaintenancePageIntent() {
+        return new Intent();
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }

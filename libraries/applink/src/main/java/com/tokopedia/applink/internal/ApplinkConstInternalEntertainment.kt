@@ -28,6 +28,8 @@ object ApplinkConstInternalEntertainment {
     val EVENT_FORM = "$INTERNAL_EVENT/form"
     @JvmField
     val EVENT_PACKAGE = "$INTERNAL_EVENT/choose-package"
+    @JvmField
+    val EVENT_REDEEM = "$INTERNAL_EVENT/redeem"
 
 
 }
