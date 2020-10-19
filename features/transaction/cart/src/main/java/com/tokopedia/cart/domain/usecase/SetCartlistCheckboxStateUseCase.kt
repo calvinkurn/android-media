@@ -4,6 +4,7 @@ import com.tokopedia.cart.data.model.request.SetCartlistCheckboxStateRequest
 import com.tokopedia.cart.data.model.response.cartlistcheckboxstate.SetCartlistCheckboxGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlistcheckboxstate.CartlistCheckboxStateData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -21,13 +22,13 @@ class SetCartlistCheckboxStateUseCase @Inject constructor(private val graphqlUse
         private const val PARAM = "params"
     }
 
-    fun buildRequestParams(cartItemDataList: List<CartItemData>): RequestParams {
+    fun buildRequestParams(cartItemDataList: List<CartItemHolderData>): RequestParams {
         val cartlistCheckboxStateRequestList = ArrayList<SetCartlistCheckboxStateRequest>()
         cartItemDataList.forEach {
             cartlistCheckboxStateRequestList.add(
                     SetCartlistCheckboxStateRequest(
-                            cartId = it.originData?.cartId?.toString() ?: "",
-                            checkboxState = it.originData?.isCheckboxState ?: false
+                            cartId = it.cartItemData?.originData?.cartId?.toString() ?: "",
+                            checkboxState = it.isSelected
                     )
             )
         }

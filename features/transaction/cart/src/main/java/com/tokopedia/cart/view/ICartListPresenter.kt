@@ -7,10 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
-import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -125,5 +122,5 @@ interface ICartListPresenter {
 
     fun setLastApplyValid()
 
-    fun saveCheckboxState(cartItemDataList: List<CartItemData>)
+    fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>)
 }
