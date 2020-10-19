@@ -77,7 +77,7 @@ public interface LinkerConstants {
 
     // Recharge Events
     String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";
-    String EVENT_DIGITAL_PURCHASE = "purchase_start";
+    String EVENT_DIGITAL_CATEGORY_LAUNCHED = "digital_category_screen_launched";
 
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
@@ -94,7 +94,7 @@ public interface LinkerConstants {
     String PRODUCT_NAME = "product_name";
     String JOURNEY_ID = "journey_id";
     String INVOICE_ID = "invoice_id";
-    String PRODUCT_TYPE = "product_type";
+    String PRODUCT_TYPE = "productType";
 
     // Recharge Constants
     String PRODUCT_TYPE_DIGITAL = "Digital";
