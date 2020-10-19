@@ -562,4 +562,8 @@ public interface ApplinkConst {
             String REWARDS = "rewards";
         }
     }
+
+    interface Navigation{
+        String MAIN_NAV = "tokopedia://navigation/main";
+    }
 }
