@@ -1021,7 +1021,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productCategoryLayout?.show()
             productCategoryRecListView?.show()
             val selectedCategory = ArrayList<ListItemUnify>()
-            selectedCategory.add(ListItemUnify(detailInputModel.categoryName, ""))
+            val listItemUnify = ListItemUnify(detailInputModel.categoryName, "")
+            listItemUnify.isBold = false
+            selectedCategory.add(listItemUnify)
             productCategoryRecListView?.setData(selectedCategory)
         }
 

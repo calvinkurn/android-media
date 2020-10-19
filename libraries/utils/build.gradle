@@ -34,6 +34,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {
