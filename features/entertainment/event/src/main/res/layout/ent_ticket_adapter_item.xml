@@ -31,16 +31,16 @@
             android:background="@color/Neutral_N100" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
             android:id="@+id/txtTitle_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
             android:textColor="@color/Neutral_N700"
-            tools:text="Day 1 Presale - Adult"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="Day 1 Presale - Adult" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtTermurah_ticket"
@@ -182,6 +182,24 @@
             android:paddingRight="@dimen/spacing_lvl6"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/ent_pdp_ticket_telah_selesai"
+            android:textColor="@color/Neutral_N300"
+            android:visibility="gone"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toBottomOf="@id/txtPrice_ticket"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtisRecommeded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ent_pdp_ticket_habis_bg"
+            android:paddingLeft="@dimen/spacing_lvl6"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl6"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:text="@string/ent_pdp_ticket_recommended"
             android:textColor="@color/Neutral_N300"
             android:visibility="gone"
             app:typographyType="heading_6"

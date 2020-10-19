@@ -11,4 +11,6 @@ interface OnBindItemTicketListener {
     fun getSelectedDate():String
 
     fun resetPackage()
+
+    fun clickRecommendation(list: List<String>)
 }

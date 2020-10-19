@@ -189,12 +189,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
-    private fun setupBottomSheet() {
+    private fun setupBottomSheet(listActiveDates: List<String>) {
         if (startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()) {
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(pdpData))
+                calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(listActiveDates))
                         ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                         ?.withSelectedDate(Date(selectedDate.toLong() * DATE_MULTIPLICATION))
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
@@ -297,7 +297,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         viewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
-            setupBottomSheet()
+            setupBottomSheet(pdpData.dates)
         })
     }
 
@@ -309,9 +309,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun setupUbahButton() {
         activity?.txtUbah?.setOnClickListener {
-            fragmentManager?.let {
-                bottomSheets.show(it, "")
-            }
+            showUpBottomSheet()
         }
     }
 
@@ -354,6 +352,16 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         ))
     }
 
+    override fun clickRecommendation(list: List<String>) {
+        setupBottomSheet(list)
+        showUpBottomSheet()
+    }
+
+    private fun showUpBottomSheet(){
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
+    }
 
     companion object {
         fun newInstance(url: String, selectedDate: String, startDate: String, endDate: String) = EventPDPTicketFragment().also {

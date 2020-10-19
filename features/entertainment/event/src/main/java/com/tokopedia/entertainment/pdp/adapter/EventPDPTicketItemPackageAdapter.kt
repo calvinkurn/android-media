@@ -22,6 +22,8 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkStar
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.toDp
 import java.util.*
 
@@ -57,19 +59,33 @@ class EventPDPTicketItemPackageAdapter(
                 val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
                 val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
                 val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) && items.available.toInt()>=1)
-                if(isSaleStarted && isNotEnded) {
-                    txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
-                    txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
-                } else if(!isSaleStarted && isNotEnded) {
-                    txtPilih_ticket.visibility = View.GONE
-                    txtHabis_ticket.visibility = View.GONE
-                    txtAlreadyEnd.visibility = View.GONE
-                    txtNotStarted.visibility = View.VISIBLE
-                } else if(isSaleStarted && !isNotEnded){
-                    txtPilih_ticket.visibility = View.GONE
-                    txtHabis_ticket.visibility = View.GONE
-                    txtAlreadyEnd.visibility = View.VISIBLE
-                    txtNotStarted.visibility = View.GONE
+                val isRecomended = (!checkDate(items.dates,onBindItemTicketListener.getSelectedDate()))
+                if(!isRecomended){
+                    if(isSaleStarted && isNotEnded) {
+                        txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
+                        txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
+                    } else if(!isSaleStarted && isNotEnded) {
+                        txtPilih_ticket.visibility = View.GONE
+                        txtHabis_ticket.visibility = View.GONE
+                        txtAlreadyEnd.visibility = View.GONE
+                        txtNotStarted.visibility = View.VISIBLE
+                    } else if(isSaleStarted && !isNotEnded){
+                        txtPilih_ticket.visibility = View.GONE
+                        txtHabis_ticket.visibility = View.GONE
+                        txtAlreadyEnd.visibility = View.VISIBLE
+                        txtNotStarted.visibility = View.GONE
+                    }
+                } else if(isRecomended){
+                    txtPilih_ticket.gone()
+                    txtHabis_ticket.gone()
+                    txtAlreadyEnd.gone()
+                    txtNotStarted.gone()
+                    txtisRecommeded.show()
+                    bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_sold_out)
+                    txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
+                    txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
+                    txtPrice_ticket.setText(resources.getString(R.string.ent_pdp_ticket_sold_out))
+                    txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                 }
 
                 itemView.post {
@@ -156,6 +172,10 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
                     eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
                 }
+
+               txtisRecommeded.setOnClickListener {
+                    onBindItemTicketListener.clickRecommendation(items.dates)
+               }
             }
         }
     }
