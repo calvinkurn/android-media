@@ -2,6 +2,8 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -35,6 +37,10 @@ internal open class BannerView(activity: Activity) {
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
+
+        // set transparent background
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         dialog.show()
 
         // resize dialog's width with 80% of screen
