@@ -43,6 +43,7 @@ object RecommendationListTracking: BaseTrackerConst(){
                             isTopAds = grid.isTopads,
                             headerName = channel.header.name,
                             isCarousel = true,
+                            pageName = channel.pageName,
                             recommendationType = grid.recommendationType
 
                     )

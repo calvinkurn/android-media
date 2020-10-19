@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
@@ -18,7 +18,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.launch
 import rx.Subscriber
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 /**
@@ -32,7 +35,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
         private val getRecommendationFilterChips: GetRecommendationFilterChips,
-        dispatcher: RecommendationDispatcher
+        private val dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()){
 
     private val _recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
@@ -41,35 +44,31 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     val filterChips: LiveData<Response<List<RecommendationFilterChipsEntity.RecommendationFilterChip>>> get() = _filterChips
 
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
-        launchCatchError(coroutineContext, block = {
+        launch(dispatcher.getIODispatcher()){
+            try{
+                if(page == 1 && _recommendationItem.value != null) _recommendationItem.postValue(null)
+                if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
+                else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
+                val userId: Int = if(userSessionInterface.isLoggedIn) userSessionInterface.userId.toInt() else 0
+                getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam)
+                var filterChips = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+                if(page == 1){
+                    filterChips = getRecommendationFilterChips.executeOnBackground()
+                }
+                val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
 
-            if(page == 1 && _recommendationItem.value != null) _recommendationItem.value = null
-            if (_recommendationItem.value == null) _recommendationItem.postValue(Response.loading())
-            else _recommendationItem.postValue(Response.loadingMore(_recommendationItem.value?.data))
-            val userId: Int = if(userSessionInterface.isLoggedIn) userSessionInterface.userId.toInt() else 0
-            getRecommendationFilterChips.setParams(userId = userId, productIDs = productId, queryParam = queryParam)
-            var filterChips = listOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-            if(page == 1){
-                filterChips = getRecommendationFilterChips.executeOnBackground()
+                val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
+                if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
+                _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data ?: emptyList(), recommendationItems)))
+
+            } catch (e: Exception){
+                if(page == 1) _filterChips.postValue(Response.error(e))
+                if(e is IOException || e is TimeoutException){
+                    _recommendationItem.postValue(Response.error(TimeoutException(), _recommendationItem.value?.data))
+                } else {
+                    _recommendationItem.postValue(Response.error(e, _recommendationItem.value?.data))
+                }
             }
-            val params = singleRecommendationUseCase.getRecomParams(pageNumber = page, productIds = listOf(productId), queryParam = queryParam)
-            singleRecommendationUseCase.execute(params,object: Subscriber<List<RecommendationItem>>(){
-                override fun onNext(list: List<RecommendationItem>) {
-                    if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
-                    _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data
-                            ?: emptyList(), list)))
-                }
-
-                override fun onCompleted() {}
-
-                override fun onError(throwable: Throwable) {
-                    _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
-
-                }
-            })
-        }){
-            if(page == 1) _filterChips.postValue(Response.error(it.localizedMessage))
-            _recommendationItem.postValue(Response.error(it.localizedMessage, _recommendationItem.value?.data))
         }
     }
 
@@ -90,7 +89,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
             override fun onCompleted() {}
 
             override fun onError(throwable: Throwable) {
-                _recommendationItem.postValue(Response.error(throwable.localizedMessage, _recommendationItem.value?.data))
+                _recommendationItem.postValue(Response.error(Exception(throwable.message), _recommendationItem.value?.data))
             }
         })
     }

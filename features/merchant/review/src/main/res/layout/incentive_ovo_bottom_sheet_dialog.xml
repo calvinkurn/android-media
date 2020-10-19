@@ -52,7 +52,7 @@
             app:layout_constraintEnd_toStartOf="@id/incentive_ovo_add_image"
             app:srcCompat="@drawable/ic_add_rating"
             app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
-        
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/incentive_ovo_add_rating_text"
             android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
             android:visibility="gone"
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="incentive_ovo_add_rating_text, incentive_ovo_add_image_text, incentive_ovo_add_review_text"/>
-        
+
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/incentiveOvoDivider"
             android:layout_width="match_parent"

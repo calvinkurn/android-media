@@ -57,6 +57,7 @@ import kotlinx.android.synthetic.main.fragment_review_pending.*
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
 import kotlinx.android.synthetic.main.partial_review_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_empty.*
+import java.lang.Exception
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
@@ -300,11 +301,19 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {
-        view?.let { Toaster.build(reviewPendingContainer, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        try {
+            view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun showToaster(message: String, ctaText: String) {
-        view?.let { Toaster.build(reviewPendingContainer, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+        try {
+            view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getPendingReviewData(page: Int, isRefresh: Boolean = false) {

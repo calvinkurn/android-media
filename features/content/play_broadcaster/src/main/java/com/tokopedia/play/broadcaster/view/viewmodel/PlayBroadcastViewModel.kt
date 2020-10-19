@@ -367,14 +367,15 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun stopPushStream(shouldNavigate: Boolean = false) {
         _observableLivePusherState.value = LivePusherState.Connecting
-        scope.launch {
+        scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
                 playPusher.stopTimer()
                 playPusher.stopPreview()
-                destroyPushStream()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
+            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
+        }) {
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }
     }

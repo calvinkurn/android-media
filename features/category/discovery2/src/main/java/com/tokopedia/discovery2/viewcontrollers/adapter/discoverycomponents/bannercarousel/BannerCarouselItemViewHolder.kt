@@ -19,8 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 
-private const val ITEM_DECORATION = 40
-private const val DEFAULT_DESIGN = 2.2
+private const val DEFAULT_DESIGN = 2.1
 
 class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val parentView: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
@@ -37,7 +36,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                 bannerCarouselItemViewModel.getBannerData()?.let { itemData ->
                     (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackCarouselBannerClick(itemData, adapterPosition)
                 }
-
             }
         }
     }
@@ -50,7 +48,8 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                     if (it.isNotEmpty()) {
                         val itemData = it[0]
                         try {
-                            parentView.layoutParams.width = ((displayMetrics.widthPixels - ITEM_DECORATION) / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble() ).toInt()
+                            parentView.layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
+                                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
                             bannerImage.layoutParams.height = parentView.layoutParams.width
                             bannerImage.loadImageWithoutPlaceholder(itemData.image)
                             itemData.description?.let { title ->
