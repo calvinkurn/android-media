@@ -17,6 +17,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
@@ -43,9 +44,16 @@ class SellerReviewDetailActivityTest {
     @get:Rule
     var activityRule: IntentsTestRule<SellerReviewDetailActivity> = object : IntentsTestRule<SellerReviewDetailActivity>(SellerReviewDetailActivity::class.java) {
         override fun getActivityIntent(): Intent {
-            val intent = Intent(targetContext, SellerReviewDetailActivity::class.java)
-            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
-            return intent
+            return Intent(targetContext, SellerReviewDetailActivity::class.java).apply {
+                putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
+                putExtra(SellerReviewDetailFragment.CHIP_FILTER, "1 Tahun Terakhir")
+                putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, "")
+            }
+        }
+
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            InstrumentationAuthHelper.clearUserSession()
         }
     }
 
@@ -59,15 +67,46 @@ class SellerReviewDetailActivityTest {
     fun validateClickEditProduct() {
         actionTest {
             fakeLogin()
-            clickAction(R.id.menu_option_product_detail)
-            clickEditProduct()
-            waitForData()
             intendingIntent()
+            waitForData()
+            val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
+            if(!isVisibleCoachMark) {
+                clickAction(R.id.text_next)
+            }
+            clickAction(R.id.menu_option_product_detail)
+            intendingIntent()
+            clickEditProduct()
         } assertTest {
+            waitForData()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, EDIT_PRODUCT_PATH)
+            finishTest()
         }
+    }
+
+    @Test
+    fun validateClickFilterTimeStar() {
+        actionTest {
+            fakeLogin()
+            intendingIntent()
+            waitForData()
+        } assertTest {
+            waitForData()
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, FILTER_TIME_STAR_PATH)
+            finishTest()
+        }
+    }
+
+    private fun waitForData() {
+        Thread.sleep(5000L)
+    }
+
+    private fun finishTest() {
+        gtmLogDBSource.deleteAll().subscribe()
+        Thread.sleep(3000)
     }
 
     private fun clickFilterTimeStar() {
@@ -76,7 +115,7 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun clickEditProduct() {
-        if(showDialogOption(TAG_EDIT_PRODUCT)?.isVisible == true) {
+        if (showDialogOption(TAG_EDIT_PRODUCT)?.isVisible == true) {
             onData(anything()).inAdapterView(withId(R.id.optionFeedbackList)).atPosition(0).perform(click())
         }
     }
@@ -93,16 +132,12 @@ class SellerReviewDetailActivityTest {
         InstrumentationAuthHelper.loginInstrumentationTestSellerUser()
     }
 
-    private fun waitForData() {
-        Thread.sleep(8000)
-    }
-
     private fun waitForTrackerSent() {
         Thread.sleep(5000)
     }
 
     companion object {
-        const val PRODUCT_ID = "606541173"
+        const val PRODUCT_ID = 669405017
         const val TAG_EDIT_PRODUCT = "Ubah Produk"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time_star.json"

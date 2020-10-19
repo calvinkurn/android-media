@@ -24,7 +24,7 @@
       "event" : "clickReview",
       "eventCategory" : "review detail page",
       "eventAction" : "click - select reason on report abuse",
-      "eventLabel" : "{{reason:.*}};",
+      "eventLabel" : "{{reason:.*;}}",
       "screenName": "review detail page - report abuse"
     },
     {

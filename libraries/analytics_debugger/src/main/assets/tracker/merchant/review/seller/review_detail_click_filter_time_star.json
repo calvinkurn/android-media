@@ -9,6 +9,7 @@
       "eventLabel" : "{{.*}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page",
     },
     {
@@ -18,6 +19,7 @@
       "eventLabel" : "{{filterBy:.*;}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     },
     {
@@ -28,6 +30,7 @@
       "isActive" : "{{true|false}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     }
   ]
