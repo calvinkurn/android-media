@@ -30,7 +30,6 @@ object TopAdsDashboardConstant {
     const val ACTION_DELETE = "delete"
     const val SOURCE_DASH = "dashboard"
     const val ACTION_MOVE = "move_group"
-    const val AD_ID = "ads"
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
     const val PRICE_SPEND = "price_spent"
@@ -79,6 +78,6 @@ object TopAdsDashboardConstant {
     const val REQUEST_FROM_NEG = "Negative"
     const val REQUEST_FROM_BID = "Bid"
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
-    const val SELLER_EDIT_FORM_PATH = "com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
     const val SELLER_CREATE_FORM_PATH = "com.tokopedia.topads.view.activity.AdCreationChooserActivity"
+    const val SELLER_ONBOARDING_PATH = " com.tokopedia.topads.auto.view.acctivity.AutoAdsOnboardingActivity"
 }

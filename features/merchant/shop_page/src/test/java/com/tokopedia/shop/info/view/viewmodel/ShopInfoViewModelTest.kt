@@ -150,7 +150,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
                 goldOS.isOfficial,
                 goldOS.isGold,
                 createdInfo.openSince,
-                emptyList()
+                emptyList(),
+                shopSnippetUrl
         )
     }
 

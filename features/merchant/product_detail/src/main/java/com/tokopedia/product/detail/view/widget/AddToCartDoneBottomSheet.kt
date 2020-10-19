@@ -6,9 +6,7 @@ import android.content.DialogInterface
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
@@ -56,7 +54,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddToCartDoneBottomSheet :
+open class AddToCartDoneBottomSheet :
         BottomSheetDialogFragment(),
         AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener,
         HasComponent<ProductDetailComponent>,
@@ -99,6 +97,13 @@ class AddToCartDoneBottomSheet :
         this.dismissListener = dismissListener
     }
 
+    fun getRecyclerView(): RecyclerView? {
+        if(::recyclerView.isInitialized) {
+            return recyclerView
+        }
+        return null
+    }
+
     private fun configView(parentView: View) {
         val closeButton = parentView.findViewById<View>(R.id.btn_close)
         closeButton?.setOnClickListener { this@AddToCartDoneBottomSheet.dismiss() }
@@ -123,10 +128,9 @@ class AddToCartDoneBottomSheet :
             inflatedView?.let{
                 configView(it)
                 dialog.setContentView(it)
-                val parent = it.parent as View
-                bottomSheetBehavior = BottomSheetBehavior.from(parent)
-                val bottomSheetView = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val bottomSheetView = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
                 bottomSheetView.setBackgroundResource(android.R.color.transparent)
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
                 if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
                     dialog.setCanceledOnTouchOutside(false)
                     recyclerView.isNestedScrollingEnabled = false
@@ -141,22 +145,17 @@ class AddToCartDoneBottomSheet :
                         override fun onSlide(bottomSheet: View, slideOffset: Float) {}
                     })
                 }
+
+                initInjector()
+                initViewModel()
+                getArgumentsData()
+                trackingQueue = TrackingQueue(context)
+                initAdapter()
+                observeRecommendationProduct()
+                observeAtcStatus()
+                getRecommendationProduct()
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInjector()
-        initViewModel()
-        getArgumentsData()
-        context?.let {
-            trackingQueue = TrackingQueue(it)
-        }
-        initAdapter()
-        observeRecommendationProduct()
-        observeAtcStatus()
-        getRecommendationProduct()
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -79,12 +79,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
-        fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean): TalkReadingFragment =
+        fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean, availableVariants: String): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
                 arguments?.putString(PARAM_PRODUCT_ID, productId)
                 arguments?.putString(PARAM_SHOP_ID, shopId)
                 arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
+                arguments?.putString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             }
     }
 
@@ -96,6 +97,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private var productId: String = ""
     private var shopId: String = ""
     private var isVariantSelected: Boolean = false
+    private var availableVariants: String = ""
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -331,7 +333,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeProductHeader() {
-        viewModel.discussionAggregate.observe(this,  Observer {
+        viewModel.discussionAggregate.observe(viewLifecycleOwner,  Observer {
             when (it) {
                 is Success -> {
                     bindHeader(
@@ -353,7 +355,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
@@ -370,7 +372,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeSortOptions() {
-        viewModel.sortOptions.observe(this, Observer { sortOptions ->
+        viewModel.sortOptions.observe(viewLifecycleOwner, Observer { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
@@ -381,7 +383,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeFilterCategories() {
-        viewModel.filterCategories.observe(this, Observer {
+        viewModel.filterCategories.observe(viewLifecycleOwner, Observer {
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
                 adapter.clearAllElements()
@@ -391,7 +393,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this, Observer {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is ViewState.Loading -> {
                     if(it.isRefreshing) {
@@ -503,11 +505,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             productId = it.getString(PARAM_PRODUCT_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
             isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
+            availableVariants = it.getString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, "0")
         }
     }
 
     private fun goToWriteActivity(eventAction: String) {
-        TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected)
+        TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected, availableVariants)
         if(useOldPage()) {
             val intent = context?.let { AddTalkActivity.createIntent(it, productId, TalkConstants.READING_SOURCE) }
             startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
@@ -518,6 +521,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 .buildUpon()
                 .appendQueryParameter(TalkConstants.PARAM_PRODUCT_ID, productId)
                 .appendQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected.toString())
+                .appendQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
                 .build().toString())
         startActivity(intent)
     }

@@ -17,7 +17,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
@@ -34,8 +33,6 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.getStockAllocation(listOf(anyString()))
         viewModel.setShopId(anyString())
-
-        joinCoroutineJob()
 
         verifyGetCampaignStockAllocationCalled()
         verifyGetOtherCampaignStockDataCalled()
@@ -62,8 +59,6 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.getStockAllocation(listOf(anyString()))
         viewModel.setShopId(anyString())
-
-        joinCoroutineJob()
 
         verifyGetCampaignStockAllocationCalled()
         verifyGetProductVariantCalled()
@@ -92,8 +87,6 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             updateNonVariantIsActive(anyBoolean())
             updateStockData()
         }
-
-        joinCoroutineJob()
 
         verifyEditStockCalled()
 
@@ -127,16 +120,13 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
 
         viewModel.run {
-            getStockAllocation(listOf(anyString()))
             setShopId(anyString())
+            getStockAllocation(listOf(anyString()))
             updateVariantStockCount(anyString(), anyInt())
             updateVariantIsActive(anyString(), ProductStatus.ACTIVE)
 
-            delay(500)
             updateStockData()
         }
-
-        joinCoroutineJob()
 
         verifyEditProductVariantCalled()
 

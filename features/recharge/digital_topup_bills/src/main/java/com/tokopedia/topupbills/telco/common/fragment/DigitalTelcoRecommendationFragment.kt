@@ -19,7 +19,7 @@ import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.common.widget.DigitalTelcoRecentTransactionWidget
 import javax.inject.Inject
 
-class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
+class DigitalTelcoRecommendationFragment : BaseDaggerFragment(), TopupBillsRecentNumberListener {
 
     private lateinit var viewModel: SharedTelcoViewModel
     private lateinit var recentNumbersWidget: DigitalTelcoRecentTransactionWidget
@@ -63,17 +63,24 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment() {
             recentNumbersWidget.toggleTitle(it)
         })
 
-        recentNumbersWidget.setListenerRecentTelco(object : TopupBillsRecentNumberListener {
-            override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
-                                             position: Int) {
-                topupBillsRecommendation.position = position
-                viewModel.setSelectedRecentNumber(topupBillsRecommendation)
-            }
-
-            override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-                topupAnalytics.impressionEnhanceCommerceRecentTransaction(topupBillsTrackRecentList)
+        viewModel.recentsImpression.observe(this, Observer {
+            viewModel.recommendations.value?.let {
+                recentNumbersWidget.getVisibleRecentItemsToUsersTracking(it)
             }
         })
+
+        recentNumbersWidget.setListener(this)
+        recentNumbersWidget.setListenerRecentTelco(this)
+    }
+
+    override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
+                                     position: Int) {
+        topupBillsRecommendation.position = position
+        viewModel.setSelectedRecentNumber(topupBillsRecommendation)
+    }
+
+    override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
+        topupAnalytics.impressionEnhanceCommerceRecentTransaction(topupBillsTrackRecentList)
     }
 
     companion object {

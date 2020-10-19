@@ -69,7 +69,11 @@ data class DynamicHomeChannelCommon(
             @SerializedName("homeAttribution")
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
-            val hasCloseButton: Boolean = false
+            val hasCloseButton: Boolean = false,
+            @SerializedName("isAutoRefreshAfterExpired")
+            val isAutoRefreshAfterExpired: Boolean = false,
+            var token: String = "",
+            var timestamp: String = ""
     ) : ImpressHolder() {
 
         fun getHomeAttribution(position: Int, creativeName: String?): String {
@@ -205,6 +209,9 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("rating")
             var rating: Int = 0,
+            @Expose
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
             @Expose
             @SerializedName("count_review")
             val countReview: Int = 0,

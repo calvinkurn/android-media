@@ -85,12 +85,12 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
 
             holder.view.setOnClickListener {
                 EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
-                        listLocation, position+1)
+                        listLocation.get(position), position)
                 goToDetail(holder, location.city, location.id_city)
             }
 
             holder.view.addOnImpressionListener(location, {
-                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation)
+                EventSearchPageTracking.getInstance().impressionCitySearchSuggestion(listLocation.get(position),position)
             })
         }
 

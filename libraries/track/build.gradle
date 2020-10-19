@@ -6,10 +6,11 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
 
-    testImplementation "org.robolectric:robolectric:4.3.1"
+    testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 }
 
@@ -21,3 +22,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'

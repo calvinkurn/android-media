@@ -200,8 +200,8 @@ class MediaHolderFragment : BaseDaggerFragment() {
             val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
             val loadControl = DefaultLoadControl()
 
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context,
-                    DefaultRenderersFactory(context), trackSelector, loadControl)
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(requireContext(),
+                    DefaultRenderersFactory(requireContext()), trackSelector, loadControl)
 
             video_player.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF

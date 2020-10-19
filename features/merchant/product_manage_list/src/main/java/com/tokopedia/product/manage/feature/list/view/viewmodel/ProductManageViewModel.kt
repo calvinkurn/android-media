@@ -11,20 +11,21 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
+import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
-import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -37,10 +38,12 @@ import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVar
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,19 +59,20 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-        private val editPriceUseCase: EditPriceUseCase,
-        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        private val getProductListUseCase: GQLGetProductListUseCase,
-        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-        private val editStockUseCase: EditStockUseCase,
-        private val deleteProductUseCase: DeleteProductUseCase,
-        private val multiEditProductUseCase: MultiEditProductUseCase,
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val editProductVariantUseCase: EditProductVariantUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val editPriceUseCase: EditPriceUseCase,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+    private val getProductListUseCase: GQLGetProductListUseCase,
+    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+    private val editStockUseCase: EditStockUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val multiEditProductUseCase: MultiEditProductUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val editProductVariantUseCase: EditProductVariantUseCase,
+    private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -109,6 +113,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _editVariantStockResult
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
+    val onClickPromoTopAds: LiveData<TopAdsPage>
+        get() = _onClickPromoTopAds
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -126,6 +132,8 @@ class ProductManageViewModel @Inject constructor(
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
+    private val _topAdsInfo = MutableLiveData<TopAdsInfo>()
+    private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -148,6 +156,20 @@ class ProductManageViewModel @Inject constructor(
             _shopInfoResult.value = Success(status)
         }) {
             _shopInfoResult.value = Fail(it)
+        }
+    }
+
+    fun getTopAdsInfo() {
+        launchCatchError(block = {
+            _topAdsInfo.value = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId.toIntOrZero()
+                val requestParams = GetShopInfoTopAdsUseCase.createRequestParams(shopId)
+                val topAdsInfo = getShopInfoTopAdsUseCase.execute(requestParams)
+
+                TopAdsInfo(topAdsInfo.isTopAds(), topAdsInfo.isAutoAds())
+            }
+        }) {
+            _topAdsInfo.value = TopAdsInfo(isTopAds = false, isAutoAds = false)
         }
     }
 
@@ -217,7 +239,8 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
+                val extraInfo = listOf(ExtraInfo.TOPADS)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
                 productListResponse?.data
@@ -479,6 +502,23 @@ class ProductManageViewModel @Inject constructor(
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
+    }
+
+    fun onPromoTopAdsClicked(productId: String) {
+        val topAdsInfo = _topAdsInfo.value
+
+        if(topAdsInfo != null) {
+            val shopHasTopAds = topAdsInfo.isTopAds
+            val shopHasAutoAds = topAdsInfo.isAutoAds
+
+            _onClickPromoTopAds.value = when {
+                shopHasAutoAds -> TopAdsPage.AutoAds(productId)
+                shopHasTopAds -> TopAdsPage.ManualAds(productId)
+                else -> TopAdsPage.OnBoarding(productId)
+            }
+        } else {
+            _onClickPromoTopAds.value = TopAdsPage.OnBoarding(productId)
+        }
     }
 
     fun detachView() {

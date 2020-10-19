@@ -1,0 +1,1240 @@
+[
+  {
+    "data": {
+      "propertyDetail": {
+        "property": {
+          "id": 488573,
+          "regionId": 0,
+          "districtId": 0,
+          "typeId": 206,
+          "typeName": "Resor",
+          "name": "The Royal Purnama",
+          "slug": "the-royal-purnama-art-suites-and-villas",
+          "address": "Jalan Pantai Purnama, Ketewel, Indonesia, 80582",
+          "zipCode": "80582",
+          "email": "",
+          "phoneNumber": "",
+          "latitude": -8.61932,
+          "longitude": 115.30894,
+          "locationImageStatic": "https://ecs7.tokopedia.net/img/hotel/hotel-default-map.png",
+          "images": [
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o=",
+              "mainPhoto": true,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/268968222.jpg?k=15bdc539e70ad7f1c2877909f53fd33df0fb9c947cde197d8391ef8ccf638956&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/268968222.jpg?k=15bdc539e70ad7f1c2877909f53fd33df0fb9c947cde197d8391ef8ccf638956&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/268968222.jpg?k=15bdc539e70ad7f1c2877909f53fd33df0fb9c947cde197d8391ef8ccf638956&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/227858480.jpg?k=0e6a0dc614a187c1e70c5b3fa0f452e047bb5d79bf5fe8482d1a4b2b0d1fc380&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/227858480.jpg?k=0e6a0dc614a187c1e70c5b3fa0f452e047bb5d79bf5fe8482d1a4b2b0d1fc380&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/227858480.jpg?k=0e6a0dc614a187c1e70c5b3fa0f452e047bb5d79bf5fe8482d1a4b2b0d1fc380&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/109893237.jpg?k=d8041404c9ea439004d749701657e8749741ab8b540a9183a71547ba439eb395&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/109893237.jpg?k=d8041404c9ea439004d749701657e8749741ab8b540a9183a71547ba439eb395&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/109893237.jpg?k=d8041404c9ea439004d749701657e8749741ab8b540a9183a71547ba439eb395&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679313.jpg?k=327f8139eb64881f9254e6eb9509b8710229dc50a2f0fef898c6b7f8986fbecf&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679313.jpg?k=327f8139eb64881f9254e6eb9509b8710229dc50a2f0fef898c6b7f8986fbecf&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679313.jpg?k=327f8139eb64881f9254e6eb9509b8710229dc50a2f0fef898c6b7f8986fbecf&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/126974818.jpg?k=612354a1e81351c03c07b020cbda324d396c51514d97c1fb89a9983fbfc431e6&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/126974818.jpg?k=612354a1e81351c03c07b020cbda324d396c51514d97c1fb89a9983fbfc431e6&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/126974818.jpg?k=612354a1e81351c03c07b020cbda324d396c51514d97c1fb89a9983fbfc431e6&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259006928.jpg?k=cbf1f8905b17952509778086e51b7cd6ab0dc5470b60969ffb1664605d138d7b&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259006928.jpg?k=cbf1f8905b17952509778086e51b7cd6ab0dc5470b60969ffb1664605d138d7b&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259006928.jpg?k=cbf1f8905b17952509778086e51b7cd6ab0dc5470b60969ffb1664605d138d7b&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248464.jpg?k=91eb6b187e22baae8549554b046a3cb90288a367e25c754cf17a742646d801b9&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248464.jpg?k=91eb6b187e22baae8549554b046a3cb90288a367e25c754cf17a742646d801b9&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248464.jpg?k=91eb6b187e22baae8549554b046a3cb90288a367e25c754cf17a742646d801b9&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/110671886.jpg?k=8ece10fa09292eca9ad8c34dc88a3e93eaa049fac40d7919c3913898fc4d786f&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/110671886.jpg?k=8ece10fa09292eca9ad8c34dc88a3e93eaa049fac40d7919c3913898fc4d786f&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/110671886.jpg?k=8ece10fa09292eca9ad8c34dc88a3e93eaa049fac40d7919c3913898fc4d786f&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820128.jpg?k=f5bd1ddaaf55c805f60c05bd7dbe2a0d2bf503c6b254e9e31520ec20c85fbc05&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820128.jpg?k=f5bd1ddaaf55c805f60c05bd7dbe2a0d2bf503c6b254e9e31520ec20c85fbc05&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820128.jpg?k=f5bd1ddaaf55c805f60c05bd7dbe2a0d2bf503c6b254e9e31520ec20c85fbc05&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820129.jpg?k=fa62329be1fc7b0e754869d26678864cad9e1b4b5670b3ce6f0a0f92777fae19&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820129.jpg?k=fa62329be1fc7b0e754869d26678864cad9e1b4b5670b3ce6f0a0f92777fae19&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820129.jpg?k=fa62329be1fc7b0e754869d26678864cad9e1b4b5670b3ce6f0a0f92777fae19&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820131.jpg?k=91a84fb0c050489baf51a2b6b2b19eead4e37c9d5746877dd93351097707b210&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820131.jpg?k=91a84fb0c050489baf51a2b6b2b19eead4e37c9d5746877dd93351097707b210&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820131.jpg?k=91a84fb0c050489baf51a2b6b2b19eead4e37c9d5746877dd93351097707b210&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259007267.jpg?k=ad37141e5d71816a3c1b9211e2a52e2041e671489c5c8da51ea274dbd3709167&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259007267.jpg?k=ad37141e5d71816a3c1b9211e2a52e2041e671489c5c8da51ea274dbd3709167&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259007267.jpg?k=ad37141e5d71816a3c1b9211e2a52e2041e671489c5c8da51ea274dbd3709167&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259006930.jpg?k=4f922ab954cfc52e65ce826d9c29d3e965fab7fb592e672945db0e89f753c7d3&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259006930.jpg?k=4f922ab954cfc52e65ce826d9c29d3e965fab7fb592e672945db0e89f753c7d3&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259006930.jpg?k=4f922ab954cfc52e65ce826d9c29d3e965fab7fb592e672945db0e89f753c7d3&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259006932.jpg?k=062de3e02ccfc76712562a880cc26fd9273f45d5f2c0ab3919faf274fa74894c&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259006932.jpg?k=062de3e02ccfc76712562a880cc26fd9273f45d5f2c0ab3919faf274fa74894c&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259006932.jpg?k=062de3e02ccfc76712562a880cc26fd9273f45d5f2c0ab3919faf274fa74894c&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820136.jpg?k=403af3e319aaa60b94e824da31a39d5f6caec039651144104b72ed42a312b54a&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820136.jpg?k=403af3e319aaa60b94e824da31a39d5f6caec039651144104b72ed42a312b54a&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820136.jpg?k=403af3e319aaa60b94e824da31a39d5f6caec039651144104b72ed42a312b54a&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259007234.jpg?k=e03a9862c57d241379719938976a6d59e3afed6dc7b2f13ab864664e4c4f95f4&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259007234.jpg?k=e03a9862c57d241379719938976a6d59e3afed6dc7b2f13ab864664e4c4f95f4&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259007234.jpg?k=e03a9862c57d241379719938976a6d59e3afed6dc7b2f13ab864664e4c4f95f4&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259007258.jpg?k=396461246d045e71c182176f0ce0a74d315cb44d03f3199de59cce40b1028d82&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259007258.jpg?k=396461246d045e71c182176f0ce0a74d315cb44d03f3199de59cce40b1028d82&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259007258.jpg?k=396461246d045e71c182176f0ce0a74d315cb44d03f3199de59cce40b1028d82&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259009169.jpg?k=173fcba1cff20ae7a8fd48bbafcae308f9b6e6d798fd847d0cd0ae280dde452b&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259009169.jpg?k=173fcba1cff20ae7a8fd48bbafcae308f9b6e6d798fd847d0cd0ae280dde452b&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259009169.jpg?k=173fcba1cff20ae7a8fd48bbafcae308f9b6e6d798fd847d0cd0ae280dde452b&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259009172.jpg?k=d73425137ed5c73f6101e819fe0fe8c33885afee629a1c8a8e653dffa548f5dc&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259009172.jpg?k=d73425137ed5c73f6101e819fe0fe8c33885afee629a1c8a8e653dffa548f5dc&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259009172.jpg?k=d73425137ed5c73f6101e819fe0fe8c33885afee629a1c8a8e653dffa548f5dc&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679274.jpg?k=580ecb92ebedaaad5f048c2e47be5e2e5a2999e515865e65c663841edd0d6a14&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679274.jpg?k=580ecb92ebedaaad5f048c2e47be5e2e5a2999e515865e65c663841edd0d6a14&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679274.jpg?k=580ecb92ebedaaad5f048c2e47be5e2e5a2999e515865e65c663841edd0d6a14&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127247729.jpg?k=414cce69c0f411fce5d140ffbe264c923a6c0ceca715d0300bbe970a79a56811&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127247729.jpg?k=414cce69c0f411fce5d140ffbe264c923a6c0ceca715d0300bbe970a79a56811&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127247729.jpg?k=414cce69c0f411fce5d140ffbe264c923a6c0ceca715d0300bbe970a79a56811&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127247801.jpg?k=e177b8d2edd9d6fc5af41daa02eeb0a3adcd463fcc39ca18dcff8c80ae885047&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127247801.jpg?k=e177b8d2edd9d6fc5af41daa02eeb0a3adcd463fcc39ca18dcff8c80ae885047&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127247801.jpg?k=e177b8d2edd9d6fc5af41daa02eeb0a3adcd463fcc39ca18dcff8c80ae885047&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259017016.jpg?k=8b06d30914c06448d3f3e05f0d82e3455b58953696f5ea523aca6be264c52f86&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259017016.jpg?k=8b06d30914c06448d3f3e05f0d82e3455b58953696f5ea523aca6be264c52f86&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259017016.jpg?k=8b06d30914c06448d3f3e05f0d82e3455b58953696f5ea523aca6be264c52f86&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259009167.jpg?k=3177d20041b3309b521c95ab3de3b7d39dddab1a7501a32c3d7738ff69c02570&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259009167.jpg?k=3177d20041b3309b521c95ab3de3b7d39dddab1a7501a32c3d7738ff69c02570&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259009167.jpg?k=3177d20041b3309b521c95ab3de3b7d39dddab1a7501a32c3d7738ff69c02570&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/43604065.jpg?k=9f73c289b8371c800caae67df8d5a31b53ad0276c3bd12582488df6ed3d7cd85&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/43604065.jpg?k=9f73c289b8371c800caae67df8d5a31b53ad0276c3bd12582488df6ed3d7cd85&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/43604065.jpg?k=9f73c289b8371c800caae67df8d5a31b53ad0276c3bd12582488df6ed3d7cd85&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248205.jpg?k=d849597f5452d3876317e8c377552e3b42d197662ad3630ad06c5e299ab40aef&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248205.jpg?k=d849597f5452d3876317e8c377552e3b42d197662ad3630ad06c5e299ab40aef&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248205.jpg?k=d849597f5452d3876317e8c377552e3b42d197662ad3630ad06c5e299ab40aef&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679331.jpg?k=8c03ed1e4c3986f4869d965b5d0189dba804b55fdbdbd569dd70500bda263cb4&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679331.jpg?k=8c03ed1e4c3986f4869d965b5d0189dba804b55fdbdbd569dd70500bda263cb4&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679331.jpg?k=8c03ed1e4c3986f4869d965b5d0189dba804b55fdbdbd569dd70500bda263cb4&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679324.jpg?k=8cea469030701c4ba8babf5063d259c4e413d5df18e568561bb024c34e0011f3&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679324.jpg?k=8cea469030701c4ba8babf5063d259c4e413d5df18e568561bb024c34e0011f3&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679324.jpg?k=8cea469030701c4ba8babf5063d259c4e413d5df18e568561bb024c34e0011f3&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258677047.jpg?k=08731acfdc5f2b9f8b15b0cd2702d509ace5c3266d37fe40a6db176cb18c3595&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258677047.jpg?k=08731acfdc5f2b9f8b15b0cd2702d509ace5c3266d37fe40a6db176cb18c3595&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258677047.jpg?k=08731acfdc5f2b9f8b15b0cd2702d509ace5c3266d37fe40a6db176cb18c3595&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258677339.jpg?k=79d09271efc110725d1def090664737359dc6ccc15a05d10b01a91f2d65742e8&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258677339.jpg?k=79d09271efc110725d1def090664737359dc6ccc15a05d10b01a91f2d65742e8&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258677339.jpg?k=79d09271efc110725d1def090664737359dc6ccc15a05d10b01a91f2d65742e8&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679293.jpg?k=4725e47959564c2d54508d0a814043af5782e03946c6e4ff02efa1f254a522ea&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679293.jpg?k=4725e47959564c2d54508d0a814043af5782e03946c6e4ff02efa1f254a522ea&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679293.jpg?k=4725e47959564c2d54508d0a814043af5782e03946c6e4ff02efa1f254a522ea&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679303.jpg?k=0175b4d0eaaab92cbeb3fca9201e73b67ca640d317f7aa1593f7341ca88abf25&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679303.jpg?k=0175b4d0eaaab92cbeb3fca9201e73b67ca640d317f7aa1593f7341ca88abf25&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679303.jpg?k=0175b4d0eaaab92cbeb3fca9201e73b67ca640d317f7aa1593f7341ca88abf25&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248499.jpg?k=de32efb1bf6ab725da534c9e85101871845cecae810ab1e0b31bf5d0f2103fa7&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248499.jpg?k=de32efb1bf6ab725da534c9e85101871845cecae810ab1e0b31bf5d0f2103fa7&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248499.jpg?k=de32efb1bf6ab725da534c9e85101871845cecae810ab1e0b31bf5d0f2103fa7&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/227858492.jpg?k=77ae2797af792663b91ac13d6f7d1dd976af637d1a1c66c55cefb176f0a3ddf0&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/227858492.jpg?k=77ae2797af792663b91ac13d6f7d1dd976af637d1a1c66c55cefb176f0a3ddf0&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/227858492.jpg?k=77ae2797af792663b91ac13d6f7d1dd976af637d1a1c66c55cefb176f0a3ddf0&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820126.jpg?k=772eccd86e25cb49fafba3670111d873896d04a0811d24ab8808bca3556ba1b9&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820126.jpg?k=772eccd86e25cb49fafba3670111d873896d04a0811d24ab8808bca3556ba1b9&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820126.jpg?k=772eccd86e25cb49fafba3670111d873896d04a0811d24ab8808bca3556ba1b9&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820132.jpg?k=6a8616e9e56ae76bdab0e32b8f1adc26dbeba831dbb77c958d08dbc4fbfb52fd&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820132.jpg?k=6a8616e9e56ae76bdab0e32b8f1adc26dbeba831dbb77c958d08dbc4fbfb52fd&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820132.jpg?k=6a8616e9e56ae76bdab0e32b8f1adc26dbeba831dbb77c958d08dbc4fbfb52fd&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820133.jpg?k=f31782ba86576308deeae616e9c676d76b2ed7a332da0216edcaf5eb17e1b65c&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820133.jpg?k=f31782ba86576308deeae616e9c676d76b2ed7a332da0216edcaf5eb17e1b65c&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820133.jpg?k=f31782ba86576308deeae616e9c676d76b2ed7a332da0216edcaf5eb17e1b65c&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820135.jpg?k=294e70fe59239f6d51eee3e4426bc11c0f047d5cacea61dd8c040a8ab227bba0&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820135.jpg?k=294e70fe59239f6d51eee3e4426bc11c0f047d5cacea61dd8c040a8ab227bba0&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820135.jpg?k=294e70fe59239f6d51eee3e4426bc11c0f047d5cacea61dd8c040a8ab227bba0&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679358.jpg?k=be2616ae7d83466925ffa89ff16c35c3f040096353685aa14546d3855d32106a&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679358.jpg?k=be2616ae7d83466925ffa89ff16c35c3f040096353685aa14546d3855d32106a&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679358.jpg?k=be2616ae7d83466925ffa89ff16c35c3f040096353685aa14546d3855d32106a&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259008232.jpg?k=12403734cbe603604f9daea8ac8bc7788688e762f107bc025bb994fd7b581400&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259008232.jpg?k=12403734cbe603604f9daea8ac8bc7788688e762f107bc025bb994fd7b581400&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259008232.jpg?k=12403734cbe603604f9daea8ac8bc7788688e762f107bc025bb994fd7b581400&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/109894124.jpg?k=36cbf0154d7723b0a97a4aa18b7939f26ec378b21995984c4e69a9013ef565fb&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/109894124.jpg?k=36cbf0154d7723b0a97a4aa18b7939f26ec378b21995984c4e69a9013ef565fb&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/109894124.jpg?k=36cbf0154d7723b0a97a4aa18b7939f26ec378b21995984c4e69a9013ef565fb&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/109893896.jpg?k=2e5b36365aeddbf8431001e30f7d7eafce51c0f29c67b7dd072871cb7b24be3f&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/109893896.jpg?k=2e5b36365aeddbf8431001e30f7d7eafce51c0f29c67b7dd072871cb7b24be3f&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/109893896.jpg?k=2e5b36365aeddbf8431001e30f7d7eafce51c0f29c67b7dd072871cb7b24be3f&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/42022764.jpg?k=95b62c72622234797037055265f5335163ea6be04040ef5b1dab6a82f2eca252&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/42022764.jpg?k=95b62c72622234797037055265f5335163ea6be04040ef5b1dab6a82f2eca252&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/42022764.jpg?k=95b62c72622234797037055265f5335163ea6be04040ef5b1dab6a82f2eca252&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/259006929.jpg?k=6e7ffa121015b7b8d6e0476210294115ead86f0615887e5ac95ab6d904de439e&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/259006929.jpg?k=6e7ffa121015b7b8d6e0476210294115ead86f0615887e5ac95ab6d904de439e&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/259006929.jpg?k=6e7ffa121015b7b8d6e0476210294115ead86f0615887e5ac95ab6d904de439e&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/53283858.jpg?k=3eee56b730daef4ab2d05b22e2201d88f9ed38e0337a280452eddac7c0bbac8f&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/53283858.jpg?k=3eee56b730daef4ab2d05b22e2201d88f9ed38e0337a280452eddac7c0bbac8f&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/53283858.jpg?k=3eee56b730daef4ab2d05b22e2201d88f9ed38e0337a280452eddac7c0bbac8f&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258838194.jpg?k=33a8a3649c608c3a5f2791c4e4659a86d8c4f05d3e015970ebb9f26387abd71b&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258838194.jpg?k=33a8a3649c608c3a5f2791c4e4659a86d8c4f05d3e015970ebb9f26387abd71b&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258838194.jpg?k=33a8a3649c608c3a5f2791c4e4659a86d8c4f05d3e015970ebb9f26387abd71b&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679347.jpg?k=4b35ef5aad341f3365533269959fd119ca572d7cc2cb187b2e65a05c0eb510af&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679347.jpg?k=4b35ef5aad341f3365533269959fd119ca572d7cc2cb187b2e65a05c0eb510af&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679347.jpg?k=4b35ef5aad341f3365533269959fd119ca572d7cc2cb187b2e65a05c0eb510af&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/53283612.jpg?k=10c2ccae4fe463f1865f47e8b79c72472de595bf8a2adf2f7495f33ebb87da12&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/53283612.jpg?k=10c2ccae4fe463f1865f47e8b79c72472de595bf8a2adf2f7495f33ebb87da12&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/53283612.jpg?k=10c2ccae4fe463f1865f47e8b79c72472de595bf8a2adf2f7495f33ebb87da12&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258679724.jpg?k=78d5760647ddd306ea7a045177984938a5ee9565366f5218bdc134f99f73bd6a&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258679724.jpg?k=78d5760647ddd306ea7a045177984938a5ee9565366f5218bdc134f99f73bd6a&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258679724.jpg?k=78d5760647ddd306ea7a045177984938a5ee9565366f5218bdc134f99f73bd6a&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/53283588.jpg?k=38457ee16f1efe133a4a5e4ade1f83dfffeb53b7e27778896db27dc45fb26123&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/53283588.jpg?k=38457ee16f1efe133a4a5e4ade1f83dfffeb53b7e27778896db27dc45fb26123&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/53283588.jpg?k=38457ee16f1efe133a4a5e4ade1f83dfffeb53b7e27778896db27dc45fb26123&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/110672941.jpg?k=58b80c62be875285bc92f0f4678bf655ba458bcb911d2eadd63a38163122cb8b&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/110672941.jpg?k=58b80c62be875285bc92f0f4678bf655ba458bcb911d2eadd63a38163122cb8b&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/110672941.jpg?k=58b80c62be875285bc92f0f4678bf655ba458bcb911d2eadd63a38163122cb8b&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/227858459.jpg?k=6749e258104dde437e09170af8ac467ccccec0822034149f50f65d158731f04f&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/227858459.jpg?k=6749e258104dde437e09170af8ac467ccccec0822034149f50f65d158731f04f&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/227858459.jpg?k=6749e258104dde437e09170af8ac467ccccec0822034149f50f65d158731f04f&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173539977.jpg?k=849f8ef958a37753db7c9ddfa7ac92f049aa6de625044b9de63055caf8436d40&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173539977.jpg?k=849f8ef958a37753db7c9ddfa7ac92f049aa6de625044b9de63055caf8436d40&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173539977.jpg?k=849f8ef958a37753db7c9ddfa7ac92f049aa6de625044b9de63055caf8436d40&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173539800.jpg?k=b0292c7f355b5261e6571fe88063706f1b100c3abe0b399f80f3e7e58fe8d068&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173539800.jpg?k=b0292c7f355b5261e6571fe88063706f1b100c3abe0b399f80f3e7e58fe8d068&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173539800.jpg?k=b0292c7f355b5261e6571fe88063706f1b100c3abe0b399f80f3e7e58fe8d068&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258860063.jpg?k=9dc4e1927139f24ed5bc612da4060f76f2d387cccbd4ed845d9f1b38cf8b6ed2&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258860063.jpg?k=9dc4e1927139f24ed5bc612da4060f76f2d387cccbd4ed845d9f1b38cf8b6ed2&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258860063.jpg?k=9dc4e1927139f24ed5bc612da4060f76f2d387cccbd4ed845d9f1b38cf8b6ed2&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173229589.jpg?k=ff118ef67c9fbec5f8ae6fc6e28b2fdfd35392f4b4cd705e0664e1b1ff801543&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173229589.jpg?k=ff118ef67c9fbec5f8ae6fc6e28b2fdfd35392f4b4cd705e0664e1b1ff801543&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173229589.jpg?k=ff118ef67c9fbec5f8ae6fc6e28b2fdfd35392f4b4cd705e0664e1b1ff801543&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173229601.jpg?k=384e10e0b354758f17675108823d1fbbf11edffb4d21fc3bde291202892dc0a9&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173229601.jpg?k=384e10e0b354758f17675108823d1fbbf11edffb4d21fc3bde291202892dc0a9&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173229601.jpg?k=384e10e0b354758f17675108823d1fbbf11edffb4d21fc3bde291202892dc0a9&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173229574.jpg?k=28f78aabbeb5e8dbf62db1c0e68f015a6b72adc26426343c54a3458332934491&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173229574.jpg?k=28f78aabbeb5e8dbf62db1c0e68f015a6b72adc26426343c54a3458332934491&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173229574.jpg?k=28f78aabbeb5e8dbf62db1c0e68f015a6b72adc26426343c54a3458332934491&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173229581.jpg?k=091c49b5b18edc16676a4d698c0cbd26ce0ce253c218f3a9e1e026fbb4cc421f&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173229581.jpg?k=091c49b5b18edc16676a4d698c0cbd26ce0ce253c218f3a9e1e026fbb4cc421f&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173229581.jpg?k=091c49b5b18edc16676a4d698c0cbd26ce0ce253c218f3a9e1e026fbb4cc421f&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173229617.jpg?k=7bbd5c7aedb1d5296aa142e880b956cd66b6d37c126fec74d36f9df55c6d5552&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173229617.jpg?k=7bbd5c7aedb1d5296aa142e880b956cd66b6d37c126fec74d36f9df55c6d5552&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173229617.jpg?k=7bbd5c7aedb1d5296aa142e880b956cd66b6d37c126fec74d36f9df55c6d5552&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/173224640.jpg?k=2a0c3a78f45483f06473de051ef6eef13077ad77bae6e43e3a8eecfbc4d18851&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/173224640.jpg?k=2a0c3a78f45483f06473de051ef6eef13077ad77bae6e43e3a8eecfbc4d18851&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/173224640.jpg?k=2a0c3a78f45483f06473de051ef6eef13077ad77bae6e43e3a8eecfbc4d18851&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/261820137.jpg?k=0d6b1721ee2c28005c8223bc0e7d891231013338ce6d564aea9a61c56e17f9bb&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/261820137.jpg?k=0d6b1721ee2c28005c8223bc0e7d891231013338ce6d564aea9a61c56e17f9bb&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/261820137.jpg?k=0d6b1721ee2c28005c8223bc0e7d891231013338ce6d564aea9a61c56e17f9bb&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258676849.jpg?k=0db15b5f13a38c41ee574d17faba7502ad0c27472639c99961861baa9b5b12a2&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/42022808.jpg?k=dc1c2c90a55d36e22bd790c9ea46d45e3e2ce023f42504ab2bf59c3054ea9b5e&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/42022808.jpg?k=dc1c2c90a55d36e22bd790c9ea46d45e3e2ce023f42504ab2bf59c3054ea9b5e&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/42022808.jpg?k=dc1c2c90a55d36e22bd790c9ea46d45e3e2ce023f42504ab2bf59c3054ea9b5e&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/253031256.jpg?k=63b8593369c1243645004f7525bca07a486d5c321140413bdc5f431e61494f29&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/253031256.jpg?k=63b8593369c1243645004f7525bca07a486d5c321140413bdc5f431e61494f29&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/253031256.jpg?k=63b8593369c1243645004f7525bca07a486d5c321140413bdc5f431e61494f29&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258681513.jpg?k=9648cc5a5bc8ac54fba452c9204a1c4f6e6e825dfc2142bf9045df33b1bd1d91&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258681513.jpg?k=9648cc5a5bc8ac54fba452c9204a1c4f6e6e825dfc2142bf9045df33b1bd1d91&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258681513.jpg?k=9648cc5a5bc8ac54fba452c9204a1c4f6e6e825dfc2142bf9045df33b1bd1d91&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258828797.jpg?k=f6be3effbdec93b9aff729ed8f55744eb94b5c59605cb2c97605d74cb49c5b8e&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258828797.jpg?k=f6be3effbdec93b9aff729ed8f55744eb94b5c59605cb2c97605d74cb49c5b8e&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258828797.jpg?k=f6be3effbdec93b9aff729ed8f55744eb94b5c59605cb2c97605d74cb49c5b8e&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/258828523.jpg?k=687e76d26d184cea8a4b310850164cef8b72dd395e174c522d3a42ac8a155273&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/258828523.jpg?k=687e76d26d184cea8a4b310850164cef8b72dd395e174c522d3a42ac8a155273&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/258828523.jpg?k=687e76d26d184cea8a4b310850164cef8b72dd395e174c522d3a42ac8a155273&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/43604074.jpg?k=ea687d1fe562cf0492a28a6eebd8be3d13e4eb1d78c22ca69e04f0bdd251010e&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/43604074.jpg?k=ea687d1fe562cf0492a28a6eebd8be3d13e4eb1d78c22ca69e04f0bdd251010e&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/43604074.jpg?k=ea687d1fe562cf0492a28a6eebd8be3d13e4eb1d78c22ca69e04f0bdd251010e&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/231992649.jpg?k=c2e50d6fd716950f0ab0a59dec4d61c24c305bd671f22bcbaf6c07ccfe62d9b9&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/231992649.jpg?k=c2e50d6fd716950f0ab0a59dec4d61c24c305bd671f22bcbaf6c07ccfe62d9b9&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/231992649.jpg?k=c2e50d6fd716950f0ab0a59dec4d61c24c305bd671f22bcbaf6c07ccfe62d9b9&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/231992787.jpg?k=0af54a500ee9c1d72f240234e3eeb31a13c27d05b272e96d4897ad8d8b61f5cb&o="
+            },
+            {
+              "isLogoPhoto": false,
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o=",
+              "mainPhoto": false,
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/231993393.jpg?k=58414235a9e04882cec67040c29de886f4431a3f769fabdf711491308fd08ee2&o="
+            }
+          ],
+          "isClosed": 0,
+          "checkinFrom": "14:00",
+          "checkinTo": "",
+          "checkinInfo": "Mulai 14:00",
+          "checkoutFrom": "",
+          "checkoutTo": "12:00",
+          "checkoutInfo": "Sampai 12:00",
+          "star": 5,
+          "description": "The Royal Purnama - Art Suites and Villa terletak sangat dekat dari Pantai Purnama, dan menawarkan kolam renang outdoor serta restoran. Akomodasi ini menyediakan AC dan minibar untuk Anda. Dapur lengkap dengan microwave dan peralatan dapur juga ada. Selain shower, kamar mandi dalamnya juga dilengkapi dengan bathtub dan perlengkapan mandi gratis. Di The Royal Purnama - Art Suites and Villa, Anda akan menemukan meja depan 24 jam, taman, dan bar. Berbagai aktivitas dapat dilakukan di akomodasi atau di daerah sekitarnya, termasuk bersepeda. Resor ini berjarak 15 km dari daerah Sanur dan 45 menit berkendara dari Bandara Internasional Denpasar Bali.",
+          "importantInformation": "Harap beri tahu pihak The Royal Purnama terlebih dahulu mengenai perkiraan waktu kedatangan Anda. Anda harus menunjukkan dokumen identitas berfoto yang berlaku serta kartu kredit pada saat check-in. Permintaan khusus tidak bisa dijamin dan dapat dikenakan biaya tambahan. Menanggapi Coronavirus (COVID-19), tindakan keamanan dan sanitasi tambahan saat ini diberlakukan di akomodasi ini. Karena Coronavirus (COVID-19), properti ini mengikuti prosedur pembatasan jarak sosial yang ketat. Karena Coronavirus (COVID-19), pastikan bahwa Anda memesan akomodasi ini sesuai dengan pedoman pemerintah setempat di destinasi Anda, termasuk tetapi tidak terbatas pada tujuan perjalanan, serta jumlah maksimum anggota grup yang diperbolehkan. Karena Coronavirus (COVID-19), Anda diharuskan memakai masker wajah di semua area bersama indoor. Harap diperhatikan bahwa anak-anak berusia di bawah 12 tahun tidak diizinkan menginap di resor ini. Harap dicatat bahwa harga kamar untuk tanggal 24, 25, dan 31 Desember sudah termasuk jamuan makan malam Natal wajib, Barbekyu Natal, dan makan malam Tahun Baru sesuai kapasitas hunian kamar standar. Tamu tambahan akan dikenakan biaya terpisah per orang. Silakan hubungi langsung pihak akomodasi untuk informasi lebih lanjut.",
+          "welcomeMessage": "",
+          "licenseNumber": "",
+          "chainId": 0,
+          "currency": "IDR",
+          "boost": 0,
+          "cityId": 54637
+        },
+        "city": {
+          "id": 54637,
+          "name": "Ketewel",
+          "countryName": "Indonesia"
+        },
+        "region": {
+          "id": 0,
+          "name": "",
+          "countryName": ""
+        },
+        "district": {
+          "id": 0,
+          "cityId": 0,
+          "latitude": 0,
+          "longitude": 0,
+          "name": ""
+        },
+        "facility": [
+          {
+            "groupName": "Umum",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-buildings.png",
+            "item": [
+              {
+                "id": 33,
+                "name": "Parkir Gratis",
+                "icon": "parking",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+              },
+              {
+                "id": 1,
+                "name": "Parkir",
+                "icon": "parking",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+              },
+              {
+                "id": 125,
+                "name": "Parkir pribadi",
+                "icon": "parking",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+              },
+              {
+                "id": 124,
+                "name": "Parkir di gedung",
+                "icon": "parking",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Kegiatan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-activities.png",
+            "item": [
+              {
+                "id": 61,
+                "name": "Bersepeda",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 68,
+                "name": "Berkuda",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 226,
+                "name": "Tur jalan kaki ",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 231,
+                "name": "Kelas memasak",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 228,
+                "name": "Makan malam bertema",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 230,
+                "name": "Tur atau kelas mengenai budaya lokal",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 232,
+                "name": "Musik/pertunjukkan live",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 229,
+                "name": "Happy hour",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 227,
+                "name": "Tur Sepeda",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 225,
+                "name": "Maraton Nonton Film",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Layanan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "item": [
+              {
+                "id": 81,
+                "name": "Wi-Fi",
+                "icon": "internet",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+              },
+              {
+                "id": 74,
+                "name": "Wi-Fi",
+                "icon": "internet",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+              },
+              {
+                "id": 34,
+                "name": "Layanan Internet",
+                "icon": "internet",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Makanan & Minuman",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-food_and_drink.png",
+            "item": [
+              {
+                "id": 2,
+                "name": "Restoran",
+                "icon": "restaurant",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-restaurant.png"
+              },
+              {
+                "id": 6,
+                "name": "Bar",
+                "icon": "activities",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-activities.png"
+              },
+              {
+                "id": 4,
+                "name": "Layanan Kamar",
+                "icon": "room_amenities",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-room_amenities.png"
+              },
+              {
+                "id": 58,
+                "name": "Fasilitas BBQ",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Kolam renang dan pusat kesehatan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png",
+            "item": [
+              {
+                "id": 10,
+                "name": "Pusat Kebugaran",
+                "icon": "gym",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-gym.png"
+              },
+              {
+                "id": 118,
+                "name": "Tepi pantai",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 41,
+                "name": "Spa & Pusat Kesehatan",
+                "icon": "spa",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-spa.png"
+              },
+              {
+                "id": 42,
+                "name": "Pijat",
+                "icon": "spa",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-spa.png"
+              },
+              {
+                "id": 80,
+                "name": "Kolam Renang Outdoor",
+                "icon": "swimming_pool",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+              },
+              {
+                "id": 86,
+                "name": "Area Pantai Pribadi",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 91,
+                "name": "Kolam Renang Outdoor (sepanjang tahun)",
+                "icon": "swimming_pool",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+              },
+              {
+                "id": 153,
+                "name": "Kolam infinity",
+                "icon": "swimming_pool",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+              },
+              {
+                "id": 159,
+                "name": "Bar kolam",
+                "icon": "bar",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-bar.png"
+              },
+              {
+                "id": 154,
+                "name": "Kolam renang dengan pemandangan",
+                "icon": "swimming_pool",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-swimming_pool.png"
+              },
+              {
+                "id": 250,
+                "name": "Swimming Pool",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 158,
+                "name": "Handuk kolam renang/pantai",
+                "icon": "towel",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-towel.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Transportasi",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png",
+            "item": [
+              {
+                "id": 16,
+                "name": "Antar-Jemput Bandara",
+                "icon": "transport",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+              },
+              {
+                "id": 60,
+                "name": "Penyewaan Mobil",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 101,
+                "name": "Layanan antar-jemput (biaya tambahan)",
+                "icon": "transport",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+              },
+              {
+                "id": 112,
+                "name": "Antar-Jemput Bandara (biaya tambahan)",
+                "icon": "transport",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-transport.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Layanan resepsionis",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-reception.png",
+            "item": [
+              {
+                "id": 7,
+                "name": "Resepsionis 24 Jam",
+                "icon": "24h",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png"
+              },
+              {
+                "id": 40,
+                "name": "Penukaran Valuta Asing",
+                "icon": "money_exchange",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-money_exchange.png"
+              },
+              {
+                "id": 36,
+                "name": "Check-In/Check-Out cepat",
+                "icon": "reception",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-reception.png"
+              },
+              {
+                "id": 39,
+                "name": "Parkir Valet",
+                "icon": "parking",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png"
+              },
+              {
+                "id": 96,
+                "name": "Layanan Concierge",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Area umum",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-common_areas.png",
+            "item": [
+              {
+                "id": 13,
+                "name": "Taman",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 14,
+                "name": "Teras",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 90,
+                "name": "Teras Berjemur",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Layanan kebersihan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-cleaning_service.png",
+            "item": [
+              {
+                "id": 20,
+                "name": "Laundry",
+                "icon": "laundry",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-laundry.png"
+              },
+              {
+                "id": 21,
+                "name": "Cuci kering",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 31,
+                "name": "Jasa Penyetrikaan",
+                "icon": "iron",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-iron.png"
+              },
+              {
+                "id": 122,
+                "name": "Layanan kebersihan harian",
+                "icon": "default",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Pertokoan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shop.png",
+            "item": [
+              {
+                "id": 47,
+                "name": "Toko Oleh-Oleh",
+                "icon": "shop",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-shop.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Lain-lain",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+            "item": [
+              {
+                "id": 83,
+                "name": "AC",
+                "icon": "ac",
+                "availability": 2,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png"
+              },
+              {
+                "id": 15,
+                "name": "Kamar Bebas-Rokok",
+                "icon": "no_smoking",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-no_smoking.png"
+              },
+              {
+                "id": 84,
+                "name": "Ruangan Khusus Merokok",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 121,
+                "name": "Khusus dewasa",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 237,
+                "name": "Keamanan 24 jam",
+                "icon": "24h",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Fitur Keamanan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
+            "item": [
+              {
+                "id": 268,
+                "name": "Staf mengikuti semua protokol keamanan sesuai petunjuk otoritas setempat",
+                "icon": "safety_features",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
+              },
+              {
+                "id": 259,
+                "name": "Proses pengecekan kesehatan tamu",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 313,
+                "name": "access_to_health_care_professional",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 255,
+                "name": "Alat P3K tersedia",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 314,
+                "name": "Tersedia masker untuk tamu",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 263,
+                "name": "Hand sanitizer in guest accommodation and key areas",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Pembatasan Jarak Sosial",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/41796ae5-b275-4956-a15f-3814dd56da1c.png",
+            "item": [
+              {
+                "id": 271,
+                "name": "Peraturan pembatasan jarak sosial diterapkan",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 269,
+                "name": "Pembayaran tanpa tunai tersedia",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Kebersihan & Disinfeksi",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/e0c0e51a-8f01-4b46-8713-8365c17c5eb0.png",
+            "item": [
+              {
+                "id": 266,
+                "name": "Akomodasi harus disemprot disinfektan setelah tamu check-out dan sebelum tamu baru check-in",
+                "icon": "safety_features",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png"
+              },
+              {
+                "id": 260,
+                "name": "Penggunaan pembersih berbahan kimia yang efektif melawan Coronavirus",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 261,
+                "name": "Seprai, handuk, dan pakaian dicuci sesuai pedoman otoritas setempat",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 256,
+                "name": "Tamu dapat membatalkan layanan kebersihan untuk akomodasinya selama mereka menginap",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          },
+          {
+            "groupName": "Keamanan Makanan",
+            "groupIconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/9/1/2b5164e4-3caa-4f74-9e75-1095348fc400.png",
+            "item": [
+              {
+                "id": 257,
+                "name": "Makanan dapat diantarkan ke akomodasi tamu",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 272,
+                "name": "Semua piring, gelas, dan alat makan lainnya sudah dibersihkan",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 317,
+                "name": "Wadah bungkus sarapan",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 252,
+                "name": "Pembatasan jarak sosial di area makan",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              },
+              {
+                "id": 316,
+                "name": "Makanan yang diantar dikemas dengan aman",
+                "icon": "default",
+                "availability": 1,
+                "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png"
+              }
+            ]
+          }
+        ],
+        "mainFacility": [
+          {
+            "id": 268,
+            "name": "Hygiene Verified",
+            "icon": "safety_features",
+            "iconUrl": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f1e863ca-5c5c-4909-babb-43e15fc38a1b.png",
+            "availability": 1
+          },
+          {
+            "id": 83,
+            "name": "AC",
+            "icon": "ac",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-ac.png",
+            "availability": 2
+          },
+          {
+            "id": 81,
+            "name": "Wi-Fi",
+            "icon": "internet",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "availability": 1
+          },
+          {
+            "id": 2,
+            "name": "Restoran",
+            "icon": "restaurant",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-restaurant.png",
+            "availability": 1
+          },
+          {
+            "id": 15,
+            "name": "Kamar Bebas-Rokok",
+            "icon": "no_smoking",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-no_smoking.png",
+            "availability": 1
+          },
+          {
+            "id": 7,
+            "name": "Resepsionis 24 Jam",
+            "icon": "24h",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-24h.png",
+            "availability": 1
+          }
+        ],
+        "propertyPolicy": [
+          {
+            "name": "Kebijakan Anak-anak dan Tempat Tidur Tambahan",
+            "content": "Anak-anak di atas umur 12 tahun diperbolehkan menginap.\nTidak ada kapasitas untuk tempat tidur tambahan di kamar.\nKapasitas maksimal dari jumlah total tamu di kamar adalah 8.\nTidak ada kapasitas untuk tempat tidur bayi di kamar.\n",
+            "icon": "children_care",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-children_care.png",
+            "propertyPolicyId": "POLICY_CHILDREN"
+          },
+          {
+            "name": "Internet",
+            "content": "Wi-Fi tersedia di area umum hotel dan tidak dikenai biaya.\n",
+            "icon": "internet",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-internet.png",
+            "propertyPolicyId": "POLICY_HOTEL_INTERNET"
+          },
+          {
+            "name": "Tempat parkir",
+            "content": "Parkir pribadi gratis tersedia di lokasi properti (reservasi tidak diperlukan).\n",
+            "icon": "parking",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-parking.png",
+            "propertyPolicyId": "POLICY_HOTEL_PARKING"
+          },
+          {
+            "name": "Binatang peliharaan",
+            "content": "Binatang peliharaan tidak diperbolehkan.\n",
+            "icon": "pet",
+            "iconUrl": "https://ecs7.tokopedia.net/img/hotel/hotel-pet.png",
+            "propertyPolicyId": "POLICY_HOTEL_PETS"
+          }
+        ]
+      }
+    }
+  }
+]

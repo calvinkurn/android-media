@@ -1,12 +1,15 @@
 package com.tokopedia.flight.orderlist.network;
 
 import android.content.Context;
+import android.net.Network;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -29,8 +32,8 @@ public class FlightOrderAuthInterceptor extends TkpdAuthInterceptor {
     private static final String KEY_ZIP_ENCODING = "gzip";
 
     @Inject
-    public FlightOrderAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
-        super(context, abstractionRouter);
+    public FlightOrderAuthInterceptor(@ApplicationContext Context context, UserSessionInterface userSession, NetworkRouter abstractionRouter) {
+        super(context, abstractionRouter, userSession);
         this.maxRetryAttempt = 0;
     }
 

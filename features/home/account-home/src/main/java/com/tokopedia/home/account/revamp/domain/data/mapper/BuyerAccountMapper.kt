@@ -20,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation_common.model.VccUserStatus
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import rx.functions.Func1
 import javax.inject.Inject
@@ -37,6 +39,8 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
+    private val UOH_AB_TEST_KEY = "uoh_android_v2"
+    private val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)
@@ -48,7 +52,7 @@ class BuyerAccountMapper @Inject constructor(
         val model = BuyerViewModel()
         items.add(getBuyerProfile(accountDataModel))
         items.add(getTokopediaPayModel(accountDataModel))
-        items.addAll(getModel(context, accountDataModel, remoteConfig))
+        items.addAll(getModel(context, accountDataModel, remoteConfig, useUoh()))
         model.items = items
 
         return model
@@ -61,6 +65,9 @@ class BuyerAccountMapper @Inject constructor(
         buyerCardViewModel.apply {
             userId = accountDataModel.profile.userId.toEmptyStringIfNull()
             name = accountDataModel.profile.fullName.toEmptyStringIfNull()
+
+            shopName = userSession.shopName.toEmptyStringIfNull()
+            isHasShop = userSession.hasShop()
 
             setShortcutResponse(accountDataModel, this)
 
@@ -133,7 +140,7 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
         tokopediaPayViewModel.isRightSaldo = true
 
-        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.depositLong, false)
+        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false)
         tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
 
         setVCCBuyer(tokopediaPayViewModel, accountDataModel)
@@ -235,6 +242,19 @@ class BuyerAccountMapper @Inject constructor(
                 tokopediaPayViewModel.labelCentre = LABEL_KYC_PENDING
                 tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
             }
+        }
+    }
+
+    private fun useUoh(): Boolean {
+        return try {
+            val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+            return (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
         }
     }
 }

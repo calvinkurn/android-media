@@ -7,6 +7,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.domain.model.AddressListModel
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
+import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import kotlinx.coroutines.launch
@@ -23,6 +24,9 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
     var destinationDistrict: String = ""
     var destinationPostalCode: String = ""
     var token: Token? = null
+
+    private var page = 1
+    private var isLoadingMore = false
     private var addressListModel: AddressListModel? = null
 
     private val _addressList = MutableLiveData<OccState<AddressListModel>>()
@@ -33,28 +37,60 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
 
     fun searchAddress(query: String) {
         _addressList.value = OccState.Loading
+        OccIdlingResource.increment()
         compositeSubscription.add(
-                useCase.getAll(query)
+                useCase.execute(query)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 _addressList.value = OccState.Failed(Failure(e))
+                                OccIdlingResource.decrement()
+                                isLoadingMore = false
                             }
 
                             override fun onNext(t: AddressListModel) {
                                 token = t.token
                                 logicSelection(t)
                                 savedQuery = query
+                                page = 1
+                                isLoadingMore = false
                             }
 
                             override fun onCompleted() {
-                                //do nothing
+                                OccIdlingResource.decrement()
                             }
                         })
         )
     }
 
-    fun logicSelection(addressListModel: AddressListModel) {
+    fun loadMore() {
+        if (_addressList.value !is OccState.Loading && !isLoadingMore) {
+            isLoadingMore = true
+            OccIdlingResource.increment()
+            compositeSubscription.add(
+                    useCase.loadMore(savedQuery, ++this.page)
+                            .subscribe(object : rx.Observer<AddressListModel> {
+                                override fun onError(e: Throwable?) {
+                                    _addressList.value = OccState.Failed(Failure(e))
+                                    OccIdlingResource.decrement()
+                                    isLoadingMore = false
+                                }
+
+                                override fun onNext(t: AddressListModel) {
+                                    logicSelection(t, isLoadMore = true)
+                                }
+
+                                override fun onCompleted() {
+                                    OccIdlingResource.decrement()
+                                    isLoadingMore = false
+                                }
+                            })
+            )
+        }
+    }
+
+    private fun logicSelection(addressListModel: AddressListModel, isLoadMore: Boolean = false, isChangeSelection: Boolean = false) {
         launch {
+            OccIdlingResource.increment()
             withContext(dispatcher.default) {
                 val addressList = addressListModel.listAddress
                 for (item in addressList) {
@@ -66,18 +102,31 @@ class AddressListViewModel @Inject constructor(private val useCase: GetAddressCo
                         destinationPostalCode = item.postalCode
                     }
                 }
-                addressListModel.listAddress = addressList
+                addressListModel.listAddress = if (isLoadMore) {
+                    (this@AddressListViewModel.addressListModel?.listAddress
+                            ?: emptyList()) + addressList
+                } else {
+                    addressList
+                }
+                if (!isChangeSelection) {
+                    addressListModel.hasNext = addressList.size == 10
+                }
             }
             this@AddressListViewModel.addressListModel = addressListModel
-            _addressList.value = OccState.Success(addressListModel)
+            _addressList.value = if (isLoadMore || isChangeSelection) {
+                OccState.Success(addressListModel)
+            } else {
+                OccState.FirstLoad(addressListModel)
+            }
+            OccIdlingResource.decrement()
         }
     }
 
     fun setSelectedAddress(addressId: String) {
         val addressModel = addressListModel
-        if (addressModel != null && _addressList.value is OccState.Success) {
+        if (addressModel != null && (_addressList.value is OccState.Success || _addressList.value is OccState.FirstLoad)) {
             selectedId = addressId
-            logicSelection(addressModel)
+            logicSelection(addressModel, isChangeSelection = true)
         }
     }
 

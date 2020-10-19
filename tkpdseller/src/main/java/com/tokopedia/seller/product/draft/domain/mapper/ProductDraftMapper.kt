@@ -2,10 +2,9 @@ package com.tokopedia.seller.product.draft.domain.mapper
 
 import android.text.TextUtils
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel
-import javax.inject.Inject
+import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel
 
-class ProductDraftMapper @Inject constructor() {
+object ProductDraftMapper {
     fun mapDomainDataModelToViewModel(drafts: List<ProductDraft>) = drafts.map { draft ->
         val primaryImageUrl = draft.detailInputModel.imageUrlOrPathList.firstOrNull().orEmpty()
         val productName = draft.detailInputModel.productName

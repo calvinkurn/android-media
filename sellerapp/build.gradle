@@ -2,10 +2,9 @@ apply plugin: 'com.android.application'
 if (project.hasProperty("auto-patch")) {
     apply plugin: 'auto-patch-plugin'
 }
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
-apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -37,7 +36,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
@@ -98,13 +96,12 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            ext.enableBugsnag = false
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
@@ -212,7 +209,7 @@ dependencies {
     } else {
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation project(rootProject.ext.features.commonDigital)
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
@@ -221,15 +218,13 @@ dependencies {
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
-    implementation project(rootProject.ext.features.topAdsWidget)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.topAdsCreate)
+    implementation project(rootProject.ext.features.topAdsEdit)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.reputation)
-    implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
@@ -257,22 +252,18 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
+    implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.voucherCreation)
-
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-//    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.withdraw)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -290,12 +281,14 @@ dependencies {
     implementation project(rootProject.ext.features.attachvoucher)
 
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.filter)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -337,10 +330,10 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.serviceDependencies.crashlytics
 
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
@@ -389,7 +382,6 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.blockCanary)

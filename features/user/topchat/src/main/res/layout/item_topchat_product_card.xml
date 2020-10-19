@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl1"
-    android:background="@drawable/bg_shadow_attach_product"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,10 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_topchat_12"
-        android:paddingLeft="@dimen/dp_topchat_12"
         android:paddingTop="@dimen/dp_topchat_12"
         android:paddingEnd="@dimen/dp_topchat_12"
-        android:paddingRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -329,18 +325,6 @@
                 app:unifyButtonVariant="ghost"
                 tools:visibility="gone" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:gravity="end|center_vertical"
-            android:orientation="horizontal">
-
-            <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify

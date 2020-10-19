@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.Tab
+import com.tokopedia.product.manage.common.list.data.model.filter.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.S
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
 import com.tokopedia.product.manage.common.feature.list.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -23,28 +24,30 @@ object ProductMapper {
             val minPrice = it.price?.min
             val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
+            val topAdsInfo = TopAdsInfo(it.isTopAds(), it.isAutoAds())
 
             ProductViewModel(
-                    id = it.id,
-                    title = it.name,
-                    imageUrl = picture?.urlThumbnail,
-                    minPrice = PriceUiModel(
-                            price = minPrice.toString(),
-                            priceFormatted = minPrice?.getCurrencyFormatted()
-                    ),
-                    maxPrice = PriceUiModel(
-                            price = maxPrice.toString(),
-                            priceFormatted = maxPrice?.getCurrencyFormatted()
-                    ),
-                    status = mapProductStatus(it),
-                    stock = it.stock,
-                    isVariant = it.isVariant,
-                    isFeatured = it.featured > 0,
-                    url = it.url,
-                    cashBack = it.cashback,
-                    multiSelectActive = multiSelectActive,
-                    isChecked = false,
-                    hasStockReserved = it.hasStockReserved
+                id = it.id,
+                title = it.name,
+                imageUrl = picture?.urlThumbnail,
+                minPrice = PriceUiModel(
+                        price = minPrice.toString(),
+                        priceFormatted = minPrice?.getCurrencyFormatted()
+                ),
+                maxPrice = PriceUiModel(
+                        price = maxPrice.toString(),
+                        priceFormatted = maxPrice?.getCurrencyFormatted()
+                ),
+                status = mapProductStatus(it),
+                stock = it.stock,
+                isVariant = it.isVariant,
+                isFeatured = it.featured > 0,
+                url = it.url,
+                cashBack = it.cashback,
+                multiSelectActive = multiSelectActive,
+                isChecked = false,
+                hasStockReserved = it.hasStockReserved,
+                topAdsInfo = topAdsInfo
             )
         } ?: emptyList()
     }

@@ -4,6 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BidInfoViewHolder<in T>(view: View): RecyclerView.ViewHolder(view){
-    abstract fun bind(item:T)
+    open fun bind(item: T, typeList: MutableList<Int>, minBid: Int){}
 
 }

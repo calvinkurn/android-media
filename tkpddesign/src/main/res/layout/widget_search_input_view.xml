@@ -29,6 +29,7 @@
 
         <EditText
             android:id="@+id/edit_text_search"
+            android:contentDescription="@string/content_desc_edit_text_search"
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

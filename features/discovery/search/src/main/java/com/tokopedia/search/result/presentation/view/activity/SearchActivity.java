@@ -12,7 +12,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -53,6 +52,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewMod
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.Nullable;
@@ -83,9 +83,11 @@ public class SearchActivity extends BaseActivity
 
     private Toolbar toolbar;
     private MotionLayout container;
-    private ProgressBar loadingView;
+    private LoaderUnify loadingView;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private View tabShadow;
+    private View quickFilterTopPadding;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
     private View backButton;
     private TextView searchTextView;
@@ -191,6 +193,8 @@ public class SearchActivity extends BaseActivity
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
         buttonCart = findViewById(R.id.search_cart_button);
         buttonHome = findViewById(R.id.search_home_button);
+        tabShadow = findViewById(R.id.search_top_bar_shadow);
+        quickFilterTopPadding = findViewById(R.id.search_quick_filter_top_padding);
     }
 
     protected void prepareView() {
@@ -200,8 +204,12 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureTabLayout() {
-        if (container == null) return;
+        if (container == null || isLandingPage()) return;
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) return;
+
+        container.loadLayoutDescription(R.xml.search_tab_layout_scene);
+        container.setTransition(R.id.searchMotionTabStart, R.id.searchMotionTabEnd);
         container.setTransitionListener(getContainerTransitionListener());
     }
 
@@ -299,6 +307,8 @@ public class SearchActivity extends BaseActivity
     private void configureToolbarVisibility() {
         if (isLandingPage()) {
             tabLayout.setVisibility(View.GONE);
+            tabShadow.setVisibility(View.GONE);
+            quickFilterTopPadding.setVisibility(View.GONE);
         }
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.flight.orderlist.domain.*
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper
 import com.tokopedia.flight.orderlist.network.FlightOrderAuthInterceptor
 import com.tokopedia.flight.orderlist.network.model.FlightOrderErrorResponse
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -141,6 +142,12 @@ class FlightOrderModule {
     @Provides
     fun provideFlightSendEmailUseCase(flightOrderRepository: FlightOrderRepository): FlightSendEmailUseCase {
         return FlightSendEmailUseCase(flightOrderRepository)
+    }
+
+    @FlightOrderScope
+    @Provides
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
     }
 
 }

@@ -33,7 +33,8 @@ class CarouselProductCardViewHolder (view: View,
                     TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression,
                             element.grid.id,
                             element.grid.name,
-                            element.grid.imageUrl)
+                            element.grid.imageUrl,
+                            element.componentName)
                 }
                 element.listener.onProductCardImpressed(position = adapterPosition, channel = channels, channelGrid = element.grid)
             }
@@ -42,7 +43,8 @@ class CarouselProductCardViewHolder (view: View,
                     TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl,
                             element.grid.id,
                             element.grid.name,
-                            element.grid.imageUrl)
+                            element.grid.imageUrl,
+                            element.componentName)
                 }
                 element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
             }

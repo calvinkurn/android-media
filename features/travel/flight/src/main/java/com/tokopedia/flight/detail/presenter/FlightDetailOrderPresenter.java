@@ -113,6 +113,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
+    public void actionCancelOrderWithoutDialog() {
+        if (isViewAttached() && getView().getFlightOrder() != null) {
+            List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                    .getFlightOrder().getJourneys());
+            getView().navigateToCancellationPage(getView().getFlightOrder().getId(), items);
+        }
+    }
+
+    @Override
     public void onHelpButtonClicked(String contactUsUrl) {
         getView().navigateToWebview(contactUsUrl);
     }

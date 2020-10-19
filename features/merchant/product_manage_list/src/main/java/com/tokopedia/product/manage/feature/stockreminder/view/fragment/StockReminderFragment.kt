@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -27,6 +29,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
@@ -207,10 +210,20 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun doResultIntent() {
-        val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
-        resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
-        activity?.setResult(Activity.RESULT_OK, resultIntent)
+        val extraCacheManagerId = activity?.intent?.data?.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_CACHE_MANAGER_ID).orEmpty()
+        if (extraCacheManagerId.isNotBlank()) {
+            val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, extraCacheManagerId) }
+            cacheManager?.let {
+                it.put(EXTRA_PRODUCT_NAME, productName)
+                it.put(EXTRA_THRESHOLD, threshold)
+                it.put(EXTRA_RESULT_STATUS, Activity.RESULT_OK)
+            }
+        } else {
+            val resultIntent = Intent()
+            resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
+            resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
+            activity?.setResult(Activity.RESULT_OK, resultIntent)
+        }
         activity?.finish()
     }
 

@@ -85,6 +85,10 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_TOPADS, label)
     }
 
+    fun eventSettingsTopadsDetail(label: String) {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL, label)
+    }
+
     fun eventSettingsCashback(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_SETTINGS_CASHBACK, label)
     }

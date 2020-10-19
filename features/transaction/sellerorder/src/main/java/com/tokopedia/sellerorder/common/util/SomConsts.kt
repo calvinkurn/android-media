@@ -164,4 +164,12 @@ object SomConsts {
 
     const val KEY_PRIMARY_DIALOG_BUTTON = "primary"
     const val KEY_SECONDARY_DIALOG_BUTTON = "secondary"
+
+    const val TOPADS_NO_PRODUCT = 1
+    const val TOPADS_NO_ADS = 2
+    const val TOPADS_MANUAL_ADS = 3
+    const val TOPADS_AUTO_ADS = 4
+
+    const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
+    const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
 }

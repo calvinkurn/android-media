@@ -15,13 +15,15 @@ class ProductVariantPriceAdapterFactoryImpl(
     private val listener: ProductVariantListener
 ): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 
+    private val variantPriceMap: MutableMap<String, Int> = mutableMapOf()
+
     override fun type(viewModel: ProductVariant): Int = ProductVariantPriceViewHolder.LAYOUT
 
     override fun type(viewModel: ProductTicker): Int = ProductVariantStockTickerViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ProductVariantPriceViewHolder.LAYOUT -> ProductVariantPriceViewHolder(parent, listener)
+            ProductVariantPriceViewHolder.LAYOUT -> ProductVariantPriceViewHolder(parent, variantPriceMap, listener)
             else -> return super.createViewHolder(parent, type)
         }
     }

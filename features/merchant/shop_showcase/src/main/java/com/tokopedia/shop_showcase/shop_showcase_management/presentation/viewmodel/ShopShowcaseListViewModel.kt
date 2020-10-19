@@ -3,30 +3,30 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 
 class ShopShowcaseListViewModel @Inject constructor(
-        private val getShopShowcaseListBuyerUseCase: GetShopShowcaseListBuyerUseCase,
+        private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
         private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
         private val reorderShopShowcaseUseCase: ReorderShopShowcaseListUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        private val dispatchers: ShopShowcaseDispatchProvider
+): BaseViewModel(dispatchers.ui()) {
 
-    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListBuyerResponse>>()
-    val getListBuyerShopShowcaseResponse: LiveData<Result<ShopShowcaseListBuyerResponse>>
+    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
+    val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
         get() = _getListBuyerShopShowcaseResponse
 
     private val _getListSellerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListSellerResponse>>()
@@ -46,16 +46,31 @@ class ShopShowcaseListViewModel @Inject constructor(
         get() = _getShopProductResponse
 
 
-    fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
+    fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean, hideShowCaseGroup: Boolean) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                getShopShowcaseListBuyerUseCase.params = GetShopShowcaseListBuyerUseCase
-                        .createRequestParam(shopId, isOwner)
-                val shopShowcaseData = getShopShowcaseListBuyerUseCase.executeOnBackground()
-                shopShowcaseData.let {
-                    _getListBuyerShopShowcaseResponse.postValue(Success(it))
+            val showcaseList = withContext(dispatchers.io()) {
+                clearGetShowcaseCache()
+                val requestParam = if (isOwner) {
+                    GetShopEtalaseByShopUseCase.createRequestParams(
+                            shopId = shopId,
+                            hideNoCount = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_NO_COUNT_VALUE,
+                            hideShowCaseGroup = hideShowCaseGroup,
+                            isOwner = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.IS_OWNER_VALUE
+                    )
+                } else {
+                    GetShopEtalaseByShopUseCase.createRequestParams(
+                            shopId = shopId,
+                            hideNoCount = GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.HIDE_NO_COUNT_VALUE,
+                            hideShowCaseGroup = hideShowCaseGroup,
+                            isOwner = GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.IS_OWNER_VALUE
+                    )
                 }
+
+                getShopShowcaseListBuyerUseCase.createObservable(requestParam)
+                        .toBlocking().first()
             }
+
+            _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
         }) {
             _getListBuyerShopShowcaseResponse.value = Fail(it)
         }
@@ -63,7 +78,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 val shopShowcaseData = getShopShowcaseListSellerUseCase.executeOnBackground()
                 shopShowcaseData.let {
                     _getListSellerShopShowcaseResponse.postValue(Success(it))
@@ -76,7 +91,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun removeSingleShopShowcase(showcaseId: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 deleteShopShowcaseUseCase.params = DeleteShopShowcaseUseCase.createRequestParam(showcaseId)
                 val removeSingleShowcaseData = deleteShopShowcaseUseCase.executeOnBackground()
                 removeSingleShowcaseData.let {
@@ -90,7 +105,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun reorderShopShowcaseList(ids: List<String>) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 reorderShopShowcaseUseCase.params = ReorderShopShowcaseListUseCase.createRequestParam(ids)
                 val reorderShowcaseData = reorderShopShowcaseUseCase.executeOnBackground()
                 reorderShowcaseData.let {
@@ -105,7 +120,7 @@ class ShopShowcaseListViewModel @Inject constructor(
     fun getTotalProduct(shopId: String, page: Int, perPage: Int,
             sortId: Int, etalase: String, search: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io()) {
                 var paramInput = mapOf(
                         "page" to page,
                         "fkeyword" to search,
@@ -123,6 +138,10 @@ class ShopShowcaseListViewModel @Inject constructor(
         }) {
             _getShopProductResponse.value = Fail(it)
         }
+    }
+
+    fun clearGetShowcaseCache() {
+        getShopShowcaseListBuyerUseCase.clearCache()
     }
 
 }
