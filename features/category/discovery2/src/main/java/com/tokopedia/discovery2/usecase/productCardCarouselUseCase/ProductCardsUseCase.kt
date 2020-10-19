@@ -23,23 +23,25 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, queryMap: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
-        component?.let { item ->
-            val parentComponentsItem = getComponent(item.parentComponentId, pageEndPoint)
-            val isDynamic = item.properties?.dynamic ?: false
+        component?.let {
+            val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
+            val isDynamic = it.properties?.dynamic ?: false
             val productListData = productCardsRepository.getProducts(
-                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                        component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(PAGE_START,
                             parentComponentsItem?.chipSelectionData,
-                            item.selectedFilters,
-                            item.selectedSort,
+                            it.selectedFilters,
+                            it.selectedSort,
                             queryMap,
                             parentComponentsItem?.data,
                             productsLimit),
-                    pageEndPoint, item.name)
+                    pageEndPoint, it.name)
 
-            if (productListData.isEmpty()) return false else item.pageLoadedCounter = 2
-            item.setComponentsItem(productListData)
-            item.noOfPagesLoaded = 1
+            it.showVerticalLoader = productListData.isNotEmpty()
+            if (productListData.isEmpty()) return false else it.pageLoadedCounter = 2
+            it.setComponentsItem(productListData)
+            it.noOfPagesLoaded = 1
             return true
         }
         return false
@@ -52,7 +54,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             val isDynamic = component1.properties?.dynamic ?: false
             val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
             val productListData = productCardsRepository.getProducts(
-                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) component1.dynamicOriginalId!! else component1.id,
+                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                        component1.dynamicOriginalId!! else component1.id,
                     getQueryParameterMap(component1.pageLoadedCounter,
                             parentComponentsItem?.chipSelectionData,
                             component1.selectedFilters,
@@ -61,7 +64,14 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             parentComponentsItem?.data, productsLimit),
                     pageEndPoint,
                     component1.name)
-            if (productListData.isNotEmpty()) component1.pageLoadedCounter += 1
+
+            if (productListData.isEmpty()) {
+                component1.showVerticalLoader = false
+            } else {
+                component1.pageLoadedCounter += 1
+                component1.showVerticalLoader = true
+                (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
+            }
             (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             return true
         }

@@ -71,6 +71,7 @@ data class ComponentsItem(
         var rpc_discoQuery:  Map<String, String?>? = null,
         var pinnedActiveTabId: String? = "",
         var dynamicOriginalId: String? = "",
+        var showVerticalLoader: Boolean = false,
         var rpc_PinnedProduct: String? = "",
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1) {
