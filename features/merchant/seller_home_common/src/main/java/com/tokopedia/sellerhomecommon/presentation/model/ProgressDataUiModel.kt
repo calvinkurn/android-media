@@ -15,5 +15,5 @@ data class ProgressDataUiModel(
         val subtitle: String = "",
         override val dataKey: String = "",
         override var error: String = "",
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ) : BaseDataUiModel

@@ -10,5 +10,5 @@ data class CardDataUiModel(
         val state: String = "",
         val value: String = "",
         override var error: String = "",
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ): BaseDataUiModel

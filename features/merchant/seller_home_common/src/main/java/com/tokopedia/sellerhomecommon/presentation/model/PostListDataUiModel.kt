@@ -8,5 +8,5 @@ data class PostListDataUiModel(
         override val dataKey: String = "",
         val items: List<PostUiModel> = emptyList(),
         override var error: String = "",
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ): BaseDataUiModel

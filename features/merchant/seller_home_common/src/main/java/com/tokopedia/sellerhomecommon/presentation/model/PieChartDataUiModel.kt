@@ -8,7 +8,7 @@ class PieChartDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
         val data: PieChartUiModel = PieChartUiModel(),
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ) : BaseDataUiModel
 
 data class PieChartUiModel(

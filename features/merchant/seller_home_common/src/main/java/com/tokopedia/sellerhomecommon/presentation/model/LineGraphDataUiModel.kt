@@ -11,7 +11,7 @@ data class LineGraphDataUiModel(
         val header: String = "",
         val list: List<XYAxisUiModel> = emptyList(),
         val yLabels: List<XYAxisUiModel> = emptyList(),
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean = false
 ) : BaseDataUiModel
 
 data class XYAxisUiModel(
