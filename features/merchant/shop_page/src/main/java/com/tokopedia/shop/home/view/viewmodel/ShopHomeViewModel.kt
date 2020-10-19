@@ -181,12 +181,8 @@ class ShopHomeViewModel @Inject constructor(
 
                 val addMerchantVoucherLayout = asyncCatchError(
                         dispatcherProvider.io(),
-                        block = {
-                            getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY, shopPageHomeLayoutUiModel)
-                        },
-                        onError = {
-                            getMerchantVoucherListFailed(shopPageHomeLayoutUiModel)
-                        }
+                        block = { getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY, shopPageHomeLayoutUiModel) },
+                        onError = { getMerchantVoucherListFailed(shopPageHomeLayoutUiModel) }
                 ).await()
 
                 addPlayWidgetCarousel?.let { playCarousel ->
@@ -289,11 +285,20 @@ class ShopHomeViewModel @Inject constructor(
         val result = shopHomeLayoutData.value
         if (result is Success) {
             launchCatchError(block = {
-                getMerchantVoucherList(shopId, numVoucher, result.data)
-            })
-            {
-                getMerchantVoucherListFailed(result.data)
+                val addMerchantVoucherLayout = asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = { getMerchantVoucherList(shopId, numVoucher, result.data) },
+                        onError = { getMerchantVoucherListFailed(result.data) }
+                ).await()
+                val layout = result.data.listWidget.toMutableList()
+                addMerchantVoucherLayout?.let { voucher ->
+                    layout[voucher.first] = voucher.second
+                }
+                _shopHomeLayoutData.postValue(Success(result.data.copy(listWidget = layout)))
+            }) {
+                it.printStackTrace()
             }
+
         }
     }
 
