@@ -18,6 +18,7 @@ class SellerFailureSlice(context: Context,
             list(context, sliceUri, ListBuilder.INFINITY) {
                 row {
                     title = context.getString(R.string.seller_action_not_found)
+                    subtitle = context.getString(R.string.seller_action_not_found_desc)
                     primaryAction = createActivityAction()
                 }
                 setIsError(true)

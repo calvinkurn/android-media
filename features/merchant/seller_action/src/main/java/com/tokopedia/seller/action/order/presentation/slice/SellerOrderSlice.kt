@@ -14,9 +14,10 @@ import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.action.R
-import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
+import com.tokopedia.seller.action.order.domain.model.Order
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
@@ -27,6 +28,7 @@ class SellerOrderSlice(context: Context,
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = context.getString(R.string.seller_action_order_title)
+                    primaryAction = createHeaderPrimaryAction()
                 }
                 orderList.forEach {
                     row {
@@ -50,6 +52,10 @@ class SellerOrderSlice(context: Context,
                         subtitle = it.status
                     }
                 }
+                seeMoreRow {
+                    title = context.getString(R.string.seller_action_order_see_all)
+                    primaryAction = createSeeMorePrimaryAction()
+                }
             }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -60,6 +66,34 @@ class SellerOrderSlice(context: Context,
                     ICON_IMAGE,
                     title
             )
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun createSeeMorePrimaryAction(): SliceAction{
+        RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL).let { intent ->
+            PendingIntent.getActivity(context, 0, intent, 0).let { pendingIntent ->
+                return SliceAction.create(
+                        pendingIntent,
+                        IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
+                        ListBuilder.ICON_IMAGE,
+                        context.getString(R.string.seller_action_order_title)
+                )
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun createHeaderPrimaryAction(): SliceAction{
+        RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL).let { intent ->
+            PendingIntent.getActivity(context, 0, intent, 0).let { pendingIntent ->
+                return SliceAction.create(
+                        pendingIntent,
+                        IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
+                        ListBuilder.ICON_IMAGE,
+                        context.getString(R.string.seller_action_order_title)
+                )
+            }
+        }
+    }
 
     private fun String.getBitmap(): Bitmap? =
             Glide.with(context)
