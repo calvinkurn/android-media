@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.navigation">
+    package="com.tokopedia.homenav">
 
     <application>
-
+        <activity android:name=".view.activity.HomeNavActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>
