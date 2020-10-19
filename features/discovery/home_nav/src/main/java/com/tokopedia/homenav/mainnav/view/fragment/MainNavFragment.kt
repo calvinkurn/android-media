@@ -13,6 +13,7 @@ import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.homenav.view.router.NavigationRouter
 import kotlinx.android.synthetic.main.fragment_main_nav.*
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -48,7 +49,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun initClickListener() {
         testButton.setOnClickListener{
-            Navigation.findNavController(it).navigate(R.id.action_fragmentMain_to_fragmentCategory)
+            NavigationRouter.navigateToCategoryPageFromMainNav(it)
         }
     }
 }
