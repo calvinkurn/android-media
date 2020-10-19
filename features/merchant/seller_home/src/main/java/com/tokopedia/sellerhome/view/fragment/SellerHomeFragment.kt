@@ -171,7 +171,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        if(!hidden) {
+        if (!hidden) {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
                 requestVisibleWidgetsData()
@@ -192,7 +192,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (item.itemId == NOTIFICATION_MENU_ID) {
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
-        } else if(item.itemId == SEARCH_MENU_ID) {
+        } else if (item.itemId == SEARCH_MENU_ID) {
             RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
@@ -290,81 +290,64 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     }
 
-    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
+    private fun List<BaseWidgetUiModel<*>>.setLoading() {
+        onEach {
             it.isLoading = true
+            it.isLoaded = true
         }
+    }
+
+    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeCard = PerformanceMonitoring.start(SELLER_HOME_CARD_TRACE)
         sellerHomeViewModel.getCardWidgetData(dataKeys)
     }
 
     private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeLineGraph = PerformanceMonitoring.start(SELLER_HOME_LINE_GRAPH_TRACE)
         sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
     private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeProgress = PerformanceMonitoring.start(SELLER_HOME_PROGRESS_TRACE)
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
     }
 
     private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
         performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
     private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeCarousel = PerformanceMonitoring.start(SELLER_HOME_CAROUSEL_TRACE)
         sellerHomeViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeTable = PerformanceMonitoring.start(SELLER_HOME_TABLE_TRACE)
         sellerHomeViewModel.getTableWidgetData(dataKeys)
     }
 
     private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
         performanceMonitoringSellerHomePieChart = PerformanceMonitoring.start(SELLER_HOME_PIE_CHART_TRACE)
         sellerHomeViewModel.getPieChartWidgetData(dataKeys)
     }
 
     private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach {
-            it.isLoaded = true
-            it.isLoading = true
-        }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeBarChart = PerformanceMonitoring.start(SELLER_HOME_BAR_CHART_TRACE)
         sellerHomeViewModel.getBarChartWidgetData(dataKeys)
@@ -372,7 +355,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
-        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet) ?: TooltipBottomSheet.createInstance()
+        val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet)
+                ?: TooltipBottomSheet.createInstance()
         tooltipBottomSheet.init(requireContext(), tooltip)
         tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
