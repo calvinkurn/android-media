@@ -49,7 +49,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun initClickListener() {
         testButton.setOnClickListener{
-            NavigationRouter.navigateToCategoryPageFromMainNav(it)
+            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY)
         }
     }
 }
