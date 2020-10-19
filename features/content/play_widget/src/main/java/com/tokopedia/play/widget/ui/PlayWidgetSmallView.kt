@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.analytic.PlaySmallAnalyticListener
+import com.tokopedia.play.widget.analytic.small.PlayWidgetSmallAnalyticListener
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
@@ -34,7 +34,7 @@ class PlayWidgetSmallView : ConstraintLayout {
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
-    private var mAnalyticListener: PlaySmallAnalyticListener? = null
+    private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
 
     private val smallBannerListener = object : PlayWidgetCardSmallBannerViewHolder.Listener {
 
@@ -74,7 +74,7 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
-    fun setAnalyticListener(listener: PlaySmallAnalyticListener?) {
+    fun setAnalyticListener(listener: PlayWidgetSmallAnalyticListener?) {
         mAnalyticListener = listener
     }
 

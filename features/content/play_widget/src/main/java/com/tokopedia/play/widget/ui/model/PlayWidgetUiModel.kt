@@ -1,9 +1,13 @@
 package com.tokopedia.play.widget.ui.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
 /**
  * Created by mzennis on 05/10/20.
  */
-sealed class PlayWidgetUiModel {
+sealed class PlayWidgetUiModel : ImpressionableModel {
+
+    override val impressHolder = ImpressHolder()
 
     data class Small(
             val title: String,

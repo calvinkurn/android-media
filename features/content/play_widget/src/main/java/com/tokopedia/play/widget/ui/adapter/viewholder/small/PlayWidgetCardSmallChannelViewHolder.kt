@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.small
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelSmallView
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
@@ -19,7 +20,7 @@ class PlayWidgetCardSmallChannelViewHolder(
     private val widgetCardSmallListener = object : PlayWidgetCardChannelSmallView.Listener {
 
         override fun onChannelClicked(view: PlayWidgetCardChannelSmallView, model: PlayWidgetSmallChannelUiModel) {
-            listener.onChannelClicked(view, model, adapterPosition)
+            listener.onChannelClicked(itemView, model, adapterPosition)
         }
     }
 
@@ -28,6 +29,9 @@ class PlayWidgetCardSmallChannelViewHolder(
     }
 
     fun bind(item: PlayWidgetSmallChannelUiModel) {
+        itemView.addOnImpressionListener(item.impressHolder) {
+            listener.onChannelImpressed(itemView, item, adapterPosition)
+        }
         playWidgetCardSmallView.setModel(item)
     }
 

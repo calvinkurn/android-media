@@ -1,11 +1,11 @@
-package com.tokopedia.play.widget.analytic
+package com.tokopedia.play.widget.analytic.small
 
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 
 /**
  * Created by jegul on 19/10/20
  */
-interface PlaySmallAnalyticListener {
+interface PlayWidgetSmallAnalyticListener {
 
     fun onClickViewAll(
             view: PlayWidgetSmallView
