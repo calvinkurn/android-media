@@ -13,14 +13,15 @@ import javax.inject.Inject
 
 class CarouselMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(list: List<CarouselDataModel>): List<CarouselDataUiModel> {
+    fun mapRemoteModelToUiModel(list: List<CarouselDataModel>, isFromCache: Boolean): List<CarouselDataUiModel> {
         return list.map {
             CarouselDataUiModel(
                     dataKey = it.dataKey,
                     items = it.items.map { item ->
                         mapItemRemoteModelToItemUiModel(item)
                     },
-                    error = it.errorMsg
+                    error = it.errorMsg,
+                    isFromCache = isFromCache
             )
         }
     }

@@ -18,7 +18,9 @@ class WhiteSpaceUiModel(
         override val ctaText: String = "",
         override var data: BaseDataUiModel? = null,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean = true
+        override var isLoaded: Boolean = true,
+        override var isLoading: Boolean = false,
+        override var isFromCache: Boolean = false
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

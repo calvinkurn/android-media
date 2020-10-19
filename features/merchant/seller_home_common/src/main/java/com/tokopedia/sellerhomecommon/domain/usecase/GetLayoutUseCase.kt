@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import android.util.Log
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -22,15 +24,17 @@ class GetLayoutUseCase(
 ) : BaseGqlUseCase<List<BaseWidgetUiModel<*>>>() {
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
+        Log.d("SellerHomeLogger", "start get layout from ${cacheStrategy.type}")
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
             val widgetList: List<WidgetModel> = data.layout?.widget.orEmpty()
             if (widgetList.isNotEmpty()) {
-                return mapper.mapRemoteModelToUiModel(widgetList)
+                Log.d("SellerHomeLogger", "finish get layout from ${cacheStrategy.type}")
+                return mapper.mapRemoteModelToUiModel(widgetList, cacheStrategy.type == CacheType.CACHE_ONLY)
             } else {
                 throw RuntimeException("no widget found")
             }

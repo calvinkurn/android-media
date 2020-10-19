@@ -7,7 +7,8 @@ package com.tokopedia.sellerhomecommon.presentation.model
 class PieChartDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
-        val data: PieChartUiModel = PieChartUiModel()
+        val data: PieChartUiModel = PieChartUiModel(),
+        override var isFromCache: Boolean
 ) : BaseDataUiModel
 
 data class PieChartUiModel(

@@ -7,6 +7,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 data class BarChartDataUiModel(
         override val dataKey: String = "",
         override var error: String = "",
+        override var isFromCache: Boolean,
         val chartData: BarChartUiModel = BarChartUiModel()
 ) : BaseDataUiModel
 

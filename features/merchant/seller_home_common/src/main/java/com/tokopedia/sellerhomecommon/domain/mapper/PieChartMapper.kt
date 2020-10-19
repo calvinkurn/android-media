@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class PieChartMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(data: List<PieChartWidgetDataModel>): List<PieChartDataUiModel> {
+    fun mapRemoteModelToUiModel(data: List<PieChartWidgetDataModel>, isFromCache: Boolean): List<PieChartDataUiModel> {
         return data.map {
             PieChartDataUiModel(
                     dataKey = it.dataKey,
@@ -23,7 +23,8 @@ class PieChartMapper @Inject constructor() {
                     data = PieChartUiModel(
                             item = mapPieChartItem(it.data.item),
                             summary = mapPieChartSummary(it.data.summary)
-                    )
+                    ),
+                    isFromCache = isFromCache
             )
         }
     }

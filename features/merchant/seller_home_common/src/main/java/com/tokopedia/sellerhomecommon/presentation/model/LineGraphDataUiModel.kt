@@ -10,7 +10,8 @@ data class LineGraphDataUiModel(
         override var error: String = "",
         val header: String = "",
         val list: List<XYAxisUiModel> = emptyList(),
-        val yLabels: List<XYAxisUiModel> = emptyList()
+        val yLabels: List<XYAxisUiModel> = emptyList(),
+        override var isFromCache: Boolean
 ) : BaseDataUiModel
 
 data class XYAxisUiModel(

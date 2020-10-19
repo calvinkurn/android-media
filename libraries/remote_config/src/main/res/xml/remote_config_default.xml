@@ -502,4 +502,8 @@
         <key>android_iris_custom_user_agent_enable</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>seller_home_dashboard_enable_cache</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
