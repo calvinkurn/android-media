@@ -396,9 +396,10 @@ class ShopPageFragment :
         shopViewModel.shopImagePath.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
-                shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this).apply {
-                    show()
+                shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
+                    init(this@ShopPageFragment)
                 }
+                shopShareBottomSheet?.show(fragmentManager)
             }
         })
 
@@ -889,6 +890,7 @@ class ShopPageFragment :
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        shopShareBottomSheet?.dismiss()
     }
 
     private fun setupTabs() {

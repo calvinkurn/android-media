@@ -84,7 +84,7 @@ object DeeplinkMapperUohOrder {
         return returnedDeeplink
     }
 
-    private fun useUoh(context: Context): Boolean {
+    fun useUoh(context: Context): Boolean {
         return try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
             val rollence = remoteConfigRollenceValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)

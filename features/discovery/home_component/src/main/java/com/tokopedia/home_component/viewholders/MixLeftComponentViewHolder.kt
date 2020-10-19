@@ -21,6 +21,9 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEm
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ConstantABTesting.EXPERIMENT_NAME
+import com.tokopedia.home_component.util.ConstantABTesting.EXPERIMENT_RATING_ONLY
+import com.tokopedia.home_component.util.ConstantABTesting.EXPERIMENT_SALES_RATING
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImage
@@ -33,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -221,8 +225,9 @@ class MixLeftComponentViewHolder (itemView: View,
                                     element.freeOngkirImageUrl
                             ),
                             isOutOfStock = element.isOutOfStock,
-                            ratingCount = element.rating,
-                            reviewCount = element.countReview
+                            ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) == EXPERIMENT_RATING_ONLY) element.rating else 0,
+                            countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) == EXPERIMENT_SALES_RATING) element.ratingFloat.toString() else "",
+                            reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(EXPERIMENT_NAME) == EXPERIMENT_RATING_ONLY) element.countReview else 0
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
