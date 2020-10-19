@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
 import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -101,6 +102,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 setLabelType(getColorString(R.color.ovo_incentive_label))
                 val ovoIncentiveIcon = ContextCompat.getDrawable(context, R.drawable.ic_ovo_incentive_label)
                 ovoIncentiveIcon?.setBounds(0, 0, 16.toPx(), 16.toPx())
+                gravity = Gravity.CENTER_VERTICAL
                 setCompoundDrawables(ovoIncentiveIcon, null, null, null)
                 compoundDrawablePadding = 4.toPx()
                 show()
