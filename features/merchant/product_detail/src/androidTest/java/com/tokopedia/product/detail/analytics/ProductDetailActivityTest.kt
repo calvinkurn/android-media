@@ -192,16 +192,6 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-//    private fun intendingNotInternalIntent() {
-//        try {
-//            val intent = Intent(targetContext, Class.forName("com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity"))
-//            intent.putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
-//            activityRule.launchActivity(intent)
-//        } catch (e: ClassNotFoundException) {
-//            e.printStackTrace()
-//        }
-//    }
-
     companion object {
         const val PRODUCT_ID = "1267836204"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
