@@ -113,6 +113,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private var isPending: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
+    private var isHitRegisterPushNotif: Boolean = false
     private var activityShouldEnd: Boolean = true
 
     @field:Named(SESSION_MODULE)
@@ -279,6 +280,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
+            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
         }
     }
 
@@ -1308,8 +1310,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun registerPushNotif() {
-        activity?.let {
-            RegisterPushNotifService.startService(it.applicationContext)
+        if(isHitRegisterPushNotif) {
+            activity?.let {
+                RegisterPushNotifService.startService(it.applicationContext)
+            }
         }
     }
 
@@ -1372,6 +1376,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+        private const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_register_page"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

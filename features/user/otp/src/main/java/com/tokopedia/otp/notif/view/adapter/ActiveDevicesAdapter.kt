@@ -22,7 +22,7 @@ class ActiveDevicesAdapter(private val list: ArrayList<ListDeviceData>)
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.view.device_name.text = list[position].deviceName
+        holder.view.device_name?.text = list[position].deviceName
 
         if ((position + 1) == list.size) {
             holder.view.view.visibility = View.INVISIBLE
