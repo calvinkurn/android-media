@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:clipChildren="false"/>
 
     <include

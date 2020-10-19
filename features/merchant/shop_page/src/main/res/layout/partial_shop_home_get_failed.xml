@@ -15,15 +15,15 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textReloadDesc"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="12dp"
-            android:maxLines="2"
-            android:text="@string/shop_page_reload_description"
-            android:textSize="12sp"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageReload"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textReload"
             app:layout_constraintEnd_toStartOf="@+id/textReload"
             app:layout_constraintTop_toTopOf="@+id/textReload"
-            app:srcCompat="@drawable/ic_reload"
+            app:srcCompat="@drawable/ic_load"
             tools:ignore="RtlSymmetry" />
 
         <com.tokopedia.unifyprinciples.Typography

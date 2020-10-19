@@ -270,7 +270,7 @@ class ShopHomeViewModel @Inject constructor(
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
                     GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
             ).toBlocking().first()
-            return Pair(index, data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse)))
+            return Pair(index, data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false))
         }
         return Pair(index, data)
     }
@@ -284,21 +284,15 @@ class ShopHomeViewModel @Inject constructor(
     fun getMerchantVoucherListReload(shopId: String, numVoucher: Int) {
         val result = shopHomeLayoutData.value
         if (result is Success) {
+            val layout = result.data.listWidget.toMutableList()
             launchCatchError(block = {
-                val addMerchantVoucherLayout = asyncCatchError(
-                        dispatcherProvider.io(),
-                        block = { getMerchantVoucherList(shopId, numVoucher, result.data) },
-                        onError = { getMerchantVoucherListFailed(result.data) }
-                ).await()
-                val layout = result.data.listWidget.toMutableList()
-                addMerchantVoucherLayout?.let { voucher ->
-                    layout[voucher.first] = voucher.second
-                }
-                _shopHomeLayoutData.postValue(Success(result.data.copy(listWidget = layout)))
+                val addMerchantVoucherLayout = getMerchantVoucherList(shopId, numVoucher, result.data)
+                layout[addMerchantVoucherLayout.first] = addMerchantVoucherLayout.second
             }) {
-                it.printStackTrace()
+                val addMerchantVoucherLayout = getMerchantVoucherListFailed(result.data)
+                layout[addMerchantVoucherLayout.first] = addMerchantVoucherLayout.second
             }
-
+            _shopHomeLayoutData.postValue(Success(result.data.copy(listWidget = layout)))
         }
     }
 
