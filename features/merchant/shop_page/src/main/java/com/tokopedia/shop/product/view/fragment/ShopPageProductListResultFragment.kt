@@ -263,10 +263,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onSwipeRefresh() {
         viewModel.clearCache()
-        isNeedToReloadData = true
-        // set shop info to null so we can load all new fresh data
-        // when performing swipe refresh
-        shopInfo = null
+        // check RE for showcase type campaign eligibility
+        loadShopRestrictionInfo()
         super.onSwipeRefresh()
     }
 
@@ -458,8 +456,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Success -> {
                     val shopRestrictionData = it.data.dataResponse[0]
                     // handle view to follow shop for campaign type showcase
-                    val isFollowShop = shopInfo?.favoriteData?.alreadyFavorited == ALREADY_FOLLOW_SHOP
-                    if(isLogin && !isMyShop && shopRestrictionData.status == PRODUCT_INELIGIBLE && !isFollowShop) {
+                    val isFollowShop = shopRestrictionData.status != PRODUCT_INELIGIBLE
+                    if(isLogin && !isMyShop && !isFollowShop) {
                         val title = shopRestrictionData.actions[0].title
                         val description = shopRestrictionData.actions[0].description
                         showShopFollowersView(title, description, isFollowShop)
@@ -883,13 +881,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if (needReloadData) {
-//            loadInitialData()
-//            needReloadData = false
-//        }
-//    }
+    override fun onResume() {
+        super.onResume()
+        // check RE eligibility for showcase type campaign
+        loadShopRestrictionInfo()
+    }
 
     override fun onPause() {
         super.onPause()
