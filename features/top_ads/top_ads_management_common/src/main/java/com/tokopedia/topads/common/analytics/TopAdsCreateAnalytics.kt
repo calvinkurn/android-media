@@ -22,6 +22,8 @@ private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
 private const val KEY_EVENT_USER_ID = "userId"
 private const val KEY_EVENT_INSIGHT_RECOMMENDATION = "clickShopInsight"
 private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "insight center"
+private const val KEY_EVENT_PDP_BOTTOMSHEET = "clickTopAds"
+private const val KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET = "bottomsheet"
 
 
 class TopAdsCreateAnalytics {
@@ -104,6 +106,16 @@ class TopAdsCreateAnalytics {
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_EVENT_USER_ID to userId
         )
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendPdpBottomSheetEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_PDP_BOTTOMSHEET,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel)
 
         getTracker().sendGeneralEvent(map)
     }

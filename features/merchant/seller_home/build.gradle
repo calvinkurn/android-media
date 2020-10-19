@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     packagingOptions {
@@ -69,10 +71,19 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.design
+
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
@@ -91,6 +102,12 @@ dependencies {
         exclude group: "com.google.android.gms", module: "play-services-places"
     }
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -99,10 +116,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveData
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-
     implementation rootProject.ext.dbDependencies.sqliteFramework
 }
 

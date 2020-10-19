@@ -48,6 +48,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("type")
             val type: String = "",
+            @SerializedName("pageName")
+            @Expose
+            val pageName: String = "",
             @SerializedName("showPromoBadge")
             val showPromoBadge: Boolean = false,
             @Expose
@@ -254,7 +257,7 @@ data class DynamicHomeChannel(
                             ).toString(),
                                     "brand", "none / other",
                                     "variant", "none / other",
-                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType}" + header.name,
+                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType} - $pageName - " + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
                                     "dimension84", id,
@@ -431,6 +434,8 @@ data class DynamicHomeChannel(
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose

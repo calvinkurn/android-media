@@ -29,7 +29,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;

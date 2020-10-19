@@ -62,7 +62,6 @@ dependencies {
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
-    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
@@ -112,6 +111,8 @@ dependencies {
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
     implementation project(rootProject.ext.features.instantDebitBca)
+    implementation project(rootProject.ext.features.pms)
+
     //Promo
 
     //Salam

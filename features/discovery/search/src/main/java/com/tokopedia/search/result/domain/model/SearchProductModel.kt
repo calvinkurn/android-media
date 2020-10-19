@@ -28,7 +28,7 @@ data class SearchProductModel(
         @Expose
         val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
 
-        @SerializedName("searchInspirationCarousel")
+        @SerializedName("searchInspirationCarouselV2")
         @Expose
         val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel(),
 

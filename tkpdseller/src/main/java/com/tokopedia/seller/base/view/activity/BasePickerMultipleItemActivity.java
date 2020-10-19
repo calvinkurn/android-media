@@ -16,11 +16,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.listener.BasePickerMultipleItem;
+import com.tokopedia.seller.manageitem.common.util.ItemPickerType;
 
 /**
  * Created by nathan on 8/2/17.

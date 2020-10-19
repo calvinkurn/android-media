@@ -34,7 +34,7 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -356,6 +356,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
+                    setEventDetails.setDealsBanner(item);
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
@@ -637,6 +638,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setPassengerEvent(Items item);
 
         void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
+
+        void setDealsBanner(Items item);
 
     }
 
