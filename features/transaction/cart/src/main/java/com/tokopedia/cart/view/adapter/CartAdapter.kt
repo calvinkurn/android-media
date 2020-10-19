@@ -1319,4 +1319,35 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
         return Pair(firstIndex, count)
     }
+
+    fun checkForSingleItemRemaining() {
+        var cartItemCount = 0
+        cartDataList.forEach outer@{ any ->
+            if (any is CartShopHolderData) {
+                any.shopGroupAvailableData.cartItemDataList?.forEach {
+                    cartItemCount++
+
+                    if (cartItemCount > 1) {
+                        return@outer
+                    }
+                }
+            }
+        }
+
+        if (cartItemCount == 1) {
+            var tmpIndex = 0
+            cartDataList.forEachIndexed { index, any ->
+                if (any is CartShopHolderData) {
+                    tmpIndex = index
+                    any.isAllSelected = true
+                    any.shopGroupAvailableData.cartItemDataList?.forEach {
+                        it.isSelected = true
+                    }
+                }
+            }
+
+            notifyItemChanged(tmpIndex)
+        }
+
+    }
 }

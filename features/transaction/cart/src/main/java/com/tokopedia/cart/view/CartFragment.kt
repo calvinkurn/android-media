@@ -1092,10 +1092,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isLastItem = cartAdapter.allCartItemData.size == 1
 
         // If unavailable item > 1 and state is collapsed, then expand first
-        var forceExpand = false
         if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
             collapseOrExpandDisabledItem()
-            forceExpand = true
         }
 
         dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
@@ -2472,6 +2470,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
 
+            cartAdapter.checkForSingleItemRemaining()
+
             hideProgressLoading()
         }
     }
@@ -2504,6 +2504,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
             removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
+            cartAdapter.checkForSingleItemRemaining()
             dPresenter.processGetWishlistData()
         }
     }
