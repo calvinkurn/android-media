@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.os.Bundle
 import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -17,15 +20,10 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.viewholder.*
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-
 class ShopHomeAdapter(
         private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
@@ -94,17 +92,17 @@ class ShopHomeAdapter(
             notifyInsertedItemRange(lastIndex, productList.size)
     }
 
-    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
-        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
-            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
-                visitables.removeAt(index)
-                notifyItemRemoved(index)
-            } else if(index != -1){
-                visitables[index] = playCarouselUiModel
-                notifyItemChanged(index)
-            }
-        }
-    }
+//    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
+//        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
+//            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
+//                visitables.removeAt(index)
+//                notifyItemRemoved(index)
+//            } else if(index != -1){
+//                visitables[index] = playCarouselUiModel
+//                notifyItemChanged(index)
+//            }
+//        }
+//    }
 
     fun setEtalaseTitleData() {
         val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
@@ -359,33 +357,33 @@ class ShopHomeAdapter(
         }
     }
 
-    fun pausePlayCarousel(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
-        })
-    }
+//    fun pausePlayCarousel(){
+//        val indexPlay = getPositionPlayCarousel()
+//        if(indexPlay == -1) return
+//        notifyItemChanged(indexPlay, Bundle().apply {
+//            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
+//        })
+//    }
 
-    fun resumePlayCarousel(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
-        })
-    }
+//    fun resumePlayCarousel(){
+//        val indexPlay = getPositionPlayCarousel()
+//        if(indexPlay == -1) return
+//        notifyItemChanged(indexPlay, Bundle().apply {
+//            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
+//        })
+//    }
 
-    fun onDestroy(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
-        })
-    }
+//    fun onDestroy(){
+//        val indexPlay = getPositionPlayCarousel()
+//        if(indexPlay == -1) return
+//        notifyItemChanged(indexPlay, Bundle().apply {
+//            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
+//        })
+//    }
 
-    private fun getPositionPlayCarousel(): Int{
-        return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
-    }
+//    private fun getPositionPlayCarousel(): Int{
+//        return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
+//    }
 
     fun updateRemindMeStatusCampaignNplWidgetData(
             campaignId: String,
