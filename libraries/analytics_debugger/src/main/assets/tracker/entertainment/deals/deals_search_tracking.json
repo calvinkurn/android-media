@@ -159,7 +159,7 @@
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{.+}}",
+      "userId" : "{{.*}}",
       "businessUnit": "travel & entertainment"
     }
   ]

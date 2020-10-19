@@ -3,16 +3,16 @@
   "mode": "exact",
   "query": [
     {
-      "event" : "clickDeals", 
+      "event" : "clickDeals",
       "eventCategory" : "digital - deals",
-      "eventAction" : "change location - brand page",
+        "eventAction" : "change location - brand page",
       "eventLabel" : "{{deals - .+ - .+}}",
       "screenName" : "/deals/",
       "category" : "deals",
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{.+}}",
+      "userId" : "{{.*}}",
       "businessUnit" : "travel & entertainment"
     }, {
       "event" : "clickDeals",
@@ -24,7 +24,7 @@
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{.+}}",
+      "userId" : "{{.*}}",
       "businessUnit" : "travel & entertainment"
     },{
       "event" : "view_item_list",
