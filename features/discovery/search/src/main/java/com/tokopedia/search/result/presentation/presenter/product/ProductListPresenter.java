@@ -544,6 +544,7 @@ final class ProductListPresenter
                     item.setCategoryID(topAds.getProduct().getCategory().getId());
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
                     item.setProductUrl(topAds.getProduct().getUri());
+                    item.setMinOrder(topAds.getProduct().getProductMinimumOrder());
 
                     if (shopRatingABTestStrategy != null) {
                         shopRatingABTestStrategy.processShopRatingVariant(topAds, item);

@@ -109,7 +109,7 @@ internal class SearchProductHandleAddToCartTest : ProductListPresenterTestFixtur
         addToCartDataLayer["brand"] shouldBe "none / other"
         addToCartDataLayer["category"] shouldBe topAdsData.product.categoryBreadcrumb
         addToCartDataLayer["variant"] shouldBe "none / other"
-        addToCartDataLayer["quantity"] shouldBe 1 // TODO:: Need data from backend
+        addToCartDataLayer["quantity"] shouldBe topAdsData.product.productMinimumOrder
         addToCartDataLayer["shop_id"] shouldBe topAdsData.shop.id
         addToCartDataLayer["shop_name"] shouldBe topAdsData.shop.name
         addToCartDataLayer["category_id"] shouldBe topAdsData.product.category.id

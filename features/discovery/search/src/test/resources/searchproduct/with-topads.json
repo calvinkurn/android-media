@@ -70,7 +70,7 @@
           "warehouseIdDefault": 0,
           "boosterList": "-1",
           "source_engine": "0",
-          "minOrder": 1,
+          "minOrder": 20,
           "url": "https://www.tokopedia.com/cellularmas/samsung-galaxy-m11-3-32-ram-3gb-rom-32gb-garansi-resmi-sein-biru?whid=0",
           "labelGroups": [],
           "badges": [
@@ -122,7 +122,7 @@
           "warehouseIdDefault": 0,
           "boosterList": "-1",
           "source_engine": "0",
-          "minOrder": 1,
+          "minOrder": 3,
           "url": "https://www.tokopedia.com/tamamgokil/samsung-galaxy-j7-prime-case-autofocus-invisible-iring-tpu-soft-case-hitam?whid=0",
           "labelGroups": [
             {
@@ -552,6 +552,7 @@
           "product_rating": 100,
           "product_rating_format": "5.0",
           "product_item_sold_payment_verified": "",
+          "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -637,6 +638,7 @@
           "product_rating": 98,
           "product_rating_format": "4.9",
           "product_item_sold_payment_verified": "Terjual 105",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -722,6 +724,7 @@
           "product_rating": 100,
           "product_rating_format": "5.0",
           "product_item_sold_payment_verified": "Terjual 13",
+          "product_minimum_order": 5,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -817,6 +820,7 @@
           "product_rating": 99,
           "product_rating_format": "5.0",
           "product_item_sold_payment_verified": "",
+          "product_minimum_order": 2,
           "free_ongkir": {
             "is_active": false,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -891,6 +895,7 @@
           "product_rating": 97,
           "product_rating_format": "4.8",
           "product_item_sold_payment_verified": "Terjual 79",
+          "product_minimum_order": 7,
           "free_ongkir": {
             "is_active": false,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -976,6 +981,7 @@
           "product_rating": 100,
           "product_rating_format": "5.0",
           "product_item_sold_payment_verified": "Terjual 38",
+          "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"

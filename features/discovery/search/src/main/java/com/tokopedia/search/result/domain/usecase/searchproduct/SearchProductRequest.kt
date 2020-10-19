@@ -200,6 +200,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     product_rating
                     product_rating_format
                     product_item_sold_payment_verified
+                    product_minimum_order
                     free_ongkir {
                       is_active
                       img_url
