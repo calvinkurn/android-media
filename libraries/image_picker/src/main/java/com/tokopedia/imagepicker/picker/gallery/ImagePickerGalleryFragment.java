@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.album.AlbumPickerActivity.EXTRA_ALBUM_ITEM;
@@ -310,8 +311,13 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     @Override
     public boolean isMediaValid(MediaItem item) {
+        Context context = getContext();
+        if (context == null) {
+            return false;
+        }
         // check if file exists
-        if (item.getWidth() == 0 || item.getHeight() == 0) {
+        File file = new File(item.getPath());
+        if (!file.exists()) {
             NetworkErrorHelper.showRedCloseSnackbar(getView(),
                     galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
                             getString(R.string.image_not_found));
@@ -332,7 +338,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
                 return false;
             }
-            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+            if (item.getWidth(context) < minImageResolution || item.getHeight(context) < minImageResolution) {
                 NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
                 return false;
             }
