@@ -41,6 +41,7 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment.Companion.NUM_VOUCHER_DISPLAY
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
@@ -78,7 +79,6 @@ class ShopHomeViewModel @Inject constructor(
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
-        private const val NUM_VOUCHER_DISPLAY = 3
     }
 
     val initialProductListData: LiveData<Result<GetShopHomeProductUiModel>>
@@ -181,8 +181,12 @@ class ShopHomeViewModel @Inject constructor(
 
                 val addMerchantVoucherLayout = asyncCatchError(
                         dispatcherProvider.io(),
-                        block = { getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY, shopPageHomeLayoutUiModel) },
-                        onError = {null}
+                        block = {
+                            getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY, shopPageHomeLayoutUiModel)
+                        },
+                        onError = {
+                            getMerchantVoucherListFailed(shopPageHomeLayoutUiModel)
+                        }
                 ).await()
 
                 addPlayWidgetCarousel?.let { playCarousel ->
@@ -273,6 +277,24 @@ class ShopHomeViewModel @Inject constructor(
             return Pair(index, data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse)))
         }
         return Pair(index, data)
+    }
+
+    private fun getMerchantVoucherListFailed(shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): Pair<Int, ShopHomeVoucherUiModel> {
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
+        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
+        return Pair(index, data.copy(isError = true))
+    }
+
+    fun getMerchantVoucherListReload(shopId: String, numVoucher: Int) {
+        val result = shopHomeLayoutData.value
+        if (result is Success) {
+            launchCatchError(block = {
+                getMerchantVoucherList(shopId, numVoucher, result.data)
+            })
+            {
+                getMerchantVoucherListFailed(result.data)
+            }
+        }
     }
 
     fun addProductToCart(

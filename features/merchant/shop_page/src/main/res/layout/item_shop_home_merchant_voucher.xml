@@ -19,4 +19,7 @@
         android:clipToPadding="false"
         android:clipChildren="false"/>
 
+    <include
+        layout="@layout/partial_shop_home_get_failed"/>
+
 </LinearLayout>

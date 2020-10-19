@@ -1,15 +1,19 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
 
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.unifyprinciples.Typography
 import java.util.ArrayList
 
 /**
@@ -30,6 +34,7 @@ class ShopHomeVoucherViewHolder(
                 position: Int,
                 merchantVoucherViewModel: MerchantVoucherViewModel
         )
+        fun onVoucherReloaded()
     }
 
     companion object {
@@ -42,36 +47,58 @@ class ShopHomeVoucherViewHolder(
     }
 
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
+    private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
+    private var textReload: Typography? = null
+    private var imageReload: ImageView? = null
 
     private fun findView(itemView: View) {
         merchantVoucherListWidget = itemView.findViewById(R.id.merchantVoucherListWidget)
+        merchantVoucherReload = itemView.findViewById(R.id.merchantVoucherReload)
+        textReload = itemView.findViewById(R.id.textReload)
+        imageReload = itemView.findViewById(R.id.imageReload)
     }
 
     override fun bind(model: ShopHomeVoucherUiModel) {
-        merchantVoucherUiModel = model
-        val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
-
-        merchantVoucherListWidget?.apply {
-            setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
-            setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-            setTitle(model.header.title)
-            setSeeAllText(model.header.ctaText)
-            getVoucherHeaderContainer()?.let {
-                val leftPadding = it.paddingLeft
-                val topPadding = it.paddingTop
-                val rightPadding = it.paddingRight
-                val bottomPadding = 0
-                it.setPadding(
-                        leftPadding,
-                        topPadding,
-                        rightPadding,
-                        bottomPadding
-                )
+        if (model.isError) {
+            merchantVoucherListWidget?.hide()
+            merchantVoucherReload?.show()
+            textReload?.setOnClickListener {
+                shopHomeVoucherViewHolderListener.onVoucherReloaded()
+                merchantVoucherListWidget?.show()
+                merchantVoucherReload?.hide()
             }
-        }
-        recyclerViewState?.let {
-            merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
+            imageReload?.setOnClickListener {
+                shopHomeVoucherViewHolderListener.onVoucherReloaded()
+                merchantVoucherListWidget?.show()
+                merchantVoucherReload?.hide()
+            }
+        } else {
+            merchantVoucherListWidget?.show()
+            merchantVoucherUiModel = model
+            val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
+
+            merchantVoucherListWidget?.apply {
+                setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
+                setData(model.data as ArrayList<MerchantVoucherViewModel>?)
+                setTitle(model.header.title)
+                setSeeAllText(model.header.ctaText)
+                getVoucherHeaderContainer()?.let {
+                    val leftPadding = it.paddingLeft
+                    val topPadding = it.paddingTop
+                    val rightPadding = it.paddingRight
+                    val bottomPadding = 0
+                    it.setPadding(
+                            leftPadding,
+                            topPadding,
+                            rightPadding,
+                            bottomPadding
+                    )
+                }
+            }
+            recyclerViewState?.let {
+                merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
+            }
         }
     }
 
