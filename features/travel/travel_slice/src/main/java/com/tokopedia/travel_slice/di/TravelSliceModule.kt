@@ -13,5 +13,4 @@ class TravelSliceModule {
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository
-
 }
