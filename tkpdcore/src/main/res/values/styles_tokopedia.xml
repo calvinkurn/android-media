@@ -120,7 +120,7 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <style name="CoolDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="CoolDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
@@ -132,7 +132,7 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.Tokopedia3" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Tokopedia3" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -170,14 +170,14 @@
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
     </style>
 
-    <style name="Theme.AppCompat.NoTitleBar.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.AppCompat.NoTitleBar.Fullscreen" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="AppBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppBarTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -214,7 +214,7 @@
         <item name="android:textColor">@color/black_54</item>
     </style>
     <!--
-        <style name="UserVoiceTheme" parent="Theme.AppCompat.Light">
+        <style name="UserVoiceTheme" parent="Theme.AppCompat.DayNight">
             <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>
             <item name="android:dropDownListViewStyle">@style/DropDownListView.Tokopedia</item>
             <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Tokopedia</item>
