@@ -27,10 +27,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -247,6 +247,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private val irisSessionId by lazy {
         context?.let { IrisSession(it).getSessionId() } ?: ""
+    }
+
+    private val shareProductInstance by lazy {
+        activity?.let {
+            ProductShare(it, ProductShare.MODE_TEXT)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -482,7 +488,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         updateStickyState()
                         updateActionButtonShadow()
                     }
-                    if (isFavoriteFromShopPage != wasFavorite) onSuccessFavoriteShop(true)
+                    if (isFavoriteFromShopPage != wasFavorite) {
+                        onSuccessFavoriteShop(true)
+                        nplFollowersButton?.setupVisibility = wasFavorite
+                    }
                 }
             }
             ProductDetailConstant.REQUEST_CODE_TOP_CHAT -> {
@@ -493,7 +502,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         val wasFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
                                 ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
-                        if (isFavoriteFromTopChat != wasFavorite) onSuccessFavoriteShop(true)
+                        if (isFavoriteFromTopChat != wasFavorite) {
+                            onSuccessFavoriteShop(true)
+                            nplFollowersButton?.setupVisibility = wasFavorite
+                        }
                     }
                 }
             }
@@ -1266,9 +1278,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
             data.doSuccessOrFail({
-                viewModel.clearCacheP2Data()
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
+                nplFollowersButton?.setupVisibility = false
             }, {
                 nplFollowersButton?.stopLoading()
                 onFailFavoriteShop(it)
@@ -1556,18 +1568,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
-
-        if (alreadyFollowShop.not() && !viewModel.isShopOwner()) {
+        val shouldShowRe = !alreadyFollowShop
+        if (shouldShowRe && !viewModel.isShopOwner()) {
             base_btn_follow?.run {
                 if (nplFollowersButton == null) {
                     nplFollowersButton = PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
                 }
             }
-            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title ?: ""
-            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description ?: ""
+            val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title
+                    ?: ""
+            val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description
+                    ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
-        nplFollowersButton?.setupVisibility = !alreadyFollowShop
+        nplFollowersButton?.setupVisibility = shouldShowRe
     }
 
     override fun onButtonFollowNplClick() {
@@ -1780,7 +1794,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun shareProduct() {
         activity?.let {
-            showProgressDialog()
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
@@ -1801,13 +1814,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val userSession = UserSession(activity)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-
         val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
-        if (userSession.isLoggedIn && userSession.isMsisdnVerified) {
+        if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
             val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
@@ -1847,9 +1857,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun executeProductShare(productData: ProductData) {
         activity?.let {
-            val productShare = ProductShare(it, ProductShare.MODE_TEXT)
-            productShare.share(productData, {
-                showProgressDialog()
+            shareProductInstance?.share(productData, {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
             }, {
                 hideProgressDialog()
             })
@@ -2577,11 +2588,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessFavoriteShop(isSuccess: Boolean, isNplFollowerType: Boolean = false) {
         val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         if (isSuccess) {
+            viewModel.clearCacheP2Data()
             pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
         }
-        nplFollowersButton?.setupVisibility = false
     }
 
     private fun onFailFavoriteShop(t: Throwable) {
