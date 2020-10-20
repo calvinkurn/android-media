@@ -6,6 +6,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -28,12 +29,16 @@ object DeeplinkMapperMerchant {
     private const val PARAM_URL = "url"
 
     fun getRegisteredNavigationReputation(deeplink: String): String {
-        if(deeplink.startsWith(ApplinkConst.REPUTATION)) {
+        if (deeplink.startsWith(ApplinkConst.REPUTATION)) {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
-            if(segments.size > 0) {
+            if (segments.size > 0) {
                 val feedbackId = segments.last()
-                return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
+                return if (GlobalConfig.isSellerApp()) {
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
+                } else {
+                    UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)
+                }
             }
             return ApplinkConstInternalMarketplace.INBOX_REPUTATION
         }
@@ -51,7 +56,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopPage(deeplink: String): String {
-        if(deeplink.startsWithPattern(ApplinkConst.SHOP)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP)) {
             val segments = Uri.parse(deeplink).pathSegments
             if (segments.size > 0) {
                 val shopId = segments[0]
@@ -62,10 +67,10 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopReview(deeplink: String): String {
-        if(deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW)) {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
-            return if(segments.size == SHOP_REVIEW_SEGMENT_SIZE) {
+            return if (segments.size == SHOP_REVIEW_SEGMENT_SIZE) {
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
             } else {
                 UriUtil.buildUri(deeplink.replace(ApplinkConst.SHOP, ApplinkConstInternalMarketplace.SHOP_PAGE), shopId)
@@ -75,7 +80,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationProductReview(deeplink: String): String {
-        if(deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW)) {
+        if (deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW)) {
             val parsedUri = Uri.parse(deeplink)
             val segments = parsedUri.pathSegments
             val rating = parsedUri.getQueryParameter(PARAM_RATING) ?: "5"
@@ -215,10 +220,10 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopProduct(deeplink: String): String {
-        if(deeplink.startsWithPattern(ApplinkConst.SHOP_PRODUCT)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_PRODUCT)) {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
-            return if(segments.size == SHOP_PRODUCT_SEGMENT_SIZE) {
+            return if (segments.size == SHOP_PRODUCT_SEGMENT_SIZE) {
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, shopId)
             } else {
                 deeplink
@@ -233,10 +238,10 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopFeed(deeplink: String): String {
-        if(deeplink.startsWithPattern(ApplinkConst.SHOP_FEED)) {
+        if (deeplink.startsWithPattern(ApplinkConst.SHOP_FEED)) {
             val segments = Uri.parse(deeplink).pathSegments
             val shopId = segments[0]
-            return if(segments.size == SHOP_FEED_SEGMENT_SIZE) {
+            return if (segments.size == SHOP_FEED_SEGMENT_SIZE) {
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId)
             } else {
                 deeplink

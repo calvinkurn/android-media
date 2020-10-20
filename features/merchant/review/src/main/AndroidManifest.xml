@@ -114,6 +114,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_reputation_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".feature.inbox.buyerreview.view.activity.InboxReputationFilterActivity"
