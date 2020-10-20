@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -11,6 +12,8 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ticker.Ticker
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by Yehezkiel on 2020-02-11
@@ -66,6 +69,30 @@ object TrackingUtil {
         linkerData.catLvl1 = productInfo.basic.category.name
         linkerData.userId = userId ?: ""
         linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
+        return linkerData
+    }
+
+    fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?, description: String): LinkerData {
+        val linkerData = LinkerData()
+        linkerData.shopId = productInfo.basic.shopID
+        linkerData.price = productInfo.finalPrice.toString()
+        linkerData.sku = productInfo.basic.sku
+        linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
+        linkerData.catLvl1 = productInfo.basic.category.name
+        linkerData.userId = userId ?: ""
+        linkerData.content = JSONArray().put(JSONObject().put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID).put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock)).toString()
+        productInfo.basic.category.detail.getOrNull(1)?.let {
+            linkerData.level2Name = it.name
+            linkerData.level2Id = it.id
+        }
+        linkerData.contentId = productInfo.basic.productID
+        linkerData.contentType = ProductTrackingConstant.Tracking.CONTENT_TYPE
+        productInfo.basic.category.detail.getOrNull(2)?.let {
+            linkerData.level3Id = it.id
+            linkerData.level3Name = it.name
+        }
+        linkerData.quantity = productInfo.getFinalStock()
+        linkerData.level1Id = productInfo.basic.category.id
         return linkerData
     }
 

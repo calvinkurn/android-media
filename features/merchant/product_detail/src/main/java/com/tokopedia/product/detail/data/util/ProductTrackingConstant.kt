@@ -89,6 +89,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_98 = "dimension98"
 
+        const val CONTENT_TYPE = "product"
     }
     object Action {
         const val CLICK = "click"
