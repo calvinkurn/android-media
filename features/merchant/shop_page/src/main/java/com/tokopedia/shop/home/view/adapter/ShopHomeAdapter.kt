@@ -93,7 +93,6 @@ class ShopHomeAdapter(
     }
 
     fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
-        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before visitables.indexOfFirst")
         visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
             if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
                 visitables.removeAt(index)
@@ -103,7 +102,6 @@ class ShopHomeAdapter(
                 notifyItemChanged(index)
             }
         }
-        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after visitables.indexOfFirst")
     }
 
     fun setEtalaseTitleData() {
