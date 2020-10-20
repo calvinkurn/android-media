@@ -18,10 +18,6 @@ class TopAdsDashboardDataSource(private val topAdsDashboardDataSourceCloud: TopA
         return topAdsDashboardDataSourceCloud.populateTotalAds(requestParams)
     }
 
-    fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
-        return topAdsDashboardDataSourceCloud.getStatistics(requestParams)
-    }
-
     fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>> {
         return topAdsDashboardDataSourceCloud.getDashboardCredit(requestParams)
     }
