@@ -20,6 +20,7 @@ import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -126,6 +127,18 @@ class ShopHomeAdapter(
                     it.data?.firstOrNull()?.youTubeVideoDetail = data
                     notifyChangedItem(visitables.indexOf(it))
                 }
+    }
+
+    fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+        visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
+            if(shopHomeVoucherUiModel.data.isNullOrEmpty()){
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            } else if(index != -1){
+                visitables[index] = shopHomeVoucherUiModel
+                notifyItemChanged(index)
+            }
+        }
     }
 
     override fun hideLoading() {

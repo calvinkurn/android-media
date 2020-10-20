@@ -93,6 +93,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
+    val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
+            get() = _shopHomeMerchantVoucherLayoutData
+    private val _shopHomeMerchantVoucherLayoutData = MutableLiveData<Result<ShopHomeVoucherUiModel>>()
+
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
@@ -256,36 +260,27 @@ class ShopHomeViewModel @Inject constructor(
         return shopPageHomeLayoutUiModel
     }
 
-    private fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): Pair<Int, ShopHomeVoucherUiModel> {
+    private fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
         val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
         if (index != 1) {
             val merchantVoucherResponse = getMerchantVoucherListUseCase.createObservable(
                     GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)
             ).toBlocking().first()
-            return Pair(index, data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false))
+            return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
         }
-        return Pair(index, data)
-    }
-
-    private fun getMerchantVoucherListFailed(shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): Pair<Int, ShopHomeVoucherUiModel> {
-        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
-        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
-        return Pair(index, data.copy(isError = true))
+        return data
     }
 
     fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
         val result = shopHomeLayoutData.value
         if (result is Success) {
-            val layout = result.data.listWidget.toMutableList()
             launchCatchError(block = {
                 val addMerchantVoucherLayout = getMerchantVoucherList(shopId, numVoucher, result.data)
-                layout[addMerchantVoucherLayout.first] = addMerchantVoucherLayout.second
+                _shopHomeMerchantVoucherLayoutData.value = Success(addMerchantVoucherLayout)
             }) {
-                val addMerchantVoucherLayout = getMerchantVoucherListFailed(result.data)
-                layout[addMerchantVoucherLayout.first] = addMerchantVoucherLayout.second
+                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
             }
-            _shopHomeLayoutData.postValue(Success(result.data.copy(listWidget = layout)))
         }
     }
 

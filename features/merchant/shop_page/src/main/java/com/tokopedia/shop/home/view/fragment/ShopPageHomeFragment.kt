@@ -466,6 +466,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
+        viewModel?.shopHomeMerchantVoucherLayoutData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    shopHomeAdapter.setHomeMerchantVoucherData(it.data)
+                }
+                is Fail -> {
+                    val data = ShopHomeVoucherUiModel(isError = true)
+                    shopHomeAdapter.setHomeMerchantVoucherData(data)
+                }
+            }
+        })
     }
 
 
