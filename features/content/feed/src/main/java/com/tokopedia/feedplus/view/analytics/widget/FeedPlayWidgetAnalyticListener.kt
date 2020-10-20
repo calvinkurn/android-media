@@ -134,7 +134,8 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
     private fun PlayWidgetChannelType.toTrackingType() = when (this) {
         PlayWidgetChannelType.Live -> "live"
         PlayWidgetChannelType.Vod -> "vod"
-        else -> ""
+        PlayWidgetChannelType.Upcoming -> "upcoming"
+        else -> "null"
     }
 
     companion object {
