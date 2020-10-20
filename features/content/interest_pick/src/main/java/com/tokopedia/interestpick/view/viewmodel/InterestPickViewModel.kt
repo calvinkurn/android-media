@@ -1,15 +1,11 @@
 package com.tokopedia.interestpick.view.viewmodel
 
-import android.content.Context
-import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.*
 import com.tokopedia.interestpick.domain.usecase.GetInterestUseCase
 import com.tokopedia.interestpick.domain.usecase.UpdateInterestUseCase
@@ -18,8 +14,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val DEFAULT_HEADER_TITLE = "Kamu Suka Apa?"
+
 class InterestPickViewModel @Inject constructor(
-        @ApplicationContext private val context: Context,
         private val getInterestPickUseCase: GetInterestUseCase,
         private val updateInterestUseCase: UpdateInterestUseCase) : ViewModel() {
 
@@ -71,7 +68,7 @@ class InterestPickViewModel @Inject constructor(
     }
 
     private fun handleUpdateInterestData(feedInterestUserUpdate: FeedInterestUserUpdate) {
-        if (!TextUtils.isEmpty(feedInterestUserUpdate.error)) {
+        if (feedInterestUserUpdate.error.isNotEmpty()) {
             interestPickLiveData.value = InterestPickViewState.Error(onUpdate = true, error = feedInterestUserUpdate.error)
         } else {
             interestPickLiveData.value = InterestPickViewState.UpdateInterestSuccess
@@ -87,7 +84,7 @@ class InterestPickViewModel @Inject constructor(
         }
     }
 
-    private fun convertToInterestList(list: List<InterestsItem>)
+    fun convertToInterestList(list: List<InterestsItem>)
             : ArrayList<InterestPickDataViewModel> {
         val interestList: ArrayList<InterestPickDataViewModel> = ArrayList()
         for (item in list) {
@@ -103,11 +100,11 @@ class InterestPickViewModel @Inject constructor(
         return interestList
     }
 
-    private fun getTitle(header: Header): String {
-        return if (!TextUtils.isEmpty(header.title)) {
+    fun getTitle(header: Header): String {
+        return if (header.title.isNotEmpty()) {
             header.title
         } else {
-            context.getString(R.string.interest_what_do_you_like)
+            DEFAULT_HEADER_TITLE
         }
     }
 }
