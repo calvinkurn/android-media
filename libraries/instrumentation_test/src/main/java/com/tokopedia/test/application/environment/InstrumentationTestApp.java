@@ -271,11 +271,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    }
-
-    @Override
     public Intent getMaintenancePageIntent() {
         return new Intent();
+    }
+
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
