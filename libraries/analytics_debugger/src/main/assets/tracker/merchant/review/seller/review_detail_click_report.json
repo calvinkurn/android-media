@@ -9,6 +9,7 @@
       "eventLabel" : "{{feedbackId:\\d{1,}}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     },
     {
@@ -18,21 +19,8 @@
       "eventLabel" : "{{options:.*;feedbackId:.*}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
-    },
-    {
-      "event" : "clickReview",
-      "eventCategory" : "review detail page",
-      "eventAction" : "click - select reason on report abuse",
-      "eventLabel" : "{{reason:.*;}}",
-      "screenName": "review detail page - report abuse"
-    },
-    {
-      "event" : "clickReview",
-      "eventCategory" : "review detail page",
-      "eventAction" : "click - kirim button reasons",
-      "eventLabel" : "{{feedbackId:.*}}",
-      "screenName" : "review detail page - report abuse"
     }
   ]
 }

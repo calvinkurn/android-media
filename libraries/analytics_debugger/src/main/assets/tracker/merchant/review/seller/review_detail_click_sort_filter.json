@@ -9,15 +9,17 @@
       "eventLabel" : "{{.*}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     },
     {
       "event" : "clickReview",
       "eventCategory" : "review detail page",
       "eventAction" : "click - select sort options on bottomsheet",
-      "eventLabel" : "{{sortBy:.*;}}",
+      "eventLabel" : "{{sortBy:.*}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     },
     {
@@ -27,6 +29,7 @@
       "eventLabel" : "{{.*}}",
       "shopId": "{{\\d{1,}}}",
       "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
       "screenName" : "review detail page"
     }
   ]
