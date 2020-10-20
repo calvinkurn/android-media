@@ -836,11 +836,6 @@ public class LinkerData implements Parcelable {
             linkerData.setInvoiceId(invoiceId);
             linkerData.setPaymentId(paymentId);
             linkerData.setThrowOnError(throwOnError);
-            linkerData.setProductCategory(productCategory);
-            linkerData.setProductName(productName);
-            linkerData.setJourneyId(journeyId);
-            linkerData.setJourneyId(invoiceId);
-            linkerData.setPaymentId(paymentId);
             linkerData.setContent(content);
             linkerData.setContentType(contentType);
             linkerData.setLevel1Name(level1Name);

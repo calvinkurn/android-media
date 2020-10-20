@@ -516,4 +516,8 @@ Anda di sini.</string>
         </html>
         ]]>
     </string>
+
+    <string name="banner_deals_main_title">Hai %s,</string>
+    <string name="banner_deals_coachmark_sub_title">Setelah redeem, jangan lupa klik ini. Ada promo spesial menantimu!</string>
+    <string name="banner_deals_coachmark_title">Wow, ada yang seru nih!</string>
 </resources>

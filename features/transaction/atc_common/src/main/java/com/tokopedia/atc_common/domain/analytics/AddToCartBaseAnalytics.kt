@@ -72,6 +72,10 @@ object AddToCartBaseAnalytics {
                 this.level3Name = if (level3Name.isEmpty() && isCategoryHasAllLevel) splitCategory[2] else if (level3Name.isEmpty()) catLvl1 else level3Name
                 this.userId = userId
                 this.content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity)).toString()
+                // sku value is productId
+                this.sku = productId
+                // contentId value is stringify array of productId
+                this.contentId = JSONArray().put(productId).toString()
             }
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
         } catch (t: Throwable) {

@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
 
@@ -60,6 +59,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.supportLibDependencies.constraintLayout

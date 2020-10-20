@@ -21,6 +21,4 @@ public interface TopAdsManagementApi {
     @GET(TopAdsCommonConstant.PATH_TOPADS_SHOP_DEPOSIT)
     Observable<Response<DataResponse<DataDeposit>>> getDashboardDeposit(@QueryMap Map<String, String> params);
 
-    @GET(TopAdsCommonConstant.PATH_CHECK_PROMO)
-    Observable<Response<DataResponse<DataCheckPromo>>> checkPromoAds(@QueryMap Map<String, String> params);
 }

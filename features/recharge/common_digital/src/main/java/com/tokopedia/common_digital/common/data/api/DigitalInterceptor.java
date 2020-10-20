@@ -31,7 +31,7 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
     public DigitalInterceptor(@ApplicationContext Context context,
                               NetworkRouter networkRouter,
                               UserSessionInterface userSessionInterface) {
-        super(context, networkRouter, userSessionInterface);
+        super(context, networkRouter, userSessionInterface, AuthUtil.KEY.KEY_WSV4);
         this.context = context;
     }
 
