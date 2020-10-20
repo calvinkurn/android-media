@@ -31,6 +31,7 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
@@ -234,9 +235,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun onUrlClicked(url: String): Boolean {
-        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
-        ovoIncentiveBottomSheet?.dismiss()
-        return RouteManager.route(context, webviewUrl)
+        context?.let {
+            return ReviewUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
+        }
+        return false
     }
 
     override fun onClickCloseThankYouBottomSheet() {
@@ -374,7 +376,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         data?.productrevIncentiveOvo?.ticker?.let {
             ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
             (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
-            return
         }
     }
 
@@ -383,7 +384,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        if(ovoIncentiveBottomSheet == null) {
+        if (ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this) }
         }
         ovoIncentiveBottomSheet?.let { bottomSheet ->

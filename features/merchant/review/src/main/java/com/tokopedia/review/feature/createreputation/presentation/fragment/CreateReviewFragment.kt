@@ -47,6 +47,7 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
@@ -398,7 +399,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        if(incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
+        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible)
+                ?: ""
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper)
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
@@ -438,9 +440,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onUrlClicked(url: String): Boolean {
-        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
-        ovoIncentiveBottomSheet?.dismiss()
-        return RouteManager.route(context, webviewUrl)
+        context?.let {
+            return ReviewUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
+        }
+        return false
     }
 
     override fun onClickCloseThankYouBottomSheet() {
@@ -626,6 +629,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                                 ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
                             }
                         }
+
                         override fun onDismiss() {
                             ReviewTracking.onClickDismissIncentiveOvoTracker(it.subtitle, "")
                         }

@@ -39,7 +39,7 @@ class ReviewPendingViewModel @Inject constructor(
         get() = _incentiveOvo
 
     fun getReviewData(page: Int, isRefresh: Boolean = false) {
-        if(isRefresh) {
+        if (isRefresh) {
             _reviewList.value = LoadingView()
         }
         launchCatchError(block = {
@@ -58,7 +58,7 @@ class ReviewPendingViewModel @Inject constructor(
             val data = withContext(Dispatchers.IO) {
                 getProductIncentiveOvo.getIncentiveOvo()
             }
-            if(data == null) {
+            if (data == null) {
                 _incentiveOvo.postValue(null)
             } else {
                 _incentiveOvo.postValue(CoroutineSuccess(data))
