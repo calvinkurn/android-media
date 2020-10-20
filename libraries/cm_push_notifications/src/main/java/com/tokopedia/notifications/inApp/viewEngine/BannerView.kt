@@ -38,8 +38,10 @@ internal open class BannerView(activity: Activity) {
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
 
-        // set transparent background
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        // set transparent background only for interstitial_img
+        if (data.type == TYPE_INTERSTITIAL_IMAGE_ONLY) {
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
 
         dialog.show()
 
