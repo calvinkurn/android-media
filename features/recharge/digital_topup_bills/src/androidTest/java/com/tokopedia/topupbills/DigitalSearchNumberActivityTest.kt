@@ -57,7 +57,7 @@ class DigitalSearchNumberActivityTest {
         ).respondWith(telcoContactHelper.createUriContact(contentResolver))
     }
 
-    @Test
+//    @Test
     fun click_clear_on_search_number_view() {
         Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.searchbar_icon)).perform(ViewActions.click())
