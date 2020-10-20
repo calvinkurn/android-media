@@ -37,7 +37,7 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-        if (remoteConfig.getBoolean(TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
+        if (remoteConfig.getBoolean(TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, false)) {
             sendTrackNew(this, newTrackingRepository) {
                 jobFinished(jobParameters, false)
             }

@@ -4,147 +4,93 @@
       "result": [{
         "id": "2",
         "name": "Semua Produk",
-        "count": 747,
+        "count": 0,
         "type": -1,
         "highlighted": false,
         "alias": "etalase",
+        "uri": "https://m.tokopedia.com/tokocampaign07",
         "useAce": true,
-        "badge": ""
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": []
+      }, {
+        "id": "cmp_26326",
+        "name": "B0mc4rtr4m",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_26326",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_26326",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
+      }, {
+        "id": "cmp_26355",
+        "name": "cmp biasa aja",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_26355",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_26355",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": []
+      }, {
+        "id": "cmp_25542",
+        "name": "Campaign 20/10",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_25542",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_25542",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
+      }, {
+        "id": "cmp_25543",
+        "name": "Campaign 21/10",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_25543",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_25543",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
       }, {
         "id": "8",
         "name": "Diskon",
-        "count": 69,
+        "count": 12,
         "type": -1,
         "highlighted": true,
         "alias": "discount",
+        "uri": "https://m.tokopedia.com/tokocampaign07?discount=1",
         "useAce": true,
-        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png"
+        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png",
+        "aceDefaultSort": 10,
+        "rules": []
       }, {
         "id": "3",
         "name": "Produk Terjual",
-        "count": 78,
+        "count": 2,
         "type": -1,
         "highlighted": true,
         "alias": "sold",
+        "uri": "https://m.tokopedia.com/tokocampaign07/sold?sort=7",
         "useAce": true,
-        "badge": ""
-      }, {
-        "id": "26157453",
-        "name": "FLASH DEALS",
-        "count": 73,
-        "type": 1,
-        "highlighted": false,
-        "alias": "flash-deals",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "25935601",
-        "name": "Hand Hygiene",
-        "count": 245,
-        "type": 1,
-        "highlighted": false,
-        "alias": "hand-hygiene",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "12604687",
-        "name": "Dettol Antiseptic Liquid",
-        "count": 73,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-antiseptic-liquid",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "12604683",
-        "name": "Dettol Bodywash",
-        "count": 163,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-bodywash",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "25664646",
-        "name": "Dettol Disinfectant Spray",
-        "count": 22,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-disinfectant-spray",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "26019833",
-        "name": "Dettol Melekat Sejiwa",
-        "count": 26,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-melekat-sejiwa",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "12604696",
-        "name": "Best Deals!",
-        "count": 3,
-        "type": 1,
-        "highlighted": false,
-        "alias": "best-deals",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "16587526",
-        "name": "Dettol Antibacterial Soap",
-        "count": 32,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-antibacterial-soap",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "12604695",
-        "name": "Dettol Floor Cleaner",
-        "count": 18,
-        "type": 1,
-        "highlighted": false,
-        "alias": "dettol-floor-cleaner",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "15416912",
-        "name": "Flash Sale",
-        "count": 6,
-        "type": 1,
-        "highlighted": false,
-        "alias": "flash-sale",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "23672910",
-        "name": "Bebas Keringat dan Bau Badan",
-        "count": 21,
-        "type": 1,
-        "highlighted": false,
-        "alias": "bebas-keringat-dan-bau-badan",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "23673102",
-        "name": "Kulit Sehat dan Cantik",
-        "count": 6,
-        "type": 1,
-        "highlighted": false,
-        "alias": "kulit-sehat-dan-cantik",
-        "useAce": true,
-        "badge": ""
-      }, {
-        "id": "26255120",
-        "name": "WIB",
-        "count": 59,
-        "type": 1,
-        "highlighted": false,
-        "alias": "wib",
-        "useAce": true,
-        "badge": ""
+        "badge": "",
+        "aceDefaultSort": 14,
+        "rules": []
       }],
       "error": {
         "message": ""

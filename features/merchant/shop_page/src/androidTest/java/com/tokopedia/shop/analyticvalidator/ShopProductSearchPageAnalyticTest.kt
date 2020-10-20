@@ -90,11 +90,12 @@ class ShopProductSearchPageAnalyticTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
     }
 
-    private fun waitForData() {
-        Thread.sleep(2000)
+    private fun waitForData(ms: Long = 2000) {
+        Thread.sleep(ms)
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
+        waitForData(200)
         assertThat(getAnalyticsWithQuery(
                 gtmLogDBSource,
                 context,

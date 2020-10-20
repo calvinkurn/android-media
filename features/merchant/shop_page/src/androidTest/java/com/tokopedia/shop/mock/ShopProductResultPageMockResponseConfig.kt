@@ -5,12 +5,18 @@ import com.tokopedia.shop.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-class ShopProductResultPageMockResponseConfig : MockModelConfig() {
+class ShopProductResultPageMockResponseConfig(
+        var productCampaignType: String = TYPE_NORMAL_PRODUCT
+) : MockModelConfig() {
     companion object {
         const val KEY_QUERY_GET_SHOP_INFO = "shopInfo"
         const val KEY_QUERY_GET_SHOP_SORT = "getShopSort"
         const val KEY_QUERY_GET_SHOP_SHOWCASE_BY_ID = "shopShowcasesByShopID"
         const val KEY_QUERY_GET_SHOP_PRODUCT = "getShopProduct"
+
+        const val TYPE_NORMAL_PRODUCT = "normal"
+        const val TYPE_UPCOMING_PRODUCT = "upcoming"
+        const val TYPE_ONGOING_PRODUCT = "ongoing"
 
     }
 
@@ -33,11 +39,26 @@ class ShopProductResultPageMockResponseConfig : MockModelConfig() {
                 FIND_BY_CONTAINS
         )
 
+        addProductListMockResponse(context)
+        return this
+    }
+
+    private fun addProductListMockResponse(context: Context) {
+        val rawString = when (productCampaignType) {
+            TYPE_UPCOMING_PRODUCT -> {
+                R.raw.response_mock_data_shop_upcoming_product_result_get_shop_product
+            }
+            TYPE_ONGOING_PRODUCT -> {
+                R.raw.response_mock_data_shop_ongoing_product_result_get_shop_product
+            }
+            else -> {
+                R.raw.response_mock_data_shop_product_result_get_shop_product
+            }
+        }
         addMockResponse(
                 KEY_QUERY_GET_SHOP_PRODUCT,
-                getRawString(context, R.raw.response_mock_data_shop_product_result_get_shop_product),
+                getRawString(context, rawString),
                 FIND_BY_CONTAINS
         )
-        return this
     }
 }
