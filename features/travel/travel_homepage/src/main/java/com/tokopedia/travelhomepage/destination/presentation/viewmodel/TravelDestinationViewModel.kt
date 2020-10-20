@@ -8,10 +8,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
+import com.tokopedia.travelhomepage.destination.model.*
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
@@ -19,6 +16,8 @@ import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -50,6 +49,51 @@ class TravelDestinationViewModel  @Inject constructor(
         travelDestinationItemListMutable.value = getEmptyModelsUseCase.requestEmptyViewModels()
     }
 
+    fun getAllContent(summaryQuery: String, recommQuery: String, orderQuery: String, articleQuery: String, cityId: String) {
+        launch {
+            val list: MutableList<TravelDestinationItemModel> = mutableListOf()
+
+            getDestinationSummaryData(summaryQuery, cityId)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+                travelDestinationItemListMutable.postValue(list)
+            }
+
+            getOrderList(orderQuery, cityId)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+            }
+
+            getCityRecommendationData(recommQuery, cityId, "ALL", CITY_RECOMMENDATION_ORDER)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+            }
+
+            getCityRecommendationData(recommQuery, cityId, "EVENTS", CITY_EVENT_ORDER)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+            }
+
+            getCityRecommendationData(recommQuery, cityId, "DEALS", CITY_DEALS_ORDER)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+            }
+
+            getCityArticles(articleQuery, cityId)?.let {
+                it.isLoaded = true
+                it.isSuccess = true
+                list.add(it)
+            }
+
+            travelDestinationItemListMutable.postValue(list)
+        }
+    }
+
     fun getDestinationCityData(query: String, webUrl: String) {
         launchCatchError( block = {
             val data = withContext(dispatcherProvider.ui()) {
@@ -64,117 +108,70 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
-    fun getDestinationSummaryData(query: String, cityId: String) {
-        launchCatchError( block = {
-            val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf(PARAM_CITY_ID to cityId)
-                val graphqlRequest = GraphqlRequest(query, TravelDestinationSummaryModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TravelDestinationSummaryModel.Response>()
+    suspend fun getDestinationSummaryData(query: String, cityId: String): TravelDestinationSummaryModel? {
+        return try {
+            val summaryData = async {
+                val data = withContext(dispatcherProvider.ui()) {
+                    val param = mapOf(PARAM_CITY_ID to cityId)
+                    val graphqlRequest = GraphqlRequest(query, TravelDestinationSummaryModel.Response::class.java, param)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData<TravelDestinationSummaryModel.Response>().response
+                data
+            }
 
-           travelDestinationItemList.value?.let {
-               val updatedList = it.toMutableList()
-               data.response.isLoaded = true
-               data.response.isSuccess = true
-               updatedList[SUMMARY_ORDER] = data.response
-               travelDestinationItemListMutable.postValue(updatedList)
-           }
-        }) {
-            isAllErrorMutable.postValue(true)
+            summaryData.await()
+        } catch (t: Throwable) {
+            null
         }
     }
 
-    fun getCityRecommendationData(query: String, cityId: String, product: String, order: Int) {
-        launchCatchError(block ={
-            val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
-                val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TravelHomepageRecommendationModel.Response>()
-
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[order] = mapper.mapToSectionViewModel(data.response, order)
-                updatedList[order].isLoaded = true
-                updatedList[order].isSuccess = true
-                travelDestinationItemListMutable.postValue(updatedList)
+    suspend fun getCityRecommendationData(query: String, cityId: String, product: String, order: Int): TravelDestinationSectionModel? {
+        return try {
+            val recommendationData = async {
+                val data = withContext(dispatcherProvider.ui()) {
+                    val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
+                    val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData<TravelHomepageRecommendationModel.Response>()
+                data
             }
 
-        }) {
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[order].isLoaded = true
-                updatedList[order].isSuccess = false
-                travelDestinationItemListMutable.postValue(updatedList)
-                checkIfAllError()
-            }
-        }
-
-    }
-
-    fun getOrderList(query: String, cityId: String) {
-        launchCatchError(block = {
-            val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
-                val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TravelHomepageOrderListModel.Response>()
-
-                travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
-                updatedList[ORDER_LIST_ORDER].isLoaded = true
-                updatedList[ORDER_LIST_ORDER].isSuccess = true
-                travelDestinationItemListMutable.value = updatedList
-            }
-        }) {
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[ORDER_LIST_ORDER].isLoaded = true
-                updatedList[ORDER_LIST_ORDER].isSuccess = false
-                travelDestinationItemListMutable.value = updatedList
-                checkIfAllError()
-            }
+            mapper.mapToSectionViewModel(recommendationData.await().response, order)
+        } catch (t: Throwable) {
+            null
         }
     }
 
-    fun getCityArticles(query: String, cityId: String) {
-        launchCatchError(block ={
-            val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf(PARAM_CITY_ID to cityId.toInt())
-                val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TravelArticleModel.Response>()
-
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[CITY_ARTICLE_ORDER] = data.response
-                updatedList[CITY_ARTICLE_ORDER].isLoaded = true
-                updatedList[CITY_ARTICLE_ORDER].isSuccess = true
-                travelDestinationItemListMutable.postValue(updatedList)
+    suspend fun getOrderList(query: String, cityId: String): TravelDestinationSectionModel? {
+        return try {
+            val orderData = async {
+                val data = withContext(dispatcherProvider.ui()) {
+                    val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
+                    val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData<TravelHomepageOrderListModel.Response>()
+                data
             }
 
-        }) {
-            travelDestinationItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[CITY_ARTICLE_ORDER].isLoaded = true
-                updatedList[CITY_ARTICLE_ORDER].isSuccess = false
-                travelDestinationItemListMutable.postValue(updatedList)
-                checkIfAllError()
-            }
+            mapper.mapToSectionViewModel(orderData.await().response)
+        } catch (t: Throwable) {
+            null
         }
     }
 
-    fun checkIfAllError() {
-        travelDestinationItemList.value?.let {
-            var isSuccess = false
-            for (item in it) {
-                if (item.isSuccess || !item.isLoaded) {
-                    isSuccess = true
-                    break
-                }
+    suspend fun getCityArticles(query: String, cityId: String): TravelArticleModel? {
+        return try {
+            val articlesData = async {
+                val data = withContext(dispatcherProvider.ui()) {
+                    val param = mapOf(PARAM_CITY_ID to cityId.toInt())
+                    val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData<TravelArticleModel.Response>()
+                data
             }
-            isAllErrorMutable.postValue(!isSuccess)
+            articlesData.await().response
+        } catch (t: Throwable) {
+            null
         }
     }
 

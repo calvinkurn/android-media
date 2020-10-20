@@ -13,16 +13,15 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -36,11 +35,21 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.header
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.unifyDependencies.dialog
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {
@@ -50,4 +59,6 @@ project.ext {
     artifactName = "top_ads_edit-release"
 }
 
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'

@@ -5,19 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
-import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -43,6 +40,10 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
         return HighlightViewHolder.LAYOUT
+    }
+
+    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+        return TopAdsBannerViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")

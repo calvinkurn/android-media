@@ -93,7 +93,7 @@ public class QueryTicketDetailFragment extends BaseDaggerFragment implements Que
     }
 
     public void onViewClicked() {
-        ContactUsTracking.eventArticleHubungiKamiClick();
+        ContactUsTracking.eventArticleHubungiKamiClick(getContext());
         getContext().startActivity(SubmitTicketActivity.getSubmitTicketActivity(getContext(), getSubmitTicketInvoiceData()));
     }
 }

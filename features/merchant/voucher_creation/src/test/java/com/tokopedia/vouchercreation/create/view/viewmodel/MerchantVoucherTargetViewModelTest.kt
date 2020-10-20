@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
@@ -17,8 +18,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,25 +35,15 @@ class MerchantVoucherTargetViewModelTest {
     @RelaxedMockK
     lateinit var voucherTargetValidationUseCase: VoucherTargetValidationUseCase
 
+    lateinit var mViewModel: MerchantVoucherTargetViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
-
-    @After
-    fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        MerchantVoucherTargetViewModel(testDispatcher, voucherTargetValidationUseCase)
+        mViewModel = MerchantVoucherTargetViewModel(TestCoroutineDispatchers, voucherTargetValidationUseCase)
     }
 
     @Test

@@ -8,6 +8,7 @@ kapt {
     useBuildCache = true
 }
 
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -19,6 +20,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled (project.hasProperty('coverage'))
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
     }
     buildTypes {
         debug{
@@ -50,6 +59,7 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        exclude 'META-INF/**'
     }
     lintOptions {
         abortOnError false
@@ -108,4 +118,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

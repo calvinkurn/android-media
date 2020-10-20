@@ -55,7 +55,7 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
                 false,
                 false,
                 true,
-                temp.source
+                temp.source.orEmpty()
         )
         return viewModel
     }
@@ -76,7 +76,7 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
                 imageUrlThumbnail = pojoAttribute.thumbnail,
                 isRead = temp.messageIsRead,
                 message = temp.msg,
-                source = temp.source
+                source = temp.source.orEmpty()
         )
         return viewModel
     }

@@ -6,21 +6,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
 import com.tokopedia.shop_showcase.common.ShowcaseType
 import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
+import com.tokopedia.unifyprinciples.Typography
 
 class ShopShowcaseListAdapter (
         val listener: ShopShowcaseManagementListener,
         val isMyShop: Boolean
 ): RecyclerView.Adapter<ShopShowcaseListAdapter.ViewHolder>() {
 
-    private var showcaseList: MutableList<ShowcaseItem> = mutableListOf()
+    private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
 
-    fun updateDataShowcaseList(showcaseListData: List<ShowcaseItem>) {
+    fun updateDataShowcaseList(showcaseListData: List<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
         notifyDataSetChanged()
     }
@@ -42,20 +47,28 @@ class ShopShowcaseListAdapter (
         val context: Context
         private var titleShowcase: TextView? = null
         private var buttonMenuMore: ImageView? = null
+        private var campaignLabel: Typography? = null
 
         init {
             context = itemView.context
             titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
             buttonMenuMore = itemView.findViewById(R.id.img_menu_more)
+            campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
         }
 
-        fun bindData(dataShowcase: ShowcaseItem, position: Int) {
+        fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ShowcaseType.GENERATED || !isMyShop) {
-                buttonMenuMore?.visibility = View.INVISIBLE
-            } else {
+            if (dataShowcase.type == ShowcaseType.CUSTOM && isMyShop) {
                 buttonMenuMore?.visibility = View.VISIBLE
+            } else {
+                buttonMenuMore?.visibility = View.INVISIBLE
+            }
+
+            if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){
+                campaignLabel?.show()
+            }else{
+                campaignLabel?.hide()
             }
 
             itemView.setOnClickListener {

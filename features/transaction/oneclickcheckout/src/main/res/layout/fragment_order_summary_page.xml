@@ -5,7 +5,6 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:enabled="false"
     tools:context=".order.view.OrderSummaryPageFragment">
 
@@ -25,18 +24,32 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_osp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:closeButtonVisibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tickerShapeType="full"
+                    app:tickerType="announcement" />
+
                 <include
                     android:id="@+id/layout_occ_onboarding"
                     layout="@layout/layout_occ_onboarding"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ticker_osp" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/lbl_osp_header"
                     android:textColor="@color/Neutral_N700_96"
@@ -64,90 +77,45 @@
                     android:id="@+id/tv_header_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_12"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:textColor="@color/Neutral_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider_top"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold"
-                    tools:text="hi blablabla" />
+                    app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:textColor="@color/Neutral_N700_96"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
                     app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:text="Yuk alaskdfjlasdjf alsdjf lasjdf lasjdf" />
-
-                <ImageView
-                    android:id="@+id/iv_subheader"
-                    android:layout_width="@dimen/dp_100"
-                    android:layout_height="@dimen/dp_0"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_subheader_action"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_header_3"
-                    tools:ignore="ContentDescription" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_subheader"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/iv_subheader"
-                    app:layout_constraintTop_toTopOf="@+id/iv_subheader"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="ini balbalablasdfj lasdjf lasdfasdfasdfasjdf asjdf" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_subheader_action"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="@string/more_info"
-                    android:textColor="@color/Green_G500"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/iv_subheader"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_subheader"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="reguler" />
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/ticker_preference_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:visibility="gone"
                     app:closeButtonVisibility="gone"
                     app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_subheader_action"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_header_3"
                     app:tickerShapeType="loose"
                     app:tickerType="announcement" />
 
@@ -177,7 +145,6 @@
                     android:layout_width="0dp"
                     android:layout_height="0.5dp"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
                     android:background="@color/Neutral_N75"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -188,7 +155,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:checked="true"
                     app:indeterminate="false"
@@ -211,9 +177,7 @@
                     android:id="@+id/img_bt_insurance_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/dp_8"
                     android:paddingLeft="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
                     android:src="@drawable/info_icon"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
@@ -226,7 +190,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
                     android:layout_weight="1"
                     android:gravity="end"
                     android:textColor="@color/Neutral_N700_96"
@@ -235,15 +198,13 @@
                     app:layout_constraintStart_toEndOf="@+id/img_bt_insurance_info"
                     app:layout_constraintTop_toTopOf="@+id/cb_insurance"
                     app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="Rp 500" />
+                    app:typographyWeight="bold" />
 
                 <View
                     android:id="@+id/divider2"
                     android:layout_width="0dp"
                     android:layout_height="0.5dp"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/Neutral_N75"
                     app:layout_constraintEnd_toEndOf="parent"

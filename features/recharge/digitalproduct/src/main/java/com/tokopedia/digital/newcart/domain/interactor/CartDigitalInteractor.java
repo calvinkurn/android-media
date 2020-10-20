@@ -72,7 +72,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     }
 
     @Override
-    public void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<String> subscriber) {
+    public void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<Boolean> subscriber) {
         compositeSubscription.add(
                 cartDigitalRepository.cancelVoucher(requestBodyCancelVoucher)
                         .subscribeOn(Schedulers.newThread())

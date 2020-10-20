@@ -25,7 +25,7 @@ class ReservedEventInfoViewHolder(itemView: View?,
             tv_campaign_stock_event_name?.text = element.eventName
             tv_campaign_stock_event_count?.text = element.stock.convertCheckMaximumStockLimit(context)
             tv_campaign_stock_event_description?.text = element.eventDesc
-            divider_campaign_stock_event_info?.showWithCondition(!element.isLastEvent)
+            divider_campaign_stock_event_info?.showWithCondition(!(element.isLastEvent && element.isVariant))
             if (element.isVariant) {
                 accordion_campaign_stock?.run {
                     setEventVariantInfo(

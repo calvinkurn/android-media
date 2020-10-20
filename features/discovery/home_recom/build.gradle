@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.carouselProductCard)
+    implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.atc_common)
@@ -79,13 +80,13 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.testCore
 }

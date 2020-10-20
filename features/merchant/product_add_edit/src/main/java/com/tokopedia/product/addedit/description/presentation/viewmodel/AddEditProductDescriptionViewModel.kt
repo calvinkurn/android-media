@@ -37,6 +37,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val productInputModel: LiveData<ProductInputModel> get() = _productInputModel
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
+    var isDraftMode: Boolean = false
+    var isFirstMoved: Boolean = false
     val categoryId: String get() {
         return productInputModel.value?.detailInputModel?.categoryId.orEmpty()
     }
@@ -49,12 +51,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val hasVariant: Boolean get() {
         productInputModel.value?.apply {
             return variantInputModel.products.isNotEmpty()
-        }
-        return false
-    }
-    val hasWholesale: Boolean get() {
-        productInputModel.value?.apply {
-            return detailInputModel.wholesaleList.isNotEmpty()
         }
         return false
     }

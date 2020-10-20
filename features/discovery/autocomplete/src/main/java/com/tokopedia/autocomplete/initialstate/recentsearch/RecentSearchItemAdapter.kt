@@ -15,7 +15,6 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
         private const val TYPE_TWO_LINE = 2
     }
 
-
     private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
     fun setData(data: List<BaseItemInitialStateSearch>) {

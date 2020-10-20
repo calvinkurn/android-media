@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
@@ -21,7 +22,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
@@ -32,6 +32,7 @@ import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -43,8 +44,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val discoverUseCase: DiscoverUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
-                                                   private val registerValidationUseCase:
-                                                   RegisterValidationUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
@@ -60,7 +59,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         LoginEmailPhoneContract.Presenter {
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
-
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
@@ -198,7 +196,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
-                    { getUserInfoAddPin() },
+                    { getUserInfo() },
                     view.onErrorReloginAfterSQ(validateToken),
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
@@ -235,15 +233,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
                     view.onErrorGetUserInfo()))
-        }
-    }
-
-    override fun getUserInfoAddPin() {
-        view?.let { view ->
-            getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                    view.onSuccessGetUserInfoAddPin(),
-                    view.onErrorGetUserInfo())
-            )
         }
     }
 
@@ -324,16 +313,5 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }, onError = {
             view.onGetDynamicBannerError(it)
         })
-    }
-
-    override fun detachView() {
-        super.detachView()
-        registerCheckUseCase.cancelJobs()
-        statusPinUseCase.cancelJobs()
-        discoverUseCase.unsubscribe()
-        registerValidationUseCase.unsubscribe()
-        loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
-        tickerInfoUseCase.unsubscribe()
     }
 }

@@ -57,14 +57,15 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     }
 
     @Override
-    public Observable<String> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher) {
+    public Observable<Boolean> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCancelVoucher));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
 
         return digitalRestApi
                 .cancelVoucher(requestBody)
-                .map(tkpdDigitalResponseResponse -> tkpdDigitalResponseResponse.body().getMessage());
+                .map(cancelVoucherDataResponse ->
+                        cartMapperData.transformCancelVoucherData(cancelVoucherDataResponse.body().getData()));
     }
 
     @NonNull

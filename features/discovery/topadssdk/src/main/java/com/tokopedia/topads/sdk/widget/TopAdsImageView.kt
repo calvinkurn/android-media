@@ -9,8 +9,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,6 +23,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -65,10 +70,11 @@ class TopAdsImageView : AppCompatImageView {
      * @param adsCount Use this parameter, To tell number of ads on page required
      * @param dimenId Use this parameter to provide dimen id
      * @param depId Required in case of category and intermediate page else optional
+     * @param productID Required for filtering. Ads service will look for ads related to the product id.
      * */
-    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "") {
+    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId)
+        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID)
         topAdsImageViewViewModel.getImageData(queryParams)
         topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {
@@ -113,13 +119,10 @@ class TopAdsImageView : AppCompatImageView {
      * If imageUrl is null or empty view will hide itself
      * @param imageData The object of TopAdsViewModel
      * */
-    fun loadImage(imageData: TopAdsImageViewModel, onLoadFailed:() -> Unit = {}) {
+    fun loadImage(imageData: TopAdsImageViewModel, cornerRadius: Int = 0, onLoadFailed: () -> Unit = {}) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
-            Glide.with(context)
-                    .load(imageData.imageUrl)
-                    .override(context.resources.displayMetrics.widthPixels,
-                            getHeight(imageData.imageWidth, imageData.imageHeight))
-                    .fitCenter()
+            getRequestBuilder(imageData.imageUrl, cornerRadius).override(context.resources.displayMetrics.widthPixels,
+                    getHeight(imageData.imageWidth, imageData.imageHeight))
                     .addListener(object : RequestListener<Drawable> {
 
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -129,13 +132,14 @@ class TopAdsImageView : AppCompatImageView {
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
+                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+                                    ?: "")
                             Timber.d("TopAdsImageView is loaded successfully")
 
                             this@TopAdsImageView.setOnClickListener {
                                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
                                 Timber.d("TopAdsImageView is clicked")
-                                ImpresionTask(this@TopAdsImageView.javaClass.canonicalName).execute(imageData.adClickUrl)
+                                TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName,imageData.adClickUrl,"","","")
                             }
                             return false
                         }
@@ -148,6 +152,19 @@ class TopAdsImageView : AppCompatImageView {
 
     }
 
+    private fun getRequestBuilder(imageUrl: String?, radius: Int): RequestBuilder<Drawable> {
+        return if (radius > 0) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .transform(FitCenter(), RoundedCorners(radius))
+        } else {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .fitCenter()
+
+        }
+    }
+
     private fun getHeight(width: Int, height: Int): Int {
         val metrics = context.resources.displayMetrics
         val deviceWidth = metrics.widthPixels.toFloat()
@@ -155,10 +172,4 @@ class TopAdsImageView : AppCompatImageView {
         return (widthRatio * height).toInt()
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        if (::topAdsImageViewViewModel.isInitialized) {
-            topAdsImageViewViewModel.onClear()
-        }
-    }
 }

@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
@@ -70,6 +71,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 import static com.tokopedia.purchase_platform.common.feature.insurance.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
 
 
@@ -86,6 +89,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
     private final InsuranceItemActionListener insuranceItemActionlistener;
+    private final SellerCashbackListener sellerCashbackListener;
     private ArrayList<InsuranceCartShops> insuranceCartList = new ArrayList<>();
     private List<Object> shipmentDataList;
 
@@ -104,6 +108,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
+    private CompositeSubscription compositeSubscription;
 
     private boolean isShowOnboarding;
     private boolean hasShownShowCase;
@@ -119,11 +124,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
                            ShipmentDataRequestConverter shipmentDataRequestConverter,
                            RatesDataConverter ratesDataConverter,
-                           InsuranceItemActionListener insuranceItemActionlistener) {
+                           InsuranceItemActionListener insuranceItemActionlistener,
+                           SellerCashbackListener sellerCashbackListener) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
         this.ratesDataConverter = ratesDataConverter;
         this.insuranceItemActionlistener = insuranceItemActionlistener;
+        this.sellerCashbackListener = sellerCashbackListener;
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
     }
@@ -188,13 +195,16 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
             return new ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
-            return new ShipmentSellerCashbackViewHolder(view);
+            return new ShipmentSellerCashbackViewHolder(view, sellerCashbackListener);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             return new ShipmentDonationViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             return new ShipmentEmasViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
-            return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener);
+            if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+                compositeSubscription = new CompositeSubscription();
+            }
+            return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
         } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
             return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
@@ -218,7 +228,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
-                    ratesDataConverter, showCaseObjectList);
+                    ratesDataConverter);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
             ((PromoCheckoutViewHolder) holder).bindViewHolder(lastApplyUiModel);
@@ -270,6 +280,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
     }
+
+    public void clearCompositeSubscription() {
+        if (compositeSubscription != null) {
+            compositeSubscription.clear();
+        }
+    }
+
 
     private void setShowCase(Context context) {
         if (!hasShownShowCase && isShowOnboarding) {
@@ -440,7 +457,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
             }
             shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false)));
+            shipmentSellerCashbackModel.setSellerCashbackFmt(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false)));
             shipmentDataList.add(shipmentSellerCashbackModel);
         }
     }

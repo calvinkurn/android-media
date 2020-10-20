@@ -55,6 +55,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -259,7 +260,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.get().isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -364,7 +365,7 @@ public class MainParentActivity extends BaseActivity implements
     private int getTabPositionFromIntent() {
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
-        
+
         try {
             String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
             return Integer.parseInt(posString);
@@ -501,6 +502,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void selectFragment(Fragment fragment) {
+        if (isFirstTimeUser()) return;
         configureStatusBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
@@ -662,8 +664,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
-            fragmentList.add(cartFragment);
+            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         }
         return fragmentList;
@@ -1102,16 +1103,16 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void stopOfficialStorePerformanceMonitoring() {
-        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
-            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
-            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+        if (officialStorePageLoadTimePerformanceCallback != null) {
+            officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
     public void startOfficialStorePerformanceMonitoring() {
-        if(officialStorePageLoadTimePerformanceCallback == null) {
+        if (officialStorePageLoadTimePerformanceCallback == null) {
             officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
                     OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
@@ -1122,8 +1123,8 @@ public class MainParentActivity extends BaseActivity implements
                     0,
                     null
             );
-            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
-            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+            officialStorePageLoadTimePerformanceCallback.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            officialStorePageLoadTimePerformanceCallback.startPreparePagePerformanceMonitoring();
         }
     }
 

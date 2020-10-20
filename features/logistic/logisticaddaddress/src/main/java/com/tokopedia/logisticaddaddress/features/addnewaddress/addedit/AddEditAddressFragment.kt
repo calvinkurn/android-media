@@ -62,7 +62,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
     private var isNullZipcode: Boolean = false
-    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
@@ -78,6 +77,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isLongitudeNotEmpty: Boolean? = false
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
+    private var isCircuitBreaker: Boolean = false
 
     lateinit var mapView: MapView
 
@@ -88,6 +88,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     lateinit var userSession: UserSessionInterface
 
     companion object {
+        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
@@ -99,6 +100,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
                     putBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, extra.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false))
                     putBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true))
+                    putBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false))
                 }
             }
         }
@@ -124,6 +126,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             isUnnamedRoad = it.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, false)
             isNullZipcode = it.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false)
             isLogisticLabel = it.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true)
+            isCircuitBreaker = it.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false)
         }
     }
 
@@ -163,7 +166,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
@@ -580,7 +583,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
     }
 
-    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, isCircuitBreaker: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
@@ -592,13 +595,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             ll_normal.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
 
-            if (isMismatch) {
-                setMismatchMapHeader()
-                setMismatchForm()
-
-            } else {
-                setMismatchSolvedMapHeader()
-                setMismatchSolvedForm()
+            when {
+                isCircuitBreaker -> {
+                    setCircuitBreakerOnHeader()
+                    setMismatchForm()
+                }
+                isMismatch -> {
+                    setMismatchMapHeader()
+                    setMismatchForm()
+                }
+                else -> {
+                    setMismatchSolvedMapHeader()
+                    setMismatchSolvedForm()
+                }
             }
             setupRvKodePosChips()
         }
@@ -684,6 +693,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
         }
+    }
+
+    private fun setCircuitBreakerOnHeader() {
+        disable_map_layout.visibility = View.VISIBLE
+        icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
+        context?.resources?.getColor(R.color.separator_color)?.let { icon_pointer.setColorFilter(it) }
+        btn_map.isClickable = false
     }
 
     private fun setNormalForm() {
@@ -840,7 +856,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        arrangeLayout(isMismatch, isMismatchSolved)
+        arrangeLayout(isMismatch, isMismatchSolved, isCircuitBreaker)
     }
 
     override fun onStart() {

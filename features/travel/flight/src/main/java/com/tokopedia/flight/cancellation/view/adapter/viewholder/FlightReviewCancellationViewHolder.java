@@ -64,7 +64,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
     public void bind(FlightCancellationModel element) {
         String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode().isEmpty() ||
                 element.getFlightCancellationJourney().getDepartureCityCode().length() == 0) ?
-                element.getFlightCancellationJourney().getDepartureAiportId() :
+                element.getFlightCancellationJourney().getDepartureAirportId() :
                 element.getFlightCancellationJourney().getDepartureCityCode();
         String arrivalCityAirportCode = (element.getFlightCancellationJourney().getArrivalCityCode().isEmpty() ||
                 element.getFlightCancellationJourney().getArrivalCityCode().length() == 0) ?

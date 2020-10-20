@@ -1,5 +1,5 @@
 {
-  "readme": "Mix Top component on home; impression, click, and click lihat semua",
+  "readme": "Mix Top component on home; impression, click, cta click, and click lihat semua",
   "mode": "exact",
   "query": [
     {
@@ -21,7 +21,10 @@
         "item_variant": "{{.*}}",
         "item_category": "{{.*}}"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/"
     },
     {
       "eventCategory": "homepage",
@@ -44,7 +47,10 @@
       }],
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/"
     },
     {
       "businessUnit": "home & browse",
@@ -55,7 +61,8 @@
       "userId": "{{.*}}",
       "eventAction": "click view all card on dynamic channel top carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
     },
     {
       "businessUnit": "home & browse",
@@ -64,9 +71,22 @@
       "screenName": "/",
       "event": "clickHomepage",
       "userId": "{{.*}}",
-      "eventAction": "click view all card on dynamic channel top carousel",
+      "eventAction": "click view all on dynamic channel top carousel",
       "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "channelId": "{{.*}}"
+    },
+    {
+      "eventCategory": "homepage",
+      "event": "clickHomepage",
+      "eventAction": "{{click .* on dynamic channel top carousel}}",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "userId": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/",
+      "channelId": "{{.*}}"
     }
   ]
 }

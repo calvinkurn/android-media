@@ -31,6 +31,8 @@ import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainSuggest
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.common.PageNameConstant
+import com.tokopedia.shop.open.common.ScreenNameTracker
+import com.tokopedia.shop.open.common.ShopOpenRevampErrorHandler
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.common.TermsAndConditionsLink.URL_TNC
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
@@ -150,6 +152,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_REGISTRATION)
         txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
         btnShopRegistration.setOnClickListener {
             activity?.let {
@@ -226,19 +229,25 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
-                        val errorMesssage = it.data.validateDomainShopName.error.message
+                        var errorMessage = it.data.validateDomainShopName.error.message
                         if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
-                            validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
+                            errorMessage = getString(R.string.open_shop_revamp_error_shop_name_too_short)
+                            validateShopName(true, errorMessage)
                         } else {
-                            validateShopName(true, errorMesssage)
+                            validateShopName(true, errorMessage)
                         }
+                        ShopOpenRevampErrorHandler.logMessage(errorMessage)
                     } else {
                         validateShopName(false, getString(R.string.open_shop_revamp_default_hint_input_shop))
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
                     }
                 }
                 is Fail -> {
-                    validateShopName(true, (it as Success).data.validateDomainShopName.error.message)
+                    it.throwable.message?.let { message ->
+                        validateShopName(true, message)
+                        ShopOpenRevampErrorHandler.logMessage(message)
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         })
@@ -251,13 +260,18 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     if (!it.data.validateDomainShopName.isValid) {
                         val errorMessage = it.data.validateDomainShopName.error.message
                         validateDomainName(true, errorMessage)
+                        ShopOpenRevampErrorHandler.logMessage(errorMessage)
                     } else {
                         isValidDomainName = true
                         validateDomainName(false, "")
                     }
                 }
                 is Fail -> {
-                    validateDomainName(true, (it as Success).data.validateDomainShopName.error.message)
+                    it.throwable.message?.let { message ->
+                        validateDomainName(true, message)
+                        ShopOpenRevampErrorHandler.logMessage(message)
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         })
@@ -269,7 +283,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     val _shopId = it.data.createShop.createdId
                     val _isSuccess = it.data.createShop.success
-                    val _message = it.data.createShop.message
+                    var _message = it.data.createShop.message
                     var isSuccess = false
                     if (_shopId.isNotEmpty() && _isSuccess) {
                         isSuccess = true
@@ -283,14 +297,20 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                         if (_message.isNotEmpty()) {
                             showErrorResponse(_message)
                         } else {
-                            showErrorResponse(getString(R.string.open_shop_revamp_error_retry))
+                            _message = getString(R.string.open_shop_revamp_error_retry)
+                            showErrorResponse(_message)
                         }
+                        ShopOpenRevampErrorHandler.logMessage(_message)
                     }
                 }
                 is Fail -> {
                     val isSuccess = false
                     showErrorNetwork(it.throwable)
                     shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
+                    it.throwable.message?.let {message ->
+                        ShopOpenRevampErrorHandler.logMessage(message)
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         })
@@ -307,6 +327,10 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
+                    it.throwable.message?.let {message ->
+                        ShopOpenRevampErrorHandler.logMessage(message)
+                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    }
                 }
             }
         })

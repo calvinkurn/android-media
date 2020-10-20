@@ -90,6 +90,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_image"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_image"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -102,6 +103,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_badge"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_badge"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:adjustViewBounds="true"
@@ -136,7 +138,9 @@
             android:layout_marginTop="@dimen/dp_6"
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_name"
-            app:srcCompat="@drawable/ic_shop_location" />
+            app:srcCompat="@drawable/ic_shop_location"
+            android:visibility="gone"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_location"
@@ -155,7 +159,9 @@
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_location_icon"
             app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_location_icon"
             app:typographyType="small"
-            tools:text="Kab. Aceh Barat Daya" />
+            tools:text="Kab. Aceh Barat Daya"
+            android:visibility="gone"
+            />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_follower_icon"
@@ -166,6 +172,7 @@
             android:layout_marginTop="@dimen/dp_6"
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_location_icon"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_shop_follower" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -185,10 +192,13 @@
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_follower_icon"
             app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_follower_icon"
             app:typographyType="small"
-            tools:text="100rb Followers" />
+            tools:text="100rb Followers"
+            android:visibility="gone"
+            />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/shop_page_main_profile_free_ongkir"
+            android:contentDescription="@string/content_desc_shop_page_main_profile_free_ongkir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -203,6 +213,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_view_shop_reputation_badge"
+            android:contentDescription="@string/content_desc_image_view_shop_reputation_badge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"

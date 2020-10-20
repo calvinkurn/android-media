@@ -49,6 +49,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
@@ -229,6 +230,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setIsRequestedCancel(Boolean isRequestedCancel) {
+        // no-op
+    }
+
+    @Override
     public void setAdditionInfoVisibility(int visibility) {
         additionalText.setVisibility(visibility);
         additionalText.setOnClickListener(view -> {
@@ -250,11 +256,17 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
+        // no-op
+    }
 
+    @Override
+    public void setTickerInfo(TickerInfo tickerInfo) {
+        // no-op
     }
 
     @Override
     public void setPricing(Pricing pricing) {
+        // no-op
     }
 
     @Override
@@ -275,12 +287,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showDropshipperInfo(DropShipper dropShipper) {
-
+        // no-op
     }
 
     @Override
     public void showDriverInfo(DriverDetails driverDetails) {
-
+        // no-op
     }
 
     @Override
@@ -297,27 +309,27 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setActionButtons(List<ActionButton> actionButtons) {
-
+        // no-op
     }
 
     @Override
     public void setShopInfo(ShopInfo shopInfo) {
-
+        // no-op
     }
 
     @Override
     public void setBoughtDate(String boughtDate) {
-
+        // no-op
     }
 
     @Override
     public void showReplacementView(List<String> reasons) {
-
+        // no-op
     }
 
     @Override
     public void finishOrderDetail() {
-
+        // no-op
     }
 
     @Override
@@ -327,22 +339,22 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-
+        // no-op
     }
 
     @Override
     public void showErrorMessage(String message) {
-
+        // no-op
     }
 
     @Override
     public void clearDynamicViews() {
-
+        // no-op
     }
 
     @Override
     public void askPermission() {
-
+        // no-op
     }
 
     @Override
@@ -468,7 +480,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
-
+        // no-op
     }
 
     @Override

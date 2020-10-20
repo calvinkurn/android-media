@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/inbox_reputation_shimmer_image"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_56"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            app:corners="8"
+            app:custom_color="@color/shimmer_custom_color"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/inbox_reputation_shimmer_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:corners="8"
+            app:custom_color="@color/shimmer_custom_color"
+            app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/inbox_reputation_shimmer_subtitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/layout_lvl7"
+            app:corners="8"
+            app:custom_color="@color/shimmer_custom_color"
+            app:layout_constraintStart_toEndOf="@id/inbox_reputation_shimmer_image"
+            app:layout_constraintTop_toBottomOf="@id/inbox_reputation_shimmer_title"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/review_pending_shimmering_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/inbox_reputation_shimmer_subtitle"
+            app:layout_constraintTop_toBottomOf="@id/inbox_reputation_shimmer_subtitle"
+            app:srcCompat="@drawable/review_pending_shimmering_star"/>
+
+        <ImageView
+            android:id="@+id/review_pending_shimmering_star_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginLeft="@dimen/dp_13"
+            app:layout_constraintStart_toEndOf="@id/review_pending_shimmering_star"
+            app:layout_constraintTop_toTopOf="@id/review_pending_shimmering_star"
+            app:srcCompat="@drawable/review_pending_shimmering_star" />
+
+        <ImageView
+            android:id="@+id/review_pending_shimmering_star_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginLeft="@dimen/dp_13"
+            app:layout_constraintStart_toEndOf="@id/review_pending_shimmering_star_2"
+            app:layout_constraintTop_toTopOf="@id/review_pending_shimmering_star"
+            app:srcCompat="@drawable/review_pending_shimmering_star"/>
+
+        <ImageView
+            android:id="@+id/review_pending_shimmering_star_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginLeft="@dimen/dp_13"
+            app:layout_constraintStart_toEndOf="@id/review_pending_shimmering_star_3"
+            app:layout_constraintTop_toTopOf="@id/review_pending_shimmering_star"
+            app:srcCompat="@drawable/review_pending_shimmering_star"/>
+
+        <ImageView
+            android:id="@+id/review_pending_shimmering_star_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginLeft="@dimen/dp_13"
+            app:layout_constraintStart_toEndOf="@id/review_pending_shimmering_star_4"
+            app:layout_constraintTop_toTopOf="@id/review_pending_shimmering_star"
+            app:srcCompat="@drawable/review_pending_shimmering_star"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
+
+
+</com.tokopedia.unifycomponents.CardUnify>

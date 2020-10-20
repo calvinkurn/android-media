@@ -32,14 +32,14 @@ object AddNewAddressUtils {
     fun showToastError(message: String, view: View, activity: Activity) {
         var msg = message
         if (message.isEmpty()) {
-            msg = activity.getString(R.string.default_request_error_unknown)
+            msg = activity.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
         val snackbar = view.let { Snackbar.make(it, msg, BaseToaster.LENGTH_SHORT) }
         val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
         snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)
-        snackbarTextView?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_secondary_54))
-        snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_primary_70))
+        snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.design.R.color.font_black_secondary_54))
+        snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.design.R.color.font_black_primary_70))
         snackbarTextView?.maxLines = 5
         snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
     }

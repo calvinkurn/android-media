@@ -301,7 +301,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
             Toaster.INSTANCE.make(getView(),
-                    getActivity().getResources().getString(R.string.msg_network_error),
+                    getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
                     });
         } else {
@@ -621,8 +621,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
                 getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
+                com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item,
                 zipCodes);
 
         zipCodeTextView.setAdapter(zipCodeAdapter);
@@ -886,39 +886,25 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private void openGeoLocation() {
+        /*here access presenter*/
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
+            mPresenter.editAddressPinPoint(address, locationEditText.getText().toString());
             Timber.d("Google play services available");
-
-            LocationPass locationPass = new LocationPass();
-
-            if (!TextUtils.isEmpty(address.getLatitude())
-                    && !TextUtils.isEmpty(address.getLongitude())
-                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
-                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
-                locationPass.setLatitude(address.getLatitude());
-                locationPass.setLongitude(address.getLongitude());
-                locationPass.setGeneratedAddress(locationEditText.getText().toString());
-            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
-                locationPass.setDistrictName(address.getDistrictName());
-                locationPass.setCityName(address.getCityName());
-            } else {
-                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
-                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
-            }
-
-            if (getActivity() != null) {
-                Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
-                        isAddAddressFromCartCheckoutMarketplace());
-                startActivityForResult(intent, REQUEST_CODE);
-            }
         } else {
             Timber.d("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }
+    }
+
+    @Override
+    public void goToGeolocationActivity(LocationPass locationPass) {
+        Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
+                isAddAddressFromCartCheckoutMarketplace());
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {

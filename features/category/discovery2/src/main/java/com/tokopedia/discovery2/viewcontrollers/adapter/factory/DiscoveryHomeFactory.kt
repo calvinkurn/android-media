@@ -25,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewHolder
@@ -46,14 +47,21 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.saleendstates.SaleEndStateViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.saleendstates.SaleEndStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModel
@@ -126,11 +134,11 @@ class DiscoveryHomeFactory {
 
             // Product Card Revamp
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
-            initializeComponent(ComponentsList.ProductCardRevampItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardRevampItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             // Product Card Horizontal Carousel
             initializeComponent(ComponentsList.ProductCardCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
-            initializeComponent(ComponentsList.ProductCardCarouselItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardCarouselItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             // Product Card Sprint Sale
             initializeComponent(ComponentsList.ProductCardSprintSale, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
@@ -140,6 +148,11 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ProductCardSprintSaleCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
             initializeComponent(ComponentsList.ProductCardSprintSaleCarouselItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
 
+            initializeComponent(ComponentsList.ProductListEmptyState, ::EmptyStateViewHolder, ::EmptyStateViewModel)
+            initializeComponent(ComponentsList.SaleEndState, ::SaleEndStateViewHolder, ::SaleEndStateViewModel)
+
+            //Quick Filter
+            initializeComponent(ComponentsList.QuickFilter, ::QuickFilterViewHolder, ::QuickFilterViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder:(v: View, fragment: Fragment) -> E,

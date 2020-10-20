@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.viewModel.removewishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
+import com.tokopedia.home_wishlist.model.datamodel.BannerTopAdsDataModel
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
@@ -86,6 +87,7 @@ class WishlistViewModelRemoveWishlistTest {
 
         // Expect remove wishlist action event can only retrieved once
         val wishlistEventRemoveWishlistActionData = wishlistViewModel.removeWishlistActionData
+        wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
         val eventRemoveWishlistActionDataSecond = wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
         Assert.assertEquals(eventRemoveWishlistActionDataSecond, null)
 
@@ -143,6 +145,7 @@ class WishlistViewModelRemoveWishlistTest {
 
         // Expect remove wishlist action event can only retrieved once
         val wishlistEventRemoveWishlistActionData = wishlistViewModel.removeWishlistActionData
+        wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
         val eventRemoveWishlistActionDataSecond = wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
         Assert.assertEquals(eventRemoveWishlistActionDataSecond, null)
 
@@ -191,8 +194,8 @@ class WishlistViewModelRemoveWishlistTest {
         }
 
         // Expect that recommendation section position is not changed in position 4
-        Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![4].javaClass)
+        Assert.assertEquals(BannerTopAdsDataModel::class.java,
+                wishlistViewModel.wishlistLiveData.value!![3].javaClass)
 
     }
 

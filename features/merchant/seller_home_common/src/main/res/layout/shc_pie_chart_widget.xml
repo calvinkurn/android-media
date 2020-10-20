@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shc_large_widget_height">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPieChartTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl3"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Total Pendapatan" />
+
+        <ImageView
+            android:id="@+id/btnPieChartTooltip"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:padding="7dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPieChartTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tvPieChartTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvPieChartTitle"
+            app:srcCompat="@drawable/ic_info"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPieChartValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnPieChartTooltip"
+            app:typographyWeight="bold"
+            tools:text="Rp2.000.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPieChartSubValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:ellipsize="end"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tvPieChartValue"
+            app:layout_constraintTop_toBottomOf="@+id/tvPieChartValue"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Sub Title" />
+
+        <com.tokopedia.charts.view.PieChartView
+            android:id="@+id/pieChartShc"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPieChartSubValue" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_loading"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPieChartTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

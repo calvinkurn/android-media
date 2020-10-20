@@ -6,6 +6,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotNull
@@ -33,8 +34,6 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
 
             viewModelShopPageProductListResultViewModel.getShop(anyString(), anyString(), anyBoolean())
-            Thread.sleep(3000L)
-
             verifyGetShopInfoUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.shopInfoResp.value is Fail)
         }
@@ -45,7 +44,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
             viewModelShopPageProductListResultViewModel.getShopProduct(
-                    anyString(), anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyBoolean()
+                    anyString(), anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyBoolean(), anyInt()
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Success)
@@ -57,12 +56,17 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop product error`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            coEvery { getShopProductUseCase.executeOnBackground().errors.isNotEmpty() }
 
             viewModelShopPageProductListResultViewModel.getShopProduct(
-                    anyString()
+                    anyString(),
+                    anyInt(),
+                    anyInt(),
+                    anyInt(),
+                    anyString(),
+                    anyString(),
+                    anyBoolean(),
+                    anyInt()
             )
-
             verifyGetShopProductUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Fail)
         }

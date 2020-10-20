@@ -16,7 +16,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
@@ -66,6 +68,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
+    private final TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener;
 
     public KolPostDetailTypeFactoryImpl(KolPostDetailContract.View mainView,
                                         KolComment.View.ViewHolder kolCommentListener,
@@ -80,6 +83,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
                                         RelatedPostAdapter.RelatedPostListener relatedPostListener,
                                         HighlightAdapter.HighlightListener highlightListener,
+                                        TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -94,6 +98,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
         this.highlightListener = highlightListener;
         this.relatedPostListener = relatedPostListener;
+        this.topAdsBannerListener = topAdsBannerListener;
         this.userSession = userSession;
     }
 
@@ -172,6 +177,11 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull TopAdsBannerViewModel topAdsBannerViewmodel) {
+        return TopAdsBannerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder abstractViewHolder;
         if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
@@ -188,6 +198,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
         } else if(viewType == RelatedPostViewHolder.LAYOUT) {
             abstractViewHolder = new RelatedPostViewHolder(view, relatedPostListener);
+        } else if(viewType == TopAdsBannerViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener);
         } else {
             abstractViewHolder = super.createViewHolder(view, viewType);
         }

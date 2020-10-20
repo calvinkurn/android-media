@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
@@ -22,9 +23,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -33,35 +36,38 @@ import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
-import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
-import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
+import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
-import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.*
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
+import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
-import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        const val URL_KEY = "url"
-
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
@@ -88,6 +94,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
     @Inject
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
+    @Inject
+    lateinit var freeShippingTracker: SettingFreeShippingTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -131,11 +139,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(sellerHomeConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.attachCallback(this)
-        } else {
-            (activity as? SellerHomeActivity)?.attachCallback(this)
-        }
+        (activity as? SellerHomeActivity)?.attachCallback(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -208,13 +212,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
-        if(isVisible) {
-            (activity as? Activity)?.run {
-                if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
+        (activity as? Activity)?.run {
+            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
         }
     }
@@ -246,9 +248,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun getStatisticPageApplink(): String {
+        val statisticVariantName = "StatsOverApp"
+        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(statisticVariantName, "")
+        return if (variant == statisticVariantName) {
+            ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        } else {
+            ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
+        }
+    }
+
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
-        var bottomSheetInfix = ""
-        var bottomSheetDescription = ""
+        val bottomSheetInfix: String
+        val bottomSheetDescription: String
         if (isTopAdsActive) {
             bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
             bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
@@ -258,9 +270,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
         return topAdsBottomSheetView?.apply {
-            topAdsBottomSheetTitle.text = bottomSheetTitle
-            topAdsBottomSheetDescription.text = bottomSheetDescription
-            topAdsNextButton.setOnClickListener{
+            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
+            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
+            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
                 onKreditTopadsClicked()
             }
         }
@@ -293,10 +305,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun observeFreeShippingStatus() {
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
             if(freeShippingActive) {
-                otherMenuViewHolder?.setupFreeShippingLayout(
-                    fragmentManager,
-                    userSession
-                )
+                otherMenuViewHolder?.setupFreeShippingLayout(childFragmentManager)
             } else {
                 otherMenuViewHolder?.hideFreeShippingLayout()
             }
@@ -304,12 +313,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun populateAdapterData() {
+        val statisticPageAppLink = getStatisticPageApplink()
+
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
                         R.drawable.ic_statistic_setting,
-                        ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD,
+                        statisticPageAppLink,
                         eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
@@ -353,7 +364,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_tokopedia_care),
-                        R.drawable.ic_tokopedia_care,
+                        R.drawable.ic_icon_tokopedia_care,
                         ApplinkConst.CONTACT_US_NATIVE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
                 DividerUiModel(DividerType.THIN_PARTIAL),
@@ -419,17 +430,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession) }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(isVisible) {
-                if (isDefaultDarkStatusBar) {
-                    activity?.requestStatusBarDark()
-                } else {
-                    activity?.requestStatusBarLight()
-                }
+            if (isDefaultDarkStatusBar) {
+                activity?.requestStatusBarDark()
+            } else {
+                activity?.requestStatusBarLight()
             }
-            observeRecyclerViewScrollListener()
         }
+        observeRecyclerViewScrollListener()
     }
 
     private fun setupOffset() {
@@ -442,14 +451,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun observeRecyclerViewScrollListener() {
         this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateSearchBarView(offset: Int) {
         val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
         val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
@@ -462,16 +469,22 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 setDarkStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
+            shopStatusHeader?.gone()
+            shopStatusHeaderIcon?.gone()
+            bg_white_other_menu?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
+            shopStatusHeader?.visible()
+            shopStatusHeaderIcon?.visible()
+            bg_white_other_menu?.visible()
         }
     }
 
     private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isVisible) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }

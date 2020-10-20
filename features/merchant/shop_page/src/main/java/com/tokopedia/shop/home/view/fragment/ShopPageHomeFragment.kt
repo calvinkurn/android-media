@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.crashlytics.android.Crashlytics
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -23,14 +24,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -38,35 +40,47 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
+import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
+import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
+import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
-import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
-import com.tokopedia.shop.product.view.viewmodel.ShopSortSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,9 +92,13 @@ import javax.inject.Inject
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        ShopPageHomeProductClickListener,
+        ShopHomeEndlessProductListener,
         ShopPageHomePlayCarouselListener,
-        ShopProductSortFilterViewHolder.ShopProductEtalaseChipListViewHolderListener {
+        ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
+        ShopHomeCarouselProductListener,
+        ShopHomeCampaignNplWidgetListener,
+        ShopProductChangeGridSectionListener,
+        SortFilterBottomSheet.Callback{
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -93,16 +111,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val SPAN_COUNT = 2
         const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
+        const val UPDATE_REMIND_ME_PLAY_ID = "update_remind_me_id"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
+        const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
         private const val REQUEST_CODE_ETALASE = 206
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_PLAY_ROOM = 256
-        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
-        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
-        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
-        const val BUNDLE_SHOP_ID = "shopId"
+        private const val REQUEST_CODE_USER_LOGIN = 101
         const val BUNDLE = "bundle"
+        const val REGISTER_VALUE = "REGISTER"
+        const val UNREGISTER_VALUE = "UNREGISTER"
+        const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
 
         fun createInstance(
                 shopId: String,
@@ -139,10 +159,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopName: String = ""
     private var shopAttribution: String = ""
     private var shopRef: String = ""
-    private var sortId = ""
-    private var sortName = ""
+    private var sortId
+        get() = shopProductFilterParameter?.getSortId().orEmpty()
+        set(value) {
+            shopProductFilterParameter?.setSortId(value)
+        }
+    private val sortName
+        get() = viewModel?.getSortNameById(sortId).orEmpty()
     private var recyclerViewTopPadding = 0
-    private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
+    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
+    private var remoteConfig: RemoteConfig? = null
+    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -158,7 +187,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,11 +195,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         getIntentData()
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
-            sortId = it.getString(SAVED_SHOP_SORT_ID , "")
-            sortName = it.getString(SAVED_SHOP_SORT_NAME, "")
+            shopProductFilterParameter = it.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
         }
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
-        shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
+        shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+        shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -180,16 +210,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
 
-    private fun startMonitoringPltNetworkRequest(){
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+    private fun startMonitoringPltNetworkRequest() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
     }
 
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
@@ -197,7 +228,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
@@ -220,9 +251,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 animator.supportsChangeAnimations = false
             }
         }
-        observeShopSortSharedViewModel()
+        observeShopProductFilterParameterSharedViewModel()
+        observeShopChangeProductGridSharedViewModel()
         observeLiveData()
         loadInitialData()
+    }
+
+    private fun observeShopChangeProductGridSharedViewModel() {
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.observe(viewLifecycleOwner, Observer {
+            if (!shopHomeAdapter.isLoading) {
+                changeProductListGridView(it)
+            }
+        })
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -233,14 +273,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         return false
     }
 
-    private fun observeShopSortSharedViewModel() {
-        shopSortSharedViewModel?.sharedSortData?.observe(this, Observer {
+    private fun observeShopProductFilterParameterSharedViewModel() {
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             if (!shopHomeAdapter.isLoading) {
-                sortId = it.first
-                sortName = it.second
-                shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-                shopHomeAdapter.refreshSticky()
-                refreshProductList()
+                shopProductFilterParameter = it
+                changeSortData(sortId)
             }
         })
     }
@@ -248,12 +285,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onResume() {
         super.onResume()
         shopHomeAdapter.resumePlayCarousel()
+        shopHomeAdapter.resumeSliderBannerAutoScroll()
     }
 
     override fun onPause() {
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pausePlayCarousel()
+        shopHomeAdapter.pauseSliderBannerAutoScroll()
     }
 
     override fun onDestroy() {
@@ -262,16 +301,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
         viewModel?.reminderPlayLiveData?.removeObservers(this)
+        viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
+        viewModel?.shopProductFilterCountLiveData?.removeObservers(this)
         viewModel?.flush()
         shopHomeAdapter.onDestroy()
-        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
+        shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SAVED_SHOP_SORT_ID, sortId)
-        outState.putString(SAVED_SHOP_SORT_NAME, sortName)
+        outState.putParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER, shopProductFilterParameter)
     }
 
     override fun loadInitialData() {
@@ -283,7 +324,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
-        viewModel?.getShopPageHomeData(shopId, sortId.toIntOrZero())
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
     private fun getIntentData() {
@@ -298,7 +339,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeLiveData() {
-        viewModel?.shopHomeLayoutData?.observe(this, Observer {
+        viewModel?.shopHomeLayoutData?.observe(viewLifecycleOwner, Observer {
             startMonitoringPltRenderPage()
             hideLoading()
             when (it) {
@@ -308,32 +349,39 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
                     stopPerformanceMonitor()
+                    val throwable = it.throwable
+                    ShopUtil.logTimberWarning(
+                            "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
+                            "shop_id='${shopId}';" +
+                                    "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
+                                    ";error_trace='${Log.getStackTraceString(throwable)}'"
+                    )
                 }
             }
             stopMonitoringPltRenderPage()
         })
 
-        viewModel?.initialProductListData?.observe(this, Observer {
+        viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
                     addProductListHeader()
-                    updateProductListData(it.data.first, it.data.second, true)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, true)
                 }
             }
             stopPerformanceMonitor()
         })
 
-        viewModel?.newProductListData?.observe(this, Observer {
+        viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
-                    updateProductListData(it.data.first, it.data.second, false)
+                    updateProductListData(it.data.hasNextPage, it.data.listShopProductUiModel, it.data.totalProductData, false)
                 }
             }
         })
 
-        viewModel?.checkWishlistData?.observe(this, Observer {
+        viewModel?.checkWishlistData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessCheckWishlist(it.data)
@@ -341,7 +389,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+        viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
             when(it.second){
                 is Success -> {
                     showToastSuccess(
@@ -356,11 +404,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel?.updatePlayWidgetData?.observe(this, Observer {
+        viewModel?.updatePlayWidgetData?.observe(viewLifecycleOwner, Observer {
             shopHomeAdapter.updatePlayWidget(it)
         })
 
-        viewModel?.videoYoutube?.observe(this, Observer {
+        viewModel?.videoYoutube?.observe(viewLifecycleOwner, Observer {
             val result = it.second
             when (result) {
                 is Success -> {
@@ -371,6 +419,120 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
+
+        viewModel?.campaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetCampaignNplRemindMeStatusData(it.data)
+                }
+            }
+        })
+
+        viewModel?.checkCampaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.success) {
+                        onSuccessCheckCampaignNplNotifyMe(it.data)
+                    } else {
+                        onFailCheckCampaignNplNotifyMe(it.data.campaignId, it.data.errorMessage)
+                    }
+                }
+                is Fail -> {
+                    (it.throwable as? CheckCampaignNplException)?.let{ checkCampaignException ->
+                        val errorMessage = ErrorHandler.getErrorMessage(context, checkCampaignException)
+                        onFailCheckCampaignNplNotifyMe(checkCampaignException.campaignId, errorMessage)
+                    }
+                }
+            }
+        })
+
+
+        viewModel?.bottomSheetFilterLiveData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBottomSheetFilterData(it.data)
+                }
+            }
+        })
+
+        viewModel?.shopProductFilterCountLiveData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessGetShopProductFilterCount(it.data)
+                }
+            }
+        })
+
+    }
+
+
+    private fun onSuccessGetShopProductFilterCount(count: Int) {
+        val countText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                count.thousandFormatted()
+        )
+        sortFilterBottomSheet?.setResultCountText(countText)
+    }
+
+    private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
+        model.defaultSortValue = DEFAULT_SORT_ID
+        sortFilterBottomSheet?.setDynamicFilterModel(model)
+    }
+
+    private fun addChangeProductGridSection(totalProductData: Int) {
+        shopHomeAdapter.updateShopPageProductChangeGridSection(totalProductData)
+    }
+
+    private fun onFailCheckCampaignNplNotifyMe(campaignId: String, errorMessage: String) {
+        view?.let{
+            Toaster.make(
+                    it,
+                    errorMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.shop_string_ok)
+            )
+        }
+        shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(campaignId)
+    }
+
+    private fun onSuccessCheckCampaignNplNotifyMe(data: CheckCampaignNotifyMeUiModel) {
+        val isRegisterCampaign = data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
+        shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(
+                data.campaignId,
+                isRegisterCampaign,
+                true
+        )
+        shopPageHomeTracking.clickNotifyMeButton(
+                isOwner,
+                data.action,
+                customDimensionShopPage
+        )
+        view?.let {
+            Toaster.make(
+                    it,
+                    data.message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.shop_string_ok),
+                    View.OnClickListener {
+                        shopPageHomeTracking.toasterActivationClickOk(isOwner, customDimensionShopPage)
+                    }
+            )
+            shopPageHomeTracking.impressionToasterActivation(isOwner, customDimensionShopPage)
+        }
+    }
+
+    private fun onSuccessGetCampaignNplRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+        shopHomeAdapter.updateRemindMeStatusCampaignNplWidgetData(data.campaignId, data.isAvailable)
+        if (getNplRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
+            val nplCampaignModel = shopHomeAdapter.getNplCampaignUiModel(data.campaignId)
+            nplCampaignModel?.let{
+                shopHomeAdapter.showNplRemindMeLoading(data.campaignId)
+                handleClickRemindMe(it)
+                setNplRemindMeClickedCampaignId("")
+            }
+        }
     }
 
     private fun addProductListHeader() {
@@ -379,7 +541,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 selectedEtalaseId = "",
                 selectedEtalaseName = "",
                 selectedSortId = sortId,
-                selectedSortName = sortName
+                selectedSortName = sortName,
+                filterIndicatorCounter = getIndicatorCount(
+                        shopProductFilterParameter?.getMapData()
+                )
         )
         shopHomeAdapter.setSortFilterData(shopProductSortFilterUiModel)
     }
@@ -474,16 +639,46 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun updateProductListData(
             hasNextPage: Boolean,
             productList: List<ShopHomeProductViewModel>,
+            totalProductData: Int,
             isInitialData: Boolean
     ) {
+        if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
+            addChangeProductGridSection(totalProductData)
+        }
         shopHomeAdapter.setProductListData(productList, isInitialData)
         updateScrollListenerState(hasNextPage)
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
-        viewModel?.getWishlistStatus(listProductWidget)
+        shopHomeAdapter.hideLoading()
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
+        checkProductWidgetWishListStatus(data)
+        checkCampaignNplWidgetRemindMeStatus(data)
+    }
+
+    private fun checkCampaignNplWidgetRemindMeStatus(data: ShopPageHomeLayoutUiModel) {
+        viewModel?.let {
+            if (it.isLogin) {
+                val listCampaignNplWidget = data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()
+                listCampaignNplWidget.forEach { nplCampaignUiModel ->
+                    nplCampaignUiModel.data?.firstOrNull()?.let { nplCampaignItem ->
+                        if (nplCampaignItem.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase())
+                            viewModel?.getCampaignNplRemindMeStatus(nplCampaignItem)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkProductWidgetWishListStatus(data: ShopPageHomeLayoutUiModel) {
+        viewModel?.let {
+            if (it.isLogin) {
+                val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
+                if (listProductWidget.isNotEmpty()) {
+                    viewModel?.getWishlistStatus(listProductWidget)
+                }
+            }
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {
@@ -521,7 +716,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun getProductList(page: Int) {
         if (shopId.isNotEmpty()) {
-            viewModel?.getNewProductList(shopId, sortId.toIntOrZero(), page)
+            viewModel?.getNewProductList(shopId, page, shopProductFilterParameter ?: ShopProductFilterParameter())
         }
     }
 
@@ -533,9 +728,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if (shopHomeAdapter.isLoading) {
                     return
                 }
-                val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_PICKER_ETALASE_NAME)
-                val isNeedToReloadData = data.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+
+                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
+                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
                 shopPageHomeTracking.clickMoreMenuChip(
                         isOwner,
                         etalaseName,
@@ -550,6 +746,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         "",
                         shopRef
                 )
+
                 intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                 startActivity(intent)
             }
@@ -558,15 +755,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
-                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
-                    shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-                    shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-                    shopHomeAdapter.refreshSticky()
+                    val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
+                    changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
-                    refreshProductList()
                 }
+            }
+            REQUEST_CODE_USER_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK)
+                    (parentFragment as? ShopPageFragment)?.refreshData()
             }
             else -> {
             }
@@ -587,7 +784,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         recycler_view?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         staggeredGridLayoutManager?.scrollToPositionWithOffset(
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
-                stickySingleHeaderView.containerHeight
+                0
         )
     }
 
@@ -855,16 +1052,31 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.onRefreshPlayBanner(shopId)
     }
 
-    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
+        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
+        if(isLogin) {
+            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
+        } else {
+            // reset remind icon
+            adapter.notifyItemChanged(position, Bundle().apply {
+                putBoolean(UPDATE_REMIND_ME_PLAY, true)
+                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
+            })
+            redirectToLoginPage()
+        }
     }
 
-    override fun onPlayBannerSeeMoreClick(appLink: String) {
-        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "")
+    override fun onPlayBannerSeeMoreClick(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarousel(shopId, viewModel?.userId ?: "", widgetPosition)
         RouteManager.route(context, appLink)
     }
 
-    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerSeeMoreBanner(appLink: String, widgetPosition: Int) {
+        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -872,11 +1084,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
     }
 
-    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, position: Int) {
+    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickPlayBanner(
                 shopId = dataModel.partnerId,
                 userId = viewModel?.userId ?: "",
@@ -884,29 +1097,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bannerId = widgetId,
                 creativeName = dataModel.coverUrl,
                 autoPlay = autoPlay,
+                positionWidget = widgetPosition,
                 positionChannel = position.toString()
         )
         RouteManager.route(context, dataModel.applink)
     }
 
-    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.impressionLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
     }
 
-    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, position: Int) {
+    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
         shopPageHomeTracking.clickLeftPlayBanner(
                 shopId = shopId,
                 userId = viewModel?.userId ?: "",
                 bannerId = widgetId,
                 creativeName = dataModel.imageUrl,
-                positionChannel = "1",
+                positionChannel = widgetPosition.toString(),
                 position = (position + 1).toString()
         )
         RouteManager.route(context, dataModel.applink)
@@ -1020,8 +1234,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun redirectToLoginPage() {
-        RouteManager.route(context, ApplinkConst.LOGIN)
+    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     private fun showToastSuccess(message: String) {
@@ -1102,10 +1319,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun redirectToEtalasePicker() {
         context?.let {
             val bundle = Bundle()
-            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, "")
-            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
-            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
-            bundle.putString(BUNDLE_SHOP_ID, shopId)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra(BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
@@ -1129,18 +1347,237 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOwner,
                 customDimensionShopPage
         )
-        sortId = ""
-        sortName = ""
-        shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
-        shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
-        shopHomeAdapter.refreshSticky()
+        changeSortData("")
         scrollToEtalaseTitlePosition()
-        refreshProductList()
     }
+
+    override fun setSortFilterMeasureHeight(measureHeight: Int) {}
+
+    override fun onFilterClicked() {
+        showBottomSheetFilter()
+    }
+
+    private fun showBottomSheetFilter() {
+        val mapParameter = if (sortId.isNotEmpty())
+            shopProductFilterParameter?.getMapData()
+        else
+            shopProductFilterParameter?.getMapDataWithDefaultSortId()
+        sortFilterBottomSheet = SortFilterBottomSheet()
+        sortFilterBottomSheet?.show(
+                requireFragmentManager(),
+                mapParameter,
+                null,
+                this
+        )
+        sortFilterBottomSheet?.setOnDismissListener {
+            sortFilterBottomSheet = null
+        }
+        viewModel?.getBottomSheetFilterData()
+    }
+
 
     private fun refreshProductList() {
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         getProductList(1)
     }
+
+    override fun onCampaignCarouselProductItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
+            shopPageHomeTracking.clickCampaignNplProduct(
+                    isOwner,
+                    it.statusCampaign,
+                    shopHomeProductViewModel?.name ?: "",
+                    shopHomeProductViewModel?.id ?: "",
+                    shopHomeProductViewModel?.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    isLogin,
+                    customDimensionShopPage
+            )
+        }
+        shopHomeProductViewModel?.let {
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCampaignCarouselProductItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
+            shopPageHomeTracking.impressionCampaignNplProduct(
+                    isOwner,
+                    it.statusCampaign,
+                    shopHomeProductViewModel?.name ?: "",
+                    shopHomeProductViewModel?.id ?: "",
+                    shopHomeProductViewModel?.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    isLogin,
+                    customDimensionShopPage
+            )
+        }
+    }
+
+    override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
+            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign)
+        }
+    }
+
+    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String) {
+        val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
+                campaignId,
+                statusCampaign,
+                shopId,
+                isOfficialStore,
+                isGoldMerchant
+        )
+        bottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                shopHomeAdapter.showNplRemindMeLoading(campaignId)
+                handleClickRemindMe(model)
+            } else {
+                setNplRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+        }
+    }
+
+    private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
+        val action = if (isRemindMe) {
+            UNREGISTER_VALUE
+        } else {
+            REGISTER_VALUE
+        }
+        val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
+        viewModel?.clickRemindMe(campaignId, action)
+    }
+
+    override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.clickCtaCampaignNplWidget(
+                    isOwner,
+                    it.statusCampaign,
+                    customDimensionShopPage
+            )
+            context?.let {context ->
+                RouteManager.route(context, model.header.ctaLink)
+            }
+        }
+    }
+
+    override fun onImpressionCampaignNplWidget(
+            position: Int,
+            shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
+    ) {
+        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
+            val statusCampaign = it.statusCampaign
+            val selectedBannerType = when (statusCampaign.toLowerCase()) {
+                StatusCampaign.UPCOMING.statusCampaign.toLowerCase() -> BannerType.UPCOMING.bannerType
+                StatusCampaign.ONGOING.statusCampaign.toLowerCase() -> BannerType.LIVE.bannerType
+                StatusCampaign.FINISHED.statusCampaign.toLowerCase() -> BannerType.FINISHED.bannerType
+                else -> ""
+            }
+            val selectedBanner = it.bannerList.firstOrNull {
+                it.bannerType.toLowerCase() == selectedBannerType.toLowerCase()
+            }
+            val isSeeCampaign = if (statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase()) {
+                it.totalNotifyWording.isNotEmpty()
+            } else {
+                null
+            }
+            shopPageHomeTracking.impressionCampaignNplWidget(
+                    it.statusCampaign,
+                    shopId,
+                    position + 1,
+                    isSeeCampaign,
+                    selectedBanner?.imageId.toString(),
+                    selectedBanner?.imageUrl ?: "",
+                    customDimensionShopPage,
+                    isOwner
+            )
+        }
+    }
+
+    override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
+        viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter(),true)
+    }
+
+    private fun setNplRemindMeClickedCampaignId(campaignId: String) {
+        PersistentCacheManager.instance.put(NPL_REMIND_ME_CAMPAIGN_ID, campaignId)
+    }
+
+    private fun getNplRemindMeClickedCampaignId(): String {
+        return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
+    }
+
+    private fun changeProductListGridView(gridType: ShopProductViewGridType){
+        shopHomeAdapter.updateShopPageProductChangeGridSection(gridType)
+        shopHomeAdapter.changeProductCardGridType(gridType)
+    }
+
+    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
+        val productListName = shopHomeAdapter.productListViewModel.joinToString(","){
+            it.name.orEmpty()
+        }
+        shopPageHomeTracking.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
+        changeProductListGridView(gridType)
+        scrollToEtalaseTitlePosition()
+        shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
+    }
+
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val isResetButtonVisible = sortFilterBottomSheet?.bottomSheetAction?.isVisible
+        sortFilterBottomSheet = null
+        shopProductFilterParameter?.clearParameter()
+        shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
+        if(isResetButtonVisible == false){
+            sortId = ""
+        }
+        changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
+        scrollToEtalaseTitlePosition()
+    }
+
+    private fun changeSortData(sortId: String){
+        this.sortId = sortId
+        shopProductFilterParameterSharedViewModel?.changeSharedSortData(
+                shopProductFilterParameter?:ShopProductFilterParameter()
+        )
+        shopHomeAdapter.changeSelectedSortFilter(this.sortId, sortName)
+        shopHomeAdapter.changeSortFilterIndicatorCounter(getIndicatorCount(
+                shopProductFilterParameter?.getMapData()
+        ))
+        shopHomeAdapter.refreshSticky()
+        refreshProductList()
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        val tempShopProductFilterParameter = ShopProductFilterParameter()
+        tempShopProductFilterParameter.setMapData(mapParameter)
+        viewModel?.getFilterResultCount(
+                shopId,
+                tempShopProductFilterParameter
+        )
+    }
+
 }

@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePrefer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +48,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
 
         assertEquals(OccState.Success(response), preferenceSummaryViewModel.preference.value)
     }
@@ -62,7 +63,7 @@ class PreferenceSummaryViewModelTest {
             (args[1] as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
 
         assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.preference.value)
     }
@@ -76,7 +77,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         preferenceSummaryViewModel.deletePreference(0)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
@@ -96,7 +97,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         preferenceSummaryViewModel.deletePreference(0)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
@@ -104,6 +105,13 @@ class PreferenceSummaryViewModelTest {
         deletePreferenceUseCase.invokeOnError(response)
 
         assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.editResult.value)
+    }
+
+    @Test
+    fun `Delete Preference On Invalid State`() {
+        preferenceSummaryViewModel.deletePreference(0)
+
+        assertNull(preferenceSummaryViewModel.editResult.value)
     }
 
     @Test
@@ -178,29 +186,22 @@ class PreferenceSummaryViewModelTest {
     }
 
     @Test
-    fun `Is Data Changed`() {
-        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
-        every {
-            getPreferenceByIdUseCase.execute(any(), any(), any())
-        } answers {
-            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
-            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
-        }
-
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+    fun `Is Data Changed First State`() {
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
-        assertEquals(true, isDataChanged)
+        assertEquals(false, isDataChanged)
     }
 
     @Test
     fun `Is Data Changed With Same Data`() {
         val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
 
-        preferenceSummaryViewModel.profileAddressId = 1
-        preferenceSummaryViewModel.profileServiceId = 1
-        preferenceSummaryViewModel.profileGatewayCode = "1"
-        preferenceSummaryViewModel.profilePaymentMetadata = "1"
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
+        }
 
         every {
             getPreferenceByIdUseCase.execute(any(), any(), any())
@@ -209,16 +210,129 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(false, isDataChanged)
     }
 
     @Test
-    fun `Is Data Changed First State`() {
+    fun `Is Data Changed With All Different Data`() {
+        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
+
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(2)
+            setProfileServiceId(2)
+            setProfileGatewayCode("2")
+            setProfilePaymentMetadata("2")
+        }
+
+        every {
+            getPreferenceByIdUseCase.execute(any(), any(), any())
+        } answers {
+            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
+        }
+
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
-        assertEquals(false, isDataChanged)
+        assertEquals(true, isDataChanged)
+    }
+
+    @Test
+    fun `Is Data Changed With Different Address`() {
+        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
+
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(2)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
+        }
+
+        every {
+            getPreferenceByIdUseCase.execute(any(), any(), any())
+        } answers {
+            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
+        }
+
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
+        val isDataChanged = preferenceSummaryViewModel.isDataChanged()
+
+        assertEquals(true, isDataChanged)
+    }
+
+    @Test
+    fun `Is Data Changed With Different Shipping`() {
+        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
+
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(1)
+            setProfileServiceId(2)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("1")
+        }
+
+        every {
+            getPreferenceByIdUseCase.execute(any(), any(), any())
+        } answers {
+            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
+        }
+
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
+        val isDataChanged = preferenceSummaryViewModel.isDataChanged()
+
+        assertEquals(true, isDataChanged)
+    }
+
+    @Test
+    fun `Is Data Changed With Different Gateway`() {
+        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
+
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("2")
+            setProfilePaymentMetadata("1")
+        }
+
+        every {
+            getPreferenceByIdUseCase.execute(any(), any(), any())
+        } answers {
+            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
+        }
+
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
+        val isDataChanged = preferenceSummaryViewModel.isDataChanged()
+
+        assertEquals(true, isDataChanged)
+    }
+
+    @Test
+    fun `Is Data Changed With Different Metadata`() {
+        val response = ProfilesItemModel(AddressModel(addressId = 1), ShipmentModel(serviceId = 1), 1, PaymentModel(gatewayCode = "1", metadata = "1"))
+
+        preferenceSummaryViewModel.apply {
+            setProfileAddressId(1)
+            setProfileServiceId(1)
+            setProfileGatewayCode("1")
+            setProfilePaymentMetadata("2")
+        }
+
+        every {
+            getPreferenceByIdUseCase.execute(any(), any(), any())
+        } answers {
+            assertEquals(OccState.Loading, preferenceSummaryViewModel.preference.value)
+            (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
+        }
+
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
+        val isDataChanged = preferenceSummaryViewModel.isDataChanged()
+
+        assertEquals(true, isDataChanged)
     }
 }

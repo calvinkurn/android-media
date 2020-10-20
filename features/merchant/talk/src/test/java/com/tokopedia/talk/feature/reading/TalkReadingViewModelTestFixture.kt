@@ -36,22 +36,4 @@ abstract class TalkReadingViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, userSession, TestCoroutineDispatchers)
     }
-
-    protected fun LiveData<*>.verifyValueEquals(expected: Any) {
-        val actual = value
-        assertEquals(expected, actual)
-    }
-
-    protected fun LiveData<*>.verifySuccessEquals(expected: Success<*>) {
-        val expectedResult = expected.data
-        val actualResult = (value as Success<*>).data
-        assertEquals(expectedResult, actualResult)
-    }
-
-    protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {
-        val expectedResult = expected.throwable::class.java
-        val actualResult = (value as Fail).throwable::class.java
-        assertEquals(expectedResult, actualResult)
-
-    }
 }

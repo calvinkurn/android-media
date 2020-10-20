@@ -71,6 +71,7 @@ abstract class BaseTracking {
     protected object BusinessUnit{
         const val KEY = "businessUnit"
         const val DEFAULT = "home & browse"
+        const val ADS_SOLUTION = "ads solution"
     }
 
     protected object ChannelId{
@@ -237,7 +238,13 @@ abstract class BaseTracking {
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
+            if (list.isNotEmpty()) {
+                var newList = list + if(product.isTopAds) " - topads" else ""
+                if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
+                if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+                if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+                map[KEY_LIST] = newList
+            }
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
@@ -260,7 +267,10 @@ abstract class BaseTracking {
             val cartId: String = "",
             val categoryId: String = "",
             val clusterId: Int = -1,
-            val quantity: String = ""): ImpressHolder()
+            val quantity: String = "",
+            val headerName: String = "",
+            val isCarousel: Boolean? = null,
+            val recommendationType: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -279,6 +289,31 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
+        )
+        if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
+        if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
+        if(currentSite.isNotBlank()) dataLayer[CurrentSite.KEY] = currentSite
+        if(businessUnit.isNotBlank()) dataLayer[BusinessUnit.KEY] = businessUnit
+        return dataLayer
+    }
+
+    open fun getBasicPromotionClick(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        promotions: List<Promotion>,
+        userId: String = "",
+        screen: String = "",
+        currentSite: String = "",
+        businessUnit: String = ""
+    ): Map<String, Any>{
+        val dataLayer = DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
         if(screen.isNotBlank()) dataLayer[Screen.KEY] = screen
@@ -439,11 +474,11 @@ abstract class BaseTracking {
         return dataLayer
     }
 
-    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: String) = Promotion(
+    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
             id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
             name = channelModel.trackingAttributionModel.promoName,
             creative = attribution,
-            position = position
+            position = (position+1).toString()
     )
 
     protected fun convertRupiahToInt(rupiah: String): Int {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleHeaderSellerSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_68"
+        tools:text="Faq"/>
+
+</RelativeLayout>

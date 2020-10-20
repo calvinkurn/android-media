@@ -18,7 +18,7 @@ import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

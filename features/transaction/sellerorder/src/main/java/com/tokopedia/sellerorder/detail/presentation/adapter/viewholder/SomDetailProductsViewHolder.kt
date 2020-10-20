@@ -21,6 +21,7 @@ class SomDetailProductsViewHolder(itemView: View, private val actionListener: So
             if (item.dataObject.listProducts.isNotEmpty()) {
                 itemView.rv_products?.visibility = View.VISIBLE
                 itemView.rv_products?.apply {
+                    isNestedScrollingEnabled = false
                     layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                     adapter = somDetailProductsCardAdapter
                 }

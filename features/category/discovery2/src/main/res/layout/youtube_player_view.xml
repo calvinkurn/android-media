@@ -7,7 +7,7 @@
     android:background="@color/black"
     tools:context=".viewcontrollers.activity.DiscoveryActivity">
 
-    <WebView
+    <com.tokopedia.discovery2.viewcontrollers.customview.YoutubeWebView
         android:id="@+id/youtube_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

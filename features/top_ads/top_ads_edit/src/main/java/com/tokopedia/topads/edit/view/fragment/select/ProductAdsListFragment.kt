@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ALL
@@ -24,16 +26,16 @@ import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
 import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
 import com.tokopedia.topads.edit.utils.Constants.ROW
-import com.tokopedia.topads.edit.utils.Constants.START
-import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.sheet.ProductFilterSheetList
+import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapter
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.edit.view.model.ProductAdsListViewModel
-import com.tokopedia.topads.edit.view.sheet.ProductFilterSheetList
-import com.tokopedia.topads.edit.view.sheet.ProductSortSheetList
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_fragment_product_list.*
 import javax.inject.Inject
 
@@ -44,6 +46,11 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var productListAdapter: ProductListAdapter
     private var selectedPrevPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
     private var selectedPrevNonPro: List<ResponseProductList.Result.TopadsGetListProduct.Data> = listOf()
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var isDataEnded = false
+    var items = mutableListOf<EtalaseViewModel>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,7 +58,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var viewModel: ProductAdsListViewModel
 
     companion object {
-
+        private var START = -ROW
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = ProductAdsListFragment()
             fragment.arguments = extras
@@ -78,7 +85,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
-        if (not_promoted.isChecked) {
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productID)
             }
@@ -95,7 +102,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productPrice)
         }
-        if (not_promoted.isChecked) {
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productPrice)
             }
@@ -113,7 +120,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productName)
         }
-        if (not_promoted.isChecked) {
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productName)
             }
@@ -130,7 +137,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productImage)
         }
-        if (not_promoted.isChecked) {
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productImage)
             }
@@ -141,6 +148,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         }
         return list
     }
+
     override fun getScreenName(): String {
         return ProductAdsListFragment::class.java.simpleName
     }
@@ -150,14 +158,47 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_edit_fragment_product_list, container, false)
+        val view = inflater.inflate(R.layout.topads_edit_fragment_product_list, container, false)
+        recyclerView = view.findViewById(R.id.product_list)
+        setAdapter()
+        return view
     }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.itemAnimator = null
+        recyclerView.adapter = productListAdapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (!isDataEnded) {
+                    START += ROW
+                    fetchList()
+                }
+            }
+        }
+    }
+
+    private fun fetchList() {
+        viewModel.productList(getKeyword(),
+                getSelectedEtalaseId(),
+                getSelectedSortId(),
+                getPromoted(),
+                ROW,
+                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            sortProductList = ProductSortSheetList.newInstance(it)
-            filterSheetProductList = ProductFilterSheetList.newInstance(it)
+            sortProductList = ProductSortSheetList.newInstance()
+            filterSheetProductList = ProductFilterSheetList.newInstance()
         }
         btn_next.setOnClickListener {
             val returnIntent = getPassingIntent()
@@ -165,36 +206,32 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             activity?.finish()
         }
         btn_sort.setOnClickListener {
-            sortProductList.show()
+            sortProductList.show(childFragmentManager, "")
         }
         btn_filter.setOnClickListener {
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
+            } else {
+                filterSheetProductList.updateData(items)
             }
-            filterSheetProductList.show()
+            filterSheetProductList.show(childFragmentManager, "filterList")
         }
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
         not_promoted.setOnClickListener {
+            not_promoted.chipType = ChipsUnify.TYPE_SELECTED
+            promoted.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
         promoted.setOnClickListener {
+            promoted.chipType = ChipsUnify.TYPE_SELECTED
+            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
-        searchInputView.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                refreshProduct()
-            }
-
-            override fun onSearchTextChanged(text: String?) {
-            }
-        })
+        Utils.setSearchListener(searchInputView, context, view, ::refreshProduct)
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
-        product_list.adapter = productListAdapter
-        product_list.layoutManager = LinearLayoutManager(context)
-
     }
 
     private fun getPassingIntent(): Intent {
@@ -207,18 +244,14 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun refreshProduct() {
+        START = 0
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
-        viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+        fetchList()
     }
 
-    private fun clearList(){
+    private fun clearShimmerList() {
         productListAdapter.items.clear()
         productListAdapter.notifyDataSetChanged()
     }
@@ -229,7 +262,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        not_promoted.isChecked = true
+        not_promoted.chipType = ChipsUnify.TYPE_SELECTED
         refreshProduct()
     }
 
@@ -237,19 +270,19 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchText
+    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
 
     private fun getPromoted(): String {
         return ALL
     }
 
     private fun onProductListSelected() {
-        if (not_promoted.isChecked) {
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevNonPro = productListAdapter.getSelectedItems()
         } else {
             selectedPrevPro = productListAdapter.getSelectedItems()
         }
-        val count: Int = if (not_promoted.isChecked) {
+        val count: Int = if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             getSelectedProduct().size + selectedPrevPro.size
         } else {
             getSelectedProduct().size + selectedPrevNonPro.size
@@ -260,7 +293,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyProduct() {
-        clearList()
+        clearShimmerList()
         btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
@@ -270,11 +303,13 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
     }
 
-    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        clearList()
+    private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
+        if (START == 0)
+            clearShimmerList()
+        prepareForNextFetch(eof)
         btn_next.isEnabled = false
         data.forEach { result ->
-            if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
+            if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
                 if (result.adID > 0 && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
@@ -289,15 +324,21 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
         }
         productListAdapter.notifyDataSetChanged()
-        if (not_promoted.isChecked)
+        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
             productListAdapter.setSelectedList(selectedPrevNonPro)
-        else
+        } else {
             productListAdapter.setSelectedList(selectedPrevPro)
+        }
         val count = selectedPrevNonPro.size + selectedPrevPro.size
 
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
+    }
 
+    private fun prepareForNextFetch(eof: Boolean) {
+        isDataEnded = eof
+        if (!isDataEnded)
+            recyclerviewScrollListener.updateStateAfterGetData()
     }
 
     private fun ifExists(productID: Int): Boolean {
@@ -311,7 +352,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
-        val items = mutableListOf<EtalaseViewModel>()
+        items.clear()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
         filterSheetProductList.updateData(items)

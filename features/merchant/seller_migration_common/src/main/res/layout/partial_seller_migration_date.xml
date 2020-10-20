@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="@dimen/dp_12"
+    android:paddingEnd="@dimen/dp_12"
+    android:background="@drawable/bg_seller_migration_rounded_border">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_seller_migration_date_warning"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintWidth_percent="0.04"
+        app:srcCompat="@drawable/ic_seller_migration_warning"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seller_migration_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:text="@string/seller_migration_bottom_sheet_redirected"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_2"
+        app:layout_constraintStart_toEndOf="@id/iv_seller_migration_date_warning"
+        app:layout_constraintTop_toTopOf="@id/iv_seller_migration_date_warning"
+        app:layout_constraintBottom_toBottomOf="@id/iv_seller_migration_date_warning"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seller_migration_start_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/tv_seller_migration_start"
+        app:layout_constraintTop_toTopOf="@id/iv_seller_migration_date_warning"
+        app:layout_constraintBottom_toBottomOf="@id/iv_seller_migration_date_warning"
+        tools:text="@string/seller_migration_bottom_sheet_redirected_dates"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

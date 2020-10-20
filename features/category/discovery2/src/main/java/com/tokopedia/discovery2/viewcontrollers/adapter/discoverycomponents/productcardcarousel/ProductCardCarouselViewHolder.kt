@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -11,11 +12,14 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
+    private var mHeaderView: FrameLayout = itemView.findViewById(R.id.header_view)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
@@ -35,6 +39,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         addDefaultItemDecorator()
     }
 
+    private fun addCardHeader(componentsItem: ComponentsItem) {
+        mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
+    }
+
     private fun addDefaultItemDecorator() {
         if (mProductCarouselRecyclerView.itemDecorationCount > 0)
             mProductCarouselRecyclerView.removeItemDecorationAt(0)
@@ -45,6 +53,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
+            mProductCarouselComponentViewModel.getProductCardHeaderData().observe(it, Observer { component ->
+                addCardHeader(component)
+            })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
@@ -53,6 +64,17 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(it, Observer {
+                setMaxHeight(it)
+            })
+        }
+    }
+
+    private fun setMaxHeight(height: Int?) {
+        height?.let {
+            val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
+            carouselLayoutParams?.height = it
+            mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
         }
     }
 

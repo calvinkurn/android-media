@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.features.shopCommon)
@@ -43,7 +42,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -105,7 +104,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }

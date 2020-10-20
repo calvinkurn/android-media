@@ -103,7 +103,7 @@ object ApplinkConstInternalMarketplace {
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
     // InboxReputationDetailActivity
-    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -120,7 +120,7 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
 
     @JvmField
-    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE/?domain={domain}"
+    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
 
     //ShopInfoActivity
     @JvmField
@@ -140,11 +140,13 @@ object ApplinkConstInternalMarketplace {
     val SHOP_PAGE_REVIEW = "$SHOP_PAGE_BASE/{shop_id}/review"
 
     @JvmField
-    val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
+    val SHOP_PAGE_PRODUCT = "$SHOP_PAGE_BASE/{shop_id}/product"
 
-    //ReviewShopInfoActiviy
     @JvmField
-    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+    val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -189,6 +191,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
+    @JvmField
+    val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
@@ -209,6 +214,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
+    @JvmField
+    val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
     @JvmField
     val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
@@ -316,4 +323,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
+    @JvmField
+    val ARGS_LAYOUT_ID = "layoutID"
+
+    @JvmField
+    val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 }

@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
-    android:background="@color/white">
+    android:paddingBottom="@dimen/dp_16">
 
     <View
         android:id="@+id/mini_shop_divider"
@@ -72,13 +71,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_3"
         tools:visibility="gone"/>
-
-    <include
-        android:id="@+id/mini_shop_shimmering"
-        layout="@layout/mini_shop_shimmering"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

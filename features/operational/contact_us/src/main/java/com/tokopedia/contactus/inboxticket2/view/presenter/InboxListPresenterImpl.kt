@@ -144,7 +144,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
                 page = FIRST_PAGE
             }
         }
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickFilter,
                 selected)
@@ -163,7 +163,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
         val detailIntent =
                 InboxDetailActivity.getIntent(mView?.getActivity(), originalList[index].id, isOfficialStore)
         mView?.navigateToActivityRequest(detailIntent, InboxBaseView.REQUEST_DETAILS)
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventTicketClick,
                 originalList[index].status)

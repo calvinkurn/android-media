@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
 
 class SelectVariantMainBottomSheet(
-        private val listener: SelectVariantMainListener
+        private val listener: SelectVariantMainListener? = null
 ): BottomSheetUnify() {
 
     companion object {
@@ -34,6 +34,11 @@ class SelectVariantMainBottomSheet(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 
     fun setData(items: VariantInputModel?) {
@@ -59,7 +64,7 @@ class SelectVariantMainBottomSheet(
         }
         contentView?.buttonSave?.setOnClickListener {
             dismiss()
-            listener.onSelectVariantMainFinished(selectAdapter?.getSelectedData().orEmpty())
+            listener?.onSelectVariantMainFinished(selectAdapter?.getSelectedData().orEmpty())
         }
         setChild(contentView)
         clearContentPadding = true

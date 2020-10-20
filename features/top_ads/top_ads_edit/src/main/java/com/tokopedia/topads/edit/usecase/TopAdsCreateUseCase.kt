@@ -75,9 +75,9 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         }, onError)
     }
 
-    fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
+    private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
 //
-        val groupName: String = dataGroup[GROUP_NAME] as String
+        val groupName = dataGroup[GROUP_NAME] as? String
         val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
         val groupId = dataGroup[Constants.GROUP_ID] as? Int

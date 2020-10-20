@@ -52,7 +52,8 @@ class GetProfileHeaderSubscriber constructor(
                         profile.isKol,
                         profile.isAffiliate,
                         profile.isFollowed,
-                        userId.toString() == view.getUserSession().userId
+                        userId.toString() == view.getUserSession().userId,
+                        isCreatePostToggleOn = data.bymeProfileHeader.profileConfig.showPostButton
                 )
         )
         visitables.add(getEmptyModel())

@@ -49,11 +49,11 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp
     ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
-    ProductCardRevampItem(R.layout.product_item_layout, ComponentNames.ProductCardRevampItem.componentName),
+    ProductCardRevampItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardRevampItem.componentName),
 
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
-    ProductCardCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardCarouselItem.componentName),
+    ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
 
     // Product Card Sprint Sale
     ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),
@@ -62,6 +62,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // Product Card Sprint Sale Carousel
     ProductCardSprintSaleCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardSprintSaleCarousel.componentName),
     ProductCardSprintSaleCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
+    ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
+    SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
+    //Quick Filter
+    QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
 }

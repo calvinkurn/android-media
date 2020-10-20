@@ -12,4 +12,6 @@ interface HomeComponentTypeFactory {
     fun type(mixLeftDataModel: MixLeftDataModel): Int
     fun type(mixTopDataModel: MixTopDataModel): Int
     fun type(productHighlightDataModel: ProductHighlightDataModel): Int
+    fun type(lego4AutoDataModel: Lego4AutoDataModel): Int
+    fun type(featuredShopDataModel: FeaturedShopDataModel): Int
 }

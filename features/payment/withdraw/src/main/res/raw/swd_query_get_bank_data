@@ -8,18 +8,14 @@ query {
             bankName
             bankBranch
             bankAccountID
-            isDefaultBank
-            isVerifiedAccount
             bankImageUrl
+            isDefaultBank
             adminFee
             minAmount
-            status
-            accountName
             maxAmount
-            createBy
-            updateBy
-            createTime
-            updateTime
+            status
+            isVerifiedAccount
+            accountName
             statusFraud
             copyWriting
             is_fraud

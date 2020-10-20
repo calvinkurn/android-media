@@ -11,8 +11,8 @@ import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.BannerModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import kotlinx.android.synthetic.main.ent_banner_view.view.*
 
@@ -20,22 +20,22 @@ import kotlinx.android.synthetic.main.ent_banner_view.view.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class BannerEventViewHolder: HomeEventViewHolder<BannerModel>, BannerView.OnPromoClickListener,
-BannerView.OnPromoAllClickListener, BannerView.OnPromoScrolledListener,
-BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
+class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : HomeEventViewHolder<BannerModel>(itemView), BannerView.OnPromoClickListener,
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoScrolledListener,
+        BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
-    constructor(itemView: View) : super(itemView)
-    var context : Context
+    var context: Context
     var el: BannerModel? = null
 
     init {
         context = itemView.context
         itemView.banner_home_ent?.onPromoClickListener = this
         itemView.banner_home_ent?.onPromoAllClickListener = this
-        itemView.banner_home_ent?.onPromoScrolledListener = this
+        itemView.banner_home_ent?.setOnPromoScrolledListener(this)
+        itemView.banner_home_ent?.setOnPromoLoadedListener(this)
         itemView.banner_home_ent?.setOnPromoDragListener(this)
         itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
-                        context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         itemView.banner_home_ent?.customHeight = context.resources.getDimensionPixelSize(R.dimen.dimen_dp_110)
         itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
@@ -49,8 +49,8 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
     override fun onPromoClick(p: Int) {
         el?.let {
+            listener.clickBanner(it.layout.items.get(p), p)
             RouteManager.route(context, it.layout.items.get(p).url)
-            EventHomePageTracking.getInstance().clickBanner(it.layout.items.get(p), p)
         }
     }
 
@@ -60,7 +60,7 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
 
     override fun onPromoScrolled(pos: Int) {
         el?.let {
-            EventHomePageTracking.getInstance().impressionBanner(it.layout.items.get(pos), pos)
+            listener.impressionBanner(it.layout.items.get(pos), pos)
         }
     }
 
@@ -68,9 +68,15 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
     }
 
     override fun onPromoDragStart() {
+
     }
 
     override fun onPromoLoaded() {
+        el?.let {
+            if (it.items.size == 1) {
+                listener.impressionBanner(it.layout.items.get(0), 0)
+            }
+        }
     }
 
     override fun bind(element: BannerModel) {

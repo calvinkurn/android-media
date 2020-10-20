@@ -11,7 +11,7 @@ import androidx.room.*
 interface DataDao {
 
     @Query("SELECT * FROM result WHERE version_code LIKE :versionCode")
-    fun getAllResult(versionCode: String): LiveData<List<DataResponse.Result>>
+    fun getAllResultList(versionCode: String): List<DataResponse.Result>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(result: DataResponse.Result)

@@ -2,13 +2,16 @@ package com.tokopedia.officialstore.testcase
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.test.application.TestRepeatRule
+import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
+import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 
 /**
  * Created by DevAra
@@ -27,14 +30,18 @@ class PltOsHomePerformanceTest {
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
     @Before
-    fun init(){
-        context =  InstrumentationRegistry.getInstrumentation().targetContext
+    fun init() {
+        context = InstrumentationRegistry.getInstrumentation().targetContext
+        context?.let {
+            setupTotalSizeInterceptor(null)
+        }
     }
 
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         activityRule.activity.finishAndRemoveTask()
     }
 
@@ -48,7 +55,8 @@ class PltOsHomePerformanceTest {
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    it
+                    it,
+                    networkData = GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
     }

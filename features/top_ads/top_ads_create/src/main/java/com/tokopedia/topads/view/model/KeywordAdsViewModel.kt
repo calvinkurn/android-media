@@ -1,21 +1,23 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_IDS
+import com.tokopedia.topads.common.data.internal.ParamObject.SEARCH_TERM
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_id
+import com.tokopedia.topads.common.data.response.KeywordSearch
+import com.tokopedia.topads.common.data.response.SearchData
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.data.response.KeywordData
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,17 +34,11 @@ class KeywordAdsViewModel @Inject constructor(
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
+        private val searchKeywordUseCase: GraphqlUseCase<KeywordSearch>,
         private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
 
-    private val selectedKeywordList = MutableLiveData<KeywordViewModel>()
-    private val keywordList = HashSet<String>()
-    private val searchCount = HashMap<String, ArrayList<Int>>()
-    private val map = ArrayList<Int>()
-
-
-    fun getSugestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<ResponseKeywordSuggestion.KeywordData>) -> Unit),
-                            onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
+    fun getSuggestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<KeywordData>) -> Unit), onEmpty: (() -> Unit)) {
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
@@ -57,35 +53,44 @@ class KeywordAdsViewModel @Inject constructor(
                             onEmpty()
                         } else {
                             onSuccess(it.topAdsGetKeywordSuggestionV3.data)
-                            updateList(it.topAdsGetKeywordSuggestionV3.data)
                         }
                     }
                 },
                 onError = {
-                    onError(it)
+                    it.printStackTrace()
                 }
         )
     }
 
-    private fun updateList(data: List<ResponseKeywordSuggestion.KeywordData>) {
-        keywordList.clear()
-        data.forEach { dataItem ->
-            dataItem.keywordData.forEach { index ->
-                keywordList.add(KeywordItemViewModel(index).data.keyword)
-                map.add(KeywordItemViewModel(index).data.bidSuggest)
-                map.add(Integer.parseInt(KeywordItemViewModel(index).data.totalSearch))
-                searchCount[KeywordItemViewModel(index).data.keyword] = map
-            }
+    fun searchKeyword(keyword: String, product_ids: String, onSucceed: (List<SearchData>) -> Unit) {
+        GraphqlHelper.loadRawString(context.resources, R.raw.topads_gql_search_keywords)?.let { query ->
+            val params = mapOf(PRODUCT_IDS to product_ids,
+                    SEARCH_TERM to keyword, SHOP_id to userSession.shopId.toInt())
+
+            searchKeywordUseCase.setTypeClass(KeywordSearch::class.java)
+            searchKeywordUseCase.setRequestParams(params)
+            searchKeywordUseCase.setGraphqlQuery(query)
+
+            searchKeywordUseCase.execute(
+                    onSuccessSearch(onSucceed),
+                    onError()
+            )
+
         }
     }
 
-    fun addNewKeyword(keyword: String): KeywordItemViewModel {
-        val item: KeywordItemViewModel = if (keywordList.contains(keyword) && searchCount.containsKey(keyword)) {
-            KeywordItemViewModel(ResponseKeywordSuggestion.KeywordDataItem(searchCount[keyword]?.get(0)!!, searchCount[keyword]?.get(1)!!.toString(), keyword, "es"))
-        } else
-            KeywordItemViewModel(ResponseKeywordSuggestion.KeywordDataItem(0, "Tidak diketahui", keyword, "es"))
-        selectedKeywordList.postValue(item)
-        return item
+
+    private fun onSuccessSearch(onSucceed: (List<SearchData>) -> Unit): (KeywordSearch) -> Unit {
+        return {
+            onSucceed(it.topAdsKeywordSearchTerm.data)
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+        }
+
     }
 
 }

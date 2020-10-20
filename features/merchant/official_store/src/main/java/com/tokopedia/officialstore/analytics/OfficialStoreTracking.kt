@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.iris.IrisAnalytics
@@ -651,7 +650,7 @@ class OfficialStoreTracking(context: Context) {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.productId.toString(),
-                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                 FIELD_PRODUCT_BRAND, item.shopName,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -862,7 +861,6 @@ class OfficialStoreTracking(context: Context) {
         ))
 
         tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
-        trackingIris.saveEvent(eventDataLayer)
     }
 
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {

@@ -6,6 +6,9 @@ android {
     androidExtensions {
         experimental = true
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 buildscript {
@@ -34,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -52,6 +56,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
     implementation project(rootProject.ext.features.youtubeCommon)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
@@ -69,7 +75,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }
@@ -85,3 +91,4 @@ apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "androidx.navigation.safeargs"

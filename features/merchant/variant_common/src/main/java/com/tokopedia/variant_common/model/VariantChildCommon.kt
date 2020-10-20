@@ -65,6 +65,9 @@ data class VariantChildCommon(
         @Expose
         val warehouseInfo: WarehouseInfoVariant? = null
 ) {
+    fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
+            ?: 0 else stock?.minimumOrder ?: 0
+
     fun getVariantFinalStock() :Int {
         return if(campaign?.isActive == true) campaign?.stock ?: 0 else stock?.stock ?: 0
     }
@@ -197,6 +200,10 @@ data class Campaign(
         @Expose
         val isCheckImei: Boolean? = null,
 
+        @SerializedName("minOrder")
+        @Expose
+        val minOrder: Int? = null,
+
         @SerializedName("hideGimmick")
         @Expose
         val hideGimmick: Boolean? = null
@@ -269,5 +276,13 @@ data class VariantUpcoming(
 
         @SerializedName("notifyMe")
         @Expose
-        val notifyMe: Boolean? = false
+        val notifyMe: Boolean? = false,
+
+        @SerializedName("upcomingType")
+        @Expose
+        val upcomingType: String? = "",
+
+        @SerializedName("ribbonCopy")
+        @Expose
+        val ribbonCopy: String? = ""
 )

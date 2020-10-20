@@ -540,7 +540,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft.setVisibility(View.VISIBLE);
         minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
 
-        if (TextUtils.isEmpty(sumTokenString)) {
+        if (sumTokenString == null || TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
             tvFloatingCounter.setText(sumTokenString);

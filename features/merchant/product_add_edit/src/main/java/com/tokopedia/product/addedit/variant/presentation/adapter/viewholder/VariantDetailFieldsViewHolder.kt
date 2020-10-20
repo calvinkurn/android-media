@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.setRecyclerViewEditorActionListener
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -55,6 +56,11 @@ class VariantDetailFieldsViewHolder(itemView: View?,
         priceField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_price_field)
         stockField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_stock_field)
         skuField = itemView?.findViewById(com.tokopedia.product.addedit.R.id.tfu_sku_field)
+
+        // handle action listener for null view error handling
+        priceField?.setRecyclerViewEditorActionListener()
+        stockField?.setRecyclerViewEditorActionListener()
+        skuField?.setRecyclerViewEditorActionListener()
 
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false

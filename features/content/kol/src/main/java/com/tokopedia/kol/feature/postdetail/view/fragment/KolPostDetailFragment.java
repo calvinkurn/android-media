@@ -45,6 +45,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
@@ -111,7 +112,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         RelatedPostAdapter.RelatedPostListener,
-        HighlightAdapter.HighlightListener {
+        HighlightAdapter.HighlightListener, TopAdsBannerViewHolder.TopAdsBannerListener {
 
     @NotNull
     @Override
@@ -203,6 +204,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
                 this,
                 this, this,
+                this,
                 this,
                 this,
                 this,
@@ -1034,6 +1036,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void userImagePostImpression(int positionInFeed, int contentPosition) {
+
+    }
+
+    @Override
+    public void onTopAdsViewImpression(@NotNull String bannerId, @NotNull String imageUrl) {
 
     }
 }

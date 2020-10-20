@@ -4,14 +4,13 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home_component.mock.reminder_widget.MockReminderWidget
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.test.env.BlankTestActivity
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,11 +19,11 @@ class BenchmarkReminderWidgetComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_reminder_widget_component() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
                 ReminderWidgetViewHolder.LAYOUT) {
             ReminderWidgetViewHolder(it, null, disableNetwork = true)
@@ -39,7 +38,7 @@ class BenchmarkReminderWidgetComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_reminder_widget_recharge_component() {
-        val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = ReminderWidgetViewHolder(
                 itemView, null, disableNetwork = true
         )
@@ -53,7 +52,7 @@ class BenchmarkReminderWidgetComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_reminder_widget_salam_component() {
-        val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(ReminderWidgetViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = ReminderWidgetViewHolder(
                 itemView, null, disableNetwork = true
         )

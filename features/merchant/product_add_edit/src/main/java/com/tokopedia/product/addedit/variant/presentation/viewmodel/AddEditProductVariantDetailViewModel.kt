@@ -73,6 +73,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         this.inputFieldSize = inputFieldSize
     }
 
+    fun resetCollapsedFields() {
+        this.collapsedFields = 0
+    }
+
     fun increaseCollapsedFields(inputFieldSize: Int) {
         collapsedFields += inputFieldSize
     }
@@ -99,11 +103,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         currentHeaderPositionMap[headerPosition] = visitablePosition
     }
 
-    fun collapseHeader(collapsedHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
+    fun collapseHeader(collapsedHeaderPosition: Int, currentHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.key } ?: 0
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // collapsing last header position creates no impact
-        if (collapsedHeaderPosition == lastHeaderPosition) return
+        if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
             currentHeaderPositionMap.forEach {
                 val headerPosition = it.key
@@ -111,19 +115,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the collapsing one
                     if (headerPosition > collapsedHeaderPosition) {
-                        val currentHeaderPosition = it.value - inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
+                        val newHeaderPosition = it.value - inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
                     }
                 }
             }
         }
     }
 
-    fun expandHeader(expandedHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.value } ?: 0
-        val lastHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
+    fun expandHeader(expandedHeaderPosition: Int, currentHeaderPosition: Int) {
+        val firstHeaderPosition = currentHeaderPositionMap.minBy { it.key } ?: 0
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxBy { it.value }?.value ?: 0
         // expanding last header position creates no impact
-        if (expandedHeaderPosition == lastHeaderPosition) return
+        if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
             currentHeaderPositionMap.forEach {
                 val headerPosition = it.key
@@ -131,8 +135,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (headerPosition != firstHeaderPosition) {
                     // only affecting the header position after the expanding one
                     if (headerPosition > expandedHeaderPosition) {
-                        val currentHeaderPosition = it.value + inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = currentHeaderPosition
+                        val newHeaderPosition = it.value + inputFieldSize
+                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
                     }
                 }
             }
@@ -178,6 +182,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 if (price < productInputModel.value?.detailInputModel?.price ?: 0.toBigInteger()) {
                     productInputModel.value?.detailInputModel?.price = price
                 }
+                combination = variantDetailInput.combination
             }
             productPosition++
         }
@@ -195,6 +200,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
+        val variantDetailInputMap = mutableMapOf<List<Int>, Boolean>()
+        inputLayoutModelMap.forEach {
+            variantDetailInputMap[it.value.combination] = it.value.isActive
+        }
+
         productInputModel.value = productInputModel.value?.also {
             inputModel.selection.forEach { selectedCombination ->
                 // search product variant by comparing combination
@@ -222,6 +232,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                     if (inputModel.sku.isNotEmpty()) {
                         sku = inputModel.sku
                     }
+
+                    status = if(variantDetailInputMap[selectedCombination] == true) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 }
             }
         }
@@ -265,6 +277,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputLayoutModelMap.forEach {
             it.value.isSkuFieldVisible = isVisible
         }
+        refreshCollapsedVariantDetailField()
     }
 
     fun getCurrentHeaderPosition(headerPosition: Int): Int {
@@ -285,10 +298,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             if (!it.value) expandedHeaderPositions.add(it.key)
         }
         val filteredMap = inputLayoutModelMap.filterValues { expandedHeaderPositions.contains(it.headerPosition) }
-        if (collapsedFields != 0) {
+        if (collapsedFields > 0) {
             val fieldsMap = mutableMapOf<Int, VariantDetailInputLayoutModel>()
             filteredMap.forEach {
-                val newFieldPosition = it.key - collapsedFields
+                val newFieldPosition = if (it.key <= collapsedFields) {
+                    it.key
+                } else {
+                    it.key - collapsedFields
+                }
                 fieldsMap[newFieldPosition] = it.value
             }
             return fieldsMap
@@ -409,6 +426,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 .getOrElse(productVariantIndex) { ProductVariantInputModel() }
         val priceString = productVariant.price.toString()
         val isPrimary = productVariant.isPrimary
+        val combination = productVariant.combination
 
         return VariantDetailInputLayoutModel(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
@@ -418,7 +436,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
-                isPrimary = isPrimary)
+                isPrimary = isPrimary,
+                combination = combination)
+    }
+
+    private fun refreshCollapsedVariantDetailField() {
+        updateProductInputModel() // save the last input
+        // reset collapsed variables
+        collapsedFields = 0
+        headerStatusMap.forEach {
+            headerStatusMap[it.key] = false
+        }
+        // do refresh
+        productInputModel.value = productInputModel.value // force invoke livedata notify observer
     }
 
 }

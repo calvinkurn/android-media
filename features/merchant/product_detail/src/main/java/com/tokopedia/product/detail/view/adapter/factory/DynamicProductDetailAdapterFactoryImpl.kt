@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 import com.tokopedia.variant_common.view.ProductVariantListener
@@ -30,11 +31,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: ProductMostHelpfulReviewDataModel): Int {
-        return ProductReviewViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductDiscussionDataModel): Int {
-        return ProductDiscussionViewHolder.LAYOUT
+        if (data.type == ProductDetailConstant.REVIEW) {
+            return ProductReviewViewHolder.LAYOUT
+        }
+        return ProductReviewOldViewHolder.LAYOUT
     }
 
     override fun type(data: ProductDiscussionMostHelpfulDataModel): Int {
@@ -45,24 +45,12 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductInfoViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductSocialProofDataModel): Int {
-        return ProductSocialProofViewHolder.LAYOUT
-    }
-
     override fun type(data: ProductShopInfoDataModel): Int {
         return ProductShopInfoViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductSnapshotDataModel): Int {
-        return ProductSnapshotViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel): Int {
         return ProductShimmeringViewHolder.LAYOUT
-    }
-
-    override fun type(data: ProductValuePropositionDataModel): Int {
-        return ProductValuePropositionViewHolder.LAYOUT
     }
 
     override fun type(data: PageErrorDataModel): Int {
@@ -101,23 +89,28 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductShopCredibilityViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductCustomInfoDataModel): Int {
+        return ProductCustomInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: TopAdsImageDataModel): Int {
+        return ProductTopAdsImageViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
-            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, listener)
             ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
-            ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
-            ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
-            ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
+            ProductReviewOldViewHolder.LAYOUT -> ProductReviewOldViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
-            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener, listener)
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
@@ -125,6 +118,8 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductMiniShopInfoViewHolder.LAYOUT -> ProductMiniShopInfoViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
+            ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)
+            ProductTopAdsImageViewHolder.LAYOUT -> ProductTopAdsImageViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

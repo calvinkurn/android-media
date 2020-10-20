@@ -10,6 +10,7 @@ import com.tokopedia.flight.searchV4.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.searchV4.domain.FlightSearchJouneyByIdUseCase
 import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJouneyByIdUseCase: FlightSearchJouneyByIdUseCase,
                                                       private val flightComboKeyUseCase: FlightComboKeyUseCase,
                                                       private val flightAnalytics: FlightAnalytics,
+                                                      private val userSessionInterface: UserSessionInterface,
                                                       private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -53,9 +55,13 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
                                journeyModel: FlightJourneyModel? = null,
                                adapterPosition: Int = -1) {
         if (adapterPosition == -1) {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                    FlightAnalytics.Screen.SEARCH,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         } else {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel, adapterPosition)
+            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                    adapterPosition, FlightAnalytics.Screen.SEARCH,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
 
         journeyModel?.let {

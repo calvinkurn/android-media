@@ -19,14 +19,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -40,10 +42,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
-import com.tokopedia.saldodetails.BuildConfig
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.utils.ErrorMessage
@@ -52,6 +53,7 @@ import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -303,6 +305,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
 
+        if(isSellerMigrationEnabled(context)) {
+            merchantDetailLL?.hide()
+        } else {
+            merchantDetailLL?.show()
+        }
     }
 
     private fun setViewModelObservers() {
@@ -626,7 +633,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun initInjector() {
 
         activity?.let {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            val saldoDetailsComponent = getComponent(SaldoDetailsComponent::class.java)
             saldoDetailsComponent.inject(this)
 
 

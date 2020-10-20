@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -26,7 +25,6 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
@@ -35,8 +33,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 
+import timber.log.Timber;
 
-public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> implements ReputationRouter {
+
+public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private static final String PLATFORM = "platform";
@@ -48,7 +48,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String SAVED_VERSION = "SAVED_VERSION";
     private static final String REACT_NAVIGATION_MODULE = "REACT_NAVIGATION_MODULE";
     private static final String IS_SHOWING_APP_RATING = "isShowAppRating";
-
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(GL_THANK_YOU_PAGE);
@@ -78,6 +77,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
         resetWalletCache();
+        Timber.w("P2#RN_THANK_YOU#open");
     }
 
     @Override
@@ -127,6 +127,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
             }
         }
         ThanksTrackerService.start(this, data);
+        Timber.w("P2#RN_THANK_YOU#sendAnalytics;id=%s;platform=%s", data.getId(), data.getPlatform());
     }
 
     /* Check savedVersion in sharedpreferences
@@ -195,16 +196,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private void closeThankyouPage() {
         RouteManager.route(this, ApplinkConst.HOME);
         finish();
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
-
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
     }
 
 }

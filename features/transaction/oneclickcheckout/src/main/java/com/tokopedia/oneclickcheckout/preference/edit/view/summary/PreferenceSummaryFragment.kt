@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -52,7 +53,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceSummaryViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
     }
 
     private var progressDialog: AlertDialog? = null
@@ -74,6 +75,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var ivPayment: ImageView? = null
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
+    private var tvPaymentInfo: Typography? = null
     private var buttonChangePayment: Typography? = null
 
     private var cbMainPreference: CheckboxUnify? = null
@@ -110,6 +112,26 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         removeObserver()
+        progressDialog?.dismiss()
+        swipeRefreshLayout = null
+        mainContent = null
+        buttonSavePreference = null
+        tvPreferenceName = null
+        tvAddressName = null
+        tvAddressReceiver = null
+        tvAddressDetail = null
+        buttonChangeAddress = null
+        tvShippingName = null
+        tvShippingDuration = null
+        buttonChangeDuration = null
+        ivPayment = null
+        tvPaymentName = null
+        tvPaymentDetail = null
+        tvPaymentInfo = null
+        buttonChangePayment = null
+        cbMainPreference = null
+        tvMainPreference = null
+        globalError = null
     }
 
     private fun removeObserver() {
@@ -120,12 +142,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
+            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), parent.getPaymentProfile())
         }
     }
 
     private fun initViewModel() {
-        viewModel.preference.observe(this, Observer {
+        viewModel.preference.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -142,13 +164,13 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         handleError(failure.throwable)
                     }
                 }
-                else -> {
+                is OccState.Loading -> {
                     swipeRefreshLayout?.isRefreshing = true
                     buttonSavePreference?.isEnabled = false
                 }
             }
         })
-        viewModel.editResult.observe(this, Observer {
+        viewModel.editResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
@@ -160,16 +182,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     it.getFailure()?.let { failure ->
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
-                                Toaster.make(view, failure.throwable.message
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable.message
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             } else {
-                                Toaster.make(view, failure.throwable?.localizedMessage
-                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                                Toaster.build(view, failure.throwable?.localizedMessage
+                                        ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             }
                         }
                     }
                 }
-                else -> {
+                is OccState.Loading -> {
                     if (progressDialog == null) {
                         progressDialog = AlertDialog.Builder(context!!)
                                 .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
@@ -231,6 +253,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPaymentDetail?.gone()
         }
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
+        } else {
+            tvPaymentInfo?.gone()
+        }
 
         val parent = activity
         if (parent is PreferenceEditParent) {
@@ -253,9 +281,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                view?.let {
-                    showGlobalError(GlobalError.NO_CONNECTION)
-                }
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
@@ -265,7 +291,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -273,8 +299,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable?.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
@@ -290,6 +316,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         mainContent = view?.findViewById(R.id.main_content)
         buttonSavePreference = view?.findViewById(R.id.btn_save)
@@ -307,6 +334,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         ivPayment = view?.findViewById(R.id.iv_payment)
         tvPaymentName = view?.findViewById(R.id.tv_payment_name)
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
+        tvPaymentInfo = view?.findViewById(R.id.tv_payment_info)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
         cbMainPreference = view?.findViewById(R.id.cb_main_preference)
@@ -397,7 +425,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 parent.setHeaderTitle(getString(R.string.lbl_summary_preference_title))
                 parent.setHeaderSubtitle(getString(R.string.lbl_summary_preference_subtitle))
                 parent.showStepper()
-                parent.setStepperValue(100, true)
+                parent.setStepperValue(100)
             }
         }
     }
@@ -408,22 +436,22 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (parent.getAddressId() == 0) {
                 val addressId = data.addressModel.addressId
                 parent.setAddressId(addressId)
-                viewModel.profileAddressId = addressId
+                viewModel.setProfileAddressId(addressId)
             }
             if (parent.getShippingId() == 0) {
                 val serviceId = data.shipmentModel.serviceId
                 parent.setShippingId(serviceId)
-                viewModel.profileServiceId = serviceId
+                viewModel.setProfileServiceId(serviceId)
             }
             if (parent.getGatewayCode().isEmpty()) {
                 val gatewayCode = data.paymentModel.gatewayCode
                 parent.setGatewayCode(gatewayCode)
-                viewModel.profileGatewayCode = gatewayCode
+                viewModel.setProfileGatewayCode(gatewayCode)
             }
             if (parent.getPaymentQuery().isEmpty()) {
                 val metadata = data.paymentModel.metadata
                 parent.setPaymentQuery(metadata)
-                viewModel.profilePaymentMetadata = metadata
+                viewModel.setProfilePaymentMetadata(metadata)
             }
         }
     }
@@ -445,5 +473,4 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     override fun initInjector() {
         getComponent(PreferenceEditComponent::class.java).inject(this)
     }
-
 }

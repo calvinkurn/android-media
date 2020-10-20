@@ -2,11 +2,30 @@ package com.tokopedia.discovery2
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.floor
 
+
+const val LIGHT_GREY = "lightGrey"
+const val LIGHT_BLUE = "lightBlue"
+const val LIGHT_GREEN = "lightGreen"
+const val LIGHT_RED = "lightRed"
+const val LIGHT_ORANGE = "lightOrange"
+const val DARK_GREY = "darkGrey"
+const val DARK_BLUE = "darkBlue"
+const val DARK_GREEN = "darkGreen"
+const val DARK_RED = "darkRed"
+const val DARK_ORANGE = "darkOrange"
+const val TRANSPARENT_BLACK = "transparentBlack"
+const val LABEL_PRODUCT_STATUS = "status"
+const val LABEL_PRICE = "price"
+const val LABEL_GIMMICK = "gimmick"
+const val LABEL_INTEGRITY = "integrity"
+const val LABEL_SHIPPING = "shipping"
+const val PDP_APPLINK = "tokopedia://product/"
 
 class Utils {
 
@@ -26,6 +45,11 @@ class Utils {
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
         var preSelectedTab = -1
+        private const val IDENTIFIER = "identifier"
+        private const val COMPONENT_ID = "component_id"
+        private const val DEVICE = "device"
+        private const val DEVICE_VALUE = "Android"
+        private const val FILTERS = "filters"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -60,6 +84,73 @@ class Utils {
                 "${convertedValue.toString().replace('.', ',')} $text $notifyMeText"
             } else {
                 "${convertedValue.toInt()} $text $notifyMeText"
+            }
+        }
+
+        fun getQueryMap(componentId: String, pageIdentifier: String, rpcDiscoQuery: Map<String, String?>?): Map<String, Any> {
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap[IDENTIFIER] = pageIdentifier
+            queryParameterMap[DEVICE] = DEVICE_VALUE
+            queryParameterMap[COMPONENT_ID] = componentId
+
+            rpcDiscoQuery?.let { map ->
+                val queryString = StringBuilder()
+                map.forEach { (key, value) ->
+                    if (!value.isNullOrEmpty()) {
+                        if (queryString.isNotEmpty()) {
+                            queryString.append('&')
+                        }
+                        queryString.append(key).append('=').append(value)
+                    }
+                }
+                if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
+            }
+            return queryParameterMap
+        }
+
+        fun isFutureSale(saleStartDate: String): Boolean {
+            if (saleStartDate.isEmpty()) return false
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedDate = parseData(saleStartDate)
+            return if (parsedDate != null) {
+                currentSystemTime.time < parsedDate.time
+            } else {
+                false
+            }
+        }
+
+
+        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
+            if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
+            val currentSystemTime = Calendar.getInstance().time
+            val saleStartDate = parseData(saleStartDate)
+            val saleEndDate = parseData(saleEndDate)
+            return if (saleStartDate != null && saleEndDate != null) {
+                (saleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < saleEndDate.time)
+            } else {
+                false
+            }
+        }
+
+        fun isSaleOver(saleEndDate: String): Boolean {
+            if (saleEndDate.isEmpty()) return true
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedDate = parseData(saleEndDate)
+            return if (parsedDate != null) {
+                currentSystemTime.time >= parsedDate.time
+            } else {
+                false
+            }
+        }
+
+        fun parseData(date: String?): Date? {
+            return date?.let {
+                try {
+                    SimpleDateFormat(TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
+                            .parse(date)
+                } catch (parseException: ParseException) {
+                    null
+                }
             }
         }
     }

@@ -4,12 +4,11 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.search.createBannerAdsListener
-import com.tokopedia.search.env.BlankTestActivity
 import com.tokopedia.search.mock.MockSearchProductModel.getCpmViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,11 +17,11 @@ internal class BenchmarkCpmComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onBind_ViewHolder_cpm() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(CpmViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(CpmViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = CpmViewHolder(
                 itemView, createBannerAdsListener())
         val data = getCpmViewModel()
@@ -35,7 +34,7 @@ internal class BenchmarkCpmComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_cpm() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 CpmViewHolder.LAYOUT) {
             CpmViewHolder(it, createBannerAdsListener())

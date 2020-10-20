@@ -92,7 +92,7 @@ class ReviewViewHolder(
                             HomePageTracking.homeReviewOnRatingChangedTracker(
                                     suggestedProductReview.suggestedProductReview.orderId,
                                     suggestedProductReview.suggestedProductReview.productId,
-                                    position + 1
+                                    position
                             )
                             reviewListener.onReviewClick(
                                     adapterPosition,

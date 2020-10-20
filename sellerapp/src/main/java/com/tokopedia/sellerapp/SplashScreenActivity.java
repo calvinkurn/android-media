@@ -12,14 +12,15 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
+import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -56,29 +57,24 @@ public class SplashScreenActivity extends SplashScreen {
 
     /**
      * handle/forward app link redirection from customer app to seller app
-     * */
+     */
     private boolean handleAppLink(UserSessionInterface userSession) {
         Uri uri = getIntent().getData();
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             boolean isAutoLogin = uri.getBooleanQueryParameter(KEY_AUTO_LOGIN, false);
             if (isFromMainApp) {
-                String redirectApplink = uri.getQueryParameter(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK);
-                Intent intent = RouteManager.getIntent(this, uri.toString());
                 if (isAutoLogin && userSession.getUserId().isEmpty()) {
                     ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
-                    seamlessLogin(true, remainingAppLinks, redirectApplink);
+                    seamlessLogin(true, remainingAppLinks);
                     return true;
                 }
-                if (intent != null) {
-                    ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
-                    if (remainingAppLinks != null && !remainingAppLinks.isEmpty()) {
-                        intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingAppLinks);
-                    }
-                    startActivity(intent);
-                    return true;
+                ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
+                if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
+                    return false;
                 }
-                return false;
+                new SellerMigrationRedirectionUtil().startRedirectionActivities(this, remainingAppLinks);
+                return true;
             }
             return false;
         }
@@ -124,12 +120,12 @@ public class SplashScreenActivity extends SplashScreen {
             startActivity(intent);
         } else {
             boolean isAutoLoginSeamless = getIntent().getBooleanExtra(KEY_AUTO_LOGIN, false);
-            seamlessLogin(isAutoLoginSeamless, null, "");
+            seamlessLogin(isAutoLoginSeamless, null);
         }
         finish();
     }
 
-    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks, String redirectApplink) {
+    private void seamlessLogin(boolean isAutoLoginSeamless, ArrayList<String> remainingApplinks) {
         boolean hasOnboarding = new SellerOnboardingPreference(this)
                 .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
@@ -137,11 +133,12 @@ public class SplashScreenActivity extends SplashScreen {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
-            if(!redirectApplink.isEmpty())
-                b.putString(ApplinkConstInternalGlobal.KEY_REDIRECT_SEAMLESS_APPLINK, redirectApplink);
-
             if (remainingApplinks != null && !remainingApplinks.isEmpty()) {
                 intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, remainingApplinks);
+            }
+            String featureName = getIntent().getStringExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME);
+            if (featureName != null && !featureName.isEmpty()) {
+                intent.putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, featureName);
             }
             intent.putExtras(b);
         } else if (hasOnboarding) {

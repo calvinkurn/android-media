@@ -14,8 +14,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
-import com.tokopedia.iris.Iris;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -26,9 +24,6 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by ricoharisin on 11/22/16.
  */
@@ -37,8 +32,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
-    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -75,7 +68,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
-                trackIrisEventForAppOpen();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -90,13 +82,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
-    }
-
-    private void trackIrisEventForAppOpen() {
-        Iris instance = IrisAnalytics.Companion.getInstance(ConsumerSplashScreen.this);
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
-        instance.saveEvent(map);
     }
 
     @NotNull

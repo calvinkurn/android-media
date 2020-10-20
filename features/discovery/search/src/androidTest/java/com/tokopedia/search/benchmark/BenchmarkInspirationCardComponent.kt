@@ -4,13 +4,12 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.search.createInspirationCardListener
-import com.tokopedia.search.env.BlankTestActivity
 import com.tokopedia.search.mock.MockSearchProductModel.getInspirationCardViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,11 +18,11 @@ internal class BenchmarkInspirationCardComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onBind_ViewHolder_inspiration_card_small_grid() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(SmallGridInspirationCardViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(SmallGridInspirationCardViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = SmallGridInspirationCardViewHolder(
                 itemView, createInspirationCardListener())
         val data = getInspirationCardViewModel()
@@ -36,7 +35,7 @@ internal class BenchmarkInspirationCardComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_inspiration_card_small_grid() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 SmallGridInspirationCardViewHolder.LAYOUT) {
             SmallGridInspirationCardViewHolder(it, createInspirationCardListener())
@@ -51,7 +50,7 @@ internal class BenchmarkInspirationCardComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_inspiration_card_big_grid() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(BigGridInspirationCardViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(BigGridInspirationCardViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = BigGridInspirationCardViewHolder(
                 itemView, createInspirationCardListener())
         val data = getInspirationCardViewModel()
@@ -64,7 +63,7 @@ internal class BenchmarkInspirationCardComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_inspiration_card_big_grid() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 BigGridInspirationCardViewHolder.LAYOUT) {
             BigGridInspirationCardViewHolder(it, createInspirationCardListener())

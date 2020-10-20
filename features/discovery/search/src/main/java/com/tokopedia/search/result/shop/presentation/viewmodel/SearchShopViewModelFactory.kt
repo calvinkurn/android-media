@@ -10,17 +10,18 @@ import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy as daggerLazy
 
 internal class SearchShopViewModelFactory(
         private val coroutineDispatcher: DispatcherProvider,
         private val searchParameter: Map<String, Any>,
-        private val searchShopFirstPageUseCase: UseCase<SearchShopModel>,
-        private val searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
-        private val getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
-        private val getShopCountUseCase: UseCase<Int>,
-        private val shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-        private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-        private val userSession: UserSessionInterface
+        private val searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
+        private val searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
+        private val getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
+        private val getShopCountUseCase: daggerLazy<UseCase<Int>>,
+        private val shopCpmViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmViewModel>>,
+        private val shopViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopViewModel>>,
+        private val userSession: daggerLazy<UserSessionInterface>
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

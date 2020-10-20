@@ -31,7 +31,12 @@ object MockChannelGrid {
                 ),
                 hasBuyButton = true,
                 rating = 5,
-                countReview = 1000
+                countReview = 1000,
+                backColor = "#123456",
+                benefit = ChannelBenefit(
+                        type = "Mulai Dari",
+                        value = "Rp 50k"
+                )
         )
         val gridList = mutableListOf<ChannelGrid>()
         for (i in 0..20) {

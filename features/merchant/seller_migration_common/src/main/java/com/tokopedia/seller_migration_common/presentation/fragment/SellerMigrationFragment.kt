@@ -28,6 +28,15 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     companion object {
         const val KEY_PARAM_FEATURE_NAME: String = "feature_name"
         const val SCREEN_NAME = "/migration-page"
+        const val KEY_STATE_LAST_TAB_POSITION = "last_tab_position"
+
+        const val PRODUCT_TAB = 0
+        const val CHAT_TAB = 1
+        const val REVIEW_TAB = 2
+        const val ADS_TAB = 3
+        const val STATISTIC_TAB = 4
+        const val FEED_PLAY_TAB = 5
+        const val FINANCIAL_SERVICES_TAB = 6
 
         fun createInstance(@SellerMigrationFeatureName featureName: String): SellerMigrationFragment {
             return SellerMigrationFragment().apply {
@@ -69,6 +78,9 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            lastTabPosition = it.getInt(KEY_STATE_LAST_TAB_POSITION, -1)
+        }
         featureName = arguments?.getString(KEY_PARAM_FEATURE_NAME).orEmpty()
     }
 
@@ -81,6 +93,11 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         initHeader()
         initBody()
         initFooter()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(KEY_STATE_LAST_TAB_POSITION, lastTabPosition)
+        super.onSaveInstanceState(outState)
     }
 
     private fun initHeader() {
@@ -124,23 +141,31 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
             SellerMigrationFeatureName.FEATURE_SET_VARIANT, SellerMigrationFeatureName.FEATURE_MULTI_EDIT,
             SellerMigrationFeatureName.FEATURE_INSTAGRAM_IMPORT, SellerMigrationFeatureName.FEATURE_FEATURED_PRODUCT,
             SellerMigrationFeatureName.FEATURE_SET_CASHBACK -> {
-                0
+                PRODUCT_TAB
             }
-            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT -> {
-                1
+            SellerMigrationFeatureName.FEATURE_TEMPLATE_CHAT, SellerMigrationFeatureName.FEATURE_SELLER_CHAT,
+            SellerMigrationFeatureName.FEATURE_CHAT_SETTING -> {
+                CHAT_TAB
             }
             SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS -> {
-                2
+                REVIEW_TAB
             }
             SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SellerMigrationFeatureName.FEATURE_TOPADS,
-            SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL -> {
-                3
+            SellerMigrationFeatureName.FEATURE_ADS, SellerMigrationFeatureName.FEATURE_ADS_DETAIL,
+            SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT, SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO -> {
+                ADS_TAB
             }
             SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, SellerMigrationFeatureName.FEATURE_MARKET_INSIGHT -> {
-                4
+                STATISTIC_TAB
+            }
+            SellerMigrationFeatureName.FEATURE_PLAY_FEED , SellerMigrationFeatureName.FEATURE_POST_FEED-> {
+                FEED_PLAY_TAB
+            }
+            SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES -> {
+                FINANCIAL_SERVICES_TAB
             }
             else -> {
-                0
+                PRODUCT_TAB
             }
         }
         viewPagerOnTabSelectedListener.onPageSelected(position)
@@ -151,11 +176,23 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     }
 
     private fun addTabFragments() {
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureProductTabFragment(this), "product"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureChatTabFragment(this), "chat"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureReviewTabFragment(this), "ulasan"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureAdsPromoTabFragment(this), "ads & promo"))
-        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(SellerFeatureStatisticTabFragment(this), "statistics"))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureProductTabFragment>(), getString(R.string.seller_migration_fragment_tab_product)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureChatTabFragment>(), getString(R.string.seller_migration_fragment_tab_chat)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureReviewTabFragment>(), getString(R.string.seller_migration_fragment_tab_review)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureAdsPromoTabFragment>(), getString(R.string.seller_migration_fragment_tab_promo_and_ads)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureStatisticTabFragment>(), getString(R.string.seller_migration_fragment_tab_statistic)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFeedPlayTabFragment>(), getString(R.string.seller_migration_fragment_tab_feed_play)))
+        tabList.add(SellerFeatureFragmentAdapter.SellerFeatureFragmentItem(getSellerFeatureTabFragment<SellerFeatureFinancialServicesTabFragment>(), getString(R.string.seller_migration_fragment_tab_financial_services)))
+    }
+
+    private inline fun <reified T : BaseSellerFeatureTabFragment> getSellerFeatureTabFragment(): Fragment {
+        return childFragmentManager.fragments.findOrCreate<T>().apply {
+            recyclerViewListener = this@SellerMigrationFragment
+        }
+    }
+
+    private inline fun <reified T> Iterable<*>.findOrCreate(): T {
+        return find { it is T } as? T ?: T::class.java.newInstance()
     }
 
     private fun goToPlayStore() {

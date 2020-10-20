@@ -4,10 +4,12 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
 
@@ -54,8 +56,8 @@ object AddEditProductMapper {
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
         productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
         productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
-        productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
-        productDraft.detailInputModel.sku = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.condition = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.sku = productInputModel.detailInputModel.sku
         productDraft.detailInputModel.imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
         productDraft.detailInputModel.pictureList = mapProductInputModelPictureListToDraftPictureList(productInputModel.detailInputModel.pictureList)
         productDraft.detailInputModel.preorder.apply {
@@ -63,12 +65,10 @@ object AddEditProductMapper {
             timeUnit = productInputModel.detailInputModel.preorder.timeUnit
             isActive = productInputModel.detailInputModel.preorder.isActive
         }
-        productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
-            productDraft.detailInputModel.wholesaleList.map { wholeSaleDraft ->
-                wholeSaleDraft.price = wholeSale.price
-                wholeSaleDraft.quantity = wholeSale.price
-            }
+        productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
+            DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkListModel>()
@@ -104,8 +104,8 @@ object AddEditProductMapper {
             price = productDraft.detailInputModel.price
             stock = productDraft.detailInputModel.stock
             minOrder = productDraft.detailInputModel.minOrder
-            condition = productDraft.detailInputModel.sku
-            sku = productDraft.detailInputModel.condition
+            condition = productDraft.detailInputModel.condition
+            sku = productDraft.detailInputModel.sku
             imageUrlOrPathList = productDraft.detailInputModel.imageUrlOrPathList
             pictureList = mapDraftPictureListToProductInputModelPictureList(productDraft.detailInputModel.pictureList)
         }
@@ -114,15 +114,13 @@ object AddEditProductMapper {
             timeUnit = productDraft.detailInputModel.preorder.timeUnit
             isActive = productDraft.detailInputModel.preorder.isActive
         }
-        productDraft.detailInputModel.wholesaleList.map { wholeSale ->
-            productInputModel.detailInputModel.wholesaleList.map { wholeSaleDraft ->
-                wholeSaleDraft.price = wholeSale.price
-                wholeSaleDraft.quantity = wholeSale.price
-            }
+        productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
+            WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
-            val videoLinkList = MutableList(productDraft.descriptionInputModel.videoLinkList.size) { VideoLinkModel() }
+            val videoLinkList = mutableListOf<VideoLinkModel>()
             productDraft.descriptionInputModel.videoLinkList.forEach { videoLink ->
                 val title = videoLink.inputTitle
                 val description = videoLink.inputDescription

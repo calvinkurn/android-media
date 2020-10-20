@@ -23,8 +23,8 @@ data class Meta (
         @SerializedName("buttonApplink") @Expose val buttonApplink : String = "",
         @SerializedName("buttonWeblink") @Expose val buttonWeblink : String = "",
         @SerializedName("overlayImage") @Expose val overlayImage : String = "",
-        @SerializedName("overlayImageApplink") @Expose val overlayImageApplink : String = "",
-        @SerializedName("overlayImageWeblink") @Expose val overlayImageWeblink : String = "",
+        @SerializedName("overlayImageAppLink") @Expose val overlayImageApplink : String = "",
+        @SerializedName("overlayImageWebLink") @Expose val overlayImageWeblink : String = "",
         @SerializedName("gradient") @Expose val gradient : List<String> = listOf(),
         @SerializedName("maxAutoplayCell") @Expose val maxAutoplayCell : Int = 0
 )

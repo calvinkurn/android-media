@@ -16,17 +16,21 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopSellerMigrationViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,7 +51,8 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val videoViewListener: VideoViewHolder.VideoViewListener,
                           private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                           private val highlightListener: HighlightAdapter.HighlightListener,
-                          private val userSession : UserSessionInterface):
+                          private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
+                          private val userSession: UserSessionInterface) :
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -74,8 +79,16 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return EmptyFeedShopViewHolder.LAYOUT
     }
 
+    override fun type(emptyFeedShopSellerMigrationUiModel: EmptyFeedShopSellerMigrationUiModel): Int {
+        return EmptyFeedShopSellerMigrationViewHolder.LAYOUT
+    }
+
     override fun type(highlightViewModel: HighlightViewModel): Int {
         return 0
+    }
+
+    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+        return TopAdsBannerViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -91,7 +104,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                         gridItemListener,
                         videoViewListener,
                         feedMultipleImageViewListener,
-                        userSession) as AbstractViewHolder< Visitable<*>>
+                        userSession) as AbstractViewHolder<Visitable<*>>
             FeedRecommendationViewHolder.LAYOUT ->
                 FeedRecommendationViewHolder(parent, recommendationCardListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             BannerViewHolder.LAYOUT ->
@@ -102,6 +115,10 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                 WhitelistViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
             EmptyFeedShopViewHolder.LAYOUT ->
                 EmptyFeedShopViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
+            EmptyFeedShopSellerMigrationViewHolder.LAYOUT ->
+                EmptyFeedShopSellerMigrationViewHolder(parent, mainView) as AbstractViewHolder<Visitable<*>>
+            TopAdsBannerViewHolder.LAYOUT ->
+                TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
 
         }

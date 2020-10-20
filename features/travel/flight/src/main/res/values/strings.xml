@@ -106,7 +106,8 @@
     <string name="flight_label_duration_direct">%1$s (langsung)</string>
     <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
     <string name="flight_label_see_detail">Lihat Detail</string>
-    <string name="flight_label_transit">Transit di %1$s • %2$s %3$s</string>
+    <string name="flight_label_transit_with_duration">Transit di %1$s selama %2$s %3$s</string>
+    <string name="flight_label_transit_without_duration">Transit di %1$s %2$s</string>
     <string name="flight_label_currency">Rp%1$s</string>
     <string name="flight_booking_passenger_adult_title">Penumpang Dewasa</string>
     <string name="flight_booking_passenger_child_title">Penumpang Anak</string>
@@ -198,10 +199,10 @@
     <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Paspor</string>
     <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
     <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Paspor</string>
-    <string name="flight_detail_total_stop_over_label">Transit : %1$d kali berhenti</string>
-    <string name="flight_detail_transit_stop_over_label">Transit : </string>
+    <string name="flight_detail_total_stop_over_label">Berhenti %1$d kali</string>
+    <string name="flight_detail_transit_stop_over_label">Berhenti di </string>
     <string name="flight_detail_operating_by" formatted="false">Dioperasikan oleh %s</string>
-    <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 12 tahun saat waktu pemberangkatan</string>
+    <string name="flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years">Umur penumpang anak maksimal 11 tahun saat waktu pemberangkatan</string>
     <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_next_button">Selanjutnya</string>

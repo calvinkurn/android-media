@@ -4,40 +4,46 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.indexOfSearchQuery
 import com.tokopedia.seller.search.common.util.safeSetSpan
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.FaqSearchListener
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ItemSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.FaqSellerSearchUiModel
 import kotlinx.android.synthetic.main.item_search_result_faq.view.*
 
 class ItemFaqSearchViewHolder(
-        private val itemFaqView: View,
+        itemFaqView: View,
         private val faqSearchListener: FaqSearchListener
-) : RecyclerView.ViewHolder(itemFaqView) {
+): AbstractViewHolder<FaqSellerSearchUiModel>(itemFaqView) {
 
-    fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
-        bindTitleText(itemSellerSearchUiModel)
+    companion object {
+        val LAYOUT = R.layout.item_search_result_faq
+    }
 
-        itemFaqView.setOnClickListener {
-            faqSearchListener.onFaqItemClicked(itemSellerSearchUiModel, adapterPosition)
+    override fun bind(element: FaqSellerSearchUiModel) {
+        bindTitleText(element)
+
+        itemView.setOnClickListener {
+            faqSearchListener.onFaqItemClicked(element, adapterPosition)
         }
     }
 
-    private fun bindTitleText(item: ItemSellerSearchUiModel) {
+    private fun bindTitleText(item: FaqSellerSearchUiModel) {
         val startIndex = indexOfSearchQuery(item.title.orEmpty(), item.keyword.orEmpty())
-        if (startIndex == -1) {
-            itemFaqView.tvTitleSearchResultFaq?.text = item.title
-        } else {
-            val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemFaqView.context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemFaqView.context, R.style.searchTextHiglight),
-                    startIndex + item.keyword?.length.orZero(),
-                    item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            itemFaqView.tvTitleSearchResultFaq?.text = highlightedTitle
+        with(itemView) {
+            if (startIndex == -1) {
+                tvTitleSearchResultFaq?.text = item.title
+            } else {
+                val highlightedTitle = SpannableString(item.title)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                highlightedTitle.safeSetSpan(TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        startIndex + item.keyword?.length.orZero(),
+                        item.title?.length.orZero(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvTitleSearchResultFaq?.text = highlightedTitle
+            }
         }
     }
 }

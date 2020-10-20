@@ -5,6 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import io.mockk.MockKAnnotations
@@ -14,8 +15,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,25 +28,15 @@ class PromotionBudgetAndTypeViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
+    lateinit var mViewModel: PromotionBudgetAndTypeViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
-
-    @After
-    fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        PromotionBudgetAndTypeViewModel(testDispatcher, basicShopInfoUseCase, userSession)
+        mViewModel = PromotionBudgetAndTypeViewModel(TestCoroutineDispatchers, basicShopInfoUseCase, userSession)
     }
 
     @Test

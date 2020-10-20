@@ -3,12 +3,17 @@ package com.tokopedia.shop.pageheader.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS
@@ -56,6 +61,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 }
     }
 
+    private val sellerMigrationDestinationApplink by lazy {
+        intent?.getStringExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+    }
+
     private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
     private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
@@ -65,10 +74,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private var shopPageHomeTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
     private var shopPageProductTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
 
+    var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initShopPageHeaderPerformanceMonitoring()
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
+        checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
     }
 
@@ -132,6 +144,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    private fun checkIfApplinkRedirectedForMigration() {
+        if (GlobalConfig.isSellerApp()) {
+            sellerMigrationDestinationApplink?.let { applink ->
+                intent?.removeExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
+                RouteManager.getIntent(this, applink).run {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(this)
+                }
+            }
+        }
+    }
+
     private fun getShopInfoIntent(context: Context): Intent {
         return Intent(context, ShopInfoActivity::class.java)
     }
@@ -142,8 +166,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS,
                 SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS
         )
-        shopPageHeaderLoadTimePerformanceCallback?.startMonitoring(SHOP_PAGE_HEADER_RESULT_TRACE)
-        shopPageHeaderLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+        performanceMonitoringShop?.startMonitoring(SHOP_PAGE_HEADER_RESULT_TRACE)
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
     }
 
     override fun initShopPageHomeTabPerformanceMonitoring() {
@@ -179,8 +203,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return shopPageProductTabLoadTimePerformanceCallback
     }
 
-    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+    override fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
         pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
     }
 

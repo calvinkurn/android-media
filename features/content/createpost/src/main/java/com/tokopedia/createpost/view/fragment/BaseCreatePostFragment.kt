@@ -915,4 +915,5 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
+
 }

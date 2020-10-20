@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
@@ -130,12 +131,17 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation (project(rootProject.ext.features.sessioncommon))
     implementation (project(rootProject.ext.libraries.remoteConfig))
+    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
@@ -52,7 +51,8 @@ dependencies {
 
     androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-
+    androidTestImplementation rootProject.ext.firebase.messaging
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 }
 
 project.ext {
@@ -63,5 +63,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'

@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
-import com.tokopedia.sellerhome.view.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
 
 /**
@@ -168,6 +168,56 @@ object SellerHomeTracking {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendTableImpressionEvent(model: TableWidgetUiModel, position: Int, slideNumber: Int, isSlideEmpty: Boolean) {
+        val state = if (isSlideEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_TABLE, model.dataKey).joinToString(" - "),
+                label = "$state - $slideNumber"
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_SIMPLE_TABLE, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
+        val value = model.data?.data?.summary?.value?.toString().orEmpty()
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
+                label = value
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
+        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.PROMO_VIEW,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+
+        val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
+        eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+
+        TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -179,6 +229,21 @@ object SellerHomeTracking {
                     TrackingConstant.NAME to TrackingConstant.SELLER_WIDGET,
                     TrackingConstant.CREATIVE to "{${it.creativeName}}",
                     TrackingConstant.CREATIVE_URL to it.featuredMediaURL,
+                    TrackingConstant.POSITION to position.toString()
+            )
+        }
+    }
+
+    private fun getWidgetPromotions(cards: List<BaseWidgetUiModel<*>>, name: String, position: Int): List<Map<String, String>> {
+        return cards.map {
+            return@map mapOf(
+                    TrackingConstant.ID to it.dataKey,
+                    TrackingConstant.NAME to name,
+                    TrackingConstant.CREATIVE to TrackingConstant.NONE,
+                    TrackingConstant.CREATIVE_URL to TrackingConstant.NONE,
+                    TrackingConstant.CATEGORY to TrackingConstant.NONE,
+                    TrackingConstant.PROMO_ID to TrackingConstant.NONE,
+                    TrackingConstant.PROMO_CODE to TrackingConstant.NONE,
                     TrackingConstant.POSITION to position.toString()
             )
         }

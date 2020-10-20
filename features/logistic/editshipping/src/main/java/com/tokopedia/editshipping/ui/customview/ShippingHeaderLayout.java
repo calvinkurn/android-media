@@ -107,8 +107,8 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         if (!zipCodes.contains(header)) {
             zipCodes.add(0, header);
         }
-        zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
-                R.id.item, presenter.getselectedAddress().getZipCodes());
+        zipCodeAdapter = new ArrayAdapter<>(getContext(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item, presenter.getselectedAddress().getZipCodes());
         zipCode.setAdapter(zipCodeAdapter);
     }
 

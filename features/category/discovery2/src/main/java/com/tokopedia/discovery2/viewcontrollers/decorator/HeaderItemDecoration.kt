@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.decorator
 
 import android.graphics.Canvas
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -39,7 +38,7 @@ class HeaderItemDecoration(
         }
 
         getHeaderViewForItem(topChildPosition, parent)?.let {
-            this.parent.addHeaderRecycelerView(it)
+            this.parent.addHeaderRecyclerView(it)
         } ?: also {
             this.parent.removeHeaderRecyclerView()
             currentHeader = null

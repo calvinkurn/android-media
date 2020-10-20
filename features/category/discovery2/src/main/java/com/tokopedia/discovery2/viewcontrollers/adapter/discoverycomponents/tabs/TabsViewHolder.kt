@@ -29,6 +29,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
+        tabsHolder.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tabsHolder.tabLayout.addOnTabSelectedListener(this)
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsHolder.tabLayout.removeAllTabs()
@@ -45,6 +46,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsHolder.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.tabLayout.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(null)
@@ -65,20 +67,23 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needResync ->
-            if (needResync) {
+        tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needReSync ->
+            if (needReSync) {
                 (fragment as DiscoveryFragment).reSync()
             }
         })
     }
 
+
     override fun onTabSelected(tab: TabLayout.Tab) {
-        trackTabsGTMStatus(tab)
+        if (tabsViewModel.setSelectedState(tab.position, true)) {
+            tabsViewModel.onTabClick()
+            trackTabsGTMStatus(tab)
+        }
         if (tab.customView != null && tab.customView is CustomViewCreator) {
             ((tab.customView as CustomViewCreator).viewModel as TabsItemViewModel).setSelectionTabItem(true)
         }
-        tabsViewModel.setSelectedState(tab.position, true)
-        tabsViewModel.onTabClick()
+
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {
