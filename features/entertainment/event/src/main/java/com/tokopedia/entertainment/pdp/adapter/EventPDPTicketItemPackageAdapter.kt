@@ -59,8 +59,8 @@ class EventPDPTicketItemPackageAdapter(
                 val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
                 val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
                 val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) && items.available.toInt()>=1)
-                val isRecomended = (!checkDate(items.dates,onBindItemTicketListener.getSelectedDate()))
-                if(!isRecomended){
+                val isRecomended = checkDate(items.dates,onBindItemTicketListener.getSelectedDate())
+                if(isRecomended){
                     if(isSaleStarted && isNotEnded) {
                         txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
                         txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
@@ -75,7 +75,7 @@ class EventPDPTicketItemPackageAdapter(
                         txtAlreadyEnd.visibility = View.VISIBLE
                         txtNotStarted.visibility = View.GONE
                     }
-                } else if(isRecomended){
+                } else {
                     txtPilih_ticket.gone()
                     txtHabis_ticket.gone()
                     txtAlreadyEnd.gone()
