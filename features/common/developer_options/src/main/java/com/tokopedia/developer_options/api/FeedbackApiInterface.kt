@@ -1,7 +1,7 @@
 package com.tokopedia.developer_options.api
 
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CategoriesResponse
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackDataResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
 import okhttp3.MultipartBody
@@ -12,7 +12,7 @@ import rx.Observable
 interface FeedbackApiInterface {
 
     @GET("/api/v1/feedback/form")
-    fun getCategories(): Observable<CategoriesResponse>
+    fun getCategories(): Observable<FeedbackDataResponse>
 
     @POST("/api/v1/feedback/create")
     fun createFeedbackForm(@Body feedbackRequest: FeedbackFormRequest): Observable<FeedbackFormResponse>

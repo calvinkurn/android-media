@@ -7,6 +7,7 @@ import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.*
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackDataResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
 import com.tokopedia.screenshot_observer.ScreenshotData
@@ -18,19 +19,19 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
 
-class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: CategoriesMapper, val imageMapper: ScreenshotResultMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
+class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscription, val mapper: FeedbackDataMapper, val imageMapper: ScreenshotResultMapper) : BaseDaggerPresenter<FeedbackPageContract.View>(), FeedbackPageContract.Presenter {
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
 
-    /*override fun getCategories() {
+    override fun getFeedbackData() {
         feedbackApi.getCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Subscriber<CategoriesResponse>() {
-                    override fun onNext(t: CategoriesResponse?) {
+                .subscribe(object: Subscriber<FeedbackDataResponse>() {
+                    override fun onNext(t: FeedbackDataResponse?) {
                         if (t != null) {
-                            view.categoriesMapper(mapper.mapData(t))
+                            view.setFeedbackData(mapper.mapData(t))
                         }
                     }
 
@@ -45,7 +46,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     }
 
                 })
-    }*/
+    }
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
         view.showLoadingDialog()
