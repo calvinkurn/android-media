@@ -66,6 +66,8 @@ public class LinkerData implements Parcelable {
     private String level2Id;
     private String level3Name;
     private String level3Id;
+    private String sku;
+    private String contentId;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -115,6 +117,8 @@ public class LinkerData implements Parcelable {
         level2Id = in.readString();
         level3Name = in.readString();
         level3Id = in.readString();
+        sku = in.readString();
+        contentId = in.readString();
     }
 
     @Override
@@ -155,6 +159,8 @@ public class LinkerData implements Parcelable {
         dest.writeString(level2Id);
         dest.writeString(level3Name);
         dest.writeString(level3Id);
+        dest.writeString(sku);
+        dest.writeString(contentId);
     }
 
     @Override
@@ -518,6 +524,22 @@ public class LinkerData implements Parcelable {
         this.level3Id = level3Id;
     }
 
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -556,6 +578,8 @@ public class LinkerData implements Parcelable {
         private String level2Id;
         private String level3Name;
         private String level3Id;
+        private String sku;
+        private String contentId;
 
         private Builder() {
         }
@@ -748,6 +772,17 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setSku(String sku) {
+            this.sku = sku;
+            return this;
+        }
+
+        public Builder setContentId(String contentId) {
+            this.contentId = contentId;
+            return this;
+        }
+
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -777,19 +812,21 @@ public class LinkerData implements Parcelable {
             linkerData.setCatLvl1(catLvl1);
             linkerData.setUserId(userId);
             linkerData.setQuantity(quantity);
-            linkerData.setQuantity(productCategory);
-            linkerData.setQuantity(productName);
-            linkerData.setQuantity(journeyId);
-            linkerData.setQuantity(invoiceId);
-            linkerData.setQuantity(paymentId);
-            linkerData.setQuantity(content);
-            linkerData.setQuantity(contentType);
-            linkerData.setQuantity(level1Name);
-            linkerData.setQuantity(level1Id);
-            linkerData.setQuantity(level2Name);
-            linkerData.setQuantity(level2Id);
-            linkerData.setQuantity(level3Name);
-            linkerData.setQuantity(level3Id);
+            linkerData.setProductCategory(productCategory);
+            linkerData.setProductName(productName);
+            linkerData.setJourneyId(journeyId);
+            linkerData.setInvoiceId(invoiceId);
+            linkerData.setPaymentId(paymentId);
+            linkerData.setContent(content);
+            linkerData.setContentType(contentType);
+            linkerData.setLevel1Name(level1Name);
+            linkerData.setLevel1Id(level1Id);
+            linkerData.setLevel2Name(level2Name);
+            linkerData.setLevel2Id(level2Id);
+            linkerData.setLevel3Name(level3Name);
+            linkerData.setLevel3Id(level3Id);
+            linkerData.setSku(sku);
+            linkerData.setContentId(contentId);
             return linkerData;
         }
 

@@ -108,4 +108,6 @@ public interface LinkerConstants {
     String LEVEL2_ID = "level2_id";
     String LEVEL3_NAME = "level3_name";
     String LEVEL3_ID = "level3_id";
+    String SKU = "sku";
+    String CONTENT_ID = "content_id";
 }
