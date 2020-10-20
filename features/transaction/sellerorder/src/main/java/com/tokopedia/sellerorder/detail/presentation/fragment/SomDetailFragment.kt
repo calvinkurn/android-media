@@ -46,6 +46,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -698,8 +699,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun acceptOrder(orderId: String, shopId: String) {
         if (orderId.isNotBlank() && shopId.isNotBlank()) {
-            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                    orderId, shopId)
+            somDetailViewModel.acceptOrder(orderId, shopId)
         }
     }
 
@@ -769,8 +769,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     btn_batal?.setOnClickListener { dismiss() }
                     btn_terima?.setOnClickListener {
                         if (orderId.isNotBlank() && shopId.isNotBlank()) {
-                            somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                                    orderId, shopId)
+                            somDetailViewModel.acceptOrder(orderId, shopId)
                             dismiss()
                         }
                     }
