@@ -75,12 +75,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-<!--    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh-->
-<!--        android:id="@+id/swipeToRefresh"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:fitsSystemWindows="true">-->
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeToRefresh"
         android:fitsSystemWindows="true"
@@ -166,8 +160,6 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-<!--    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>-->
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

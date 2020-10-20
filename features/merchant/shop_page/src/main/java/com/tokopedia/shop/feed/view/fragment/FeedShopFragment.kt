@@ -167,10 +167,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         return view!!.findViewById(R.id.recyclerView)
     }
 
-//    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-//        return view!!.findViewById(R.id.swipeToRefresh)
-//    }
-
     override fun callInitialLoadAutomatically(): Boolean {
         return false
     }

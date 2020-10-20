@@ -31,11 +31,5 @@
             android:layout_marginBottom="@dimen/spacing_lvl5"
             android:visibility="gone" />
 
-<!--        <androidx.core.widget.NestedScrollView-->
-<!--            android:id="@+id/scrollView_globalError_shopPage"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:visibility="gone" />-->
-
     </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>
 </LinearLayout>
