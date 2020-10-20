@@ -1593,7 +1593,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
      * Play widget
      */
     override fun onWidgetShouldRefresh(view: View) {
-        viewModel?.autoRefreshPlayWidget(shopId)
+        viewModel?.getPlayWidget(shopId)
     }
 
     private fun setupPlayWidget() {
