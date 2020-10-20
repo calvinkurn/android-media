@@ -216,7 +216,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.name)
             addTextChangedListener(textWatcher)
             isEnabled = false
-            isSingleLine = false
         }
     }
 
@@ -225,7 +224,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.domain)
             addTextChangedListener(shopDomainTextWatcher)
             isEnabled = false
-            isSingleLine = false
         }
     }
 
