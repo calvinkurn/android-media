@@ -625,7 +625,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         } else {
             globalError_shopPage.setType(GlobalError.NO_CONNECTION)
         }
-        
         globalError_shopPage.visible()
         recycler_view.hide()
 
