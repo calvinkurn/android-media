@@ -7,7 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -49,13 +49,16 @@ class PlayWidgetCardMediumChannelViewHolder(
 
     fun bind(item: PlayWidgetMediumChannelUiModel) {
         setData(item)
-
         itemView.setOnClickListener {
-            cardMediumListener.onCardClicked(item, adapterPosition)
+            RouteManager.route(it.context, item.appLink)
         }
-        itemView.addOnImpressionListener(item.impress) {
-            cardMediumListener.onCardVisible(item, adapterPosition)
-        }
+
+//        itemView.setOnClickListener {
+//            cardMediumListener.onCardClicked(item, adapterPosition)
+//        }
+//        itemView.addOnImpressionListener(item.impress) {
+//            cardMediumListener.onCardVisible(item, adapterPosition)
+//        }
 
         channelType = item.channelType
     }

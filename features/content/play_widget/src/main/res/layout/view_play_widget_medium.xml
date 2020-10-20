@@ -28,6 +28,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:maxEms="12"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
