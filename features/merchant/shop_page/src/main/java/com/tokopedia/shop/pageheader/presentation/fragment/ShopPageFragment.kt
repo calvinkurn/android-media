@@ -249,36 +249,27 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after initViews")
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after errorButton")
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shopPageFragmentHeaderViewHolder")
         initToolbar()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after initToolbar")
         initAdapter()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after initAdapter")
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh.isEnabled = (verticalOffset == 0)
         })
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after appBarLayout")
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = viewPagerAdapter
         viewPager.offscreenPageLimit = PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after tabLayout")
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 viewPagerAdapter.handleSelectedTab(tab, true)
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after onTabReselected")
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 viewPagerAdapter.handleSelectedTab(tab, false)
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after onTabUnselected")
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -296,7 +287,6 @@ class ShopPageFragment :
                             )
                     )
                 }
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after isFirstLoading")
                 if (isSellerMigrationEnabled(context)) {
                     if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
                         val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
@@ -309,21 +299,15 @@ class ShopPageFragment :
                         hideBottomSheetSellerMigration()
                     }
                 }
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after isSellerMigrationEnabled")
             }
         })
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before swipeToRefresh")
         swipeToRefresh.setOnRefreshListener {
             refreshData()
             updateStickyContent()
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before mainLayout")
         mainLayout.requestFocus()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after mainLayout.requestFocus()")
         initStickyLogin(view)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after initStickyLogin")
         getChatButtonInitialMargin()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after getChatButtonInitialMargin")
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
@@ -513,19 +497,12 @@ class ShopPageFragment :
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before initViews")
             initViews(view)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after initViews")
             getSavedInstanceStateData(savedInstanceState)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before observeLiveData")
             observeLiveData(this)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after observeLiveData")
             observeShopProductFilterParameterSharedViewModel()
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after observeShopProductFilterParameterSharedViewModel")
             startPltNetworkPerformanceMonitoring()
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before getInitialData")
             getInitialData()
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after getInitialData")
         }
     }
 
@@ -820,10 +797,8 @@ class ShopPageFragment :
     }
 
     private fun onSuccessGetShopPageTabData(shopPageP1Data: ShopPageP1HeaderData) {
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} first hit onSuccessGetShopPageTabData")
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before assign shopPageHeaderDataModel")
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageFragment.shopId
             isOfficial = shopPageP1Data.isOfficial
@@ -834,32 +809,24 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before updateCustomDimensionData")
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
                 shopPageHeaderDataModel?.isGoldMerchant ?: false
         )
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after updateCustomDimensionData")
         val shopType = when {
             shopPageHeaderDataModel?.isOfficial ?: false -> TrackShopTypeDef.OFFICIAL_STORE
             shopPageHeaderDataModel?.isGoldMerchant ?: false -> TrackShopTypeDef.GOLD_MERCHANT
             else -> TrackShopTypeDef.REGULAR_MERCHANT
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before sendScreenShopPage")
         shopPageTracking?.sendScreenShopPage(shopId, shopType)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before getShopPageHeaderContentData")
         getShopPageHeaderContentData()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before setupTabs")
         setupTabs()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before setViewState")
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before shopPageFragmentHeaderViewHolder bind")
         shopPageHeaderDataModel?.let {
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shopPageFragmentHeaderViewHolder bind")
     }
 
     protected fun stopPreparePltShopPage() {
@@ -922,22 +889,16 @@ class ShopPageFragment :
     }
 
     private fun setupTabs() {
-        Log.i("SHOP_TEST_setupTabs", "{${System.currentTimeMillis()}} before listShopPageTabModel")
         listShopPageTabModel = createListShopPageTabModel()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before viewPagerAdapter.setTabData")
         viewPagerAdapter.setTabData(listShopPageTabModel)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before viewPagerAdapter.notifyDataSetChanged()")
         viewPagerAdapter.notifyDataSetChanged()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before selectedPosition")
         var selectedPosition = getSelectedTabPosition()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before shouldOverrideTabToHome")
         if (shouldOverrideTabToHome) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
             } else {
                 viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
             }
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shouldOverrideTabToHome")
         }
         if (shouldOverrideTabToReview) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ReviewShopFragment::class.java)) {
@@ -945,7 +906,6 @@ class ShopPageFragment :
             } else {
                 selectedPosition
             }
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shouldOverrideTabToReview")
         }
         if (shouldOverrideTabToProduct) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(ShopPageProductListFragment::class.java)) {
@@ -953,7 +913,6 @@ class ShopPageFragment :
             } else {
                 selectedPosition
             }
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shouldOverrideTabToProduct")
         }
         if (shouldOverrideTabToFeed) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)) {
@@ -961,17 +920,13 @@ class ShopPageFragment :
             } else {
                 selectedPosition
             }
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after shouldOverrideTabToFeed")
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} before tabLayout")
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
             }
         }
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after tabLayout")
         viewPager.setCurrentItem(selectedPosition, false)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} after setCurrentItem")
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
