@@ -87,32 +87,34 @@ class ShopHomeVoucherViewHolder(
                 merchantVoucherReload?.hide()
             }
         } else {
-            merchantVoucherShimmering?.hide()
-            merchantVoucherListWidget?.show()
-            merchantVoucherReload?.hide()
-            merchantVoucherUiModel = model
-            val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
+            if (!model.data.isNullOrEmpty()) {
+                merchantVoucherShimmering?.hide()
+                merchantVoucherListWidget?.show()
+                merchantVoucherReload?.hide()
+                merchantVoucherUiModel = model
+                val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
 
-            merchantVoucherListWidget?.apply {
-                setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
-                setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-                setTitle(model.header.title)
-                setSeeAllText(model.header.ctaText)
-                getVoucherHeaderContainer()?.let {
-                    val leftPadding = it.paddingLeft
-                    val topPadding = it.paddingTop
-                    val rightPadding = it.paddingRight
-                    val bottomPadding = 0
-                    it.setPadding(
-                            leftPadding,
-                            topPadding,
-                            rightPadding,
-                            bottomPadding
-                    )
+                merchantVoucherListWidget?.apply {
+                    setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
+                    setData(model.data as ArrayList<MerchantVoucherViewModel>?)
+                    setTitle(model.header.title)
+                    setSeeAllText(model.header.ctaText)
+                    getVoucherHeaderContainer()?.let {
+                        val leftPadding = it.paddingLeft
+                        val topPadding = it.paddingTop
+                        val rightPadding = it.paddingRight
+                        val bottomPadding = 0
+                        it.setPadding(
+                                leftPadding,
+                                topPadding,
+                                rightPadding,
+                                bottomPadding
+                        )
+                    }
                 }
-            }
-            recyclerViewState?.let {
-                merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
+                recyclerViewState?.let {
+                    merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
+                }
             }
         }
     }
