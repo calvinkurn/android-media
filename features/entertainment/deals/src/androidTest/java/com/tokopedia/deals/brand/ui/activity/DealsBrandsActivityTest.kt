@@ -3,8 +3,10 @@ package com.tokopedia.deals.brand.ui.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -17,8 +19,8 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
+import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.Assert
@@ -32,6 +34,7 @@ class DealsBrandsActivityTest {
     private val gtmLogDbSource = GtmLogDBSource(context)
 
     private val TAB_RELAKSASI = "Relaksasi"
+    private val TAB_SEMUA = "Semua"
     private val QUERY = "Alfa"
 
     @get: Rule
@@ -54,19 +57,24 @@ class DealsBrandsActivityTest {
 
     @Test
     fun testBrandLayout() {
-        changeLocationBrandPage()
         actionOnDealsBrandViewHolder()
         clickOnRelaksasiTab()
+        changeLocationBrandPage()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
                 hasAllSuccess())
     }
 
     private fun actionOnDealsBrandViewHolder() {
+        Thread.sleep(2000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(QUERY), closeSoftKeyboard())
 
         Thread.sleep(2000)
-        onView(getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
+        onView(AllOf.allOf(withId(R.id.deals_brand_recycler_view), withTagStringValue(TAB_SEMUA)))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+
+        Thread.sleep(2000)
+        onView(getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 0)).perform(click())
     }
 
     private fun clickOnRelaksasiTab() {
