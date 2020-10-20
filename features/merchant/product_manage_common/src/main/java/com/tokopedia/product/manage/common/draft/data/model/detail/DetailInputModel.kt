@@ -11,6 +11,7 @@ import java.math.BigInteger
 @Parcelize
 data class DetailInputModel(
         var productName: String = "",
+        var oldProductName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
         var price: BigInteger = 0.toBigInteger(),

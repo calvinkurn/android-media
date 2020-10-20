@@ -51,6 +51,7 @@ object AddEditProductMapper {
         productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
+        productDraft.detailInputModel.oldProductName = productInputModel.detailInputModel.oldProductName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
         productDraft.detailInputModel.categoryName = productInputModel.detailInputModel.categoryName
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
@@ -99,6 +100,7 @@ object AddEditProductMapper {
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
+            oldProductName = productDraft.detailInputModel.oldProductName
             categoryId = productDraft.detailInputModel.categoryId
             categoryName = productDraft.detailInputModel.categoryName
             price = productDraft.detailInputModel.price
