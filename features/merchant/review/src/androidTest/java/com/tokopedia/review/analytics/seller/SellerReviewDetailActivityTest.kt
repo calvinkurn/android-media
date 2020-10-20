@@ -51,7 +51,7 @@ class SellerReviewDetailActivityTest {
         override fun getActivityIntent(): Intent {
             return Intent(targetContext, SellerReviewDetailActivity::class.java).apply {
                 putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
-                putExtra(SellerReviewDetailFragment.CHIP_FILTER, "1 Tahun Terakhir")
+                putExtra(SellerReviewDetailFragment.CHIP_FILTER, TIME_ONE_YEAR)
                 putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, "")
             }
         }
@@ -240,6 +240,7 @@ class SellerReviewDetailActivityTest {
         const val TAG_FILTER_TIME = "Tampilkan periode ulasan dalam"
         const val TAG_OPTION_FEEDBACK = "Menu"
         const val TAG_SORT_FILTER = "Filter"
+        const val TIME_ONE_YEAR = "1 Tahun Terakhir"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time.json"
         const val FILTER_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_star.json"
