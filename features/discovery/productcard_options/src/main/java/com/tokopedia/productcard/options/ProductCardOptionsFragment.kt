@@ -131,8 +131,8 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private fun observeRouteToShopPageEvent() {
         productCardOptionsViewModel?.getRouteToShopPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            routeToShopPage()
             sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP)
+            routeToShopPage()
         })
     }
 
