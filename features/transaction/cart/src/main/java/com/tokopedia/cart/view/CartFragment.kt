@@ -2467,10 +2467,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
         val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
-        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", 1.0f, 0.2f)
+        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", 1.0f, 0.0f)
+        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", 1.0f, 0.5f)
+        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", 1.0f, 0.5f)
 
         AnimatorSet().let {
-            it.playTogether(animY, animX, animAlpha)
+            it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
             it.interpolator = DecelerateInterpolator()
             it.duration = 1000
             it.addListener(object : Animator.AnimatorListener {
