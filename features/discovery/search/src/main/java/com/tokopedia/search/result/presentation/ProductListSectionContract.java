@@ -184,6 +184,10 @@ public interface ProductListSectionContract {
         void showAddToCartSuccessMessage();
 
         void showAddToCartFailedMessage(String errorMessage);
+
+        void routeToShopPage(String shopId);
+
+        void trackEventGoToShopPage(Object dataLayer);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -1845,16 +1845,23 @@ final class ProductListPresenter
 
     @Override
     public void handleVisitShopAction() {
-        if (getView() == null || threeDotsProductItem == null || !threeDotsProductItem.isTopAds()) return;
+        if (getView() == null || threeDotsProductItem == null) return;
 
-        topAdsUrlHitter.hitClickUrl(
-                getView().getClassName(),
-                threeDotsProductItem.getTopadsClickShopUrl(),
-                threeDotsProductItem.getProductID(),
-                threeDotsProductItem.getProductName(),
-                threeDotsProductItem.getImageUrl(),
-                SearchConstant.TopAdsComponent.TOP_ADS
-        );
+        if (threeDotsProductItem.isTopAds()) {
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    threeDotsProductItem.getTopadsClickShopUrl(),
+                    threeDotsProductItem.getProductID(),
+                    threeDotsProductItem.getProductName(),
+                    threeDotsProductItem.getImageUrl(),
+                    SearchConstant.TopAdsComponent.TOP_ADS
+            );
+        }
+
+        getView().routeToShopPage(threeDotsProductItem.getShopID());
+        getView().trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer());
+
+        this.threeDotsProductItem = null;
     }
 
     @Override

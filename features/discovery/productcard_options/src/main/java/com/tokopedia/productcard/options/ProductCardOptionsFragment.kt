@@ -132,17 +132,7 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     private fun observeRouteToShopPageEvent() {
         productCardOptionsViewModel?.getRouteToShopPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_VISIT_SHOP)
-            routeToShopPage()
         })
-    }
-
-    private fun routeToShopPage() {
-        context?.let { context ->
-            val shopId = productCardOptionsViewModel?.productCardOptionsModel?.shopId ?: ""
-
-            if (shopId.isNotEmpty())
-                RouteManager.route(context, ApplinkConst.SHOP, shopId)
-        }
     }
 
     private fun observeShareProductEvent() {

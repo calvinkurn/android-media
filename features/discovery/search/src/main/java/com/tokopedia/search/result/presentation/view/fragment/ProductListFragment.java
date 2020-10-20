@@ -613,7 +613,7 @@ public class ProductListFragment
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
             ProductCardOptionsManager.handleProductCardOptionsActivityResult(
                     requestCode, resultCode, data,
-                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction
+                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction, this::handleShareProductAction
             );
         }
     }
@@ -650,7 +650,21 @@ public class ProductListFragment
     }
 
     private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
-        presenter.handleVisitShopAction();
+        if (presenter != null) presenter.handleVisitShopAction();
+    }
+
+    @Override
+    public void routeToShopPage(String shopId) {
+        if (getContext() != null) RouteManager.route(getContext(), ApplinkConst.SHOP, shopId);
+    }
+
+    @Override
+    public void trackEventGoToShopPage(Object dataLayer) {
+        SearchTracking.trackEventGoToShopPage(getQueryKey(), dataLayer);
+    }
+
+    private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
+        SearchTracking.eventShareProduct(getQueryKey(), productCardOptionsModel.getProductId());
     }
 
     @Override

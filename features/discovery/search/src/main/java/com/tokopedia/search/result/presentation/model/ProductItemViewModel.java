@@ -475,6 +475,19 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         );
     }
 
+    public Object getProductAsShopPageObjectDataLayer() {
+        return DataLayer.mapOf(
+                "id", shopID,
+                "name", String.format(ACTION_FIELD, isAds() ? ORGANIC_ADS : ORGANIC),
+                "creative", shopName,
+                "creative_url", shopUrl,
+                "position", Integer.toString(getPosition()),
+                "category", getCategoryBreadcrumb(),
+                "promo_id", "none / other",
+                "promo_code", "none / other"
+        );
+    }
+
     private String getShopType() {
         if (isShopOfficialStore) return "official_store";
         else if (isShopPowerMerchant) return "gold_merchant";
