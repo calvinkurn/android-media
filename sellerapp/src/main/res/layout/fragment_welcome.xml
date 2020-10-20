@@ -97,7 +97,7 @@
             app:customText="Masuk"
             app:textColor="@color/grey_600"
             app:borderColor="@color/grey_600"
-            app:cornerSize="5"
+            app:sellerLoginTextViewCornerSize="5"
             app:borderSize="2"
             app:iconButton="@drawable/ic_login_icon"/>
 
