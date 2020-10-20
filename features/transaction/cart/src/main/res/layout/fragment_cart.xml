@@ -191,4 +191,9 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <ImageView
+        android:id="@+id/tmp_animated_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"/>
+
 </LinearLayout>

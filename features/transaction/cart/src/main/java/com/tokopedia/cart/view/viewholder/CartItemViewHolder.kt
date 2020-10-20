@@ -1,11 +1,15 @@
 package com.tokopedia.cart.view.viewholder
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.Path
+import android.os.Build
 import android.text.*
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.PathInterpolator
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
@@ -294,12 +298,8 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
-        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
-        ImageHandler.loadImageRounded2(
-                this.itemView.context, this.ivProductImage,
-                data.cartItemData?.originData?.productImage
-        )
-
+        renderProductName(data)
+        renderImage(data)
         renderPrice(data)
         renderVariant(data)
         renderWarningMessage(data)
@@ -309,9 +309,20 @@ class CartItemViewHolder constructor(itemView: View,
 
         sendAnalyticsInformationLabel(data)
 
-        setClickListener(parentPosition, data)
-
         divider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
+    }
+
+    private fun renderProductName(data: CartItemHolderData) {
+        textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
+        textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
+    }
+
+    private fun renderImage(data: CartItemHolderData) {
+        ImageHandler.loadImageRounded2(
+                this.itemView.context, this.ivProductImage,
+                data.cartItemData?.originData?.productImage
+        )
+        ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
@@ -368,11 +379,6 @@ class CartItemViewHolder constructor(itemView: View,
         } else {
             textIncidentLabel.gone()
         }
-    }
-
-    private fun setClickListener(parentPosition: Int, data: CartItemHolderData) {
-        ivProductImage.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
-        textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun renderPrice(data: CartItemHolderData) {
@@ -655,7 +661,7 @@ class CartItemViewHolder constructor(itemView: View,
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
-                        ?: 0)
+                        ?: 0, ivProductImage)
             }
         }
         textMoveToWishlist.show()

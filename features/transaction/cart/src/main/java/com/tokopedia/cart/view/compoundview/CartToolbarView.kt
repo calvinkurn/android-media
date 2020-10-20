@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import com.tokopedia.cart.R
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -11,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by meta on 19/07/18.
  */
-class CartToolbarView : BaseCustomView {
+class CartToolbarView : Toolbar, CartToolbar {
 
     lateinit var textView: Typography
     lateinit var btnWishlist: ImageView
@@ -38,8 +39,16 @@ class CartToolbarView : BaseCustomView {
         }
     }
 
-    fun setTitle(title: CharSequence) {
-        textView.text = title
+    override fun getWishlistIconPosition(): Pair<Int, Int> {
+        val location = IntArray(2)
+        btnWishlist.getLocationOnScreen(location)
+        val xCoordinate = location[0]
+        val yCoordinate = location[1]
+
+        return Pair(xCoordinate, yCoordinate)
     }
 
+    override fun playWishlistAnimation() {
+
+    }
 }

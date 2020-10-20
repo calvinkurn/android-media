@@ -1,9 +1,11 @@
 package com.tokopedia.cart.view
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -54,6 +58,7 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TI
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.adapter.CartAdapter
 import com.tokopedia.cart.view.adapter.CartItemAdapter
+import com.tokopedia.cart.view.compoundview.CartToolbar
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
 import com.tokopedia.cart.view.compoundview.CartToolbarView
 import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
@@ -135,6 +140,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, CartToolbarListener,
         InsuranceItemActionListener, TickerAnnouncementActionListener, SellerCashbackListener {
 
+    lateinit var toolbar: CartToolbar
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: UnifyButton
@@ -148,6 +154,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
     lateinit var imgChevronSummary: UnifyImageButton
     lateinit var textTotalPaymentLabel: Typography
+    lateinit var tmpAnimatedImage: ImageView
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -204,7 +211,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var hasTriedToLoadRecommendation: Boolean = false
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
-    private var noAvailableItems = false
     private var delayShowPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
@@ -438,6 +444,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
         imgChevronSummary = view.findViewById(R.id.img_chevron_summary)
         textTotalPaymentLabel = view.findViewById(R.id.text_total_payment_label)
+        tmpAnimatedImage = view.findViewById(R.id.tmp_animated_image)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -475,21 +482,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             layoutManager = gridLayoutManager
             adapter = cartAdapter
             addItemDecoration(cartItemDecoration)
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-                    super.onDrawOver(c, parent, state)
-                    val firstCartSectionHeaderPosition = cartAdapter.firstCartSectionHeaderPosition
-                    if (firstCartSectionHeaderPosition > -1 && parent.layoutManager is GridLayoutManager) {
-                        if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
-                            if (!noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
-                                setToolbarShadowVisibility(true)
-                            }
-//                        } else if (!noAvailableItems && bottomLayout.visibility == View.VISIBLE && bottomLayout.visibility == View.VISIBLE) {
-//                            setToolbarShadowVisibility(false)
-                        }
-                    }
-                }
-            })
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -504,8 +496,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     if (bottomLayout.visibility == View.GONE) {
                         llPromoCheckout.gone()
-                        return
                     }
+
                     if (recyclerView.canScrollVertically(-1)) {
                         disableSwipeRefresh()
                         setToolbarShadowVisibility(true)
@@ -571,20 +563,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     llPromoCheckout.animate()
                             .y(initialPromoButtonPosition)
                             .setDuration(0)
-                            .start();
+                            .start()
                 } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
                     // Prevent scroll down move button too far
                     llPromoCheckout.animate()
                             .y(valueY)
                             .setDuration(0)
-                            .start();
+                            .start()
                 }
             } else {
                 // Set to initial position if scroll up to top
                 llPromoCheckout.animate()
                         .y(initialPromoButtonPosition)
                         .setDuration(0)
-                        .start();
+                        .start()
             }
         }
     }
@@ -600,12 +592,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
             statusBarBackground.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
 
-            val toolbar: View?
             if (isToolbarWithBackButton) {
-                toolbar = toolbarRemoveWithBackView()
+                toolbar = toolbarRemoveWithBackView() as CartToolbar
                 statusBarBackground.hide()
             } else {
-                toolbar = toolbarRemoveView()
+                toolbar = toolbarRemoveView() as CartToolbar
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     statusBarBackground.visibility = View.INVISIBLE
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -614,8 +605,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     statusBarBackground.hide()
                 }
             }
-            toolbar?.let {
-                appbar.addView(toolbar)
+            toolbar.let {
+                appbar.addView(toolbar as View)
                 (activity as AppCompatActivity).setSupportActionBar(appbar)
             }
         }
@@ -625,7 +616,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             return CartToolbarWithBackView(it).apply {
                 listener = this@CartFragment
-                setTitle(getString(R.string.cart))
             }
         }
 
@@ -636,7 +626,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             return CartToolbarView(it).apply {
                 listener = this@CartFragment
-                setTitle(getString(R.string.cart))
             }
         }
 
@@ -1322,9 +1311,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: Int) {
+    override fun onWishlistCheckChanged(productId: String, cartId: Int, imageView: ImageView) {
+        setupProductImageAnimation(imageView)
+
         val isLastItem = cartAdapter.allCartItemData.size == 1
         dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+    }
+
+    private fun setupProductImageAnimation(imageView: ImageView) {
+        val imageSource = imageView.drawable.toBitmap()
+        val location = IntArray(2)
+        imageView.getLocationOnScreen(location)
+        val xCoordinate = location[0]
+        val yCoordinate = location[1]
+
+        tmpAnimatedImage.apply {
+            setImageBitmap(imageSource)
+
+            x = xCoordinate.toFloat()
+            y = yCoordinate.toFloat()
+        }
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
@@ -1496,7 +1502,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
 
-        setToolbarShadowVisibility(cartListData.shopGroupAvailableDataList.isEmpty())
         cartAdapter.notifyDataSetChanged()
 
         setActivityBackgroundColor()
@@ -1517,7 +1522,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showEmptyCartContainer()
         notifyBottomCartParent()
 
-        setToolbarShadowVisibility(true)
         cartAdapter.notifyDataSetChanged()
 
         setActivityBackgroundColor()
@@ -2265,7 +2269,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                           unselectAllItem: Boolean,
                                           noAvailableItems: Boolean) {
         dPresenter.getCartListData()?.isAllSelected = selectAllItem
-        this.noAvailableItems = noAvailableItems
         if (noAvailableItems) {
             llPromoCheckout.gone()
             cartAdapter.removeCartSelectAll()
@@ -2411,7 +2414,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-            setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
             notifyBottomCartParent()
 
             cartAdapter.checkForSingleItemRemaining()
@@ -2430,7 +2432,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
-        showToastMessageGreen(message, false)
+        playProductImageAnimation(message)
 
         when (source) {
             WISHLIST_SOURCE_AVAILABLE_ITEM -> {
@@ -2453,6 +2455,38 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun playProductImageAnimation(message: String) {
+        tmpAnimatedImage.show()
+
+        val target = toolbar.getWishlistIconPosition()
+        val targetX = target.first
+        val targetY = target.second
+
+        val deltaX = targetX - (tmpAnimatedImage.width / 2)
+        val deltaY = targetY - (tmpAnimatedImage.height / 2)
+
+        val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
+        val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
+        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", 1.0f, 0.2f)
+
+        AnimatorSet().let {
+            it.playTogether(animY, animX, animAlpha)
+            it.interpolator = DecelerateInterpolator()
+            it.duration = 1000
+            it.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    tmpAnimatedImage.gone()
+                    toolbar.playWishlistAnimation()
+                    showToastMessageGreen(message, false)
+                }
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+            it.start()
+        }
+    }
+
     private fun removeLocalCartItem(updateListResult: Pair<ArrayList<Int>, ArrayList<Int>>, forceExpandCollapsedUnavailableItems: Boolean) {
         updateListResult.first.forEach {
             onNeedToRemoveViewItem(it)
@@ -2471,7 +2505,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        setToolbarShadowVisibility(cartAdapter.allAvailableCartItemData.isEmpty())
         notifyBottomCartParent()
     }
 
@@ -2918,7 +2951,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        recommendationPage++;
+        recommendationPage++
     }
 
     override fun showItemLoading() {
@@ -3154,7 +3187,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val productId = recommendationItem.productId.toString()
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
-        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click"
 
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }

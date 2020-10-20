@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_4"
+        android:text="@string/cart"
         app:typographyType="heading_4"
         tools:text="Keranjang" />
 
