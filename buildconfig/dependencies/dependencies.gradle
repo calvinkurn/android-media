@@ -151,6 +151,7 @@ ext {
             appCompactV7      : "androidx.appcompat:appcompat:${appCompatVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
             design            : "com.google.android.material:material:${materialVersion}",
+            swipeRefresh      : "androidx.swiperefreshlayout:swiperefreshlayout:${materialVersion}",
             cardViewV7        : "androidx.cardview:cardview:${supportLegacyLibraryVersion}",
             exifinterface     : "androidx.exifinterface:exifinterface:${supportLibraryVersion}",
             constraintLayout  : "androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}",

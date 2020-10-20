@@ -84,6 +84,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
     implementation (rootProject.ext.firebase.crashlytics) {
