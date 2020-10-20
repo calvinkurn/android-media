@@ -238,7 +238,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
 
     private fun initBottomSheetListener() {
         bottomSheetLayout?.let {
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout) as UserLockBottomSheetBehavior<*>
+            bottomSheetBehavior = BottomSheetBehavior.from(it) as UserLockBottomSheetBehavior<*>
         }
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
