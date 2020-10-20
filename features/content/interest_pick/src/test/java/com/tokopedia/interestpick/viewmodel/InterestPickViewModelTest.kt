@@ -1,4 +1,4 @@
-package com.tokopedia.interest_pick.viewmodel
+package com.tokopedia.interestpick.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.interestpick.data.pojo.*
