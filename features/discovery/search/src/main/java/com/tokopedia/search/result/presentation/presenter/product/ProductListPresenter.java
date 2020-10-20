@@ -103,6 +103,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Advertisin
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -151,6 +152,7 @@ final class ProductListPresenter
     private List<Option> quickFilterOptionList = new ArrayList<>();
     private DynamicFilterModel dynamicFilterModel;
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
+    private int firstProductPosition = 0;
 
     @Inject
     ProductListPresenter(
@@ -952,6 +954,7 @@ final class ProductListPresenter
 
         topAdsCount = 1;
         productList = createProductItemVisitableList(productViewModel);
+        firstProductPosition = list.size();
         list.addAll(productList);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
@@ -1637,17 +1640,19 @@ final class ProductListPresenter
 
     public void onFreeOngkirOnBoardingShown() {
         if (getView() != null && !isSearchOnBoardingShown()) {
-            getView().showOnBoarding();
+            getView().showOnBoarding(firstProductPosition);
             toggleSearchOnBoardingShown();
         }
     }
 
     private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN);
+        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN)
+                && searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN);
     }
 
     private void toggleSearchOnBoardingShown() {
         searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true);
+        searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }
 

@@ -49,6 +49,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1592,33 +1593,63 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding() {
-        if (searchSortFilter != null && searchSortFilter.getSortFilterPrefix() != null) {
-            ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+    public void showOnBoarding(int firstProductPosition) {
+        if (recyclerView == null) return;
 
-            CoachMarkItem item = createFilterOnBoardingCoachMarkItem();
-            coachMarkItemList.add(item);
+        recyclerView.post(() -> {
+            View threeDots = getThreeDotsOfFirstProductItem(firstProductPosition);
+
+            if (searchSortFilter == null || threeDots == null) return;
+
+            if (firstProductPosition > 0)
+                recyclerView.smoothScrollToPosition(firstProductPosition);
+
+            ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
+                    searchSortFilter.getSortFilterPrefix(),
+                    threeDots
+            );
 
             CoachMarkBuilder builder = new CoachMarkBuilder();
             builder.allowPreviousButton(false);
             builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
-        }
+        });
     }
 
-    private CoachMarkItem createFilterOnBoardingCoachMarkItem() {
+    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+        if (recyclerView == null) return null;
+
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        if (viewHolder == null) return null;
+
+        if (viewHolder.itemView instanceof IProductCardView)
+            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+        else
+            return null;
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, View threeDots) {
+        ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+
+        coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
+        coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMarkItem createFilterOnBoarding(View sortFilterPrefix) {
         return new CoachMarkItem(
-                searchSortFilter.getSortFilterPrefix(),
-                getFilterOnBoardingTitle(),
-                getFilterOnBoardingDescription()
+                sortFilterPrefix,
+                getString(R.string.search_product_filter_onboarding_title),
+                getString(R.string.search_product_filter_onboarding_description)
         );
     }
 
-    private String getFilterOnBoardingTitle() {
-        return getString(R.string.search_product_filter_onboarding_title);
-    }
-
-    private String getFilterOnBoardingDescription() {
-        return getString(R.string.search_product_filter_onboarding_description);
+    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
+        return new CoachMarkItem(
+                threeDotsButton,
+                getString(R.string.search_product_three_dots_onboarding_title),
+                getString(R.string.search_product_three_dots_onboarding_description)
+        );
     }
 
     private Unit openBottomSheetFilterRevamp() {
