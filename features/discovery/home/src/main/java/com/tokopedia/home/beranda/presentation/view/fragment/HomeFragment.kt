@@ -125,6 +125,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.IconConfig
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
@@ -434,12 +435,11 @@ open class HomeFragment : BaseDaggerFragment(),
         homeMainToolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setIcon(
-                    IconConfig(listOf(
-                            IconList.LottieWishlistIcon.get(),
-                            IconList.NavGlobalIcon.get {
-                                Toast.makeText(activity, "Coming soon!", Toast.LENGTH_LONG).show()
-                            }
-                    ))
+                    IconBuilder()
+                            .addNavGlobalIcon {  }
+                            .addMessageIcon {  }
+                            .addNotificationIcon {  }
+                            .build()
             )
         }
         activity?.let {

@@ -61,9 +61,10 @@
       android:minHeight="?actionBarSize"
       app:contentInsetLeft="0dp"
       app:contentInsetStart="0dp"
-        app:toolbarContentType="typeTitle"
+        app:toolbarContentType="typeSearchbar"
         app:toolbarTitle="Lottie support"
         app:toolbarBackButton="close"
+        app:toolbarDefaultHint="This is default hint!"
         app:toolbarAlwaysShowShadow="true"/>
     
     <View
