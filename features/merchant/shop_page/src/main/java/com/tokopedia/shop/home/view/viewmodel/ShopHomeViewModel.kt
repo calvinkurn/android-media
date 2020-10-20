@@ -169,16 +169,7 @@ class ShopHomeViewModel @Inject constructor(
                     sortListData  = sortResponse
                 }
 
-                if (shouldGetPlayWidget(it)) {
-                    val layoutWithPlayWidget = asyncCatchError(
-                            dispatcherProvider.io(),
-                            block = { getPlayWidget(shopId, it) },
-                            onError = { null })
-
-                    layoutWithPlayWidget.await()?.let { uiModel ->
-                        _shopHomeLayoutData.value = Success(uiModel)
-                    }
-                }
+                getPlayWidget(shopId, Success(it))
             }
 
 
@@ -501,20 +492,29 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    private fun shouldGetPlayWidget(model: ShopPageHomeLayoutUiModel): Boolean {
-        return model.listWidget.any { it is CarouselPlayWidgetUiModel }
+    fun getPlayWidget(shopId: String, resultLayoutUiModel: Result<ShopPageHomeLayoutUiModel>? = _shopHomeLayoutData.value) {
+        if (resultLayoutUiModel !is Success) return
+        val layoutUiModel = resultLayoutUiModel.data
+
+        if (!shouldGetPlayWidget(layoutUiModel)) return
+
+        launchCatchError(block = {
+            val response = playWidgetTools.getWidgetFromNetwork(
+                    PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                    dispatcherProvider.io()
+            )
+            val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
+            val newCarouselUiModel = layoutUiModel.listWidget.map {
+                if (it is CarouselPlayWidgetUiModel) it.copy(widgetUiModel = widgetUiModel)
+                else it
+            }
+            _shopHomeLayoutData.value = Success(layoutUiModel.copy(listWidget = newCarouselUiModel))
+        }) {
+            _shopHomeLayoutData.value = Success(layoutUiModel.copy(listWidget = layoutUiModel.listWidget.filter { it !is CarouselPlayWidgetUiModel }))
+        }
     }
 
-    private suspend fun getPlayWidget(shopId: String, layoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel {
-        val response = playWidgetTools.getWidgetFromNetwork(
-                PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                dispatcherProvider.io()
-        )
-        val uiModel = playWidgetTools.mapWidgetToModel(response)
-        val newLayoutUiModel = layoutUiModel.listWidget.map {
-            if (it is CarouselPlayWidgetUiModel) it.copy(widgetUiModel = uiModel)
-            else it
-        }
-        return layoutUiModel.copy(listWidget = newLayoutUiModel)
+    private fun shouldGetPlayWidget(model: ShopPageHomeLayoutUiModel): Boolean {
+        return model.listWidget.any { it is CarouselPlayWidgetUiModel }
     }
 }

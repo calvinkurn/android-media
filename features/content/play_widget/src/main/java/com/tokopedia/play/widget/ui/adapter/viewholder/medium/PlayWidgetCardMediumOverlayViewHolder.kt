@@ -3,7 +3,7 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
@@ -23,11 +23,14 @@ class PlayWidgetCardMediumOverlayViewHolder(
 
     private fun setupListener(item: PlayWidgetMediumOverlayUiModel) {
         itemView.setOnClickListener {
-            cardMediumListener.onCardClicked(item, adapterPosition)
+            RouteManager.route(it.context, item.appLink)
         }
-        itemView.addOnImpressionListener(item.impress) {
-            cardMediumListener.onCardVisible(item, adapterPosition)
-        }
+//        itemView.setOnClickListener {
+//            cardMediumListener.onCardClicked(item, adapterPosition)
+//        }
+//        itemView.addOnImpressionListener(item.impress) {
+//            cardMediumListener.onCardVisible(item, adapterPosition)
+//        }
     }
 
     companion object {

@@ -219,14 +219,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun debounce() {
         debounceJob?.cancel()
         debounceJob = launch(executorDispatchers.main) {
-            OccIdlingResource.increment()
-            delay(1000)
+            delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
                 if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0) {
                     getRates()
                 }
-                OccIdlingResource.decrement()
             }
         }
     }
@@ -1554,6 +1552,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             return
         }
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach {
@@ -1564,8 +1563,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
+            OccIdlingResource.decrement()
         }, {
             globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, {
             if (it is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
@@ -1573,6 +1574,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(it)
             }
+            OccIdlingResource.decrement()
         })
     }
 
@@ -1688,6 +1690,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     companion object {
+        const val DEBOUNCE_TIME = 1000L
+
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
