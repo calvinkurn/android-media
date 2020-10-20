@@ -161,7 +161,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after onCreateView")
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} FeedShopFragment:  after onCreateView")
         return inflater.inflate(R.layout.fragment_feed_shop, container, false)
     }
 
@@ -174,12 +174,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after onViewCreated")
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} FeedShopFragment:  after onViewCreated")
         presenter.attachView(this)
         initVar()
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
-        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after super.onViewCreated")
+        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} FeedShopFragment:  after super.onViewCreated")
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
     }
