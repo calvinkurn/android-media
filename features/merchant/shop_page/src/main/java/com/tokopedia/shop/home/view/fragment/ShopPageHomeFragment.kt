@@ -344,6 +344,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
+                    stopMonitoringPltRenderPage()
+                    viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
@@ -355,9 +357,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
                                     ";error_trace='${Log.getStackTraceString(throwable)}'"
                     )
+                    stopMonitoringPltRenderPage()
                 }
             }
-            stopMonitoringPltRenderPage()
         })
 
         viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
@@ -872,7 +874,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherReloaded() {
-        viewModel?.getMerchantVoucherListReload(shopId, NUM_VOUCHER_DISPLAY)
+        viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
     }
 
     override fun onVoucherSeeAllClicked() {
