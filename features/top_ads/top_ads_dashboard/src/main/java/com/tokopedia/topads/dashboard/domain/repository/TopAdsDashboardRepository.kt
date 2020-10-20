@@ -15,7 +15,5 @@ interface TopAdsDashboardRepository {
 
     fun populateTotalAds(requestParams: RequestParams): Observable<TotalAd>
 
-    fun getStatistics(requestParams: RequestParams): Observable<DataStatistic>
-
     fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>>
 }

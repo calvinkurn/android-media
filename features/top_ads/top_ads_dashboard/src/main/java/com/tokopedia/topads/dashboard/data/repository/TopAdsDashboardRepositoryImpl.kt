@@ -19,9 +19,6 @@ class TopAdsDashboardRepositoryImpl(private val topAdsDashboardDataSource: TopAd
         return topAdsDashboardDataSource.populateTotalAd(requestParams)
     }
 
-    override fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
-        return topAdsDashboardDataSource.getStatistics(requestParams)
-    }
 
     override fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>> {
         return topAdsDashboardDataSource.getDashboardCredit(requestParams)
