@@ -72,11 +72,11 @@ object TrackingUtil {
         return linkerData
     }
 
-    fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?, description: String): LinkerData {
+    fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.shopId = productInfo.basic.shopID
         linkerData.price = productInfo.finalPrice.toString()
-        linkerData.sku = productInfo.basic.sku
+        linkerData.sku = productInfo.basic.productID
         linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
         linkerData.catLvl1 = productInfo.basic.category.name
         linkerData.userId = userId ?: ""
