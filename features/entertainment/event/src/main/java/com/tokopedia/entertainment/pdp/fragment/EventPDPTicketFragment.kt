@@ -282,7 +282,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         viewModel.productDetailEntity.observe(viewLifecycleOwner, Observer {
             pdpData = it.eventProductDetail.productDetailData
             eventVerifyRequest = getInitialVerify(pdpData)
-
+            changeLabel()
         })
 
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
@@ -363,6 +363,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         }
     }
 
+    private fun changeLabel(){
+        val bitwiseIsHiburan = pdpData.customText1.toInt() and IS_HIBURAN
+        activity?.txtPlaceHolderTglKunjungan?.text = if( bitwiseIsHiburan > 0) resources.getString(R.string.ent_pdp_berlaku_hingga)
+        else resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+    }
+
     companion object {
         fun newInstance(url: String, selectedDate: String, startDate: String, endDate: String) = EventPDPTicketFragment().also {
             it.arguments = Bundle().apply {
@@ -377,6 +383,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         val EMPTY_QTY = 0
         val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000
+        const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"
 
         private const val PREFERENCES_NAME = "event_ticket_preferences"

@@ -37,6 +37,7 @@
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_pdp_ubah">Ubah</string>
     <string name="ent_pdp_tanggal_kunjungan">Tanggal Kunjungan</string>
+    <string name="ent_pdp_berlaku_hingga">Berlaku Hingga</string>
     <string name="ent_pdp_ticket_total_harga">Total Harga</string>
     <string name="ent_pdp_ticket_pesan_text">Pesan Tiket</string>
     <string name="ent_pdp_ticket_pilih">Pilih</string>
