@@ -1,9 +1,7 @@
 package com.tokopedia.sellerorder.detail.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
-import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
 import com.tokopedia.usecase.coroutines.Fail
