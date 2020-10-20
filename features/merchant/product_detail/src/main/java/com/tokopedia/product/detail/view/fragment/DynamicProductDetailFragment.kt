@@ -27,10 +27,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -242,6 +242,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private val irisSessionId by lazy {
         context?.let { IrisSession(it).getSessionId() } ?: ""
+    }
+
+    private val shareProductInstance by lazy {
+        activity?.let {
+            ProductShare(it, ProductShare.MODE_TEXT)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -1542,7 +1548,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         viewModel.userSessionInterface.email,
                         t.message
                 )
-                Crashlytics.logException(Exception(errorMessage))
+                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
             }
         } catch (ex: IllegalStateException) {
             ex.printStackTrace()
@@ -1719,7 +1725,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun shareProduct() {
         activity?.let {
-            showProgressDialog()
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
@@ -1740,13 +1745,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val userSession = UserSession(activity)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-
         val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
-        if (userSession.isLoggedIn && userSession.isMsisdnVerified) {
+        if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
             val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
@@ -1786,9 +1788,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun executeProductShare(productData: ProductData) {
         activity?.let {
-            val productShare = ProductShare(it, ProductShare.MODE_TEXT)
-            productShare.share(productData, {
-                showProgressDialog()
+            shareProductInstance?.share(productData, {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
             }, {
                 hideProgressDialog()
             })
@@ -2181,6 +2184,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun advertiseProductClicked() {
+        DynamicProductDetailTracking.Click.eventTopAdsButtonClicked(
+                viewModel.userId,
+                btn_top_ads.text.toString(),
+                viewModel.getDynamicProductInfoP1)
         val firstAppLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         val secondAppLink = when (viewModel.p2Login.value?.topAdsGetShopInfo?.category) {
             TopAdsShopCategoryTypeDef.MANUAL_USER -> {
@@ -2214,6 +2221,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun rincianTopAdsClicked() {
+        DynamicProductDetailTracking.Click.eventTopAdsButtonClicked(
+                viewModel.userId,
+                btn_top_ads.text.toString(),
+                viewModel.getDynamicProductInfoP1)
         if (GlobalConfig.isSellerApp()) {
             showTopAdsBottomSheet()
         } else {

@@ -312,7 +312,10 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                         override fun onTick(l: Long) {
                             item.usage.expiredCountDown = l / 1000
                             holder.value.text = convertLongToHourMinuteSec(l)
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
+                            try {
+                                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
+                            } catch (e: Exception) {
+                            }
                             holder.progressTimer.progress = l.toInt() / 1000
                             try {
                                 holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),

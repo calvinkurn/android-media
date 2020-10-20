@@ -436,29 +436,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         mRunnableUpdateCatalogStatus = null
     }
 
-    override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
-        if (activity == null || !isAdded) {
-            return
-        }
-        val adb = AlertDialog.Builder(activityContext)
-        val view = LayoutInflater.from(context)
-                .inflate(R.layout.layout_tp_network_error_large, null, false)
-        val img = view.findViewById<ImageView>(R.id.img_error)
-        val titleText = view.findViewById<TextView>(R.id.text_title_error)
-        if (title == null || title.isEmpty()) {
-            titleText.setText(R.string.tp_label_too_many_access)
-        } else {
-            titleText.text = title
-        }
-        val label = view.findViewById<TextView>(R.id.text_label_error)
-        label.text = desc
-        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> viewModel.startSaveCoupon(item) }
-        adb.setView(view)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
     override fun onPreValidateError(title: String, message: String) {
         val adb = AlertDialog.Builder(activityContext)
         adb.setTitle(title)
