@@ -168,11 +168,13 @@ class SimpleEditProductBottomSheet @Inject constructor(
                 height = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.skipCollapsed = true
-            bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = true
+                bottomSheetBehavior.skipCollapsed = true
+                bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = true
         }
