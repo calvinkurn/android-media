@@ -51,4 +51,5 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.dropOff)
+    implementation project(rootProject.ext.features.buyerorder)
 }
