@@ -1,4 +1,4 @@
-package com.tokopedia.shop.analyticvalidator
+package com.tokopedia.shop.analyticvalidator.testcase
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -6,10 +6,8 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -22,27 +20,25 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig
-import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig.Companion.TYPE_NORMAL_PRODUCT
+import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig.Companion.TYPE_UPCOMING_PRODUCT
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 
-class ShopProductResultPageAnalyticTest {
+class ShopUpcomingProductResultPageAnalyticTest {
 
     companion object {
-        private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_product_card_tracker.json"
-        private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_page_click_sort_tracker.json"
+        private const val SHOP_PAGE_UPCOMING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_upcoming_product_result_product_card_tracker.json"
         private const val SAMPLE_SHOP_ID = "3418893"
+        private const val SAMPLE_ETALASE_ID_CAMPAIGN = "cmp_26326"
     }
 
     @get:Rule
@@ -54,29 +50,25 @@ class ShopProductResultPageAnalyticTest {
     fun beforeTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_NORMAL_PRODUCT))
+        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_UPCOMING_PRODUCT))
         activityRule.launchActivity(Intent().apply {
             putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+            putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
         })
     }
 
     @Test
-    fun testShopPageProductResultJourney() {
+    fun testShopPageUpcomingProductResultJourney() {
+
         waitForData(5000)
-        testClickSortButton()
         testProductCard()
-        validateTracker()
+        validateTrackerUpcomingProduct()
     }
 
-    private fun validateTracker() {
+    private fun validateTrackerUpcomingProduct() {
         activityRule.activity.finish()
         waitForData(2000)
-        //click sort tracker
-        doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH)
-
-        //product card tracker
-        doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH)
-
+        doAnalyticDebuggerTest(SHOP_PAGE_UPCOMING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH)
     }
 
     @After
@@ -117,18 +109,6 @@ class ShopProductResultPageAnalyticTest {
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
         )
-    }
-
-    private fun testClickSortButton() {
-        val mockIntentData = Intent().apply {
-            putExtra(ShopProductSortActivity.SORT_ID, "1")
-            putExtra(ShopProductSortActivity.SORT_NAME, "Terbaru")
-        }
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity"))
-        ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
-        Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(R.id.sort_filter_items_wrapper))))
-                .check(matches(isDisplayed())).perform(click())
     }
 
 }

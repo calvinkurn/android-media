@@ -1,22 +1,17 @@
-package com.tokopedia.shop.analyticvalidator
+package com.tokopedia.shop.analyticvalidator.testcase
 
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -24,33 +19,24 @@ import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopParamConstant
-import com.tokopedia.shop.mock.ShopPageSearchProductPageMockResponseConfig
 import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig
-import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig.Companion.TYPE_NORMAL_PRODUCT
 import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig.Companion.TYPE_ONGOING_PRODUCT
-import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig.Companion.TYPE_UPCOMING_PRODUCT
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
-import com.tokopedia.shop.product.view.viewholder.ShopProductViewHolder
-import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 
-class ShopUpcomingProductResultPageAnalyticTest {
+class ShopOngoingProductResultPageAnalyticTest {
 
     companion object {
-        private const val SHOP_PAGE_UPCOMING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_upcoming_product_result_product_card_tracker.json"
+        private const val SHOP_PAGE_ONGOING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_ongoing_product_result_product_card_tracker.json"
         private const val SAMPLE_SHOP_ID = "3418893"
         private const val SAMPLE_ETALASE_ID_CAMPAIGN = "cmp_26326"
     }
@@ -64,7 +50,7 @@ class ShopUpcomingProductResultPageAnalyticTest {
     fun beforeTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_UPCOMING_PRODUCT))
+        setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_ONGOING_PRODUCT))
         activityRule.launchActivity(Intent().apply {
             putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
             putExtra(ShopParamConstant.EXTRA_ETALASE_ID, SAMPLE_ETALASE_ID_CAMPAIGN)
@@ -72,17 +58,16 @@ class ShopUpcomingProductResultPageAnalyticTest {
     }
 
     @Test
-    fun testShopPageUpcomingProductResultJourney() {
-
+    fun testShopPageOngoingProductResultJourney() {
         waitForData(5000)
         testProductCard()
-        validateTrackerUpcomingProduct()
+        validateTrackerOngoingProduct()
     }
 
-    private fun validateTrackerUpcomingProduct() {
+    private fun validateTrackerOngoingProduct() {
         activityRule.activity.finish()
         waitForData(2000)
-        doAnalyticDebuggerTest(SHOP_PAGE_UPCOMING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH)
+        doAnalyticDebuggerTest(SHOP_PAGE_ONGOING_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH)
     }
 
     @After

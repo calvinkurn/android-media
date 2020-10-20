@@ -1,4 +1,4 @@
-package com.tokopedia.shop.analyticvalidator
+package com.tokopedia.shop.analyticvalidator.testcase
 
 import android.app.Activity
 import android.app.Instrumentation
