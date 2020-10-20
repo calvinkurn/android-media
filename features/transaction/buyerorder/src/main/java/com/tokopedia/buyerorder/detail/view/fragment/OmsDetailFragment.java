@@ -381,7 +381,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void updateDrawState(TextPaint ds) {
                     super.updateDrawState(ds);
                     ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                    ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
                 }
             }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             helpLabel.setHighlightColor(Color.TRANSPARENT);
@@ -399,8 +399,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.white));
-        shape.setStroke(2, getResources().getColor(R.color.grey_300));
+        shape.setColor(getResources().getColor(com.tokopedia.design.R.color.white));
+        shape.setStroke(2, getResources().getColor(com.tokopedia.design.R.color.grey_300));
         primaryActionBtn.setBackground(shape);
         if (isSingleButton) {
             primaryActionBtn.setLayoutParams(params);
@@ -416,9 +416,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.deep_orange_500));
+        shape.setColor(getResources().getColor(com.tokopedia.design.R.color.deep_orange_500));
         secondaryActionBtn.setBackground(shape);
-        secondaryActionBtn.setTextColor(getResources().getColor(R.color.white));
+        secondaryActionBtn.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
         if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
             secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
         }
@@ -696,9 +696,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                     DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                     doubleTextView.setTopText(entityPessenger.getTitle());
-                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.subtitle_gray_color));
+                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_560));
                     doubleTextView.setBottomText(entityPessenger.getValue());
-                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.title_gray_color));
+                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_796));
                     doubleTextView.setBottomTextStyle("bold");
 
                     userInfo.addView(doubleTextView);
@@ -750,9 +750,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                             DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                             doubleTextView.setTopText(passengerInformation.getTitle());
-                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), R.color.subtitle_gray_color));
+                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_560));
                             doubleTextView.setBottomText(passengerInformation.getValue());
-                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), R.color.title_gray_color));
+                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_796));
                             doubleTextView.setBottomTextStyle("bold");
 
                             userInfo.addView(doubleTextView);
@@ -792,7 +792,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             disableText.setText(header.getStatusLabel());
         }
 
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (actionButton.getHeaderObject() != null) {
             poweredBy.setText(header.getPoweredBy());
@@ -821,12 +821,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lp.gravity = Gravity.CENTER;
         dialog.getWindow().setAttributes(lp);
         View v = dialog.getWindow().getDecorView();
-        v.setBackgroundResource(android.R.color.transparent);
+        v.setBackgroundResource(com.tokopedia.design.R.color.transparent);
 
         ImageView qrCode = view.findViewById(R.id.qrCode);
         LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
         TextView closeButton = view.findViewById(R.id.redeem_ticket);
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (!actionButton.getBody().getBody().isEmpty()) {
             String[] voucherCodes = actionButton.getBody().getBody().split(",");
