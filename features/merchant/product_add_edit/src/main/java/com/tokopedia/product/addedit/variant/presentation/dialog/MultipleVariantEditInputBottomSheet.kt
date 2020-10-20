@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_inp
 import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
-        private var enableEditSku: Boolean,
-        private var enableEditPrice: Boolean,
-        private val multipleVariantEditInputListener: MultipleVariantEditInputListener
+        private var enableEditSku: Boolean = false,
+        private var enableEditPrice: Boolean = false,
+        private val multipleVariantEditInputListener: MultipleVariantEditInputListener? = null
 ): BottomSheetUnify() {
 
     companion object {
@@ -134,7 +134,7 @@ class MultipleVariantEditInputBottomSheet(
     private fun validatePrice() {
         if (contentView?.tfuPrice.getText().isNotEmpty()) {
             val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidatePrice(inputText)
+            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
             contentView?.tfuPrice?.setMessage(errorMessage)
@@ -151,7 +151,7 @@ class MultipleVariantEditInputBottomSheet(
     private fun validateStock() {
         if (contentView?.tfuStock.getText().isNotEmpty()) {
             val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidateStock(inputText)
+            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
             contentView?.tfuStock?.setMessage(errorMessage)
@@ -188,7 +188,7 @@ class MultipleVariantEditInputBottomSheet(
                         stock = stock,
                         sku = sku
                 )
-                multipleVariantEditInputListener.onMultipleEditInputFinished(inputData)
+                multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
             }
             dismiss()
         }

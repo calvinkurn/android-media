@@ -18,6 +18,9 @@ class IssueRegistry : IssueRegistry() {
                 CLASS_IMPORT,
                 VectorDrawableDetector.ISSUE,
                 MethodCallDetector.METHOD_CALL_PROHIBITED_ISSUE
+                AnimatedVectorDetector.JAVA_ISSUE,
+                AnimatedVectorDetector.XML_ISSUE
+
         )
 
     override val minApi: Int

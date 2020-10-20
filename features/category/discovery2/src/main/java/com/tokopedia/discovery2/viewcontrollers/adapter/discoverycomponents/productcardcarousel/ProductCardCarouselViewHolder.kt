@@ -15,7 +15,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -65,6 +64,17 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
+            mProductCarouselComponentViewModel.getProductCardMaxHeight().observe(it, Observer {
+                setMaxHeight(it)
+            })
+        }
+    }
+
+    private fun setMaxHeight(height: Int?) {
+        height?.let {
+            val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
+            carouselLayoutParams?.height = it
+            mProductCarouselRecyclerView.layoutParams = carouselLayoutParams
         }
     }
 
