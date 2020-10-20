@@ -347,9 +347,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(com.tokopedia.design.R.color.font_black_secondary_54)));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
-            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
+            Drawable drawable = ContextCompat.getDrawable(getContext(), com.tokopedia.utils.R.drawable.background_deadline);
             doubleTextView.setBottomTextBackground(drawable);
-            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10), getResources().getDimensionPixelSize(R.dimen.dp_20), getResources().getDimensionPixelSize(R.dimen.dp_10));
+            doubleTextView.setBottomTextRightPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_20), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10));
 
             doubleTextView.setBottomTextBackgroundColor(Color.parseColor(title.backgroundColor()));
         }
