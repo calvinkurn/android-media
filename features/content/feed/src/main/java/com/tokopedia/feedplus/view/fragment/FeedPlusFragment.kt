@@ -919,7 +919,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onWidgetShouldRefresh(view: View) {
-        Toast.makeText(requireContext(), "Refreshing Widget", Toast.LENGTH_SHORT).show()
         feedViewModel.doAutoRefreshPlayWidget()
     }
 
