@@ -181,7 +181,6 @@ class ShopHomeViewModel @Inject constructor(
                 newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
                     _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
                 }
-
                 productList.await()?.let { productListData ->
                     _initialProductListData.postValue(Success(productListData))
                 }
@@ -247,7 +246,7 @@ class ShopHomeViewModel @Inject constructor(
             val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
             if(playBannerDataModel.channelList.isNotEmpty()){
                 newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
-            }else {
+            }else{
                 newHomeLayout.remove(data)
             }
             return shopPageHomeLayoutUiModel.copy(
