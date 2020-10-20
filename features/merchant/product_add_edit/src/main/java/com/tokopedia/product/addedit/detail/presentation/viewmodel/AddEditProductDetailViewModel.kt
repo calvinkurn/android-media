@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductNameExistUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -33,7 +34,8 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        private val validateProductNameExistUseCase: ValidateProductNameExistUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -176,14 +178,34 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
+            // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-            return
+        } else {
+            // show product name tips
+            val productNameTips = provider.getProductNameTips()
+            productNameTips?.let { productNameMessage = it }
+            mIsProductNameInputError.value = false
+
+            if (productNameInput != productInputModel.oldProductName) {
+                // remote product name validation
+                launchCatchError(block = {
+                    val response = withContext(Dispatchers.IO) {
+                        validateProductNameExistUseCase.setParams(productNameInput)
+                        validateProductNameExistUseCase.executeOnBackground()
+                    }
+                    val validationMessage = response.productValidateV3.data.productName
+                            ?.joinToString("/n").orEmpty()
+                    if (validationMessage.isNotEmpty()) {
+                        productNameMessage = validationMessage
+                    }
+                    mIsProductNameInputError.value = !response.productValidateV3.isSuccess
+                }, onError = {
+                    // no-op
+                })
+            }
         }
-        val productNameTips = provider.getProductNameTips()
-        productNameTips?.let { productNameMessage = it }
-        mIsProductNameInputError.value = false
     }
 
     fun validateProductPriceInput(productPriceInput: String) {
