@@ -25,7 +25,6 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
                 bottomSheetUnify = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
-                    clearContentPadding = true
                     setTitle(context.getString(R.string.title_shipment_courier_bottomsheet_occ))
                     val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
                     setupChild(child, list)

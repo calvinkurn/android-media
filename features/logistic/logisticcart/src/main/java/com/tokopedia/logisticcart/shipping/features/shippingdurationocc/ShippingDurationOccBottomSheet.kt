@@ -26,7 +26,6 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
                 bottomSheetUnify = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
-                    clearContentPadding = true
                     setTitle(context.getString(R.string.title_bottomsheet_shipment))
                     val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
                     setupChild(child, list)

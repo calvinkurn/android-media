@@ -85,7 +85,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
             tvPrice.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
-            tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
