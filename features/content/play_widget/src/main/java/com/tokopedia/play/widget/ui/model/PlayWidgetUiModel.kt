@@ -5,9 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 /**
  * Created by mzennis on 05/10/20.
  */
-sealed class PlayWidgetUiModel : ImpressionableModel {
-
-    override val impressHolder = ImpressHolder()
+sealed class PlayWidgetUiModel {
 
     data class Small(
             val title: String,
@@ -17,7 +15,10 @@ sealed class PlayWidgetUiModel : ImpressionableModel {
             override val config: PlayWidgetConfigUiModel,
             val useHeader: Boolean,
             val items: List<PlayWidgetSmallItemUiModel>
-    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider
+    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
+
+        override val impressHolder = ImpressHolder()
+    }
 
     data class Medium(
             val title: String,
@@ -27,7 +28,10 @@ sealed class PlayWidgetUiModel : ImpressionableModel {
             override val config: PlayWidgetConfigUiModel,
             val background: PlayWidgetBackgroundUiModel,
             val items: List<PlayWidgetMediumItemUiModel>
-    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider
+    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
+
+        override val impressHolder = ImpressHolder()
+    }
 
     object Placeholder : PlayWidgetUiModel()
 }
