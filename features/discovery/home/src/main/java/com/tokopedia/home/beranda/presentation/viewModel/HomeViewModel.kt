@@ -83,7 +83,6 @@ open class HomeViewModel @Inject constructor(
         private val getAtcUseCase: Lazy<AddToCartOccUseCase>,
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
-        private val getDynamicChannelsUseCase: Lazy<GetDynamicChannelsUseCase>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
         private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
@@ -297,12 +296,14 @@ open class HomeViewModel @Inject constructor(
         if(playCard.value is PlayCardDataModel && (playCard.value as PlayCardDataModel).playCardHome != null) {
             val newPlayCard = (playCard.value as PlayCardDataModel).copy(playCardHome = (playCard.value as PlayCardDataModel).playCardHome?.copy(totalView = totalView))
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
-        } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.isNotEmpty()) {
-            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.withIndex().find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
-                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.toMutableList()
-                    newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-                    val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(channelList = newList))
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
+        } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.isNotEmpty() == true) {
+            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.withIndex()?.find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
+                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.toMutableList()
+                    newList?.let { newList ->
+                        newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+                        val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(channelList = newList))
+                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
+                    }
             }
         }
 
@@ -316,17 +317,17 @@ open class HomeViewModel @Inject constructor(
                     authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
             )
             val newPlayCarouselDataModel = getPlayBannerUseCase.get().executeOnBackground()
-            logChannelUpdate("get play banner data: ${newPlayCarouselDataModel.title} - ${newPlayCarouselDataModel.channelList.size}")
+            logChannelUpdate("get play carousel data: ${newPlayCarouselDataModel.title} - ${newPlayCarouselDataModel.channelList.size}")
             if(newPlayCarouselDataModel.channelList.isEmpty()){
                 _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
-                    logChannelUpdate("delete play banner data: ${newPlayCarouselDataModel.title}")
+                    logChannelUpdate("delete play carousel data: ${newPlayCarouselDataModel.title}")
                     homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, playIndex, this@HomeViewModel))
                 }
             } else {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
                 val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                logChannelUpdate("get update play banner data: ${newPlayCarouselDataModel.title} - index: $playIndex")
+                logChannelUpdate("get update play carousel data: ${newPlayCarouselDataModel.title} - index: $playIndex")
                 if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel) {
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(playCarouselCardDataModel.copy(
                             playBannerCarouselDataModel = newPlayCarouselDataModel
@@ -334,8 +335,8 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }){
-            logChannelUpdate("error get update play banner data: ${it.message}")
-            if(playCarouselCardDataModel.playBannerCarouselDataModel.channelList.isEmpty()) {
+            logChannelUpdate("error get update play carousel data: ${it.message}")
+            if(playCarouselCardDataModel.playBannerCarouselDataModel?.channelList?.isEmpty() == true) {
                 val newList = mutableListOf<Visitable<*>>()
                 newList.addAll(_homeLiveData.value?.list ?: listOf())
                 homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, -1, this@HomeViewModel))
@@ -365,10 +366,10 @@ open class HomeViewModel @Inject constructor(
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
                     position = pair.index,
                     visitable = (pair.value as PlayCarouselCardDataModel).copy(
-                            playBannerCarouselDataModel = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.copy(
-                                    channelList = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel.channelList.map {
+                            playBannerCarouselDataModel = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(
+                                    channelList = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.map {
                                         if(it is PlayBannerCarouselItemDataModel) it.copy(remindMe = it.remindMe) else it
-                                    }
+                                    } ?: listOf()
                             )
                     ),
                     callback = this
@@ -501,6 +502,12 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getPlayBannerCarouselIfAvailable(homeData: HomeDataModel?){
+        homeData?.list?.find { it is PlayCarouselCardDataModel }?.let {
+            getPlayBannerV2(it as PlayCarouselCardDataModel)
+        }
+    }
+
     // Logic get play carousel and should load from API
     fun getPlayBannerCarousel(position: Int = 0) {
         if(position != -1 && position < _homeLiveData.value?.list?.size ?: 0) {
@@ -509,20 +516,20 @@ open class HomeViewModel @Inject constructor(
                 getPlayBannerV2(visitable)
             } else {
                 val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
-                logChannelUpdate("find play banner ${playBannerCarousel?.javaClass?.simpleName}")
+                logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
                 if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
                     getPlayBannerV2(playBannerCarousel)
                 } else {
-                    logChannelUpdate("Null find playbanner listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
+                    logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
                 }
             }
         } else {
             val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
-            logChannelUpdate("find play banner ${playBannerCarousel?.javaClass?.simpleName}")
+            logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
             if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
                 getPlayBannerV2(playBannerCarousel)
             } else {
-                logChannelUpdate("Null find playbanner listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
+                logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
             }
         }
     }
@@ -902,7 +909,7 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     _homeLiveData.postValue(homeData)
-                    getPlayBannerCarousel()
+                    getPlayBannerCarouselIfAvailable(homeData)
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()

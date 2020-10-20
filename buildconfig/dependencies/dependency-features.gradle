@@ -132,8 +132,7 @@ ext {
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
 
-            inboxReputation                 : ":features:merchant:inbox_reputation",
-            reputation                      : ":features:merchant:reputation",
+            reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             sellerAction                    : ":features:merchant:seller_action",
@@ -186,7 +185,6 @@ ext {
             topAdsCreate                 : ":features:top_ads:top_ads_create",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
-            topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
