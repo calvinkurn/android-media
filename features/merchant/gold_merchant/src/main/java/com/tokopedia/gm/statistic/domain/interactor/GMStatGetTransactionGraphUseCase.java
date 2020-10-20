@@ -1,9 +1,9 @@
 package com.tokopedia.gm.statistic.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.seller.common.usecase.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.domain.GMStatRepository;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
@@ -12,7 +12,6 @@ import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
