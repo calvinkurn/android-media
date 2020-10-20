@@ -12,8 +12,11 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavItemViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
-class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener): BaseAdapterTypeFactory(), MainNavTypeFactory {
+class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
+                             private val userSession: UserSessionInterface)
+    : BaseAdapterTypeFactory(), MainNavTypeFactory {
 
     override fun type(accountHeaderViewModel: AccountHeaderViewModel): Int {
         return AccountHeaderViewHolder.LAYOUT
@@ -33,7 +36,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener): Base
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener)
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             MainNavItemViewHolder.LAYOUT -> MainNavItemViewHolder(view, mainNavListener)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)

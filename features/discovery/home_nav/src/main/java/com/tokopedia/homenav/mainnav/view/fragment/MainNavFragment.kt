@@ -14,9 +14,16 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_main_nav.*
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
+
+
+    private lateinit var userSession: UserSessionInterface
+
+
     override fun getScreenName(): String {
         return ""
     }
@@ -44,12 +51,21 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this)
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
     }
 
     private fun initClickListener() {
         testButton.setOnClickListener{
             NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY)
         }
+    }
+
+    private fun getUserSession() : UserSessionInterface{
+        if(!::userSession.isInitialized){
+            activity?.let {
+                userSession = UserSession(it)
+            }
+        }
+        return userSession
     }
 }
