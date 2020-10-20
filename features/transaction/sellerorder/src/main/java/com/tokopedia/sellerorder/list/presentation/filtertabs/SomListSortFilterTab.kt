@@ -35,16 +35,23 @@ class SomListSortFilterTab(
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         // use old filter items if any
         filterItems = ArrayList(statusList.map { statusFilter ->
-            filterItems.find { it.title.contains(statusFilter.status) }
-                    ?: SortFilterItem("${statusFilter.status}${" (${statusFilter.amount})".takeIf { statusFilter.amount > 0 }
-                            ?: ""}").apply {
-                        listener = { onTabClicked(this, statusFilter) }
-                        type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                    }
+            filterItems.find {
+                it.title.contains(statusFilter.status)
+            }?.apply {
+                title = "${statusFilter.status}${" (${statusFilter.amount})".takeIf { statusFilter.amount > 0 } ?: ""}"
+            } ?: createNewTabs(statusFilter)
         })
         sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
         changeTabSortFilterText()
+    }
+
+    private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
+        return SortFilterItem("${statusFilter.status}${" (${statusFilter.amount})".takeIf { statusFilter.amount > 0 }
+                ?: ""}").apply {
+            listener = { onTabClicked(this, statusFilter) }
+            type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        }
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {

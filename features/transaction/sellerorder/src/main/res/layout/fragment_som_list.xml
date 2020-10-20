@@ -139,7 +139,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:text="@string/som_list_bulk_action_button" />
+            android:text="@string/som_list_bulk_accept_order_button" />
 
     </androidx.cardview.widget.CardView>
 

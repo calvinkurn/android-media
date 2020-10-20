@@ -40,7 +40,7 @@ class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
-            itemView.setOnClickListener { if (!multiEditEnabled) listener.onOrderClicked(element) }
+            itemView.setOnClickListener { if (!multiEditEnabled) listener.onOrderClicked(element) else itemView.checkBoxSomListMultiSelect.performClick() }
             itemView.alpha = if (multiEditEnabled && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)

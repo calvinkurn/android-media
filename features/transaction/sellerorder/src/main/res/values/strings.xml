@@ -356,10 +356,18 @@
     <string name="som_list_search_bar_placeholder">Cari produk atau nomor invoice</string>
     <string name="som_list_response_before_label">Respons sebelum</string>
     <string name="som_list_more_products">+%1$s produk lainnya</string>
-    <string name="som_list_bulk_action_button">Atur Sekaligus</string>
+    <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
     <string name="som_list_order_courier_label">Kurir:</string>
     <string name="som_list_order_counter">%1$d Pesanan</string>
     <string name="som_list_filter_chip">Filter</string>
     <string name="som_list_order_destination_label">Tujuan:</string>
+    <string name="som_list_bulk_accept_order_bottom_sheet_title">Terima pesanan sekaligus</string>
+    <string name="som_list_bottom_sheet_bulk_accept_order_description">Pastikan stok produk tersedia, ya. Skor toko akan dikurangi jika kamu membatalkan pesanan ini.</string>
+    <string name="som_list_btn_bulk_accept_order">Terima Pesanan Sekaligus</string>
+    <string name="som_list_bulk_accept_order_product_amount">%1$s Barang</string>
+    <string name="som_list_bulk_accept_order_success_message">%1$d pesanan baru berhasil diterima.</string>
+    <string name="som_list_bulk_accept_order_failed_message">%1$d pesanan baru gagal diterima.</string>
+    <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
+    <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
 </resources>
