@@ -74,7 +74,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, R.color.Neutral_N50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, R.color.Unify_N50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {

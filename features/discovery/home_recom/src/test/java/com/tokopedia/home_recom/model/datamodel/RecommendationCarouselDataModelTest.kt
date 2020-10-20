@@ -10,8 +10,8 @@ import org.junit.Test
  * Created by Lukas on 2019-07-15
  */
 class RecommendationCarouselDataModelTest{
-    private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun recommendationCarouselDataModelFactory(title: String, recommendationItems: List<RecommendationCarouselItemDataModel>, listener: RecommendationListener) = RecommendationCarouselDataModel(title, "", recommendationItems, listener)
+    private val visitor = HomeRecommendationTypeFactoryImpl(mockk(), mockk(), mockk(), mockk())
+    private fun recommendationCarouselDataModelFactory(title: String, recommendationItems: List<RecommendationCarouselItemDataModel>, listener: RecommendationListener) = RecommendationCarouselDataModel(title, "", recommendationItems)
 
     @Test
     fun test(){
