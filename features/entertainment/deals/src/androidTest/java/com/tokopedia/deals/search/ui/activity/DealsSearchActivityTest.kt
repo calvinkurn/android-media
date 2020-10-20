@@ -3,13 +3,11 @@ package com.tokopedia.deals.search.ui.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -19,19 +17,14 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.utils.DealsLocationUtils
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchNotFoundMockResponse
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 /**
  * @author by abrar on 30/09/20
@@ -75,7 +68,7 @@ class DealsSearchActivityTest {
                 hasAllSuccess())
     }
 
-    private fun changeLocation () {
+    private fun changeLocation() {
         Thread.sleep(2000)
         onView(withId(R.id.tv_location)).perform(click())
         Thread.sleep(1000)
