@@ -102,6 +102,7 @@ internal fun createEmptyStateListener(): EmptyStateListener {
         override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
     }
