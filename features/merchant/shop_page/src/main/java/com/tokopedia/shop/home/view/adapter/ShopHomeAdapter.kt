@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
