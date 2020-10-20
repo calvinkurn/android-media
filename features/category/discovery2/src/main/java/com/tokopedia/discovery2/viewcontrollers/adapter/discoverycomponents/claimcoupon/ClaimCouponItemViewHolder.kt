@@ -36,7 +36,6 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
             setData(it, claimCouponItemViewModel.getIsDouble())
         })
-
     }
 
     private fun setData(dataItem: DataItem?, isDouble: Boolean) {
@@ -57,7 +56,9 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
 
         claimBtn.setOnClickListener {
-            claimCouponItemViewModel.redeemCoupon()
+            claimCouponItemViewModel.redeemCoupon { message ->
+                Toaster.make(itemView, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
                 try {
                     if (item == NOT_LOGGEDIN) {
