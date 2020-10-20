@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -160,6 +161,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after onCreateView")
         return inflater.inflate(R.layout.fragment_feed_shop, container, false)
     }
 
@@ -172,10 +174,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after onViewCreated")
         presenter.attachView(this)
         initVar()
         userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
+        Log.i("SHOP_FEED_TEST", "{${System.currentTimeMillis()}} after super.onViewCreated")
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
     }
