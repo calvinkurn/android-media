@@ -1512,9 +1512,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
-                content.row == "bottom"
-            }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
