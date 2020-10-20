@@ -33,7 +33,7 @@ class PltProductPerformanceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         setupGraphqlMockResponseWithCheck(createMockModelConfig())
 
-        val intent = ProductDetailActivity.createIntent(context, "1061061424")
+        val intent = ProductDetailActivity.createIntent(context, "1060957410")
         activityRule.launchActivity(intent)
     }
 
