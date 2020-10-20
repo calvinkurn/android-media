@@ -509,7 +509,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSmoothScrollToReplyView(int adapterPosition) {
-        if(adapterPosition > -1 && adapter.getList().get(adapterPosition) instanceof InboxReputationDetailItemViewHolder) {
+        if(adapterPosition > -1 && adapterPosition < adapter.getList().size()
+                && adapter.getList().get(adapterPosition) instanceof InboxReputationDetailItemViewHolder) {
             listProduct.smoothScrollToPosition(adapterPosition);
         }
     }
