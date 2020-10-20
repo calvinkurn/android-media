@@ -99,6 +99,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
+    fun setShopName(shopName: String) {
+        val name = MethodChecker.fromHtml(shopName)
+        val shopNameTv = view.shop_page_main_profile_name
+        if (shopNameTv.text != name) {
+            shopNameTv.text = name
+        }
+    }
+
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
         val labelTitle = remoteConfig.getString(LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
         if (labelTitle.isNotEmpty()) {
