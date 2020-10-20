@@ -42,7 +42,7 @@ class PostVoucherViewHolder(itemView: View?,
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             activity?.runOnUiThread {
                                 val bitmap = resource.toBitmap()
-                                val painter = SquareVoucherPainter(activity.applicationContext, bitmap, ::onSuccessGetBitmap)
+                                val painter = SquareVoucherPainter(context, bitmap, ::onSuccessGetBitmap)
                                 painter.drawInfo(element)
                             }
                             return false
