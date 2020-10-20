@@ -14,14 +14,20 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.TYPE
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
-import com.tokopedia.topads.common.domain.interactor.*
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -31,14 +37,14 @@ import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -47,7 +53,7 @@ import javax.inject.Inject
 class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
+            private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
             private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
             private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
@@ -64,12 +70,73 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
 
-
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
         private const val SELECTION_TYPE_DEF = 0
         private const val SELECTION_IND_DEF = 2
-        private const val GROUP_ID_FOR_STATISTICS = "-1"
+
+        const val CAL_YYYY_MM_DD = "yyyy-MM-dd"
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        const val START_DATE = "startDate"
+        const val END_DATE = "endDate"
+        const val STATS_URL = """query topadsDashboardStatistics (${'$'}startDate: String!, ${'$'}endDate: String!,${'$'}shopID: Int!,${'$'}type:Int,${'$'}group:String){
+    topadsDashboardStatistics(startDate:${'$'}startDate,endDate:${'$'}endDate,shopID:${'$'}shopID,type:${'$'}type,group:${'$'}group){
+    data{
+      summary {
+        ads_impression_sum
+        ads_click_sum
+        ads_ctr_percentage
+        ads_cost_avg
+        ads_conversion_sum
+        ads_all_sold_sum
+        ads_cost_sum
+        ads_all_gross_profit
+        ads_follow_count
+        ads_impression_sum_fmt
+        ads_click_sum_fmt
+        ads_ctr_percentage_fmt
+        ads_cost_avg_fmt
+        ads_conversion_sum_fmt
+        ads_all_sold_sum_fmt
+        ads_cost_sum_fmt
+        ads_all_gross_profit_fmt
+        ads_follow_count_fmt
+        cost_sum
+        all_gross_profit
+        cost_sum_fmt
+        all_gross_profit_fmt
+
+      }
+      cells {
+        day
+        month
+        year
+        ads_impression_sum
+        ads_click_sum
+        ads_ctr_percentage
+        ads_cost_avg
+        ads_conversion_sum
+        ads_all_sold_sum
+        ads_cost_sum
+        ads_all_gross_profit
+        ads_impression_sum_fmt
+        ads_click_sum_fmt
+        ads_ctr_percentage_fmt
+        ads_cost_avg_fmt
+        ads_conversion_sum_fmt
+        ads_all_sold_sum_fmt
+        ads_cost_sum_fmt
+        ads_all_gross_profit_fmt
+        cost_sum
+        all_gross_profit
+        cost_sum_fmt
+        all_gross_profit_fmt
+        aff_impression_sum
+        aff_impression_sum_fmt
+      }
+    }
+  }
+}"""
         const val DEPOSIT = """query topadsDashboardDeposits(${'$'}shop_id: Int!) {
   topadsDashboardDeposits(shop_id: ${'$'}shop_id) {
     data {
@@ -227,20 +294,20 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         }
     }
 
-    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
-        topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, GROUP_ID_FOR_STATISTICS), object : Subscriber<DataStatistic>() {
-            override fun onCompleted() {}
+    @GqlQuery("StatsList", STATS_URL)
+    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
+        val params = mapOf(SHOP_ID to userSession.shopId.toIntOrZero(), START_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate), END_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate), TYPE to selectedStatisticType, GROUP to adType)
+        topAdsGetStatisticsUseCase.setTypeClass(StatsData::class.java)
+        topAdsGetStatisticsUseCase.setRequestParams(params)
+        topAdsGetStatisticsUseCase.setGraphqlQuery(StatsList.GQL_QUERY)
+        topAdsGetStatisticsUseCase.execute({
+            onSuccesGetStatisticsInfo(it.topadsDashboardStatistics.data)
 
-            override fun onError(e: Throwable) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e.localizedMessage)
-                view?.onErrorGetStatisticsInfo(e)
-            }
-
-            override fun onNext(dataStatistic: DataStatistic) {
-                onSuccesGetStatisticsInfo(dataStatistic)
-            }
-        })
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
+            view?.onErrorGetStatisticsInfo(it)
+        }
+        )
     }
 
 
@@ -385,8 +452,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetStatisticsUseCase.unsubscribe()
-        topAdsAddSourceTaggingUseCase.unsubscribe()
+        topAdsGetStatisticsUseCase.cancelJobs()
         deleteTopAdsStatisticsUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.cancelJobs()
         topAdsGetGroupProductDataUseCase.cancelJobs()

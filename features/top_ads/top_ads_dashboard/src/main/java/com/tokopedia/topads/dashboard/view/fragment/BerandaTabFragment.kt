@@ -39,6 +39,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashInsightPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment.Companion.MANUAL_AD
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightMiniKeyFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
@@ -155,6 +156,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         }
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
+            loadStatisticsData()
         }
     }
 
@@ -212,7 +214,6 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     private fun loadData() {
         swipe_refresh_layout.isEnabled = true
-        loadStatisticsData()
         getAutoTopUpStatus()
         topAdsDashboardPresenter.getShopDeposit(::onLoadTopAdsShopDepositSuccess)
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
@@ -388,9 +389,10 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         loadStatisticsData()
     }
 
-    private fun loadStatisticsData() {
+    fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
     }
 
     override fun onDestroy() {
