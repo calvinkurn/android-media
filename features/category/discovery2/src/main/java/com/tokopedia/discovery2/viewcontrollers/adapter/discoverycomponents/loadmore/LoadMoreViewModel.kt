@@ -30,12 +30,10 @@ class LoadMoreViewModel(val application: Application, private val components: Co
         super.onAttachToViewHolder()
 
         launchCatchError(block = {
-            syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint, components.rpc_discoQuery)
         }, onError = {
             it.printStackTrace()
         })
-
-
     }
 
 

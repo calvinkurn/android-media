@@ -4,7 +4,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="8dip" />
-            <solid android:color="#1e31353b" />
+            <solid android:color="@color/Unify_N700_44" />
         </shape>
     </item>
 
@@ -12,7 +12,7 @@
         <clip>
             <shape>
                 <corners android:radius="8dip" />
-                <solid android:color="@color/Red_R500" />
+                <solid android:color="@color/Unify_R500" />
             </shape>
         </clip>
     </item>
