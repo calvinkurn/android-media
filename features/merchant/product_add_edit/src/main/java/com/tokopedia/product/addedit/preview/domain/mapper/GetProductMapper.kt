@@ -24,8 +24,7 @@ class GetProductMapper @Inject constructor() {
             mapDetailInputModel(product),
             mapDescriptionInputModel(product),
             mapShipmentInputModel(product),
-            mapVariantInputModel(product.variant),
-            oldProductName = product.productName)
+            mapVariantInputModel(product.variant))
 
     private fun mapVariantInputModel(variant: Variant): VariantInputModel =
             VariantInputModel(
@@ -112,6 +111,7 @@ class GetProductMapper @Inject constructor() {
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
+                    product.productName,
                     product.productName,
                     product.category.name,
                     product.category.id,
