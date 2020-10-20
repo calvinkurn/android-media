@@ -20,6 +20,10 @@ import com.tokopedia.gm.shopinfo.data.cloud.TomeProductApi;
 import com.tokopedia.gm.shopinfo.data.cloud.source.ShopInfoDataSource;
 import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepository;
 import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.common.usecase.JobExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.UIThread;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,6 +35,18 @@ import retrofit2.Retrofit;
 @GMScope
 @Module
 public class GMModule {
+
+    @GMScope
+    @Provides
+    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
+    }
+
+    @GMScope
+    @Provides
+    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
+        return uiThread;
+    }
 
     @GMScope
     @Provides
