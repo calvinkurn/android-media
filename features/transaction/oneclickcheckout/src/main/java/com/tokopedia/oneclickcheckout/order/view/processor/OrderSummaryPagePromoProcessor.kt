@@ -176,8 +176,10 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             }
         }
 
-        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null && !codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-            codes.add(shipping.logisticPromoViewModel.promoCode)
+        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
+                codes.add(shipping.logisticPromoViewModel.promoCode)
+            }
         } else if (shipping.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
             codes.remove(shipping.logisticPromoViewModel.promoCode)
         }

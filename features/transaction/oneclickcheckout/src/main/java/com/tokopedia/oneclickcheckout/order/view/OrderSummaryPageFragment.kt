@@ -190,6 +190,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.updatePromoState(PromoUiModel().apply {
                     titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                 })
+                // trigger validate to reset BBO benefit
+                viewModel.validateUsePromo()
             }
         }
     }
