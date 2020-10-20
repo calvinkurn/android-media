@@ -81,11 +81,15 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
 
-    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
-    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'
-    implementation ('com.alivc.videochat:live-pusher:1.0@aar') {
-        exclude group: 'com.alivc'
-    }
+//    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
+//    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'
+//    implementation ('com.alivc.videochat:live-pusher:1.0@aar') {
+//        exclude group: 'com.alivc'
+//    }
+
+    implementation files('libs/alivc-core-pusher.jar')
+    implementation files('libs/AlivcReporter-1.2.aar')
+    implementation files('libs/live-pusher-3.6.0.aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

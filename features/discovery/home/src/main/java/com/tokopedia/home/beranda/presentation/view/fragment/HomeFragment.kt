@@ -76,7 +76,6 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
-import com.tokopedia.home.beranda.helper.isSuccess
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -115,6 +114,8 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -169,7 +170,8 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeReviewListener,
         PopularKeywordListener,
         FramePerformanceIndexInterface,
-        HomeAutoRefreshListener {
+        HomeAutoRefreshListener,
+        PlayWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -285,6 +287,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
     private val gson = Gson()
+
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -684,7 +688,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeHomeRequestNetwork()
         observeSalamWidget()
         observeRechargeRecommendation()
-        observePlayReminder()
+//        observePlayReminder()
         observeIsNeedRefresh()
     }
           
@@ -812,19 +816,19 @@ open class HomeFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observePlayReminder(){
-        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
-            if(it.isSuccess()){
-                showToaster(
-                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
-                        else getString(R.string.home_page_play_card_success_remove_reminder),
-                        Toaster.TYPE_NORMAL
-                )
-            } else {
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
-            }
-        })
-    }
+//    private fun observePlayReminder(){
+//        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
+//            if(it.isSuccess()){
+//                showToaster(
+//                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
+//                        else getString(R.string.home_page_play_card_success_remove_reminder),
+//                        Toaster.TYPE_NORMAL
+//                )
+//            } else {
+//                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+//            }
+//        })
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -1006,6 +1010,9 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
+        playWidgetCoordinator = PlayWidgetCoordinator(viewLifecycleOwner).apply {
+            setListener(this@HomeFragment)
+        }
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -1023,7 +1030,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(context, this)
+                FeaturedShopComponentCallback(context, this),
+                playWidgetCoordinator = playWidgetCoordinator
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -2139,4 +2147,7 @@ open class HomeFragment : BaseDaggerFragment(),
         return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
+    override fun onWidgetShouldRefresh(view: View) {
+        getHomeViewModel().getPlayWidget()
+    }
 }

@@ -49,13 +49,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
-
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
-
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
 
     init {
         initDaggerInject()
@@ -220,10 +217,9 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return components.properties?.buttonNotification
     }
 
-    fun subscribeUser(syncSelectedTab: Boolean = false) {
+    fun subscribeUser() {
         if (isUserLoggedIn()) {
             dataItem.value?.let { productItemData ->
-
                 launchCatchError(block = {
                     val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
                     campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
@@ -231,7 +227,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
@@ -247,7 +243,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     override fun loggedInCallback() {
-        subscribeUser(true)
+        subscribeUser()
     }
 
     fun sendTopAdsClick() {
@@ -290,5 +286,4 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                 .build()
                 .inject(this)
     }
-
 }

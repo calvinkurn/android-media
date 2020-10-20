@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
@@ -32,7 +33,8 @@ class ShopHomeAdapterTypeFactory(
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
-        private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener
+        private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+        private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -135,7 +137,7 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
-            CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(parent)
+            CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(parent, playWidgetCoordinator)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

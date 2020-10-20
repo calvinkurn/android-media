@@ -47,10 +47,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -89,8 +87,8 @@ open class HomeViewModel @Inject constructor(
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
         private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
         private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
-        private val getPlayBannerUseCase: Lazy<GetPlayWidgetUseCase>,
-        private val playToggleChannelReminderUseCase: Lazy<PlayToggleChannelReminderUseCase>,
+//        private val getPlayBannerUseCase: Lazy<GetPlayWidgetUseCase>,
+//        private val playToggleChannelReminderUseCase: Lazy<PlayToggleChannelReminderUseCase>,
         private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
@@ -103,7 +101,8 @@ open class HomeViewModel @Inject constructor(
         private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>,
-        private val homeProcessor: Lazy<HomeCommandProcessor>
+        private val homeProcessor: Lazy<HomeCommandProcessor>,
+        private val playWidgetTools: Lazy<PlayWidgetTools>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()), ResultCommandProcessor {
 
     companion object {
@@ -137,8 +136,8 @@ open class HomeViewModel @Inject constructor(
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
 
-    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
-    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
+//    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
+//    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
 
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
@@ -290,92 +289,94 @@ open class HomeViewModel @Inject constructor(
     fun updateBannerTotalView(channelId: String, totalView: String) {
         val homeList = _homeLiveData.value?.list ?: listOf()
         val playCard = homeList.withIndex().find {
-            (_, visitable) -> (visitable is PlayCardDataModel && visitable.playCardHome?.channelId == channelId) ||
-                (visitable is PlayCarouselCardDataModel)
+            (_, visitable) -> (visitable is PlayCardDataModel && visitable.playCardHome?.channelId == channelId)
+//                || (visitable is PlayCarouselCardDataModel)
         } ?: return
         if(playCard.value is PlayCardDataModel && (playCard.value as PlayCardDataModel).playCardHome != null) {
             val newPlayCard = (playCard.value as PlayCardDataModel).copy(playCardHome = (playCard.value as PlayCardDataModel).playCardHome?.copy(totalView = totalView))
             homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
-        } else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.isNotEmpty() == true) {
-            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.withIndex()?.find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
-                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.toMutableList()
-                    newList?.let { newList ->
-                        newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-                        val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(channelList = newList))
-                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
-                    }
-            }
         }
+
+//        else if(playCard.value is PlayCarouselCardDataModel && (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.isNotEmpty() == true) {
+//            (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.withIndex()?.find { (_, value) -> value is PlayBannerCarouselItemDataModel && value.channelId == channelId }?.let {
+//                    val newList = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.toMutableList()
+//                    newList?.let { newList ->
+//                        newList[it.index] = (it.value as PlayBannerCarouselItemDataModel).copy(countView = totalView)
+//                        val newPlayCard = (playCard.value as PlayCarouselCardDataModel).copy(playBannerCarouselDataModel = (playCard.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(channelList = newList))
+//                        homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newPlayCard, playCard.index, this))
+//                    }
+//            }
+//        }
 
     }
 
-    private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
-        launchCatchError(coroutineContext, block = {
-            getPlayBannerUseCase.get().setParams(
-                    widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
-                    authorId = "",
-                    authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
-            )
-            val newPlayCarouselDataModel = getPlayBannerUseCase.get().executeOnBackground()
-            logChannelUpdate("get play carousel data: ${newPlayCarouselDataModel.title} - ${newPlayCarouselDataModel.channelList.size}")
-            if(newPlayCarouselDataModel.channelList.isEmpty()){
-                _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
-                    logChannelUpdate("delete play carousel data: ${newPlayCarouselDataModel.title}")
-                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, playIndex, this@HomeViewModel))
-                }
-            } else {
-                val newList = mutableListOf<Visitable<*>>()
-                newList.addAll(_homeLiveData.value?.list ?: listOf())
-                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
-                logChannelUpdate("get update play carousel data: ${newPlayCarouselDataModel.title} - index: $playIndex")
-                if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel) {
-                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(playCarouselCardDataModel.copy(
-                            playBannerCarouselDataModel = newPlayCarouselDataModel
-                    ), playIndex, this@HomeViewModel))
-                }
-            }
-        }){
-            logChannelUpdate("error get update play carousel data: ${it.message}")
-            if(playCarouselCardDataModel.playBannerCarouselDataModel?.channelList?.isEmpty() == true) {
-                val newList = mutableListOf<Visitable<*>>()
-                newList.addAll(_homeLiveData.value?.list ?: listOf())
-                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, -1, this@HomeViewModel))
-            }
-        }
-    }
+//    private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
+//        launchCatchError(coroutineContext, block = {
+//            getPlayBannerUseCase.get().setParams(
+//                    widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
+//                    authorId = "",
+//                    authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
+//            )
+//            val newPlayCarouselDataModel = getPlayBannerUseCase.get().executeOnBackground()
+//            logChannelUpdate("get play carousel data: ${newPlayCarouselDataModel.title} - ${newPlayCarouselDataModel.channelList.size}")
+//            if(newPlayCarouselDataModel.channelList.isEmpty()){
+//                _homeLiveData.value?.list?.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }?.let{ playIndex ->
+//                    logChannelUpdate("delete play carousel data: ${newPlayCarouselDataModel.title}")
+//                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, playIndex, this@HomeViewModel))
+//                }
+//            } else {
+//                val newList = mutableListOf<Visitable<*>>()
+//                newList.addAll(_homeLiveData.value?.list ?: listOf())
+//                val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+//                logChannelUpdate("get update play carousel data: ${newPlayCarouselDataModel.title} - index: $playIndex")
+//                if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel) {
+//                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(playCarouselCardDataModel.copy(
+//                            playBannerCarouselDataModel = newPlayCarouselDataModel
+//                    ), playIndex, this@HomeViewModel))
+//                }
+//            }
+//        }){
+//            logChannelUpdate("error get update play carousel data: ${it.message}")
+//            if(playCarouselCardDataModel.playBannerCarouselDataModel?.channelList?.isEmpty() == true) {
+//                val newList = mutableListOf<Visitable<*>>()
+//                newList.addAll(_homeLiveData.value?.list ?: listOf())
+//                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(playCarouselCardDataModel, -1, this@HomeViewModel))
+//            }
+//        }
+//    }
 
-    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
-        launchCatchError(block = {
-            playToggleChannelReminderUseCase.get().setParams(channelId, isSet)
-            val reminder = playToggleChannelReminderUseCase.get().executeOnBackground()
-            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
-                _reminderPlayLiveData.postValue(Result.success(isSet))
-            } else {
-                rollbackRemindPlayBanner()
-                _reminderPlayLiveData.postValue(Result.error(Throwable()))
-            }
-        }){
-            rollbackRemindPlayBanner()
-            _reminderPlayLiveData.postValue(Result.error(Throwable()))
-        }
-    }
+//    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+//        launchCatchError(block = {
+//            playToggleChannelReminderUseCase.get().setParams(channelId, isSet)
+//            val reminder = playToggleChannelReminderUseCase.get().executeOnBackground()
+//            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+//                _reminderPlayLiveData.postValue(Result.success(isSet))
+//            } else {
+//                rollbackRemindPlayBanner()
+//                _reminderPlayLiveData.postValue(Result.error(Throwable()))
+//            }
+//        }){
+//            rollbackRemindPlayBanner()
+//            _reminderPlayLiveData.postValue(Result.error(Throwable()))
+//        }
+//    }
 
-    private fun rollbackRemindPlayBanner(){
-        val pair = _homeLiveData.value?.list?.withIndex()?.find { (_, model) -> model is PlayCarouselCardDataModel }
-        if(pair != null){
-            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                    position = pair.index,
-                    visitable = (pair.value as PlayCarouselCardDataModel).copy(
-                            playBannerCarouselDataModel = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(
-                                    channelList = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.map {
-                                        if(it is PlayBannerCarouselItemDataModel) it.copy(remindMe = it.remindMe) else it
-                                    } ?: listOf()
-                            )
-                    ),
-                    callback = this
-            ))
-        }
-    }
+//    private fun rollbackRemindPlayBanner(){
+//        val pair = _homeLiveData.value?.list?.withIndex()?.find { (_, model) -> model is PlayCarouselCardDataModel }
+//        if(pair != null){
+//            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+//                    position = pair.index,
+//                    visitable = (pair.value as PlayCarouselCardDataModel).copy(
+//                            playBannerCarouselDataModel = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.copy(
+//                                    channelList = (pair.value as PlayCarouselCardDataModel).playBannerCarouselDataModel?.channelList?.map {
+//                                        if(it is PlayBannerCarouselItemDataModel) it.copy(remindMe = it.remindMe) else it
+//                                    } ?: listOf()
+//                            )
+//                    ),
+//                    callback = this
+//            ))
+//        }
+//    }
 
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
@@ -502,37 +503,37 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getPlayBannerCarouselIfAvailable(homeData: HomeDataModel?){
-        homeData?.list?.find { it is PlayCarouselCardDataModel }?.let {
-            getPlayBannerV2(it as PlayCarouselCardDataModel)
-        }
-    }
+//    private fun getPlayBannerCarouselIfAvailable(homeData: HomeDataModel?){
+//        homeData?.list?.find { it is PlayCarouselCardDataModel }?.let {
+//            getPlayBannerV2(it as PlayCarouselCardDataModel)
+//        }
+//    }
 
     // Logic get play carousel and should load from API
-    fun getPlayBannerCarousel(position: Int = 0) {
-        if(position != -1 && position < _homeLiveData.value?.list?.size ?: 0) {
-            val visitable = _homeLiveData.value?.list?.get(position)
-            if (visitable != null && visitable is PlayCarouselCardDataModel) {
-                getPlayBannerV2(visitable)
-            } else {
-                val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
-                logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
-                if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
-                    getPlayBannerV2(playBannerCarousel)
-                } else {
-                    logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
-                }
-            }
-        } else {
-            val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
-            logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
-            if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
-                getPlayBannerV2(playBannerCarousel)
-            } else {
-                logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
-            }
-        }
-    }
+//    fun getPlayBannerCarousel(position: Int = 0) {
+//        if(position != -1 && position < _homeLiveData.value?.list?.size ?: 0) {
+//            val visitable = _homeLiveData.value?.list?.get(position)
+//            if (visitable != null && visitable is PlayCarouselCardDataModel) {
+//                getPlayBannerV2(visitable)
+//            } else {
+//                val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
+//                logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
+//                if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
+//                    getPlayBannerV2(playBannerCarousel)
+//                } else {
+//                    logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
+//                }
+//            }
+//        } else {
+//            val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
+//            logChannelUpdate("find play carousel ${playBannerCarousel?.javaClass?.simpleName}")
+//            if (playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel) {
+//                getPlayBannerV2(playBannerCarousel)
+//            } else {
+//                logChannelUpdate("Null find play carousel listnya: ${_homeLiveData.value?.list?.map { it.javaClass.simpleName }}")
+//            }
+//        }
+//    }
 
     // If the image is valid it will be set play banner to UI
     fun setPlayBanner(playCardDataModel: PlayCardDataModel){
@@ -772,11 +773,11 @@ open class HomeViewModel @Inject constructor(
     private fun evaluatePlayCarouselWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             // find the old data from current list
-            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCarouselCardDataModel}
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is CarouselPlayWidgetDataModel }
             if(playWidget != null) {
                 // Find the new play widget is still available or not
                 val list = homeViewModel.list.toMutableList()
-                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+                val playIndex = list.indexOfFirst { visitable -> visitable is CarouselPlayWidgetDataModel }
 
                 // if on new home available the data, it will be load new data
                 if(playIndex != -1){
@@ -785,7 +786,6 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }
-
         return homeDataModel
     }
 
@@ -909,7 +909,7 @@ open class HomeViewModel @Inject constructor(
                     homeData = evaluateGeolocationComponent(homeData)
                     homeData = evaluateAvailableComponent(homeData)
                     _homeLiveData.postValue(homeData)
-                    getPlayBannerCarouselIfAvailable(homeData)
+                    getPlayWidget(homeData)
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
@@ -1459,6 +1459,31 @@ open class HomeViewModel @Inject constructor(
             is HomeVisitable -> visitable.visitableId()
             is HomeComponentVisitable -> visitable.visitableId()
             else -> null
+        }
+    }
+
+    /**
+     * Play widget
+     */
+    fun getPlayWidget(model: HomeDataModel? = _homeLiveData.value) {
+        val dataModel = model?.list?.find { it is CarouselPlayWidgetDataModel } ?: return
+        if (dataModel !is CarouselPlayWidgetDataModel) return
+
+        val index = model.list.indexOfFirst { it is CarouselPlayWidgetDataModel }
+
+        launchCatchError(block = {
+            val response = playWidgetTools.get().getWidgetFromNetwork(
+                    PlayWidgetUseCase.WidgetType.Home,
+//                    PlayWidgetUseCase.WidgetType.ShopPage("2248809"), // todo testing only
+                    homeDispatcher.get().io()
+            )
+            val uiModel = playWidgetTools.get().mapWidgetToModel(response)
+            homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(dataModel.copy(
+                    widgetUiModel = uiModel
+            ), index, this@HomeViewModel))
+
+        }) {
+            homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dataModel, index, this@HomeViewModel))
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
@@ -72,10 +73,7 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
     fun setData(data: PlayWidgetUiModel.Medium) {
         title.text = data.title
         actionTitle.text = data.actionTitle
-
-        actionTitle.setOnClickListener {
-            widgetMediumListener?.onSeeMoreClicked(data.actionAppLink, data.actionWebLink)
-        }
+        actionTitle.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
 
         configureBackgroundOverlay(data.background)
 
