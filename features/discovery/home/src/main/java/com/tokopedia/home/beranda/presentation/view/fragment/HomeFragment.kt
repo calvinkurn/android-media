@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -33,7 +34,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -149,7 +149,6 @@ import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -436,8 +435,10 @@ open class HomeFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setIcon(
                     IconConfig(listOf(
-                            IconList.MessageIcon.get(),
-                            IconList.NavGlobalIcon.get()
+                            IconList.LottieWishlistIcon.get(),
+                            IconList.NavGlobalIcon.get {
+                                Toast.makeText(activity, "Coming soon!", Toast.LENGTH_LONG).show()
+                            }
                     ))
             )
         }
@@ -1441,11 +1442,11 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-            homeMainToolbar?.setupSearchbar(
-                    listOf(HintData(placeholder = "Devara Fikry Akmal", keyword = "Devara Fikry Akmal")),
-                    durationAutoTransition = 500,
-                    shouldShowTransition = true
-            )
+//            homeMainToolbar?.setupSearchbar(
+//                    listOf(HintData(placeholder = "Devara Fikry Akmal", keyword = "Devara Fikry Akmal")),
+//                    durationAutoTransition = 500,
+//                    shouldShowTransition = true
+//            )
 //            homeMainToolbar?.setSearchBarHint(
 //                    placeholderToHint(data),
 //                    isFirstInstall(),
@@ -1698,7 +1699,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun isLightThemeStatusBar(): Boolean {
         homeMainToolbar?.let {
-            return it.toolbarType != NavToolbar.TOOLBAR_DARK_TYPE
+            return it.toolbarThemeType != NavToolbar.TOOLBAR_DARK_TYPE
         }
         return false
     }

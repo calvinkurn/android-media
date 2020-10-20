@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
+    implementation rootProject.ext.miscDependencies.lottie
 }
 
 project.ext {

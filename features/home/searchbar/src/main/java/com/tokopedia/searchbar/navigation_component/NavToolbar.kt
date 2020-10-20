@@ -29,22 +29,28 @@ class NavToolbar: Toolbar, LifecycleObserver {
         private const val BACK_TYPE_NONE = 0
         private const val BACK_TYPE_CLOSE = 1
         private const val BACK_TYPE_BACK = 2
+
+        private const val TOOLBAR_TYPE_SEARCH = 0
+        private const val TOOLBAR_TYPE_TITLE = 1
     }
 
     //public variable
-    var toolbarType: Int = 0
+    var toolbarThemeType: Int = 0
     private set
 
     //attribution variable
     private var backType = BACK_TYPE_NONE
-    private var showSearchbar = false
     private var initialTheme = TOOLBAR_DARK_TYPE
     private var toolbarFillColor = getLightIconColor()
     private var toolbarAlwaysShowShadow = false
     private var backDrawable: Drawable? = null
+    private var toolbarContentType = TOOLBAR_TYPE_TITLE
+    private var toolbarTitle = ""
+    private var toolbarDefaultHint = ""
 
     //helper variable
     private var shadowApplied: Boolean = false
+    private var isSearchbarShown = false
 
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
@@ -62,9 +68,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
             val ta = context.obtainStyledAttributes(attrs, R.styleable.NavToolbar, 0, 0)
             try {
                 backType = ta.getInt(R.styleable.NavToolbar_toolbarBackButton, BACK_TYPE_NONE)
-                showSearchbar = ta.getBoolean(R.styleable.NavToolbar_toolbarShowSearchbar, false)
                 initialTheme = ta.getInt(R.styleable.NavToolbar_toolbarInitialTheme, TOOLBAR_DARK_TYPE)
                 toolbarAlwaysShowShadow = ta.getBoolean(R.styleable.NavToolbar_toolbarAlwaysShowShadow, false)
+                toolbarContentType = ta.getInt(R.styleable.NavToolbar_toolbarContentType, TOOLBAR_TYPE_TITLE)
+                toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
+                toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
             } finally {
                 ta.recycle()
             }
@@ -73,6 +81,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute(context)
         configureShadowBasedOnAttribute()
+        configureToolbarContentTypeBasedOnAttribute()
     }
 
     /**
@@ -86,7 +95,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        if (toolbarType == TOOLBAR_DARK_TYPE) {
+        if (toolbarThemeType == TOOLBAR_DARK_TYPE) {
             navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
         } else {
             navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
@@ -131,10 +140,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * NavRecyclerViewScrollListener
      */
     fun switchToDarkToolbar() {
-        if (toolbarType != TOOLBAR_DARK_TYPE) {
+        if (toolbarThemeType != TOOLBAR_DARK_TYPE) {
             navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
-            toolbarType = TOOLBAR_DARK_TYPE
+            toolbarThemeType = TOOLBAR_DARK_TYPE
             setBackButtonColor(getLightIconColor())
+            setTitleTextColorBasedOnTheme()
         }
     }
 
@@ -144,10 +154,12 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * NavRecyclerViewScrollListener
      */
     fun switchToLightToolbar() {
-        if (toolbarType != TOOLBAR_LIGHT_TYPE) {
+        if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
-            toolbarType = TOOLBAR_LIGHT_TYPE
+            toolbarThemeType = TOOLBAR_LIGHT_TYPE
             setBackButtonColor(getDarkIconColor())
+            toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+            setTitleTextColorBasedOnTheme()
         }
     }
 
@@ -161,6 +173,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
                        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
                        durationAutoTransition: Long = 0,
                        shouldShowTransition: Boolean = true) {
+        showSearchbar()
+
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(
@@ -176,6 +190,17 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
     fun setOnBackButtonClickListener(backButtonClickListener: ()-> Unit) {
         nav_icon_back.setOnClickListener { backButtonClickListener }
+    }
+
+    fun setToolbarContentType(toolbarContentType: Int) {
+        when(toolbarContentType) {
+            TOOLBAR_TYPE_TITLE -> {
+                showTitle()
+            }
+            TOOLBAR_TYPE_SEARCH -> {
+                showSearchbar()
+            }
+        }
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
@@ -210,6 +235,17 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
     private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = paddingTop, right: Int = paddingRight, bottom: Int = paddingBottom) {
         setPadding(left, top, right, bottom)
+    }
+
+    private fun configureToolbarContentTypeBasedOnAttribute() {
+        when(toolbarContentType) {
+            TOOLBAR_TYPE_SEARCH -> {
+                showSearchbar(listOf(HintData(toolbarDefaultHint, toolbarDefaultHint)))
+            }
+            TOOLBAR_TYPE_TITLE -> {
+                showTitle()
+            }
+        }
     }
 
     private fun configureShadowBasedOnAttribute() {
@@ -263,7 +299,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         backDrawable?.let {
             val unwrappedDrawable: Drawable = it
             val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
-            if (toolbarType == TOOLBAR_DARK_TYPE) {
+            if (toolbarThemeType == TOOLBAR_DARK_TYPE) {
                 DrawableCompat.setTint(wrappedDrawable, getLightIconColor())
             } else {
                 DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
@@ -272,7 +308,34 @@ class NavToolbar: Toolbar, LifecycleObserver {
         }
     }
 
+    private fun showTitle() {
+        isSearchbarShown = false
+        toolbar_title.visibility = VISIBLE
+        layout_search.visibility = GONE
+        toolbar_title.text = toolbarTitle
+        setTitleTextColorBasedOnTheme()
+    }
+
+    private fun showSearchbar(hints: List<HintData>? = null) {
+        isSearchbarShown = true
+        toolbar_title.visibility = GONE
+        layout_search.visibility = VISIBLE
+
+        hints?.let { setupSearchbar(hints = hints) }
+    }
+
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Neutral_N700)
 
     private fun getLightIconColor() = ContextCompat.getColor(context, R.color.white)
+
+    private fun setTitleTextColorBasedOnTheme() {
+        when(toolbarThemeType) {
+            TOOLBAR_DARK_TYPE -> {
+                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.white))
+            }
+            TOOLBAR_LIGHT_TYPE -> {
+                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+            }
+        }
+    }
 }

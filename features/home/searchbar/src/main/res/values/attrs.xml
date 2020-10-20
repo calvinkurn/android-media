@@ -5,6 +5,10 @@
     </declare-styleable>
 
     <declare-styleable name="NavToolbar">
+        <attr name="toolbarContentType" format="enum">
+            <enum name="typeSearchbar" value="0"/>
+            <enum name="typeTitle" value="1"/>
+        </attr>
         <attr name="toolbarBackButton" format="enum">
             <enum name="none" value="0"/>
             <enum name="close" value="1"/>
@@ -14,7 +18,8 @@
             <enum name="dark" value="0"/>
             <enum name="light" value="1"/>
         </attr>
-        <attr name="toolbarShowSearchbar" format="boolean"/>
         <attr name="toolbarAlwaysShowShadow" format="boolean"/>
+        <attr name="toolbarTitle" format="string"/>
+        <attr name="toolbarDefaultHint" format="string"/>
     </declare-styleable>
 </resources>
