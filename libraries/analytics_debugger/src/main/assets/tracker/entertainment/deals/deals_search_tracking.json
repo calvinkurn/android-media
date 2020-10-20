@@ -15,18 +15,6 @@
       "userId" : "{{.*}}",
       "businessUnit" : "travel & entertainment"
     }, {
-      "event" : "clickDeals",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "click search",
-      "eventLabel" : "-",
-      "screenName" : "/deals/search",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{.+}}",
-      "userId" : "{{.*}}",
-      "businessUnit" : "travel & entertainment"
-    }, {
       "event" : "view_item_list",
       "eventCategory" : "digital - deals",
       "eventAction" : "impression on search result",
