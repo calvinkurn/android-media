@@ -173,4 +173,6 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val HIDE_NPL_BS = false
 }

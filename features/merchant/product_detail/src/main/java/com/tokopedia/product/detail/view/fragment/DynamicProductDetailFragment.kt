@@ -193,7 +193,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         ViewModelProvider(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
     }
 
-    private var nplFollowersButton: PartialButtonShopFollowersView? = null
+    private val nplFollowersButton: PartialButtonShopFollowersView? by lazy {
+        base_btn_follow?.run {
+            PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
+        }
+    }
 
     //Listener function
     private lateinit var initToolBarMethod: () -> Unit
@@ -489,7 +493,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                     if (isFavoriteFromShopPage != wasFavorite) {
                         onSuccessFavoriteShop(true)
-                        nplFollowersButton?.setupVisibility = wasFavorite
                     }
                 }
             }
@@ -503,7 +506,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                         if (isFavoriteFromTopChat != wasFavorite) {
                             onSuccessFavoriteShop(true)
-                            nplFollowersButton?.setupVisibility = wasFavorite
                         }
                     }
                 }
@@ -1280,7 +1282,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             data.doSuccessOrFail({
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
-                nplFollowersButton?.setupVisibility = false
             }, {
                 nplFollowersButton?.stopLoading()
                 onFailFavoriteShop(it)
@@ -1570,18 +1571,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
         val shouldShowRe = !alreadyFollowShop
         if (shouldShowRe && !viewModel.isShopOwner()) {
-            base_btn_follow?.run {
-                if (nplFollowersButton == null) {
-                    nplFollowersButton = PartialButtonShopFollowersView.build(this, this@DynamicProductDetailFragment)
-                }
-            }
             val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title
                     ?: ""
             val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description
                     ?: ""
             nplFollowersButton?.renderView(title, desc, alreadyFollowShop)
         }
-        nplFollowersButton?.setupVisibility = shouldShowRe
+        setupNplVisibility(shouldShowRe)
     }
 
     override fun onButtonFollowNplClick() {
@@ -1589,7 +1585,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
 
         if (isFavorite) {
-            nplFollowersButton?.setupVisibility = false
+            setupNplVisibility(ProductDetailConstant.HIDE_NPL_BS)
         } else {
             onShopFavoriteClick(isNplFollowType = true)
         }
@@ -2594,6 +2590,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpUiUpdater?.successUpdateShopFollow(if (isNplFollowerType) false else isFavorite)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
             dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopCredibility, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
+
+            setupNplVisibility(if (isNplFollowerType) ProductDetailConstant.HIDE_NPL_BS else isFavorite)
+        }
+    }
+
+    private fun setupNplVisibility(isFavorite: Boolean) {
+        val restrictionData = viewModel.p2Data.value?.restrictionInfo?.restrictionData
+        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true) {
+            isFavorite
+        } else {
+            false
         }
     }
 
