@@ -86,6 +86,7 @@ import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
+import com.tokopedia.feedplus.view.analytics.widget.FeedPlayWidgetAnalyticListener
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
@@ -188,6 +189,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
+    lateinit var feedPlayWidgetAnalytic: FeedPlayWidgetAnalyticListener
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
@@ -485,6 +489,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun initVar() {
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@FeedPlusFragment)
+            setAnalyticListener(feedPlayWidgetAnalytic)
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)
