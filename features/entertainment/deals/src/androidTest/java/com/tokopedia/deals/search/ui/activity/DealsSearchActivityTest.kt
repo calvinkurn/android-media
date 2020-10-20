@@ -20,14 +20,18 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
+import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
 
 /**
  * @author by abrar on 30/09/20
@@ -38,6 +42,9 @@ class DealsSearchActivityTest {
     private val gtmLogDbSource = GtmLogDBSource(context)
 
     private val query = "tes"
+
+    @Inject
+    lateinit var dealsLocationUtils: DealsLocationUtils
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsSearchActivity> = object : IntentsTestRule<DealsSearchActivity>(DealsSearchActivity::class.java) {
@@ -58,10 +65,10 @@ class DealsSearchActivityTest {
     }
 
     @Test
-    fun testSearchLayout() {
-        clickChipsLastSeen()
-        clickSearch()
-        clickOnSearchBar()
+    fun testSearchFlow() {
+        //changeLocation()
+        actionOnLastSeen()
+        actionOnCuratedViewHolder()
         actionOnVoucherViewHolder()
         actionOnMerchantViewHolder()
         impressionNotFoundViewHolder()
@@ -70,18 +77,11 @@ class DealsSearchActivityTest {
                 hasAllSuccess())
     }
 
-    private fun clickSearch() {
+    private fun changeLocation () {
         Thread.sleep(2000)
-        onView(withId(R.id.search_bar)).perform(click())
+        val id = dealsLocationUtils.getLocation().id++
+        dealsLocationUtils.updateLocation(Location(id))
     }
-
-    private fun clickOnSearchBar() {
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
-    }
-
 
     private fun actionOnVoucherViewHolder() {
         Thread.sleep(2000)
@@ -99,36 +99,26 @@ class DealsSearchActivityTest {
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
     }
 
+    private fun actionOnLastSeen() {
+        Thread.sleep(2000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.curated_layout), 0)).perform(click())
+    }
+
     private fun actionOnCuratedViewHolder() {
         Thread.sleep(2000)
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.chip_green_item), 0)).perform(click())
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.curated_layout), 1)).perform(click())
     }
 
 
     private fun impressionNotFoundViewHolder() {
         Thread.sleep(2000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("tesasjsagsja"))
-
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("tesasjsagsja"), ViewActions.closeSoftKeyboard())
         Thread.sleep(2000)
-        onView(withId(R.id.tv_not_found_title))
-    }
-
-    private fun clickChipsLastSeen() {
-        Thread.sleep(3000)
-        onView(withId(R.id.rv_search_results)).check(matches(isDisplayed())).perform(RecyclerViewActions
-                .scrollToPosition<RecyclerView.ViewHolder>(CHIPS_POSITION))
-
-        Thread.sleep(2000)
-        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_search_results)
-        val viewHolder = recyclerView.findViewHolderForAdapterPosition(CHIPS_POSITION)
-        viewHolder?.let {
-            CommonActions.clickChildViewWithId(R.id.chip_green_item)
-        }
+        onView(getElementFromMatchAtPosition(withId(R.id.not_found_layout), 1))
     }
 
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE = "tracker/entertainment/deals/deals_search_tracking.json"
-        const val CHIPS_POSITION = 0
     }
 }
