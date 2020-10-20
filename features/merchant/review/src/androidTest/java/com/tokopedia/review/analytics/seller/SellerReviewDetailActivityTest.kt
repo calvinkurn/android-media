@@ -20,7 +20,8 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
-import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
+import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.RatingAndTopicDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -91,6 +92,12 @@ class SellerReviewDetailActivityTest {
             fakeLogin()
             intendingIntent()
             waitForData()
+            val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
+            if(!isVisibleCoachMark) {
+                clickAction(R.id.text_next)
+            }
+            clickFilterTime()
+            clickFilterStar()
         } assertTest {
             waitForData()
             performClose(activityRule)
@@ -109,9 +116,18 @@ class SellerReviewDetailActivityTest {
         Thread.sleep(3000)
     }
 
-    private fun clickFilterTimeStar() {
-        val viewInteraction = Espresso.onView(AllOf.allOf(withId(R.id.rvRatingDetail))).check(ViewAssertions.matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductFeedbackDetailViewHolder>(0, CommonActions.clickChildViewWithId(R.id.ivOptionReviewFeedback)))
+    private fun clickFilterStar() {
+        val viewInteractionStar = Espresso.onView(AllOf.allOf(withId(R.id.rvRatingDetail))).check(ViewAssertions.matches(isDisplayed()))
+        viewInteractionStar.perform(RecyclerViewActions.actionOnItemAtPosition<OverallRatingDetailViewHolder>(1, CommonActions.clickChildViewWithId(R.id.review_period_filter_button_detail)))
+    }
+
+    private fun clickFilterTime() {
+        val viewInteractionTime = Espresso.onView(AllOf.allOf(withId(R.id.rvRatingDetail))).check(ViewAssertions.matches(isDisplayed()))
+        viewInteractionTime.perform(RecyclerViewActions.actionOnItemAtPosition<RatingAndTopicDetailViewHolder>(0, CommonActions.clickChildViewWithId(R.id.rating_checkbox)))
+        if (showDialogOption(TAG_FILTER_TIME)?.isVisible == true) {
+            onData(anything()).inAdapterView(withId(R.id.listFilterReviewDetail)).atPosition(2).perform(click())
+        }
+        Thread.sleep(1000)
     }
 
     private fun clickEditProduct() {
@@ -139,6 +155,7 @@ class SellerReviewDetailActivityTest {
     companion object {
         const val PRODUCT_ID = 669405017
         const val TAG_EDIT_PRODUCT = "Ubah Produk"
+        const val TAG_FILTER_TIME = "Tampilkan periode ulasan dalam"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time_star.json"
         const val REPORT_PATH = "tracker/merchant/review/seller/review_detail_click_report.json"
