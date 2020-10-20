@@ -881,15 +881,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // check RE eligibility for showcase type campaign
-        loadShopRestrictionInfo()
-    }
-
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        hideShopFollowersView()
     }
 
     override fun initInjector() {
@@ -938,8 +933,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun redirectToEtalasePicker() {
-        // hide partial shop followers
-        partialShopNplFollowersView?.setupVisibility = false
         context?.let {
             val bundle = Bundle()
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, selectedEtalaseId)
