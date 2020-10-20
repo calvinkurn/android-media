@@ -11,9 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -25,7 +24,6 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-
 class ShopHomeAdapter(
         private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
@@ -49,19 +47,24 @@ class ShopHomeAdapter(
             it.javaClass == ShopProductSortFilterUiModel::class.java
         }.takeIf { it != -1 } ?: 0
 
-//    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-//        super.onViewAttachedToWindow(holder)
-//        if(holder is ShopHomePlayCarouselViewHolder) {
-//            holder.onResume()
-//        }
-//    }
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onResume()
+        }
+        else if(holder is ShopHomeSliderBannerViewHolder) {
+            holder.resumeTimer()
+        }
+    }
 
-//    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-//        if(holder is ShopHomePlayCarouselViewHolder) {
-//            holder.onPause()
-//        }
-//        super.onViewDetachedFromWindow(holder)
-//    }
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        if(holder is ShopHomePlayCarouselViewHolder) {
+            holder.onPause()
+        }else if(holder is ShopHomeSliderBannerViewHolder) {
+            holder.pauseTimer()
+        }
+        super.onViewDetachedFromWindow(holder)
+    }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
@@ -222,6 +225,24 @@ class ShopHomeAdapter(
 
     override fun isShowLoadingMore(): Boolean {
         return visitables.filterIsInstance<ShopHomeProductViewModel>().isNotEmpty()
+    }
+
+    fun pauseSliderBannerAutoScroll() {
+        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+            it.name == WidgetName.SLIDER_BANNER
+        }
+        listSliderBannerViewModel.forEach {
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+        }
+    }
+
+    fun resumeSliderBannerAutoScroll() {
+        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+            it.name == WidgetName.SLIDER_BANNER
+        }
+        listSliderBannerViewModel.forEach {
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+        }
     }
 
     fun refreshSticky() {

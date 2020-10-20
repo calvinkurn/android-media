@@ -74,6 +74,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
 
+        // todo testing only
+        dynamicChannelList.add(2, DynamicHomeChannel.Channels(
+                layout = DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER
+        ))
+
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
@@ -135,9 +140,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> { createTopAdsBannerModel(channel) }
-//                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel, position) }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> { createLego4AutoComponent(channel, position, isCache) }
                 DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> { createFeaturedShopComponent(channel, position, isCache) }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createCarouselPlayWidget(channel, position) }
             }
         }
 
@@ -171,13 +176,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
-
-//    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels, position: Int) {
-//        if (!isCache) {
-//            val playBanner = mappingPlayCarouselChannel(channel, position, HashMap(), isCache)
-//            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-//        }
-//    }
 
     private fun createDynamicChannel(channel: DynamicHomeChannel.Channels,
                                      trackingData: Map<String, Any>? = null,
@@ -393,17 +391,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-//    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
-//                                           position: Int,
-//                                           trackingData: MutableMap<String, Any>,
-//                                           isCache: Boolean): Visitable<*> {
-//        val playCardViewModel = PlayCarouselCardDataModel(channel = channel, position = position)
-//        if (!isCache) {
-//            playCardViewModel.setTrackingData(trackingData)
-//        }
-//        return playCardViewModel
-//    }
-
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
@@ -416,6 +403,36 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
     }
 
-
     override fun build(): List<Visitable<*>> = visitableList
+
+    /**
+     * Play widget
+     */
+    private fun createCarouselPlayWidget(dynamicHomeChannel: DynamicHomeChannel.Channels, position: Int) {
+        if (isCache) return
+        val dataModel = CarouselPlayWidgetDataModel(
+                dynamicHomeChannel.apply {
+                    setPosition(position)
+                }
+        )
+        if (!visitableList.contains(dataModel)) visitableList.add(dataModel)
+    }
+
+//    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels, position: Int) {
+//        if (!isCache) {
+//            val playBanner = mappingPlayCarouselChannel(channel, position, HashMap(), isCache)
+//            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+//        }
+//    }
+
+//    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
+//                                           position: Int,
+//                                           trackingData: MutableMap<String, Any>,
+//                                           isCache: Boolean): Visitable<*> {
+//        val playCardViewModel = PlayCarouselCardDataModel(channel = channel, position = position)
+//        if (!isCache) {
+//            playCardViewModel.setTrackingData(trackingData)
+//        }
+//        return playCardViewModel
+//    }
 }

@@ -1,11 +1,9 @@
 package com.tokopedia.play.widget
 
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**

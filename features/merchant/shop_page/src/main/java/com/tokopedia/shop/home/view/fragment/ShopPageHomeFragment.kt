@@ -32,12 +32,17 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -98,7 +103,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
         ShopProductChangeGridSectionListener,
-        SortFilterBottomSheet.Callback{
+        SortFilterBottomSheet.Callback,
+        PlayWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -187,12 +193,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this,
+        playWidgetCoordinator = playWidgetCoordinator)
     }
+
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPltMonitoring()
         getIntentData()
+        setupPlayWidget()
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
             shopProductFilterParameter = it.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
@@ -282,15 +292,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-//    override fun onResume() {
-//        super.onResume()
+    override fun onResume() {
+        super.onResume()
 //        shopHomeAdapter.resumePlayCarousel()
-//    }
+        shopHomeAdapter.resumeSliderBannerAutoScroll()
+    }
 
     override fun onPause() {
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
 //        shopHomeAdapter.pausePlayCarousel()
+        shopHomeAdapter.pauseSliderBannerAutoScroll()
     }
 
     override fun onDestroy() {
@@ -1049,19 +1061,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //        viewModel?.onRefreshPlayBanner(shopId)
 //    }
 //
-//    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
-//        if(isLogin) {
-//            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
-//        } else {
-//            // reset remind icon
-//            adapter.notifyItemChanged(position, Bundle().apply {
-//                putBoolean(UPDATE_REMIND_ME_PLAY, true)
-//                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
-//            })
-//            redirectToLoginPage()
-//        }
-//    }
-
 //    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
 //        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
 //        if(isLogin) {
@@ -1085,7 +1084,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
 //        RouteManager.route(context, appLink)
 //    }
-
+//
+//    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
+//        shopPageHomeTracking.impressionPlayBanner(
+//                shopId = dataModel.partnerId,
+//                userId = viewModel?.userId ?: "",
+//                channelId = dataModel.channelId,
+//                bannerId = widgetId,
+//                creativeName = dataModel.coverUrl,
+//                autoPlay = autoPlay,
+//                positionWidget = widgetPosition,
+//                positionChannel = position.toString()
+//        )
+//    }
+//
 //    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
 //        shopPageHomeTracking.clickPlayBanner(
 //                shopId = dataModel.partnerId,
@@ -1099,7 +1111,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //        )
 //        RouteManager.route(context, dataModel.applink)
 //    }
-
+//
 //    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
 //        shopPageHomeTracking.impressionLeftPlayBanner(
 //                shopId = shopId,
@@ -1110,7 +1122,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //                position = (position + 1).toString()
 //        )
 //    }
-
+//
 //    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
 //        shopPageHomeTracking.clickLeftPlayBanner(
 //                shopId = shopId,
@@ -1577,4 +1589,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    /**
+     * Play widget
+     */
+    override fun onWidgetShouldRefresh(view: View) {
+        viewModel?.autoRefreshPlayWidget(shopId)
+    }
+
+    private fun setupPlayWidget() {
+        playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
+            setListener(this@ShopPageHomeFragment)
+        }
+    }
 }

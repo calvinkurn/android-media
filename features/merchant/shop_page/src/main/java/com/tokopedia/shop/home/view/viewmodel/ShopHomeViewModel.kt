@@ -517,4 +517,15 @@ class ShopHomeViewModel @Inject constructor(
         }
         return layoutUiModel.copy(listWidget = newLayoutUiModel)
     }
+
+    fun autoRefreshPlayWidget(shopId: String) {
+        val layoutUiModel = _shopHomeLayoutData.value
+        if (layoutUiModel !is Success) return
+
+        launchCatchError(block = {
+            val newCarouselModel = getPlayWidget(shopId, layoutUiModel.data)
+            _shopHomeLayoutData.value = Success(newCarouselModel)
+        }) {
+        }
+    }
 }
