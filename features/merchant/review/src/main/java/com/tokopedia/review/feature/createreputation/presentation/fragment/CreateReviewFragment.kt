@@ -532,12 +532,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea.getText()
         createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+                createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
     }
 
     private fun isReviewComplete(): Boolean {
         val reviewMessage = createReviewExpandableTextArea.getText()
-        return (reviewMessage.length >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD && reviewClickAt != 0 && createReviewViewModel.isImageNotEmpty())
+        return (reviewMessage.length >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD && animatedReviewPicker.getReviewClickAt() != 0 && createReviewViewModel.isImageNotEmpty())
     }
 
     private fun showReviewIncompleteDialog() {
@@ -799,7 +799,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
-        if (isUserEligible()) {
+        if (isUserEligible() && !isReviewIncomplete) {
             getIncentiveOvoData()
             shouldShowThankYouBottomSheet = true && !isReviewIncomplete
             return
