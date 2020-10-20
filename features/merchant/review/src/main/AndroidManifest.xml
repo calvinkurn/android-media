@@ -76,7 +76,7 @@
 
                 <data
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_review_inbox_detail"
+                    android:pathPattern="@string/path_review_detail_buyer"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

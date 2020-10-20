@@ -67,7 +67,7 @@
     <string name="path_shop_favourite_list" translatable="false">/shop-favourites</string>
 
     <string name="path_review_inbox" translatable="false">/review</string>
-    <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
+    <string name="path_review_detail_buyer" translatable="false">/review/detail/.*\\/</string>
     <string name="path_reputation_detail" translatable="false">/reputation/.*\\/</string>
     <string name="path_review_report" translatable="false">/review-report</string>
 

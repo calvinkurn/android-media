@@ -6,7 +6,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
-import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -34,11 +33,7 @@ object DeeplinkMapperMerchant {
             val segments = parsedUri.pathSegments
             if (segments.size > 0) {
                 val feedbackId = segments.last()
-                return if (GlobalConfig.isSellerApp()) {
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
-                } else {
-                    UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)
-                }
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
             return ApplinkConstInternalMarketplace.INBOX_REPUTATION
         }
