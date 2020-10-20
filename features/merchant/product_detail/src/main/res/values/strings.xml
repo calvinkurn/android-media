@@ -259,8 +259,9 @@
 
     <string name="double_string_builder">%1s %2s</string>
 
-    <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Catat tanggal rilisnya, ya!</string>
+    <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
     <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
     <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
+    <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
 
 </resources>

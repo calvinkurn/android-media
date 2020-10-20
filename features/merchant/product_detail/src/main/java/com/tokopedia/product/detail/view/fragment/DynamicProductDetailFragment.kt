@@ -130,7 +130,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -1193,9 +1192,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ?: "", viewModel.userId)
                 logException(it)
                 if (it is AkamaiErrorException && it.message != null) {
-                    view?.showToasterError(it.message ?: "", ctaText = getString(R.string.label_oke_pdp))
+                    view?.showToasterError(it.message
+                            ?: "", ctaText = getString(R.string.label_oke_pdp))
                 } else {
-                    showToastError(it)
+                    view?.showToasterError(getErrorMessage(it), ctaText = getString(R.string.label_oke_pdp))
                 }
             })
         }
@@ -1292,7 +1292,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
         val message = if (isFavorite)  getString(R.string.merchant_product_detail_success_follow_shop) else getString(R.string.merchant_product_detail_success_unfollow_shop)
 
-        view?.showToasterSuccess(if(isNplFollowerType) getString(R.string.merchant_product_detail_success_follow_shop_npl) else message)
+        view?.showToasterSuccess(if (isNplFollowerType) getString(R.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
     private fun observeMoveToWarehouse() {
@@ -1420,7 +1420,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 result.data.ovoValidationDataModel)
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
-                    else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))
+                    else -> view?.showToasterError(getString(R.string.default_request_error_unknown), ctaText = getString(R.string.label_oke_pdp))
                 }
             }
         }
@@ -1878,12 +1878,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onErrorMoveToEtalase(throwable: Throwable) {
         hideProgressDialog()
-        showToastError(throwable)
+        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(R.string.oke))
     }
 
     private fun onErrorWarehouseProduct(throwable: Throwable) {
         hideProgressDialog()
-        showToastError(throwable)
+        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(R.string.oke))
     }
 
     private fun onSuccessWarehouseProduct() {
@@ -2113,7 +2113,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
-        showToastError(MessageErrorException(errorMessage))
+        view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
+                ctaText = getString(R.string.oke))
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
@@ -2127,7 +2128,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
-        showToastError(MessageErrorException(errorMessage))
+        view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
+                ctaText = getString(R.string.oke))
     }
 
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
@@ -2596,10 +2598,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onFailFavoriteShop(t: Throwable) {
-        context?.let {
-            view?.showToasterError(ProductDetailErrorHandler.getErrorMessage(it, t), ctaText = getString(R.string.retry_label)) {
-                onShopFavoriteClick()
-            }
+        view?.showToasterError(getErrorMessage(t), ctaText = getString(R.string.retry_label)) {
+            onShopFavoriteClick()
         }
         pdpUiUpdater?.failUpdateShopFollow()
         dynamicAdapter.notifyWithPayload(pdpUiUpdater?.shopInfoMap, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
@@ -2749,16 +2749,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun showToastError(throwable: Throwable) {
-        view?.let {
-            context?.let { ctx ->
-                Toaster.make(it,
-                        ProductDetailErrorHandler.getErrorMessage(ctx, throwable),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_ERROR, "Oke", clickListener = View.OnClickListener {}
-                )
-            }
-        }
+    private fun getErrorMessage(throwable: Throwable): String {
+        return context?.let {
+            ProductDetailErrorHandler.getErrorMessage(it, throwable)
+        } ?: getString(R.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {
@@ -2911,9 +2905,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onFailNotifyMe(t: Throwable) {
         val dataModel = pdpUiUpdater?.notifyMeMap
-        context?.let {
-            showToastError(t)
-        }
+        view?.showToasterError(getErrorMessage(t), ctaText = getString(R.string.oke))
         if (dataModel != null) {
             pdpUiUpdater?.notifyMeMap?.notifyMe = !dataModel.notifyMe
             dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
