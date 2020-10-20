@@ -1,0 +1,18 @@
+{
+  "readme": "this tracker for tracking search page",
+  "mode" : "exact",
+  "query": [{
+      "event" : "viewDealsIris",
+      "eventCategory" : "digital - deals",
+      "eventAction" : "impression on search results",
+      "eventLabel" : "{{deals - .+ - .+ - result not found}}",
+      "screenName" : "/deals/",
+      "category" : "deals",
+      "currentSite" : "tokopediadigitaldeals",
+      "clientId" : "{{.+}}",
+      "sessionIris" : "{{.+}}",
+      "userId" : "{{.*}}",
+      "businessUnit": "travel & entertainment"
+    }
+  ]
+}

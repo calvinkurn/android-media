@@ -40,18 +40,6 @@
       ],
       "item_list" : "/deals"
     }, {
-      "event" : "viewDealsIris",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "impression on search results",
-      "eventLabel" : "{{deals - .+ - .+ - result not found}}",
-      "screenName" : "/deals/",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{.+}}",
-      "userId" : "{{.*}}",
-      "businessUnit": "travel & entertainment"
-    }, {
       "event" : "select_content",
       "eventCategory" : "digital - deals",
       "eventAction" : "click on search result",

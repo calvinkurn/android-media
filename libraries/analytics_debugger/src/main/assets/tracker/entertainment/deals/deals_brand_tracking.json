@@ -44,7 +44,7 @@
           "item_id": "{{.+}}",
           "price": "{{.+}}",
           "item_brand": "{{.+}}",
-          "item_category": "Makanan",
+          "item_category": "{{.+}}",
           "item_variant": "{{.+}}",
           "index": "{{.+}}",
           "dimension40": "/deals"
