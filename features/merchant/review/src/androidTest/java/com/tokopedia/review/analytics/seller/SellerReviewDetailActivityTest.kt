@@ -176,7 +176,6 @@ class SellerReviewDetailActivityTest {
         Thread.sleep(3000)
     }
 
-
     private fun clickReportDetail() {
         onView(withId(R.id.rvRatingDetail)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(4, scrollTo()))
         Thread.sleep(1000L)
