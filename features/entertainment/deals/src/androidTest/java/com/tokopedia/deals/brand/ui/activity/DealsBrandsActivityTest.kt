@@ -17,6 +17,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf

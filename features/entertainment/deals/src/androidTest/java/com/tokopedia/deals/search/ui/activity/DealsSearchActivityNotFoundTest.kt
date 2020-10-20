@@ -36,7 +36,7 @@ import javax.inject.Inject
 /**
  * @author by abrar on 30/09/20
  */
-class DealsSearchActivityTest {
+class DealsSearchActivityNotFoundTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
@@ -48,7 +48,7 @@ class DealsSearchActivityTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             gtmLogDbSource.deleteAll().subscribe()
-            setupGraphqlMockResponse(DealsSearchMockResponse())
+            setupGraphqlMockResponse(DealsSearchNotFoundMockResponse())
         }
 
         override fun getActivityIntent(): Intent {
@@ -56,67 +56,16 @@ class DealsSearchActivityTest {
         }
     }
 
-    @Before
-    fun setUp() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
     @Test
     fun testSearchFlow() {
-        changeLocation()
-        actionOnLastSeen()
-        actionOnCuratedViewHolder()
-        actionOnVoucherViewHolder()
-        actionOnMerchantViewHolder()
-
-        setupGraphqlMockResponse(DealsSearchNotFoundMockResponse())
         Thread.sleep(3000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
+        Thread.sleep(2000)
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE),
                 hasAllSuccess())
     }
 
-    private fun changeLocation () {
-        Thread.sleep(2000)
-        onView(withId(R.id.tv_location)).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Mal Bali Galeria"))).perform(click())
-        Thread.sleep(2000)
-        onView(withId(R.id.tv_location)).perform(click())
-        Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Ramayana Mal Bali"))).perform(click())
-        Thread.sleep(2000)
-    }
-
-    private fun actionOnVoucherViewHolder() {
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
-
-        Thread.sleep(2000)
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.voucher_deals_layout), 1)).perform(click())
-        Thread.sleep(2000)
-    }
-
-    private fun actionOnMerchantViewHolder() {
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
-        Thread.sleep(2000)
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
-        Thread.sleep(2000)
-    }
-
-    private fun actionOnLastSeen() {
-        Thread.sleep(2000)
-        onView(withText("BBQ tes")).check(matches(isDisplayed())).perform(click())
-        Thread.sleep(2000)
-    }
-
-    private fun actionOnCuratedViewHolder() {
-        Thread.sleep(2000)
-        onView(withText("Dessert")).check(matches(isDisplayed())).perform(click())
-        Thread.sleep(2000)
-    }
-
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE = "tracker/entertainment/deals/deals_search_tracking.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE = "tracker/entertainment/deals/deals_search_not_found_tracking.json"
     }
 }
