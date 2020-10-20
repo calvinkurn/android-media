@@ -89,6 +89,7 @@ class DealsSearchActivityTest {
 
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.voucher_deals_layout), 1)).perform(click())
+        Thread.sleep(2000)
     }
 
     private fun actionOnMerchantViewHolder() {
@@ -97,16 +98,19 @@ class DealsSearchActivityTest {
 
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
+        Thread.sleep(2000)
     }
 
     private fun actionOnLastSeen() {
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.curated_layout), 0)).perform(click())
+        Thread.sleep(2000)
     }
 
     private fun actionOnCuratedViewHolder() {
         Thread.sleep(2000)
-        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.curated_layout), 1)).perform(click())
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.curated_layout), 4)).perform(click())
+        Thread.sleep(2000)
     }
 
 
