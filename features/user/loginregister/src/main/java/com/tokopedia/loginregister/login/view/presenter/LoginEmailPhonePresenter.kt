@@ -22,7 +22,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
@@ -45,8 +44,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val discoverUseCase: DiscoverUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
-                                                   private val registerValidationUseCase:
-                                                   RegisterValidationUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
@@ -317,16 +314,4 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             view.onGetDynamicBannerError(it)
         })
     }
-
-    override fun detachView() {
-        super.detachView()
-        registerCheckUseCase.cancelJobs()
-        statusPinUseCase.cancelJobs()
-        discoverUseCase.unsubscribe()
-        registerValidationUseCase.unsubscribe()
-        loginTokenUseCase.unsubscribe()
-        getProfileUseCase.unsubscribe()
-        tickerInfoUseCase.unsubscribe()
-    }
-
 }

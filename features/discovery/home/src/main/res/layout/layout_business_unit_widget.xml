@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabBackground="@color/white"
-        app:tabIndicatorColor="@color/tkpd_main_green"
-        app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextColor="@color/tkpd_dark_gray"/>
+        app:tabBackground="@color/Unify_N0"
+        app:tabIndicatorColor="@color/Unify_G500"
+        app:tabSelectedTextColor="@color/Unify_G500"
+        app:tabTextColor="@color/Unify_N200"/>
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

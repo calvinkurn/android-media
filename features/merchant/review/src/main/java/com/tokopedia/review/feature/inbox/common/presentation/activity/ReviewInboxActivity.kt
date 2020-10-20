@@ -11,7 +11,6 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivityOld
 
 class ReviewInboxActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
