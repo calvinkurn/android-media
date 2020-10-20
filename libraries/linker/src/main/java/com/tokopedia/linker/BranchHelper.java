@@ -117,12 +117,18 @@ public class BranchHelper {
     }
 
     public static void sendItemViewEvent(Context context, LinkerData linkerData){
+        BranchUniversalObject buo = new BranchUniversalObject()
+                .setTitle(linkerData.getProductName())
+                .setContentMetadata(
+                        new ContentMetadata()
+                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(),"Product price"), CurrencyType.IDR)
+                                .setProductName(linkerData.getProductName())
+                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
+                                .setSku(linkerData.getId())
+                                .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
+                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
         new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
-                .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getId())
-                .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice())
-                .addCustomDataProperty(LinkerConstants.CATEGORY_LEVEL_1, linkerData.getCatLvl1())
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
-                .addCustomDataProperty(LinkerConstants.DESCRIPTION, linkerData.getDescription())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
                 .addCustomDataProperty(LinkerConstants.CONTENT, linkerData.getContent())
@@ -134,6 +140,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.SKU, linkerData.getSku())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
+                .addContentItems(buo)
                 .logEvent(context);
     }
 
