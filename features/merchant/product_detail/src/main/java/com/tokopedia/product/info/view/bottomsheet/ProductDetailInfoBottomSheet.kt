@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
@@ -92,6 +93,22 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_product_detail))
+        isDragable = true
+        setShowListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet.peekHeight = 0
+            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(p0: View, p1: Int) {
+                    if (p1 == BottomSheetBehavior.STATE_COLLAPSED) {
+                        dismiss()
+                    }
+                }
+
+                override fun onSlide(p0: View, p1: Float) {
+                }
+            })
+        }
+
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
 
         setupRecyclerView(childView)
