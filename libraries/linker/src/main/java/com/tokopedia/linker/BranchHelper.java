@@ -138,7 +138,6 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL2_ID, linkerData.getLevel2Id())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
-                .addCustomDataProperty(LinkerConstants.SKU, linkerData.getSku())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
                 .addContentItems(buo)
                 .logEvent(context);
