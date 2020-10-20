@@ -197,7 +197,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
     private var reasonCourierProblemText: String = ""
-    private val tagConfirm = "tag_confirm"
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
@@ -224,6 +223,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         private const val ERROR_EDIT_AWB = "Error when edit AWB."
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
+
+        private const val TAG_BOTTOMSHEET = "bottomSheet"
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -296,6 +297,13 @@ class SomDetailFragment : BaseDaggerFragment(),
         observingSetDelivered()
         observingUserRoles()
         observeRejectCancelOrder()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
+            if (it.isVisible) it.dismiss()
+        }
     }
 
     override fun onDestroy() {
@@ -449,7 +457,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                         setCloseClickListener { dismiss() }
                         setTitle(TITLE_PILIH_PENOLAKAN)
                     }
-                    fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, getString(R.string.show_bottomsheet)) }
+                    fragmentManager?.let { it1 -> bottomSheetRejectReason.show(it1, TAG_BOTTOMSHEET) }
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
@@ -810,7 +818,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
                 btSheet.setChild(infoLayout)
                 btSheet.setCloseClickListener { btSheet.dismiss() }
-                btSheet.show(it, tagConfirm)
+                btSheet.show(it, TAG_BOTTOMSHEET)
             }
         } else {
             createIntentConfirmShipping(false)
@@ -834,7 +842,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             setCloseClickListener { dismiss() }
         }
 
-        fragmentManager?.let { secondaryBottomSheet?.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { secondaryBottomSheet?.show(it, TAG_BOTTOMSHEET) }
     }
 
     override fun onBottomSheetItemClick(key: String) {
@@ -919,7 +927,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         fragmentManager?.let {
-            bottomSheetPenalty.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetPenalty.show(it, TAG_BOTTOMSHEET)
         }
     }
 
@@ -951,7 +959,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             setChild(viewBottomSheetUbahResi)
         }
         fragmentManager?.let {
-            bottomSheetUbahResi.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetUbahResi.show(it, TAG_BOTTOMSHEET)
         }
     }
 
@@ -977,7 +985,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
-                    if(failEditAwbResponse.message.isNotEmpty()) {
+                    if (failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
                     } else {
                         it.throwable.showErrorToaster()
@@ -1006,7 +1014,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 setCloseClickListener { this.dismiss() }
                 setChild(childView)
             }
-            bottomSheetUnify.show(it, "")
+            bottomSheetUnify.show(it, TAG_BOTTOMSHEET)
         }
     }
 
@@ -1022,7 +1030,8 @@ class SomDetailFragment : BaseDaggerFragment(),
             tv_buyer_request_cancel?.text = it.popUp.body
 
             val reasonBuyer = Utils.getL2CancellationReason(detailResponse.buyerRequestCancel.reason)
-            tvBuyerRequestCancelNotes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
+            tvBuyerRequestCancelNotes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator")
+                    ?: "")
 
             setupBuyerRequestCancelBottomSheetButtons(this, bottomSheetReqCancel, reasonBuyer, it.popUp.actionButtons)
         }
@@ -1035,7 +1044,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         fragmentManager?.let {
-            bottomSheetReqCancel.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetReqCancel.show(it, TAG_BOTTOMSHEET)
         }
     }
 
@@ -1134,7 +1143,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         fragmentManager?.let {
-            bottomSheetProductEmpty.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetProductEmpty.show(it, TAG_BOTTOMSHEET)
         }
 
         somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
@@ -1198,7 +1207,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             setChild(viewBottomSheetShopClosed)
             setCloseClickListener { dismiss() }
         }
-        fragmentManager?.let { bottomSheetShopClosed.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { bottomSheetShopClosed.show(it, TAG_BOTTOMSHEET) }
     }
 
     private fun updateClosingEndDate(endDate: String, viewBottomSheet: View) {
@@ -1260,7 +1269,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         fragmentManager?.let {
-            bottomSheetCourierProblems?.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetCourierProblems?.show(it, TAG_BOTTOMSHEET)
         }
 
         somBottomSheetCourierProblemsAdapter.listChildCourierProblems = rejectReason.listChild.toMutableList()
@@ -1307,7 +1316,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             setTitle(VALUE_REASON_BUYER_NO_RESPONSE)
             setChild(viewBottomSheetBuyerNoResponse)
         }
-        fragmentManager?.let { bottomSheetBuyerNoResponse.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { bottomSheetBuyerNoResponse.show(it, TAG_BOTTOMSHEET) }
     }
 
     private fun setOtherReason(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
@@ -1352,7 +1361,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         fragmentManager?.let {
-            bottomSheetBuyerOtherReason.show(it, getString(R.string.show_bottomsheet))
+            bottomSheetBuyerOtherReason.show(it, TAG_BOTTOMSHEET)
         }
     }
 
