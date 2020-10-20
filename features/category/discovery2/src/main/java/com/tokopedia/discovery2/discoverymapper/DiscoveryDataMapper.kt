@@ -170,7 +170,8 @@ class DiscoveryDataMapper {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
                 },
                 shopLocation = getShopLocation(dataItem),
-                shopBadgeList = getShopBadgeList(dataItem)
+                shopBadgeList = getShopBadgeList(dataItem),
+                countSoldRating = dataItem.averageRating ?: ""
         )
     }
 
