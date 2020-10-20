@@ -28,7 +28,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
-import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -97,6 +96,7 @@ class SellerReviewDetailActivityTest {
                 clickAction(R.id.text_next)
             }
             clickFilterTime()
+            intendingIntent()
             clickFilterStar()
         } assertTest {
             waitForData()
@@ -117,17 +117,17 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun clickFilterStar() {
-        val viewInteractionStar = Espresso.onView(AllOf.allOf(withId(R.id.rvRatingDetail))).check(ViewAssertions.matches(isDisplayed()))
-        viewInteractionStar.perform(RecyclerViewActions.actionOnItemAtPosition<OverallRatingDetailViewHolder>(1, CommonActions.clickChildViewWithId(R.id.review_period_filter_button_detail)))
+        val viewInteractionStar = Espresso.onView(withId(R.id.rvRatingDetail)).check(ViewAssertions.matches(isDisplayed()))
+        viewInteractionStar.perform(RecyclerViewActions.actionOnItemAtPosition<RatingAndTopicDetailViewHolder>(0, CommonActions.clickChildViewWithId(R.id.rating_checkbox)))
     }
 
     private fun clickFilterTime() {
-        val viewInteractionTime = Espresso.onView(AllOf.allOf(withId(R.id.rvRatingDetail))).check(ViewAssertions.matches(isDisplayed()))
-        viewInteractionTime.perform(RecyclerViewActions.actionOnItemAtPosition<RatingAndTopicDetailViewHolder>(0, CommonActions.clickChildViewWithId(R.id.rating_checkbox)))
+        val viewInteractionTime = Espresso.onView(withId(R.id.rvRatingDetail)).check(ViewAssertions.matches(isDisplayed()))
+        viewInteractionTime.perform(RecyclerViewActions.actionOnItemAtPosition<OverallRatingDetailViewHolder>(0, CommonActions.clickChildViewWithId(R.id.review_period_filter_button_detail)))
         if (showDialogOption(TAG_FILTER_TIME)?.isVisible == true) {
-            onData(anything()).inAdapterView(withId(R.id.listFilterReviewDetail)).atPosition(2).perform(click())
+            onData(anything()).inAdapterView(withId(R.id.listFilterReviewDetail)).atPosition(1).perform(click())
         }
-        Thread.sleep(1000)
+        waitForData()
     }
 
     private fun clickEditProduct() {
