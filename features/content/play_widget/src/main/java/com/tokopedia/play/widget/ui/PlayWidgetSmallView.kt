@@ -47,18 +47,24 @@ class PlayWidgetSmallView : ConstraintLayout {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
             mAnalyticListener?.onImpressChannelCard(
-                    this@PlayWidgetSmallView,
-                    position
+                    view = this@PlayWidgetSmallView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
             )
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
             mAnalyticListener?.onClickChannelCard(
-                    this@PlayWidgetSmallView,
-                    position
+                    view = this@PlayWidgetSmallView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
             )
         }
     }
+
+    private var mIsAutoPlay: Boolean = false
 
     private val adapter = PlayWidgetCardSmallAdapter(
             bannerCardListener = smallBannerListener,
@@ -88,6 +94,8 @@ class PlayWidgetSmallView : ConstraintLayout {
         }
 
         adapter.setItemsAndAnimateChanges(data.items)
+
+        mIsAutoPlay = data.config.autoPlay
     }
 
     private fun setupView(view: View) {
