@@ -891,7 +891,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = true;
         } else if (!isVisible && isSurveyBtnVisible) {
-            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = false;
         }
     }

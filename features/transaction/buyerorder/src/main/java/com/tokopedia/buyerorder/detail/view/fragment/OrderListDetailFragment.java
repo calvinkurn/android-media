@@ -173,15 +173,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         conditionalInfoText.setVisibility(View.VISIBLE);
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
         if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
             shape.setColor(Color.parseColor(conditionalInfo.color().background()));
         }
         if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.color().border()));
         }
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
         if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
             conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
@@ -415,12 +415,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         primaryActionBtn.setBackground(shape);
         if (isSingleButton) {
@@ -439,12 +439,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         secondaryActionBtn.setBackground(shape);
         if (!actionButton.getActionColor().getTextColor().equals("")) {
