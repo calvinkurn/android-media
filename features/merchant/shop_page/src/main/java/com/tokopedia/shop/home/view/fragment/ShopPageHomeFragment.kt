@@ -173,6 +173,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
+    private var timeNow = 0L
+    private var timeEnd = 0L
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -323,7 +325,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
-        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before get ShopPageHomeData")
+        timeNow = System.currentTimeMillis()
+        Log.i("SHOP_HOME_TEST", "{${timeNow}} before get ShopPageHomeData")
         viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
@@ -345,7 +348,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after success get ShopHomeLayoutData")
+                    timeEnd = System.currentTimeMillis()
+                    Log.i("SHOP_HOME_TEST", "{${timeEnd}} after success get ShopHomeLayoutData")
+                    Log.i("SHOP_HOME_TEST", "{${timeEnd - timeNow}} result")
                     stopMonitoringPltRenderPage()
                     viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
@@ -472,8 +477,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeAdapter.setHomeMerchantVoucherData(it.data)
                 }
                 is Fail -> {
-                    val data = ShopHomeVoucherUiModel(isError = true)
-                    shopHomeAdapter.setHomeMerchantVoucherData(data)
+                    shopPageHomeLayoutUiModel?.listWidget?.indexOfFirst { uiModel -> uiModel is ShopHomeVoucherUiModel }?.let { index ->
+                        val data = shopPageHomeLayoutUiModel?.listWidget?.get(index) as ShopHomeVoucherUiModel
+                        shopHomeAdapter.setHomeMerchantVoucherData(data.copy(isError = true))
+                    }
                 }
             }
         })

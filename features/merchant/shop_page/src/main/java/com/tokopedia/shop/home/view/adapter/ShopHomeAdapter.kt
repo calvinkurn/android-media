@@ -131,7 +131,7 @@ class ShopHomeAdapter(
 
     fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
         visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
-            if(shopHomeVoucherUiModel.data.isNullOrEmpty()){
+            if(shopHomeVoucherUiModel.data.isNullOrEmpty() && !shopHomeVoucherUiModel.isError){
                 visitables.removeAt(index)
                 notifyItemRemoved(index)
             } else if(index != -1){
