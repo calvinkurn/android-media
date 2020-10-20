@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.CreditResponse
+import com.tokopedia.topads.dashboard.data.utils.ListUnifyUtils.getShownRadioButton
 import com.tokopedia.topads.dashboard.data.utils.ListUnifyUtils.setSelectedItem
 import com.tokopedia.topads.dashboard.data.utils.Utils.calculatePercentage
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
@@ -25,6 +26,7 @@ import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewMo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.topads_dash_topup_nominal_sheet.*
 import javax.inject.Inject
@@ -124,20 +126,32 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
             onLoadFinish {
                 this.setOnItemClickListener { _, _, position, _ ->
                     defPosition = position
-                    setSelectedItem(listUnify, position) {
-                        setBonus(position)
-                    }
+                    selectOperation(this,listUnify,position)
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
                         defPosition = position
-                        this.setSelectedItem(listUnify, position) {
-                            setBonus(position)
-                        }
+                        selectOperation(this,listUnify,position)
                     }
                 }
-                this.setSelectedItem(listUnify, defPosition) {}
+                selectOperation(this,listUnify,defPosition)
             }
+        }
+    }
+
+    private fun selectOperation(list1: ListUnify, list: ArrayList<ListItemUnify>, position: Int) {
+        list1.run {
+            val selectedItem = this.getItemAtPosition(position) as ListItemUnify
+            list.filter { it.getShownRadioButton()?.isChecked ?: false }
+                    .filterNot { it == selectedItem }
+                    .onEach { it.getShownRadioButton()?.isChecked = false }
+            selectedItem.getShownRadioButton()?.isChecked = true
+            setBonus(position)
+        }
+    }
+
+    private fun select(list1: ListUnify, list: ArrayList<ListItemUnify>, position: Int) {
+        list1.setSelectedItem(list, position) {
         }
     }
 
@@ -165,17 +179,17 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
             onLoadFinish {
                 this.setOnItemClickListener { _, _, position, _ ->
                     topUpChoice = position
-                    setSelectedItem(listUnify, position) {
-                    }
+                    select(this,listUnify,position)
+
                 }
                 listUnify.forEachIndexed { position, it ->
                     it.listRightRadiobtn?.setOnClickListener {
                         topUpChoice = position
-                        this.setSelectedItem(listUnify, position) {
-                        }
+                        select(this,listUnify,position)
                     }
                 }
-                this.setSelectedItem(listUnify, topUpChoice) {}
+
+                select(this,listUnify,topUpChoice)
             }
         }
     }

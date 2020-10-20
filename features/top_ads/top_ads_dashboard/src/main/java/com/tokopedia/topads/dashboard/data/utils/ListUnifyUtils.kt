@@ -17,7 +17,7 @@ object ListUnifyUtils {
         onChecked(selectedItem)
     }
 
-    private fun ListItemUnify.getShownRadioButton() = run {
+    fun ListItemUnify.getShownRadioButton() = run {
         when {
             listLeftRadiobtn?.visibility == android.view.View.VISIBLE -> listLeftRadiobtn
             listRightRadiobtn?.visibility == android.view.View.VISIBLE -> listRightRadiobtn
