@@ -435,7 +435,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(PESAWAT_INTERNAL_ORDER) ||
                         it.startsWith(BELANJA_INTERNAL_ORDER) ||
                         it.startsWith(MARKETPLACE_INTERNAL_ORDER)
-            }, DF_CATEGORY_TRADE_IN, R.string.title_buyerorder))
+            }, DF_BASE, R.string.title_buyerorder))
         }
     }
 
