@@ -95,7 +95,8 @@ class ReviewViewHolder(
                                     suggestedProductReview.suggestedProductReview.orderId,
                                     suggestedProductReview.suggestedProductReview.productId,
                                     position,
-                                    suggestedProductReview.suggestedProductReview.description
+                                    suggestedProductReview.suggestedProductReview.description,
+                                    element.channel.id
                             )
                             reviewListener.onReviewClick(
                                     adapterPosition,
@@ -112,7 +113,8 @@ class ReviewViewHolder(
                     HomePageTracking.homeReviewOnCloseTracker(
                             suggestedProductReview.suggestedProductReview.orderId,
                             suggestedProductReview.suggestedProductReview.productId,
-                            suggestedProductReview.suggestedProductReview.description
+                            suggestedProductReview.suggestedProductReview.description,
+                            element.channel.id
                     )
                     reviewListener.onCloseClick()
                 }

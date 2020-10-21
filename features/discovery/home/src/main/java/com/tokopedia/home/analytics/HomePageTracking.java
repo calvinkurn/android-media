@@ -874,7 +874,7 @@ public class HomePageTracking {
                 EVENT, isToIris? "promoViewIris" : "promoView",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "view - product review notification",
-                EVENT_LABEL, orderId + " - " + productId + " - " + message,
+                EVENT_LABEL, orderId + " - " + productId + " - message:" + message + ";",
                 ECOMMERCE, DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
                                 "promotions", promotionBody
@@ -884,21 +884,23 @@ public class HomePageTracking {
 
     }
 
-    public static void homeReviewOnCloseTracker(String orderId, String productId, String message) {
+    public static void homeReviewOnCloseTracker(String orderId, String productId, String message, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - back button on home product review widget",
-                EVENT_LABEL, orderId + " - " + productId + " - " + message
+                EVENT_LABEL, orderId + " - " + productId + " - " + message,
+                CHANNEL_ID, channelId
         ));
     }
 
-    public static void homeReviewOnRatingChangedTracker(String orderId, String productId, int starCount, String message) {
+    public static void homeReviewOnRatingChangedTracker(String orderId, String productId, int starCount, String message, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - product rating stars on home product review widget",
-                EVENT_LABEL, orderId + " - " + productId + " - " + Integer.toString(starCount, 10) + " - " + message
+                EVENT_LABEL, orderId + " - " + productId + " - " + Integer.toString(starCount, 10) + " - " + message,
+                CHANNEL_ID, channelId
         ));
     }
 
