@@ -58,7 +58,7 @@ class SellerReviewDetailActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            InstrumentationAuthHelper.clearUserSession()
+            fakeLogin()
         }
     }
 
@@ -66,13 +66,12 @@ class SellerReviewDetailActivityTest {
     fun setup() {
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(SellerReviewDetailMockResponse())
+        intendingIntent()
     }
 
     @Test
     fun validateClickEditProduct() {
         actionTest {
-            fakeLogin()
-            intendingIntent()
             waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
@@ -93,8 +92,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickFilterTime() {
         actionTest {
-            fakeLogin()
-            intendingIntent()
             waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
@@ -112,8 +109,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickFilterStar() {
         actionTest {
-            fakeLogin()
-            intendingIntent()
             waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
@@ -131,8 +126,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickReport() {
         actionTest {
-            fakeLogin()
-            intendingIntent()
             waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
@@ -150,8 +143,6 @@ class SellerReviewDetailActivityTest {
     @Test
     fun validateClickSortFilter() {
         actionTest {
-            fakeLogin()
-            intendingIntent()
             waitForData()
             val isVisibleCoachMark = CoachMark().hasShown(activityRule.activity, SellerReviewDetailFragment.TAG_COACH_MARK_REVIEW_DETAIL)
             if (!isVisibleCoachMark) {
