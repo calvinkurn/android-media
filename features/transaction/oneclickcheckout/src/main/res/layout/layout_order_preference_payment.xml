@@ -85,6 +85,22 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_payment_ovo_error_action"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lines="1"
+        android:textColor="@color/Green_G500"
+        android:text="aktivasi"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_payment_error_message"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_installment_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -156,7 +172,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_payment,tv_installment_error_message,tv_payment_detail,tv_payment_error_message" />
+        app:constraint_referenced_ids="iv_payment,tv_installment_error_message,tv_payment_detail,tv_payment_error_message,tv_payment_ovo_error_action" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_info"
