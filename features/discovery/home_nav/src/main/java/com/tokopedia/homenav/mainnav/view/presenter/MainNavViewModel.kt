@@ -29,7 +29,7 @@ class MainNavViewModel @Inject constructor(
 
     fun getMainNavData() {
         launchCatchError(coroutineContext, block = {
-            mainNavUseCase.get().getMainNavData().flowOn(coroutineContext).collect {
+            mainNavUseCase.get().getMainNavData().flowOn(baseDispatcher.get().io()).collect {
                 _mainNavLiveData.postValue(Success(it))
             }
         }){
