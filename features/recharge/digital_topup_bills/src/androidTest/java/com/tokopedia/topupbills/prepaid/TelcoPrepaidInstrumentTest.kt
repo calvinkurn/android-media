@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -35,6 +36,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
@@ -131,8 +133,8 @@ class TelcoPrepaidInstrumentTest {
 
     fun validate_coachmark() {
         Thread.sleep(4000)
-//        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
-//        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
+        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
+        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
             onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
@@ -141,7 +143,7 @@ class TelcoPrepaidInstrumentTest {
             onView(withId(R.id.text_next)).perform(click())
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
-//        }
+        }
     }
 
     fun validate_click_done_keyboard_fav_number() {
