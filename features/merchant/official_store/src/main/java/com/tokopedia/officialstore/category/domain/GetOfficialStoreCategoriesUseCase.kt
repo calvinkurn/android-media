@@ -17,8 +17,11 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
         @Named(QUERY_OFFICIAL_STORE_CATEGORIES) val query: String
 ): UseCase<OfficialStoreCategories>() {
 
+    private var doQueryHashing : Boolean = false
+
     override suspend fun executeOnBackground(): OfficialStoreCategories {
         val gqlRequest = GraphqlRequest(query, OfficialStoreCategories.Response::class.java)
+        gqlRequest.isDoQueryHash = doQueryHashing
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
@@ -29,7 +32,8 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
         }
     }
 
-    suspend fun executeOnBackground(isCache: Boolean): OfficialStoreCategories{
+    suspend fun executeOnBackground(isCache: Boolean, doQueryHashing : Boolean): OfficialStoreCategories{
+        this.doQueryHashing = doQueryHashing
         if(isCache){
             graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())
         }
