@@ -165,19 +165,19 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_beli));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                     case 1:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_bayar));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_Y300));
                         break;
                     case 2:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_pesan));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_Y500));
                         break;
                     case 3:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_ajukan));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_T400));
                         break;
                     case 4:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, R.color.tab_indicator_jual));
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(ExploreActivity.this, com.tokopedia.unifyprinciples.R.color.Unify_G500));
                         break;
                 }
             }
@@ -250,7 +250,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         public void onClick(View v) {
             TabLayout.Tab currentTab = tab.getTabAt(positionTab);
             if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
-                HomePageTracking.eventClickTabExplorer(context, title);
+                HomePageTracking.eventClickTabExplorer(title);
                 currentTab.select();
             }
         }

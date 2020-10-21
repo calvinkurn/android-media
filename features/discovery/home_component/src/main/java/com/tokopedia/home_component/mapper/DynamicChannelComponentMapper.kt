@@ -92,6 +92,7 @@ object DynamicChannelComponentMapper {
                                 )
                             },
                             rating = it.rating,
+                            ratingFloat = it.ratingFloat,
                             countReview = it.countReview,
                             backColor = it.backColor,
                             benefit = ChannelBenefit(

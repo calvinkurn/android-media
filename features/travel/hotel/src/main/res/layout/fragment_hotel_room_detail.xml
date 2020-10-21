@@ -62,7 +62,7 @@
                         android:maxLines="1"
                         android:lines="1"
                         android:ellipsize="end"
-                        android:maxWidth="@dimen/dp_300"
+                        android:maxWidth="@dimen/hotel_300dp"
                         />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

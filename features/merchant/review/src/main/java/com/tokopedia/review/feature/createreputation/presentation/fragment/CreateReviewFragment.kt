@@ -468,10 +468,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         )
         if(isEditMode) {
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
-                    createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+                    createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
             createReviewViewModel.submitReview(reputationId, productId, shopId.toIntOrZero(),
-                    createReviewScore.getScore(), reviewClickAt, reviewMessage, createReviewAnonymousCheckbox.isChecked)
+                    createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         }
     }
 
