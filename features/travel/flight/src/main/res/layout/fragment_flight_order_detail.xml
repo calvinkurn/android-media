@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/flight_search_reverse_background"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:closeButtonVisibility="gone"
-        app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
-        app:tickerShapeType="full"
-        app:tickerType="warning" />
+        android:layout_height="match_parent"
+        android:background="@color/flight_search_reverse_background"
+        android:orientation="vertical">
 
-    <include
-        layout="@layout/include_flight_order_detail_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl3" />
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
+            app:tickerShapeType="full"
+            app:tickerType="warning" />
 
-    <include
-        layout="@layout/include_flight_order_detail_journey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl3" />
+        <include
+            layout="@layout/include_flight_order_detail_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl3" />
 
-</LinearLayout>
+        <include
+            layout="@layout/include_flight_order_detail_journey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

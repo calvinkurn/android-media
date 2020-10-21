@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -313,6 +314,7 @@
                 android:id="@+id/ticketBottomView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/ticketTopView"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_lvl4">
 
