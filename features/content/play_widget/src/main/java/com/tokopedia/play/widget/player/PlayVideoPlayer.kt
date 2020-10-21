@@ -21,11 +21,7 @@ import kotlinx.coroutines.*
  */
 open class PlayVideoPlayer(val context: Context) {
 
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(job + Dispatchers.Default)
-
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
-    private var playerState: VideoPlayerState = VideoPlayerState.Idle
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
@@ -44,25 +40,19 @@ open class PlayVideoPlayer(val context: Context) {
     }
 
     private fun whenIsPlayingChanged(isPlaying: Boolean) {
-        scope.launch(Dispatchers.Main) {
-            listener?.onIsPlayingChanged(isPlaying)
-        }
+        listener?.onIsPlayingChanged(isPlaying)
     }
 
     fun start() {
         if (videoUrl?.isBlank() == true) return
 
-        scope.launch {
-            val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
-            exoPlayer.playWhenReady = true
-            exoPlayer.prepare(mediaSource,true, false)
-        }
+        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        exoPlayer.playWhenReady = true
+        exoPlayer.prepare(mediaSource,true, false)
     }
 
     fun stop() {
-        scope.launch {
-            exoPlayer.stop()
-        }
+        exoPlayer.stop()
     }
 
     fun release() {
@@ -70,28 +60,9 @@ open class PlayVideoPlayer(val context: Context) {
             exoPlayer.release()
         } catch (throwable: Throwable) {
         }
-        flush()
     }
-
-    fun isIdle(): Boolean = playerState == VideoPlayerState.Idle
-
-    fun isBusy(): Boolean = playerState == VideoPlayerState.Busy
-
-    fun setState(state: VideoPlayerState) {
-        this.playerState = state
-    }
-
-    fun getPlayerState(): VideoPlayerState = playerState
 
     fun getPlayer(): ExoPlayer = exoPlayer
-
-    private fun flush() {
-        if (scope.isActive && !job.isCancelled){
-            job.cancelChildren()
-        }
-    }
-
-    enum class VideoPlayerState { Idle, Busy }
 
     interface VideoPlayerListener {
         fun onIsPlayingChanged(isPlaying: Boolean)

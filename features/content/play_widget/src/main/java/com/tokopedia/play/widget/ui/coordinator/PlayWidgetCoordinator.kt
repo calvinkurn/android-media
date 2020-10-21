@@ -36,6 +36,8 @@ class PlayWidgetCoordinator(
         }
     }
 
+    private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
+
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
     }
@@ -56,6 +58,7 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
         widget.setAnalyticListener(mAnalyticListener)
+        autoPlayCoordinator.controlWidget(widget)
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
@@ -78,6 +81,7 @@ class PlayWidgetCoordinator(
 
         if (model is PlayWidgetConfigProvider) {
             configureAutoRefresh(model.config)
+            configureAutoPlay(widget, model.config)
         }
     }
 
@@ -90,6 +94,10 @@ class PlayWidgetCoordinator(
                 }
             }
         }
+    }
+
+    private fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) {
+        autoPlayCoordinator.configureAutoPlay(widget, config)
     }
 
     private fun stopTimer() {

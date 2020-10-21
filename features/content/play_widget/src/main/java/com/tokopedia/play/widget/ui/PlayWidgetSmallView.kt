@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
@@ -14,6 +15,7 @@ import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
+import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
@@ -35,6 +37,7 @@ class PlayWidgetSmallView : ConstraintLayout {
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
     private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
+    private var mWidgetViewListener: PlayWidgetViewListener? = null
 
     private val smallBannerListener = object : PlayWidgetCardSmallBannerViewHolder.Listener {
 
@@ -84,6 +87,10 @@ class PlayWidgetSmallView : ConstraintLayout {
         mAnalyticListener = listener
     }
 
+    fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
+    }
+
     fun setData(data: PlayWidgetUiModel.Small) {
         tvTitle.text = data.title
 
@@ -103,5 +110,32 @@ class PlayWidgetSmallView : ConstraintLayout {
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
 
         snapHelper.attachToRecyclerView(rvWidgetCardSmall)
+
+        rvWidgetCardSmall.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) { onRecyclerViewIdle(recyclerView) }
+            }
+
+        })
+    }
+
+    private fun onRecyclerViewIdle(recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager
+        if (layoutManager !is LinearLayoutManager) return
+
+        try {
+            val firstCompleteVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+            val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
+                layoutManager.findViewByPosition(it)
+            }
+
+            mWidgetViewListener?.onWidgetVisibleCardsChanged(allVisibleViews)
+        } catch (e: Throwable) {
+        }
     }
 }

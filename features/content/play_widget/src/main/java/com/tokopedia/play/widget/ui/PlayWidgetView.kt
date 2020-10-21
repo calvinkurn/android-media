@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -23,6 +24,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
+    private var mWidgetViewListener: PlayWidgetViewListener? = null
 
     override fun onViewRemoved(child: View?) {
         when (child) {
@@ -46,11 +48,19 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         }
     }
 
+    fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetViewListener(listener)
+        }
+    }
+
     private fun addSmallView(model: PlayWidgetUiModel.Small) {
         val widgetView = addWidgetView { PlayWidgetSmallView(context) }
 
         widgetView.setData(model)
         widgetView.setAnalyticListener(mAnalyticListener)
+        widgetView.setWidgetViewListener(mWidgetViewListener)
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
