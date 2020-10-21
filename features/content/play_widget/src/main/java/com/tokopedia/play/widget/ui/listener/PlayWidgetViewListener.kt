@@ -1,11 +1,11 @@
 package com.tokopedia.play.widget.ui.listener
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by jegul on 21/10/20
  */
 interface PlayWidgetViewListener {
 
-    fun onWidgetVisibleCardsChanged(visibleCards: List<View>)
+    fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView)
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.small.PlayWidgetSmallAnalyticListener
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
@@ -111,31 +112,19 @@ class PlayWidgetSmallView : ConstraintLayout {
 
         snapHelper.attachToRecyclerView(rvWidgetCardSmall)
 
+        rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
+            mWidgetViewListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
+        }
+
         rvWidgetCardSmall.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) { onRecyclerViewIdle(recyclerView) }
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    mWidgetViewListener?.onWidgetCardsScrollChanged(recyclerView)
+                }
             }
-
         })
-    }
-
-    private fun onRecyclerViewIdle(recyclerView: RecyclerView) {
-        val layoutManager = recyclerView.layoutManager
-        if (layoutManager !is LinearLayoutManager) return
-
-        try {
-            val firstCompleteVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-            val lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
-
-            val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
-                layoutManager.findViewByPosition(it)
-            }
-
-            mWidgetViewListener?.onWidgetVisibleCardsChanged(allVisibleViews)
-        } catch (e: Throwable) {
-        }
     }
 }

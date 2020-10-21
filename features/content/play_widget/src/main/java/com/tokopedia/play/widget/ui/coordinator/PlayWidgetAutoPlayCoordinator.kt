@@ -1,6 +1,8 @@
 package com.tokopedia.play.widget.ui.coordinator
 
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -22,7 +24,10 @@ class PlayWidgetAutoPlayCoordinator(
 
     private val widgetViewListener = object : PlayWidgetViewListener {
 
-        override fun onWidgetVisibleCardsChanged(visibleCards: List<View>) {
+        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
+            val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
+            if (visibleCards.isEmpty()) return
+
             autoPlayJob?.cancel()
             autoPlayJob = scope.launch(mainCoroutineDispatcher) {
                 delay(200)
@@ -90,6 +95,24 @@ class PlayWidgetAutoPlayCoordinator(
 
     private fun getEligibleAutoPlayReceivers(playerReceivers: List<PlayVideoPlayerReceiver>): List<PlayVideoPlayerReceiver> {
         return playerReceivers.take(FAKE_MAX_AUTOPLAY)
+    }
+
+    private fun getVisibleWidgetInRecyclerView(recyclerView: RecyclerView): List<View> {
+        val layoutManager = recyclerView.layoutManager
+        if (layoutManager !is LinearLayoutManager) return emptyList()
+
+        return try {
+            val firstCompleteVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+            val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
+                layoutManager.findViewByPosition(it)
+            }
+
+            allVisibleViews
+        } catch (e: Throwable) {
+            emptyList()
+        }
     }
 
     companion object {
