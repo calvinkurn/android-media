@@ -1,13 +1,12 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
-import kotlinx.android.synthetic.main.item_product_cart_additional.view.*
+import com.tokopedia.productcard.ProductCardModel
+import kotlinx.android.synthetic.main.item_product_wishlist.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
@@ -16,10 +15,37 @@ import kotlinx.android.synthetic.main.item_product_cart_additional.view.*
 class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_product_cart_additional
+        val LAYOUT = R.layout.item_product_wishlist
     }
 
     fun bind(element: CartWishlistItemHolderData) {
+        itemView.wishlist_item?.apply {
+            setProductModel(
+                    ProductCardModel(
+                            productImageUrl = element.imageUrl,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            shopBadgeList = listOf(ProductCardModel.ShopBadge(imageUrl = element.badgeUrl)),
+                            shopName = element.shopName,
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.freeShipping,
+                                    imageUrl = element.freeShippingUrl
+                            ),
+                            hasAddToCartButton = true,
+                            hasRemoveFromWishlistButton = true
+                    )
+            )
+
+            setAddToCartOnClickListener {
+
+            }
+
+            setDeleteProductOnClickListener {
+
+            }
+        }
+
+/*
         if (element.isWishlist) {
             itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_on)
         } else {
@@ -73,6 +99,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
         itemView.setOnClickListener {
             actionListener?.onWishlistProductClicked(element.id)
         }
+*/
     }
 
     private fun getRatingImageResource(rating: Int): Int {

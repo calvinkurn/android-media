@@ -16,6 +16,10 @@ query wishlist($page: Int, $count: Int, $filter: WishlistFilter){
         minimum_order
         rating
         review_count
+        free_ongkir {
+          is_active
+          image_url
+        }
         wholesale_price {
           minimum
           maximum
