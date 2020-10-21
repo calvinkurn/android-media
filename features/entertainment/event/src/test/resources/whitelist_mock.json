@@ -1,0 +1,13 @@
+{
+  "data": {
+    "id": 18,
+    "product_id": 378,
+    "user_id": 8964906,
+    "email": "yohan.setiawan@tokopedia.com",
+    "status": 1,
+    "success": true
+  },
+  "status": "OK",
+  "config": null,
+  "server_process_time": "992.413µs"
+}

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.changephonenumber.data.model.GetWarningData;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 import javax.inject.Inject;
 
@@ -17,14 +17,14 @@ import rx.functions.Func1;
  * Created by milhamj on 27/12/17.
  */
 
-public class GetWarningMapper implements Func1<Response<TokopediaWsV4Response>, WarningViewModel> {
+public class GetWarningMapper implements Func1<Response<TokopediaWsV4Response>, WarningUIModel> {
     @Inject
     public GetWarningMapper() {
     }
 
     @Override
-    public WarningViewModel call(Response<TokopediaWsV4Response> tkpdResponseResponse) {
-        WarningViewModel model = new WarningViewModel();
+    public WarningUIModel call(Response<TokopediaWsV4Response> tkpdResponseResponse) {
+        WarningUIModel model = new WarningUIModel();
         if (tkpdResponseResponse.isSuccessful()) {
             if (!tkpdResponseResponse.body().isError() &&
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
