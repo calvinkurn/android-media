@@ -102,8 +102,8 @@ object GlideBuilder {
                         if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
                             thumbnail(thumbnailLoader(imageView.context, BlurHashDecoder.decode(
                                     blurHash = it.getQueryParameter(BLUR_HASH_QUERY),
-                                    width = imageView.width,
-                                    height = imageView.height,
+                                    width = if (imageView.maxWidth <= 0) 100 else imageView.maxWidth,
+                                    height = if (imageView.maxHeight <= 0) 100 else imageView.maxHeight,
                                     useCache = true
                             )))
                         }
