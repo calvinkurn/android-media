@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.common.presentation.widget
+package com.tokopedia.common.travel.widget
 
 import android.content.Context
 import android.graphics.*
@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
-import com.tokopedia.hotel.R
+import com.tokopedia.common.travel.R
 
 /**
  * @author by furqan on 14/05/19
@@ -16,7 +16,7 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     : RelativeLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val DEFAULT_RADIUS: Float = 9f
+        private const val DEFAULT_RADIUS: Float = 8f
         private const val NO_VALUE = -1
     }
 
