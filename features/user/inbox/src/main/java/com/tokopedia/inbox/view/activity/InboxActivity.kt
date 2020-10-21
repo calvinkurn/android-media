@@ -9,9 +9,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.InboxFragmentType
+import com.tokopedia.inbox.view.ext.setSelectedPage
+import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
+import com.tokopedia.inbox.view.navigator.InboxNavigator
 
 class InboxActivity : BaseActivity() {
 
+    private var navigator: InboxNavigator? = null
     private val bottomNav: BottomNavigationView? by lazy(LazyThreadSafetyMode.NONE) {
         findViewById<BottomNavigationView?>(R.id.inbox_bottom_nav)
     }
@@ -19,9 +24,15 @@ class InboxActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inbox)
+        setupNavigator()
         setupBackground()
         setupNotificationBar()
         setupBottomNav()
+        setupInitialPage()
+    }
+
+    private fun setupNavigator() {
+        navigator = InboxNavigator(this, R.id.fragment_contaier, supportFragmentManager, InboxFragmentFactoryImpl())
     }
 
     private fun setupBackground() {
@@ -46,7 +57,7 @@ class InboxActivity : BaseActivity() {
                         Toast.makeText(context, "notification", Toast.LENGTH_SHORT).show()
                     }
                     R.id.menu_inbox_chat -> {
-                        Toast.makeText(context, "chat", Toast.LENGTH_SHORT).show()
+                        onBottomNavSelected(InboxFragmentType.CHAT)
                     }
                     R.id.menu_inbox_discussion -> {
                         Toast.makeText(context, "discussion", Toast.LENGTH_SHORT).show()
@@ -55,5 +66,14 @@ class InboxActivity : BaseActivity() {
                 return@setOnNavigationItemSelectedListener true
             }
         }
+    }
+
+    private fun setupInitialPage() {
+        navigator?.start(InboxFragmentType.CHAT)
+        bottomNav?.setSelectedPage(InboxFragmentType.CHAT)
+    }
+
+    private fun onBottomNavSelected(@InboxFragmentType page: Int) {
+        navigator?.showPage(page)
     }
 }
