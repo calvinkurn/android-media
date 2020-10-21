@@ -34,7 +34,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order)
+        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
         fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onTickerDetailInfoClicked(url: String)
@@ -100,19 +100,19 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         val element = listTypeData[position]
         when (holder) {
             is UohOrderListViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohTickerItemViewHolder -> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohEmptyStateViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationTitleViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationItemViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
         }
     }
@@ -126,13 +126,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
-        // prevent crash
-        // Fatal Exception: java.lang.IndexOutOfBoundsException
-        // Index: 1, Size: 1
-
-        var actualIndex = index
-        if (index == listTypeData.size) actualIndex = index - 1
-        return listTypeData[actualIndex].dataObject as UohListOrder.Data.UohOrders.Order
+        return listTypeData[index].dataObject as UohListOrder.Data.UohOrders.Order
     }
 
     fun showLoaderAtIndex(index: Int) {
