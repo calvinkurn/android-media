@@ -729,8 +729,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     return
                 }
 
-                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                val etalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID) ?: ""
+                val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME) ?: ""
                 val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
                 shopPageHomeTracking.clickMoreMenuChip(
                         isOwner,
@@ -755,8 +755,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     if (shopHomeAdapter.isLoading) {
                         return
                     }
-                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
+                    shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     changeSortData(sortId)
                     scrollToEtalaseTitlePosition()
                 }
