@@ -314,6 +314,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductSkuInput(productSkuInput: String) {
+        // check is sku contains a space character
         if (productSkuInput.contains(" ")) {
             val errorMessage = provider.getEmptyProductSkuErrorMessage()
             errorMessage?.let { productSkuMessage = it }

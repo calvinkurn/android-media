@@ -663,6 +663,25 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() {
+        viewModel.validateProductSkuInput("ESKU")
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
+    }
+
+    @Test
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() {
+        val stringResErrorMessage = "SKU produk tidak boleh mengandung spasi"
+
+        runValidationAndProvideMessage(provider::getEmptyProductSkuErrorMessage, stringResErrorMessage) {
+            viewModel.validateProductSkuInput("ES KU")
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == stringResErrorMessage)
+    }
+
+    @Test
     fun `updateProductPhotos should not change any image url's`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
