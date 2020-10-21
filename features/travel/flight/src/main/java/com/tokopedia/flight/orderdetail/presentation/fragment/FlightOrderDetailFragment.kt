@@ -1,18 +1,26 @@
 package com.tokopedia.flight.orderdetail.presentation.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 
 /**
  * @author by furqan on 19/10/2020
  */
 class FlightOrderDetailFragment : BaseDaggerFragment() {
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(FlightOrderDetailComponent::class.java).inject(this)
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_flight_order_detail, container, false)
 
     companion object {
 
