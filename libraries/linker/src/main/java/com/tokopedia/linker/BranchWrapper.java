@@ -277,8 +277,9 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
             linkProperties.addTag("hotel");
             linkProperties.addTag("pdp");
-            linkProperties.addTag(data.getCustmMsg());
+            if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign("Share");
+            deeplinkPath = data.getDeepLink();
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {

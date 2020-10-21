@@ -85,6 +85,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
     private var source: String = HotelSourceEnum.SEARCHRESULT.value
+    private var isPromo: Boolean = false
 
     private var isHotelDetailSuccess: Boolean = true
     private var isHotelReviewSuccess: Boolean = true
@@ -331,7 +332,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         hotel_share_button.setOnClickListener {
             activity?.run {
-                HotelShare(this).shareEvent(propertyDetailData, { /* show loading */ }, { /* hide loading */ }, this.applicationContext)
+                HotelShare(this).shareEvent(propertyDetailData, isPromo,
+                        { /* show loading */ },
+                        { /* hide loading */ },
+                        this.applicationContext)
             }
         }
     }
@@ -533,6 +537,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             if (hotelDetailTag.isNotEmpty()) {
                 hotel_detail_tag.show()
                 hotel_detail_tag.text = hotelDetailTag
+                isPromo = true
             } else hotel_detail_tag.hide()
 
             if (data[0].additionalPropertyInfo.isEnabled) {
