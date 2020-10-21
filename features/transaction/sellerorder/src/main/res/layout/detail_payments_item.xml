@@ -18,13 +18,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:text="@string/informasi_pembayaran"
+        android:text="@string/rincian_pembayaran"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="@string/informasi_pembayaran" />
+        tools:text="@string/rincian_pembayaran" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_price_label"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@id/payments_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Harga (4 Barang)" />
+        tools:text="Total Harga (4 Barang)" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_price_value"
@@ -169,11 +169,11 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl3"
         android:gravity="center_vertical"
-        android:textColor="@color/Yellow_Y500"
-        android:textSize="@dimen/sp_14"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_payments"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Rp10.376.650" />
 

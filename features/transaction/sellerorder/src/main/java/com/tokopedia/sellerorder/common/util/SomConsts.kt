@@ -19,6 +19,7 @@ object SomConsts {
     const val PARAM_BOOKING_MESSAGE_LIST = "message"
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_USER_ROLES = "user_roles"
+    const val PARAM_LOGISTIC_INFO_ALL = "logistic_info_all"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -172,4 +173,6 @@ object SomConsts {
 
     const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
     const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
+
+    const val IS_WAREHOUSE = 1
 }

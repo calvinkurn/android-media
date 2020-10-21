@@ -78,6 +78,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LOGISTIC_INFO_ALL
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
@@ -104,6 +105,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
@@ -142,6 +144,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -574,13 +577,12 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.deadline.color,
                 detailResponse.listLabelInfo,
                 detailResponse.orderId.toString(),
-                detailResponse.shipment.awb,
-                detailResponse.shipment.awbTextColor,
                 detailResponse.shipment.awbUploadUrl,
                 detailResponse.shipment.awbUploadProofText,
                 detailResponse.bookingInfo.onlineBooking.bookingCode,
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
+                detailResponse.warehouse.fullFillBy,
                 detailResponse.tickerInfo)
 
         listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
@@ -614,7 +616,11 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.bookingInfo.onlineBooking.message,
                 detailResponse.bookingInfo.onlineBooking.messageArray,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
-                isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
+                isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb,
+                awb = detailResponse.shipment.awb,
+                awbTextColor = detailResponse.shipment.awbTextColor,
+                logisticInfo = detailResponse.logisticInfo
+        )
 
         listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
     }
@@ -1437,6 +1443,12 @@ class SomDetailFragment : BaseDaggerFragment(),
         val phone = "tel:$strPhoneNo"
         intent.data = Uri.parse(phone)
         startActivity(intent)
+    }
+
+    override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
+        startActivity(Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
+            putParcelableArrayListExtra(PARAM_LOGISTIC_INFO_ALL, ArrayList(logisticInfoList))
+        })
     }
 
     override fun onShowBookingCode(bookingCode: String, bookingType: String) {

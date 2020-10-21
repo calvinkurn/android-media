@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -12,12 +11,11 @@ import kotlinx.android.synthetic.main.detail_payments_item.view.*
  * Created by fwidjaja on 2019-10-07.
  */
 class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    @SuppressLint("SetTextI18n")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailPayments) {
-            itemView.product_price_label.text = "${itemView.context.getString(R.string.product_price_label)} (${item.dataObject.totalProducts} Barang)"
+            itemView.product_price_label.text = StringBuilder("${itemView.context.getString(R.string.product_price_label)} (${item.dataObject.totalProducts} Barang)")
             itemView.product_price_value.text = item.dataObject.productsPriceText
-            itemView.shipping_price_label.text = "${itemView.context.getString(R.string.shipping_price_label)} (${item.dataObject.totalWeight})"
+            itemView.shipping_price_label.text = StringBuilder("${itemView.context.getString(R.string.shipping_price_label)} (${item.dataObject.totalWeight})")
             itemView.shipping_price_value.text = item.dataObject.shippingPriceText
 
             if (item.dataObject.insurancePriceValue > 0) {

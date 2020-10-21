@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.Spannable
@@ -8,20 +7,20 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
+import com.tokopedia.sellerorder.common.util.SomConsts.IS_WAREHOUSE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CANCELLED
@@ -32,31 +31,32 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.detail_header_item.view.*
-import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-03.
  */
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
-    private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
-    private val viewPool = RecyclerView.RecycledViewPool()
 
-    @SuppressLint("Range")
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
+            if (item.dataObject.fullFillBy == IS_WAREHOUSE) {
+                itemView.warehouseLabel.show()
+            } else {
+                itemView.warehouseLabel.hide()
+            }
+
             itemView.header_see_history?.setOnClickListener {
                 itemView.context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                         .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
                         .putExtra(EXTRA_USER_MODE, 2))
             }
 
-            if (item.dataObject.tickerInfo.text.isNotEmpty()) {
+            if (item.dataObject.tickerInfo.text.isNotEmpty() || item.dataObject.awbUploadProofText.isNotEmpty()) {
                 setupTicker(itemView.ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo)
                 itemView.ticker_detail_buyer_request_cancel?.show()
             } else {
@@ -86,18 +86,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 itemView.due_label?.visibility = View.GONE
             }
 
-            if (item.dataObject.listLabelOrder.isNotEmpty()) {
-                itemView.rv_detail_order_label?.visibility = View.VISIBLE
-                itemView.rv_detail_order_label?.apply {
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = somDetailLabelInfoAdapter
-                    setRecycledViewPool(viewPool)
-                }
-                somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
-            } else {
-                itemView.rv_detail_order_label?.visibility = View.GONE
-            }
-
             itemView.header_invoice?.text = item.dataObject.invoice
 
             itemView.header_invoice_copy?.setOnClickListener {
@@ -106,40 +94,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             itemView.header_see_invoice?.setOnClickListener {
                 actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
-            }
-
-            if (item.dataObject.awb.isNotEmpty()) {
-                itemView.layout_resi?.visibility = View.VISIBLE
-                itemView.header_resi_value?.text = item.dataObject.awb
-                if (item.dataObject.awbTextColor.isNotEmpty()) {
-                    itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
-                }
-                itemView.header_copy_resi?.setOnClickListener {
-                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
-                }
-            } else {
-                itemView.layout_resi?.visibility = View.GONE
-            }
-
-            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
-                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
-                itemView.ticker_invalid_resi?.apply {
-                    visibility = View.VISIBLE
-                    setHtmlDescription(completeDesc)
-                    tickerShape = Ticker.SHAPE_FULL
-                    tickerType = Ticker.TYPE_ERROR
-                    closeButtonVisibility = View.GONE
-                    post {
-                        measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        requestLayout()
-                    }
-                    if (item.dataObject.awbUploadUrl.isNotEmpty()) {
-                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
-                    }
-                }
-            } else {
-                itemView.ticker_invalid_resi?.visibility = View.GONE
             }
         }
 
@@ -166,6 +120,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         tickerBuyerRequestCancel?.apply {
             val tickerDescription = makeTickerDescription(context, tickerInfo)
             setTextDescription(tickerDescription)
+
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     if (tickerInfo.actionUrl.isNotBlank()) {

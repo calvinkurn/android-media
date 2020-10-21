@@ -23,4 +23,8 @@ data class SomDetailShipping (
         val onlineBookingMsg: String = "",
         val onlineBookingMsgArray: List<String> = listOf(),
         val onlineBookingType: String = "",
-        val isRemoveAwb: Boolean = false)
+        val isRemoveAwb: Boolean = false,
+        val awb: String = "",
+        val awbTextColor: String = "",
+        val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo()
+)

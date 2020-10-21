@@ -1,9 +1,12 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.graphics.Typeface
+import android.graphics.Color
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
@@ -17,15 +20,24 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
-            itemView.tv_shipping_name.text = item.dataObject.shippingName
-            itemView.tv_shipping_price.text = item.dataObject.shippingPrice
-            itemView.tv_receiver_name.text = item.dataObject.receiverName
-            itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
+            if(item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
+                itemView.tv_shipping_name.apply {
+                    setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                    setOnClickListener {
+                        actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                    }
+                    text = StringBuilder("${item.dataObject.shippingName} >")
+                }
+            } else {
+                itemView.tv_shipping_name.text = item.dataObject.shippingName
+                itemView.tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
+            }
+            itemView.tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} (${item.dataObject.receiverPhone})")
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
             itemView.tv_receiver_province.text = item.dataObject.receiverProvince
 
-            itemView.copy_address_btn.apply {
+            itemView.shipping_address_copy.apply {
                 setOnClickListener {
                     actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
                             "\n" + item.dataObject.receiverPhone +
@@ -35,22 +47,17 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
             }
 
-            if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
-                itemView.label_harus_sesuai.visibility = View.VISIBLE
-                itemView.ic_harus_sesuai.visibility = View.VISIBLE
-                itemView.label_harus_sesuai.setOnClickListener {
-                    actionListener?.onShowBottomSheetInfo(
-                            itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
-                            R.string.desc_bottomsheet_immutable_courier)
+            if (item.dataObject.awb.isNotEmpty()) {
+                itemView.rl_no_resi?.visibility = View.VISIBLE
+                itemView.no_resi_value?.text = item.dataObject.awb
+                if (item.dataObject.awbTextColor.isNotEmpty()) {
+                    itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                 }
-                itemView.ic_harus_sesuai.setOnClickListener {
-                    actionListener?.onShowBottomSheetInfo(
-                            itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
-                            R.string.desc_bottomsheet_immutable_courier)
+                itemView.no_resi_copy?.setOnClickListener {
+                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
                 }
             } else {
-                itemView.label_harus_sesuai.visibility = View.GONE
-                itemView.ic_harus_sesuai.visibility = View.GONE
+                itemView.rl_no_resi?.visibility = View.GONE
             }
 
             // booking online - driver
@@ -92,44 +99,29 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 } else {
                     itemView.rl_booking_code.visibility = View.VISIBLE
 
-                    itemView.rl_wajib_dicantumkan.setOnClickListener {
-                        actionListener?.onShowBottomSheetInfo(
-                                itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
-                                R.string.wajib_tulis_kode_booking_desc)
-                    }
-
                     if (item.dataObject.onlineBookingCode.isEmpty()) {
-                        itemView.booking_code_see_btn.visibility = View.GONE
-                        itemView.booking_code_value.apply {
-                            text = itemView.context.getString(R.string.placeholder_kode_booking)
-                            setTypeface(this.typeface, Typeface.ITALIC)
-                        }
+                        itemView.rl_booking_code?.hide()
                     } else {
+                        itemView.booking_code_value?.show()
+
                         itemView.booking_code_value.apply {
-                            text = item.dataObject.onlineBookingCode
-                            setTypeface(this.typeface, Typeface.BOLD)
-                        }
-                        itemView.booking_code_see_btn.apply {
-                            visibility = View.VISIBLE
+                            text = StringBuilder("${item.dataObject.onlineBookingCode} >")
                             setOnClickListener {
                                 actionListener?.onShowBookingCode(
                                         item.dataObject.onlineBookingCode,
                                         item.dataObject.onlineBookingType)
                             }
                         }
-
                     }
                 }
             }
 
             // dropshipper
             if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
-                itemView.rl_som_dropshipper.visibility = View.VISIBLE
+                itemView.rl_drop_shipper.visibility = View.VISIBLE
                 itemView.tv_som_dropshipper_name.text = item.dataObject.dropshipperName
-                itemView.tv_som_dropshipper_phone.text = item.dataObject.dropshipperPhone
-
             } else {
-                itemView.rl_som_dropshipper.visibility = View.GONE
+                itemView.rl_drop_shipper.visibility = View.GONE
             }
         }
 
