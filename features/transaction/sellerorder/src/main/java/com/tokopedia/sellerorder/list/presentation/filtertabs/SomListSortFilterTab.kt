@@ -106,6 +106,12 @@ class SomListSortFilterTab(
         }
     }
 
+    fun selectParentFilter() {
+        sortFilter.apply {
+
+        }
+    }
+
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
