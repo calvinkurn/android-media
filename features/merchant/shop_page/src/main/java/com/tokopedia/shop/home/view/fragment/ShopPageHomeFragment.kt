@@ -42,7 +42,9 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -104,7 +106,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeCampaignNplWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
-        PlayWidgetListener {
+        PlayWidgetMediumListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -398,21 +400,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
-//
-//        viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
-//            when(it.second){
-//                is Success -> {
-//                    showToastSuccess(
-//                            if((it.second as Success<Boolean>).data) getString(R.string.shop_page_play_card_success_add_reminder)
-//                            else getString(R.string.shop_page_play_card_success_remove_reminder)
-//                    )
-//                }
-//                is Fail -> {
-//                    adapter.notifyItemChanged(it.first, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
-//                    showErrorToast(getString(R.string.shop_page_play_card_error_reminder))
-//                }
-//            }
-//        })
 
         viewModel?.videoYoutube?.observe(viewLifecycleOwner, Observer {
             val result = it.second
@@ -469,6 +456,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         observePlayWidget()
+        observePlayWidgetToggleReminder()
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -1592,6 +1580,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getPlayWidget(shopId)
     }
 
+    override fun onToggleReminderClicked(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+        if (isLogin) {
+            viewModel?.setToggleReminderPlayWidget(channel, remind, position)
+        } else {
+            shopHomeAdapter.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
+                    remind = remind,
+                    success = false,
+                    position = position
+            ))
+            redirectToLoginPage()
+        }
+    }
+
     private fun setupPlayWidget() {
         playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
             setListener(this@ShopPageHomeFragment)
@@ -1601,6 +1602,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun observePlayWidget() {
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { widgetUiModel ->
             shopHomeAdapter.updatePlayWidget(widgetUiModel)
+        })
+    }
+
+    private fun observePlayWidgetToggleReminder() {
+        viewModel?.playWidgetToggleReminderObservable?.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                showToastSuccess(
+                        if(it.remind) {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        } else {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        })
+            } else {
+                shopHomeAdapter.updatePlayWidgetReminder(it)
+                showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))
+            }
         })
     }
 }

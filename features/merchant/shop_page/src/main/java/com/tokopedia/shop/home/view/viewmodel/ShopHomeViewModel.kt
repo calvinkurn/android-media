@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -86,9 +88,6 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
-//    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
-//    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
-
     val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
         get() = _videoYoutube
     private val _videoYoutube = MutableLiveData<Pair<String, Result<YoutubeVideoDetailModel>>>()
@@ -114,6 +113,10 @@ class ShopHomeViewModel @Inject constructor(
     val playWidgetObservable: LiveData<PlayWidgetUiModel?>
         get() = _playWidgetObservable
     private val _playWidgetObservable = MutableLiveData<PlayWidgetUiModel?>()
+
+    val playWidgetToggleReminderObservable: LiveData<PlayWidgetReminderUiModel>
+        get() = _playWidgetToggleReminderObservable
+    private val _playWidgetToggleReminderObservable = MutableLiveData<PlayWidgetReminderUiModel>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -507,6 +510,24 @@ class ShopHomeViewModel @Inject constructor(
             _playWidgetObservable.value = widgetUiModel
         }) {
             _playWidgetObservable.value = null
+        }
+    }
+
+    fun setToggleReminderPlayWidget(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+        launchCatchError(block = {
+            val response = playWidgetTools.setToggleReminder(
+                    channel.channelId,
+                    remind,
+                    dispatcherProvider.io()
+            )
+            val reminderUiModel = playWidgetTools.mapWidgetToggleReminder(response)
+            _playWidgetToggleReminderObservable.value = reminderUiModel.copy(remind = remind, position = position)
+        }) {
+            _playWidgetToggleReminderObservable.value = PlayWidgetReminderUiModel(
+                    remind = remind,
+                    success = false,
+                    position = position
+            )
         }
     }
 

@@ -33,7 +33,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
     companion object {
 
-        private val query = """
+        private const val query = """
         query playGetWidgetV2(${'$'}widgetType: String!, ${'$'}authorId: String, ${'$'}authorType: String){
           playGetWidgetV2(
             req: {
@@ -103,8 +103,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         private const val PARAM_WIDGET_TYPE = "widgetType"
         private const val PARAM_AUTHOR_ID = "authorId"
         private const val PARAM_AUTHOR_TYPE = "authorType"
-
-        const val VALUE_AUTHOR_TYPE = "shop"
 
         @JvmStatic
         fun createParams(

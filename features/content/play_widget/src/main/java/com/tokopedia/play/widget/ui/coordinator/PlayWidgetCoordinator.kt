@@ -56,6 +56,7 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
         widget.setAnalyticListener(mAnalyticListener)
+        widget.setListener(mListener)
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
@@ -65,6 +66,7 @@ class PlayWidgetCoordinator(
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
+        mWidget?.setListener(mListener)
     }
 
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {

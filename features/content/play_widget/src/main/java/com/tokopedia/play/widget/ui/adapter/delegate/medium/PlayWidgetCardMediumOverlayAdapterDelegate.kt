@@ -12,9 +12,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 /**
  * Created by mzennis on 07/10/20.
  */
-class PlayWidgetCardMediumOverlayAdapterDelegate(
-        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
-) : TypedAdapterDelegate<PlayWidgetMediumOverlayUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumOverlayViewHolder>(
+class PlayWidgetCardMediumOverlayAdapterDelegate : TypedAdapterDelegate<PlayWidgetMediumOverlayUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumOverlayViewHolder>(
         PlayWidgetCardMediumOverlayViewHolder.layoutRes
 ) {
 
@@ -23,6 +21,6 @@ class PlayWidgetCardMediumOverlayAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumOverlayViewHolder {
-        return PlayWidgetCardMediumOverlayViewHolder(basicView, cardMediumListener)
+        return PlayWidgetCardMediumOverlayViewHolder(basicView)
     }
 }

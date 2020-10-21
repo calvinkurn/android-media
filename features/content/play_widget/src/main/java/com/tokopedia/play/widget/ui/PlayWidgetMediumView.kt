@@ -19,8 +19,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -32,14 +34,12 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardMediumListener {
+class PlayWidgetMediumView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
-
-    var widgetMediumListener: PlayWidgetMediumListener? = null
 
     private val background: LoaderImageView
 
@@ -55,10 +55,14 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
-    private val adapter = PlayWidgetCardMediumAdapter(listener = this)
-    private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+    private var mListener: PlayWidgetMediumListener? = null
 
-//    private var videoPlayers = mutableListOf<PlayVideoPlayer>()
+    private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+    private val adapter = PlayWidgetCardMediumAdapter(channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener{
+        override fun onToggleReminderClick(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+            mListener?.onToggleReminderClicked(channel, remind, position)
+        }
+    })
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -93,23 +97,12 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
         configureBackgroundOverlay(data.background)
 
         adapter.setItemsAndAnimateChanges(data.items)
-
-//        #1 Workaround
-//        configurePlayer(data.config)
     }
 
-//    #1 Workaround
-//    private fun configurePlayer(config: PlayWidgetConfigUiModel) {
-//        videoPlayers = MutableList(config.maxAutoPlayCard.toInt()) {
-//            PlayVideoPlayer(context)
-//        }
-//    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-//        #1 Workaround
-//        videoPlayers.forEach { it.release() }
-//        videoPlayers.clear()
+    fun setListener(listener: PlayWidgetListener?) {
+        if (listener is PlayWidgetMediumListener) {
+            mListener = listener
+        }
     }
 
     /**
@@ -162,37 +155,5 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
                 }
             }
         }
-    }
-
-    override fun onCardClicked(item: PlayWidgetMediumItemUiModel, position: Int) {
-        widgetMediumListener?.onCardClicked(item, position)
-    }
-
-    override fun onCardVisible(item: PlayWidgetMediumItemUiModel, position: Int) {
-        widgetMediumListener?.onCardVisible(item, position)
-    }
-
-    override fun onCardAttachedToWindow(card: PlayWidgetCardMediumChannelViewHolder) {
-//        #1 Workaround
-//        val idlePlayer = videoPlayers.find { it.isIdle() }
-//        if (idlePlayer != null) {
-//            card.setPlayer(idlePlayer)
-//            idlePlayer.start()
-//            idlePlayer.setState(PlayVideoPlayer.VideoPlayerState.Busy)
-//        }
-    }
-
-    override fun onCardDetachedFromWindow(card: PlayWidgetCardMediumChannelViewHolder) {
-//        #1 Workaround
-//        card.getPlayer()?.apply {
-//            stop()
-//            setState(PlayVideoPlayer.VideoPlayerState.Idle)
-//        }
-    }
-
-    interface PlayWidgetMediumListener {
-        fun onCardClicked(item: PlayWidgetMediumItemUiModel, position: Int)
-        fun onCardVisible(item: PlayWidgetMediumItemUiModel, position: Int)
-        fun onSeeMoreClicked(appLink: String, webLink: String)
     }
 }
