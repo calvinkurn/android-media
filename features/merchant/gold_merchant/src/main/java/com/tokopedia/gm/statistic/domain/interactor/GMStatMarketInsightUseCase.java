@@ -2,10 +2,10 @@ package com.tokopedia.gm.statistic.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.seller.common.usecase.UseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetShopCategory;
 import com.tokopedia.gm.statistic.domain.KeywordModel;
