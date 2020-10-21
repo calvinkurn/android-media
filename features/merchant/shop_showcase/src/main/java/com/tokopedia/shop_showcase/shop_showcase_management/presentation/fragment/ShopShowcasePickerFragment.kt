@@ -392,6 +392,9 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
                 && (showcaseList.size >= MAX_TOTAL_SHOWCASE_PM_AND_OS)) {
             showToaster(getString(R.string.max_total_showcase_error_text), Toaster.TYPE_NORMAL)
         }
+        else if (totalCheckedShowcase >= ShopShowcasePickerAdapter.MAX_SELECTED_SHOWCASE) {
+            showToaster(getString(R.string.max_selected_showcase_text), Toaster.TYPE_NORMAL)
+        }
         else {
             context?.let {
                 setupAddShowcaseBottomSheet(it)
