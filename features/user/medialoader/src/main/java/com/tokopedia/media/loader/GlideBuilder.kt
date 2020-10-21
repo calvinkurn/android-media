@@ -116,7 +116,6 @@ object GlideBuilder {
                 if (transform != null) localTransform.add(transform)
                 if (signatureKey != null) signature(signatureKey)
                 if (isCircular) localTransform.add(CircleCrop())
-                if (placeHolder != 0) placeholder(placeHolder)
                 if (!isAnimate) dontAnimate()
 
                 drawableError?.let { drawable -> error(drawable) }
