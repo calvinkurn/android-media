@@ -4,7 +4,7 @@ data class SomListFilterUiModel(val statusList: List<Status> = listOf()) {
     data class Status(
             val key: String = "",
             val status: String = "",
-            val amount: Int = 0,
+            var amount: Int = 0,
             val id: List<Int> = listOf(),
             val childStatuses: List<ChildStatus> = listOf(),
             var isChecked: Boolean = false
