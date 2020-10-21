@@ -70,7 +70,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
-        if (config.autoPlay) {
+        if (false) { //TODO(!config.autoPlay)
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
