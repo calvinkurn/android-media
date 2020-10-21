@@ -136,8 +136,7 @@ class SomListViewModel @Inject constructor(
 
     fun acceptOrder(orderId: String) {
         launchCatchError(block = {
-            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, userSession.shopId
-                    ?: "0"))
+            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, userSession.shopId ?: "0"))
         }, onError = {
             _acceptOrderResult.postValue(Fail(it))
         })

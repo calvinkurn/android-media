@@ -49,7 +49,7 @@ class SomListBulkAcceptOrderViewModel @Inject constructor(
             addSource(_bulkAcceptOrderStatusResult) {
                 when (it) {
                     is Success -> {
-                        lastBulkAcceptOrderStatusSuccessResult = _bulkAcceptOrderStatusResult.value
+                        lastBulkAcceptOrderStatusSuccessResult = it
                         if (it.data.data.success == it.data.data.totalOrder) {
                             bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         } else if (retryCount < MAX_RETRY) {
@@ -93,5 +93,10 @@ class SomListBulkAcceptOrderViewModel @Inject constructor(
         }, onError = {
             bulkAcceptOrderResult.postValue(Fail(it))
         })
+    }
+
+    fun reset() {
+        lastBulkAcceptOrderStatusSuccessResult = null
+        bulkAcceptOrderStatusResult.postValue(null)
     }
 }

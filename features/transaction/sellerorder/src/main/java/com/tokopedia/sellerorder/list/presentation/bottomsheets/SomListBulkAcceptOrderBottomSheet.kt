@@ -1,18 +1,20 @@
 package com.tokopedia.sellerorder.list.presentation.bottomsheets
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.list.di.SomListComponentInstance
+import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.list.di.bulkaccept.DaggerSomBulkAcceptOrderComponent
+import com.tokopedia.sellerorder.list.di.bulkaccept.SomBulkAcceptOrderComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkAcceptOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderProductUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
@@ -23,14 +25,10 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_som_list_bulk_accept_order.*
 import javax.inject.Inject
 
-class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
+class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify(), HasComponent<SomBulkAcceptOrderComponent> {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SomListBulkAcceptOrderViewModel::class.java)
-    }
+    lateinit var viewModel: SomListBulkAcceptOrderViewModel
 
     private val typeFactory: SomListBulkAcceptOrderTypeFactory = SomListBulkAcceptOrderTypeFactory()
     private val adapter = BaseListAdapter<SomListBulkAcceptOrderProductUiModel, SomListBulkAcceptOrderTypeFactory>(typeFactory)
@@ -38,12 +36,17 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
 
     private var listener: SomListBulkAcceptOrderBottomSheetListener? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        inject()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        allowDismiss()
         setTitle(getString(R.string.som_list_bulk_accept_order_bottom_sheet_title))
         val childViews = View.inflate(context, R.layout.bottomsheet_som_list_bulk_accept_order, null)
         setChild(childViews)
-        inject()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,10 +56,16 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
         observeBulkAcceptOrderStatusResult()
     }
 
-    private fun inject() {
-        activity?.let {
-            SomListComponentInstance.getSomComponent(it.application).inject(this)
+    override fun getComponent(): SomBulkAcceptOrderComponent? {
+        return activity?.let {
+            DaggerSomBulkAcceptOrderComponent.builder()
+                    .somComponent(SomComponentInstance.getSomComponent(it.application))
+                    .build()
         }
+    }
+
+    private fun inject() {
+        component?.inject(this)
     }
 
     private fun setRecyclerView() {
@@ -98,12 +107,16 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
         isCancelable = false
         isHideable = false
         overlayClickDismiss = false
-        showCloseIcon = false
+    }
+
+    private fun allowDismiss() {
+        isCancelable = true
+        isHideable = true
+        overlayClickDismiss = true
     }
 
     private fun setProducts() {
-        val products = orders.flatMap { it.orderProduct }
-                .groupBy { it.productId }
+        val products = orders.flatMap { it.orderProduct }.groupBy { it.productId }
 
         val groupedProducts = products.filter { it.value.isNotEmpty() }.map {
             SomListBulkAcceptOrderProductUiModel(
