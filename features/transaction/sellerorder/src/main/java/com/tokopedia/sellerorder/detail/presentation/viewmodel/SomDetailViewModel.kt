@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -67,9 +69,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun acceptOrder(acceptOrderQuery: String, orderId: String, shopId: String) {
+    fun acceptOrder(orderId: String, shopId: String) {
         launchCatchError(block = {
-            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(acceptOrderQuery, orderId, shopId))
+            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, shopId))
         }, onError = {
             _acceptOrderResult.postValue(Fail(it))
         })
