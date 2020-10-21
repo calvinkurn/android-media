@@ -673,12 +673,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if (errorMessage == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage)
-            {
-                context?.run {
-                    presenter.discoverLogin(this)
-                }
-            }.showRetrySnackbar()
+            activity?.let {
+                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage)
+                {
+                    context?.run {
+                        presenter.discoverLogin(this)
+                    }
+                }.showRetrySnackbar()
+            }
         }
     }
 
