@@ -27,11 +27,6 @@ class OfficialStoreCategoryViewModel @Inject constructor(
 
     fun getOfficialStoreCategories() {
         launchCatchError(block = {
-            val cacheResponse = withContext(dispatchers.io()) {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(true)
-            }
-            _officialStoreCategoriesResult.value = Success(cacheResponse)
-
             val cloudResponse = withContext(dispatchers.io()) {
                 getOfficialStoreCategoriesUseCase.executeOnBackground(false)
             }
