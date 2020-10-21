@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view
+package com.tokopedia.cart.view.decorator
 
 import android.graphics.Rect
 import android.view.View
