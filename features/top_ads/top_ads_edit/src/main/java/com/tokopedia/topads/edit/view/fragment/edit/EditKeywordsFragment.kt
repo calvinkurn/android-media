@@ -41,6 +41,7 @@ import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
@@ -61,7 +62,7 @@ import javax.inject.Inject
 
 
 private const val CLICK_SETUP_KEY = "click - setup keyword"
-
+private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 class EditKeywordsFragment : BaseDaggerFragment() {
 
     @Inject
@@ -290,6 +291,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_KATA_KUNCI, "")
             onAddKeyword()
         }
     }
@@ -396,6 +398,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)
         bundle.putParcelableArrayList(POSITIVE_EDIT, editedKeywords)
+        bundle.putParcelableArrayList(POSITIVE_KEYWORD_ALL, list)
         return bundle
     }
 

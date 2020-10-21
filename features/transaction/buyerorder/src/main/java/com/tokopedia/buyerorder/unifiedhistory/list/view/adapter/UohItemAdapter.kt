@@ -136,15 +136,13 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData.removeAt(index)
-        listTypeData.add(index, UohTypeData("", TYPE_LOADER))
-        notifyDataSetChanged()
+        listTypeData[index] = UohTypeData("", TYPE_LOADER)
+        notifyItemChanged(index)
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData.removeAt(index)
-        listTypeData.add(index, UohTypeData(order, TYPE_ORDER_LIST))
-        notifyDataSetChanged()
+        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+        notifyItemChanged(index)
     }
 
     fun addList(list: List<UohTypeData>) {
