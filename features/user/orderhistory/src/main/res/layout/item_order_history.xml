@@ -47,7 +47,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_orderhistory_12"
             android:layout_marginLeft="@dimen/dp_orderhistory_12"
@@ -138,7 +138,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_buy"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:gravity="center"
@@ -154,7 +154,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_wishlist"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:gravity="center"
