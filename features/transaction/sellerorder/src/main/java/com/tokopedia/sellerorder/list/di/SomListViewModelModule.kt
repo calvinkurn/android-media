@@ -22,9 +22,4 @@ abstract class SomListViewModelModule {
     @IntoMap
     @ViewModelKey(SomListViewModel::class)
     internal abstract fun somListViewModel(viewModel: SomListViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SomListBulkAcceptOrderViewModel::class)
-    internal abstract fun somListBulkAcceptOrderViewModel(viewModel: SomListBulkAcceptOrderViewModel): ViewModel
 }
