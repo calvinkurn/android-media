@@ -443,7 +443,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
 
-        //
+        // execute getShopShowCasesUseCase when the showcases contains nameless show case
         val productShowCases = viewModel.productShowCases.map { it.showcaseName }
         if (productShowCases.contains("")) viewModel.getShopShowCasesUseCase()
 
@@ -812,8 +812,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                             ?: ArrayList()
                     // update the view model state
                     viewModel.updateProductShowCases(selectedShowcaseList)
-                    // display the show case names with comma separator
-                    displayProductShowCaseNames(selectedShowcaseList.map { it.showcaseName })
+                    if(selectedShowcaseList.isNotEmpty()) {
+                        // display the show case names with comma separator
+                        displayProductShowCaseNames(selectedShowcaseList.map { it.showcaseName })
+                    } else displayProductShowCaseTips()
                 }
             }
         }
@@ -1226,8 +1228,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                     // update the show case item picker collections in view model
                     viewModel.updateProductShowCases(ArrayList(selectedProductShowCases))
-                    // display the show case names with comma separator
-                    displayProductShowCaseNames(selectedProductShowCases.map { it.showcaseName })
+                    if(selectedProductShowCases.isNotEmpty()) {
+                        // display the show case names with comma separator
+                        displayProductShowCaseNames(selectedProductShowCases.map { it.showcaseName })
+                    } else displayProductShowCaseTips()
                     // hide the reload layout only when the view is visible
                     productShowCasesReloadLayout?.run {
                         if(this.isVisible) {
@@ -1489,6 +1493,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun displayProductShowCaseNames(productShowCaseNames: List<String>) {
         productShowCasesView?.text = productShowCaseNames.joinToString()
+    }
+
+    private fun displayProductShowCaseTips() {
+        productShowCasesView?.text = getString(R.string.label_product_showcase_tips)
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {

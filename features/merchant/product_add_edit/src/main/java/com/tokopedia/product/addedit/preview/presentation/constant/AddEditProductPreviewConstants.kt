@@ -28,5 +28,6 @@ class AddEditProductPreviewConstants {
         const val BUNDLE_DRAFT_ID = "draftId"
         const val BUNDLE_PRODUCT_ID = "productId"
         const val BUNDLE_IS_PRODUCT_DUPLICATE = "isProductDuplicate"
+        const val DRAFT_SHOWCASE_ID = "0"
     }
 }

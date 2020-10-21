@@ -31,7 +31,7 @@ class GetShopShowCasesUseCase @Inject constructor(
 
     companion object {
         private const val QUERY = "query shopShowcases {\n" +
-                "  shopShowcases(withDefault: true) {\n" +
+                "  shopShowcases(withDefault: false) {\n" +
                 "    result {\n" +
                 "      id\n" +
                 "      name\n" +
