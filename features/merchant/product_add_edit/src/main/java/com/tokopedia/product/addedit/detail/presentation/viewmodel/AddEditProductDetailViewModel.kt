@@ -93,6 +93,11 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
+    private val mIsProductSkuInputError = MutableLiveData<Boolean>()
+    val isProductSkuInputError: LiveData<Boolean>
+        get() = mIsProductSkuInputError
+    var productSkuMessage: String = ""
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
@@ -127,6 +132,9 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
         }
         addSource(wholeSaleErrorCounter) {
+            this.value = isInputValid()
+        }
+        addSource(mIsProductSkuInputError) {
             this.value = isInputValid()
         }
     }
@@ -165,9 +173,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         val isPreOrderActivated = isPreOrderActivated.value ?: false
         val isPreOrderDurationError = isPreOrderActivated && mIsPreOrderDurationInputError.value ?: false
 
+        // by default the product sku is allowed to empty
+        val isProductSkuError = mIsProductSkuInputError.value ?: false
+
         return (!isProductPhotoError && !isProductNameError &&
                 !isProductPriceError && !isProductStockError &&
-                !isOrderQuantityError && !isProductWholeSaleError && !isPreOrderDurationError)
+                !isOrderQuantityError && !isProductWholeSaleError &&
+                !isPreOrderDurationError && !isProductSkuError)
     }
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
@@ -299,6 +311,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         orderQuantityMessage = ""
         mIsOrderQuantityInputError.value = false
+    }
+
+    fun validateProductSkuInput(productSkuInput: String) {
+        if (productSkuInput.contains(" ")) {
+            val errorMessage = provider.getEmptyProductSkuErrorMessage()
+            errorMessage?.let { productSkuMessage = it }
+            mIsProductSkuInputError.value = true
+            return
+        }
+        productSkuMessage = ""
+        mIsProductSkuInputError.value = false
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {

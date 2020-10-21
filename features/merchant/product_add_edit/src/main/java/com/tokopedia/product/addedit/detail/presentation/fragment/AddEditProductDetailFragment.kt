@@ -551,6 +551,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         })
 
+        // product minimum order text change listener
+        productSkuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(p0: Editable?) {}
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val skuInput = charSequence?.toString()
+                skuInput?.let { viewModel.validateProductSkuInput(it) }
+            }
+        })
+
         // Continue to add product description
         submitButton?.setOnClickListener {
             submitTextView?.hide()
@@ -583,6 +596,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToOrderQuantityInputStatus()
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
+        subscribeToProductSkuInputStatus()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
@@ -718,6 +732,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.value?.run {
             if (this && !requestedFocus) {
                 preOrderDurationField?.requestFocus()
+                requestedFocus = true
+            }
+        }
+
+        // product sku validation
+        val productSkuInput = productSkuField?.getEditableValue().toString()
+        viewModel.validateProductSkuInput(productSkuInput)
+        viewModel.isProductSkuInputError.value?.run {
+            if (this && !requestedFocus) {
+                productSkuField?.requestFocus()
                 requestedFocus = true
             }
         }
@@ -1155,6 +1179,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, Observer {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
+        })
+    }
+
+    private fun subscribeToProductSkuInputStatus() {
+        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, Observer {
+            productSkuField?.setError(it)
+            productSkuField?.setMessage(viewModel.productSkuMessage)
         })
     }
 
