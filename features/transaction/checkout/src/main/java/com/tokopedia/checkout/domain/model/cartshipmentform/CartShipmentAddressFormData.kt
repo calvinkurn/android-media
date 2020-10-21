@@ -42,7 +42,7 @@ data class CartShipmentAddressFormData(
         var promoCheckoutErrorDefault: PromoCheckoutErrorDefault? = null,
         var isOpenPrerequisiteSite: Boolean = false,
         var isEligibleNewShippingExperience: Boolean = false,
-        var abTestButton: ABTestButton? = null
+        var abTestButton: ABTestButton = ABTestButton()
 ) : Parcelable {
 
     val isAvailablePurchaseProtection: Boolean
@@ -86,7 +86,7 @@ data class CartShipmentAddressFormData(
         promoCheckoutErrorDefault = parcel.readParcelable(PromoCheckoutErrorDefault::class.java.classLoader)
         isOpenPrerequisiteSite = parcel.readByte() != 0.toByte()
         isEligibleNewShippingExperience = parcel.readByte() != 0.toByte()
-        abTestButton = parcel.readParcelable(ABTestButton::class.java.classLoader)
+        abTestButton = parcel.readParcelable(ABTestButton::class.java.classLoader) ?: ABTestButton()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

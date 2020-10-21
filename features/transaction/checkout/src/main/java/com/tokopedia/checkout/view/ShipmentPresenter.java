@@ -579,7 +579,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 int tmpCornerId = Integer.parseInt(cornerId);
                 params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID, tmpCornerId);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Timber.d(e);
             }
         }
         if (leasingId != null && !leasingId.isEmpty()) {
@@ -587,7 +587,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 int tmpLeasingId = Integer.parseInt(leasingId);
                 params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID, tmpLeasingId);
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Timber.d(e);
             }
         }
         if (isTradeIn) {
