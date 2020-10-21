@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.common.list.data.model.filter
+package com.tokopedia.product.manage.common.feature.list.data.model.filter
 
 import com.google.gson.annotations.SerializedName
 

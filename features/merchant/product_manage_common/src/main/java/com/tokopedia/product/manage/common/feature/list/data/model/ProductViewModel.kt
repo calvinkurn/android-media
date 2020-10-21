@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.common.feature.list.model
+package com.tokopedia.product.manage.common.feature.list.data.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory

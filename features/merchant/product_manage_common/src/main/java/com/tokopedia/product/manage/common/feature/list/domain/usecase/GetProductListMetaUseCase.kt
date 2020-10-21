@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.common.list.domain.usecase
+package com.tokopedia.product.manage.common.feature.list.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

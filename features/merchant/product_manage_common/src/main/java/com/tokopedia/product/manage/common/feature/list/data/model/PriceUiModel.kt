@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.common.feature.list.model
+package com.tokopedia.product.manage.common.feature.list.data.model
 
 data class PriceUiModel(
         val price: String?,

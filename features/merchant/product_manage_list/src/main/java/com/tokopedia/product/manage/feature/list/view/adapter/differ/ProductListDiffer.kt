@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.product.manage.common.feature.list.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
 import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
 
 class ProductListDiffer: ProductManageDiffer() {

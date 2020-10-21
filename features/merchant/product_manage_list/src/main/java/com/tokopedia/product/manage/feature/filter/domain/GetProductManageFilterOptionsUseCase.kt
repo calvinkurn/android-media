@@ -4,9 +4,9 @@ import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCa
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
-import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaResponse
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
-import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase.Companion.HIDE_NO_COUNT
