@@ -13,13 +13,19 @@ import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.android.synthetic.main.fragment_main_nav.*
+import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
+
+    @Inject
+    lateinit var viewModel: MainNavViewModel
 
     private lateinit var userSession: UserSessionInterface
 
@@ -48,6 +54,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickListener()
+        viewModel.getMainNavData()
     }
 
     private fun initAdapter() {

@@ -26,6 +26,7 @@ class MainNavRepositoryImpl(
             walletResult?.let {
                 combinedData.wallet = it
             }
+            return@coroutineScope combinedData
         }
     }
 }

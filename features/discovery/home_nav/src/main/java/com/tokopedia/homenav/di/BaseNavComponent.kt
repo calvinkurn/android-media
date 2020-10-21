@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.di
 
+import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -10,6 +12,9 @@ import dagger.Component
 @BaseNavScope
 @Component(modules = [BaseNavModule::class], dependencies = [BaseAppComponent::class])
 interface BaseNavComponent {
+
+    @ApplicationContext
+    fun getApplicationContext(): Context
 
     fun provideGraphqlRepository(): GraphqlRepository
     fun provideUserSession(): UserSessionInterface
