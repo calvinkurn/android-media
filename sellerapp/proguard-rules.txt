@@ -447,3 +447,13 @@
 -keep class com.google.android.material.internal.CollapsingTextHelper {
     public void recalculate();
 }
+
+# chucker update version to 3.3.0
+-dontwarn java.lang.instrument.ClassFileTransformer
+-dontwarn sun.misc.SignalHandler
+-dontwarn java.lang.instrument.Instrumentation
+-dontwarn sun.misc.Signal
+-dontwarn kotlin.KotlinNothingValueException
+-dontwarn kotlin.time.*
+
+-keep class kotlinx.coroutines.DelayKt { *; }
