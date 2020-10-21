@@ -3,9 +3,11 @@ package com.tokopedia.review.analytics.seller
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,13 +15,15 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.logout.view.LogoutActivity
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.adapter.SortListAdapter
@@ -29,10 +33,10 @@ import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.RatingA
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.TopicViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,6 +51,12 @@ class SellerReviewDetailActivityTest {
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
+    val activityRuleLogin = IntentsTestRule(LoginActivity::class.java, false, false)
+
+    @get:Rule
+    val activityRuleLogout = IntentsTestRule(LogoutActivity::class.java, false, false)
+
+    @get:Rule
     var activityRule: IntentsTestRule<SellerReviewDetailActivity> = object : IntentsTestRule<SellerReviewDetailActivity>(SellerReviewDetailActivity::class.java) {
         override fun getActivityIntent(): Intent {
             return Intent(targetContext, SellerReviewDetailActivity::class.java).apply {
@@ -58,7 +68,7 @@ class SellerReviewDetailActivityTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            fakeLogin()
+            userLogin()
         }
     }
 
@@ -67,6 +77,11 @@ class SellerReviewDetailActivityTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(SellerReviewDetailMockResponse())
         intendingIntent()
+    }
+
+    @After
+    fun finish() {
+        userLogout()
     }
 
     @Test
@@ -217,8 +232,27 @@ class SellerReviewDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun fakeLogin() {
-        InstrumentationAuthHelper.loginInstrumentationTestSellerUser()
+    private fun userLogin() {
+        val bundle = Bundle()
+        bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_FILL, true)
+        bundle.putString(LoginEmailPhoneFragment.AUTO_FILL_EMAIL, EMAIL_LOGIN)
+        val intent = Intent(targetContext, LoginActivity::class.java)
+        intent.putExtras(bundle)
+        activityRuleLogin.launchActivity(intent)
+
+        onView(withId(com.tokopedia.loginregister.R.id.password))
+                .check(matches(withText(PASSWORD_LOGIN)))
+
+        onView(withId(com.tokopedia.loginregister.R.id.password))
+                .perform(ViewActions.typeText(PASSWORD_LOGIN))
+
+        onView(withId(com.tokopedia.loginregister.R.id.register_btn))
+                .perform(click())
+    }
+
+    private fun userLogout() {
+        val intent = Intent(targetContext, LogoutActivity::class.java)
+        activityRuleLogout.launchActivity(intent)
     }
 
     private fun waitForTrackerSent() {
@@ -232,6 +266,8 @@ class SellerReviewDetailActivityTest {
         const val TAG_OPTION_FEEDBACK = "Menu"
         const val TAG_SORT_FILTER = "Filter"
         const val TIME_ONE_YEAR = "1 Tahun Terakhir"
+        const val EMAIL_LOGIN = "transaction.team+seller01@tokopedia.com"
+        const val PASSWORD_LOGIN = "123toped789"
         const val EDIT_PRODUCT_PATH = "tracker/merchant/review/seller/review_detail_click_dot_edit_product.json"
         const val FILTER_TIME_PATH = "tracker/merchant/review/seller/review_detail_click_filter_time.json"
         const val FILTER_STAR_PATH = "tracker/merchant/review/seller/review_detail_click_filter_star.json"
