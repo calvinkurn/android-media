@@ -106,3 +106,15 @@ fun String.convertToDate(format: String, locale: Locale = Locale.getDefault()): 
     }
 }
 
+@SuppressLint("SimpleDateFormat")
+fun String?.changeDateFormat(prevFormat: String, newFormat: String): String? {
+    if (this != null) {
+        val prevFormatter = SimpleDateFormat(prevFormat)
+        val newFormatter = SimpleDateFormat(newFormat)
+        prevFormatter.parse(this)?.let { prevDate ->
+            return newFormatter.format(prevDate)
+        }
+    }
+    return null
+}
+

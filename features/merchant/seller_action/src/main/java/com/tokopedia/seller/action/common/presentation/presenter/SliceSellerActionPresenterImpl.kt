@@ -41,8 +41,8 @@ class SliceSellerActionPresenterImpl(
     private val mReviewStarsListLiveData = MutableLiveData<Result<Pair<Uri, List<InboxReviewList>>>>()
     private val mBalanceLiveData = MutableLiveData<Result<Pair<Uri, List<SellerActionBalance>>>>()
 
-    override fun getOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String): LiveData<Result<Pair<Uri, List<Order>>>> {
-        loadMainOrderList(sliceUri, orderType)
+    override fun getOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?): LiveData<Result<Pair<Uri, List<Order>>>> {
+        loadMainOrderList(sliceUri, orderType, date)
         return mOrderListLiveData
     }
 
@@ -56,10 +56,10 @@ class SliceSellerActionPresenterImpl(
         return mBalanceLiveData
     }
 
-    private fun loadMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String) {
+    private fun loadMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?) {
         GlobalScope.launch(dispatcher.io()) {
             try {
-                getSliceMainOrderList(sliceUri, orderType)
+                getSliceMainOrderList(sliceUri, orderType, date)
             } catch (ex: Exception) {
                 mOrderListLiveData.postValue(Fail(SellerActionException(sliceUri, ex.message.orEmpty())))
             }
@@ -91,9 +91,9 @@ class SliceSellerActionPresenterImpl(
         }
     }
 
-    private suspend fun getSliceMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String) {
-        val startDate = getCalculatedFormattedDate(DATE_FORMAT, DAYS_BEFORE)
-        val endDate = Date().toFormattedString(DATE_FORMAT)
+    private suspend fun getSliceMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?) {
+        val startDate = date ?: getCalculatedFormattedDate(DATE_FORMAT, DAYS_BEFORE)
+        val endDate = date ?: Date().toFormattedString(DATE_FORMAT)
         with(sliceMainOrderListUseCase) {
             params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate, SellerActionOrderCodeMapper.mapOrderCodeByType(orderType))
             mOrderListLiveData.postValue(Success(Pair(sliceUri, executeOnBackground())))

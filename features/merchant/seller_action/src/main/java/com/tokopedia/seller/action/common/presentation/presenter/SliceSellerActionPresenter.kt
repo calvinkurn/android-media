@@ -10,7 +10,7 @@ import com.tokopedia.usecase.coroutines.Result
 
 interface SliceSellerActionPresenter {
 
-    fun getOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String): LiveData<Result<Pair<Uri, List<Order>>>>
+    fun getOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?): LiveData<Result<Pair<Uri, List<Order>>>>
     fun getShopReviewList(sliceUri: Uri, stars: Int): LiveData<Result<Pair<Uri, List<InboxReviewList>>>>
     fun getBalance(sliceUri: Uri, shopId: Int): LiveData<Result<Pair<Uri, List<SellerActionBalance>>>>
 

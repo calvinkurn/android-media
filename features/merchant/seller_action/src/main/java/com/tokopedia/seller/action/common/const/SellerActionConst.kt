@@ -11,6 +11,7 @@ object SellerActionConst {
     object Params {
         internal const val RATING = "rating"
         internal const val ORDER_TYPE = "orderType"
+        internal const val ORDER_DATE = "orderDate"
     }
 
 }
