@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.list.presentation.fragments
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
@@ -11,7 +10,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.design.text.SearchInputView
@@ -26,15 +24,10 @@ import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
-import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
@@ -45,9 +38,16 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiMod
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_FILTER
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToRequestPickupPage
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -67,11 +67,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope, SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener {
 
     companion object {
-        private const val REQUEST_DETAIL = 999
-        private const val REQUEST_FILTER = 998
-        private const val REQUEST_CONFIRM_SHIPPING = 997
-        private const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
-
         private const val DELAY_SEARCH = 500L
 
         private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
@@ -213,6 +208,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun loadInitialData() {
+        SomListOrderViewHolder.multiEditEnabled = false
         isLoadingInitialData = true
         loadUserRoles()
         loadTopAdsCategory()
@@ -302,6 +298,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onCheckChanged() {
         updateBulkActionCheckboxStatus()
         toggleBulkActionButtonVisibility()
+        updateOrderCounter()
     }
 
     override fun onCheckBoxClickedWhenDisabled() {
@@ -309,15 +306,15 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
-        goToSomOrderDetail(order)
+        goToSomOrderDetail(activity, order, viewModel.userRoleResult.value)
     }
 
     override fun onTrackButtonClicked(orderId: String, url: String) {
-        goToTrackingPage(orderId, url)
+        goToTrackingPage(context, orderId, url)
     }
 
     override fun onConfirmShippingButtonClicked(orderId: String) {
-        goToConfirmShippingPage(orderId)
+        goToConfirmShippingPage(activity, orderId)
     }
 
     override fun onAcceptOrderButtonClicked(orderId: String) {
@@ -325,7 +322,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onRequestPickupButtonClicked(orderId: String) {
-        goToRequestPickupPage(orderId)
+        goToRequestPickupPage(activity, orderId)
     }
 
     override fun onBulkAcceptOrderCompleted(totalSuccess: Int, totalFailed: Int) {
@@ -509,6 +506,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             toggleBulkAction()
             resetOrderSelectedStatus()
             toggleBulkActionCheckboxVisibility()
+            toggleBulkActionButtonVisibility()
+            updateOrderCounter()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
         }
@@ -522,6 +521,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 resetOrderSelectedStatus()
                 toggleBulkActionButtonVisibility()
             }
+            updateOrderCounter()
         }
 
         btnBulkAction.setOnClickListener {
@@ -529,6 +529,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 getString(R.string.som_list_bulk_accept_order_button) -> showBulkAcceptOrderBottomSheet()
             }
         }
+    }
+
+    private fun updateOrderCounter() {
+        val text = if (SomListOrderViewHolder.multiEditEnabled) {
+            val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
+            getString(R.string.som_list_order_counter_multi_select_enabled, checkedCount)
+        } else {
+            getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
+        }
+        tvSomListOrderCounter.text = text
     }
 
     private fun handleSomFilterActivityResult(resultCode: Int, data: Intent?) {
@@ -612,7 +622,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun toggleBulkActionButtonVisibility() {
-        containerBtnBulkAction.showWithCondition(SomListOrderViewHolder.multiEditEnabled)
+        val isAnyCheckedOrder = adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.isChecked } != null
+        containerBtnBulkAction.showWithCondition(SomListOrderViewHolder.multiEditEnabled && isAnyCheckedOrder)
     }
 
     private fun toggleBulkActionCheckboxVisibility() {
@@ -697,6 +708,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
+                toggleBulkActionCheckboxVisibility()
             } else {
                 adapter.addMoreData(data)
                 updateBulkActionCheckboxStatus()
@@ -791,42 +803,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             it.setOrders(adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked })
             it.setListener(this@SomListFragment)
             it.show(childFragmentManager, TAG_BOTTOM_SHEET_BULK_ACCEPT)
-        }
-    }
-
-    private fun goToSomOrderDetail(item: SomListOrderUiModel) {
-        val userRolesResult = viewModel.userRoleResult.value
-        val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else null
-        Intent(activity, SomDetailActivity::class.java).apply {
-            putExtra(PARAM_ORDER_ID, item.orderId)
-            userRoles?.let {
-                putExtra(SomConsts.PARAM_USER_ROLES, it)
-            }
-            startActivityForResult(this, REQUEST_DETAIL)
-        }
-    }
-
-    private fun goToTrackingPage(orderId: String, url: String) {
-        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
-        val uriBuilder = Uri.Builder()
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, url)
-        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
-        routingAppLink += uriBuilder.toString()
-        RouteManager.route(context, routingAppLink)
-    }
-
-    private fun goToConfirmShippingPage(orderId: String) {
-        Intent(activity, SomConfirmShippingActivity::class.java).apply {
-            putExtra(PARAM_ORDER_ID, orderId)
-            putExtra(PARAM_CURR_IS_CHANGE_SHIPPING, false)
-            startActivityForResult(this, REQUEST_CONFIRM_SHIPPING)
-        }
-    }
-
-    private fun goToRequestPickupPage(orderId: String) {
-        Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
-            putExtra(PARAM_ORDER_ID, orderId)
-            startActivityForResult(this, REQUEST_CONFIRM_REQUEST_PICKUP)
         }
     }
 

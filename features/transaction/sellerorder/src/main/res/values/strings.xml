@@ -360,6 +360,7 @@
     <string name="som_list_multi_select">Pilih Sekaligus</string>
     <string name="som_list_order_courier_label">Kurir:</string>
     <string name="som_list_order_counter">%1$d Pesanan</string>
+    <string name="som_list_order_counter_multi_select_enabled">%1$d Pesanan dipilih</string>
     <string name="som_list_filter_chip">Filter</string>
     <string name="som_list_order_destination_label">Tujuan:</string>
     <string name="som_list_bulk_accept_order_bottom_sheet_title">Terima pesanan sekaligus</string>
