@@ -800,7 +800,7 @@ public class SearchTracking {
     public static void trackEventShareProduct(String queryKey, String productId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        TrackAppUtils.EVENT, Event.PRODUCTCLICK,
+                        TrackAppUtils.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_SHARE_PRODUCT_OPTIONS,
                         TrackAppUtils.EVENT_LABEL, queryKey + " - " + productId
