@@ -209,6 +209,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun loadInitialData() {
         SomListOrderViewHolder.multiEditEnabled = false
+        resetOrderSelectedStatus()
         isLoadingInitialData = true
         loadUserRoles()
         loadTopAdsCategory()
