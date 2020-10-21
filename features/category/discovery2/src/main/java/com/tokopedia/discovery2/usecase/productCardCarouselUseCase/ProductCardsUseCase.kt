@@ -72,7 +72,6 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                 component1.showVerticalLoader = true
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             }
-            (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             return true
         }
         return false
