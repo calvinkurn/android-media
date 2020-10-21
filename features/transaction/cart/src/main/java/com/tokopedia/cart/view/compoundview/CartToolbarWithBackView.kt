@@ -56,7 +56,7 @@ class CartToolbarWithBackView : Toolbar, CartToolbar {
         return Pair(xCoordinate, yCoordinate)
     }
 
-    override fun playWishlistAnimation() {
+    override fun animateWishlistIcon() {
         btnWishlist.gone()
         btnWishlistLottie.show()
         btnWishlistLottie.addAnimatorListener(object : Animator.AnimatorListener {

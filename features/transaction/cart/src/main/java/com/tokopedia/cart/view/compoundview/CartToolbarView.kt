@@ -48,7 +48,7 @@ class CartToolbarView : Toolbar, CartToolbar {
         return Pair(xCoordinate, yCoordinate)
     }
 
-    override fun playWishlistAnimation() {
+    override fun animateWishlistIcon() {
 
     }
 }

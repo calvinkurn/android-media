@@ -4,6 +4,6 @@ interface CartToolbar {
 
     fun getWishlistIconPosition(): Pair<Int, Int>
 
-    fun playWishlistAnimation()
+    fun animateWishlistIcon()
 
 }
