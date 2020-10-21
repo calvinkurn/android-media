@@ -290,12 +290,12 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val detailFeedback = feedback.text.toString()
             var validate = true
 
-            if (reportType == 1) {
-                if (emailText.isEmpty()) {
-                    validate = false
-                    setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
-                }
+            if (emailText.isEmpty()) {
+                validate = false
+                setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
+            }
 
+            if (reportType == 1) {
                 if (affectedPageText.isEmpty()) {
                     validate = false
                     setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page) )
