@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +59,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottomsheet_pages_name.*
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -68,7 +70,7 @@ import java.io.File
 import javax.inject.Inject
 
 
-class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
+class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected, SearchView.OnQueryTextListener {
 
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
@@ -91,7 +93,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var uriImage: Uri? = null
     private var lastAccessedPage: String? = ""
     private var resizedUriImage: Uri? = null
-    private var categoryItem: Int = -1
+    private var categoryItem: Int = 0
+    private var reportType: Int = 0
+    private var labelsId: Int = 0
 
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
@@ -204,17 +208,20 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         setActiveFilter(filterBugs, filterFeedback)
         bugsLayout.visibility = View.VISIBLE
         feedbackLayout.visibility = View.GONE
+        reportType = 1
 
         filterBugs.setOnClickListener {
-           setActiveFilter(filterBugs, filterFeedback)
+            setActiveFilter(filterBugs, filterFeedback)
             bugsLayout.visibility = View.VISIBLE
             feedbackLayout.visibility = View.GONE
+            reportType = 1
         }
 
         filterFeedback.setOnClickListener {
             setActiveFilter(filterFeedback, filterBugs)
             feedbackLayout.visibility = View.VISIBLE
             bugsLayout.visibility = View.GONE
+            reportType = 2
         }
     }
 
@@ -280,28 +287,35 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             val affectedPageText = page.text.toString()
             val journeyText = journey.text.toString()
             val expectedResultText = expectedResult.text.toString()
+            val detailFeedback = feedback.text.toString()
             var validate = true
 
-            if (emailText.isEmpty()) {
-                validate = false
-                setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
-            }
+            if (reportType == 1) {
+                if (emailText.isEmpty()) {
+                    validate = false
+                    setWrapperError(et_email_wrapper, getString(R.string.warning_email) )
+                }
 
-            if (affectedPageText.isEmpty()) {
-                validate = false
-                setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page) )
-            }
+                if (affectedPageText.isEmpty()) {
+                    validate = false
+                    setWrapperError(et_affected_page_wrapper, getString(R.string.warning_page) )
+                }
 
-            if(journeyText.isEmpty()) {
-                validate = false
-                setWrapperError(et_str_wrapper, getString(R.string.warning_str) )
+                if(journeyText.isEmpty()) {
+                    validate = false
+                    setWrapperError(et_str_wrapper, getString(R.string.warning_str) )
+                }
+            } else {
+                if (detailFeedback.isEmpty()) {
+                    validate = false
+                    setWrapperError(et_feedback_wrapper, getString(R.string.warning_feedback) )
+                }
             }
-
 
             if(validate) {
                 val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, expectedResultText))
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, expectedResultText, detailFeedback))
             }
         }
 
@@ -343,12 +357,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return ScreenshotData(id, fileName, path)
     }
 
-    private fun requestMapper(email: String, page: String, journey: String, issueType: String, expectedResult: String): FeedbackFormRequest {
+    private fun requestMapper(email: String, page: String, journey: String, issueType: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackFormRequest(
                 platformID = 2,
-                //this should be user email
-                email = email,
+                email = userSession?.email ,
                 appVersion =  affectedVersion,
                 bundleVersion = versionCode,
                 device = deviceInfo,
@@ -362,8 +375,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 category = categoryItem,
                 journey = journey,
                 expected = expectedResult,
-                //labelsId here (page name)
-                labelsId = arrayListOf("1")
+                labelsId = arrayListOf(labelsId),
+                type = reportType,
+                detail = detailFeedback
         )
     }
 
@@ -505,6 +519,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvPages.adapter = pagesAdapter
 
+            search_input_page.setOnQueryTextListener(this@FeedbackPageFragment)
+
+
         }
 
         bottomSheetPage?.apply {
@@ -522,5 +539,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     override fun onSelect(selection: Int, pageName: String) {
         bottomSheetPage?.dismiss()
         page.setText(pageName)
+        labelsId = selection
+    }
+
+    /*onSearchListener*/
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

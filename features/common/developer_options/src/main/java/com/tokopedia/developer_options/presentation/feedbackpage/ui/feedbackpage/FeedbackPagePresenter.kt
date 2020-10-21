@@ -1,18 +1,17 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.*
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.CommitResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackDataResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.FeedbackFormResponse
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.response.ImageResponse
 import com.tokopedia.screenshot_observer.ScreenshotData
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -84,8 +83,6 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                 .subscribe(object : Subscriber<ImageResponse>() {
                     override fun onNext(t: ImageResponse?) {
                         if (totalImage == imageCount) {
-                            Log.d("TOTAL_IMAGE", totalImage.toString())
-                            Log.d("TOTAL_IMAGE_COUNT", imageCount.toString())
                             view.hideLoadingDialog()
                             commitData(feedbackId)
                         }
@@ -110,9 +107,10 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         feedbackApi.commitData("api/v1/feedback/$feedbackId/commit")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<ResponseBody>() {
-                    override fun onNext(t: ResponseBody?) {
+                .subscribe(object : Subscriber<CommitResponse>() {
+                    override fun onNext(t: CommitResponse?) {
                         view.hideLoadingDialog()
+                        /*send jiraURL here*/
                         view.goToTicketCreatedActivity()
                     }
 

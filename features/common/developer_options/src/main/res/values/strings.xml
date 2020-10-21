@@ -29,7 +29,8 @@
     <string name="warning_page">Page should not be empty</string>
     <string name="warning_str">Step to Reproduce should not be empty</string>
     <string name="warning_actual">Actual Result should not be empty</string>
-    <string name="warning_expected">Expected Result not be empty</string>
+    <string name="warning_expected">Expected Result should not be empty</string>
+    <string name="warning_feedback">Feedback should not be empty</string>
     <string name="marshmallow">MARSHMALLOW</string>
     <string name="nougat">NOUGAT</string>
     <string name="oreo">OREO</string>

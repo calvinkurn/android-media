@@ -5,20 +5,20 @@
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.design.text.SearchInputView
+    <SearchView
         android:layout_marginTop="@dimen/dp_4"
         android:id="@+id/search_input_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:search_bar_show_icon="false"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_pages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_18"
         android:layout_marginTop="@dimen/dp_18"
         app:layout_constraintTop_toBottomOf="@id/search_input_page"
         app:layout_constraintStart_toStartOf="parent"/>
