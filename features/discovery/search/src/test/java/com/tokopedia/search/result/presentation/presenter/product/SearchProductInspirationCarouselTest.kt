@@ -395,33 +395,4 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             )
         }
     }
-
-    @Test
-    fun `Tracker Impression Inspiration Carousel`() {
-        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(inFirstPage.jsonToObject())
-
-        `When Load Data`()
-
-        `Then verify view set product list`()
-
-
-        // POSITION
-        // 4 -> inspiration carousel info (position 4)
-        // 14 -> inspiration carousel list (position 12)
-        val visitableList = visitableListSlot.captured
-        `Then verify interaction for Inspiration Carousel Info impression`(visitableList[4] as InspirationCarouselViewModel)
-        `Then verify interaction for Inspiration Carousel List impression`(visitableList[14] as InspirationCarouselViewModel)
-    }
-
-    private fun `Then verify interaction for Inspiration Carousel Info impression`(data: InspirationCarouselViewModel) {
-        verify {
-            productListView.sendImpressionInspirationCarouselInfo(data)
-        }
-    }
-
-    private fun `Then verify interaction for Inspiration Carousel List impression`(data: InspirationCarouselViewModel) {
-        verify {
-            productListView.sendImpressionInspirationCarouselList(data)
-        }
-    }
 }

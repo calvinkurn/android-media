@@ -1058,7 +1058,6 @@ final class ProductListPresenter
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
-                        impressedInspirationCarousel(data);
                         inspirationCarouselViewModelIterator.remove();
                     }
                     catch (Exception exception) {
@@ -1120,14 +1119,6 @@ final class ProductListPresenter
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
 
         list.addAll(broadMatchIndex, broadMatchVisitableList);
-    }
-
-    private void impressedInspirationCarousel(InspirationCarouselViewModel data) {
-        if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
-            getView().sendImpressionInspirationCarouselList(data);
-        } else if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
-            getView().sendImpressionInspirationCarouselInfo(data);
-        }
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
@@ -1732,6 +1723,20 @@ final class ProductListPresenter
                     broadMatchItemViewModel.getImageUrl(),
                     SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
             );
+    }
+
+    @Override
+    public void onInspirationCarouselInfoImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
+        if (getView() == null || inspirationCarouselProduct == null) return;
+
+        getView().sendImpressionInspirationCarouselInfo(inspirationCarouselProduct);
+    }
+
+    @Override
+    public void onInspirationCarouselListImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
+        if (getView() == null || inspirationCarouselProduct == null) return;
+
+        getView().sendImpressionInspirationCarouselList(inspirationCarouselProduct);
     }
 
     @Override
