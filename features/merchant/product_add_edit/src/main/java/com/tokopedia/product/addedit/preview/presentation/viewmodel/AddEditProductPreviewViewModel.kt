@@ -110,7 +110,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         } else {
-                            productInputModel.detailInputModel.oldProductName = ""
+                            productInputModel.detailInputModel.currentProductName = ""
                         }
 
                         // decrement wholesale min order by one because of > symbol

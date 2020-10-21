@@ -188,7 +188,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             productNameTips?.let { productNameMessage = it }
             mIsProductNameInputError.value = false
 
-            if (productNameInput != productInputModel.detailInputModel.oldProductName) {
+            if (productNameInput != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
                     val response = withContext(Dispatchers.IO) {
