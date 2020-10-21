@@ -77,7 +77,7 @@ object OvoWidgetTracking: BaseTracking() {
         tracker?.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.HOMEPAGE,
-                String.format(Action.CLICK_ON + " %s", QR_CODE),
+                String.format(Action.CLICK_ON, QR_CODE),
                 Label.NONE
         )
     }
