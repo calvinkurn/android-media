@@ -3,12 +3,14 @@ package com.tokopedia.play.widget.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -20,6 +22,7 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -50,6 +53,8 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
 
     private val recyclerViewItem: RecyclerView
 
+    private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
+
     private val adapter = PlayWidgetCardMediumAdapter(listener = this)
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
@@ -68,6 +73,16 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
         overlayImage = view.findViewById(R.id.play_widget_overlay_image)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
+
+        setupView(view)
+    }
+
+    private fun setupView(view: View) {
+        recyclerViewItem.layoutManager = layoutManager
+        recyclerViewItem.adapter = adapter
+        recyclerViewItem.addOnScrollListener(configureParallax())
+
+        snapHelper.attachToRecyclerView(recyclerViewItem)
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
@@ -77,11 +92,7 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
 
         configureBackgroundOverlay(data.background)
 
-        recyclerViewItem.layoutManager = layoutManager
-        recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(configureParallax())
-
-        adapter.setItems(data.items)
+        adapter.setItemsAndAnimateChanges(data.items)
 
 //        #1 Workaround
 //        configurePlayer(data.config)
