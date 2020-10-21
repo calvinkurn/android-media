@@ -5,7 +5,6 @@ import android.view.View
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -73,7 +72,6 @@ class SomOrderRequestCancelBottomSheet : BottomSheetUnify() {
                         )
                     }
                     btnPositive?.setOnClickListener {
-                        SomAnalytics.eventClickButtonTolakPesananPopup("$statusCode")
                         showPositiveButtonBuyerRequestCancelOnClickButtonDialog(reasonBuyer)
                     }
                 }

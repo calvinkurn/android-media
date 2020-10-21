@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.design.text.SearchInputView
@@ -109,7 +110,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var selectedOrderId: String = ""
     private var isRefreshingSelectedOrder: Boolean = false
     private var shouldScrollToTop: Boolean = false
-    private var isJustRestored: Boolean = false
+    private var isJustRestored: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var fromWidget: Boolean = false
     private var filterStatusId: Int = 0
     private var tabActive: String = ""
@@ -388,6 +389,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             init(order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
             show(this@SomListFragment.childFragmentManager, SomOrderRequestCancelBottomSheet.TAG)
         }
+    }
+
+    override fun onViewComplaintButtonClicked(order: SomListOrderUiModel) {
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, order.buttons.firstOrNull()?.url.orEmpty()))
     }
 
     override fun onBulkAcceptOrderCompleted(totalSuccess: Int, totalFailed: Int) {
@@ -722,7 +727,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun resetOrderSelectedStatus() {
-        adapter.data.onEach { (it as SomListOrderUiModel).isChecked = false }
+        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }
         adapter.notifyDataSetChanged()
     }
 
@@ -812,10 +817,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
-        if (isLoadingInitialData && data.isEmpty()) {
-            showEmptyState()
-            multiEditViews.gone()
-        } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText) { // show only if current order list is based on current search keyword
+        // show only if current order list is based on current search keyword
+        if (data.firstOrNull()?.searchParam == searchBarSomList.searchText) {
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
@@ -836,11 +839,18 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             data.firstOrNull().let { newOrder ->
                 if (newOrder == null) {
                     (adapter as SomListOrderAdapter).removeOrder(selectedOrderId)
+                    if (adapter.dataSize == 0) {
+                        showEmptyState()
+                    }
                 } else {
                     (adapter as SomListOrderAdapter).updateOrder(newOrder)
                 }
             }
             selectedOrderId = ""
+        }
+        if (adapter.dataSize == 0) {
+            multiEditViews.showWithCondition(adapter.dataSize > 0)
+            showEmptyState()
         }
         updateScrollListenerState(viewModel.hasNextPage())
         isLoadingInitialData = false
