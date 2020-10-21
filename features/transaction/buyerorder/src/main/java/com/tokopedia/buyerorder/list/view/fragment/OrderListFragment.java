@@ -635,7 +635,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.buyerorder.R.string.close_buyer), v->{});
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
     }
 
     @Override
@@ -1031,7 +1031,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
-                        getResources().getString(com.tokopedia.buyerorder.R.string.title_ok_buyer), v -> {
+                        getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
                         });
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);

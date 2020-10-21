@@ -189,7 +189,7 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/btn_wishlist_buyer"
+            android:id="@+id/btn_wishlist"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginTop="8dp"
