@@ -75,6 +75,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
         private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
 
+        private const val KEY_LAST_ACTIVE_FILTER = "lastActiveFilter"
+
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
         @JvmStatic
@@ -103,6 +105,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListSortFilterTab(sortFilterSomList, this)
     }
 
+    private var isJustRestored: Boolean = false
     private var fromWidget: Boolean = false
     private var filterStatusId: Int = 0
     private var tabActive: String = ""
@@ -128,10 +131,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
+        if (savedInstanceState == null && arguments != null) {
             filterStatusId = arguments?.getString(FILTER_STATUS_ID).orEmpty().toIntOrZero()
             fromWidget = arguments?.getBoolean(FROM_WIDGET_TAG) ?: false
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+        } else if (savedInstanceState != null) {
+            isJustRestored = true
+            tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
         }
     }
 
@@ -190,6 +196,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        SomListOrderViewHolder.multiEditEnabled = false
+        outState.putString(KEY_LAST_ACTIVE_FILTER, tabActive)
+        super.onSaveInstanceState(outState)
     }
 
     override fun loadInitialData() {
@@ -263,7 +275,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         textChangeJob = launchCatchError(block = {
             delay(DELAY_SEARCH)
             viewModel.setSearchParam(text.orEmpty())
-            refreshOrderList()
+            if (!isJustRestored) {
+                refreshOrderList()
+            }
         }, onError = {
             // TODO: Log to crashlytics
         })
@@ -310,8 +324,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadFilters()
         refreshOrderList()
         val stringBuilder = StringBuilder()
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 } ?: "")
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 } ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 }
+                ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 }
+                ?: "")
         showCommonToaster(stringBuilder.toString())
     }
 
@@ -347,7 +363,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             when (result) {
                 is Success -> {
                     if (adapter.data.filterIsInstance<SomListEmptyStateUiModel>().isNotEmpty()) {
-                        createSomListEmptyStateModel(viewModel.isTopAdsActive())
+                        showEmptyState()
+                        if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
                     }
                 }
                 is Fail -> showToasterError()
@@ -421,6 +438,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Fail -> showToasterError(getString(R.string.som_list_failed_accept_order))
             }
         })
+    }
+
+    private fun showEmptyState() {
+        val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
+        (adapter as SomListOrderAdapter).updateOrders(newItems)
     }
 
     private fun loadUserRoles() {
@@ -657,8 +679,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
         if (isLoadingInitialData && data.isEmpty()) {
-            val newItems = arrayListOf(createSomListEmptyStateModel(viewModel.isTopAdsActive()))
-            (adapter as SomListOrderAdapter).updateOrders(newItems)
+            showEmptyState()
             multiEditViews.gone()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText) { // show only if current order list is based on current search keyword
             if (adapter.dataSize > 0 && isLoadingInitialData) {
@@ -675,6 +696,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         updateScrollListenerState(viewModel.hasNextPage())
         isLoadingInitialData = false
+        isJustRestored = false
     }
 
     private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
