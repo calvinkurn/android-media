@@ -1489,16 +1489,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 renderCartNotEmpty(it)
             }
 
-            if (recentViewList == null || shouldReloadRecentViewList) {
-                dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
-            } else {
-                renderRecentView(null)
-            }
-
             if (wishLists == null) {
                 dPresenter.processGetWishlistData()
             } else {
                 renderWishlist(null, false)
+            }
+
+            if (recentViewList == null || shouldReloadRecentViewList) {
+                dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
+            } else {
+                renderRecentView(null)
             }
 
             if (recommendationList == null) {

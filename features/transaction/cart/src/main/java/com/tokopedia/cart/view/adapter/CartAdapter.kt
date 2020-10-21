@@ -725,6 +725,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is ShipmentSellerCashbackModel ||
+                    item is CartWishlistHolderData ||
                     item is InsuranceCartShops ||
                     item is DisabledItemHeaderHolderData ||
                     item is DisabledReasonHolderData ||
@@ -750,7 +751,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             if (item is CartEmptyHolderData ||
                     item is CartShopHolderData ||
                     item is ShipmentSellerCashbackModel ||
-                    item is CartRecentViewHolderData ||
                     item is InsuranceCartShops ||
                     item is DisabledItemHeaderHolderData ||
                     item is DisabledReasonHolderData ||
