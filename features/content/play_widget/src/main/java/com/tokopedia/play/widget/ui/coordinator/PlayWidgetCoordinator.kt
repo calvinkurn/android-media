@@ -17,11 +17,10 @@ import kotlinx.coroutines.*
 class PlayWidgetCoordinator(
         lifecycleOwner: LifecycleOwner? = null,
         mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
-        private val timerCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
-) : LifecycleObserver {
+        workCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
+) : LifecycleObserver, PlayWidgetAutoRefreshCoordinator.Listener {
 
     private val scope = CoroutineScope(mainCoroutineDispatcher)
-    private var timerJob: Job? = null
 
     private var mWidget: PlayWidgetView? = null
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
@@ -36,21 +35,37 @@ class PlayWidgetCoordinator(
         }
     }
 
+    private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
+            scope,
+            mainCoroutineDispatcher,
+            workCoroutineDispatcher,
+            this
+    )
+
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        stopTimer()
+        autoRefreshCoordinator.onPause()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         val currentModel = mModel
         if (currentModel is PlayWidgetConfigProvider) {
-            configureAutoRefresh(currentModel.config)
+            autoRefreshCoordinator.configureAutoRefresh(currentModel.config)
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        scope.coroutineContext.cancelChildren()
+    }
+
+    override fun onWidgetShouldRefresh() {
+        mWidget?.let { mListener?.onWidgetShouldRefresh(it) }
     }
 
     fun controlWidget(widget: PlayWidgetView) {
@@ -79,30 +94,8 @@ class PlayWidgetCoordinator(
         widget.setModel(model)
 
         if (model is PlayWidgetConfigProvider) {
-            configureAutoRefresh(model.config)
+            autoRefreshCoordinator.configureAutoRefresh(model.config)
         }
-    }
-
-    private fun configureAutoRefresh(config: PlayWidgetConfigUiModel) {
-        stopTimer()
-        if (config.autoRefresh) {
-            timerJob = scope.launch {
-                initTimer(config.autoRefreshTimer) {
-                    mWidget?.let { mListener?.onWidgetShouldRefresh(it) }
-                }
-            }
-        }
-    }
-
-    private fun stopTimer() {
-        timerJob?.cancel()
-    }
-
-    private suspend fun initTimer(durationInSecs: Long, handler: () -> Unit) {
-        withContext(timerCoroutineDispatcher) {
-            delay(durationInSecs * 1000L)
-        }
-        handler()
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
