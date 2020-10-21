@@ -340,12 +340,14 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
-        if (channelType == ChannelType.Pause) {
-            showDialogContinueLiveStreaming()
-            openBroadcastActivePage()
-            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-        } else  {
-            openBroadcastSetupPage()
+        when (channelType) {
+            ChannelType.Pause -> {
+                showDialogContinueLiveStreaming()
+                openBroadcastActivePage()
+                analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
+            }
+            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
+            else -> openBroadcastSetupPage()
         }
     }
 
@@ -388,6 +390,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun openBroadcastSetupPage() {
         navigateToFragment(PlayBroadcastPrepareFragment::class.java)
         analytic.openSetupScreen()
+    }
+
+    private fun openBroadcastFinalSetupPage() {
+        navigateToFragment(PlayBeforeLiveFragment::class.java)
     }
 
     private fun openBroadcastActivePage() {
