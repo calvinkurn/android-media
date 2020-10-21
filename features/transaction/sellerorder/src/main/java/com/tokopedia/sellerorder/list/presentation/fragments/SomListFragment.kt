@@ -107,6 +107,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private var selectedOrderId: String = ""
+    private var isRefreshingSelectedOrder: Boolean = false
     private var shouldScrollToTop: Boolean = false
     private var isJustRestored: Boolean = false
     private var fromWidget: Boolean = false
@@ -509,7 +510,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun observeRejectOrder() {
         viewModel.rejectOrderResult.observe(viewLifecycleOwner, Observer {
-            selectedOrderId = ""
             when (it) {
                 is Success -> {
                     val rejectOrderResponse = it.data.rejectOrder
@@ -528,7 +528,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun observeRejectCancelRequest() {
         viewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
-            selectedOrderId = ""
             when (result) {
                 is Success -> {
                     onActionCompleted()
@@ -545,11 +544,18 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun onActionCompleted() {
         somListSortFilterTab.decrementOrderCount()
         updateOrderCounter()
-        (adapter as SomListOrderAdapter).removeOrderWithId(selectedOrderId)
+        refreshSelectedOrder()
         if (adapter.dataSize == 0) {
             showEmptyState()
         }
-        selectedOrderId = ""
+    }
+
+    private fun refreshSelectedOrder() {
+        adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.orderId == selectedOrderId }?.let { selectedOrder ->
+            isRefreshingSelectedOrder = true
+            getSwipeRefreshLayout(view)?.isRefreshing = true
+            viewModel.refreshSelectedOrder(selectedOrder.orderResi)
+        }
     }
 
     private fun showEmptyState() {
@@ -825,6 +831,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 adapter.addMoreData(data)
                 updateBulkActionCheckboxStatus()
             }
+        } else if (isRefreshingSelectedOrder) {
+            isRefreshingSelectedOrder = false
+            data.firstOrNull().let { newOrder ->
+                if (newOrder == null) {
+                    (adapter as SomListOrderAdapter).removeOrder(selectedOrderId)
+                } else {
+                    (adapter as SomListOrderAdapter).updateOrder(newOrder)
+                }
+            }
+            selectedOrderId = ""
         }
         updateScrollListenerState(viewModel.hasNextPage())
         isLoadingInitialData = false

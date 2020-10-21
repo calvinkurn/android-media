@@ -130,6 +130,21 @@ class SomListViewModel @Inject constructor(
         })
     }
 
+    fun refreshSelectedOrder(invoice: String) {
+        launchCatchError(block = {
+            val currentSearchParam = getOrderListParams.search
+            setSearchParam(invoice)
+            somListGetOrderListUseCase.setParam(getOrderListParams)
+            val result = somListGetOrderListUseCase.execute()
+            setSearchParam(currentSearchParam)
+            getUserRolesJob?.join()
+            getOrderListParams.nextOrderId = result.first
+            _orderListResult.postValue(Success(result.second))
+        }, onError = {
+            _orderListResult.postValue(Fail(it))
+        })
+    }
+
     fun getTopAdsCategory() {
         launchCatchError(block = {
             somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toIntOrZero())

@@ -18,9 +18,21 @@ class SomListOrderAdapter(
         visitables.addAll(items)
     }
 
-    fun removeOrderWithId(selectedOrderId: String) {
-        val index = visitables.indexOfFirst { it is SomListOrderUiModel && it.orderId == selectedOrderId }
-        visitables.removeAt(index)
-        notifyItemRemoved(index)
+    fun updateOrder(order: SomListOrderUiModel) {
+        visitables.filterIsInstance<SomListOrderUiModel>().indexOfFirst { it.orderId == order.orderId }.let { index ->
+            if (index in 0 until visitables.size) {
+                visitables[index] = order
+                notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun removeOrder(orderId: String) {
+        visitables.filterIsInstance<SomListOrderUiModel>().indexOfFirst { it.orderId == orderId }.let { index ->
+            if (index in 0 until visitables.size) {
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            }
+        }
     }
 }
