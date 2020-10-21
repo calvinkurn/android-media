@@ -48,7 +48,6 @@ class GraphqlCloudDataStore @Inject constructor(
             header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
         }
         if (requests[0].isDoQueryHash) {
-            val header: MutableMap<String, String> = HashMap()
             val queryHashingHeaderValue = StringBuilder()
             for (graphqlRequest in requests) {
                 val queryHashValue: String = cacheManager.getQueryHashValue(graphqlRequest.md5)
