@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="horizontal"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="0dp">
+    android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textview_title"
@@ -20,14 +18,32 @@
         app:typographyType="heading_4"
         tools:text="Keranjang" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btn_wishlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        app:srcCompat="@drawable/ic_wishlist_checkout_off" />
+        android:layout_marginEnd="@dimen/dp_8"
+        app:srcCompat="@drawable/ic_wishlist_checkout_off"
+        app:unifyImageButtonVariant="image" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/btn_wishlist_lottie"
+        android:layout_width="@dimen/dp_34"
+        android:layout_height="@dimen/dp_34"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/anim_cart_wishlist" />
 
 </RelativeLayout>

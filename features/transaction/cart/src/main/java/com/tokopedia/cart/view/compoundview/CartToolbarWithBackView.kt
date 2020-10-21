@@ -11,6 +11,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.cart.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyImageButton
 
 /**
  * Created by meta on 19/07/18.
@@ -19,7 +20,7 @@ class CartToolbarWithBackView : Toolbar, CartToolbar {
 
     lateinit var btnBack: ImageView
     lateinit var textView: TextView
-    lateinit var btnWishlist: ImageView
+    lateinit var btnWishlist: UnifyImageButton
     lateinit var btnWishlistLottie: LottieAnimationView
     lateinit var listener: CartToolbarListener
 
