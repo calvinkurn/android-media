@@ -105,8 +105,9 @@ class EventPDPTicketItemPackageAdapter(
 
                 quantityEditor.setValueChangedListener { newValue, _, _ ->
                     isError = !((quantityEditor.getValue() >= items.minQty.toInt() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toInt())
+                    val total = if(newValue < items.minQty.toInt()) EMPTY_QTY else newValue
                     onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id, items,
-                            items.salesPrice.toInt()*newValue, newValue.toString(),
+                            items.salesPrice.toInt()*total, total.toString(),
                             isError, items.name, items.productId,items.salesPrice,
                             getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     eventPDPTracking.onClickQuantity()
@@ -155,8 +156,10 @@ class EventPDPTicketItemPackageAdapter(
                             isError = true
                         }
 
-                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*getDigit(txtTotal.toString()),
-                                getDigit(txtTotal.toString()).toString(), isError, items.name, items.productId,items.salesPrice,
+                        val total = if(getDigit(txtTotal.toString()) < items.minQty.toInt()) EMPTY_QTY else getDigit(txtTotal.toString())
+
+                        onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*total,
+                                total.toString(), isError, items.name, items.productId,items.salesPrice,
                                 getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)
                     }
                 })
