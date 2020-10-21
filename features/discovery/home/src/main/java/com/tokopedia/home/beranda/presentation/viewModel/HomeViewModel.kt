@@ -83,7 +83,6 @@ open class HomeViewModel @Inject constructor(
         private val getAtcUseCase: Lazy<AddToCartOccUseCase>,
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
-        private val getDynamicChannelsUseCase: Lazy<GetDynamicChannelsUseCase>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
         private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
