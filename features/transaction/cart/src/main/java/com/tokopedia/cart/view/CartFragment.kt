@@ -1357,6 +1357,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyItemChanged(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         cartAdapter.checkForShipmentForm()
+        dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -3175,7 +3176,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartShopNameChecked(isAllChecked: Boolean) {
-        dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
         val params = generateParamValidateUsePromoRevamp(isAllChecked, -1, -1, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
