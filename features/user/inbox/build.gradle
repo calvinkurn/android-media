@@ -27,6 +27,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.principles
 
+    // TODO: remove later
     implementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation project(rootProject.ext.features.topchat)
