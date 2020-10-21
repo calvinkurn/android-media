@@ -40,7 +40,10 @@ class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
-            itemView.setOnClickListener { if (!multiEditEnabled) listener.onOrderClicked(element) }
+            itemView.setOnClickListener {
+                if (!multiEditEnabled) listener.onOrderClicked(element)
+                else touchCheckBox(element)
+            }
             itemView.alpha = if (multiEditEnabled && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)
@@ -57,6 +60,14 @@ class SomListOrderViewHolder(
             setupDestinationInfo(element, isOrderEnded)
             setupQuickActionButton(element)
         }
+    }
+
+    private fun touchCheckBox(element: SomListOrderUiModel) {
+        itemView.checkBoxSomListMultiSelect.apply {
+            isChecked = !isChecked
+            element.isChecked = isChecked
+        }
+        listener.onCheckChanged()
     }
 
     private fun setupQuickActionButton(element: SomListOrderUiModel) {

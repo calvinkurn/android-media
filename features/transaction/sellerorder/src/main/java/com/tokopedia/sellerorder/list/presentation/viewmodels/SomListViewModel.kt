@@ -36,8 +36,7 @@ class SomListViewModel @Inject constructor(
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
         private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val userSession: UserSessionInterface,
-        dispatcher: SomDispatcherProvider) : BaseViewModel(dispatcher.io()
-) {
+        dispatcher: SomDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
     companion object {
         private const val DATE_FORMAT = "dd/MM/yyyy"
@@ -155,12 +154,16 @@ class SomListViewModel @Inject constructor(
     }
 
     fun setStatusOrderFilter(id: List<Int>) {
-        getOrderListParams.nextOrderId = 0
         getOrderListParams.statusList = id
+        resetNextOrderId()
     }
 
     fun setSearchParam(keyword: String) {
         getOrderListParams.search = keyword
+    }
+
+    fun resetNextOrderId() {
+        getOrderListParams.nextOrderId = 0
     }
 
     fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
