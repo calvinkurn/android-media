@@ -1,8 +1,10 @@
 package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.AccountHeaderViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavItemViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.SeparatorViewHolder
@@ -15,8 +17,7 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
-                             private val userSession: UserSessionInterface)
-    : BaseAdapterTypeFactory(), MainNavTypeFactory {
+                             private val userSession: UserSessionInterface): MainNavTypeFactory {
 
     override fun type(accountHeaderViewModel: AccountHeaderViewModel): Int {
         return AccountHeaderViewHolder.LAYOUT
@@ -34,13 +35,14 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return TransactionListViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when (type) {
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
+        return when (viewType) {
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener)
             MainNavItemViewHolder.LAYOUT -> MainNavItemViewHolder(view, mainNavListener)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
-            else -> super.createViewHolder(view, type)
-        }
+            else -> throw TypeNotSupportedException.create("Layout not supported")
+        } as AbstractViewHolder<HomeNavVisitable>
     }
+
 }
