@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/flight_search_reverse_background"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
+        app:tickerShapeType="full"
+        app:tickerType="warning" />
+
+    <include
+        layout="@layout/include_flight_order_detail_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+    <include
+        layout="@layout/include_flight_order_detail_journey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+</LinearLayout>
