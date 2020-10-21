@@ -36,7 +36,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener) : Hom
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
         return when (viewType) {
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener)
-            MainNavItemViewHolder.LAYOUT -> MainNavItemViewHolder(view, mainNavListener)
+            MainNavItemViewHolder.LAYOUT -> MainNavItemViewHolder(view)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")

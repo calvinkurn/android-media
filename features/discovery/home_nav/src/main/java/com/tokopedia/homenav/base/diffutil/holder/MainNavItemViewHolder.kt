@@ -7,8 +7,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.base.viewmodel.MainNavItemViewModel
 
-class MainNavItemViewHolder(itemView: View,
-                            mainNavListener: MainNavListener
+class MainNavItemViewHolder(itemView: View
 ): AbstractViewHolder<MainNavItemViewModel>(itemView) {
     companion object {
         @LayoutRes
