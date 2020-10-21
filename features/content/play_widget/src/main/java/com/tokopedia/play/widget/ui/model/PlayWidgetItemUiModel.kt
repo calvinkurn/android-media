@@ -30,7 +30,10 @@ data class PlayWidgetSmallChannelUiModel(
         val hasPromo: Boolean,
         val video: PlayWidgetVideoUiModel,
         val channelType: PlayWidgetChannelType
-): PlayWidgetSmallItemUiModel()
+): PlayWidgetSmallItemUiModel(), ImpressionableModel {
+
+    override val impressHolder = ImpressHolder()
+}
 
 /**
  * Medium

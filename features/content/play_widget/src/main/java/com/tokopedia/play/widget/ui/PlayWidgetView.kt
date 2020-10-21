@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
+import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -21,9 +22,11 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    private var mAnalyticListener: PlayWidgetAnalyticListener? = null
+
     override fun onViewRemoved(child: View?) {
         when (child) {
-            is PlayWidgetSmallView -> child.setListener(null)
+            is PlayWidgetSmallView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
     }
@@ -36,44 +39,43 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         }
     }
 
-    private fun addSmallView(model: PlayWidgetUiModel.Small) {
-        val firstChild = getFirstChild()
-        val widgetView = if (firstChild !is PlayWidgetSmallView) {
-            removeCurrentView()
-            val smallWidget = PlayWidgetSmallView(context).apply {
-                layoutParams = getChildLayoutParams()
-            }
-            addView(smallWidget)
+    fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
+        mAnalyticListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setAnalyticListener(listener)
+        }
+    }
 
-            smallWidget
-        } else firstChild
+    private fun addSmallView(model: PlayWidgetUiModel.Small) {
+        val widgetView = addWidgetView { PlayWidgetSmallView(context) }
+
+        widgetView.setData(model)
+        widgetView.setAnalyticListener(mAnalyticListener)
+    }
+
+    private fun addMediumView(model: PlayWidgetUiModel.Medium) {
+        val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
         widgetView.setData(model)
     }
 
-    private fun addMediumView(model: PlayWidgetUiModel.Medium) {
-        if (getFirstChild() is PlayWidgetMediumView) return
-        removeCurrentView()
-        val mediumWidget = PlayWidgetMediumView(context).apply {
-            layoutParams = getChildLayoutParams()
-        }
-        addView(mediumWidget)
-        mediumWidget.setData(model)
-    }
-
     private fun addPlaceholderView() {
-        val firstChild = getFirstChild()
-        val widgetView = if (firstChild !is PlayWidgetPlaceholderView) {
-            removeCurrentView()
-            val placeholderWidget = PlayWidgetPlaceholderView(context).apply {
-                layoutParams = getChildLayoutParams()
-            }
-            addView(placeholderWidget)
-
-            placeholderWidget
-        } else firstChild
+        val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) }
 
         widgetView.setData()
+    }
+
+    private inline fun <reified T: View> addWidgetView(creator: () -> T): T {
+        val firstChild = getFirstChild()
+        return if (firstChild !is T) {
+            removeCurrentView()
+            val widget = creator().apply {
+                layoutParams = getChildLayoutParams()
+            }
+            addView(widget)
+
+            widget
+        } else firstChild
     }
 
     private fun getFirstChild(): View? = getChildAt(0)

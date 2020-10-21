@@ -34,7 +34,9 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     }
 
     private fun setupView() {
-        widgetCoordinator = PlayWidgetCoordinator(this)
+        widgetCoordinator = PlayWidgetCoordinator(this).apply {
+            setAnalyticListener(PlayWidgetSampleAnalytic(this@PlayWidgetSampleActivity))
+        }
         adapter = PlayWidgetSampleAdapter(widgetCoordinator)
 
         rvWidgetSample.adapter = adapter

@@ -10,8 +10,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetSmallItemUiModel
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetCardSmallChannelAdapterDelegate
-    : TypedAdapterDelegate<PlayWidgetSmallChannelUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallChannelViewHolder>(
+class PlayWidgetCardSmallChannelAdapterDelegate(
+        private val smallCardChannelListener: PlayWidgetCardSmallChannelViewHolder.Listener
+) : TypedAdapterDelegate<PlayWidgetSmallChannelUiModel, PlayWidgetSmallItemUiModel, PlayWidgetCardSmallChannelViewHolder>(
         PlayWidgetCardSmallChannelViewHolder.layout
 ) {
 
@@ -20,6 +21,6 @@ class PlayWidgetCardSmallChannelAdapterDelegate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardSmallChannelViewHolder {
-        return PlayWidgetCardSmallChannelViewHolder(basicView)
+        return PlayWidgetCardSmallChannelViewHolder(basicView, smallCardChannelListener)
     }
 }
