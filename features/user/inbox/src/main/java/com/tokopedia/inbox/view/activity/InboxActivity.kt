@@ -54,7 +54,7 @@ class InboxActivity : BaseActivity() {
             setOnNavigationItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
-                        Toast.makeText(context, "notification", Toast.LENGTH_SHORT).show()
+                        onBottomNavSelected(InboxFragmentType.NOTIFICATION)
                     }
                     R.id.menu_inbox_chat -> {
                         onBottomNavSelected(InboxFragmentType.CHAT)

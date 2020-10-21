@@ -17,7 +17,7 @@ class InboxNavigator constructor(
         private val fm: FragmentManager,
         private val fragmentFactory: InboxFragmentFactory
 ) {
-    //    private var notificationFragment: Fragment? = null
+    private var notificationFragment: Fragment? = null
     private var chatFragment: Fragment? = null
 
     //    private var discussionFragment: Fragment? = null
@@ -31,12 +31,11 @@ class InboxNavigator constructor(
 
     private fun initFragments() {
         chatFragment = fragmentFactory.createChatListFragment()
+        notificationFragment = fragmentFactory.createNotificationFragment()
 
-//        addPage(homeFragment, context.getString(R.string.sah_home))
-//        addPage(productManageFragment, context.getString(R.string.sah_product_list))
-        addPage(chatFragment, context.getString(R.string.title_inbox_chat))
+        addPage(notificationFragment, context.getString(R.string.inbox_title_notification))
+        addPage(chatFragment, context.getString(R.string.inbox_title_chat))
 //        addPage(somListFragment, context.getString(R.string.sah_sale))
-//        addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
     }
 
     fun start(@InboxFragmentType page: Int) {
@@ -193,7 +192,7 @@ class InboxNavigator constructor(
 
     private fun getPageFragment(@InboxFragmentType type: Int): Fragment? {
         return when (type) {
-//            InboxFragmentType.NOTIFICATION -> homeFragment
+            InboxFragmentType.NOTIFICATION -> notificationFragment
             InboxFragmentType.CHAT -> chatFragment
 //            InboxFragmentType.DISCUSSION -> productManageFragment
             else -> null
