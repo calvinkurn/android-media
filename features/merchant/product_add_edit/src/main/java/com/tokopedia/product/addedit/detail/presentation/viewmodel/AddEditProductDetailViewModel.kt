@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
@@ -202,7 +203,8 @@ class AddEditProductDetailViewModel @Inject constructor(
                     }
                     mIsProductNameInputError.value = !response.productValidateV3.isSuccess
                 }, onError = {
-                    // no-op
+                    // log error
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it)
                 })
             }
         }
