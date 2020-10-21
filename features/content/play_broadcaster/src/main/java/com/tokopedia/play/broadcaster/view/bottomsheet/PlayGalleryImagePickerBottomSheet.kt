@@ -319,7 +319,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
             )
             return false
         }
-        if (mediaItem.width < MINIMUM_COVER_WIDTH || mediaItem.height < MINIMUM_COVER_HEIGHT) {
+        if (mediaItem.getWidth(requireContext()) < MINIMUM_COVER_WIDTH ||
+                mediaItem.getHeight(requireContext()) < MINIMUM_COVER_HEIGHT) {
             showToaster(
                     message = getString(R.string.play_prepare_cover_gallery_error_pixel_label, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT),
                     type = Toaster.TYPE_ERROR,
