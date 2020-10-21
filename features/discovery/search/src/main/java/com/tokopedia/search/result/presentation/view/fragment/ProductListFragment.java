@@ -1518,8 +1518,11 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
-        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, getUserId(), impressionObjectDataLayer);
+    public void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel) {
+        List<Object> broadMatchItemAsObjectDataLayer = new ArrayList<>();
+        broadMatchItemAsObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
+
+        SearchTracking.trackEventImpressionBroadMatch(trackingQueue, getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), getUserId(), broadMatchItemAsObjectDataLayer);
     }
 
     @Override

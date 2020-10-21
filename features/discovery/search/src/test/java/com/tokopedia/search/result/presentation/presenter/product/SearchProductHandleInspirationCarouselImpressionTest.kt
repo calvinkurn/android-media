@@ -5,7 +5,7 @@ import io.mockk.confirmVerified
 import io.mockk.verify
 import org.junit.Test
 
-internal class SearchProductHandleInspirationCarouseImpressionlTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleInspirationCarouselImpressionTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Handle onInspirationCarouselListImpressed`() {

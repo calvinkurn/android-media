@@ -830,23 +830,8 @@ final class ProductListPresenter
 
         if (relatedViewModel != null) {
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
-            trackBroadMatchImpression();
 
             relatedViewModel = null;
-        }
-    }
-
-    private void trackBroadMatchImpression() {
-        for (BroadMatchViewModel broadMatchViewModel: relatedViewModel.getBroadMatchViewModelList()) {
-            List<Object> broadMatchItemAsImpressionObjectDataLayer = new ArrayList<>();
-
-            for(BroadMatchItemViewModel broadMatchItemViewModel: broadMatchViewModel.getBroadMatchItemViewModelList())
-                broadMatchItemAsImpressionObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
-
-            getView().trackBroadMatchImpression(
-                    broadMatchViewModel.getKeyword(),
-                    broadMatchItemAsImpressionObjectDataLayer
-            );
         }
     }
 
@@ -1695,8 +1680,14 @@ final class ProductListPresenter
 
     @Override
     public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        if (getView() == null || !broadMatchItemViewModel.isOrganicAds()) return;
+        if (getView() == null) return;
 
+        if (broadMatchItemViewModel.isOrganicAds()) getViewToImpressBroadMatchAdsItem(broadMatchItemViewModel);
+
+        getView().trackBroadMatchImpression(broadMatchItemViewModel);
+    }
+
+    private void getViewToImpressBroadMatchAdsItem(BroadMatchItemViewModel broadMatchItemViewModel) {
         topAdsUrlHitter.hitImpressionUrl(
                 getView().getClassName(),
                 broadMatchItemViewModel.getTopAdsViewUrl(),

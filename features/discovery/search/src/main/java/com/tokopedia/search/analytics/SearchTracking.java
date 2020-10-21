@@ -708,21 +708,24 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventImpressionBroadMatch(String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
-                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
-                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
-                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                        BUSINESS_UNIT, SEARCH,
-                        USER_ID, userId,
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        broadMatchItems.toArray(new Object[broadMatchItems.size()])
-                                ))
-                )
+    public static void trackEventImpressionBroadMatch(TrackingQueue trackingQueue, String keyword, String alternativeKeyword, String userId, List<Object> broadMatchItems) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                BUSINESS_UNIT, SEARCH,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                broadMatchItems.toArray(new Object[broadMatchItems.size()])
+                        ))
+        );
+
+        trackingQueue.putEETracking(
+                map
         );
     }
 

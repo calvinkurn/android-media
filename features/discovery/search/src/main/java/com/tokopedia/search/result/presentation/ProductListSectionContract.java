@@ -147,7 +147,7 @@ public interface ProductListSectionContract {
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
-        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onQuickFilterSelected(Option option);
 
