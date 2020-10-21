@@ -8,11 +8,17 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectRequest
 import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.detail.data.model.SomRejectCancelOrderRequest
+import com.tokopedia.sellerorder.detail.data.model.SomRejectCancelOrderResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -35,6 +41,8 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
         private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
+        private val somRejectOrderUseCase: SomRejectOrderUseCase,
+        private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: SomDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
@@ -69,6 +77,14 @@ class SomListViewModel @Inject constructor(
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
     val acceptOrderResult: LiveData<Result<SomAcceptOrder.Data>>
         get() = _acceptOrderResult
+
+    private val _rejectOrderResult = MutableLiveData<Result<SomRejectOrder.Data>>()
+    val rejectOrderResult: LiveData<Result<SomRejectOrder.Data>>
+        get() = _rejectOrderResult
+
+    private val _rejectCancelOrderResult = MutableLiveData<Result<SomRejectCancelOrderResponse.Data>>()
+    val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
+        get() = _rejectCancelOrderResult
 
     private var getUserRolesJob: Job? = null
 
@@ -140,6 +156,22 @@ class SomListViewModel @Inject constructor(
         }, onError = {
             _acceptOrderResult.postValue(Fail(it))
         })
+    }
+
+    fun rejectOrder(rejectOrderRequest: SomRejectRequest) {
+        launchCatchError(block = {
+            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequest))
+        }, onError = {
+            _rejectOrderResult.postValue(Fail(it))
+        })
+    }
+
+    fun rejectCancelOrder(orderId: String) {
+        launchCatchError(block = {
+            _rejectCancelOrderResult.postValue(
+                    somRejectCancelOrderRequest.execute(SomRejectCancelOrderRequest(orderId))
+            )
+        }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
     }
 
     fun clearUserRoles() {

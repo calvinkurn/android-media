@@ -72,7 +72,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
-import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.oldlist.data.model.SomListFilter
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder

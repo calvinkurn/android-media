@@ -6,11 +6,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectRequest
 import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.domain.*
+import com.tokopedia.sellerorder.detail.domain.SomEditRefNumUseCase
+import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -85,9 +92,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun rejectOrder(rejectOrderQuery: String, rejectOrderRequest: SomRejectRequest) {
+    fun rejectOrder(rejectOrderRequest: SomRejectRequest) {
         launchCatchError(block = {
-            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderQuery, rejectOrderRequest))
+            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequest))
         }, onError = {
             _rejectOrderResult.postValue(Fail(it))
         })

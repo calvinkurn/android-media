@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.SomProductionDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.data.model.*
 import dagger.Module
 import dagger.Provides

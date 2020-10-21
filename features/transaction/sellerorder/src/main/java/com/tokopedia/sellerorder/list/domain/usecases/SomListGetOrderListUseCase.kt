@@ -80,6 +80,16 @@ class SomListGetOrderListUseCase @Inject constructor(
                     display_name
                     type
                     url
+                    popup {
+                      title
+                      body
+                      actionButton {
+                        key
+                        displayName
+                        color
+                        type
+                      }
+                    }
                   }
                 }
               }

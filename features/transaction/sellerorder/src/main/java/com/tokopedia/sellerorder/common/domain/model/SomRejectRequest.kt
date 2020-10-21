@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.data.model
+package com.tokopedia.sellerorder.common.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable

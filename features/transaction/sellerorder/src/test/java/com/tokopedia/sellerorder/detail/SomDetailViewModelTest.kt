@@ -3,8 +3,12 @@ package com.tokopedia.sellerorder.detail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
+import com.tokopedia.sellerorder.common.domain.model.SomRejectRequest
 import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.*
@@ -217,11 +221,11 @@ class SomDetailViewModelTest {
     fun rejectOrder_shouldReturnSuccess() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
+            somRejectOrderUseCase.execute(any())
         } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(success = 1)))
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequest())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Success)
@@ -232,11 +236,11 @@ class SomDetailViewModelTest {
     fun rejectOrder_shouldReturnFail() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
+            somRejectOrderUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequest())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Fail)
@@ -246,11 +250,11 @@ class SomDetailViewModelTest {
     fun rejectOrder_msgShouldNotReturnEmpty() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
+            somRejectOrderUseCase.execute(any())
         } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(message = listMsg)))
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequest())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Success)

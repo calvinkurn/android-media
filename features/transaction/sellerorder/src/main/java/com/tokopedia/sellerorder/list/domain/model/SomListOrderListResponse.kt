@@ -4,6 +4,7 @@ package com.tokopedia.sellerorder.list.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
 
 data class SomListOrderListResponse(
         @SerializedName("data")
@@ -97,7 +98,10 @@ data class SomListOrderListResponse(
                         val type: String = "",
                         @SerializedName("url")
                         @Expose
-                        val url: String = ""
+                        val url: String = "",
+                        @SerializedName("popup")
+                        @Expose
+                        val popUp: PopUp = PopUp()
                 )
             }
         }
