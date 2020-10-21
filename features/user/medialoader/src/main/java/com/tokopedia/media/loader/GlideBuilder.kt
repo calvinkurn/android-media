@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
@@ -20,6 +21,7 @@ import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
@@ -77,7 +79,19 @@ object GlideBuilder {
                     else -> {}
                 }
 
-                if (thumbnailUrl.isNotEmpty()) thumbnail(imageView.thumbnailLoader(thumbnailUrl))
+                if (thumbnailUrl.isNotEmpty()) {
+                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+                } else {
+                    val blurHashDecoder = BlurHashDecoder.decode(
+                            blurHash = "awf",
+                            width = imageView.width,
+                            height = imageView.height,
+                            useCache = true
+                    )
+
+                    thumbnail(thumbnailLoader(imageView.context, blurHashDecoder))
+                }
+
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
@@ -95,18 +109,15 @@ object GlideBuilder {
                     transform(MultiTransformation(localTransform))
                 }
 
-                if (stateListener != null) {
-                    listener(glideListener(stateListener))
-                }
-
+                listener(glideListener(stateListener))
                 into(imageView)
             }
         }
     }
 
-    private fun ImageView.thumbnailLoader(url: String): RequestBuilder<Drawable> {
-        return GlideApp.with(this.context)
-                .load(url)
+    private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Drawable> {
+        return GlideApp.with(context)
+                .load(resource)
                 .dontAnimate()
                 .dontTransform()
                 .fitCenter()
