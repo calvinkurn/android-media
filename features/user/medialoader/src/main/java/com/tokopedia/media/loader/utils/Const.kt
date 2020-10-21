@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader.utils
 
+import android.net.Uri
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
@@ -17,12 +18,8 @@ typealias MediaException = GlideException
 * */
 const val HEADER_ECT = "ECT"
 
-/*
-* determine object classification in every network capability segmentation
-* only supported for 2 segmentation are slow for 2g / 3g, and fast for 4g and wifi.
-* */
-const val LOW_QUALITY = "2g"
-const val HIGH_QUALITY = "4g"
+// url parameter of blur hashing
+const val BLUR_HASH_QUERY = "b"
 
 // default rounded
 const val DEFAULT_ROUNDED = 5.0f
@@ -31,4 +28,8 @@ const val DEFAULT_ROUNDED = 5.0f
 fun Key?.mediaSignature(glideUrl: GlideUrl): Key {
     if (this != null) return this
     return ObjectKey("${glideUrl.toStringUrl()}&connection=${glideUrl.headers[HEADER_ECT].toString()}")
+}
+
+fun String.toUri(): Uri? {
+    return Uri.parse(this)
 }

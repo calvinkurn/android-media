@@ -23,6 +23,8 @@ import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
+import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
+import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
@@ -30,13 +32,26 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
-    private fun glideListener(listener: LoaderStateListener?) = object : RequestListener<Drawable> {
-        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+    private fun glideListener(
+            listener: LoaderStateListener?
+    ) = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+        ): Boolean {
             listener?.failedLoad(e)
             return false
         }
 
-        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+        override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+        ): Boolean {
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
@@ -82,14 +97,17 @@ object GlideBuilder {
                 if (thumbnailUrl.isNotEmpty()) {
                     thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
                 } else {
-                    val blurHashDecoder = BlurHashDecoder.decode(
-                            blurHash = "awf",
-                            width = imageView.width,
-                            height = imageView.height,
-                            useCache = true
-                    )
-
-                    thumbnail(thumbnailLoader(imageView.context, blurHashDecoder))
+                    val imageUrl = url.toStringUrl()
+                    imageUrl.toUri()?.let {
+                        if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
+                            thumbnail(thumbnailLoader(imageView.context, BlurHashDecoder.decode(
+                                    blurHash = it.getQueryParameter(BLUR_HASH_QUERY),
+                                    width = imageView.width,
+                                    height = imageView.height,
+                                    useCache = true
+                            )))
+                        }
+                    }
                 }
 
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
