@@ -6,8 +6,11 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -19,6 +22,8 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.toolbar
 import java.lang.ref.WeakReference
 
 class NavToolbar: Toolbar, LifecycleObserver {
@@ -32,6 +37,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
         private const val TOOLBAR_TYPE_SEARCH = 0
         private const val TOOLBAR_TYPE_TITLE = 1
+        private const val TOOLBAR_TYPE_CUSTOM = 2
     }
 
     //public variable
@@ -47,10 +53,10 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private var toolbarContentType = TOOLBAR_TYPE_TITLE
     private var toolbarTitle = ""
     private var toolbarDefaultHint = ""
+    private var toolbarCustomReference: Int? = null
 
     //helper variable
     private var shadowApplied: Boolean = false
-    private var isSearchbarShown = false
 
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
@@ -73,6 +79,9 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 toolbarContentType = ta.getInt(R.styleable.NavToolbar_toolbarContentType, TOOLBAR_TYPE_TITLE)
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
+                toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
+            } catch (e: IllegalArgumentException) {
+
             } finally {
                 ta.recycle()
             }
@@ -188,7 +197,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         navIconAdapter.setIconCounter(iconId, counter)
     }
 
-    fun setOnBackButtonClickListener(backButtonClickListener: ()-> Unit) {
+    fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
         nav_icon_back.setOnClickListener { backButtonClickListener }
     }
 
@@ -200,7 +209,15 @@ class NavToolbar: Toolbar, LifecycleObserver {
             TOOLBAR_TYPE_SEARCH -> {
                 showSearchbar()
             }
+            TOOLBAR_TYPE_CUSTOM -> {
+                showCustomView()
+            }
         }
+    }
+
+    fun getCustomViewContentView(): View? {
+        if (toolbarCustomReference == null) return null
+        return layout_custom_view
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
@@ -244,6 +261,17 @@ class NavToolbar: Toolbar, LifecycleObserver {
             }
             TOOLBAR_TYPE_TITLE -> {
                 showTitle()
+            }
+            TOOLBAR_TYPE_CUSTOM -> {
+                if (toolbarCustomReference != null) {
+                    toolbarCustomReference?.let {
+                        showCustomView()
+                        val parentLayout = layout_custom_view
+                        val childView = LayoutInflater.from(context).inflate(it, parentLayout, false)
+                        childView.setId(generateViewId())
+                        parentLayout.addView(childView)
+                    }
+                }
             }
         }
     }
@@ -309,19 +337,26 @@ class NavToolbar: Toolbar, LifecycleObserver {
     }
 
     private fun showTitle() {
-        isSearchbarShown = false
-        toolbar_title.visibility = VISIBLE
-        layout_search.visibility = GONE
+        hideToolbarContent(hideTitle = false)
+        showToolbarContent(showTitle = true)
         toolbar_title.text = toolbarTitle
+
         setTitleTextColorBasedOnTheme()
     }
 
     private fun showSearchbar(hints: List<HintData>? = null) {
-        isSearchbarShown = true
-        toolbar_title.visibility = GONE
-        layout_search.visibility = VISIBLE
+        hideToolbarContent(hideSearchbar = false)
+        showToolbarContent(showSearchbar = true)
 
         hints?.let { setupSearchbar(hints = hints) }
+    }
+
+    private fun showCustomView() {
+        hideToolbarContent(hideCustomContent = false)
+        showToolbarContent(showCustomContent = true)
+
+        toolbar_title.text = toolbarTitle
+        setTitleTextColorBasedOnTheme()
     }
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Neutral_N700)
@@ -337,5 +372,17 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
             }
         }
+    }
+
+    private fun hideToolbarContent(hideTitle: Boolean = true, hideSearchbar: Boolean = true, hideCustomContent: Boolean = true) {
+        if (hideTitle) toolbar_title.visibility = View.GONE
+        if (hideSearchbar) layout_search.visibility = View.GONE
+        if (hideCustomContent) layout_custom_view.visibility = View.GONE
+    }
+
+    private fun showToolbarContent(showTitle: Boolean = false, showSearchbar: Boolean = false, showCustomContent: Boolean = false) {
+        if (showTitle) toolbar_title.visibility = View.VISIBLE
+        if (showSearchbar) layout_search.visibility = View.VISIBLE
+        if (showCustomContent) layout_custom_view.visibility = View.VISIBLE
     }
 }

@@ -8,6 +8,7 @@
         <attr name="toolbarContentType" format="enum">
             <enum name="typeSearchbar" value="0"/>
             <enum name="typeTitle" value="1"/>
+            <enum name="typeCustom" value="2"/>
         </attr>
         <attr name="toolbarBackButton" format="enum">
             <enum name="none" value="0"/>
@@ -21,5 +22,6 @@
         <attr name="toolbarAlwaysShowShadow" format="boolean"/>
         <attr name="toolbarTitle" format="string"/>
         <attr name="toolbarDefaultHint" format="string"/>
+        <attr name="toolbarCustomContent" format="reference"/>
     </declare-styleable>
 </resources>

@@ -18,6 +18,17 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_8">
 
+        <FrameLayout
+            android:orientation="horizontal"
+            android:id="@+id/layout_custom_view"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
+            app:layout_constraintStart_toEndOf="@id/nav_icon_back"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
         <ImageView
             android:id="@+id/nav_icon_back"
             android:layout_marginStart="4dp"
