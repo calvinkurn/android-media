@@ -48,7 +48,6 @@ class GraphqlCloudDataStore @Inject constructor(
             header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
         }
         if (requests[0].isDoQueryHash) {
-            val header: MutableMap<String, String> = HashMap()
             val queryHashingHeaderValue = StringBuilder()
             for (graphqlRequest in requests) {
                 val queryHashValue: String = cacheManager.getQueryHashValue(graphqlRequest.md5)
@@ -131,6 +130,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             else{
                                 header[QUERY_HASHING_HEADER] = ""
                             }
+                            Timber.d("Android Query Hash - Query Hash error " + CacheHelper.getQueryName(requests.get(0).query) + " KEY: " + requests.get(0).md5)
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
@@ -155,6 +155,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
+                                Timber.d("Android Query Hash - Query Hash saved " + CacheHelper.getQueryName(request.query) + " KEY: " + request.md5 + " QueryHash:" + qhValues.get(index))
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing
