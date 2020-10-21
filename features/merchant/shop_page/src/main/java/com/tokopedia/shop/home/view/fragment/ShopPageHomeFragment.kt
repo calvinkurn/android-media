@@ -310,7 +310,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.newProductListData?.removeObservers(this)
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
-        viewModel?.reminderPlayLiveData?.removeObservers(this)
+//        viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
         viewModel?.shopProductFilterCountLiveData?.removeObservers(this)
         viewModel?.flush()
@@ -398,24 +398,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
-
-        viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
-            when(it.second){
-                is Success -> {
-                    showToastSuccess(
-                            if((it.second as Success<Boolean>).data) getString(R.string.shop_page_play_card_success_add_reminder)
-                            else getString(R.string.shop_page_play_card_success_remove_reminder)
-                    )
-                }
-                is Fail -> {
-                    adapter.notifyItemChanged(it.first, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
-                    showErrorToast(getString(R.string.shop_page_play_card_error_reminder))
-                }
-            }
-        })
-
-//        viewModel?.updatePlayWidgetData?.observe(viewLifecycleOwner, Observer {
-//            shopHomeAdapter.updatePlayWidget(it)
+//
+//        viewModel?.reminderPlayLiveData?.observe(viewLifecycleOwner, Observer {
+//            when(it.second){
+//                is Success -> {
+//                    showToastSuccess(
+//                            if((it.second as Success<Boolean>).data) getString(R.string.shop_page_play_card_success_add_reminder)
+//                            else getString(R.string.shop_page_play_card_success_remove_reminder)
+//                    )
+//                }
+//                is Fail -> {
+//                    adapter.notifyItemChanged(it.first, Bundle().apply { putBoolean(UPDATE_REMIND_ME_PLAY, true) })
+//                    showErrorToast(getString(R.string.shop_page_play_card_error_reminder))
+//                }
+//            }
 //        })
 
         viewModel?.videoYoutube?.observe(viewLifecycleOwner, Observer {
@@ -472,8 +468,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
+        observePlayWidget()
     }
-
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
         val countText = String.format(
@@ -1600,5 +1596,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
             setListener(this@ShopPageHomeFragment)
         }
+    }
+
+    private fun observePlayWidget() {
+        viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { widgetUiModel ->
+            shopHomeAdapter.updatePlayWidget(widgetUiModel)
+        })
     }
 }

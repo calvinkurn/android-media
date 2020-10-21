@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -85,11 +86,8 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>()
 
-    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
-    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
-
-//    val updatePlayWidgetData: LiveData<ShopHomePlayCarouselUiModel> get() = _updatePlayWidgetData
-//    private val _updatePlayWidgetData = MutableLiveData<ShopHomePlayCarouselUiModel>()
+//    val reminderPlayLiveData: LiveData<Pair<Int, Result<Boolean>>> get() = _reminderPlayLiveData
+//    private val _reminderPlayLiveData = MutableLiveData<Pair<Int, Result<Boolean>>>()
 
     val videoYoutube: LiveData<Pair<String, Result<YoutubeVideoDetailModel>>>
         get() = _videoYoutube
@@ -103,7 +101,6 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkCampaignNplRemindMeStatusData
     private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
-
     val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
         get() = _bottomSheetFilterLiveData
     private val _bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
@@ -112,8 +109,11 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopProductFilterCountLiveData
     private val _shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
 
-
     private var sortListData: List<ShopProductSortModel> = listOf()
+
+    val playWidgetObservable: LiveData<PlayWidgetUiModel?>
+        get() = _playWidgetObservable
+    private val _playWidgetObservable = MutableLiveData<PlayWidgetUiModel?>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -504,13 +504,9 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io()
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
-            val newCarouselUiModel = layoutUiModel.listWidget.map {
-                if (it is CarouselPlayWidgetUiModel) it.copy(widgetUiModel = widgetUiModel)
-                else it
-            }
-            _shopHomeLayoutData.value = Success(layoutUiModel.copy(listWidget = newCarouselUiModel))
+            _playWidgetObservable.value = widgetUiModel
         }) {
-            _shopHomeLayoutData.value = Success(layoutUiModel.copy(listWidget = layoutUiModel.listWidget.filter { it !is CarouselPlayWidgetUiModel }))
+            _playWidgetObservable.value = null
         }
     }
 

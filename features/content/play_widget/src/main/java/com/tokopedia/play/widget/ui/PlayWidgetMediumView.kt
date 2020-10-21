@@ -146,7 +146,7 @@ class PlayWidgetMediumView : ConstraintLayout, PlayWidgetCardMediumAdapter.CardM
                     if (distanceFromLeft <= 0) {
                         val itemSize = it.width.toFloat()
                         val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                        overlay.alpha = 1 - alpha
+                        overlayImage.alpha = 1 - alpha
                     }
                 }
             }
