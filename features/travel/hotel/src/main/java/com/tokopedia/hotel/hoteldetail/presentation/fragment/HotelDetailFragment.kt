@@ -42,6 +42,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAda
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
+import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
@@ -155,7 +156,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         setupGlobalSearchWidget()
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -176,7 +176,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             stopTrace()
         })
 
-        detailViewModel.hotelInfoResult.observe(this, Observer {
+        detailViewModel.hotelInfoResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isHotelDetailSuccess = true
@@ -193,7 +193,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             stopTrace()
         })
 
-        detailViewModel.hotelReviewResult.observe(this, Observer {
+        detailViewModel.hotelReviewResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isHotelReviewSuccess = true
@@ -312,6 +312,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         setupImportantInfo(data)
         setupDescription(data)
         setupMainFacilityItem(data)
+        setupShareLink(data)
 
         btn_hotel_detail_show.setOnClickListener {
             context?.run {
@@ -324,6 +325,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             hideLoadingContainerBottom()
             hideRoomNotAvailableContainerBottom()
             hideRoomAvailableContainerBottom()
+        }
+    }
+
+    private fun setupShareLink(propertyDetailData: PropertyDetailData) {
+        hotel_share_button.setOnClickListener {
+            activity?.run {
+                HotelShare(this).shareEvent(propertyDetailData, { /* show loading */ }, { /* hide loading */ }, this.applicationContext)
+            }
         }
     }
 

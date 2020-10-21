@@ -3,6 +3,7 @@ package com.tokopedia.linker;
 public interface LinkerConstants {
     String PRODUCTTYPE_DIGITAL = "digital";
     String PRODUCTTYPE_MARKETPLACE = "marketplace";
+    String FEATURE_TYPE_HOTEL = "hotelShareURL";
     String BRANCH_PROMOCODE_KEY = "branch_promo";
     String REFERRAL_ADVOCATE_PROMO_CODE = "";
     String ANDROID_DESKTOP_URL_KEY = "$android_url";
