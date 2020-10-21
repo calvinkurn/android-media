@@ -74,7 +74,7 @@
         <ImageView
             android:id="@+id/labelCampaignBackground"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/product_card_label_campaign_height"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
@@ -86,7 +86,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewLabelCampaign"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_label_campaign_height"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:ellipsize="end"
@@ -109,7 +109,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/product_card_content_margin_top"
             app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
