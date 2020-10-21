@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.list.presentation.navigator
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +9,7 @@ import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
+import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.usecase.coroutines.Result
@@ -22,10 +22,10 @@ object SomListNavigator {
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
 
-    fun goToSomOrderDetail(activity: Activity?, item: SomListOrderUiModel, userRolesResult: Result<SomGetUserRoleUiModel>?) {
-        activity?.run {
+    fun goToSomOrderDetail(fragment: SomListFragment, item: SomListOrderUiModel, userRolesResult: Result<SomGetUserRoleUiModel>?) {
+        fragment.run {
             val userRoles = if (userRolesResult != null && userRolesResult is Success) userRolesResult.data else null
-            Intent(this, SomDetailActivity::class.java).apply {
+            Intent(context, SomDetailActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, item.orderId)
                 userRoles?.let {
                     putExtra(SomConsts.PARAM_USER_ROLES, it)
@@ -46,9 +46,9 @@ object SomListNavigator {
         }
     }
 
-    fun goToConfirmShippingPage(activity: Activity?, orderId: String) {
-        activity?.run {
-            Intent(activity, SomConfirmShippingActivity::class.java).apply {
+    fun goToConfirmShippingPage(fragment: SomListFragment, orderId: String) {
+        fragment.run {
+            Intent(context, SomConfirmShippingActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, false)
                 startActivityForResult(this, REQUEST_CONFIRM_SHIPPING)
@@ -56,9 +56,9 @@ object SomListNavigator {
         }
     }
 
-    fun goToRequestPickupPage(activity: Activity?, orderId: String) {
-        activity?.run {
-            Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+    fun goToRequestPickupPage(fragment: SomListFragment, orderId: String) {
+        fragment.run {
+            Intent(context, SomConfirmReqPickupActivity::class.java).apply {
                 putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, REQUEST_CONFIRM_REQUEST_PICKUP)
             }

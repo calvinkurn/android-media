@@ -307,7 +307,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
-        goToSomOrderDetail(activity, order, viewModel.userRoleResult.value)
+        goToSomOrderDetail(this, order, viewModel.userRoleResult.value)
     }
 
     override fun onTrackButtonClicked(orderId: String, url: String) {
@@ -315,7 +315,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onConfirmShippingButtonClicked(orderId: String) {
-        goToConfirmShippingPage(activity, orderId)
+        goToConfirmShippingPage(this, orderId)
     }
 
     override fun onAcceptOrderButtonClicked(orderId: String) {
@@ -323,7 +323,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onRequestPickupButtonClicked(orderId: String) {
-        goToRequestPickupPage(activity, orderId)
+        goToRequestPickupPage(this, orderId)
     }
 
     override fun onBulkAcceptOrderCompleted(totalSuccess: Int, totalFailed: Int) {
