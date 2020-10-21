@@ -45,6 +45,7 @@ class PlayWidgetCoordinator(
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         stopTimer()
+        autoPlayCoordinator.onPause()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -53,6 +54,7 @@ class PlayWidgetCoordinator(
         if (currentModel is PlayWidgetConfigProvider) {
             configureAutoRefresh(currentModel.config)
         }
+        autoPlayCoordinator.onResume()
     }
 
     fun controlWidget(widget: PlayWidgetView) {

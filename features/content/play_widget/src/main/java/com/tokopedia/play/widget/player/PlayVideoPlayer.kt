@@ -51,6 +51,14 @@ open class PlayVideoPlayer(val context: Context) {
         exoPlayer.prepare(mediaSource,true, false)
     }
 
+    fun pause() {
+        exoPlayer.playWhenReady = false
+    }
+
+    fun resume() {
+        exoPlayer.playWhenReady = true
+    }
+
     fun stop() {
         exoPlayer.stop()
     }

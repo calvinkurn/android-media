@@ -25,7 +25,7 @@ class PlayWidgetAutoPlayCoordinator(
         override fun onWidgetVisibleCardsChanged(visibleCards: List<View>) {
             autoPlayJob?.cancel()
             autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-                delay(800)
+                delay(200)
                 val playerReceivers = visibleCards.filterIsInstance<PlayVideoPlayerReceiver>()
                 val autoPlayEligibleReceivers = getEligibleAutoPlayReceivers(playerReceivers)
 
@@ -52,12 +52,20 @@ class PlayWidgetAutoPlayCoordinator(
         }
     }
 
+    fun onPause() {
+        videoPlayerMap.keys.forEach { it.pause() }
+    }
+
+    fun onResume() {
+        videoPlayerMap.keys.forEach { it.resume() }
+    }
+
     fun controlWidget(widget: PlayWidgetView) {
         widget.setWidgetViewListener(widgetViewListener)
     }
 
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
-        if (false) { //config.autoPlay
+        if (config.autoPlay) {
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
