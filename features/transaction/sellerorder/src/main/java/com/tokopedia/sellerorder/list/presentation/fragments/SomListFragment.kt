@@ -49,6 +49,7 @@ import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -202,6 +203,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListOrderViewHolder.multiEditEnabled = false
         outState.putString(KEY_LAST_ACTIVE_FILTER, tabActive)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onPause() {
+        childFragmentManager.fragments.forEach {
+            if (it is BottomSheetUnify) it.dismiss()
+        }
+        super.onPause()
     }
 
     override fun loadInitialData() {
@@ -391,8 +399,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                         result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                             activeFilter.isChecked = true
-                            onTabClicked(activeFilter)
                             somListSortFilterTab.selectTab(activeFilter)
+                            onTabClicked(activeFilter)
                         }
                     }
                     somListSortFilterTab.show(result.data)
@@ -682,13 +690,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             showEmptyState()
             multiEditViews.gone()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText) { // show only if current order list is based on current search keyword
-            if (adapter.dataSize > 0 && isLoadingInitialData) {
+            if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
-                tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
-                multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
                 rvSomList.addOneTimeGlobalLayoutListener {
                     rvSomList.smoothScrollToPosition(0)
                 }
+                tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
+                multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
             } else {
                 adapter.addMoreData(data)
                 updateBulkActionCheckboxStatus()
