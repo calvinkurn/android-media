@@ -91,11 +91,13 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
@@ -153,6 +155,7 @@ final class ProductListPresenter
     private DynamicFilterModel dynamicFilterModel;
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
+    private boolean hasFullThreeDotsOptions = false;
 
     @Inject
     ProductListPresenter(
@@ -194,6 +197,7 @@ final class ProductListPresenter
 
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
+        hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
     }
 
     private boolean getIsUseRatingString() {
@@ -226,6 +230,18 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    private boolean getHasFullThreeDotsOptions() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+                    .equals(AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -1773,7 +1789,7 @@ final class ProductListPresenter
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
 
-        productCardOptionsModel.setHasAddToCart(true);
+        productCardOptionsModel.setHasAddToCart(hasFullThreeDotsOptions);
         productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(item.getMinOrder()));
         productCardOptionsModel.setCategoryName(item.getCategoryString());
         productCardOptionsModel.setProductName(item.getProductName());
@@ -1785,9 +1801,9 @@ final class ProductListPresenter
         shop.setShopUrl(item.getShopUrl());
         productCardOptionsModel.setShop(shop);
 
-        productCardOptionsModel.setHasVisitShop(true);
+        productCardOptionsModel.setHasVisitShop(hasFullThreeDotsOptions);
 
-        productCardOptionsModel.setHasShareProduct(true);
+        productCardOptionsModel.setHasShareProduct(hasFullThreeDotsOptions);
         productCardOptionsModel.setProductImageUrl(item.getImageUrl());
         productCardOptionsModel.setProductUrl(item.getProductUrl());
 

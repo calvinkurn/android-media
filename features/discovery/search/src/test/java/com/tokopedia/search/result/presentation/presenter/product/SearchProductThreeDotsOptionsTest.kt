@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.*
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -23,6 +24,8 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     @Test
     fun `Click three dots option for organic product`() {
+        `Given AB Test will return full options variant`()
+        setUp()
         `Given view getQueryKey will return keyword`()
         `Given search product API will success`()
         `Given view already load data`()
@@ -35,6 +38,12 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
         `Then verify click three dots option`(productItemViewModel)
         `Then verify product card options model`(productItemViewModel)
+    }
+
+    private fun `Given AB Test will return full options variant`() {
+        every {
+            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+        } returns AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS
     }
 
     private fun `Given view getQueryKey will return keyword`() {
@@ -103,6 +112,8 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     @Test
     fun `Click three dots option for ads product`() {
+        `Given AB Test will return full options variant`()
+        setUp()
         `Given view getQueryKey will return keyword`()
         `Given search product API will success`()
         `Given view already load data`()
@@ -115,5 +126,38 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
         `Then verify click three dots option`(productItemViewModel)
         `Then verify product card options model`(productItemViewModel)
+    }
+
+    @Test
+    fun `Click three dots options for control variant`() {
+        `Given AB Test will return control variant`()
+        setUp()
+        `Given search product API will success`()
+        `Given view already load data`()
+
+        val indexedProductItem = visitableList.getProductItemWithIndex(false)
+        val productItemViewModel = indexedProductItem.value as ProductItemViewModel
+        val position = indexedProductItem.index
+        `When click three dots`(productItemViewModel, position)
+
+        `Then verify click three dots option`(productItemViewModel)
+
+        `Then verify product card options does not have full options `()
+    }
+
+    private fun `Given AB Test will return control variant`() {
+        every {
+            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+        } returns AB_TEST_THREE_DOTS_SEARCH_CONTROL
+    }
+
+    private fun `Then verify product card options does not have full options `() {
+        val productCardOptionsModel = productCardOptionsModelSlot.captured
+
+        productCardOptionsModel.hasWishlist shouldBe true
+        productCardOptionsModel.hasSimilarSearch shouldBe true
+        productCardOptionsModel.hasAddToCart shouldBe false
+        productCardOptionsModel.hasShareProduct shouldBe false
+        productCardOptionsModel.hasVisitShop shouldBe false
     }
 }

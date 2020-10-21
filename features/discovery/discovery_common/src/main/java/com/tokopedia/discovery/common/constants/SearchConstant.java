@@ -142,6 +142,9 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
         String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_CONTROL = "Control Variant (Original)";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
     }
 
     interface ProductCardLabel {
