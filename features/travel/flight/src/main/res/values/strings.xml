@@ -352,4 +352,20 @@ di tempatmu.</string>
     <string name="flight_detail_bottom_sheet_tab_price_title">Harga</string>
     <string name="flight_detail_bottom_sheet_tab_price_subtotal">Subtotal</string>
 
+    <string name="flight_order_detail_status_label">Status</string>
+    <string name="flight_order_detail_invoice_label">Invoice</string>
+    <string name="flight_order_detail_category_label">Kategori</string>
+    <string name="flight_order_detail_create_time_label">Tanggal Transaksi</string>
+    <string name="flight_order_detail_payment_method_label">Metode Pembayaran</string>
+    <string name="flight_order_detail_total_payment_label">Total Pembayaran</string>
+    <string name="flight_order_detail_detail_payment_label">Lihat Detail Pembayaran</string>
+
+    <string name="flight_order_detail_journey_detail_title">Detail pesanan</string>
+    <string name="flight_order_detail_e_ticket_available">E-tiket kamu sudah terbit.</string>
+    <string name="flight_order_detail_departure_ticket_title">Tiket berangkat</string>
+    <string name="flight_order_detail_booking_code_label">Kode Booking:</string>
+    <string name="flight_order_detail_return_ticket_title">Tiket pulang</string>
+    <string name="flight_order_detail_send_e_ticket_label">Kirim E-tiket</string>
+    <string name="flight_order_detail_see_e_ticket_label">Lihat E-tiket</string>
+
 </resources>
