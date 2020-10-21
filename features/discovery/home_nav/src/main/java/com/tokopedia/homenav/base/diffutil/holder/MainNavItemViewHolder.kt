@@ -1,12 +1,11 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder
+package com.tokopedia.homenav.base.diffutil.holder
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavItemViewModel
+import com.tokopedia.homenav.base.viewmodel.MainNavItemViewModel
 
 class MainNavItemViewHolder(itemView: View,
                             mainNavListener: MainNavListener

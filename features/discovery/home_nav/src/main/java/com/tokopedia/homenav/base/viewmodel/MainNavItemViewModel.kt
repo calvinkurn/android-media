@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.view.viewmodel
+package com.tokopedia.homenav.base.viewmodel
 
 import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
