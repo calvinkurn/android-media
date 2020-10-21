@@ -37,7 +37,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
         return when (viewType) {
-            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener)
+            AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             MainNavItemViewHolder.LAYOUT -> MainNavItemViewHolder(view, mainNavListener)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
