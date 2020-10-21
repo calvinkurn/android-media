@@ -74,12 +74,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         formatRestoredData(data)
 
         add_btn.setOnClickListener {
-            if (keywordValidation(editText.text.toString().trim())) {
-                adapter.addKeyword(editText.text.toString().trim())
+            if (keywordValidation(editText.textFieldInput.text.toString().trim())) {
+                adapter.addKeyword(editText.textFieldInput.text.toString().trim())
                 onCheckedItem()
             }
             add_btn?.isEnabled = false
-            editText.text.clear()
+            editText.textFieldInput.text.clear()
         }
 
         btn_next.setOnClickListener {
@@ -92,7 +92,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
-        editText.addTextChangedListener(object : TextWatcher {
+        editText.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = validateKeyword(s)
                 if (s.toString().trim().isEmpty()) {
@@ -111,10 +111,10 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
         })
-        editText.setOnEditorActionListener { v, actionId, _ ->
+        editText.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (keywordValidation(editText.text.toString().trim())) {
-                    adapter.addKeyword(editText.text.toString().trim())
+                if (keywordValidation(editText.textFieldInput.text.toString().trim())) {
+                    adapter.addKeyword(editText.textFieldInput.text.toString().trim())
                     onCheckedItem()
                 }
                 Utils.dismissKeyboard(context, v)
@@ -141,7 +141,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun setValues(flag: Boolean) {
         add_btn.isEnabled = flag
-        editText.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
+        editText.textFieldInput?.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
         error_text.visibility = if (flag) View.INVISIBLE else View.VISIBLE
     }
 

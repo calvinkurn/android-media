@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.data.source.cloud
 
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
@@ -17,18 +18,10 @@ import rx.functions.Func1
 
 class TopAdsDashboardDataSourceCloud(private val topAdsDashboardApi: TopAdsDashboardApi) {
 
-    fun populateTotalAds(requestParams: RequestParams): Observable<TotalAd> {
-        return topAdsDashboardApi.populateTotalAd(requestParams.paramsAllValueInString)
-                .map(TopAdsResponseMapper())
-    }
 
     fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
         return topAdsDashboardApi.getStatistics(requestParams.paramsAllValueInString)
                 .map(TopAdsResponseMapper())
-    }
-
-    fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>> {
-        return topAdsDashboardApi.getDashboardCredit().map(TopAdsResponseMapper())
     }
 
 
