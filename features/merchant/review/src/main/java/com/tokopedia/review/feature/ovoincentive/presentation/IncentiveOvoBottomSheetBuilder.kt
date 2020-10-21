@@ -66,6 +66,8 @@ object IncentiveOvoBottomSheetBuilder {
             val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
             val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
             view.apply {
+                overlayClickDismiss = false
+                showCloseIcon = false
                 val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
                 bottomSheet.setShowListener {
                     CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, productRevIncentiveOvoDomain != null)
@@ -99,8 +101,6 @@ object IncentiveOvoBottomSheetBuilder {
                         CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
                     }
                 }
-                overlayClickDismiss = false
-                showCloseIcon = false
             }
         }
     }

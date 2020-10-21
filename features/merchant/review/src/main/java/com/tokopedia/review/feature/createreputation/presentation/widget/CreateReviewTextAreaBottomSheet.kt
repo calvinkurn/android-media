@@ -22,11 +22,12 @@ import com.tokopedia.unifyprinciples.Typography
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
 
     companion object {
-        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String): CreateReviewTextAreaBottomSheet {
+        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String, isUserEligible: Boolean): CreateReviewTextAreaBottomSheet {
             return CreateReviewTextAreaBottomSheet().apply {
                 this.text = text
                 this.textAreaListener = textAreaListener
                 this.incentiveHelper = incentiveHelper
+                this.isUserEligible = isUserEligible
             }
         }
     }
@@ -34,6 +35,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
     private var text: String = ""
     private var textAreaListener: TextAreaListener? = null
     private var incentiveHelper = ""
+    private var isUserEligible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         clearContentPadding = true
@@ -62,6 +64,9 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify() {
                     }
 
                     override fun afterTextChanged(s: Editable?) {
+                        if(!isUserEligible) {
+                            return
+                        }
                         val textLength = s?.length ?: 0
                         with(incentiveHelperText) {
                             incentiveHelper = when {

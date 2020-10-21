@@ -401,7 +401,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
         if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible)
                 ?: ""
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper)
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, createReviewViewModel.isUserEligible())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -970,6 +970,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun setHelperText(textLength: Int) {
+        if (!createReviewViewModel.isUserEligible()) {
+            return
+        }
         with(incentiveHelperText) {
             incentiveHelper = when {
                 textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
