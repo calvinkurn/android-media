@@ -4,16 +4,15 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.base.viewmodel.MainNavItemViewModel
+import com.tokopedia.homenav.base.viewmodel.CommonNavItemViewModel
 
-class MainNavItemViewHolder(itemView: View
-): AbstractViewHolder<MainNavItemViewModel>(itemView) {
+class CommonNavItemViewHolder(itemView: View
+): AbstractViewHolder<CommonNavItemViewModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_main_nav_item
     }
 
-    override fun bind(element: MainNavItemViewModel) {
+    override fun bind(element: CommonNavItemViewModel) {
     }
 }
