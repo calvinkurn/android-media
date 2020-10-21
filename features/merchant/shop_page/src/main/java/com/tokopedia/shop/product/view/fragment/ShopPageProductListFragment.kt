@@ -485,9 +485,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                 val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
+                shopPageTracking?.clickEtalaseChip(
+                        isOwner,
+                        etalaseName,
+                        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+                )
                 shopPageTracking?.clickMoreMenuChip(
                         isOwner,
-                        getSelectedEtalaseChip(),
+                        etalaseName,
                         customDimensionShopPage
                 )
                 if (shopPageTracking != null) {
@@ -529,8 +534,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     if (shopProductAdapter.isLoading) {
                         return
                     }
+                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
-                    val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     changeSortData(sortId)
                     scrollToChangeProductGridSegment()
                 }
@@ -1309,11 +1314,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onEtalaseFilterClicked() {
-        shopPageTracking?.clickEtalaseChip(
-                isOwner,
-                getSelectedEtalaseChip(),
-                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        )
         redirectToEtalasePicker()
     }
 
