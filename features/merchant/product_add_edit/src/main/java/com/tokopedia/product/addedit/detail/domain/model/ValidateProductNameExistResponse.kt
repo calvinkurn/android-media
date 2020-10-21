@@ -21,11 +21,11 @@ data class ProductValidateV3 (
         var data: ProductValidateData = ProductValidateData()
 )
 
-class ProductValidateData {
+data class ProductValidateData (
     @SerializedName("productName")
     @Expose
     var productName: List<String>? = null
-}
+)
 
 data class ProductValidateHeader (
         @SerializedName("reason")
