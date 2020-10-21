@@ -93,7 +93,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var uriImage: Uri? = null
     private var lastAccessedPage: String? = ""
     private var resizedUriImage: Uri? = null
-    private var categoryItem: Int = 0
+    private var categoryItem: Int = -1
     private var reportType: Int = 0
     private var labelsId: Int = 0
 
