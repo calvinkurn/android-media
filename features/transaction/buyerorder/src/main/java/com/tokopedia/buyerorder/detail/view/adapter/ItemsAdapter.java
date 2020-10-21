@@ -275,7 +275,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Map.Entry<String, String> entry = it.next();
                 DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
                 doubleTextView.setTopText(entry.getKey());
-                doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.font_black_secondary_54));
                 doubleTextView.setBottomText(entry.getValue());
                 doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.black_70_new));
                 doubleTextView.setBottomTextStyle("bold");
@@ -574,8 +574,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(Color.WHITE);
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -585,7 +585,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!actionButton.getActionColor().getBackground().equals("")) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (!actionButton.getActionColor().getBorder().equals("")) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -599,12 +599,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             }
 
             tapActionTextView.setBackground(shape);
@@ -826,8 +826,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), (int) context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(Color.WHITE);
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -837,7 +837,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -851,12 +851,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             }
 
             tapActionTextView.setBackground(shape);

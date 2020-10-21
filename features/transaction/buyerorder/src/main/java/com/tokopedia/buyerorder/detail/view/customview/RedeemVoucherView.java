@@ -109,12 +109,12 @@ public class RedeemVoucherView extends LinearLayout {
         if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
             shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
         } else {
-            shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
         }
         if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
             shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
         } else {
-            shape.setStroke(0, MethodChecker.getColor(context, R.color.green_nob));
+            shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
         }
         if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
             redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
@@ -122,7 +122,7 @@ public class RedeemVoucherView extends LinearLayout {
             redeemVoucher.setTextColor(Color.WHITE);
         }
 
-        shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+        shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
     }
 
     private void renderRetryButton(ActionButton actionButton) {
@@ -138,19 +138,19 @@ public class RedeemVoucherView extends LinearLayout {
             if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(MethodChecker.getColor(context, R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
             } else {
-                shape.setStroke(0, MethodChecker.getColor(context, R.color.green_nob));
+                shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
                 redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                redeemVoucher.setTextColor(MethodChecker.getColor(context, R.color.green_nob));
+                redeemVoucher.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
-            shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             redeemVoucher.setBackground(shape);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {

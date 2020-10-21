@@ -246,7 +246,7 @@ public class CancelSearchFragment extends Fragment {
 
     private void setButtonCancelSearch(boolean active) {
         submitButton.setEnabled(active);
-        submitButton.setBackground(active ? ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_green) :
+        submitButton.setBackground(active ? ContextCompat.getDrawable(getActivity(), com.tokopedia.design.R.drawable.bg_button_green) :
                 ContextCompat.getDrawable(getActivity(), R.drawable.bg_grey_button_rounded));
         submitButton.setTextColor(active ? ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white) :
                 ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.grey_700));

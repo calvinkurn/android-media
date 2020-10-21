@@ -418,7 +418,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             myClip = ClipData.newPlainText("text", detail.value());
                             myClipboard.setPrimaryClip(myClip);
                             Toaster.INSTANCE.make(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
+                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

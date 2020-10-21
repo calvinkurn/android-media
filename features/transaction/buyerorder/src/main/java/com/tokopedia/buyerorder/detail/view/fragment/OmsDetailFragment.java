@@ -834,7 +834,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 voucherCodeLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < voucherCodes.length; i++) {
                     BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], 0, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes[i].length());
-                    bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
+                    bookingCodeView.setBackground(getContext().getResources().getDrawable(com.tokopedia.design.R.drawable.bg_search_input_text_area));
                     voucherCodeLayout.addView(bookingCodeView);
                 }
             }

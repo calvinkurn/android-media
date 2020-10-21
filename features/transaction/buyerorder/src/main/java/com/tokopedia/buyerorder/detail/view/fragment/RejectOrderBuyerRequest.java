@@ -197,7 +197,7 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
 
     private void setButtonCancelSearch(boolean active) {
         submitButton.setEnabled(active);
-        MethodChecker.setBackground(submitButton, MethodChecker.getDrawable(getActivity(), active ? R.drawable.bg_button_green : R.drawable.bg_grey_button_rounded));
+        MethodChecker.setBackground(submitButton, MethodChecker.getDrawable(getActivity(), active ? com.tokopedia.design.R.drawable.bg_button_green : R.drawable.bg_grey_button_rounded));
         submitButton.setTextColor(MethodChecker.getColor(getActivity(), active ? com.tokopedia.design.R.color.white : com.tokopedia.design.R.color.grey_700));
     }
 
