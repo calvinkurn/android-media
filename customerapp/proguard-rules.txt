@@ -210,6 +210,17 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+# chucker update version to 3.3.0
+-dontwarn java.lang.instrument.ClassFileTransformer
+-dontwarn sun.misc.SignalHandler
+-dontwarn java.lang.instrument.Instrumentation
+-dontwarn sun.misc.Signal
+-dontwarn kotlin.KotlinNothingValueException
+-dontwarn kotlin.time.*
+
+-keep class kotlinx.coroutines.DelayKt { *; }
+
+#traceroute
 -keepclassmembers class com.wandroid.traceroute.TraceRoute {
     void clearResult();
     void appendResult(***);
