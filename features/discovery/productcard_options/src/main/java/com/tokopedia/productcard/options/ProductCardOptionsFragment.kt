@@ -139,11 +139,10 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         productCardOptionsViewModel?.getShareProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             showLoading()
 
+            sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT)
+
             activity?.let { activity ->
-                ProductShare(activity).share(it, {
-                }, {
-                    sendProductCardOptionsResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_SHARE_PRODUCT)
-                })
+                ProductShare(activity).share(it, { }, { })
             }
         })
     }

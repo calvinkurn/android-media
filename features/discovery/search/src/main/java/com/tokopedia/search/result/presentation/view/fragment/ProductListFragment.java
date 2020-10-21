@@ -664,7 +664,7 @@ public class ProductListFragment
     }
 
     private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
-        SearchTracking.eventShareProduct(getQueryKey(), productCardOptionsModel.getProductId());
+        SearchTracking.trackEventShareProduct(getQueryKey(), productCardOptionsModel.getProductId());
     }
 
     @Override

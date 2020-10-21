@@ -797,7 +797,7 @@ public class SearchTracking {
         );
     }
 
-    public static void eventShareProduct(String queryKey, String productId) {
+    public static void trackEventShareProduct(String queryKey, String productId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, "",

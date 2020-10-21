@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import rx.Subscriber
 
-internal class SearchProductHandleVisitShop : ProductListPresenterTestFixtures() {
+internal class SearchProductHandleVisitShopTest : ProductListPresenterTestFixtures() {
 
     private val searchProductModel = "searchproduct/with-topads.json".jsonToObject<SearchProductModel>()
     private val className = "SearchProductClassName"
