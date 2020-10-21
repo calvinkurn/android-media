@@ -124,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@id/filterReport"
                 app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_bug_type"
@@ -173,6 +173,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="text"
                         android:maxLines="1"
+                        android:focusable="false"
                         android:hint="Tell us in which page the bug occured*"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
@@ -252,7 +253,7 @@
                 app:layout_constraintTop_toBottomOf="@id/filterReport"
                 app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_feedback_wrapper"

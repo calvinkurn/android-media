@@ -23,6 +23,8 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
@@ -31,15 +33,19 @@ import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawO
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI_OLD
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
+import com.tokopedia.developer_options.presentation.feedbackpage.adapter.PageItemAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.FeedbackModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
+import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.LabelsItem
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_CLASS_NAME
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
+import com.tokopedia.developer_options.presentation.feedbackpage.utils.TITLE_PAGE_LIST
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -48,6 +54,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.screenshot_observer.ScreenshotData
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -61,16 +68,16 @@ import java.io.File
 import javax.inject.Inject
 
 
-class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener {
+class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
 
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
     private var compositeSubscription: CompositeSubscription? = null
     private var myPreferences: Preferences? = null
-    private val imageAdapter: ImageFeedbackAdapter by lazy {
-        ImageFeedbackAdapter(this)
-    }
+    private val imageAdapter = ImageFeedbackAdapter(this)
+    private var pagesAdapter = PageItemAdapter(this)
+    private var bottomSheetPage: BottomSheetUnify? = null
 
     private var deviceInfo: String = ""
     private var androidVersion: String = ""
@@ -89,6 +96,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
     private var selectedImage: ArrayList<String> = arrayListOf()
+    private var listPages: List<LabelsItem> = listOf()
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -179,6 +187,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             bugType.adapter = adapter
         } }
         userSession = UserSession(activity)
+        feedbackPagePresenter.getFeedbackData()
     }
 
     private fun initImageUri() {
@@ -262,6 +271,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
         }
 
+        page.setOnClickListener {
+            openBottomSheetPage()
+        }
+
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
             val affectedPageText = page.text.toString()
@@ -323,20 +336,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return result
     }
 
-
     private fun generateScreenshotDataFromCursor(cursor: Cursor): ScreenshotData? {
         val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
         val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
         val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
         return ScreenshotData(id, fileName, path)
-    }
-
-    private fun isFileScreenshot(fileName: String): Boolean {
-        return fileName.toLowerCase().startsWith(FILE_NAME_PREFIX)
-    }
-
-    private fun isPathScreenshot(path: String): Boolean {
-        return path.toLowerCase().contains(PATH_SCREENSHOT)
     }
 
     private fun requestMapper(email: String, page: String, journey: String, issueType: String, expectedResult: String): FeedbackFormRequest {
@@ -481,12 +485,42 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         private const val REQUEST_CODE_IMAGE = 111
         private const val REQUEST_CODE_EDIT_IMAGE = 101
 
-        private val FILE_NAME_PREFIX = "screenshot"
-        private val PATH_SCREENSHOT = "screenshots/"
         private val PROJECTION = arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DISPLAY_NAME,
                 MediaStore.Images.Media.DATA
         )
+    }
+
+    override fun setFeedbackData(model: FeedbackModel) {
+       pagesAdapter.renderData(model.labels)
+    }
+
+    private fun openBottomSheetPage() {
+
+
+        bottomSheetPage = BottomSheetUnify()
+        val viewBottomSheetPage = View.inflate(context, R.layout.bottomsheet_pages_name, null).apply {
+            val rvPages = findViewById<RecyclerView>(R.id.rv_pages)
+            rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvPages.adapter = pagesAdapter
+
+        }
+
+        bottomSheetPage?.apply {
+            setTitle(TITLE_PAGE_LIST)
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetPage)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetPage?.show(it, "show")
+        }
+    }
+
+    override fun onSelect(selection: Int, pageName: String) {
+        bottomSheetPage?.dismiss()
+        page.setText(pageName)
     }
 }

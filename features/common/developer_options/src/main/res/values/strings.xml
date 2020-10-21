@@ -14,12 +14,12 @@
     <string name="remote_config_edit_btn_save">Save</string>
 
     <!--Feedback Page-->
-    <string name="category">Category</string>
+    <string name="category">Category*</string>
     <string name="email">Tokopedia Email</string>
     <string name="step_to_reproduce">Step to Reproduce</string>
     <string name="actual_result">Actual Result</string>
     <string name="expected_result">Expected Result</string>
-    <string name="page">Page</string>
+    <string name="page">Page Name</string>
     <string name="btn_submit_feedback_page">Submit</string>
     <string name="tokopedia_email">\@tokopedia.com</string>
     <string name="ticket_text_1">Terima kasih atas laporanmu. Kamu bisa cek status tiketmu di link ini :</string>
@@ -38,6 +38,8 @@
     <string name="copy_success">Text telah tersalin</string>
     <string name="image_picker_title">Pilih foto</string>
     <string name="review_add_photo_txt">Tambah \nfoto</string>
+    <string name="tv_journey">Ex: steps:pdp>search>click filter, then suddenly the whole app crash and shut down</string>
+    <string name="feedback">Feedback</string>
 
     <string name="draw_on_picture_label">Edit Images</string>
     <string name="developer_options_feedback_next_label">Next</string>
