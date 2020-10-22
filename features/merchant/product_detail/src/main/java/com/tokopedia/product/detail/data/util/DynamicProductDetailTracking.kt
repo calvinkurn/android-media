@@ -53,6 +53,19 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventClickFollowNpl(productInfo: DynamicProductInfoP1?, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_NPL_FOLLOWERS,
+                    productInfo?.basic?.shopID ?: "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        }
+
         fun eventClickCustomInfo(title: String, userId: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val componentTitle = "component title: $title"
             val mapEvent = TrackAppUtils.gtmData(
