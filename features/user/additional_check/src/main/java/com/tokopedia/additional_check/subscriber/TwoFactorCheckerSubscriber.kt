@@ -73,23 +73,23 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkMainApp(activity: Activity) {
-        if(!exceptionPage.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfig() == true) {
-            viewModel.check(onSuccess = {
-                handleResponse(activity, twoFactorResult = it)
-            }, onError = {
-                it.printStackTrace()
-            })
+        if(!exceptionPage.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfig() == true) {
+            checking(activity)
         }
     }
 
     private fun checkSellerApp(activity: Activity) {
-        if(!exceptionPageSeller.contains(activity.javaClass.simpleName.toString()) && getTwoFactorRemoteConfigSellerApp() == true) {
-            viewModel.check(onSuccess = {
-                handleResponse(activity, twoFactorResult = it)
-            }, onError = {
-                it.printStackTrace()
-            })
+        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp() == true) {
+            checking(activity)
         }
+    }
+
+    private fun checking(activity: Activity) {
+        viewModel.check(onSuccess = {
+            handleResponse(activity, twoFactorResult = it)
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     override fun onActivityDestroyed(activity: Activity?) {}
