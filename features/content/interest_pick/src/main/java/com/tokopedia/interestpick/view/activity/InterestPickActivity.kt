@@ -25,9 +25,7 @@ class InterestPickActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        fragment?.let {
-            (it as? InterestPickFragment)?.onBackPressed()
-        }
+        (fragment as? InterestPickFragment)?.onBackPressed()
         super.onBackPressed()
     }
 }
