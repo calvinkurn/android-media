@@ -5,10 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
+import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.ext.setSelectedPage
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
@@ -16,8 +16,8 @@ import com.tokopedia.inbox.view.navigator.InboxNavigator
 class InboxActivity : BaseActivity() {
 
     private var navigator: InboxNavigator? = null
-    private val bottomNav: BottomNavigationView? by lazy(LazyThreadSafetyMode.NONE) {
-        findViewById<BottomNavigationView?>(R.id.inbox_bottom_nav)
+    private val bottomNav: InboxBottomNavigationView? by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById<InboxBottomNavigationView?>(R.id.inbox_bottom_nav)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +28,9 @@ class InboxActivity : BaseActivity() {
         setupNotificationBar()
         setupBottomNav()
         setupInitialPage()
+
+        // TODO: remove later
+        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, 99)
     }
 
     private fun setupNavigator() {

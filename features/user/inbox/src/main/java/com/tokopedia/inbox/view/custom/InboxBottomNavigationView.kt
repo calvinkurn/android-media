@@ -5,13 +5,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.InboxFragmentType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 
 class InboxBottomNavigationView : BottomNavigationView {
@@ -19,6 +22,7 @@ class InboxBottomNavigationView : BottomNavigationView {
     private var menuView: BottomNavigationMenuView? = null
     private var buttons: Array<BottomNavigationItemView>? = null
     private var labelFontSize: Float = DEFAULT_FONT_SIZE
+    private var badges: Array<Typography?> = Array(3) { null }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -27,6 +31,16 @@ class InboxBottomNavigationView : BottomNavigationView {
         initField()
         initMenuView()
         initBadgeLayout()
+    }
+
+    fun setBadgeCount(@InboxFragmentType typePosition: Int, badgeCount: Int) {
+        val badge = getBadgeAt(typePosition)
+        if (badgeCount <= 0) {
+            badge?.hide()
+        } else {
+            badge?.show()
+            badge?.text = badgeCount.toString()
+        }
     }
 
     private fun initMenuView() {
@@ -42,12 +56,13 @@ class InboxBottomNavigationView : BottomNavigationView {
     private fun initBadgeLayout() {
         val totalItems = menuView?.childCount ?: return
         for (i in 0 until totalItems) {
-            val menuItem = menuView?.getChildAt(i) as? BottomNavigationItemView
+            val menuItem = getMenuViewAt(i)
             val badge = View.inflate(context, R.layout.partial_inbox_bottom_nav_badge, null)
-            val layoutParam = FrameLayout.LayoutParams(
+            val layoutParam = LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT
             )
             menuItem?.addView(badge, layoutParam)
+            badges[i] = badge.findViewById(R.id.unread_counter)
         }
     }
 
@@ -104,6 +119,14 @@ class InboxBottomNavigationView : BottomNavigationView {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun getMenuViewAt(position: Int): BottomNavigationItemView? {
+        return menuView?.getChildAt(position) as? BottomNavigationItemView
+    }
+
+    private fun getBadgeAt(typePosition: Int): Typography? {
+        return badges.getOrNull(typePosition)
     }
 
     companion object {
