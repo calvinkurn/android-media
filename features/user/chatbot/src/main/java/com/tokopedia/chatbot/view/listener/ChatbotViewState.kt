@@ -11,6 +11,7 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleView
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -41,6 +42,8 @@ interface ChatbotViewState : BaseChatViewState {
     fun scrollToBottom()
 
     fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel)
+
+    fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel)
 
     fun hideEmptyMessage(visitable: Visitable<*>)
 
