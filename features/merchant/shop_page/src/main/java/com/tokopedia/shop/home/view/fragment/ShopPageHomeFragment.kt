@@ -123,7 +123,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
-        const val NUM_VOUCHER_DISPLAY = 3
+        const val NUM_VOUCHER_DISPLAY = 10
 
         fun createInstance(
                 shopId: String,
