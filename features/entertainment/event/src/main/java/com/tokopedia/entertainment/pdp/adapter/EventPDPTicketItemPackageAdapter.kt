@@ -62,30 +62,20 @@ class EventPDPTicketItemPackageAdapter(
                 val isRecomended = checkDate(items.dates,onBindItemTicketListener.getSelectedDate())
                 if(isRecomended){
                     if(isSaleStarted && isNotEnded) {
-                        txtPilih_ticket.visibility = if (itemIsAvailable) View.VISIBLE else View.GONE
-                        txtHabis_ticket.visibility = if (!itemIsAvailable) View.VISIBLE else View.GONE
+                        if(itemIsAvailable){
+                            txtPilih_ticket.show()
+                        } else {
+                            txtHabis_ticket.show()
+                            showSoldOut(itemView)
+                        }
                     } else if(!isSaleStarted && isNotEnded) {
-                        txtPilih_ticket.visibility = View.GONE
-                        txtHabis_ticket.visibility = View.GONE
-                        txtAlreadyEnd.visibility = View.GONE
-                        txtNotStarted.visibility = View.VISIBLE
+                        txtNotStarted.show()
                     } else if(isSaleStarted && !isNotEnded){
-                        txtPilih_ticket.visibility = View.GONE
-                        txtHabis_ticket.visibility = View.GONE
-                        txtAlreadyEnd.visibility = View.VISIBLE
-                        txtNotStarted.visibility = View.GONE
+                        txtAlreadyEnd.show()
                     }
                 } else {
-                    txtPilih_ticket.gone()
-                    txtHabis_ticket.gone()
-                    txtAlreadyEnd.gone()
-                    txtNotStarted.gone()
                     txtisRecommeded.show()
-                    bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_sold_out)
-                    txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
-                    txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
-                    txtPrice_ticket.setText(resources.getString(R.string.ent_pdp_ticket_sold_out))
-                    txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                    showSoldOut(itemView)
                 }
 
                 itemView.post {
@@ -198,6 +188,17 @@ class EventPDPTicketItemPackageAdapter(
         this.idPackage = idPackage
         this.packageName = packageName
         notifyDataSetChanged()
+    }
+
+    private fun showSoldOut(itemView : View){
+        with(itemView) {
+            bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_sold_out)
+            txtTitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
+            txtTermurah_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
+            txtSubtitle_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
+            txtPrice_ticket.setText(resources.getString(R.string.ent_pdp_ticket_sold_out))
+            txtPrice_ticket.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        }
     }
 
     companion object {
