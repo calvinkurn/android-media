@@ -139,6 +139,8 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
+                .setRevenue(0)
+                .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo)
                 .logEvent(context);
     }
