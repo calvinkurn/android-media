@@ -14,6 +14,7 @@
     <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
     <string name="seller_filter">Filter</string>
+    <string name="title_logistic_info">Informasi Terkait Kurir</string>
 
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>
@@ -54,10 +55,12 @@
     <string name="daftar_produk">Daftar Produk</string>
     <string name="buyer">Nama Pembeli</string>
     <string name="purchasing_date">Tanggal Pembelian</string>
-    <string name="nomor_resi">Nomor Resi</string>
+    <string name="nomor_resi">No. Resi</string>
     <string name="som_deadline">Batas Respons</string>
     <string name="som_deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
+    <string name="see_detail">Lihat Detail</string>
+    <string name="see_invoice">Lihat Invoice</string>
     <string name="lihat">Lihat</string>
     <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
     <string name="salin_caps">SALIN</string>
@@ -67,14 +70,14 @@
     <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
-    <string name="kurir_pengiriman">Kurir Pengiriman</string>
-    <string name="alamat_pengiriman">Alamat Pengiriman</string>
+    <string name="kurir_pengiriman">Kurir</string>
+    <string name="alamat_pengiriman">Alamat</string>
     <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
     <string name="salin_alamat">Salin Alamat</string>
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
-    <string name="informasi_pembayaran">Informasi Pembayaran</string>
-    <string name="product_price_label">Harga</string>
+    <string name="rincian_pembayaran">Rincian Pembayaran</string>
+    <string name="product_price_label">Total Harga</string>
     <string name="shipping_price_label">Total Ongkos Kirim</string>
     <string name="insurance_price_label">Asuransi</string>
     <string name="additional_price_label">Biaya Tambahan Penjual</string>
@@ -349,6 +352,7 @@
 
     <string name="label_payment_deadline">Batas Pembayaran:</string>
     <string name="label_buyer_and_place_name">Pembeli:</string>
+    <string name="warehouse_label">Tokocabang</string>
 
     <string name="som_request_cancel_bottomsheet_title">Tanggapi Pembatalan</string>
 
