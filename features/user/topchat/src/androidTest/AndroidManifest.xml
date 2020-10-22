@@ -14,5 +14,9 @@
             android:name="com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".stub.chatroom.view.activity.TopChatRoomActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>
