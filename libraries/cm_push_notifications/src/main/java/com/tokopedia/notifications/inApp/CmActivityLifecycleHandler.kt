@@ -4,21 +4,16 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType
 import java.lang.ref.WeakReference
 import java.util.*
 
 class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
                                  val pushIntentHandler: PushIntentHandler,
-                                 val broadcastHandler: BroadcastHandler,
                                  val callback: ShowInAppCallback,
                                  val weakHashMap: WeakHashMap<Activity, Boolean>) {
 
     var currentWeakActivity: WeakReference<Activity>? = null
-    private set
-
-    //todo create arraylist of screens and loop it
-    private val DISCO_PAGE_ACTIVITY_NAME = "com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity"
+        private set
 
     fun onNewIntent(activity: Activity, intent: Intent?) {
         checkApplication(activity)
@@ -38,10 +33,6 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             finalBundle = intent.extras
         }
 
-        val className = activity.javaClass.name
-        if (className == DISCO_PAGE_ACTIVITY_NAME) {
-            broadcastHandler.registerBroadcastManager(activity)
-        }
         pushIntentHandler.checkPushIntent(activity, finalBundle)
     }
 
@@ -53,8 +44,6 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
 
     fun onActivityStopInternal(activity: Activity) {
         clearCurrentActivity(activity)
-        broadcastHandler.onActivityStop(activity)
-        cancelJob(activity.hashCode(), GratifCancellationExceptionType.ACTIVITY_STOP)
     }
 
     fun onActivityDestroyedInternal(activity: Activity) {
@@ -78,10 +67,6 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
         if (applicationCallback.getApplication() == null) {
             applicationCallback.setApplication(activity.application)
         }
-    }
-
-    private fun cancelJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String) {
-        callback.cancelGratifJob(entityHashCode, reason)
     }
 
     private fun showInApp(name: String, entityHashCode: Int) {

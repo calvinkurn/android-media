@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp
+package com.tokopedia.promotionstarget.cmGratification.broadcast
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -6,14 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.promotionstarget.cmGratification.pushIntent.GratifCmPushHandler
 import java.lang.ref.WeakReference
 
-//tools - trigger rules yaha se - it will remain insiede cm
-class BroadcastHandler (private val pushIntentHandler: PushIntentHandler){
+class BroadcastHandler(val pushIntentHandler: GratifCmPushHandler) {
 
-    private val broadcastReceiverMap = java.util.HashMap<WeakReference<Activity>, WeakReference<BroadcastReceiver>>()
+    private val broadcastReceiverMap = HashMap<WeakReference<Activity>, WeakReference<BroadcastReceiver>>()
 
-    fun registerBroadcastManager(activity: Activity): BroadcastReceiver {
+    fun processActivity(activity: Activity): BroadcastReceiver {
         val receiver: BroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val bundle = intent.extras
@@ -37,7 +37,7 @@ class BroadcastHandler (private val pushIntentHandler: PushIntentHandler){
         return receiver
     }
 
-    fun onActivityStop(activity: Activity){
+    fun onActivityStop(activity: Activity) {
         unRegisterBroadcastReceiver(activity)
     }
 
@@ -51,7 +51,7 @@ class BroadcastHandler (private val pushIntentHandler: PushIntentHandler){
             }
         }
         if (finalWeakActivity != null) {
-            val weakReceiver = broadcastReceiverMap.get(finalWeakActivity)
+            val weakReceiver = broadcastReceiverMap[finalWeakActivity]
             if (weakReceiver != null) {
                 val receiver = weakReceiver.get()
                 if (receiver != null) {

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.fragment.FragmentInflater.Companion.A
 import com.tokopedia.abstraction.base.view.fragment.FragmentInflater.Companion.DEFAULT
 import com.tokopedia.abstraction.base.view.fragment.FragmentInflater.Companion.FRAGMENT
 import com.tokopedia.abstraction.base.view.fragment.FragmentInflater.Companion.VIEW_PAGER
-import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleObserver
+import com.tokopedia.fragmentLifecycle.FragmentLifecycleObserver
 
 abstract class CmFragment: TkpdBaseV4Fragment() {
     @FragmentInflater

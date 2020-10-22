@@ -1,39 +1,34 @@
 package com.tokopedia.notifications.inApp
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType
 
 class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback) {
 
     fun onFragmentStart(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STARTED)
+        getFragmentCallbacks().forEach { it.onFragmentStart(fragment) }
         showInApp(fragment.javaClass.name, fragment.hashCode())
     }
 
     fun onFragmentResume(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_RESUME)
+        getFragmentCallbacks().forEach { it.onFragmentResume(fragment) }
         showInApp(fragment.javaClass.name, fragment.hashCode())
     }
 
     fun onFragmentStop(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_STOP)
+        getFragmentCallbacks().forEach { it.onFragmentStop(fragment) }
     }
 
     fun onFragmentUnSelected(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_UNSELECTED)
+        getFragmentCallbacks().forEach { it.onFragmentUnSelected(fragment) }
     }
 
     fun onFragmentDestroyed(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_DESTROYED)
+        getFragmentCallbacks().forEach { it.onFragmentDestroyed(fragment) }
     }
 
     fun onFragmentSelected(fragment: Fragment) {
-        cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_SELECTED)
+        getFragmentCallbacks().forEach { it.onFragmentSelected(fragment) }
         showInApp(fragment.javaClass.name, fragment.hashCode())
-    }
-
-    private fun cancelJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String) {
-        callback.cancelGratifJob(entityHashCode, reason)
     }
 
     private fun showInApp(name: String, entityHashCode: Int) {
@@ -41,10 +36,11 @@ class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback) {
             callback.showInAppForScreen(name, entityHashCode)
         }
     }
+
+    private fun getFragmentCallbacks() = CmEventListener.fragmentLifecycleCallbackList
 }
 
 interface ShowInAppCallback {
     fun showInAppForScreen(name: String, entityHashCode: Int) //check from rules
-    fun cancelGratifJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String?) //todo remane cancel all queued jobs
-    fun canShowDialog():Boolean
+    fun canShowDialog(): Boolean
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.notifications
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleCallback
+import com.tokopedia.fragmentLifecycle.FragmentLifecycleCallback
 import com.tokopedia.notifications.inApp.CmFragmentLifecycleHandler
 import timber.log.Timber
 

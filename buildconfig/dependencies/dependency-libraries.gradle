@@ -105,6 +105,7 @@ ext {
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
-            lint                    : ":libraries:lint"
+            lint                    : ":libraries:lint",
+            tkpdFragmentLifecycle   :":libraries:fragment_lifecycle"
     ]
 }

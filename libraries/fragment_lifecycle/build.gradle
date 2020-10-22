@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.miscDependencies.multiDex
+}
+
+project.ext {
+    artifactId = 'fragment-lifecycle'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "fragment_lifecycle-release"
+}
+
+apply from: '../../publish_local.gradle'

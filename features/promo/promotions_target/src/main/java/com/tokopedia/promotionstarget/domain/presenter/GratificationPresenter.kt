@@ -36,7 +36,7 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val application: Application, val weakHashMap: WeakHashMap<Activity,Boolean>) {
+class GratificationPresenter @Inject constructor(val application: Application, val dialogIsShownMap: WeakHashMap<Activity,Boolean>) {
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -72,8 +72,8 @@ class GratificationPresenter @Inject constructor(val application: Application, v
                                 gratifPopupCallback: GratifPopupCallback? = null): Job? {
         return scope?.launch(worker + ceh) {
             val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
-            val notifResponse = notificationUseCase.getResponse(map)
-//            val notifResponse = notificationUseCase.getFakeResponse(map)
+//            val notifResponse = notificationUseCase.getResponse(map)
+            val notifResponse = notificationUseCase.getFakeResponse(map)
             //todo Rahul verify key later
             val reason = notifResponse.response?.resultStatus?.code
             if (reason == GratifResultStatus.SUCCESS) {
@@ -89,7 +89,7 @@ class GratificationPresenter @Inject constructor(val application: Application, v
                             weakActivity?.get()?.let { activity ->
                                 if (notificationEntryType == NotificationEntryType.PUSH) {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
-                                } else if (weakHashMap[activity] != null) {
+                                } else if (dialogIsShownMap[activity] != null) {
                                     gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                                 } else {
                                     performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
@@ -125,14 +125,14 @@ class GratificationPresenter @Inject constructor(val application: Application, v
                         gratifPopupCallback?.onShow(dialog)
                     }
                 })
-        weakHashMap[activity] = true
+        dialogIsShownMap[activity] = true
 
         dialog?.setOnDismissListener { dialogInterface ->
-            weakHashMap.remove(activity)
+            dialogIsShownMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
         dialog?.setOnCancelListener { dialogInterface ->
-            weakHashMap.remove(activity)
+            dialogIsShownMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
     }

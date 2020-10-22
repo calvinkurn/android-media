@@ -16,6 +16,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.tkpdFragmentLifecycle)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)

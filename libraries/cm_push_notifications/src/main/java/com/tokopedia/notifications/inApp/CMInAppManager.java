@@ -2,13 +2,13 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.DialogInterface;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.abstraction.base.view.listener.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.fragmentLifecycle.FragmentLifecycleObserver;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.FragmentObserver;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
@@ -22,26 +22,18 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
-import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType;
-import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType;
-import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ConcurrentHashMap;
 
-import kotlinx.coroutines.Job;
 import timber.log.Timber;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_GRATIF;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 
@@ -51,22 +43,22 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
 public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
-        ShowInAppCallback {
+        ShowInAppCallback,
+        SendPushContract {
 
     private static CMInAppManager inAppManager;
     private Application application;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
     private List<String> excludeScreenList;
-    private Map<Integer, Job> mapOfGratifJobs = new ConcurrentHashMap<>();
 
     //map  - which will tell whether this activity has pop-up or not
-    private WeakHashMap<Activity, Boolean> weakHashMap = new WeakHashMap<>();
+    final WeakHashMap<Activity, Boolean> dialogIsShownMap = new WeakHashMap<>();
     public CmActivityLifecycleHandler activityLifecycleHandler;
 
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
-    private GratificationDialogHandler gratificationDialogHandler;
+    public CmDataConsumer cmDataConsumer;
 
     static {
         inAppManager = new CMInAppManager();
@@ -84,22 +76,14 @@ public class CMInAppManager implements CmInAppListener,
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
-        GratificationPresenter gratificationPresenter = new GratificationPresenter(application, weakHashMap);
-        gratificationPresenter.setExceptionCallback(th -> {
-            if (th != null) {
-                th.printStackTrace();
-                Timber.e(th);
-            }
-        });
+        cmDataConsumer = new CmDataConsumer(this);
+
         cmDialogHandler = new CmDialogHandler();
-        gratificationDialogHandler = new GratificationDialogHandler(gratificationPresenter);
-        PushIntentHandler pushIntentHandler = new PushIntentHandler(gratificationDialogHandler);
-        BroadcastHandler broadcastHandler = new BroadcastHandler(pushIntentHandler);
+        PushIntentHandler pushIntentHandler = new PushIntentHandler();
         activityLifecycleHandler = new CmActivityLifecycleHandler(this,
                 pushIntentHandler,
-                broadcastHandler,
                 this,
-                weakHashMap);
+                dialogIsShownMap);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
@@ -135,13 +119,21 @@ public class CMInAppManager implements CmInAppListener,
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
-                showDialog(cmInApp, entityHashCode);
-                if (!cmInApp.getType().equals(TYPE_GRATIF)) {
-                    dataConsumed(cmInApp);
-                }
+                if (checkForOtherSources(cmInApp, entityHashCode)) return;
+                showDialog(cmInApp);
+                dataConsumed(cmInApp);
             }
         }
     }
+
+    private boolean checkForOtherSources(CMInApp cmInApp, int entityHashCode) {
+        if (CmEventListener.INSTANCE.getInAppPopupContractMap().containsKey(cmInApp.type)) {
+            CmEventListener.INSTANCE.getInAppPopupContractMap().get(cmInApp.type).handleInAppPopup(cmInApp, entityHashCode);
+            return true;
+        }
+        return false;
+    }
+
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
@@ -152,45 +144,19 @@ public class CMInAppManager implements CmInAppListener,
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
     }
 
-    private void showGratifDialog(CMInApp data, int entityHashCode) {
-
-        Job job = gratificationDialogHandler.showOrganicDialog(activityLifecycleHandler.getCurrentWeakActivity(), data, new GratificationPresenter.AbstractGratifPopupCallback() {
-
-            @Override
-            public void onIgnored(int reason) {
-                if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
-                    dataConsumed(data);
-                }
-                gratificationDialogHandler.showIgnoreToast(activityLifecycleHandler.getCurrentWeakActivity(), "organic", reason);
-            }
-
-            @Override
-            public void onShow(@NotNull DialogInterface dialog) {
-                dataConsumed(data);
-            }
-
-            @Override
-            public void onExeption(@NotNull Exception ex) {
-                dataConsumed(data);
-                onCMInAppInflateException(data);
-            }
-        });
-        mapOfGratifJobs.put(entityHashCode, job);
-    }
-
-    private void showDialog(CMInApp data, int entityHashCode) {
+    private void showDialog(CMInApp data) {
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
-        switch (data.getType()) {
-            case TYPE_INTERSTITIAL_IMAGE_ONLY:
-            case TYPE_INTERSTITIAL:
-                showInterstitialDialog(currentActivity, data);
-                break;
-            case TYPE_GRATIF:
-                showGratifDialog(data, entityHashCode);
-                break;
-            default:
-                showLegacyDialog(currentActivity, data);
-                break;
+        String type = data.type;
+        if (!TextUtils.isEmpty(type)) {
+            switch (data.getType()) {
+                case TYPE_INTERSTITIAL_IMAGE_ONLY:
+                case TYPE_INTERSTITIAL:
+                    showInterstitialDialog(currentActivity, data);
+                    break;
+                default:
+                    showLegacyDialog(currentActivity, data);
+                    break;
+            }
         }
     }
 
@@ -198,7 +164,7 @@ public class CMInAppManager implements CmInAppListener,
         cmDialogHandler.interstitialDialog(currentActivity, data, new CmDialogHandler.CmDialogHandlerCallback() {
             @Override
             public void onShow(@NotNull Activity activity) {
-                weakHashMap.put(activity, true);
+                dialogIsShownMap.put(activity, true);
             }
 
             @Override
@@ -212,7 +178,7 @@ public class CMInAppManager implements CmInAppListener,
         cmDialogHandler.showLegacyDialog(currentActivity, data, new CmDialogHandler.AbstractCmDialogHandlerCallback() {
             @Override
             public void onShow(@NotNull Activity activity) {
-                weakHashMap.put(activity, true);
+                dialogIsShownMap.put(activity, true);
             }
         });
     }
@@ -225,18 +191,9 @@ public class CMInAppManager implements CmInAppListener,
     public boolean canShowDialog() {
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null) {
-            return !weakHashMap.containsKey(activity);
+            return !dialogIsShownMap.containsKey(activity);
         }
         return false;
-    }
-
-    @Override
-    public void cancelGratifJob(int entityHashCode, @GratifCancellationExceptionType String reason) {
-        Job job = mapOfGratifJobs.get(entityHashCode);
-        if (job != null && job.isActive()) {
-            job.cancel(new CancellationException(reason));
-            mapOfGratifJobs.remove(entityHashCode);
-        }
     }
 
     private void dataConsumed(CMInApp inAppData) {
@@ -271,7 +228,7 @@ public class CMInAppManager implements CmInAppListener,
         RulesManager.getInstance().viewDismissed(inApp.id);
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null)
-            weakHashMap.remove(activity);
+            dialogIsShownMap.remove(activity);
     }
 
     @Override
@@ -296,7 +253,8 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
+    @Override
+    public void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
         if (cmInApp == null) return;
 
         if (elementId != null) {
@@ -324,6 +282,10 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public Application getApplication() {
         return application;
+    }
+
+    public WeakHashMap<Activity, Boolean> getDialogIsShownMap(){
+        return dialogIsShownMap;
     }
 
     @Override

@@ -2,14 +2,11 @@ package com.tokopedia.notifications.inApp.viewEngine;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
-import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +37,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         activityCount++;
         try {
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.e(e);
         }
     }

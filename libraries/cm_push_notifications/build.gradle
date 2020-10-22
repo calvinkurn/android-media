@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.common_promo)
+    implementation project(rootProject.ext.libraries.tkpdFragmentLifecycle)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -48,7 +49,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.features.promotionsTarget)
     implementation (rootProject.ext.playServicesDependencies.ads){
         exclude group: 'com.android.support'
     }
