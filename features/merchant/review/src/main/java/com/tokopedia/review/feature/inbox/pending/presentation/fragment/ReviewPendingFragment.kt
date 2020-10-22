@@ -104,8 +104,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible)
     }
 
-    override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int) {
-        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId())
+    override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int, isEligible: Boolean) {
+        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible)
     }
 
     override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int, inboxReviewId: Int, seen: Boolean) {
@@ -385,7 +385,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         if (ovoIncentiveBottomSheet == null) {
-            ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this) }
+            ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this, ReviewInboxTrackingConstants.PENDING_TAB) }
         }
         ovoIncentiveBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }

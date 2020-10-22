@@ -510,7 +510,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 createReviewAnonymousCheckbox.isChecked,
                 isEditMode,
                 feedbackId.toString(),
-                createReviewViewModel.isUserEligible()
+                createReviewViewModel.isUserEligible() && isReviewComplete()
         )
         if (isEditMode) {
             createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toIntOrZero(),
@@ -559,7 +559,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     CreateReviewTracking.eventClickSendNow(title)
                 }
                 show()
-                CreateReviewTracking.eventViewDialog(title)
+                CreateReviewTracking.eventViewBackDialog(title)
             }
         }
     }
@@ -622,7 +622,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             if (ovoIncentiveBottomSheet == null) {
-                                ovoIncentiveBottomSheet = IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, data, this@CreateReviewFragment)
+                                ovoIncentiveBottomSheet = IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, data, this@CreateReviewFragment, "")
                             }
                             ovoIncentiveBottomSheet?.let { bottomSheet ->
                                 activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }

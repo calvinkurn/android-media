@@ -23,14 +23,14 @@ object IncentiveOvoBottomSheetBuilder {
 
     private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
 
-    fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, incentiveOvoListener: IncentiveOvoListener): BottomSheetUnify {
+    fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, incentiveOvoListener: IncentiveOvoListener, category: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.incentive_ovo_tnc_bottom_sheet, null)
         bottomSheetUnify.apply {
             setChild(view)
-            setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener)
+            setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, category)
             setOnDismissListener {
-                ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker("")
+                ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(category)
             }
             setShowListener {
                 bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
@@ -98,14 +98,14 @@ object IncentiveOvoBottomSheetBuilder {
                     setOnClickListener {
                         dismiss()
                         incentiveOvoListener.onClickCloseThankYouBottomSheet()
-                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain != null)
+                        CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
                     }
                 }
             }
         }
     }
 
-    private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener) {
+    private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, category: String) {
         bottomSheet.apply {
             view.apply {
                 tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
@@ -114,7 +114,7 @@ object IncentiveOvoBottomSheetBuilder {
                 incentiveOvoBtnContinueReview.apply {
                     setOnClickListener {
                         dismiss()
-                        ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
+                        ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
                     }
                     text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
                 }

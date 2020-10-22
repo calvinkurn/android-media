@@ -27,7 +27,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 showProductName(productName)
                 showProductVariantName(productVariantName)
                 setListener(reputationId, productId, inboxReviewId, status.seen, status.isEligible)
-                setupStars(reputationId, productId, inboxReviewId, status.seen)
+                setupStars(reputationId, productId, inboxReviewId, status.seen, status.isEligible)
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
@@ -73,12 +73,12 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean) {
+    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean, isEligible: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
-                    reviewPendingItemListener.trackStarsClicked(reputationId, productId, position)
+                    reviewPendingItemListener.trackStarsClicked(reputationId, productId, position, isEligible)
                     Handler().postDelayed({ reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) }, 200)
                 }
             })

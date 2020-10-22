@@ -16,10 +16,10 @@ object ReviewPendingTracking {
         )
     }
 
-    fun eventClickRatingStar(reputationId: Int, productId: Int, starRating: Int, userId: String) {
+    fun eventClickRatingStar(reputationId: Int, productId: Int, starRating: Int, userId: String, isEligible: Boolean) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId.toString(), productId.toString()),
+                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId.toString(), productId.toString(), isEligible.toString()),
                         String.format(ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_STAR, starRating.toString()),
                         userId
                 )
