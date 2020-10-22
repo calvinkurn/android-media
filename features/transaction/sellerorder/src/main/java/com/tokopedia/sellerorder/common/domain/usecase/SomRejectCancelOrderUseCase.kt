@@ -1,9 +1,9 @@
-package com.tokopedia.sellerorder.detail.domain
+package com.tokopedia.sellerorder.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.sellerorder.common.domain.model.SomRejectCancelOrderRequest
+import com.tokopedia.sellerorder.common.domain.model.SomRejectCancelOrderResponse
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.detail.data.model.SomRejectCancelOrderRequest
-import com.tokopedia.sellerorder.detail.data.model.SomRejectCancelOrderResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

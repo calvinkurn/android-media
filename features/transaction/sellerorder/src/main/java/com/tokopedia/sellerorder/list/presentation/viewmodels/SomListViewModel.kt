@@ -2,15 +2,12 @@ package com.tokopedia.sellerorder.list.presentation.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
-import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.domain.usecase.*
+import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -24,19 +21,23 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class SomListViewModel @Inject constructor(
+        getUserRoleUseCase: SomGetUserRoleUseCase,
+        somAcceptOrderUseCase: SomAcceptOrderUseCase,
+        somRejectOrderUseCase: SomRejectOrderUseCase,
+        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        somEditRefNumUseCase: SomEditRefNumUseCase,
+        userSession: UserSessionInterface,
+        dispatcher: SomDispatcherProvider,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
         private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
         private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
         private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
-        private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
-        private val getUserRoleUseCase: SomGetUserRoleUseCase,
-        private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
-        private val userSession: UserSessionInterface,
-        dispatcher: SomDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+        private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase
+) : SomOrderBaseViewModel(dispatcher.io(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+        somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     companion object {
         private const val DATE_FORMAT = "dd/MM/yyyy"
@@ -61,16 +62,6 @@ class SomListViewModel @Inject constructor(
     private val _topAdsCategoryResult = MutableLiveData<Result<Int>>()
     val topAdsCategoryResult: LiveData<Result<Int>>
         get() = _topAdsCategoryResult
-
-    private val _userRoleResult = MutableLiveData<Result<SomGetUserRoleUiModel>>()
-    val userRoleResult: LiveData<Result<SomGetUserRoleUiModel>>
-        get() = _userRoleResult
-
-    private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
-    val acceptOrderResult: LiveData<Result<SomAcceptOrder.Data>>
-        get() = _acceptOrderResult
-
-    private var getUserRolesJob: Job? = null
 
     private var getOrderListParams = SomListGetOrderListParam().apply {
         startDate = Utils.getFormattedDate(90, DATE_FORMAT)
@@ -114,31 +105,27 @@ class SomListViewModel @Inject constructor(
         })
     }
 
+    fun refreshSelectedOrder(invoice: String) {
+        launchCatchError(block = {
+            val currentSearchParam = getOrderListParams.search
+            setSearchParam(invoice)
+            somListGetOrderListUseCase.setParam(getOrderListParams)
+            val result = somListGetOrderListUseCase.execute()
+            setSearchParam(currentSearchParam)
+            getUserRolesJob?.join()
+            getOrderListParams.nextOrderId = result.first
+            _orderListResult.postValue(Success(result.second))
+        }, onError = {
+            _orderListResult.postValue(Fail(it))
+        })
+    }
+
     fun getTopAdsCategory() {
         launchCatchError(block = {
             somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toIntOrZero())
             _topAdsCategoryResult.postValue(somListGetTopAdsCategoryUseCase.execute())
         }, onError = {
             _topAdsCategoryResult.postValue(Fail(it))
-        })
-    }
-
-    fun getUserRoles() {
-        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
-            getUserRolesJob = launchCatchError(block = {
-                getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
-                _userRoleResult.postValue(getUserRoleUseCase.execute())
-            }, onError = {
-                _userRoleResult.postValue(Fail(it))
-            })
-        }
-    }
-
-    fun acceptOrder(orderId: String) {
-        launchCatchError(block = {
-            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, userSession.shopId ?: "0"))
-        }, onError = {
-            _acceptOrderResult.postValue(Fail(it))
         })
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.data.model
+package com.tokopedia.sellerorder.common.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-11-06.
  */
-class SomRejectOrder (
+class SomRejectOrderResponse (
         @SerializedName("data")
         @Expose
         val data: Data = Data()

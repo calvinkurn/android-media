@@ -354,6 +354,8 @@
     <string name="label_buyer_and_place_name">Pembeli:</string>
     <string name="warehouse_label">Tokocabang</string>
 
+    <string name="som_request_cancel_bottomsheet_title">Tanggapi Pembatalan</string>
+
     <!--  new som list  -->
     <string name="som_list_empty_state_description_no_topads_no_filter">Tetap semangat, rejeki nggak akan pergi \nasal kamu pantang menyerah</string>
     <string name="som_list_error_some_information_cannot_be_loaded">Beberapa informasi gagal dimuat</string>

@@ -18,7 +18,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -192,6 +195,9 @@ class SomListOrderViewHolder(
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(element.orderId)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(element.orderId)
                 KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(element.orderId)
+                KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
+                KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
+                KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
             }
         }
     }
@@ -204,5 +210,8 @@ class SomListOrderViewHolder(
         fun onConfirmShippingButtonClicked(orderId: String)
         fun onAcceptOrderButtonClicked(orderId: String)
         fun onRequestPickupButtonClicked(orderId: String)
+        fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
+        fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
+        fun onEditAwbButtonClicked(orderId: String)
     }
 }

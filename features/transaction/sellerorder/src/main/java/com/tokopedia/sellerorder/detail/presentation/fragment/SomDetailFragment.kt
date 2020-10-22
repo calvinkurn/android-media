@@ -38,16 +38,19 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
@@ -58,18 +61,14 @@ import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRIMARY_DIALOG_BUTTON
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SECONDARY_DIALOG_BUTTON
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
@@ -89,14 +88,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CREATED
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
@@ -128,7 +124,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.tf_cancel_notes
@@ -187,10 +182,10 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
-    private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
-    private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
-    private var successEditAwbResponse = SomEditAwbResponse.Data()
-    private var failEditAwbResponse = SomEditAwbResponse.Error()
+    private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
+    private var rejectOrderResponse = SomRejectOrderResponse.Data.RejectOrder()
+    private var successEditAwbResponse = SomEditRefNumResponse.Data()
+    private var failEditAwbResponse = SomEditRefNumResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
@@ -328,7 +323,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
-            somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
+            somDetailViewModel.getUserRoles()
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
         }
@@ -650,7 +645,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         eventClickMainActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
                         when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId, userSession.shopId)
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
@@ -689,17 +684,17 @@ class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(orderId: String, shopId: String) {
+    private fun setActionAcceptOrder(orderId: String) {
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
-            showFreeShippingAcceptOrderDialog(orderId, shopId)
+            showFreeShippingAcceptOrderDialog(orderId)
         } else {
-            acceptOrder(orderId, shopId)
+            acceptOrder(orderId)
         }
     }
 
-    private fun acceptOrder(orderId: String, shopId: String) {
-        if (orderId.isNotBlank() && shopId.isNotBlank()) {
-            somDetailViewModel.acceptOrder(orderId, shopId)
+    private fun acceptOrder(orderId: String) {
+        if (orderId.isNotBlank()) {
+            somDetailViewModel.acceptOrder(orderId)
         }
     }
 
@@ -746,7 +741,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showFreeShippingAcceptOrderDialog(orderId: String, shopId: String) {
+    private fun showFreeShippingAcceptOrderDialog(orderId: String) {
         view?.context?.let {
             val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
                 setUnlockVersion()
@@ -768,8 +763,8 @@ class SomDetailFragment : BaseDaggerFragment(),
 
                     btn_batal?.setOnClickListener { dismiss() }
                     btn_terima?.setOnClickListener {
-                        if (orderId.isNotBlank() && shopId.isNotBlank()) {
-                            somDetailViewModel.acceptOrder(orderId, shopId)
+                        if (orderId.isNotBlank()) {
+                            somDetailViewModel.acceptOrder(orderId)
                             dismiss()
                         }
                     }
@@ -845,7 +840,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId, userSession.shopId)
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }
@@ -896,7 +891,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetPenalty.dismiss() }
             btn_cancel_order_confirmed?.setOnClickListener {
                 bottomSheetPenalty.dismiss()
-                val orderRejectRequest = SomRejectRequest(
+                val orderRejectRequest = SomRejectRequestParam(
                         orderId = detailResponse.orderId.toString(),
                         rCode = "0",
                         reason = tf_cancel_notes?.textFieldInput?.text.toString()
@@ -927,36 +922,18 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionUbahNoResi() {
-        val bottomSheetUbahResi = BottomSheetUnify()
-        val viewBottomSheetUbahResi = View.inflate(context, R.layout.bottomsheet_cancel_order, null).apply {
-            tf_cancel_notes?.setLabelStatic(true)
-            tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
-            tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
-            btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
-            btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
-            btn_cancel_order_confirmed?.setOnClickListener {
-                secondaryBottomSheet?.dismiss()
-                bottomSheetUbahResi.dismiss()
-                doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
-            }
-        }
-
-        bottomSheetUbahResi.apply {
-            setTitle(TITLE_UBAH_RESI)
-            setFullPage(false)
-            setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetUbahResi)
-        }
-        fragmentManager?.let {
-            bottomSheetUbahResi.show(it, getString(R.string.show_bottomsheet))
+        SomOrderEditAwbBottomSheet().apply {
+            setListener(object: SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                override fun onEditAwbButtonClicked(cancelNotes: String) {
+                    doEditAwb(cancelNotes)
+                }
+            })
+            show(this@SomDetailFragment.childFragmentManager, SomOrderEditAwbBottomSheet.TAG)
         }
     }
 
     private fun doEditAwb(shippingRef: String) {
-        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_edit_awb)
-        val queryString = rawQuery.replace(INPUT_ORDER_ID, orderId, true)
-                .replace(INPUT_SHIPPING_REF, shippingRef, true)
-        somDetailViewModel.editAwb(queryString)
+        somDetailViewModel.editAwb(orderId, shippingRef)
     }
 
     private fun observingEditAwb() {
@@ -974,7 +951,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
-                    if(failEditAwbResponse.message.isNotEmpty()) {
+                    if (failEditAwbResponse.message.isNotEmpty()) {
                         showToasterError(failEditAwbResponse.message, view)
                     } else {
                         it.throwable.showErrorToaster()
@@ -1011,28 +988,28 @@ class SomDetailFragment : BaseDaggerFragment(),
         showBuyerRequestCancelBottomSheet(it)
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun showBuyerRequestCancelBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
-        val bottomSheetReqCancel = BottomSheetUnify()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel_order, null).apply {
-            tickerPerformanceInfo?.setTextDescription(getString(R.string.som_shop_performance_info))
-            tv_buyer_request_cancel?.text = it.popUp.body
+        SomOrderRequestCancelBottomSheet().apply {
+            setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
+                override fun onAcceptOrder() {
+                    setActionAcceptOrder(orderId)
+                }
 
-            val reasonBuyer = Utils.getL2CancellationReason(detailResponse.buyerRequestCancel.reason)
-            tvBuyerRequestCancelNotes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator") ?: "")
+                override fun onRejectOrder(reasonBuyer: String) {
+                    val orderRejectRequest = SomRejectRequestParam(
+                            orderId = detailResponse.orderId.toString(),
+                            rCode = "0",
+                            reason = reasonBuyer
+                    )
+                    doRejectOrder(orderRejectRequest)
+                }
 
-            setupBuyerRequestCancelBottomSheetButtons(this, bottomSheetReqCancel, reasonBuyer, it.popUp.actionButtons)
-        }
-
-        bottomSheetReqCancel.apply {
-            setFullPage(false)
-            setTitle(it.popUp.title)
-            setChild(viewBottomSheet)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let {
-            bottomSheetReqCancel.show(it, getString(R.string.show_bottomsheet))
+                override fun onRejectCancelRequest() {
+                    rejectCancelOrder()
+                }
+            })
+            init(it.popUp, Utils.getL2CancellationReason(detailResponse.buyerRequestCancel.reason), detailResponse.statusCode)
+            show(this@SomDetailFragment.childFragmentManager, SomOrderRequestCancelBottomSheet.TAG)
         }
     }
 
@@ -1103,7 +1080,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.visibility = View.VISIBLE
             fl_btn_primary?.setOnClickListener {
                 bottomSheetProductEmpty.dismiss()
-                val orderRejectRequest = SomRejectRequest()
+                val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = detailResponse.orderId.toString()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
                 var strListPrd = ""
@@ -1175,7 +1152,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
             btn_reject_shop_closed?.setOnClickListener {
                 bottomSheetShopClosed.dismiss()
-                val orderRejectRequest = SomRejectRequest(
+                val orderRejectRequest = SomRejectRequestParam(
                         orderId = detailResponse.orderId.toString(),
                         rCode = rejectReason.reasonCode.toString(),
                         closedNote = tf_shop_closed_notes?.textFieldInput?.text.toString(),
@@ -1231,7 +1208,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.visibility = View.VISIBLE
             fl_btn_primary?.setOnClickListener {
                 bottomSheetCourierProblems?.dismiss()
-                val orderRejectRequest = SomRejectRequest()
+                val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = detailResponse.orderId.toString()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
 
@@ -1284,7 +1261,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetBuyerNoResponse.dismiss()
 
-                val orderRejectRequest = SomRejectRequest().apply {
+                val orderRejectRequest = SomRejectRequestParam().apply {
                     orderId = detailResponse.orderId.toString()
                     rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
@@ -1327,7 +1304,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetBuyerOtherReason.dismiss()
 
-                val orderRejectRequest = SomRejectRequest().apply {
+                val orderRejectRequest = SomRejectRequestParam().apply {
                     orderId = detailResponse.orderId.toString()
                     rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
@@ -1364,11 +1341,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
+    private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
-            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(it, R.raw.gql_som_reject_order), orderRejectRequest)
+            somDetailViewModel.rejectOrder(orderRejectRequestParam)
         }
-        SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
+        SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequestParam.reason)
     }
 
     private fun observingRejectOrder() {
@@ -1503,119 +1480,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun isUserRoleFetched(value: Result<SomGetUserRoleUiModel>?): Boolean = value is Success
-
-    private fun setupBuyerRequestCancelBottomSheetButtons(
-            view: View,
-            bottomSheetReqCancel: BottomSheetUnify,
-            reasonBuyer: String,
-            actionButtons: List<SomDetailOrder.Data.GetSomDetail.PopUp.ActionButton>) = with(view) {
-        when {
-            detailResponse.statusCode == STATUS_CODE_ORDER_CREATED ||
-                    detailResponse.statusCode == STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
-                val primaryButtonText = actionButtons.find {
-                    it.type == KEY_PRIMARY_DIALOG_BUTTON
-                }?.displayName.orEmpty()
-                val secondaryButtonText = actionButtons.find {
-                    it.type == KEY_SECONDARY_DIALOG_BUTTON
-                }?.displayName.orEmpty()
-                btnNegative?.text = secondaryButtonText
-                btnPositive?.text = primaryButtonText
-                btnNegative?.setOnClickListener {
-                    showBuyerRequestCancelOnClickButtonDialog(
-                            title = getBuyerRequestCancellationPopupTitle(detailResponse.statusCode),
-                            description = getBuyerRequestCancellationPopUpDescription(detailResponse.statusCode),
-                            primaryButtonText = getBuyerRequestCancellationRejectButton(detailResponse.statusCode),
-                            secondaryButtonText = getString(R.string.som_buyer_cancellation_cancel_button),
-                            primaryButtonClickAction = {
-                                bottomSheetReqCancel.dismiss()
-                                when (detailResponse.statusCode) {
-                                    STATUS_CODE_ORDER_CREATED -> {
-                                        setActionAcceptOrder(orderId, userSession.shopId)
-                                    }
-                                    STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
-                                        rejectCancelOrder()
-                                    }
-                                }
-                            }
-                    )
-                }
-                btnPositive?.setOnClickListener {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusCode}")
-                    showPositiveButtonBuyerRequestCancelOnClickButtonDialog(
-                            bottomSheetReqCancel,
-                            reasonBuyer)
-                }
-            }
-            else -> containerButtonBuyerRequestCancel?.gone()
-        }
-    }
-
-    private fun getBuyerRequestCancellationRejectButton(statusCode: Int): String {
-        return when (statusCode) {
-            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_button)
-            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_button)
-            else -> ""
-        }
-    }
-
-    private fun getBuyerRequestCancellationPopUpDescription(statusCode: Int): String {
-
-        return when (statusCode) {
-            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_description)
-            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_description)
-            else -> ""
-        }
-    }
-
-    private fun getBuyerRequestCancellationPopupTitle(statusCode: Int): String {
-        return when (statusCode) {
-            STATUS_CODE_ORDER_CREATED -> getString(R.string.som_buyer_cancellation_confirm_accept_order_title)
-            STATUS_CODE_ORDER_ORDER_CONFIRMED -> getString(R.string.som_buyer_cancellation_confirm_shipping_title)
-            else -> ""
-        }
-    }
-
-    private fun showPositiveButtonBuyerRequestCancelOnClickButtonDialog(
-            bottomSheetReqCancel: BottomSheetUnify,
-            reasonBuyer: String) {
-        showBuyerRequestCancelOnClickButtonDialog(
-                title = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_title),
-                description = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_description),
-                primaryButtonText = getString(R.string.som_buyer_cancellation_confirm_accept_cancellation_button),
-                secondaryButtonText = getString(R.string.som_buyer_cancellation_cancel_button),
-                primaryButtonClickAction = {
-                    bottomSheetReqCancel.dismiss()
-                    val orderRejectRequest = SomRejectRequest(
-                            orderId = detailResponse.orderId.toString(),
-                            rCode = "0",
-                            reason = reasonBuyer
-                    )
-                    doRejectOrder(orderRejectRequest)
-                }
-        )
-    }
-
-    private fun showBuyerRequestCancelOnClickButtonDialog(
-            title: String,
-            description: String,
-            primaryButtonText: String,
-            secondaryButtonText: String,
-            primaryButtonClickAction: () -> Unit) {
-        context?.run {
-            DialogUnify(this, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                setTitle(title)
-                setDescription(description)
-                setPrimaryCTAText(primaryButtonText)
-                setSecondaryCTAText(secondaryButtonText)
-                setPrimaryCTAClickListener {
-                    primaryButtonClickAction()
-                    dismiss()
-                }
-                setSecondaryCTAClickListener { dismiss() }
-                show()
-            }
-        }
-    }
 
     private fun Throwable.showGlobalError() {
         val type = if (this is UnknownHostException || this is SocketTimeoutException) {

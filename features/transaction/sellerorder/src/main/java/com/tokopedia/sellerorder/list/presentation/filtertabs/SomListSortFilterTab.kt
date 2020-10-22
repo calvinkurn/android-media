@@ -70,7 +70,7 @@ class SomListSortFilterTab(
             false
         }
         sortFilterItem.toggleSelected()
-        listener.onTabClicked(status)
+        listener.onTabClicked(status, true)
         changeTabSortFilterText()
     }
 
@@ -119,11 +119,18 @@ class SomListSortFilterTab(
         }
     }
 
+    fun decrementOrderCount() {
+        selectedTab?.run {
+            amount -= 1
+            filterItems.find { it.title.contains(status) }?.title = composeTabTitle(status, amount)
+        }
+    }
+
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
 
     interface SomListSortFilterTabClickListener {
-        fun onTabClicked(status: SomListFilterUiModel.Status)
+        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean)
     }
 }

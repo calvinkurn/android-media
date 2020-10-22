@@ -71,8 +71,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
-import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.oldlist.data.model.SomListFilter
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder
@@ -964,12 +964,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             if (data != null) {
                 when {
                     data.hasExtra(RESULT_ACCEPT_ORDER) -> {
-                        val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
+                        val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrderResponse.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
                         refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
 
                     }
                     data.hasExtra(RESULT_REJECT_ORDER) -> {
-                        val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
+                        val resultRejectOrder = data.getParcelableExtra<SomRejectOrderResponse.Data.RejectOrder>(RESULT_REJECT_ORDER)
                         refreshThenShowToasterOk(resultRejectOrder.message.first())
 
                     }

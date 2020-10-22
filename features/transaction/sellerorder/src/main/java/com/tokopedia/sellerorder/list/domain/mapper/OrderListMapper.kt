@@ -45,7 +45,8 @@ class OrderListMapper @Inject constructor() {
                     key = it.key,
                     displayName = it.displayName,
                     type = it.type,
-                    url = it.url
+                    url = it.url,
+                    popUp = it.popUp
             )
         }
     }
