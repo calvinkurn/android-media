@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedplus.R
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -50,7 +49,7 @@ class FeedTopAdsVerificationTest {
     fun testTopAdsFeed() {
         waitForData()
 
-        val feedRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        val feedRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.feedplus.R.id.recycler_view)
         val itemCount = feedRecyclerView.adapter?.itemCount?:0
 
         for (i in 0 until itemCount) {
@@ -63,7 +62,7 @@ class FeedTopAdsVerificationTest {
     private fun checkProductOnDynamicChannel(recyclerView: RecyclerView, i: Int) {
         when (val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)) {
             is TopadsShopViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recommendationRv, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.topads.sdk.R.id.recommendationRv, 0)
             }
         }
     }

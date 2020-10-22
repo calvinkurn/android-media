@@ -7,7 +7,7 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
-import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
+import com.tokopedia.loginfingerprint.data.model.SignatureData
 import java.security.*
 import java.security.spec.X509EncodedKeySpec
 
@@ -118,18 +118,18 @@ class CryptographyUtils: Cryptography {
         return ""
     }
 
-    override fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
+    override fun generateFingerprintSignature(userId: String, deviceId: String): SignatureData {
         val datetime = (System.currentTimeMillis()/1000).toString()
-        return FingerprintSignature(signature = getSignature(userId + datetime + deviceId), datetime = datetime)
+        return SignatureData(signature = getSignature(userId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
     }
 
-    override fun getSignature(textToEncrypt: String): String {
+    override fun getSignature(textToEncrypt: String, algorithm: String): String {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var signText = ""
             try {
                 keyStore?.load(null)
                 val privateKey = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as? PrivateKey
-                val signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
+                val signature = Signature.getInstance(algorithm)
                 signature.initSign(privateKey)
                 signature.update(textToEncrypt.toByteArray())
                 signText = Base64.encodeToString(signature.sign(),

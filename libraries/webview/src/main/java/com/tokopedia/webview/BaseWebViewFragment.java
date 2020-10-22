@@ -40,13 +40,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
@@ -63,6 +64,7 @@ import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -76,6 +78,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     public TkpdWebView webView;
     ProgressBar progressBar;
+    private SwipeToRefresh swipeRefreshLayout;
     private ValueCallback<Uri> uploadMessageBeforeLolipop;
     public ValueCallback<Uri[]> uploadMessageAfterLolipop;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -107,6 +110,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String TOKOPEDIA_STRING = "tokopedia";
     protected boolean isTokopediaUrl;
     boolean allowOverride = true;
+    boolean pullToRefresh = false;
     private boolean needLogin = false;
 
     // last check overrideUrlLoading
@@ -156,6 +160,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         url = getUrlFromArguments(args);
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
+        pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
         isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -189,6 +194,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         View view = inflater.inflate(getLayout(), container, false);
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
+        swipeRefreshLayout = view.findViewById(R.id.general_web_view_lib_swipe_refresh_layout);
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setEnabled(pullToRefresh);
+            swipeRefreshLayout.setOnRefreshListener(this::reloadPage);
+        }
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
@@ -741,6 +752,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         // webview is blank, but it already goes to native page, so this activity is safe to close.
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 

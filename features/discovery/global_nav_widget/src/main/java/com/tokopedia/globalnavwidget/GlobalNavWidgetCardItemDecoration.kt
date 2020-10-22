@@ -8,6 +8,7 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 
 internal class GlobalNavWidgetCardItemDecoration(
+        private val spacingCardTop: Int,
         private val spacingCardToContainer: Int,
         private val spacingBetweenCardInPixel: Int
 ): RecyclerView.ItemDecoration() {
@@ -37,7 +38,7 @@ internal class GlobalNavWidgetCardItemDecoration(
     }
 
     private fun setTopMargin(view: CardView, outRect: Rect) {
-        outRect.top = spacingCardToContainer - view.getVerticalOffset()
+        outRect.top = spacingCardTop - view.getVerticalOffset()
     }
 
     private fun setRightMargin(position: Int, view: CardView, outRect: Rect, parent: RecyclerView) {

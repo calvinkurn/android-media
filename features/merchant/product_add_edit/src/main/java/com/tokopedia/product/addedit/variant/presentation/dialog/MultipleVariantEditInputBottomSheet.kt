@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_inp
 import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
-        private var enableEditSku: Boolean,
-        private var enableEditPrice: Boolean,
-        private val multipleVariantEditInputListener: MultipleVariantEditInputListener
+        private var enableEditSku: Boolean = false,
+        private var enableEditPrice: Boolean = false,
+        private val multipleVariantEditInputListener: MultipleVariantEditInputListener? = null
 ): BottomSheetUnify() {
 
     companion object {
@@ -110,25 +110,31 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun sendTrackerTrackManageAllPriceData() {
-        val price = contentView?.tfuPrice.getTextBigIntegerOrZero().toString()
+        val price = contentView?.tfuPrice.getText()
         val stock = contentView?.tfuStock.getText()
         val sku = contentView?.tfuSku.getText()
 
         if (trackerIsEditMode) {
-            ProductEditVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
-            ProductEditVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
-            ProductEditVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+            if (price.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            if (stock.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            if (sku.isNotEmpty())
+                ProductEditVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
         } else {
-            ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
-            ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
-            ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
+            if (price.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllPrice(price, trackerShopId)
+            if (stock.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllStock(stock, trackerShopId)
+            if (sku.isNotEmpty())
+                ProductAddVariantDetailTracking.trackManageAllSku(sku, trackerShopId)
         }
     }
 
     private fun validatePrice() {
         if (contentView?.tfuPrice.getText().isNotEmpty()) {
             val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidatePrice(inputText)
+            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
             contentView?.tfuPrice?.setMessage(errorMessage)
@@ -145,7 +151,7 @@ class MultipleVariantEditInputBottomSheet(
     private fun validateStock() {
         if (contentView?.tfuStock.getText().isNotEmpty()) {
             val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
-            val errorMessage = multipleVariantEditInputListener.onMultipleEditInputValidateStock(inputText)
+            val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
             contentView?.tfuStock?.setMessage(errorMessage)
@@ -182,7 +188,7 @@ class MultipleVariantEditInputBottomSheet(
                         stock = stock,
                         sku = sku
                 )
-                multipleVariantEditInputListener.onMultipleEditInputFinished(inputData)
+                multipleVariantEditInputListener?.onMultipleEditInputFinished(inputData)
             }
             dismiss()
         }

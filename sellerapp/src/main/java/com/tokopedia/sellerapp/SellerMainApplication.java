@@ -36,7 +36,6 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -49,11 +48,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.weaver.WeaveInterface;
-import com.tokopedia.weaver.Weaver;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +64,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         InAppManager.InAppMessageListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -158,34 +154,18 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         TimberWrapper.init(this);
         super.onCreate();
-        createAndCallPostSeq();
-        initAppNotificationReceiver();
-        registerActivityLifecycleCallbacks();
-        TokoPatch.init(this);
-    }
-
-    private void createAndCallPostSeq() {
-        //don't convert to lambda does not work in kit kat
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                return executePostCreateSequence();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_POST_SEQ_ASYNC_SELLERAPP, context);
-    }
-
-    @NotNull
-    private Boolean executePostCreateSequence() {
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(this);
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
+
+        initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
         initBlockCanary();
-        return true;
+        TokoPatch.init(this);
     }
 
     private void setVersionName(){

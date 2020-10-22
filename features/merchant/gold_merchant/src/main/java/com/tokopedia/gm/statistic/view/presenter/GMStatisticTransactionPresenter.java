@@ -1,6 +1,6 @@
 package com.tokopedia.gm.statistic.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.base.view.core.BaseDaggerPresenter;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 

@@ -24,12 +24,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -283,6 +284,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                         animateScannerLaser();
                     }
                 }).showRetrySnackbar();
+    }
+
+    @Override
+    public void goToEventRedeemPage(String url){
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_REDEEM);
+        intent.putExtra("EXTRA_URL_REDEEM", url);
+        startActivity(intent);
     }
 
     @Override

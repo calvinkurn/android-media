@@ -1175,6 +1175,13 @@ public class ProductListFragment
     }
 
     @Override
+    public boolean isAnySortActive() {
+        if (searchParameter == null) return false;
+
+        return !SearchFilterUtilsKt.isSortHasDefaultValue(searchParameter.getSearchParameterMap());
+    }
+
+    @Override
     public void clearLastProductItemPositionFromCache() {
         if (getActivity() == null || getActivity().getApplicationContext() == null) return;
         LocalCacheHandler.clearCache(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);

@@ -357,8 +357,9 @@ class ShopProductModule {
 
     @Provides
     fun provideGMAuthInterceptor(@ShopPageContext context: Context?,
-                                 abstractionRouter: AbstractionRouter?): GMAuthInterceptor {
-        return GMAuthInterceptor(context, abstractionRouter)
+                                 userSession: UserSessionInterface,
+                                 abstractionRouter: NetworkRouter): GMAuthInterceptor {
+        return GMAuthInterceptor(context, userSession, abstractionRouter)
     }
 
     @ShopProductGMFeaturedQualifier
