@@ -262,6 +262,7 @@
     <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
+    <string name="shop_sort_filter_chips_name">Filter</string>
 
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
@@ -281,12 +282,10 @@
     <string name="content_desc_shop_page_main_profile_badge">image badge toko</string>
     <string name="content_desc_shop_page_main_profile_name">text nama toko</string>
     <string name="content_desc_shop_page_main_profile_location">text lokasi toko</string>
-    <string name="content_desc_shop_page_main_profile_follower">text jumlah follower toko</string>
+    <string name="content_desc_shop_page_main_profile_follower">text follower toko</string>
     <string name="content_desc_shop_page_main_profile_free_ongkir">text toko bebas ongkir</string>
-    <string name="content_desc_image_view_shop_reputation_badge">text reputasi toko</string>
-    <string name="content_desc_shop_page_follow_unfollow_button">button follow unfollow</string>
+    <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
-    <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
     <string name="content_desc_button_chat">button chat</string>
 
 </resources>

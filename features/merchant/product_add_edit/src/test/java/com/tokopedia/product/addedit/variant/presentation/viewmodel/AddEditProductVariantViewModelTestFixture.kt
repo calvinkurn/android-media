@@ -1,11 +1,10 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.addedit.coroutine.TestCoroutineDispatchers
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
+import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -25,12 +24,12 @@ abstract class AddEditProductVariantViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getCategoryVariantCombinationUseCase: GetCategoryVariantCombinationUseCase
+    lateinit var getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     val variantDetailTest1 = VariantDetail(
-            variantID=54,
+            variantID=1,
             identifier="",
             name="Ukuran Kemasan",
             status=1,
@@ -120,7 +119,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     protected val viewModel: AddEditProductVariantViewModel by lazy {
         spyk(AddEditProductVariantViewModel(
                 testCoroutineDispatcher,
-                getCategoryVariantCombinationUseCase
+                getVariantCategoryCombinationUseCase
         ))
     }
 

@@ -40,7 +40,10 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
@@ -71,6 +74,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
+    private var UOH_AB_TEST_KEY = "uoh_android_v2"
+    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -233,7 +238,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         } else {
             context?.let {
                 adapter.clearAllElements()
-                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
             }
         }
 
@@ -479,6 +484,23 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             recommendationList.add(RecommendationProductViewModel(item, recommendationWidget.title))
         }
         return recommendationList
+    }
+
+    private fun getAbTestingRemoteConfig(): RemoteConfig {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    private fun useUoh(): Boolean {
+        return try {
+            val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
+            (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {

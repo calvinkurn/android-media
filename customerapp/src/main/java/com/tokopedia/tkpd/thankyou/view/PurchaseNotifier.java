@@ -3,8 +3,9 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.pms.common.Constant;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 
@@ -38,7 +39,7 @@ public class PurchaseNotifier {
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.ARG_NOTIFICATION_TITLE, TOKOPEDIA);
                 bundle.putString(Constants.ARG_NOTIFICATION_DESCRIPTION, getTransferNotificationMessage(context, extras));
-                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, Constant.PURCHASE_VERIFICATION);
+                bundle.putString(Constants.ARG_NOTIFICATION_APPLINK, ApplinkConstInternalPayment.INSTANCE.getPMS_PAYMENT_LIST());
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
 

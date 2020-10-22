@@ -1,6 +1,7 @@
 query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
   get_home_recommendation{
     recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,banner_ads,position"){
+      pageName
       product{
         id
           name
@@ -20,6 +21,7 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
           slashed_price
           slashed_price_int
           rating
+          ratingAverage
           count_review
           recommendation_type
           shop{

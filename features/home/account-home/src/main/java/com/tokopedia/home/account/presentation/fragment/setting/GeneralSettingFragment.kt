@@ -37,9 +37,7 @@ import com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION
 import com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home.account.AccountConstants.Analytics.SAFE_MODE
-import com.tokopedia.home.account.AccountConstants.Analytics.SETTING
 import com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE
-import com.tokopedia.home.account.AccountConstants.Analytics.SHOP
 import com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
@@ -48,7 +46,6 @@ import com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECKOUT_TEM
 import com.tokopedia.home.account.data.util.NotifPreference
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent
 import com.tokopedia.home.account.di.module.SettingsModule
-import com.tokopedia.home.account.presentation.activity.StoreSettingActivity
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter
 import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
@@ -58,13 +55,15 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import kotlinx.android.synthetic.main.fragment_general_setting.*
 import java.util.*
 import javax.inject.Inject
 
@@ -95,13 +94,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             notifPreference = NotifPreference(it)
         }
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(GOOGLE_API_KEY)
-                .requestEmail()
-                .requestProfile()
-                .build()
+        activity?.run {
+            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getGoogleClientId(this))
+                    .requestEmail()
+                    .requestProfile()
+                    .build()
 
-        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, googleSignInOptions) } as GoogleSignInClient
+            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+        }
     }
 
     override fun onResume() {
@@ -150,10 +151,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
                 getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
-        if (userSession.hasShop()) {
-            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                    getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
-        }
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
@@ -206,6 +203,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
                     getString(R.string.title_dev_options)))
+
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
         }
 
         val itemOut = SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.account_home_button_logout))
@@ -225,10 +225,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(ACCOUNT)
                 RouteManager.route(activity, ApplinkConstInternalGlobal.ACCOUNT_SETTING)
             }
-            SettingConstant.SETTING_SHOP_ID -> {
-                accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
-                startActivity(StoreSettingActivity.createIntent(activity))
-            }
             SettingConstant.SETTING_TKPD_PAY_ID -> {
                 accountAnalytics.eventClickSetting(PAYMENT_METHOD)
                 startActivity(TkpdPaySettingActivity.createIntent(activity))
@@ -240,6 +236,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_NOTIFICATION_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
                 accountAnalytics.eventClickSetting(NOTIFICATION)
+                accountAnalytics.eventTroubleshooterClicked()
             }
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
@@ -276,6 +273,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            SettingConstant.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
@@ -440,6 +440,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun refreshSettingOptionsList() {
         if (adapter != null) {
+            setupTickerSellerMigration()
             adapter.setSettingItems(settingItems)
             adapter.notifyDataSetChanged()
         }
@@ -458,6 +459,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
         }
+    }
+
+    private fun setupTickerSellerMigration() {
+        initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
     }
 
     companion object {

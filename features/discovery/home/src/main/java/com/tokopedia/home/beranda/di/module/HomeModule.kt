@@ -13,12 +13,16 @@ import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaul
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
+import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.home.util.HomeCommandProcessor
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -54,12 +58,18 @@ class HomeModule {
     fun homeRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       homeDefaultDataSource: HomeDefaultDataSource
+                       homeDefaultDataSource: HomeDefaultDataSource,
+                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+                       @ApplicationContext context: Context,
+                       remoteConfig: RemoteConfig
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
-            geolocationRemoteDataSource)
+            geolocationRemoteDataSource,
+            dynamicChannelDataMapper,
+            context,
+            remoteConfig)
 
     @HomeScope
     @Provides
@@ -81,6 +91,10 @@ class HomeModule {
     @HomeScope
     fun provideHomeVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
 
+    @Provides
+    @HomeScope
+    fun provideHomeDynamicChannelVisitableFactory(userSessionInterface: UserSessionInterface?, remoteConfig: RemoteConfig): HomeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface!!, remoteConfig, HomeDefaultDataSource())
+
     @HomeScope
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
@@ -90,5 +104,9 @@ class HomeModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }
+
+    @HomeScope
+    @Provides
+    fun provideHomeProcessor(homeDispatcher: HomeDispatcherProvider): HomeCommandProcessor = HomeCommandProcessor(homeDispatcher.io())
 
 }

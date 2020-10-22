@@ -67,6 +67,8 @@ public interface ProductListSectionContract {
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
+        boolean isAnySortActive();
+
         void clearLastProductItemPositionFromCache();
 
         void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);

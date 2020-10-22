@@ -51,12 +51,12 @@ class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: Home
         StripedUnderlineUtil.stripUnderlines(tvDesc)
 
         tvDesc.setOnClickListener {
-            HomePageTracking.eventClickGeolocationComponent(itemView.context)
+            HomePageTracking.eventClickGeolocationComponent()
             homeCategoryListener?.launchPermissionChecker()
         }
 
         btnClose.setOnClickListener {
-            HomePageTracking.eventClickCloseGeolocationComponent(itemView.context)
+            HomePageTracking.eventClickCloseGeolocationComponent()
             homeCategoryListener?.onCloseGeolocationView()
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.activity
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -59,7 +60,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
     lateinit var topAdsInsightPresenter: TopAdsInsightPresenter
     private var currentGroupId: String = ""
     lateinit var adapter: TopAdsDashInsightKeyPagerAdapter
-    lateinit var data: InsightKeyData
+    var data: InsightKeyData? = null
     private var keyList: MutableList<String> = mutableListOf()
     private var requestFrom: String = REQUEST_FROM_POS
     private var countToAdd: Int = 1
@@ -74,6 +75,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         setContentView(R.layout.topads_dash_insight_key_activity_base_layout)
         topAdsInsightPresenter.attachView(this)
         topAdsInsightPresenter.getInsight(resources)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         tabUnify.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 view_pager.setCurrentItem(tab?.position?:0, true)
@@ -99,12 +101,14 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         })
 
         changeSelectedGroup.setOnClickListener {
-            val sheet = GroupSelectInsightSheet(data, currentGroupId)
-            sheet.show(supportFragmentManager, "")
-            sheet.selectedGroup = { position, groupId ->
-                sheet.dismiss()
-                currentGroupId = groupId
-                renderViewPager(data)
+            data?.let {
+                val sheet = GroupSelectInsightSheet(it, currentGroupId)
+                sheet.show(supportFragmentManager, "")
+                sheet.selectedGroup = { position, groupId ->
+                    sheet.dismiss()
+                    currentGroupId = groupId
+                    renderViewPager(it)
+                }
             }
         }
         header_toolbar?.setNavigationOnClickListener {
@@ -130,7 +134,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
         val list: ArrayList<Fragment> = arrayListOf()
         val bundle = Bundle()
         currentGroupId = if (currentGroupId.isEmpty()) {
-            intent.getStringExtra(KEY_INSIGHT)
+            intent.getStringExtra(KEY_INSIGHT)?:""
         } else
             currentGroupId
         currentTabPosition = tabUnify.getUnifyTabLayout().selectedTabPosition
@@ -191,7 +195,7 @@ class TopAdsKeywordInsightsActivity : BaseActivity(), HasComponent<TopAdsDashboa
 
     override fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean) {
         currentGroupId = groupId
-        val query = data.header.btnAction?.insight ?: ""
+        val query = data?.header?.btnAction?.insight ?: ""
         this.countToAdd = countToAdd
         topAdsInsightPresenter.topAdsCreated(groupId, query, mutationData)
         var eventAction = ""

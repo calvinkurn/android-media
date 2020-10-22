@@ -33,6 +33,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -82,10 +83,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -104,6 +102,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -113,8 +112,8 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper.PermissionCheckListener
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
@@ -284,7 +283,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-
+    private val gson = Gson()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -330,7 +329,6 @@ open class HomeFragment : BaseDaggerFragment(),
         injectCouponTimeBased()
         setGeolocationPermission()
         needToShowGeolocationComponent()
-        stickyContent
     }
 
 
@@ -469,10 +467,8 @@ open class HomeFragment : BaseDaggerFragment(),
             null
         }
 
-    private fun setupHomeRecyclerView() { //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
-//is finite
+    private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
-        homeRecyclerView?.itemAnimator = null
         if (homeRecyclerView?.itemDecorationCount == 0) {
             homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
         }
@@ -489,7 +485,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                    ContextCompat.getColor(it, R.color.green_600)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
         //status bar background compability, we show view background for android >= Kitkat
@@ -540,7 +536,7 @@ open class HomeFragment : BaseDaggerFragment(),
         registerBroadcastReceiverTokoCash()
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
-            HomePageTracking.eventClickJumpRecomendation(activity)
+            HomePageTracking.eventClickJumpRecomendation()
         }
         KeyboardHelper.setKeyboardVisibilityChangedListener(root, object : OnKeyboardVisibilityChangedListener {
             override fun onKeyboardShown() {
@@ -733,9 +729,10 @@ open class HomeFragment : BaseDaggerFragment(),
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
-                    setData(data.list as List<HomeVisitable>, data.isCache)
+                    setData(data.list, data.isCache)
                 } else if (!data.isCache) {
                     showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                    pageLoadTimeCallback?.invalidate()
                 }
             }
         })
@@ -748,8 +745,11 @@ open class HomeFragment : BaseDaggerFragment(),
                 hideLoading()
             } else if (status === Result.Status.ERROR) {
                 hideLoading()
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                showNetworkError(getString(R.string.home_error_connection))
                 pageLoadTimeCallback?.invalidate()
+            } else if (status === Result.Status.ERROR_PAGINATION) {
+                hideLoading()
+                showNetworkError(getString(R.string.home_error_connection))
             } else {
                 showLoading()
             }
@@ -893,19 +893,25 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
+    private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if(!data.isEmpty()) {
-            if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                setOnRecyclerViewLayoutReady(isCache);
-                adapter?.submitList(data);
-            } else {
-                adapter?.submitList(data);
+            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
+                setOnRecyclerViewLayoutReady(isCache)
             }
+            adapter?.submitList(data)
+            adjustTickerLayout()
+        }
+    }
 
-            if (isDataValid(data)) {
-                removeNetworkError();
-            } else {
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR);
+    private fun adjustTickerLayout() {
+        /**
+         * Mandatory! Because ticker height is depends on the highest message, we need to requestLayout()
+         * when there is ticker available. Otherwise, ticker component will get cut.
+         */
+        val tickerPosition = adapter?.currentList?.indexOfFirst { it is TickerDataModel }
+        tickerPosition?.let {
+            if (it != -1) {
+                adapter?.notifyItemChanged(it)
             }
         }
     }
@@ -1015,7 +1021,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 HomeReminderWidgetCallback(RechargeRecommendationCallback(context,getHomeViewModel(),this),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
                 ProductHighlightComponentCallback(this),
-                Lego4AutoBannerComponentCallback(context, this)
+                Lego4AutoBannerComponentCallback(context, this),
+                FeaturedShopComponentCallback(context, this)
+
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1181,7 +1189,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo(activity)
+        HomePageTracking.eventClickViewAllPromo()
         HomeTrackingUtils.homeViewAllPromotions(activity, "PromoListActivity")
         val remoteConfigEnable: Boolean
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
@@ -1223,11 +1231,11 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_REVIEW -> {
-                if(shouldShowToaster()) {
-                    showToasterReviewSuccess()
-                }
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
+                    if(shouldShowToaster()) {
+                        showToasterReviewSuccess()
+                    }
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
@@ -1256,7 +1264,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        homeRecyclerView?.itemAnimator = null
+//        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
@@ -1319,7 +1327,12 @@ open class HomeFragment : BaseDaggerFragment(),
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
             }
+            onPageLoadTimeEnd()
         }
+    }
+
+    private fun onPageLoadTimeEnd() {
+        stickyContent
     }
 
     private fun needToShowGeolocationComponent() {
@@ -1364,14 +1377,14 @@ open class HomeFragment : BaseDaggerFragment(),
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        HomePageTracking.eventClickNotAllowGeolocation(activity)
+                        HomePageTracking.eventClickNotAllowGeolocation()
                         getHomeViewModel().onCloseGeolocation()
                         showNotAllowedGeolocationSnackbar()
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionGranted() {
-                        HomePageTracking.eventClickAllowGeolocation(activity)
+                        HomePageTracking.eventClickAllowGeolocation()
                         detectAndSendLocation()
                         getHomeViewModel().onCloseGeolocation()
                         showAllowedGeolocationSnackbar()
@@ -1504,11 +1517,7 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
             if (adapter!!.itemCount > 0) {
-                if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
-                            activity, getString(R.string.msg_network_error)) { onNetworkRetry() }
-                }
-                messageSnackbar?.showRetrySnackbar()
+                showToaster(message, TYPE_ERROR)
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
@@ -1545,7 +1554,8 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+        if(getHomeViewModel().getUserId().isNotEmpty()) getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
+        else RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
@@ -1555,6 +1565,14 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             RouteManager.route(context, playBannerCarouselItemDataModel.applink)
         }
+    }
+
+    override fun getTopAdsBannerNextPageToken(): String {
+        return getHomeViewModel().currentTopAdsBannerToken
+    }
+
+    override fun onDynamicChannelRetryClicked() {
+        getHomeViewModel().onDynamicChannelRetryClicked()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -1873,7 +1891,7 @@ open class HomeFragment : BaseDaggerFragment(),
         getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting)) { view: View? ->
-                    HomePageTracking.eventClickOnAtur(activity)
+                    HomePageTracking.eventClickOnAtur()
                     goToApplicationDetailActivity()
                 }.show()
     }
@@ -2010,8 +2028,12 @@ open class HomeFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
-    private fun needToPerformanceMonitoring(): Boolean {
-        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded
+    private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {
+        val dynamicChannelComponent = data.firstOrNull { it is HomeComponentVisitable }
+        val dynamicChannel = data.firstOrNull { it is DynamicChannelDataModel }
+        val dynamicChannelIsExist = dynamicChannelComponent != null || dynamicChannel != null
+
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded && dynamicChannelIsExist
     }
 
     private fun showToaster(message: String, typeToaster: Int) {

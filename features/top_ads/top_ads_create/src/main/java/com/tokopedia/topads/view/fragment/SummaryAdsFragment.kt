@@ -43,7 +43,7 @@ import javax.inject.Inject
  * Author errysuprayogi on 29,October,2019
  */
 
-private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan manual"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
@@ -292,8 +292,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun addKeywords(index: Int) {
         val key = KeywordsItem()
+        if (stepperModel?.selectedKeywordType?.isNotEmpty() != false && index < stepperModel?.selectedKeywordType?.size ?: -1) {
+            key.keywordTypeID = stepperModel?.selectedKeywordType?.get(index).toString()
+        }
         key.keywordTag = stepperModel?.selectedKeywords?.get(index) ?: ""
-        key.keywordTypeID = stepperModel?.selectedKeywordType?.get(index).toString()
         if (stepperModel?.selectedSuggestBid?.get(index) ?: 0 > 0) {
             key.priceBid = stepperModel?.selectedSuggestBid?.get(index) ?: 0
         } else

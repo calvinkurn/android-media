@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseManagementListener
 import com.tokopedia.shop_showcase.common.ShowcaseType
@@ -22,9 +23,9 @@ class ShopShowcaseListAdapter (
         val isMyShop: Boolean
 ): RecyclerView.Adapter<ShopShowcaseListAdapter.ViewHolder>() {
 
-    private var showcaseList: MutableList<ShowcaseItem> = mutableListOf()
+    private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
 
-    fun updateDataShowcaseList(showcaseListData: List<ShowcaseItem>) {
+    fun updateDataShowcaseList(showcaseListData: List<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
         notifyDataSetChanged()
     }
@@ -55,13 +56,13 @@ class ShopShowcaseListAdapter (
             campaignLabel = itemView.findViewById(R.id.tv_campaign_label)
         }
 
-        fun bindData(dataShowcase: ShowcaseItem, position: Int) {
+        fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {
             titleShowcase?.text = dataShowcase.name
 
-            if (dataShowcase.type == ShowcaseType.GENERATED || !isMyShop) {
-                buttonMenuMore?.visibility = View.INVISIBLE
-            } else {
+            if (dataShowcase.type == ShowcaseType.CUSTOM && isMyShop) {
                 buttonMenuMore?.visibility = View.VISIBLE
+            } else {
+                buttonMenuMore?.visibility = View.INVISIBLE
             }
 
             if(dataShowcase.type ==  ShowcaseType.CAMPAIGN){
