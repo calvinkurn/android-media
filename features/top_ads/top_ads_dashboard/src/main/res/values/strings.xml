@@ -283,5 +283,11 @@
     <string name="topads_insight_invalid_key_tag_pos">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci negatif di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
     <string name="topads_insight_invalid_key_tag_neg">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
 
+    <string name="topads_dashboard_ad_type_selection_label">Tambah Iklan</string>
+    <string name="topads_dashboard_ad_product_type_selection_title">Iklan Produk</string>
+    <string name="topads_dashboard_ad_product_type_selection_subtitle">Produk pilihanmu akan tampil di halaman strategis Tokopedia.</string>
+    <string name="topads_dashboard_ad_headline_type_selection_title">Iklan Toko</string>
+    <string name="topads_dashboard_ad_headline_type_selection_subtitle">Produk dan tokomu akan tampil teratas di hasil pencarian Tokopedia.</string>
+
 </resources>
 

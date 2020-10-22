@@ -73,8 +73,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             if (GlobalConfig.isSellerApp()) {
                 val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
                 startActivityForResult(intent, AUTO_ADS_DISABLED)
-            } else {
-                openCreateForm()
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
@@ -240,7 +238,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun openCreateForm() {
         if (AppUtil.isSellerInstalled(this)) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
             intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_CREATE_FORM_PATH)
             startActivity(intent)
         } else {

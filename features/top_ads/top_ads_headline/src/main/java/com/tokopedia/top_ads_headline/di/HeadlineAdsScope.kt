@@ -1,4 +1,4 @@
-package com.example.top_ads_headline.di
+package com.tokopedia.top_ads_headline.di
 
 import javax.inject.Scope
 
