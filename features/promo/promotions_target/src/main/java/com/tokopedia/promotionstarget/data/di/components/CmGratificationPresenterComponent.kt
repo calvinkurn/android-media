@@ -5,6 +5,7 @@ import com.tokopedia.promotionstarget.data.di.modules.DispatcherModule
 import com.tokopedia.promotionstarget.data.di.modules.GqlModule
 import com.tokopedia.promotionstarget.data.di.modules.GratiffPresenterModule
 import com.tokopedia.promotionstarget.data.di.scopes.CmGratifPresnterScope
+import com.tokopedia.promotionstarget.domain.presenter.GratifThankYouUseCase
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import dagger.Component
 
@@ -13,4 +14,5 @@ import dagger.Component
 interface CmGratificationPresenterComponent {
 
     fun inject(presenter: GratificationPresenter)
+    fun inject(usecase: GratifThankYouUseCase)
 }

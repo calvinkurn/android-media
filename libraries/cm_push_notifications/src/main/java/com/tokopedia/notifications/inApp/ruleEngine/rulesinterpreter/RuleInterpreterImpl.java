@@ -75,11 +75,11 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                 }
                             }
                         }
-                        dataProvider.notificationsDataResult(inAppList, entityHashCode);
+                        dataProvider.notificationsDataResult(inAppList, entityHashCode, entity);
                     }
 
                     @Override public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null,entityHashCode);
+                        dataProvider.notificationsDataResult(null,entityHashCode, entity);
                     }
 
                     @Override public void onCompleted() {}

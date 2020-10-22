@@ -35,7 +35,7 @@ class InAppDataProviderSubscriber(
             }
 
         }
-        dataProvider?.notificationsDataResult(inAppList,0)
+        dataProvider?.notificationsDataResult(inAppList,0,"")
     }
 
     override fun onCompleted() {
@@ -43,7 +43,7 @@ class InAppDataProviderSubscriber(
     }
 
     override fun onError(e: Throwable?) {
-        dataProvider?.notificationsDataResult(null,0)
+        dataProvider?.notificationsDataResult(null,0,"")
     }
 
     private fun checkIfActiveInTimeFrame(inAppData: CMInApp, currentTime: Long): Boolean {

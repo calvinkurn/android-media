@@ -11,10 +11,12 @@ import java.util.List;
 import rx.Completable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class StorageProvider implements InterfaceDataStore {
     private InAppDataDao inAppDataDao;
     private ElapsedTimeDao elapsedTimeDao;
+    String TAG = "GratifTag";
 
     public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao) {
         this.inAppDataDao = inAppDataDao;
@@ -27,8 +29,15 @@ public class StorageProvider implements InterfaceDataStore {
             @Override
             public void call() {
                 List<CMInApp> dataFromParentID = inAppDataDao.getDataFromParentIdForPerstOff(value.parentId);
-                if (dataFromParentID == null || dataFromParentID.isEmpty())
-                    inAppDataDao.insert(value);
+                if (dataFromParentID == null || dataFromParentID.isEmpty()) {
+                    CMInApp oldData = inAppDataDao.getInAppData(value.id);
+                    if (oldData != null) {
+                        Timber.d(TAG+" in-app NotificationId - " + value.id + " insert fail - it is already present");
+                    } else {
+                        Timber.d(TAG+" in-app NotificationId - " + value.id + " insert success");
+                    }
+                    long rowId = inAppDataDao.insert(value);
+                }
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -38,6 +47,14 @@ public class StorageProvider implements InterfaceDataStore {
         return Completable.fromAction(new Action0() {
             @Override
             public void call() {
+                for(CMInApp inApp:inAppDataRecords){
+                    CMInApp oldData = inAppDataDao.getInAppData(inApp.id);
+                    if (oldData != null) {
+                        Timber.d(TAG+" in-app LIST NotificationId - " + inApp.id + " insert fail - it is already present");
+                    } else {
+                        Timber.d(TAG+" in-app LIST NotificationId - " + inApp.id + " insert success");
+                    }
+                }
                 inAppDataDao.insert(inAppDataRecords);
             }
         }).subscribeOn(Schedulers.io());

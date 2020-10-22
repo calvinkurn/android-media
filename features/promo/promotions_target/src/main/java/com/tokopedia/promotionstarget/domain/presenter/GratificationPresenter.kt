@@ -1,9 +1,8 @@
 package com.tokopedia.promotionstarget.domain.presenter
 
 import android.app.Activity
-import android.app.Application
+import android.content.Context
 import android.content.DialogInterface
-import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
@@ -28,21 +27,23 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Com
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.UNKOWN_ERROR
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
+import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
+import com.tokopedia.promotionstarget.presentation.ui.Locks
 import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.*
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val application: Application, val dialogIsShownMap: WeakHashMap<Activity,Boolean>) {
+class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity,Boolean>) {
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
     @Inject
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
-
 
     @Inject
     @field:Named(IO)
@@ -59,7 +60,7 @@ class GratificationPresenter @Inject constructor(val application: Application, v
 
     init {
         DaggerCmGratificationPresenterComponent.builder()
-                .appModule(AppModule(application))
+                .appModule(AppModule(context))
                 .build()
                 .inject(this)
     }
@@ -68,44 +69,75 @@ class GratificationPresenter @Inject constructor(val application: Application, v
     private fun getNotification(weakActivity: WeakReference<Activity>?,
                                 notificationID: Int,
                                 @NotificationEntryType notificationEntryType: Int,
-                                paymentID: Int = 0,
-                                gratifPopupCallback: GratifPopupCallback? = null): Job? {
+                                paymentID: Long = 0L,
+                                gratifPopupCallback: GratifPopupCallback? = null,
+                                screenName: String,
+                                timeout: Long
+    ): Job? {
         return scope?.launch(worker + ceh) {
-            val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
-//            val notifResponse = notificationUseCase.getResponse(map)
-            val notifResponse = notificationUseCase.getFakeResponse(map)
-            //todo Rahul verify key later
-            val reason = notifResponse.response?.resultStatus?.code
-            if (reason == GratifResultStatus.SUCCESS) {
-                //todo Rahul refactor later
-//                val code = notifResponse.response.promoCode
-                val code = "NUPLBDAY5D7RUU5M329"
-                if (!code.isNullOrEmpty()) {
-                    val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
+            Locks.notificationMutex.withLock {
+                if (timeout > 0L) {
+                    withTimeout(timeout, block = {
+                        processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName)
+                    })
+                } else {
+                    processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName)
+                }
+
+            }
+        }
+    }
+
+    private suspend fun processApis(weakActivity: WeakReference<Activity>,
+                                    notificationID: Int,
+                                    @NotificationEntryType notificationEntryType: Int,
+                                    paymentID: Long = 0,
+                                    gratifPopupCallback: GratifPopupCallback? = null,
+                                    screenName: String) {
+
+        val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
+        Timber.d("$TAG GRATIF ENGINE API START with=$map")
+        val notifResponse = notificationUseCase.getResponse(map)
+//                val notifResponse = notificationUseCase.getFakeResponse(map)
+        Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
+        //todo Rahul verify key later
+        val reason = notifResponse.response?.resultStatus?.code
+        if (reason == GratifResultStatus.SUCCESS) {
+            //todo Rahul refactor later
+            val code = notifResponse.response.promoCode
+//                    val code = "NUPLBDAY5D7RUU5M329"
+//                    val code = "UNDIANMITRA05D7RUC66K7ZJDG8JA"  //expired
+//                    val code = "UNDIANMITRA205D7RUC66K7ZJ9QUR9"  //used
+            if (!code.isNullOrEmpty()) {
+                val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
 //                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
-                    val couponStatus = couponDetail?.coupon?.realCode ?: ""
-                    if (couponStatus.isNotEmpty()) {
-                        withContext(uiWorker) {
-                            weakActivity?.get()?.let { activity ->
-                                if (notificationEntryType == NotificationEntryType.PUSH) {
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
-                                } else if (dialogIsShownMap[activity] != null) {
-                                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
-                                } else {
-                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback)
-                                }
+                val couponStatus = couponDetail?.coupon?.realCode ?: ""
+                if (couponStatus.isNotEmpty()) {
+                    withContext(uiWorker) {
+                        weakActivity.get()?.let { activity ->
+                            if (notificationEntryType == NotificationEntryType.PUSH) {
+                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
+                            } else if (CmGratificationDialog.weakHashMap[activity] != null) {
+                                Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
+                                gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                            } else {
+                                Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
+                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
                             }
                         }
-                    } else {
-                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                     }
-
                 } else {
-                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
+                    Timber.d("$TAG COUPON ENGINE INVALID COUPON, notifId = $notificationID, couponCode=$code")
+                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.INVALID_COUPON)
                 }
+
             } else {
-                gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
+                Timber.d("$TAG GRATIF ENGINE COUPON CODE EMPTY, notifId = $notificationID")
+                gratifPopupCallback?.onIgnored(GratifPopupIngoreType.COUPON_CODE_EMPTY)
             }
+        } else {
+            Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
+            gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
         }
     }
 
@@ -113,7 +145,8 @@ class GratificationPresenter @Inject constructor(val application: Application, v
                                   gratifNotification: GratifNotification,
                                   couponDetail: TokopointsCouponDetailResponse,
                                   @NotificationEntryType notificationEntryType: Int,
-                                  gratifPopupCallback: GratifPopupCallback? = null
+                                  gratifPopupCallback: GratifPopupCallback? = null,
+                                  screenName: String
     ) {
 
         val dialog = CmGratificationDialog().show(activity,
@@ -124,12 +157,14 @@ class GratificationPresenter @Inject constructor(val application: Application, v
                     if (dialog != null) {
                         gratifPopupCallback?.onShow(dialog)
                     }
-                })
+                }, screenName)
         dialogIsShownMap[activity] = true
 
         dialog?.setOnDismissListener { dialogInterface ->
             dialogIsShownMap.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
+            val userId = UserSession(activity).userId
+            GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
         }
         dialog?.setOnCancelListener { dialogInterface ->
             dialogIsShownMap.remove(activity)
@@ -138,27 +173,52 @@ class GratificationPresenter @Inject constructor(val application: Application, v
     }
 
 
-    fun showGratificationInApp(weakActivity: WeakReference<Activity>?,
-                               gratificationId: String?,
+    fun showGratificationInApp(weakActivity: WeakReference<Activity>,
+                               gratificationId: String? = "",
                                @NotificationEntryType notificationEntryType: Int,
-                               gratifPopupCallback: GratifPopupCallback?
+                               gratifPopupCallback: GratifPopupCallback,
+                               screenName: String,
+                               paymentID: Long = 0L,
+                               timeout: Long = 0L
     ): Job? {
-        Log.d("NOOB", "showGratificationInApp")
         try {
 
             synchronized(this) {
                 initSafeJob()
                 initSafeScope()
             }
+            weakActivity.get()?.let { activity ->
+                if (CmGratificationDialog.weakHashMap[activity] != null) {
+                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
+                    gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                    return null
+                }
+            }
             if (!gratificationId.isNullOrEmpty()) {
-                return getNotification(weakActivity, gratificationId.toInt(), notificationEntryType, gratifPopupCallback = gratifPopupCallback)
+                return getNotification(weakActivity,
+                        gratificationId.toInt(),
+                        notificationEntryType,
+                        gratifPopupCallback = gratifPopupCallback,
+                        screenName = screenName,
+                        paymentID = paymentID,
+                        timeout = timeout
+                )
             }
 
         } catch (ex: Exception) {
+            Timber.d("$TAG unexpected error for gratifId=$gratificationId")
             exceptionCallback?.onError(ex)
             ex.printStackTrace()
         }
         return null
+    }
+
+    fun onClear() {
+        try {
+            scope?.cancel()
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
     }
 
     private fun initSafeScope() {

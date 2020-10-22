@@ -35,12 +35,14 @@ import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
 import com.tokopedia.promotionstarget.data.notification.HachikoButtonType
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
+import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.CmGratificationViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -69,13 +71,29 @@ class CmGratificationDialog {
     private var couponDetailResponse: TokopointsCouponDetailResponse? = null
     private var buttonText = ""
 
+    @NotificationEntryType
+    private var notificationEntryType = NotificationEntryType.ORGANIC
+    private var screenName = ""
+
+    companion object {
+        val weakHashMap = WeakHashMap<Activity, Boolean>()
+    }
+
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
     }
 
-    fun show(activityContext: Context, gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse, @NotificationEntryType notificationEntryType: Int, onShowListener: DialogInterface.OnShowListener): BottomSheetDialog? {
+    fun show(activityContext: Context,
+             gratifNotification: GratifNotification,
+             couponDetailResponse: TokopointsCouponDetailResponse,
+             @NotificationEntryType notificationEntryType: Int,
+             onShowListener: DialogInterface.OnShowListener,
+             screenName: String
+    ): BottomSheetDialog? {
         this.gratifNotification = gratifNotification
         this.couponDetailResponse = couponDetailResponse
+        this.notificationEntryType = notificationEntryType
+        this.screenName = screenName
 
         val pair = prepareBottomSheet(activityContext, onShowListener)
         bottomSheetDialog = pair.second
@@ -215,6 +233,9 @@ class CmGratificationDialog {
                         }
                     }
                 }
+
+                val userId = UserSession(btnAction.context).userId
+                GratificationAnalyticsHelper.handleClickSecondaryCta(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName)
             }
             btnAction2.post { expandBottomSheet() }
         }
@@ -248,6 +269,9 @@ class CmGratificationDialog {
                     LiveDataResult.STATUS.ERROR -> {
                         btnAction.text = buttonText
                         toggleProgressBar(false)
+
+                        val userId = UserSession(btnAction.context).userId
+                        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, "fail")
                     }
                     LiveDataResult.STATUS.LOADING -> {
                         btnAction.text = ""
@@ -258,12 +282,17 @@ class CmGratificationDialog {
         }
     }
 
-    private fun handleAutoApplySuccess(autoApplyResponse: AutoApplyResponse?){
+    private fun handleAutoApplySuccess(autoApplyResponse: AutoApplyResponse?) {
         performShowToast(autoApplyResponse)
         val code = autoApplyResponse?.tokopointsSetAutoApply?.resultStatus?.code
-        if(code == "200") {
+        if (code == "200") {
             handleGreenBtnRedirection()
         }
+
+        val userId = UserSession(btnAction.context).userId
+        val autoApplyStatusCode = if (code == "200") "success" else "fail"
+        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, autoApplyStatusCode)
+
         toggleProgressBar(false)
         btnAction.text = buttonText
     }
@@ -281,10 +310,17 @@ class CmGratificationDialog {
                 viewModel.autoApply(code)
             } else {
                 handleGreenBtnRedirection()
+                sendGreenButtonClickEventForNoAutoApply()
             }
         } else {
             handleGreenBtnRedirection()
+            sendGreenButtonClickEventForNoAutoApply()
         }
+    }
+
+    private fun sendGreenButtonClickEventForNoAutoApply(){
+        val userId = UserSession(btnAction.context).userId
+        GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, null)
     }
 
     private fun toggleSecondButton(toggle: Boolean) {

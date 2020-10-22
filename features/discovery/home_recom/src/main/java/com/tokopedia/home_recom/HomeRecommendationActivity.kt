@@ -60,7 +60,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
                                 getRecomPageProductId(),
                                 getSource(),
                                 getRef(),
-                                getInternalRef())
+                                getInternalRef(),
+                                FragmentInflater.ACTIVITY)
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)

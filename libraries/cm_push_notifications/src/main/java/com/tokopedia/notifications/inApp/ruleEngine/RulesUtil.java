@@ -25,7 +25,8 @@ public class RulesUtil {
             String CANCELLABLE = "d";
             String IS_TEST = "isTest";
             String PERST_ON = "perstOn";
-            String SCREEN_NAME = "ss";
+            String SCREEN_NAME = "s";
+            String MULTIPLE_SCREEN_NAME = "ss";
             String UI = "ui";
         }
     }

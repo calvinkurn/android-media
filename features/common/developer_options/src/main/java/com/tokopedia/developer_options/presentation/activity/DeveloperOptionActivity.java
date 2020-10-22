@@ -134,6 +134,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private EditText etDelayGratif;
     private AppCompatTextView btnDelayGratif;
     private CheckBox cbGratifDebugToast;
+    private AppCompatTextView btnShowLogs;
 
     @Override
     public String getScreenName() {
@@ -258,6 +259,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         etDelayGratif = findViewById(R.id.et_delay_gratif);
         btnDelayGratif = findViewById(R.id.btn_delay_gratif_pop_up);
         cbGratifDebugToast = findViewById(R.id.cb_gratif_debug_toast);
+        btnShowLogs = findViewById(R.id.btn_log_viewer);
     }
 
     private void initListener() {
@@ -505,8 +507,11 @@ public class DeveloperOptionActivity extends BaseActivity {
                 SharedPreferences sp1 = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
                 sp1.edit().putInt("get_notification_delay",delayInNum).apply();
             }catch (Exception e){
+                Timber.e(e);
                 Toast.makeText(btnDelayGratif.getContext(),"Unable to save",Toast.LENGTH_SHORT).show();
             }
+
+
         });
 
         boolean isDebugGratifChecked = gratifSp.getBoolean("gratif_debug_toast",false);
@@ -516,6 +521,16 @@ public class DeveloperOptionActivity extends BaseActivity {
         cbGratifDebugToast.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
             sp.edit().putBoolean("gratif_debug_toast",isChecked).apply();
+        });
+
+        btnShowLogs.setOnClickListener(v -> {
+            try{
+                String className = "com.tokopedia.logger.viewer.LogcatActivity";
+                Intent i = new Intent(v.getContext(),Class.forName(className));
+                startActivity(i);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         });
     }
 

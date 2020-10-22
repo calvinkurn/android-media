@@ -40,7 +40,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-
 }
 
 project.ext {
