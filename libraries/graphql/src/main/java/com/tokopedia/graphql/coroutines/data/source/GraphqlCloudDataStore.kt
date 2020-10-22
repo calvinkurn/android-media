@@ -78,7 +78,7 @@ class GraphqlCloudDataStore @Inject constructor(
             requests: List<GraphqlRequest>,
             cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponseInternal {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             var result: Response<JsonArray>? = null
             try {
                 if (requests == null || requests.isEmpty()) {
