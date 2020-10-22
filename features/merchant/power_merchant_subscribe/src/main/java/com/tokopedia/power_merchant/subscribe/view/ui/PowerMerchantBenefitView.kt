@@ -12,7 +12,8 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
-import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.*
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.PowerMerchantBenefit
+import com.tokopedia.power_merchant.subscribe.view.viewholder.PowerMerchantItemViewHolder.*
 import kotlinx.android.synthetic.main.layout_power_merchant_benefit.view.*
 
 class PowerMerchantBenefitView: ConstraintLayout {
@@ -24,8 +25,6 @@ class PowerMerchantBenefitView: ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet): super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
-
-    private val adapter by lazy { PowerMerchantViewAdapter() }
 
     init {
         inflate(context, R.layout.layout_power_merchant_benefit, this)
@@ -39,11 +38,14 @@ class PowerMerchantBenefitView: ConstraintLayout {
     }
 
     private fun setupBenefitList() {
+        val listener = createViewHolderListener()
+        val adapter = PowerMerchantViewAdapter(listener)
+
         val benefits = listOf(
             PowerMerchantBenefit(
-                R.string.power_merchant_shop_benefit,
-                R.string.power_merchant_shop_benefit_description,
-                R.drawable.ic_power_merchant
+                    R.string.power_merchant_shop_benefit,
+                    R.string.power_merchant_shop_benefit_description,
+                    com.tokopedia.gm.common.R.drawable.ic_power_merchant
             ),
             PowerMerchantBenefit(
                 R.string.power_merchant_top_ads_benefit,
@@ -65,12 +67,24 @@ class PowerMerchantBenefitView: ConstraintLayout {
         )
 
         with(listBenefit) {
+            this.adapter = adapter
             isNestedScrollingEnabled = false
-            adapter = this@PowerMerchantBenefitView.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
 
         adapter.items = benefits
+    }
+
+    private fun createViewHolderListener() = object : PmViewHolderListener {
+        override fun onItemClicked(title: Int) {
+            when (title) {
+                R.string.power_merchant_broadcast_benefit -> trackClickBroadcastTnC()
+            }
+        }
+    }
+
+    private fun trackClickBroadcastTnC() {
+        powerMerchantTracking?.eventClickBroadcastTnC()
     }
 
     private fun setOnClickTextLearnMore() {
@@ -85,7 +99,7 @@ class PowerMerchantBenefitView: ConstraintLayout {
     }
 
     private fun trackClickLearnMore() {
-        powerMerchantTracking?.eventLearnMorePm()
+        powerMerchantTracking?.eventClickLearnMoreUpgradeShop()
     }
 
     private fun goToLearnMorePage() {

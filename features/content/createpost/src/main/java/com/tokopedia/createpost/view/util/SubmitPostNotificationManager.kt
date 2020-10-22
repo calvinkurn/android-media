@@ -33,14 +33,14 @@ abstract class SubmitPostNotificationManager(
     }
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle(context.getString(R.string.af_notif_uploading))
-        setSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_big_notif_customerapp))
+        setContentTitle(context.getString(R.string.cp_notif_uploading))
+        setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
+        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         updateLargeIcon(this)
 
-        val format = context.getString(R.string.af_notif_media)
+        val format = context.getString(R.string.cp_notif_media)
         val text = String.format(format, currentProgress, maxCount)
         setContentText(text)
         setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -56,7 +56,7 @@ abstract class SubmitPostNotificationManager(
     fun onAddProgress() {
         currentProgress++
 
-        val format = context.getString(R.string.af_notif_media)
+        val format = context.getString(R.string.cp_notif_media)
         val text = String.format(format, currentProgress, maxCount)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -68,7 +68,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSubmitPost() {
-        val text = context.getString(R.string.af_notif_submit)
+        val text = context.getString(R.string.cp_notif_submit)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, true)
@@ -79,7 +79,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSuccessPost() {
-        val text = context.getString(R.string.af_notif_success)
+        val text = context.getString(R.string.cp_notif_success)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -91,7 +91,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onFailedPost(errorMessage: String) {
-        val text = context.getString(R.string.af_notif_error)
+        val text = context.getString(R.string.cp_notif_error)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -115,7 +115,7 @@ abstract class SubmitPostNotificationManager(
             Glide.with(context.applicationContext)
                     .asBitmap()
                     .load(file)
-                    .error(R.drawable.ic_big_notif_customerapp)
+                    .error(com.tokopedia.design.R.drawable.ic_big_notif_customerapp)
                     .into(object: CustomTarget<Bitmap>(100, 100) {
                         override fun onLoadCleared(placeholder: Drawable?) {
 

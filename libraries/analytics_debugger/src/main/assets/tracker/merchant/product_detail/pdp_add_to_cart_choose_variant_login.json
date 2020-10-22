@@ -1,0 +1,72 @@
+{
+  "readme": "Product Detail - click add to cart login",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "product detail page",
+      "eventAction": "{{.*}}",
+      "event": "view_item",
+      "categoryId": "{{productId : \\d{1,}}}",
+      "productId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "{{.*}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}",
+      "promotions": [
+        {
+          "item_id": "{{.*}}",
+          "creative_url": "{{.*}}",
+          "creative_name": "{{layout:.*;comp:.*;temp:.*;}}",
+          "category": "{{.*}}",
+          "item_name": "{{.*}}",
+          "promo_code": "{{.*}}",
+          "promo_id": "{{.*}}",
+          "creative_slot": "{{\\d{1,}}}"
+        }
+      ]
+    },
+    {
+      "eventCategory": "product detail page",
+      "eventAction": "{{.*}}",
+      "event": "clickPDP",
+      "productId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "eventLabel": "{{level : \\d{1,};variant_title : .*;variant_value: .*;variant : \\d{1,};}}",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
+    },
+    {
+      "eventCategory": "product detail page",
+      "eventAction": "{{.*}}",
+      "event": "add_to_cart",
+      "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",
+      "productId": "{{\\d{1,}}}",
+      "user_id": "{{\\d{1,}}}",
+      "isLoggedInStatus": "{{true|false}}",
+      "sessionIris": "{{.{1,}}}",
+      "shopId": "{{\\d{1,}}}",
+      "shopType": "{{.*}}",
+      "items": [
+        {
+          "item_category": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "dimension54": "{{.*}}",
+          "dimension80": "{{.*}}",
+          "dimension81": "{{.*}}",
+          "dimension45": "{{\\d{1,}}}",
+          "dimension83": "{{.*}}",
+          "dimension40": "{{.*}}",
+          "dimension79": "{{\\d{1,}}}",
+          "item_id": "{{\\d{1,}}}",
+          "quantity": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "item_variant": "{{.*}}",
+          "item_name": "{{.*}}",
+          "dimension82": "{{.*}}",
+          "dimension38": "{{.*}}"
+        }
+      ],
+      "eventLabel": "{{.*}}"
+    }
+  ]
+}

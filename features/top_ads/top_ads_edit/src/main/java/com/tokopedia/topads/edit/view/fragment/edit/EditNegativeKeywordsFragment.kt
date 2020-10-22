@@ -3,9 +3,11 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,9 +18,11 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_KEYWORD
@@ -70,7 +74,8 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun showNegConfirmationDialog(position: Int) {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
-        dialog.setDescription(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc))
+        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
+                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
         dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
         dialog.setPrimaryCTAClickListener {
@@ -126,7 +131,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        keyword_count.text = String.format(getString(R.string.keyword_count), adapter.items.size)
+        keyword_count.text = String.format(getString(R.string.topads_edit_kata_kunci_negative_count), adapter.items.size)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -155,6 +160,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             setVisibilityOperation(View.GONE)
 
         }
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
@@ -209,8 +215,11 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     fun sendData(): Bundle {
         val bundle = Bundle()
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+        list.addAll(adapter.getCurrentItems())
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_ADDED, addedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
+        bundle.putParcelableArrayList(NEGATIVE_KEYWORD_ALL, list)
         return bundle
     }
 

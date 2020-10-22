@@ -1,0 +1,21 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "result_status": {
+        "code": "42049",
+        "message": [
+          "Nomor telepon Anda belum terverifikasi, silahkan lengkapi Profil Anda"
+        ],
+        "reason": "MSISDN not verified"
+      },
+      "empty_state": {
+        "title": "Ayo verifikasi nomor HP kamu!",
+        "description": "Supaya bisa gunakan berbagai promo menarik",
+        "image_url": "https://ecs7.tokopedia.net/microsite-production/tokopoints/noHp@3x.png"
+      }
+    }
+  }
+}

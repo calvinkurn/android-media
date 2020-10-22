@@ -1,11 +1,11 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
@@ -47,16 +47,16 @@ public class OrderServiceAdapter extends RecyclerView.Adapter<OrderServiceAdapte
 
     @Override
     public void onBindViewHolder(OrderServiceViewHolder holder, int position) {
-        final CourierServiceModel courierViewModel = modelList.get(position);
-        holder.serviceName.setText(courierViewModel.getServiceName());
+        final CourierServiceModel courierUiModel = modelList.get(position);
+        holder.serviceName.setText(courierUiModel.getServiceName());
         holder.servicePlaceHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CourierSelectionModel model = new CourierSelectionModel();
                 model.setCourierId(courierId);
                 model.setCourierName(courierName);
-                model.setServiceId(courierViewModel.getServiceId());
-                model.setServiceName(courierViewModel.getServiceName());
+                model.setServiceId(courierUiModel.getServiceId());
+                model.setServiceName(courierUiModel.getServiceName());
                 listener.onServiceSelected(model);
             }
         });

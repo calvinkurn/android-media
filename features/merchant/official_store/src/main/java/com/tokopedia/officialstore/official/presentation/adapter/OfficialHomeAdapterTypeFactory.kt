@@ -9,10 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
@@ -71,6 +70,10 @@ class OfficialHomeAdapterTypeFactory(
         return RecommendationListCarouselViewHolder.LAYOUT
     }
 
+    override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
+        return ReminderWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
@@ -91,5 +94,26 @@ class OfficialHomeAdapterTypeFactory(
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return MixLeftComponentViewHolder.LAYOUT
+    }
+
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
+        return MixTopComponentViewHolder.LAYOUT
+    }
+
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int {
+        return ProductHighlightComponentViewHolder.LAYOUT
+    }
+
+    override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
+        return Lego4AutoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
+        return FeaturedShopViewHolder.LAYOUT
     }
 }

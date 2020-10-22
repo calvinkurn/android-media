@@ -25,7 +25,9 @@ import rx.schedulers.Schedulers;
 
 /**
  * Common use-case class for all graphql network response
+ * Use kotlin version
  */
+@Deprecated
 public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
     private List<GraphqlRequest> mRequests;

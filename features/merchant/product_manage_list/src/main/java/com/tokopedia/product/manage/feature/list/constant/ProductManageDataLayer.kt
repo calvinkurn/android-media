@@ -28,7 +28,8 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_SETTINGS_DUPLICATE = "$CLICK_SETTINGS_OPTION - duplicate product"
     const val EVENT_ACTION_CLICK_SETTINGS_REMINDER = "$CLICK_SETTINGS_OPTION - stock reminder"
     const val EVENT_ACTION_CLICK_SETTINGS_DELETE = "$CLICK_SETTINGS_OPTION - delete product"
-    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "$CLICK_SETTINGS_OPTION - topads"
+    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "click advertise the product"
+    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL = "click ads detail"
     const val EVENT_ACTION_CLICK_SETTINGS_CASHBACK = "$CLICK_SETTINGS_OPTION - cashback settings"
     const val EVENT_ACTION_CLICK_SETTINGS_FEATURED = "$CLICK_SETTINGS_OPTION - featured product"
 
@@ -81,7 +82,28 @@ object ProductManageDataLayer {
     const val STATUS_TOGGLE_ON = "{on}"
     const val STATUS_TOGGLE_OFF = "{off}"
 
+    const val EVENT_ACTION_CLICK_ALLOCATION_CLOSE = "click close stock allocation - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK = "click on stock utama - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS = "click product status - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK = "click decrease stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK = "click input stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK = "click increase stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN = "click on stock campaign - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK = "click save stock - "
+    const val EVENT_ACTION_CLICK_ALLOCATION_PREVIEW_VARIANT_PRODUCT = "click preview variant product"
+
+    const val ALLOCATION_SINGLE_PRODUCT = "single product"
+    const val ALLOCATION_VARIANT_PRODUCT = "variant product"
+
+    const val EVENT_LABEL_ALLOCATION_ON = "on"
+    const val EVENT_LABEL_ALLOCATION_OFF = "off"
+    const val EVENT_LABEL_ALLOCATION_MAIN = "main"
+    const val EVENT_LABEL_ALLOCATION_CAMPAIGN = "campaign"
+
     const val CUSTOM_DIMENSION_PAGE_SOURCE = "pageSource"
     const val CUSTOM_DIMENSION_PAGE_SOURCE_ADD_PRODUCT = "/add-product"
     const val CUSTOM_DIMENSION_PAGE_SOURCE_EDIT_PRODUCT = "/edit-product"
+
+    const val SCREEN_NAME_STOCK_ALLOCATION_SINGLE = "/stock allocation - single product"
+    const val SCREEN_NAME_STOCK_ALLOCATION_VARIANT = "/stock allocation - variant product"
 }

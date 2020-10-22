@@ -10,12 +10,13 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantDateFormatter.formatCancellationDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_cancellation.*
 
 class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
     private var listener: BottomSheetCancelListener? = null
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
-        PowerMerchantTracking()
+        PowerMerchantTracking(UserSession(context))
     }
 
     companion object {
@@ -70,6 +71,7 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
         }
 
         btnBack.setOnClickListener {
+            listener?.onClickBackButton()
             dismiss()
         }
 
@@ -91,5 +93,6 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
 
     interface BottomSheetCancelListener {
         fun onClickCancelButton()
+        fun onClickBackButton()
     }
 }

@@ -1,0 +1,16 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 0,
+      "keywordProcess": "4",
+      "totalData": 16,
+      "totalDataText": "16",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "products": []
+    }
+  }
+}

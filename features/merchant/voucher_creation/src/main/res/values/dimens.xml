@@ -13,7 +13,7 @@
     <dimen name="mvc_create_target_description_height">54dp</dimen>
     <dimen name="mvc_create_target_description_margin_right">17dp</dimen>
     <dimen name="mvc_create_target_description_margin_top">2dp</dimen>
-    <dimen name="mvc_create_divider_height">1dp</dimen>
+    <dimen name="mvc_divider_height">1dp</dimen>
     <dimen name="mvc_create_promo_code_padding_vertical">10dp</dimen>
     <dimen name="mvc_create_promo_code_padding_horizontal">16.44dp</dimen>
     <dimen name="mvc_create_widget_title_height">56dp</dimen>

@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.widget;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +31,7 @@ public class StickySingleHeaderView extends FrameLayout
     private boolean refreshSticky;
     private int recyclerViewPaddingTop = 0;
     private int currentScroll = 0;
-
+    private RecyclerView.ViewHolder viewHolder;
     public StickySingleHeaderView(Context context) {
         super(context);
     }
@@ -45,8 +45,11 @@ public class StickySingleHeaderView extends FrameLayout
     }
 
     public int getContainerHeight() {
-        mHeaderContainer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        return mHeaderContainer.getMeasuredHeight();
+        if(null != mHeaderContainer) {
+            mHeaderContainer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            return mHeaderContainer.getMeasuredHeight();
+        }
+        return 0;
     }
 
     public interface OnStickySingleHeaderAdapter {
@@ -58,7 +61,7 @@ public class StickySingleHeaderView extends FrameLayout
 
         void setListener(OnStickySingleHeaderListener onStickySingleHeaderViewListener);
 
-        void updateEtalaseListViewHolderData();
+        void onStickyHide();
     }
 
     private void initView() {
@@ -74,13 +77,14 @@ public class StickySingleHeaderView extends FrameLayout
         mRecyclerView = (RecyclerView) view;
         recyclerViewPaddingTop = mRecyclerView.getPaddingTop();
         mHeaderContainer = new FrameLayout(getContext());
-        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.card_shadow_bottom));
+        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable.card_shadow_bottom));
         mHeaderContainer.setClipToPadding(false);
         mHeaderContainer.setClipChildren(false);
+        mHeaderContainer.setClickable(true);
         mHeaderContainer.setLayoutParams(
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(), 0, mRecyclerView.getPaddingRight(), 0);
         mHeaderContainer.setVisibility(View.GONE);
+        mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), com.tokopedia.design.R.drawable.card_shadow_bottom));
         addView(mHeaderContainer);
         RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -94,10 +98,9 @@ public class StickySingleHeaderView extends FrameLayout
                                 ("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.");
                     StickySingleHeaderView.this.adapter = (OnStickySingleHeaderAdapter) adapter;
                     StickySingleHeaderView.this.adapter.setListener(StickySingleHeaderView.this);
-                    stickyPosition = StickySingleHeaderView.this.adapter.getStickyHeaderPosition();
                     staggeredGridLayoutManager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
                 }
-
+                stickyPosition = StickySingleHeaderView.this.adapter.getStickyHeaderPosition();
             }
 
             @Override
@@ -116,23 +119,23 @@ public class StickySingleHeaderView extends FrameLayout
             return;
         int firstCompletelyVisiblePosition = staggeredGridLayoutManager.findFirstCompletelyVisibleItemPositions(null)[0];
         int firstVisiblePosition = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)[0];
-        if (firstCompletelyVisiblePosition > -1) {
-            if (firstCompletelyVisiblePosition >= (stickyPosition) && currentScroll >= recyclerViewPaddingTop) {
+        if (firstCompletelyVisiblePosition > -1 && stickyPosition!=-1) {
+            if (firstCompletelyVisiblePosition > (stickyPosition) && currentScroll >= recyclerViewPaddingTop) {
                 // make the etalase label always visible
                 if (!isStickyShowed() || refreshSticky) {
                     showSticky();
                     mHeaderContainer.setVisibility(View.VISIBLE);
                     refreshSticky = false;
                 }
-                if (firstVisiblePosition == stickyPosition) {
-                    adapter.updateEtalaseListViewHolderData();
-                }
             } else {
                 // make the etalase label always gone
                 if (isStickyShowed() || refreshSticky) {
-                    clearHeaderView();
-                    mHeaderContainer.setVisibility(View.GONE);
-                    refreshSticky = false;
+                    adapter.onStickyHide();
+                    new Handler().post(() -> {
+                        clearHeaderView();
+                        mHeaderContainer.setVisibility(View.GONE);
+                        refreshSticky = false;
+                    });
                 }
             }
         }
@@ -144,10 +147,13 @@ public class StickySingleHeaderView extends FrameLayout
 
     private void showSticky() {
         clearHeaderView();
-        RecyclerView.ViewHolder viewHolder = adapter.createStickyViewHolder(mHeaderContainer);
+        if (viewHolder == null) {
+            viewHolder = adapter.createStickyViewHolder(mHeaderContainer);
+        }
         mHeaderContainer.addView(viewHolder.itemView);
         mHeaderHeight = mHeaderContainer.getHeight();
         adapter.bindSticky(viewHolder);
+        mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(), mHeaderContainer.getPaddingTop(), mRecyclerView.getPaddingRight(), mHeaderContainer.getPaddingBottom());
     }
 
     @Override

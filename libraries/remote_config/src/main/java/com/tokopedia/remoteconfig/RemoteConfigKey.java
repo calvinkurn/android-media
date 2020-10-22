@@ -51,9 +51,6 @@ public class RemoteConfigKey {
 
     public static final String IMAGE_HOST = "image_host";
 
-    public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
-    public static final String ENABLE_TRACKING_VIEW_PORT = "android_customer_enable_search_tracking_view_port";
-
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     public static final String SHOW_TOKOCARD = "app_enable_toko_card";
@@ -81,6 +78,7 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
@@ -110,8 +108,6 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
-    public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
-
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
@@ -128,10 +124,10 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
     public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
-    public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
-    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
+
+    public static final String MAINAPP_ENABLE_NEW_DEALS_REVAMP_FLOW = "android_customer_enable_new_deals_revamp_flow";
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
 
@@ -150,8 +146,6 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
-
-    public static final String APP_SEMUA_CATEGORY_ENABLE = "app_semua_category_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
@@ -179,6 +173,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+    public static final String ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE = "android_shop_page_enable_product_change_grid_layout";
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
@@ -204,6 +199,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
+    public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
+
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
@@ -226,7 +223,17 @@ public class RemoteConfigKey {
 
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
-    public static final String SELLER_HOME_IMPROVEMENT_DISABLED = "android_seller_home_improvement_disabled";
     public static final String ENABLE_GLOBAL_SEARCH_SELLER = "android_sellerapp_global_search_enabled";
+    public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
+    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
+    public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
+
+    public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
+
+    public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
+    public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+
+    public static final String ENABLE_UOH = "android_enable_uoh";
 }

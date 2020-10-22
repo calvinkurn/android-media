@@ -22,11 +22,11 @@
             android:layout_centerVertical="true"
             android:text="@string/label_sub_total"
             app:typographyType="body_2"
-            app:typographyWeight="bold"
             tools:ignore="SmallSp" />
 
         <ImageView
             android:id="@+id/iv_detail_option_chevron"
+            android:contentDescription="@string/content_desc_iv_detail_option_chevron"
             android:layout_width="@dimen/dp_10"
             android:layout_height="@dimen/dp_10"
             android:layout_alignParentEnd="true"
@@ -34,12 +34,12 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginStart="@dimen/dp_5"
-            app:srcCompat="@drawable/ic_down"
+            app:srcCompat="@drawable/checkout_module_ic_down"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_sub_total_price"
-            android:textColor="@color/price_label"
+            android:textColor="@color/Neutral_N700_96"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

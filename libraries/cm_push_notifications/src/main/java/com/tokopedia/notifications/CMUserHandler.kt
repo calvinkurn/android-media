@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.data.model.TokenResponse
@@ -22,6 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -41,7 +44,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         launchCatchError(block = {
             sendFcmTokenToServerGQL(token)
         }, onError = {
-            Log.e(TAG, "CMUserHandler: sendFcmTokenToServer ", it)
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         })
     }
 
@@ -57,12 +61,18 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 try {
                     adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
                 } catch (e: IOException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesNotAvailableException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesRepairableException) {
+                    Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     e.printStackTrace()
                     return ""
                 }
@@ -89,19 +99,6 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             return ""
         }
 
-    private val userIdAsInt: Int
-        get() {
-            val userIdStr = userId
-            var userIdInt = 0
-            if (!TextUtils.isEmpty(userIdStr)) {
-                try {
-                    userIdInt = Integer.parseInt(userIdStr.trim { it <= ' ' })
-                } catch (e: NumberFormatException) {
-                }
-            }
-            return userIdInt
-        }
-
     fun updateToken(token: String, remoteDelaySeconds: Long, userAction: Boolean) {
         try {
             var delay = getRandomDelay(remoteDelaySeconds)
@@ -110,6 +107,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             this.token = token
             handler.postDelayed(runnable, delay)
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
 
     }
@@ -121,12 +120,13 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 it.unsubscribe()
             }
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
         }
     }
 
     private fun sendFcmTokenToServerGQL(token: String?) {
         try {
-            Log.d("CMUserHandler", Thread.currentThread().name)
             if (tempFcmId.equals(token!!, ignoreCase = true)) {
                 //ignore temporary fcm token
                 return
@@ -134,20 +134,18 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
 
-            if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
-                    CMNotificationUtils.mapTokenWithUserRequired(mContext, userId) ||
-                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId) ||
-                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext, appVersionName)) {
+            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
-                requestParams[USER_ID] = userIdAsInt
                 requestParams[SOURCE] = SOURCE_ANDROID
                 requestParams[FCM_TOKEN] = token
                 requestParams[APP_ID] = CMNotificationUtils.getUniqueAppId(mContext)
                 requestParams[SDK_VERSION] = CMNotificationUtils.sdkVersion.toString()
                 requestParams[APP_VERSION] = appVersionName
-                requestParams[USER_STATE] = CMNotificationUtils.getUserStatus(mContext, userId)
+                val userIdAndStatus = CMNotificationUtils.getUserIdAndStatus(mContext, userId)
+                requestParams[USER_STATE] = userIdAndStatus.first
+                requestParams[USER_ID] = userIdAndStatus.second
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
                 requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
 
@@ -163,7 +161,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.message)
+                        Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                                .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
                     }
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
@@ -179,6 +178,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
             }
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
             e.printStackTrace()
         }
 

@@ -30,7 +30,7 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
         return super.createViewHolder(parent, type)
     }
 
-    override fun type(viewModel: LoadingModel?): Int = LOADING_LAYOUT
+    override fun type(viewModel: LoadingModel): Int = LOADING_LAYOUT
 
     override fun type(viewModel: TravelHomepageBannerModel): Int = TravelHomepageBannerViewHolder.LAYOUT
 
@@ -45,6 +45,6 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
     override fun type(model: TravelHomepageLegoBannerModel): Int = TravelHomepageLegoBannerViewHolder.LAYOUT
 
     companion object {
-        var LOADING_LAYOUT = R.layout.layout_subhomepage_loading
+        var LOADING_LAYOUT = R.layout.travel_homepage_shimmering
     }
 }

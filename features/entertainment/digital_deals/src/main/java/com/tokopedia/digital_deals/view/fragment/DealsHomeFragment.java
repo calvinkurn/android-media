@@ -80,7 +80,7 @@ import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -518,7 +518,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void renderCarousels(CategoryItem carousel) {
-        if (carousel.getItems() != null && carousel.getItems().size() > 0) {
+        if (carousel != null && carousel.getItems() != null && carousel.getItems().size() > 0) {
             clPromos.setVisibility(View.VISIBLE);
             bannerList = carousel.getItems();
             initBanner();
@@ -618,7 +618,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void addDealsToCards(CategoryItem top) {
-        if (top.getItems() != null) {
+        if (top != null && top.getItems() != null) {
             ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).addAll(top.getItems());
         }
     }

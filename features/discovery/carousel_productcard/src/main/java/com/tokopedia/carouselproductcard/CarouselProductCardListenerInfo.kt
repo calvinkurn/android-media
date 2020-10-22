@@ -29,4 +29,11 @@ internal class CarouselProductCardListenerInfo {
                 field = value
             }
         }
+
+    var onSeeMoreClickListener: CarouselProductCardListener.OnSeeMoreClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
 }

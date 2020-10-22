@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
@@ -34,6 +36,7 @@ import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
 import javax.inject.Inject
 
+private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 class EditProductFragment : BaseDaggerFragment() {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
@@ -120,7 +123,9 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
         add_product.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
             intent.putIntegerArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
@@ -217,8 +222,9 @@ class EditProductFragment : BaseDaggerFragment() {
         /// for the products which are added and removed
         val iterator = addedProducts.iterator()
         while (iterator.hasNext()){
+            val key = iterator.next()
             deletedProducts.forEach { deleted ->
-                if (iterator.next().itemID == deleted.itemID) {
+                if (key.itemID == deleted.itemID) {
                     iterator.remove()
                 }
             }

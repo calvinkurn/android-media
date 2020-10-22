@@ -6,13 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
+import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
+import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -40,6 +51,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
         renderProductCardContent(productCardModel)
+
+        renderStockPercentage(productCardModel)
+        renderStockLabel(productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
@@ -79,6 +93,18 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
+        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.progress = productCardModel.stockBarPercentage
+        }
+    }
+
+    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
+        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            textViewStockLabel.text = productCardModel.stockBarLabel
+        }
     }
 
     private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
@@ -123,6 +149,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
         buttonAddToCart?.showWithCondition(isVisible)
         buttonRemoveFromWishlist?.showWithCondition(isVisible)
+        progressBarStock?.showWithCondition(!isVisible)
+        textViewStockLabel?.showWithCondition(!isVisible)
     }
 
     fun wishlistPage_enableButtonAddToCart(){

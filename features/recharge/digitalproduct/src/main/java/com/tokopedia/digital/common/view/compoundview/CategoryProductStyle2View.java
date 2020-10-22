@@ -92,7 +92,7 @@ public class CategoryProductStyle2View extends
     @Override
     protected void onInitialDataRendered() {
         if (source == NATIVE) {
-            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+            tvTitle.setText(TextUtils.isEmpty(data.titleText) ? "" : data.titleText);
         } else {
             tvTitle.setVisibility(GONE);
         }
@@ -158,11 +158,11 @@ public class CategoryProductStyle2View extends
     }
 
     private void renderInstantCheckoutOptions() {
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
-                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+                    actionListener.isRecentInstantCheckoutUsed(data.categoryId)
             );
         } else {
             cbInstantCheckout.setChecked(false);
@@ -179,11 +179,11 @@ public class CategoryProductStyle2View extends
     private void renderOperatorChooserOptions() {
         clearHolder(holderRadioChooserOperator);
         radioChooserView.setActionListener(getActionListenerRadioChooserOperator());
-        radioChooserView.renderInitDataList(data.getOperatorList(), data.getDefaultOperatorId());
+        radioChooserView.renderInitDataList(data.operatorList, data.defaultOperatorId);
         holderRadioChooserOperator.addView(radioChooserView);
 
         if (hasLastOrderHistoryData()) {
-            for (Operator operator : data.getOperatorList()) {
+            for (Operator operator : data.operatorList) {
                 if (operator.getOperatorId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
@@ -305,7 +305,7 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void tracking() {
-                actionListener.onOperatorSelected(data.getName(), operatorSelected.getName());
+                actionListener.onOperatorSelected(data.name, operatorSelected.getName());
             }
         };
     }
@@ -387,7 +387,7 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void tracking() {
-                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
+                actionListener.onProductSelected(data.name, productSelected.getDesc());
             }
         };
     }
@@ -459,8 +459,8 @@ public class CategoryProductStyle2View extends
                 preCheckoutProduct.setPromo(true);
             }
         }
-        preCheckoutProduct.setCategoryId(data.getCategoryId());
-        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setCategoryId(data.categoryId);
+        preCheckoutProduct.setCategoryName(data.name);
         preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
         preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);

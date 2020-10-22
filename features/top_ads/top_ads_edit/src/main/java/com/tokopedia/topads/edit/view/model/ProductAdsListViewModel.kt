@@ -25,15 +25,15 @@ class ProductAdsListViewModel @Inject constructor(
                 })
     }
 
-    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>) -> Unit),
+    fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, onSuccess: ((List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
-        getProductUseCase.setParams(keyword,etalaseId,sortBy,isPromoted,rows,start)
+        getProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start)
         getProductUseCase.executeQuerySafeMode(
                 {
                     if (it.topadsGetListProduct.data.isEmpty()) {
                         onEmpty()
                     } else {
-                        onSuccess(it.topadsGetListProduct.data)
+                        onSuccess(it.topadsGetListProduct.data, it.topadsGetListProduct.eof)
                         if (etalaseId.isEmpty()) {
                             totalCount = it.topadsGetListProduct.data.size
                         }
@@ -48,7 +48,7 @@ class ProductAdsListViewModel @Inject constructor(
         return ResponseEtalase.Data.ShopShowcasesByShopID.Result(totalCount, "", "Semua Etalase", 0)
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         getEtalaseUseCase.cancelJobs()
         getProductUseCase.cancelJobs()

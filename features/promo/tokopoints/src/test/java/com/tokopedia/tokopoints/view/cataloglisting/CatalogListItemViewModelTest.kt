@@ -145,6 +145,7 @@ class CatalogListItemViewModelTest {
                 every { code } returns "200"
                 every { cta } returns "cta"
                 every { title } returns "title"
+                every { description } returns "description"
 
             }
         }
@@ -159,6 +160,7 @@ class CatalogListItemViewModelTest {
         assert(result.code == data.coupons[0].code)
         assert(result.cta == data.coupons[0].cta)
         assert(result.title == data.coupons[0].title)
+        assert(result.description == data.coupons[0].description)
     }
 
     @Test

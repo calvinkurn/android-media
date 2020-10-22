@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.chatroom.domain.mapper
 
+import androidx.collection.ArrayMap
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_CAROUSEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -16,6 +19,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -39,28 +43,81 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 latestHeaderDate = chatItemPojo.date
             }
             for (chatItemPojoByDate in chatItemPojo.chats) {
-                var index = 0
-                while (index < chatItemPojoByDate.replies.size) {
-                    val chatDateTime = chatItemPojoByDate.replies[index]
-                    if (hasAttachment(chatDateTime)) {
-                        val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
-                        if (chatDateTime.isMultipleProductAttachment(nextItem)) {
-                            val products = mergeProduct(index, chatItemPojoByDate.replies)
+                var replyIndex = 0
+                while (replyIndex < chatItemPojoByDate.replies.size) {
+                    val chatDateTime = chatItemPojoByDate.replies[replyIndex]
+                    val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
+                    when {
+                        // Merge broadcast bubble
+                        chatDateTime.isBroadCast() && chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
+                            val broadcast = mergeBroadcast(
+                                    replyIndex,
+                                    chatItemPojoByDate.replies,
+                                    chatDateTime.blastId
+                            )
+                            val broadcastUiModel = createBroadCastUiModel(chatDateTime, broadcast.first)
+                            listChat.add(broadcastUiModel)
+                            replyIndex += broadcast.second
+                        }
+                        // Merge product bubble
+                        hasAttachment(chatDateTime) && chatDateTime.isAlsoProductAttachment(nextItem) -> {
+                            val products = mergeProduct(
+                                    replyIndex,
+                                    chatItemPojoByDate.replies,
+                                    chatDateTime.isBroadCast()
+                            )
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)
-                            index += products.size
-                        } else {
-                            listChat.add(mapAttachment(chatDateTime))
-                            index++
+                            replyIndex += products.size
                         }
-                    } else {
-                        listChat.add(convertToMessageViewModel(chatDateTime))
-                        index++
+                        // usual attachment
+                        hasAttachment(chatDateTime) -> {
+                            listChat.add(mapAttachment(chatDateTime))
+                            replyIndex++
+                        }
+                        // text message
+                        else -> {
+                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            listChat.add(textMessage)
+                            replyIndex++
+                        }
                     }
                 }
             }
         }
         return listChat
+    }
+
+    private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {
+        return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
+    }
+
+    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Int): Pair<Map<String, Visitable<*>>, Int> {
+        val broadcast = ArrayMap<String, Visitable<*>>()
+        var idx = index
+        while (idx < replies.size) {
+            val reply = replies[idx]
+            val replyType = reply.attachmentType.toString()
+            val nextReply = replies.getOrNull(idx + 1)
+            if (reply.isProductAttachment() && reply.isAlsoProductAttachment(nextReply) && reply.blastId == blastId) {
+                val products = mergeProduct(idx, replies, reply.isBroadCast())
+                val carouselProducts = createCarouselProduct(reply, products)
+                broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts
+                idx += products.size
+            } else if (reply.isBroadCast() && reply.blastId == blastId) {
+                val messageItem = if (hasAttachment(reply)) {
+                    mapAttachment(reply)
+                } else {
+                    convertToMessageViewModel(reply)
+                }
+                broadcast[replyType] = messageItem
+                idx++
+            } else {
+                break
+            }
+        }
+        val totalToSkip = idx - index
+        return Pair(broadcast, totalToSkip)
     }
 
     private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
@@ -71,6 +128,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         with(chatDateTime) {
             return ProductCarouselUiModel(
                     products = products,
+                    isSender = !chatDateTime.isOpposite,
                     messageId = msgId.toString(),
                     fromUid = senderId.toString(),
                     from = senderName,
@@ -78,21 +136,28 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     attachmentId = attachment?.id ?: "",
                     attachmentType = attachment?.type.toString(),
                     replyTime = replyTime,
-                    message = msg
+                    message = msg,
+                    source = chatDateTime.source
             )
         }
     }
 
-    private fun mergeProduct(index: Int, replies: List<Reply>): List<Visitable<*>> {
+    private fun mergeProduct(index: Int, replies: List<Reply>, isBroadCast: Boolean): List<Visitable<*>> {
         val products = mutableListOf<Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val chat = replies[idx]
             if (chat.isProductAttachment()) {
-                products.add(convertToProductAttachment(chat))
+                val product = convertToProductAttachment(chat)
+                products.add(product)
                 idx++
             } else {
                 break
+            }
+        }
+        if (isBroadCast) {
+            products.sortBy {
+                return@sortBy (it as ProductAttachmentViewModel).hasEmptyStock()
             }
         }
         return products
@@ -109,10 +174,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-        var temp = item.attachment?.attributes
-
-        val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(MethodChecker.fromHtml(temp).toString(),
-                TopChatVoucherPojo::class.java)
+        val pojo = gson.fromJson<TopChatVoucherPojo>(item.attachment?.attributes, TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
         var voucherType = MerchantVoucherType(voucher.voucherType, "")
         var voucherAmount = MerchantVoucherAmount(voucher.amountType, voucher.amount)
@@ -145,27 +207,30 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 !item.isOpposite,
                 voucherModel,
                 item.replyId.toString(),
-                item.blastId.toString()
+                item.blastId.toString(),
+                item.source,
+                voucher.isPublic
         )
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
         return ImageDualAnnouncementUiModel(
-                item.msgId.toString(),
-                item.senderId.toString(),
-                item.senderName,
-                item.role,
-                item.attachment?.id ?: "",
-                item.attachment?.type.toString(),
-                item.replyTime,
-                item.msg,
-                pojoAttribute.imageUrl,
-                pojoAttribute.url,
-                pojoAttribute.imageUrl2,
-                pojoAttribute.url2,
-                item.blastId
+                messageId = item.msgId.toString(),
+                fromUid = item.senderId.toString(),
+                from = item.senderName,
+                fromRole = item.role,
+                attachmentId = item.attachment?.id ?: "",
+                attachmentType = item.attachment?.type.toString(),
+                replyTime = item.replyTime,
+                message = item.msg,
+                imageUrlTop = pojoAttribute.imageUrl,
+                redirectUrlTop = pojoAttribute.url,
+                imageUrlBottom = pojoAttribute.imageUrl2,
+                redirectUrlBottom = pojoAttribute.url2,
+                blastId = item.blastId,
+                source = item.source
         )
     }
 
@@ -187,7 +252,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 replyTime = message.replyTime,
                 isSender = !message.isOpposite,
                 message = message.msg,
-                isRead = message.isRead
+                isRead = message.isRead,
+                source = message.source
         )
     }
 
@@ -210,7 +276,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 isRead = message.isRead,
                 isDummy = false,
                 isSender = !message.isOpposite,
-                sticker = stickerAttributes.stickerProfile
+                sticker = stickerAttributes.stickerProfile,
+                source = message.source
         )
     }
 }

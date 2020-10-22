@@ -23,7 +23,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }
@@ -50,15 +50,20 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization?.customWtvText.isNullOrBlank()) {
+            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+        } else {
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization?.customWtvText
+        }
     }
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
             refreshThanksPageData()
         }
-        btnShopAgain.setOnClickListener {
-            gotoHomePage()
-        }
+        setUpHomeButton(btnShopAgain)
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {

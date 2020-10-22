@@ -39,17 +39,36 @@
         </activity>
 
         <activity
-            android:name=".detail.presentation.activity.AddEditProductDetailActivity"
+            android:name=".variant.presentation.activity.AddEditProductVariantActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
+            android:name=".variant.presentation.activity.AddEditProductVariantDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".shipment.presentation.activity.AddEditProductShipmentActivity"
+            android:name=".imagepicker.view.activity.SizechartPickerAddProductActivity"
+            android:label="@string/action_pick_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.SizechartPickerEditPhotoActivity"
+            android:label="@string/action_edit_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.VariantPhotoPickerActivity"
+            android:label="@string/action_pick_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.VariantPhotoEditorActivity"
+            android:label="@string/action_edit_photo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

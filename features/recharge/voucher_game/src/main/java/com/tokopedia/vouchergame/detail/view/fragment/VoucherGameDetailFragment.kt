@@ -38,9 +38,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -137,7 +135,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        voucherGameViewModel.voucherGameProducts.observe(this, Observer {
+        voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
             it.run {
                 input_field_container_shimmering.visibility = View.GONE
                 when(it) {
@@ -233,7 +231,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
-            voucherGameAnalytics.categoryName = data.catalog.label
+            categoryName = data.catalog.label
+            voucherGameAnalytics.categoryName = categoryName
             (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
@@ -251,6 +250,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onMenuDetailError(error: Throwable) {
 
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -595,25 +598,20 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        processCheckout()
+        processCheckoutData()
     }
 
-    private fun processCheckout() {
+    private fun processCheckoutData() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {
-                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
                         .categoryId(voucherGameExtraParam.categoryId)
-                        .instantCheckout("0")
                         .isPromo(if (attributes.promo != null) "1" else "0")
                         .operatorId(voucherGameExtraParam.operatorId)
                         .productId(id)
                         .utmCampaign(voucherGameExtraParam.categoryId)
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
+
                 if (hasFirstInput()) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
                 }

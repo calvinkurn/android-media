@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/auto_ad_status_image"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_90"
             app:layout_constraintEnd_toStartOf="@+id/status_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/status_title"
-            app:srcCompat="@drawable/ill_iklan_otomatis" />
+            android:src="@drawable/ill_iklan_otomatis" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/status_title"

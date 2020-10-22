@@ -14,8 +14,11 @@ import javax.inject.Inject
  */
 class SomGetOrderListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomListOrder.Data>) {
 
-    suspend fun execute(param: SomListOrderParam, query: String): Result<SomListOrder.Data.OrderList> {
-        useCase.setGraphqlQuery(query)
+    init {
+        useCase.setGraphqlQuery(QUERY)
+    }
+
+    suspend fun execute(param: SomListOrderParam): Result<SomListOrder.Data.OrderList> {
         useCase.setTypeClass(SomListOrder.Data::class.java)
         useCase.setRequestParams(generateParam(param))
 
@@ -29,5 +32,46 @@ class SomGetOrderListUseCase @Inject constructor(private val useCase: GraphqlUse
 
     private fun generateParam(param: SomListOrderParam): Map<String, Any?> {
         return mapOf(SomConsts.PARAM_INPUT to param)
+    }
+
+    companion object {
+        val QUERY = """
+            query OrderList(${'$'}input: OrderListArgs!) {
+              orderList(input: ${'$'}input) {
+                cursor_order_id
+                list {
+                  order_id
+                  status
+                  status_color
+                  order_status_id
+                  order_resi
+                  order_date
+                  order_label {
+                    flag_name
+                    flag_color
+                    flag_background
+                  }
+                  buyer_name
+                  deadline_text
+                  deadline_color
+                  order_product {
+                    picture
+                    product_name
+                  }
+                  cancel_request
+                  cancel_request_note
+                  cancel_request_time
+                  cancel_request_origin_note
+                  ticker_info {
+                    text
+                    type
+                    action_text
+                    action_key
+                    action_url
+                  }
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

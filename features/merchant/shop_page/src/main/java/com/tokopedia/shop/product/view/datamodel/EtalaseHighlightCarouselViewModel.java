@@ -15,10 +15,10 @@ import java.util.List;
 public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterTypeFactory>{
 
     private List<ShopProductViewModel> shopProductViewModelList;
-    private ShopProductEtalaseChipItemViewModel shopEtalaseViewModel;
+    private ShopEtalaseItemDataModel shopEtalaseViewModel;
 
     public EtalaseHighlightCarouselViewModel(List<ShopProductViewModel> shopProductViewModelList,
-                                             ShopProductEtalaseChipItemViewModel shopEtalaseViewModel) {
+                                             ShopEtalaseItemDataModel shopEtalaseViewModel) {
         setShopProductEtalaseHighLightViewModel(shopProductViewModelList);
         setEtalaseViewModel(shopEtalaseViewModel);
     }
@@ -35,11 +35,11 @@ public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterT
         return shopProductViewModelList;
     }
 
-    public ShopProductEtalaseChipItemViewModel getShopEtalaseViewModel() {
+    public ShopEtalaseItemDataModel getShopEtalaseViewModel() {
         return shopEtalaseViewModel;
     }
 
-    private void setEtalaseViewModel(ShopProductEtalaseChipItemViewModel shopEtalaseViewModel) {
+    private void setEtalaseViewModel(ShopEtalaseItemDataModel shopEtalaseViewModel) {
         this.shopEtalaseViewModel = shopEtalaseViewModel;
     }
 

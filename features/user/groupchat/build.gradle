@@ -33,7 +33,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.vote)
-    implementation project(rootProject.ext.libraries.sharedata)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -69,6 +68,8 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.lottie
+
+    implementation rootProject.ext.playServicesDependencies.core
 }
 
 project.ext {

@@ -26,17 +26,16 @@ import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarning
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
+import com.tokopedia.otp.verification.domain.data.OtpConstant;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.changephonenumber.view.uimodel.WarningUIModel.ACTION_OTP;
+import static com.tokopedia.changephonenumber.view.uimodel.WarningUIModel.BALANCE_THRESHOLD_FOR_WARNING;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -68,7 +67,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
     private TextView withdrawButton;
-    private WarningViewModel viewModel;
+    private WarningUIModel viewModel;
     private String email;
     private String phoneNumber;
     private View mainView;
@@ -196,8 +195,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGetWarningSuccess(WarningViewModel warningViewModel) {
-        this.viewModel = warningViewModel;
+    public void onGetWarningSuccess(WarningUIModel warningUIModel) {
+        this.viewModel = warningUIModel;
         presenter.validateOtpStatus(getUserId());
     }
 
@@ -288,11 +287,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     private void goToNextActivity() {
-        Intent intent = VerificationActivity.
-                getShowChooseVerificationMethodIntent(getContext(),
-                        RequestOtpUseCase.OTP_TYPE_VERIFY_USER_CHANGE_PHONE_NUMBER,
-                        phoneNumber,
-                        email);
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.COTP);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.VERIFY_USER_CHANGE_PHONE_NUMBER);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
         startActivityForResult(intent, VERIFY_USER_CHANGE_PHONE_NUMBER);
     }
 

@@ -147,7 +147,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     }
 
     private void renderFileName(FlightCancellationAttachmentModel element) {
-        if (element.getFilename() != null && element.getFilename().length() > 0) {
+        if (element.getFilename().length() > 0) {
             tvFilename.setVisibility(View.VISIBLE);
         } else {
             tvFilename.setVisibility(View.GONE);

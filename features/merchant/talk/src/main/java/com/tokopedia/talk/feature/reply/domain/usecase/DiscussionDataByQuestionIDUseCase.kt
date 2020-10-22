@@ -19,7 +19,10 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
             """
                 query discussionDataByQuestionID($questionID: String!, $shopID: String) {
                   discussionDataByQuestionID(questionID: $questionID, shopID: $shopID) {
+                    shopID
+                    shopURL
                     productName
+                    productID
                     thumbnail
                     url
                     maxAnswerLength
@@ -29,6 +32,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                       maskedContent
                       userName
                       userID
+                      userThumbnail
                       createTime
                       createTimeFormatted
                       state {
@@ -39,6 +43,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                         allowFollow
                         isFollowed
                         isMasked
+                        isYours
                       }
                       totalAnswer
                       answer {
@@ -59,6 +64,7 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
                           allowUnmask
                           allowReport
                           allowDelete
+                          isYours
                         }
                         attachedProductCount
                         attachedProduct {

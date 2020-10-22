@@ -2,7 +2,6 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -13,6 +12,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -68,7 +68,7 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
         }, LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.light_G500)),
+        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.light_G500)),
                 LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txt_learnmore_transition_page.movementMethod = LinkMovementMethod.getInstance();
         txt_learnmore_transition_page.text = spanText

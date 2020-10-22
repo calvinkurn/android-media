@@ -2,17 +2,9 @@ package com.tkpd.library.utils.legacy;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
-import android.text.Html;
-import android.text.Spanned;
-import android.view.View;
 
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
-import java.io.File;
 
 /**
  * Created by nisie on 10/28/16.

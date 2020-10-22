@@ -34,6 +34,7 @@ class ProductViewHolder(
         showProductImage(product)
         showStockHintImage(product)
         showProductCheckBox(product)
+        showProductTopAdsIcon(product)
 
         setOnClickListeners(product)
     }
@@ -49,7 +50,7 @@ class ProductViewHolder(
             itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
                 getNumberFormatted()
             } else {
-                ">${MAX_SHOWING_STOCK.getNumberFormatted()}"
+                "${MAX_SHOWING_STOCK.getNumberFormatted()}+"
             }
             itemView.textStockCount.show()
             itemView.textStock.show()
@@ -60,6 +61,7 @@ class ProductViewHolder(
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
+        itemView.labelCampaign.showWithCondition(product.hasStockReserved)
     }
 
     private fun showVariantLabel(product: ProductViewModel) {
@@ -123,6 +125,10 @@ class ProductViewHolder(
     private fun showProductCheckBox(product: ProductViewModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun showProductTopAdsIcon(product: ProductViewModel) {
+        itemView.imageTopAds.showWithCondition(product.hasTopAds())
     }
 
     private fun toggleCheckBox() {

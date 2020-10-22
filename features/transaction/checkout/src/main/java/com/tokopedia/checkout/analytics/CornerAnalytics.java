@@ -17,14 +17,6 @@ public class CornerAnalytics extends TransactionAnalytics {
 
     }
 
-    public void sendChooseCornerAddress() {
-        sendEventCategoryAction(
-                EventName.CLICK_REGISTER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CHOOSE_LOCATION_CORNER
-        );
-    }
-
     public void sendClickCornerAddress(String cornerAddress) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_REGISTER,

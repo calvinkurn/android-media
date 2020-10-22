@@ -1,7 +1,9 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.graphics.Rect;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 
 public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
@@ -16,11 +18,9 @@ public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left += size * 2.5;
-            outRect.right += size;
-        } else {
             outRect.left += size;
-            outRect.right += size;
+        } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+            outRect.right = size;
         }
     }
 }

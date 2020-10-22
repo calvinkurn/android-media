@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
@@ -16,7 +17,7 @@ import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGenera
 import kotlinx.android.synthetic.main.fragment_recharge_general_recommendation.*
 import javax.inject.Inject
 
-class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBillsRecentTransactionWidget.ActionListener {
+class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBillsRecentNumberListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

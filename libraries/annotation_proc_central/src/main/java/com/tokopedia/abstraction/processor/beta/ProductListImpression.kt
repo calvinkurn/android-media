@@ -42,7 +42,7 @@ data class ProductListImpression(
 )
 
 
-private const val KEY_DIMENSION_40 = "dimension83"
+private const val KEY_DIMENSION_40 = "dimension40"
 
 
 @ErrorHandler(GTMErrorHandlerImpl::class)

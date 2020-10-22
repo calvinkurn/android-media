@@ -17,7 +17,12 @@ object StickyLoginConstant {
     const val PARAMS_PAGE = "page"
     const val LAYOUT_FLOATING = "floating"
 
-    const val REMOTE_CONFIG_FOR_HOME = "android_customer_sticky_login_home"
-    const val REMOTE_CONFIG_FOR_PDP = "android_customer_sticky_login_pdp"
-    const val REMOTE_CONFIG_FOR_SHOP = "android_customer_sticky_login_shop"
+    const val KEY_STICKY_LOGIN_WIDGET_HOME = "android_customer_sticky_login_home"
+    const val KEY_STICKY_LOGIN_WIDGET_PDP = "android_customer_sticky_login_pdp"
+    const val KEY_STICKY_LOGIN_WIDGET_SHOP = "android_customer_sticky_login_shop"
+
+    /** Login Reminder **/
+    const val KEY_STICKY_LOGIN_REMINDER_HOME = "android_customer_sticky_login_reminder_home"
+    const val KEY_STICKY_LOGIN_REMINDER_PDP = "android_customer_sticky_login_reminder_pdp"
+    const val KEY_STICKY_LOGIN_REMINDER_SHOP = "android_customer_sticky_login_reminder_shop"
 }

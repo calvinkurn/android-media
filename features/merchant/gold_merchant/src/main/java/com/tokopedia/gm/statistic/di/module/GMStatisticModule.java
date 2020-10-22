@@ -8,7 +8,6 @@ import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.gm.statistic.data.source.GMStatDataSource;
@@ -29,12 +28,12 @@ import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
-import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.gm.shopinfo.data.cloud.ShopApi;
+import com.tokopedia.gm.shopinfo.data.cloud.TomeProductApi;
+import com.tokopedia.gm.shopinfo.data.cloud.source.ShopInfoDataSource;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepository;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.gm.shopinfo.domain.usecase.AddProductShopInfoUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -95,8 +94,8 @@ public class GMStatisticModule {
     @Provides
     GMStatisticTransactionPresenter provideGmStatisticTransactionPresenter(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
-            SessionHandler sessionHandler) {
-        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, sessionHandler);
+            UserSessionInterface userSessionInterface) {
+        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, userSessionInterface);
     }
 
     @GMStatisticScope

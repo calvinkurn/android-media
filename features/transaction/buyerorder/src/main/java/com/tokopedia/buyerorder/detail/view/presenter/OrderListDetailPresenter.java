@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -30,12 +33,14 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
+import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
+import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
@@ -46,6 +51,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -100,6 +106,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String fromPayment = null;
     String orderId;
     RequestCancelInfo requestCancelInfo;
+    @Inject
+    SendEventNotificationUseCase sendEventNotificationUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -226,6 +234,45 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    @Override
+    public void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText, RelativeLayout actionButtonLayout) {
+        if (actionButton.getName().equalsIgnoreCase("customer_notification")) {
+            sendEventNotificationUseCase.setPath(actionButton.getUri());
+            sendEventNotificationUseCase.setBody(metadata);
+            sendEventNotificationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null && getView().getAppContext() != null) {
+                        getView().showSuccessMessageWithAction(e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
+                    if (getView() != null && getView().getAppContext() != null) {
+                        Type token = new TypeToken<SendEventEmail>() {
+                        }.getType();
+                        RestResponse restResponse = typeDataResponseMap.get(token);
+                        actionButtonLayout.setClickable(false);
+                        if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
+                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
+                            getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                        } else {
+                            Gson gson = new Gson();
+                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_fail));
+                            SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
+                            getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     @Override
     public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
@@ -264,9 +311,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 if (actionButtonList != null)
                                     if (flag) {
                                         view.setTapActionButton(position, actionButtonList);
-                                        for (int i=0; i< actionButtonList.size();i++) {
-                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH))
-                                            {
+                                        for (int i = 0; i < actionButtonList.size(); i++) {
+                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
                                                 actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
                                             }
                                         }
@@ -279,7 +325,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 ActionButtonList data = response.getData(ActionButtonList.class);
                                 actionButtonList = data.getActionButtonList();
                                 if (actionButtonList != null && actionButtonList.size() > 0)
-                                getView().setActionButtons(actionButtonList);
+                                    getView().setActionButtons(actionButtonList);
                             }
                         }
                     }
@@ -430,16 +476,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setDetail(details.detail().get(i));
         }
 
-
+        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
+                getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+            }
+        }
+        getView().setBoughtDate(details.getBoughtDate());
         if (details.getShopInfo() != null) {
             getView().setShopInfo(details.getShopInfo());
         }
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
-                getView().setItems(details.getItems(), flags.isIsOrderTradeIn());
+                getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
             else
-                getView().setItems(details.getItems(), false);
+                getView().setItems(details.getItems(), false, details);
         }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
@@ -466,6 +517,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
         }
 
+        if (details.getTickerInfo() != null) {
+            getView().setTickerInfo(details.getTickerInfo());
+        }
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);
@@ -475,9 +530,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(),details.getHelpLink());
+        getView().setContactUs(details.contactUs(), details.getHelpLink());
 
-        if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
+        if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
+            getView().setActionButtonsVisibility(View.GONE, View.GONE);
+        } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
                 ActionButton leftActionButton = details.actionButtons().get(0);
                 ActionButton rightActionButton = details.actionButtons().get(1);
@@ -568,7 +625,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             return;
         UserSession userSession = new UserSession(getView().getAppContext());
         String userId = userSession.getUserId();
+        String deviceId = userSession.getDeviceId();
 
+        if (isFinishOrderWithDeviceIdChecker() && deviceId != null && deviceId.isEmpty()) {
+            getView().showErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            getView().finishOrderDetail();
+            return;
+        }
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("user_id", userId);
         requestParams.putString("order_id", orderId);
@@ -614,6 +677,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    private boolean isFinishOrderWithDeviceIdChecker() {
+        return true;
+    }
+
     @Override
     public void detachView() {
         orderDetailsUseCase.unsubscribe();
@@ -648,7 +715,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
         downloadHelper.downloadFile(this::isdownloadable);
     }
-    private Boolean isdownloadable(String uri ) {
+
+    private Boolean isdownloadable(String uri) {
         Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
         Matcher matcher = pattern.matcher(uri);
         return (matcher.find() || this.isdownloadable);
@@ -663,7 +731,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
                 paymentMethod = details.getPayMethods().get(0).getValue();
             }
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            if (categoryType == 3) {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            } else {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
+            }
         }
     }
 
@@ -681,7 +753,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo.getRequestCancelNote();
     }
 
-    public boolean shouldShowTimeForCancellation(){
+    public boolean shouldShowTimeForCancellation() {
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }

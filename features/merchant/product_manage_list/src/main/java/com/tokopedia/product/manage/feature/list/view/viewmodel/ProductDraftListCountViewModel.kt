@@ -4,9 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
-import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
-import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
+import com.tokopedia.product.manage.common.draft.domain.usecase.ClearAllDraftProductsUseCase
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllDraftProductsCountUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -15,10 +14,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductDraftListCountViewModel @Inject constructor(
-    private val getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
-    private val clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-    private val updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase,
-    private val dispatchers: CoroutineDispatchers
+        private val getAllDraftProductsCountUseCase: GetAllDraftProductsCountUseCase,
+        private val clearAllDraftProductsUseCase: ClearAllDraftProductsUseCase,
+        private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     val getAllDraftCountResult
@@ -29,7 +27,7 @@ class ProductDraftListCountViewModel @Inject constructor(
     fun getAllDraftCount() {
         launchCatchError(block = {
             val draftCount = withContext(dispatchers.io) {
-                getAllProductsCountDraftUseCase.getData(RequestParams.EMPTY)
+                getAllDraftProductsCountUseCase.getData(RequestParams.EMPTY)
             }
             _getAllDraftCountResult.value = Success(draftCount)
         }) {
@@ -37,22 +35,10 @@ class ProductDraftListCountViewModel @Inject constructor(
         }
     }
 
-    fun fetchAllDraftCountWithUpdateUploading() {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val params = UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false)
-                updateUploadingDraftProductUseCase.getData(params)
-            }
-            getAllDraftCount()
-        }) {
-            getAllDraftCount()
-        }
-    }
-
     fun clearAllDraft() {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                clearAllDraftProductUseCase.getData(RequestParams.EMPTY)
+                clearAllDraftProductsUseCase.getData(RequestParams.EMPTY)
             }
         }) {
             // do nothing
@@ -60,8 +46,7 @@ class ProductDraftListCountViewModel @Inject constructor(
     }
 
     fun detachView() {
-        getAllProductsCountDraftUseCase.unsubscribe()
-        clearAllDraftProductUseCase.unsubscribe()
-        updateUploadingDraftProductUseCase.unsubscribe()
+        getAllDraftProductsCountUseCase.unsubscribe()
+        clearAllDraftProductsUseCase.unsubscribe()
     }
 }

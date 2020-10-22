@@ -5,17 +5,20 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.sortfilter.SortFilterItem;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -54,8 +57,6 @@ public interface ProductListSectionContract {
 
         void stopTracePerformanceMonitoring();
 
-        void initQuickFilter(List<Filter> quickFilterList);
-
         void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
@@ -90,27 +91,11 @@ public interface ProductListSectionContract {
 
         void redirectToBrowser(String url);
 
-        HashMap<String, String> getSelectedSort();
-
-        void setSelectedSort(HashMap<String, String> selectedSort);
-
-        HashMap<String, String> getSelectedFilter();
-
-        void refreshFilterController(HashMap<String, String> selectedFilter);
-
         void showRefreshLayout();
 
         void hideRefreshLayout();
 
         String getScreenNameId();
-
-        void setTotalSearchResultCount(String formattedResultCount);
-
-        BaseAppComponent getBaseAppComponent();
-
-        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
-
-        void renderFailRequestDynamicFilter();
 
         boolean isFirstActiveTab();
 
@@ -120,11 +105,9 @@ public interface ProductListSectionContract {
 
         void reloadData();
 
-        void showBottomNavigation();
+        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
-        void hideBottomNavigation();
-
-        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
         RemoteConfig getABTestRemoteConfig();
 
@@ -146,13 +129,11 @@ public interface ProductListSectionContract {
 
         void logWarning(String message, @Nullable Throwable throwable);
 
-        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
-        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
-
-        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
@@ -167,19 +148,41 @@ public interface ProductListSectionContract {
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
         void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+
+        void onQuickFilterSelected(Option option);
+
+        void initFilterControllerForQuickFilter(List<Filter> quickFilterList);
+
+        void hideQuickFilterShimmering();
+
+        void setQuickFilter(List<SortFilterItem> items);
+
+        void showOnBoarding();
+
+        boolean isQuickFilterSelected(Option option);
+
+        void setProductCount(String productCountText);
+
+        String getClassName();
+
+        void sendTrackingOpenFilterPage();
+
+        void openBottomSheetFilter(@Nullable DynamicFilterModel dynamicFilterModel);
+
+        void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
+
+        void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void redirectionStartActivity(String applink, String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void requestDynamicFilter(Map<String, Object> searchParameter);
 
         void loadMoreData(Map<String, Object> searchParameter);
 
         void loadData(Map<String, Object> searchParameter);
 
         void onBannedProductsGoToBrowserClick(String url);
-
-        boolean isUsingBottomSheetFilter();
 
         String getUserId();
 
@@ -195,8 +198,6 @@ public interface ProductListSectionContract {
 
         void clearData();
 
-        void setStartFrom(int startFrom);
-
         int getStartFrom();
 
         void onViewCreated();
@@ -205,10 +206,23 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+        void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
-        boolean isTrackingViewPortEnabled();
+        List<Option> getQuickFilterOptionList();
+
+        @Nullable
+        DynamicFilterModel getDynamicFilterModel();
+
+        void getProductCount(Map<String, String> mapParameter);
+
+        void onFreeOngkirOnBoardingShown();
+
+        void openFilterPage(Map<String, Object> searchParameter);
+
+        void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
     }
 }

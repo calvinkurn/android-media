@@ -147,4 +147,9 @@ object FilterTracking {
         }
         return TextUtils.join("&", filterList)
     }
+
+    @JvmStatic
+    fun sendGeneralEvent(trackingMap: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(trackingMap)
+    }
 }

@@ -37,20 +37,5 @@
             android:exported="true"
             android:label="@string/title_date_setting"
             android:theme="@style/Theme.White" />
-        <activity
-            android:name=".featured.view.activity.GMFeaturedProductActivity"
-            android:exported="true"
-            android:label="@string/featured_product_title" >
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_gold_merchant_featured_product"/>
-            </intent-filter>
-        </activity>
     </application>
 </manifest>

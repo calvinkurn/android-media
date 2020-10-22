@@ -5,6 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
@@ -17,8 +18,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,23 +39,15 @@ class CreateMerchantVoucherStepsViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
+    lateinit var mViewModel: CreateMerchantVoucherStepsViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-    }
-
-    @After
-    fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-    }
-
-    private val testDispatcher = TestCoroutineDispatcher()
-
-    private val mViewModel by lazy {
-        CreateMerchantVoucherStepsViewModel(testDispatcher, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
+        mViewModel = CreateMerchantVoucherStepsViewModel(TestCoroutineDispatchers, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
     }
 
     @Test

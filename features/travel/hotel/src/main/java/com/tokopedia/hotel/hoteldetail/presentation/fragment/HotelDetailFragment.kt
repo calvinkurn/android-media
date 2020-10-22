@@ -31,6 +31,7 @@ import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWid
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
@@ -109,7 +110,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
             source = it.getString(HotelDetailActivity.EXTRA_SOURCE) ?: HotelSourceEnum.SEARCHRESULT.value
 
-            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
+            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
                         TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
@@ -161,7 +162,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        detailViewModel.roomListResult.observe(this, Observer {
+        detailViewModel.roomListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isRoomListSuccess = true
@@ -275,31 +276,25 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
 
-        val navIcon = detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
-        (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
+        collapsingToolbar.title = data.property.name
 
-        collapsing_toolbar.title = ""
         app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var isShow = false
-            var scrollRange = -1
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsing_toolbar.title = data.property.name
-                    navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                if (verticalOffset < COLLAPSING_TOOLBAR_OFFSET) {
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
                     isShow = true
                 } else if (isShow) {
-                    collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
                     isShow = false
                 }
-
-                (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
             }
         })
 
@@ -314,6 +309,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
+        setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
         setupImportantInfo(data)
         setupDescription(data)
@@ -333,6 +329,23 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
+    private fun setupSafetyBadgeLayout(propertySafetyBadge: PropertySafetyBadge) {
+        if (propertySafetyBadge.isShow) {
+            hotel_safety_information_layout.show()
+            if (propertySafetyBadge.title.isNotEmpty()) {
+                tv_hotel_safety_information_title.text = propertySafetyBadge.title
+                iv_hotel_safety_badge_icon.loadImage(propertySafetyBadge.icon.light)
+            } else {
+                tv_hotel_safety_information_title.hide()
+                iv_hotel_safety_badge_icon.hide()
+            }
+
+            if (propertySafetyBadge.content.isNotEmpty()) {
+                tv_hotel_safety_information_content.text = propertySafetyBadge.content
+            } else tv_hotel_safety_information_content.hide()
+
+        } else hotel_safety_information_layout.hide()
+    }
     private fun showLoadingLayout() {
         app_bar_layout.visibility = View.GONE
         container_hotel_detail.visibility = View.GONE
@@ -648,6 +661,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
+
+        const val COLLAPSING_TOOLBAR_OFFSET = -200
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,

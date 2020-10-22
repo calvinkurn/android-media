@@ -12,7 +12,13 @@ import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkRes
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
+import com.tokopedia.talk_old.reporttalk.domain.ReportTalkUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -26,6 +32,10 @@ class TalkReplyViewModel @Inject constructor(
         private val talkDeleteTalkUseCase: TalkDeleteTalkUseCase,
         private val talkDeleteCommentUseCase: TalkDeleteCommentUseCase,
         private val talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase,
+        private val talkMarkNotFraudUseCase: TalkMarkNotFraudUseCase,
+        private val talkMarkCommentNotFraudUseCase: TalkMarkCommentNotFraudUseCase,
+        private val talkReportTalkUseCase: TalkReportTalkUseCase,
+        private val talkReportCommentUseCase: TalkReportCommentUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -63,6 +73,22 @@ class TalkReplyViewModel @Inject constructor(
     val attachedProducts: LiveData<MutableList<AttachedProduct>>
         get() = _attachedProducts
 
+    private val _markCommentNotFraudResult = MutableLiveData<Result<TalkMarkCommentNotFraudSuccess>>()
+    val markCommentNotFraudResult: LiveData<Result<TalkMarkCommentNotFraudSuccess>>
+        get() = _markCommentNotFraudResult
+
+    private val _markNotFraudResult = MutableLiveData<Result<TalkMarkNotFraudResponseWrapper>>()
+    val markNotFraudResult: LiveData<Result<TalkMarkNotFraudResponseWrapper>>
+        get() = _markNotFraudResult
+
+    private val _reportTalkResult = MutableLiveData<Result<TalkReportTalkResponseWrapper>>()
+    val reportTalkResult: LiveData<Result<TalkReportTalkResponseWrapper>>
+        get() = _reportTalkResult
+
+    private val _reportCommentResult = MutableLiveData<Result<TalkReportCommentResponseWrapper>>()
+    val reportCommentResult: LiveData<Result<TalkReportCommentResponseWrapper>>
+        get() = _reportCommentResult
+
     private var isFollowing: Boolean = false
 
     fun followUnfollowTalk(talkId: Int) {
@@ -74,7 +100,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkFollowUnfollowTalkResponse.data.isSuccess == MUTATION_SUCCESS) {
                 _followUnfollowResult.postValue(Success(response))
             } else {
-                _followUnfollowResult.postValue(Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.first())))
+                _followUnfollowResult.postValue(Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.firstOrNull())))
             }
         }) {
             _followUnfollowResult.postValue(Fail(it))
@@ -87,6 +113,7 @@ class TalkReplyViewModel @Inject constructor(
                 discussionDataByQuestionIDUseCase.setParams(questionId, shopId)
                 discussionDataByQuestionIDUseCase.executeOnBackground()
             }
+            isMyShop = response.discussionDataByQuestionID.shopID == userSession.shopId
             _discussionData.postValue(Success(response))
         }) {
             _discussionData.postValue(Fail(it))
@@ -102,7 +129,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkDeleteTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteTalkResult.postValue(Success(response))
             } else {
-                _deleteTalkResult.postValue(Fail(Throwable(response.talkDeleteTalk.messageError.first())))
+                _deleteTalkResult.postValue(Fail(Throwable(response.talkDeleteTalk.messageError.firstOrNull())))
             }
         }) {
             _deleteTalkResult.postValue(Fail(it))
@@ -118,7 +145,7 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkDeleteComment.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteCommentResult.postValue(Success(response))
             } else {
-                _deleteCommentResult.postValue(Fail(Throwable(response.talkDeleteComment.messageError.first())))
+                _deleteCommentResult.postValue(Fail(Throwable(response.talkDeleteComment.messageError.firstOrNull())))
             }
         }) {
             _deleteCommentResult.postValue(Fail(it))
@@ -138,10 +165,70 @@ class TalkReplyViewModel @Inject constructor(
             if(response.talkCreateNewComment.data.isSuccess == MUTATION_SUCCESS) {
                 _createNewCommentResult.postValue(Success(response))
             } else {
-                _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.first())))
+                _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.firstOrNull())))
             }
         }) {
-            _createNewCommentResult.postValue(Fail(Throwable()))
+            _createNewCommentResult.postValue(Fail(it))
+        }
+    }
+
+    fun markCommentNotFraud(questionId: String, commentId: String){
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                talkMarkCommentNotFraudUseCase.setParams(questionId.toIntOrZero(), commentId.toIntOrZero())
+                talkMarkCommentNotFraudUseCase.executeOnBackground()
+            }
+            if(response.talkMarkCommentNotFraud.data.isSuccess == MUTATION_SUCCESS) {
+                _markCommentNotFraudResult.postValue(Success(TalkMarkCommentNotFraudSuccess(commentId)))
+            } else {
+                _markCommentNotFraudResult.postValue(Fail(Throwable(response.talkMarkCommentNotFraud.messageError.firstOrNull())))
+            }
+        }) {
+            _markCommentNotFraudResult.postValue(Fail(it))
+        }
+    }
+
+    fun markQuestionNotFraud(questionId: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                talkMarkNotFraudUseCase.setParams(questionId.toIntOrZero())
+                talkMarkNotFraudUseCase.executeOnBackground()
+            }
+            if(response.talkMarkNotFraud.data.isSuccess == MUTATION_SUCCESS) {
+                _markNotFraudResult.postValue(Success(response))
+            } else {
+                _markNotFraudResult.postValue(Fail(Throwable(response.talkMarkNotFraud.messageError.firstOrNull())))
+            }
+        }) {
+            _markNotFraudResult.postValue(Fail(it))
+        }
+    }
+
+    fun reportTalk(questionId: String) {
+        launchCatchError(block = {
+            talkReportTalkUseCase.setParams(questionId.toIntOrZero())
+            val response = talkReportTalkUseCase.executeOnBackground()
+            if(response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
+                _reportTalkResult.postValue(Success(response))
+            } else {
+                _reportTalkResult.postValue(Fail(Throwable(response.talkReportTalk.messageError.firstOrNull())))
+            }
+        }) {
+            _reportTalkResult.postValue(Fail(it))
+        }
+    }
+
+    fun reportComment(commentId: String) {
+        launchCatchError(block = {
+            talkReportCommentUseCase.setParams(commentId.toIntOrZero())
+            val response = talkReportCommentUseCase.executeOnBackground()
+            if(response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
+                _reportCommentResult.postValue(Success(response))
+            } else {
+                _reportCommentResult.postValue(Fail(Throwable(response.talkReportComment.messageError.firstOrNull())))
+            }
+        }) {
+            _reportCommentResult.postValue(Fail(it))
         }
     }
 
@@ -161,9 +248,5 @@ class TalkReplyViewModel @Inject constructor(
 
     fun getIsFollowing(): Boolean {
         return isFollowing
-    }
-
-    fun setIsMyShop(shopId: String) {
-        isMyShop = shopId == userSession.shopId
     }
 }

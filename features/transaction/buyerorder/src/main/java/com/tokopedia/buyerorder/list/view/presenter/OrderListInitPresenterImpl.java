@@ -29,7 +29,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
 
 
     @Override
-    public void getInitData() {
+    public void getInitData(String orderCategory) {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
                 R.raw.initorderlist), TabData.class, false);
@@ -53,8 +53,8 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
                 view.removeProgressBarView();
                 if (response != null) {
                     TabData data = response.getData(TabData.class);
-                    if (!data.getOrderLabelList().isEmpty()) {
-                        view.renderTabs(data.getOrderLabelList());
+                    if (data != null && !data.getOrderLabelList().isEmpty()) {
+                        view.renderTabs(data.getOrderLabelList(), orderCategory);
                     }
                 }
             }

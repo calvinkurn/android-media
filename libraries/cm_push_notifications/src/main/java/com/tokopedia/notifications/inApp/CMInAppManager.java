@@ -2,21 +2,24 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
-import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
+import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.inApp.viewEngine.BannerView;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
@@ -26,50 +29,57 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Map;
+
+import timber.log.Timber;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
  */
-public class CMInAppManager implements CmInAppListener {
+public class CMInAppManager implements CmInAppListener, DataProvider {
 
     private static CMInAppManager inAppManager;
+    private Application application;
+    private WeakReference<Activity> currentActivity;
+    private CmInAppListener cmInAppListener;
+    private final Object lock = new Object();
+    private List<String> excludeScreenList;
 
-    Application application;
-
-    WeakReference<Activity> currentActivity;
-
-    CmInAppListener cmInAppListener;
-
-    final Object lock = new Object();
-
-    public long cmInAppEndTimeInterval = HOURS_24_IN_MILLIS * 7;
-
-    public static CMInAppManager getInstance() {
-        return inAppManager;
-    }
+    /*
+     * This flag is used for validation of the dialog to be displayed.
+     * This is useful for avoiding InApp dialog appearing more than once.
+     * */
+    private Boolean isDialogShowing = false;
 
     static {
         inAppManager = new CMInAppManager();
     }
 
+    public long getCmInAppEndTimeInterval() {
+        return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
+    }
+
+    public static CMInAppManager getInstance() {
+        return inAppManager;
+    }
+
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
-        cmInAppEndTimeInterval = ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
-                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
-        RulesManager.initRuleEngine(application);
+        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
 
     public static CmInAppListener getCmInAppListener() {
-        if (inAppManager == null)
-            return null;
-        if (inAppManager.cmInAppListener == null)
-            return null;
+        if (inAppManager == null) return null;
+        if (inAppManager.cmInAppListener == null) return null;
         return inAppManager.cmInAppListener;
     }
 
@@ -82,41 +92,111 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void showInAppNotification() {
-        DataProvider dataProvider = new DataProvider() {
-            @Override
-            public void notificationsDataResult(List<CMInApp> inAppDataList) {
-                synchronized (lock) {
-                    if (canShowInApp(inAppDataList)) {
-                        if (getCurrentActivity() == null)
-                            return;
-                        Activity activity = getCurrentActivity();
-                        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
-                        CMInApp cmInApp = inAppDataList.get(0);
-                        final View view = viewEngine.createView(cmInApp);
-                        if (view == null)
-                            return;
-                        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-                        if (null != inAppViewPrev)//In-App view already present on Activity
-                            return;
-                        FrameLayout root = (FrameLayout) activity.getWindow()
-                                .getDecorView()
-                                .findViewById(android.R.id.content)
-                                .getRootView();
-                        root.addView(view);
-                        dataConsumed(cmInApp);
-                    }
-                }
+        if (excludeScreenList != null && excludeScreenList.contains(currentActivity.get().getClass().getName()))
+            return;
+        RulesManager.getInstance().checkValidity(
+                currentActivity.get().getClass().getName(),
+                0L,
+                this
+        );
+    }
+
+    @Override
+    public void notificationsDataResult(List<CMInApp> inAppDataList) {
+        synchronized (lock) {
+            if (canShowInApp(inAppDataList)) {
+                CMInApp cmInApp = inAppDataList.get(0);
+                sendEventInAppPrepared(cmInApp);
+                showDialog(cmInApp);
+                dataConsumed(cmInApp);
+                sendAmplificationEventInAppRead(cmInApp);
             }
-        };
-        RulesManager.getInstance().checkValidity(currentActivity.get().getClass().getName(), 0L, dataProvider);
+        }
+    }
+
+    private void sendEventInAppPrepared(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    private void sendAmplificationEventInAppRead(CMInApp cmInApp) {
+        if (cmInApp.isAmplification()) {
+            IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(
+                    application.getApplicationContext(),
+                    IrisAnalyticsEvents.INAPP_READ,
+                    cmInApp
+            );
+        }
+    }
+
+    @Override
+    public void sendEventInAppDelivered(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
+    }
+
+    /**
+     * legacy dialog
+     *
+     * @param cmInApp
+     */
+    private void showLegacyDialog(CMInApp cmInApp) {
+        Activity activity = getCurrentActivity();
+        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+
+        final View view = viewEngine.createView(cmInApp);
+        if (view == null) return;
+
+        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+        //In-App view already present on Activity
+        if (null != inAppViewPrev) return;
+
+        FrameLayout root = (FrameLayout) activity.getWindow()
+                .getDecorView()
+                .findViewById(android.R.id.content)
+                .getRootView();
+        root.addView(view);
+
+        // set flag if has dialog showing
+        isDialogShowing = true;
+    }
+
+    /**
+     * dialog for interstitial and interstitialImg
+     *
+     * @param data
+     */
+    private void interstitialDialog(CMInApp data) {
+        if (getCurrentActivity() == null) return;
+        Activity activity = getCurrentActivity();
+        try {
+            // show interstitial banner
+            BannerView.create(activity, data);
+
+            // set flag if has dialog showing
+            isDialogShowing = true;
+        } catch (Exception e) {
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT)))
+                    + "';data='" + data.toString().substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
+            onCMInAppInflateException(data);
+        }
+    }
+
+    private void showDialog(CMInApp data) {
+        switch (data.getType()) {
+            case TYPE_INTERSTITIAL_IMAGE_ONLY:
+            case TYPE_INTERSTITIAL:
+                interstitialDialog(data);
+                break;
+            case TYPE_SILENT:
+                break;
+            default:
+                showLegacyDialog(data);
+                break;
+        }
     }
 
     private boolean canShowInApp(List<CMInApp> inAppDataList) {
-        if (inAppDataList != null && inAppDataList.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return inAppDataList != null && inAppDataList.size() > 0;
     }
 
     private Activity getCurrentActivity() {
@@ -132,16 +212,19 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     public void onActivityStartedInternal(Activity activity) {
-        if (application == null)
-            application = activity.getApplication();
+        if (application == null) application = activity.getApplication();
         updateCurrentActivity(activity);
-        showInAppNotification();
+
+        if (!isDialogShowing) {
+            showInAppNotification();
+        }
     }
 
     public void onActivityStopInternal(Activity activity) {
         if (currentActivity != null && currentActivity.get().getClass().
-                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName()))
+                getSimpleName().equalsIgnoreCase(activity.getClass().getSimpleName())) {
             currentActivity.clear();
+        }
     }
 
     private void dataConsumed(CMInApp inAppData) {
@@ -161,40 +244,45 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                if (currentActivity != null && currentActivity.get() != null)
-                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
+                if (application != null) {
+                    sendEventInAppDelivered(cmInApp);
+                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                } else {
+                    Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
+                }
             }
         } catch (Exception e) {
+            Map<String, String> data = remoteMessage.getData();
+            if (data != null)
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data='" + data.toString()
+                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
+            else
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
     }
 
     @Override
-    public boolean showCmInAppMessage() {
-        return false;
+    public void onCMinAppDismiss(CMInApp inApp) {
+        RulesManager.getInstance().viewDismissed(inApp.id);
+        isDialogShowing = false;
     }
 
     @Override
-    public void onCMInAppShown(CMInApp cmInApp) {
+    public void onCMinAppInteraction(CMInApp cmInApp) {
+        RulesManager.getInstance().interactedWithView(cmInApp.id);
     }
 
     @Override
-    public void onCMinAppDismiss() {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            View mainView = activity.findViewById(R.id.mainContainer);
-            if (mainView != null && mainView.getTag() != null && mainView.getTag() instanceof CMInApp) {
-                CMInApp cmInApp = (CMInApp) mainView.getTag();
-                RulesManager.getInstance().viewDismissed(cmInApp.id);
-            }
+    public void onCMInAppLinkClick(String appLink, CMInApp cmInApp, ElementType elementType) {
+        if (getCurrentActivity() != null) {
+            Activity activity = currentActivity.get();
+            activity.startActivity(RouteManager.getIntent(activity, appLink));
+        } else {
+            Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
         }
-    }
 
-    @Override
-    public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
-        Log.d("InApp", deepLinkUri.toString());
-        Intent appLinkIntent = RouteManager.getIntent(application.getApplicationContext(), deepLinkUri.toString());
-        if (getCurrentActivity() != null)
-            getCurrentActivity().startActivity(appLinkIntent);
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
@@ -203,16 +291,15 @@ public class CMInAppManager implements CmInAppListener {
             default:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, null);
         }
-
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
-        if (cmInApp == null)
-            return;
+        if (cmInApp == null) return;
+
         if (elementId != null) {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp);
         }
     }
 
@@ -224,5 +311,9 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppInflateException(CMInApp inApp) {
         RulesManager.getInstance().dataInflateError(inApp.id);
+    }
+
+    public void setExcludeScreenList(List<String> excludeScreenList) {
+        this.excludeScreenList = excludeScreenList;
     }
 }

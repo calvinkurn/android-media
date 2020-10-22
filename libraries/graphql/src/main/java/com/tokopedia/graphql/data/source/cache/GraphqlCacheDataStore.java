@@ -18,7 +18,9 @@ import rx.Observable;
 
 /**
  * Retrieve the response from cache only
+ * Use kotlin version
  */
+@Deprecated
 public class GraphqlCacheDataStore implements GraphqlDataStore {
 
     private GraphqlCacheManager mCacheManager;

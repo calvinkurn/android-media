@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.power_merchant.subscribe.R
 
 class FeatureItemDecoration: RecyclerView.ItemDecoration() {
 
@@ -16,7 +15,7 @@ class FeatureItemDecoration: RecyclerView.ItemDecoration() {
         val viewHolder = parent.getChildViewHolder(view)
         val context = viewHolder.itemView.context
 
-        val margin = context.resources.getDimension(R.dimen.spacing_lvl3).toInt()
+        val margin = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
 
         if(position == itemCount - 1) {
             viewHolder.itemView.setMargin(margin, 0, margin, 0)

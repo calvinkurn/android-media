@@ -10,9 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.categorylevels.R
@@ -27,6 +30,7 @@ import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
 import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.interfaces.CatalogCardListener
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +39,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
+
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -66,13 +71,15 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     companion object {
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val EXTRA_BANNED_DATA = "CATEGORY_DATA"
 
         @JvmStatic
-        fun newInstance(departmentId: String, departmentName: String): Fragment {
+        fun newInstance(departmentId: String, departmentName: String, data: BannedData?): Fragment {
             val fragment = CatalogNavFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            bundle.putParcelable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -103,6 +110,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+                bannedData = it.getParcelable(EXTRA_BANNED_DATA) ?: BannedData()
             }
         }
     }
@@ -273,7 +281,13 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         catalog_recyclerview.requestLayout()
     }
 
-    data class AceFilterInput(var pmin: String, var pmax: String, var sc: String)
+    data class AceFilterInput(
+            @field:SerializedName("pmin")
+            var pmin: String,
+            @field:SerializedName("pmax")
+            var pmax: String,
+            @field:SerializedName("sc")
+            var sc: String)
 
     override fun onSwipeToRefresh() {
         reloadData()
@@ -311,7 +325,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     override fun onShareButtonClicked() {
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
     }
 
     override fun onDestroyView() {
@@ -346,5 +360,9 @@ class CatalogNavFragment : BaseBannedProductFragment(),
     override fun addBannedProductScreen() {
         super.addBannedProductScreen()
         view?.findViewById<View>(R.id.layout_banned_screen)?.show()
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }

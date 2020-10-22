@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_filter_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
+        app:typographyType="body_2"
+        android:layout_marginBottom="@dimen/dp_18"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/contact_us_grey_n_700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Semua"/>
 
     <ImageView
         android:id="@+id/iv_tick"
@@ -28,12 +28,11 @@
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:padding="@dimen/dp_4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check" />
+        app:srcCompat="@drawable/contact_us_ic_tick" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

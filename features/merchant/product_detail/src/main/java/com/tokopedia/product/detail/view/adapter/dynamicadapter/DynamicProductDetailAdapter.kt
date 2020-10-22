@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.adapter.dynamicadapter
 
+import android.os.Bundle
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,20 +16,24 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshot(snapshotData: ProductSnapshotDataModel?) {
-        snapshotData?.let {
-            val indexOfSnapshot = list.indexOf(it)
-            notifyItemChanged(indexOfSnapshot)
+    fun notifyBasicContentWithPayloads(contentData: ProductContentDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfContent = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfContent, payload)
+            } else {
+                notifyItemChanged(indexOfContent)
+            }
         }
     }
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int? = null) {
-        snapshotData?.let {
-            val indexOfSnapshot = list.indexOf(it)
+    fun notifyMediaWithPayload(contentData: ProductMediaDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfMedia = list.indexOf(it)
             if (payload != null) {
-                notifyItemChanged(indexOfSnapshot, payload)
+                notifyItemChanged(indexOfMedia, payload)
             } else {
-                notifyItemChanged(indexOfSnapshot)
+                notifyItemChanged(indexOfMedia)
             }
         }
     }
@@ -36,6 +42,13 @@ class DynamicProductDetailAdapter(
         shopInfoData?.let {
             val indexOfShopInfo = list.indexOf(shopInfoData)
             notifyItemChanged(indexOfShopInfo, payload)
+        }
+    }
+
+    fun notifyTopAdsBanner(topAdsImageData: TopAdsImageDataModel?) {
+        topAdsImageData?.let {
+            val indexOfTopAdsImage = list.indexOf(topAdsImageData)
+            notifyItemChanged(indexOfTopAdsImage)
         }
     }
 
@@ -50,23 +63,18 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
-        shipingInfo?.let {
-            val indexOfShipingInfo = list.indexOf(it)
-            notifyItemChanged(indexOfShipingInfo)
+    fun notifyRecomAdapter(productRecommendationDataModel: ProductRecommendationDataModel?) {
+        productRecommendationDataModel?.let{productRecommendationDataModel->
+            val index = list.indexOf(productRecommendationDataModel)
+            if(index != -1) notifyItemChanged(index)
         }
     }
 
-    fun notifyRecomAdapter(listOfData: List<ProductRecommendationDataModel>?) {
-        listOfData?.run {
-            forEach {
-                if (it.isRecomenDataEmpty) {
-                    clearElement(it)
-                } else {
-                    notifyItemChanged(list.indexOf(it))
-                }
-            }
-        }
+    fun notifyFilterRecommendation(productRecommendationDataModel: ProductRecommendationDataModel){
+        val index = list.indexOf(productRecommendationDataModel)
+        if(index != -1) notifyItemChanged(index, Bundle().apply {
+            putBoolean(ProductRecommendationViewHolder.KEY_UPDATE_FILTER_RECOM, true)
+        })
     }
 
     fun removeRecommendation(listOfData: List<ProductRecommendationDataModel>?) {
@@ -77,45 +85,48 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
+    fun <T : DynamicPdpDataModel> removeComponentSection(data: T?) {
         data?.let {
             clearElement(it)
         }
     }
 
-    fun removeQnaSection(data: ProductDiscussionMostHelpfulDataModel?) {
-        data?.let {
-            clearElement(it)
+    fun <T : DynamicPdpDataModel> notifyItemComponentSections(vararg data: T?) {
+        data.forEach {
+            it?.let {
+                val indexOfData = list.indexOf(it)
+                if (indexOfData != -1) {
+                    notifyItemChanged(indexOfData)
+                }
+            }
         }
     }
 
-    fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMerchantVoucherSection(data: ProductMerchantVoucherDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun getTradeinPosition(data: ProductGeneralInfoDataModel?): Int {
+    fun <T: DynamicPdpDataModel> getItemComponentIndex(data: T?) : Int{
         return if (data != null) {
             list.indexOf(data)
         } else {
-            0
+            RecyclerView.NO_POSITION
         }
     }
 
-    fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
+
+    fun <T : DynamicPdpDataModel> notifyWithPayload(data: T?, payload: Int) {
+        data?.let {
+            val indexOfData = list.indexOf(data)
+            if (indexOfData != -1) {
+                notifyItemChanged(indexOfData, payload)
+            }
+        }
+    }
+
+    fun getTopAdsBannerPosition(data: TopAdsImageDataModel): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            -1
+        }
+    }
 
     fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
         data?.let {
@@ -129,7 +140,7 @@ class DynamicProductDetailAdapter(
     }
 
     fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
-        notifyMeData?.let{
+        notifyMeData?.let {
             val indexOfNotifyMe = list.indexOf(notifyMeData)
             if (payload != null) {
                 notifyItemChanged(indexOfNotifyMe, payload)
@@ -139,20 +150,13 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyDiscussion(productDiscussionMostHelpfulDataModel: ProductDiscussionMostHelpfulDataModel?) {
-        productDiscussionMostHelpfulDataModel?.let {
-            val indexOfDiscussion = list.indexOf(it)
-            if(indexOfDiscussion == -1) {
-                return
-            }
-            notifyItemChanged(indexOfDiscussion)
-        }
-    }
-
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is ProductRecommendationViewHolder) {
-            listener.loadTopads()
+        if (holder is ProductRecommendationViewHolder &&
+                holder.adapterPosition < visitables.size &&
+                visitables[holder.adapterPosition] is ProductRecommendationDataModel &&
+                (visitables[holder.adapterPosition] as ProductRecommendationDataModel).recomWidgetData == null) {
+            listener.loadTopads((visitables[holder.adapterPosition] as ProductRecommendationDataModel).name)
         }
     }
 }

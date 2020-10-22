@@ -29,7 +29,6 @@ import timber.log.Timber;
  */
 public class TimberWrapper {
 
-    private static final String APP_TYPE = "sellerApp";
     private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
@@ -78,7 +77,7 @@ public class TimberWrapper {
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
                     timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
-                    timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
+                    timberReportingTree.setVersionName(GlobalConfig.RAW_VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
@@ -100,6 +99,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-seller-app-p%s", priority);
         String parser = String.format("android-seller-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }

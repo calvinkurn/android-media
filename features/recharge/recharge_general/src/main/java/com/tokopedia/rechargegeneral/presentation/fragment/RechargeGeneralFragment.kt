@@ -35,10 +35,8 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
@@ -69,10 +67,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
 import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class RechargeGeneralFragment: BaseTopupBillsFragment(),
         OnInputListener,
@@ -102,7 +97,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     set(value) {
         field = value
         // Get operator name for tracking
-        operatorName = getOperatorData(value)?.attributes?.name?.toLowerCase(Locale.getDefault()) ?: ""
+        operatorName = getOperatorData(value)?.attributes?.name ?: ""
     }
     private var selectedProduct: RechargeGeneralProductSelectData? = null
         set(value) {
@@ -187,13 +182,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.operatorCluster.observe(this, Observer {
+        viewModel.operatorCluster.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     loading_view.hide()
                     renderInitialData()
                 }
                 is Fail -> {
+                    hideLoading()
                     var throwable = it.throwable
                     if (throwable.message == NULL_PRODUCT_ERROR)
                         throwable = MessageErrorException(getString(R.string.selection_null_product_error))
@@ -202,14 +198,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             }
         })
 
-        viewModel.productList.observe(this, Observer {
+        viewModel.productList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
                     setupInputAndProduct(it.data)
                     if (hasFavoriteNumbers) {
                         updateFavoriteNumberInputField()
                     }
-                    adapter.hideLoading()
+                    hideLoading()
                 }
                 is Fail -> {
                     val previousOperatorId = operatorId
@@ -223,14 +219,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         operator_select.setInputText(defaultOperatorName, false)
                         getProductList(menuId, operatorId)
                     } else {
-                        adapter.hideLoading()
+                        hideLoading()
                     }
                     NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.selection_null_product_error))
                 }
             }
         })
 
-        sharedViewModel.recommendationItem.observe(this, Observer {
+        sharedViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
             val operatorClusters = viewModel.operatorCluster.value
             if (operatorClusters is Success) {
                 rechargeGeneralAnalytics.eventClickRecentIcon(it, categoryName, it.position)
@@ -271,6 +267,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
             enquire()
+        }
+
+        recharge_general_swipe_refresh_layout.setOnRefreshListener{
+            recharge_general_swipe_refresh_layout.isRefreshing = true
+            loadData()
         }
 
         loadData()
@@ -756,14 +757,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun getOperatorCluster(menuId: Int) {
         viewModel.getOperatorCluster(
                 GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
-                viewModel.createOperatorClusterParams(menuId)
+                viewModel.createOperatorClusterParams(menuId),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
-                viewModel.createProductListParams(menuId, operator)
+                viewModel.createProductListParams(menuId, operator),
+                recharge_general_swipe_refresh_layout.isRefreshing
         )
     }
 
@@ -808,8 +811,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && inputDataKeys.isNotEmpty()
-                && inputData.keys.toList().sorted() == inputDataKeys.sorted()
+                && (inputDataKeys.isEmpty()
+                || inputData.keys.toList().sorted() == inputDataKeys.sorted())
     }
 
     private fun enquire() {
@@ -838,7 +841,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
             rechargeAnalytics.eventOpenScreen(
-                    userSession.isLoggedIn,
+                    userSession.userId,
                     categoryName,
                     categoryId.toString())
         }
@@ -848,6 +851,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             setupAutoFillData(data.recommendations[0])
         }
         renderFooter(data)
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        // do nothing
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
@@ -872,7 +879,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
-        showGetListError(error)
+
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -937,18 +944,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         // Setup checkout pass data
         if (validateEnquiry()) {
             selectedProduct?.run {
-                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
                         .categoryId(categoryId.toString())
-                        .instantCheckout("0")
                         .isPromo(if (isPromo) "1" else "0")
                         .operatorId(operatorId.toString())
                         .productId(id)
                         .utmCampaign(categoryId.toString())
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
+
                 if (inputData.containsKey(PARAM_CLIENT_NUMBER)) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(inputData[PARAM_CLIENT_NUMBER]!!)
                 }
@@ -1011,6 +1013,12 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     fun onBackPressed() {
         rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
+    }
+
+    private fun hideLoading() {
+        recharge_general_swipe_refresh_layout.isEnabled = true
+        recharge_general_swipe_refresh_layout.isRefreshing = false
+        adapter.hideLoading()
     }
 
     override fun getScreenName(): String {

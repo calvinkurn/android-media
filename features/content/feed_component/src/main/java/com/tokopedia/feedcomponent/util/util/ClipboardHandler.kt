@@ -12,7 +12,7 @@ class ClipboardHandler {
     fun copyToClipboard(context: Activity, Text: String) {
         val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Tokopedia", Text)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 
 }

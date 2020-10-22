@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivJoinRekening"
+            android:layout_width="@dimen/swd_de_active_account_width"
+            android:layout_height="@dimen/swd_de_active_account_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/swd_img_join_rekening" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvJoinRekeningTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/swp_dp_12"
+            android:gravity="center"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivJoinRekening"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="Title" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/descriptionBulletContainer"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvJoinRekeningTitle"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnJoinRPAndWithdrawal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:text="@string/swd_withdrawand_join"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptionBulletContainer"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnWithdrawalOnly"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/swp_dp_12"
+            android:text="@string/swd_withdrawal_only"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnJoinRPAndWithdrawal"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvJoinRekeningTNC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnWithdrawalOnly"
+            app:typographyType="body_3"
+            tools:text="Description" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

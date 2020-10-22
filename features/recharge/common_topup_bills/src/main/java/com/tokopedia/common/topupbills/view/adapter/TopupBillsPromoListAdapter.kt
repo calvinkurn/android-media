@@ -1,6 +1,5 @@
 package com.tokopedia.common.topupbills.view.adapter
 
-import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
@@ -20,7 +19,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsPromo
 class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
         RecyclerView.Adapter<TopupBillsPromoListAdapter.PromoItemViewHolder>() {
 
-    private lateinit var context: Context
     private lateinit var listener: ActionListener
 
     fun setListener(listener: ActionListener) {
@@ -38,7 +36,6 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoItemViewHolder {
-        context = parent.context
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_digital_telco_promo, parent, false)
         return PromoItemViewHolder(view)
     }
@@ -86,16 +83,16 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
             description.text = topupBillsPromo.title
             promoCode.text = topupBillsPromo.promoCode
 
-            var containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
-            var btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_rounded)
+            var containerBg = AppCompatResources.getDrawable(itemView.context, R.drawable.digital_bg_transparent_border_green)
+            var btnCopyBg = AppCompatResources.getDrawable(itemView.context, R.drawable.digital_bg_green_rounded)
             if (topupBillsPromo.voucherCodeCopied) {
-                btnCopyPromo.text = context.getString(R.string.common_topup_text_has_copied_promo_code)
-                btnCopyPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
+                btnCopyPromo.text = itemView.context.getString(R.string.common_topup_text_has_copied_promo_code)
+                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.white))
             } else {
-                containerBg = AppCompatResources.getDrawable(context, R.drawable.common_topup_bg_transparent_round)
-                btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
-                btnCopyPromo.text = context.getString(R.string.common_topup_text_copy_promo_code)
-                btnCopyPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
+                containerBg = AppCompatResources.getDrawable(itemView.context, R.drawable.common_topup_bg_transparent_round)
+                btnCopyBg = AppCompatResources.getDrawable(itemView.context, R.drawable.digital_bg_transparent_border_green)
+                btnCopyPromo.text = itemView.context.getString(R.string.common_topup_text_copy_promo_code)
+                btnCopyPromo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.tkpd_main_green))
             }
             container.background = containerBg
             btnCopyPromo.background = btnCopyBg

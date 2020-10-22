@@ -14,8 +14,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 
 object TalkReadingMapper {
 
-    const val SORT_CATEGORY = "Urutkan"
-    const val SORT_POPULAR = "Terpopuler"
+    const val SORT_CATEGORY = "Paling Relevan"
     const val SORT_LATEST = "Terbaru"
     const val CATEGORY_FILTER_FORMAT = "%s (%d)"
 
@@ -50,7 +49,6 @@ object TalkReadingMapper {
     fun mapSelectedSortToSortFilterItem(selectedSortOption: SortOption): String {
         return when(selectedSortOption) {
             is SortOption.SortByInformativeness -> SORT_CATEGORY
-            is SortOption.SortByLike -> SORT_POPULAR
             else -> SORT_LATEST
         }
     }
@@ -70,7 +68,7 @@ object TalkReadingMapper {
     private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit,
                                                                   onCategoryModifiedListener: OnCategoryModifiedListener): ArrayList<SortFilterItem> {
         val result = arrayListOf<SortFilterItem>()
-        val sortChip = SortFilterItem(title = SORT_CATEGORY, listener = showBottomSheet)
+        val sortChip = SortFilterItem(title = SORT_LATEST, listener = showBottomSheet)
         result.add(sortChip)
         this.forEach {
             val sortFilterItem = SortFilterItem(String.format(CATEGORY_FILTER_FORMAT, it.text, it.counter))

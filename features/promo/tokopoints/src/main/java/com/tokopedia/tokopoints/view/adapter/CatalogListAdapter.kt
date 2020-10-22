@@ -29,6 +29,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import rx.Subscriber
 import java.util.*
+import kotlin.collections.HashMap
 
 class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresenter, private val mContext: Context?, callback: AdapterCallback?, private val categoryId: Int, private val subCategoryId: Int, private val pointsRange: Int, private val mIsLimitEnable: Boolean) : BaseAdapter<CatalogsValueEntity?>(callback) {
 
@@ -44,7 +45,6 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         var textDiscount: TextView
         var imgBanner: ImageView
         var imgTime: ImageView
-        var imgPoint: ImageView
         var pbQuota: ProgressBar
         var isVisited = false
         override fun bindView(item: CatalogsValueEntity?, position: Int) {
@@ -61,7 +61,6 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             btnContinue = view.findViewById(R.id.button_continue)
             imgBanner = view.findViewById(R.id.img_banner)
             imgTime = view.findViewById(R.id.img_time)
-            imgPoint = view.findViewById(R.id.img_points_stack)
             labelPoint = view.findViewById(R.id.text_point_label)
             textDiscount = view.findViewById(R.id.text_point_discount)
             pbQuota = view.findViewById(R.id.progress_timer_quota)
@@ -69,7 +68,7 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
     }
 
     private fun setData(holder: ViewHolder, item: CatalogsValueEntity?, position: Int) {
-         if(item == null) return
+        if (item == null) return
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
@@ -77,10 +76,8 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         //setting points info if exist in response
         if (item.pointsStr == null || item.pointsStr.isEmpty()) {
             holder.pointValue.visibility = View.GONE
-            holder.imgPoint.visibility = View.GONE
         } else {
             holder.pointValue.visibility = View.VISIBLE
-            holder.imgPoint.visibility = View.VISIBLE
             holder.pointValue.text = item.pointsStr
         }
         //setting expiry time info if exist in response
@@ -133,16 +130,17 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.orange_red))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
         }
         if (item.isDisabledButton) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
         } else {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
         }
+
         if (item.pointsSlash <= 0) {
             holder.labelPoint.visibility = View.GONE
         } else {
@@ -156,6 +154,7 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.textDiscount.visibility = View.VISIBLE
             holder.textDiscount.text = item.discountPercentageStr
         }
+
         holder.btnContinue.setOnClickListener { v: View? ->
             //call validate api the show dialog
             mPresenter.startValidateCoupon(item)
@@ -235,9 +234,9 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
                 item["creative"] = data.title
                 item["creative_url"] = data.imageUrlMobile
                 item["promo_code"] = data.baseCode
-                val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
+                val promotions: HashMap<String, List<Map<String, String>>> = HashMap()
                 promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-                val promoView: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+                val promoView: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
                 promoView["promoView"] = promotions
                 AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
@@ -257,9 +256,9 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         item["creative"] = data.title
         item["creative_url"] = data.imageUrlMobile
         item["promo_code"] = data.baseCode
-        val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
+        val promotions: HashMap<String, List<Map<String, String>>> = HashMap()
         promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-        val promoClick: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
         promoClick["promoClick"] = promotions
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,

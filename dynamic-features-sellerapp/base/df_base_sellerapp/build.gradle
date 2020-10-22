@@ -62,9 +62,10 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.layanan)
 
-
     //Content
 //    implementation project(rootProject.ext.features.profile)
+    implementation project(rootProject.ext.features.playBroadcaster)
+
     //Discovery
     implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
@@ -74,10 +75,11 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.reviewProduct)
 
     //User
 //    implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.managepassword)
 //    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.settingbank)
@@ -89,7 +91,17 @@ dependencies {
     implementation project(rootProject.ext.features.attachvoucher)
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.voucherCreation)
     implementation project(rootProject.ext.features.sellerSearch)
+    implementation project(rootProject.ext.features.activation)
+    implementation project(rootProject.ext.features.createpost)
+    implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+
+//    Merchant
+    implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.statistic)
+    implementation project(rootProject.ext.features.sellerMenu)
 }

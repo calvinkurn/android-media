@@ -50,7 +50,7 @@ public class GetCampaignUseCase {
     }
 
     public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber) {
-        String query = GraphqlHelper.loadRawString(resources, R.raw.query_get_campaign_list);
+        String query = GraphqlHelper.loadRawString(resources, R.raw.shake_landing_query_get_campaign_list);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
                 CampaignGqlResponse.class, requestParams, false);

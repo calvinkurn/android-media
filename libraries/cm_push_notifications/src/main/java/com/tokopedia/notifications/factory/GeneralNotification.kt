@@ -2,6 +2,7 @@ package com.tokopedia.notifications.factory
 
 import android.app.Notification
 import android.content.Context
+import android.text.TextUtils
 import androidx.core.app.NotificationCompat
 
 import com.tokopedia.notifications.common.CMNotificationUtils
@@ -21,12 +22,12 @@ class GeneralNotification internal constructor(context: Context, baseNotificatio
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
         builder.setAutoCancel(true)
 
-        baseNotificationModel.detailMessage?.apply {
-            if (!this.isBlank()) {
-                builder.setStyle(NotificationCompat.BigTextStyle()
-                        .bigText(this))
-            }
-        }
+        if (!TextUtils.isEmpty(baseNotificationModel.detailMessage))
+            builder.setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage)))
+        else if (!TextUtils.isEmpty(baseNotificationModel.message))
+            builder.setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message)))
         return builder.build()
     }
 

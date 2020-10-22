@@ -29,16 +29,12 @@ import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +45,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     public static final int LAYOUT = R.layout.search_empty_state_product;
 
     public static final String SEARCH_NF_VALUE = "1";
-    private final int MAX_TOPADS = 4;
-    private TopAdsView topAdsView;
     private TopAdsParams topAdsParams;
     private Context context;
     private ImageView noResultImage;
@@ -73,7 +67,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
-        topAdsView = itemView.findViewById(R.id.topads);
         topAdsBannerView = itemView.findViewById(R.id.banner_ads);
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
 
@@ -97,24 +90,9 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         selectedFilterRecyclerView.setAdapter(productSelectedFilterAdapter);
     }
 
-    private void loadProductAds() {
-        Config productAdsConfig = new Config.Builder()
-                .setSessionId(emptyStateListener.getRegistrationId())
-                .setUserId(emptyStateListener.getUserId())
-                .withMerlinCategory()
-                .topAdsParams(topAdsParams)
-                .setEndpoint(Endpoint.PRODUCT)
-                .build();
-        topAdsView.setConfig(productAdsConfig);
-        topAdsView.setDisplayMode(DisplayMode.FEED);
-        topAdsView.setMaxItems(MAX_TOPADS);
-        topAdsView.setAdsItemClickListener(this);
-        topAdsView.loadTopAds();
-    }
 
     private void loadBannerAds() {
         if (!boundedEmptySearchModel.isBannerAdsAllowed()) {
-            loadProductAds();
             return;
         }
 
@@ -130,17 +108,6 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
             topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
                 if (bannerAdsListener != null) {
                     bannerAdsListener.onBannerAdsClicked(position, appLink, data);
-                }
-            });
-            topAdsBannerView.setAdsListener(new TopAdsListener() {
-                @Override
-                public void onTopAdsLoaded(List<Item> list) {
-                    loadProductAds();
-                }
-
-                @Override
-                public void onTopAdsFailToLoad(int errorCode, String message) {
-                    loadProductAds();
                 }
             });
             topAdsBannerView.loadTopAds();

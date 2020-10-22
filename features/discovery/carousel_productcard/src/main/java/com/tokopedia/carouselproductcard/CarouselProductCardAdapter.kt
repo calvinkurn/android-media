@@ -6,5 +6,5 @@ internal interface CarouselProductCardAdapter {
 
     fun asRecyclerViewAdapter(): RecyclerView.Adapter<*>
 
-    fun submitCarouselProductCardModelList(list: List<CarouselProductCardModel>?)
+    fun submitCarouselProductCardModelList(list: List<BaseCarouselCardModel>?)
 }

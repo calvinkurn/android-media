@@ -116,7 +116,7 @@
         android:layout_toRightOf="@id/product_image"
         android:orientation="horizontal">
 
-        <com.tokopedia.gm.resource.GMImageView
+        <com.tokopedia.gm.common.widget.GMImageView
             android:id="@+id/gold_merchant"
             android:layout_width="@dimen/dp_11"
             android:layout_height="@dimen/dp_11"

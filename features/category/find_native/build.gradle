@@ -41,10 +41,13 @@ dependencies {
     implementation project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.libraries.sharedata)
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+
 }
 
 project.ext {

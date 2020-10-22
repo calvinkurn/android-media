@@ -23,7 +23,7 @@ class ShopProductListEmptyViewHolder(
                     view.context,
                     no_result_image,
                     element.urlRes,
-                    R.drawable.ic_loading_image
+                    com.tokopedia.design.R.drawable.ic_loading_image
             )
             text_view_empty_title_text.text = element.title
             text_view_empty_content_text.text = element.content

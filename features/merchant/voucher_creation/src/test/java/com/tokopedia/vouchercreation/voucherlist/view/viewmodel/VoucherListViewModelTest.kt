@@ -7,6 +7,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
@@ -17,7 +18,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -29,6 +29,9 @@ class VoucherListViewModelTest {
 
     @RelaxedMockK
     lateinit var getVoucherListUseCase: GetVoucherListUseCase
+
+    @RelaxedMockK
+    lateinit var getNotStartedVoucherListUseCase: GetVoucherListUseCase
 
     @RelaxedMockK
     lateinit var cancelVoucherUseCase: CancelVoucherUseCase
@@ -52,18 +55,19 @@ class VoucherListViewModelTest {
     lateinit var cancelVoucherResponseObserver: Observer<in Result<Int>>
 
     @RelaxedMockK
-    lateinit var localVoucherListObserver: Observer<in Result<List<VoucherUiModel>>>
+    lateinit var localVoucherListObserver: Observer<in List<VoucherUiModel>>
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
-    lateinit var mViewModel: VoucherListViewModel
+    private lateinit var mViewModel: VoucherListViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = VoucherListViewModel(getVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, testDispatcher)
+
+        mViewModel = VoucherListViewModel(getVoucherListUseCase, getNotStartedVoucherListUseCase, cancelVoucherUseCase, shopBasicDataUseCase, voucherDetailUseCase, TestCoroutineDispatchers)
+
         with(mViewModel) {
             successVoucherLiveData.observeForever(successVoucherObserver)
             stopVoucherResponseLiveData.observeForever(stopVoucherResponseObserver)
@@ -74,17 +78,12 @@ class VoucherListViewModelTest {
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
         with(mViewModel) {
             successVoucherLiveData.removeObserver(successVoucherObserver)
             stopVoucherResponseLiveData.removeObserver(stopVoucherResponseObserver)
             cancelVoucherResponseLiveData.observeForever(cancelVoucherResponseObserver)
             localVoucherListLiveData.removeObserver(localVoucherListObserver)
         }
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
     }
 
     @Test
@@ -97,6 +96,9 @@ class VoucherListViewModelTest {
             } returns dummySuccessShopBasicData
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(true)
@@ -125,6 +127,9 @@ class VoucherListViewModelTest {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
 
             getActiveVoucherList(true)
 
@@ -150,6 +155,9 @@ class VoucherListViewModelTest {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } returns  listOf(voucherUiModel)
 
             getActiveVoucherList(true)
 
@@ -168,6 +176,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
             getActiveVoucherList(false)
@@ -191,16 +202,16 @@ class VoucherListViewModelTest {
             coEvery {
                 getVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
 
             getActiveVoucherList(false)
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
                 getVoucherListUseCase.executeOnBackground()
             }
-
             assert(voucherList.value is Fail)
         }
     }
@@ -252,7 +263,7 @@ class VoucherListViewModelTest {
 
             coroutineContext[Job]?.children?.forEach { it.join() }
 
-            assert(localVoucherListLiveData.value is Success)
+            assert(localVoucherListLiveData.value != null)
         }
     }
 
@@ -279,7 +290,7 @@ class VoucherListViewModelTest {
 
             setSearchKeyword(dummyKeyword)
 
-            assert((localVoucherListLiveData.value as? Success)?.data == dummySuccessVoucherHistory)
+            assert(localVoucherListLiveData.value  == dummySuccessVoucherHistory)
         }
     }
 

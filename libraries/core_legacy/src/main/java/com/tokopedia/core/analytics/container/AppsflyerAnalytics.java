@@ -17,8 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.core.analytics.appsflyer.AppsflyerEventValidation;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -60,10 +59,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public void initialize() {
         super.initialize();
 
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext())
-                .legacySessionHandler();
         UserSessionInterface userSession = new UserSession(context);
-        final String userID = userSession.isLoggedIn() ? sessionHandler.getLoginID() : "00000";
+        final String userID = userSession.isLoggedIn() ? userSession.getUserId() : "00000";
 
 
         Timber.d("Appsflyer login userid " + userID);
@@ -75,14 +72,14 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    String isFirstLaunch = null;
+                    boolean isFirstLaunch = false;
                     String deeplink = null;
                     if (conversionData.containsKey("is_first_launch"))
-                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                        isFirstLaunch = (boolean) conversionData.get("is_first_launch");
                     if (conversionData.containsKey("af_dp"))
                         deeplink = (String) conversionData.get("af_dp");
 
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                    if (isFirstLaunch && !TextUtils.isEmpty(deeplink)) {
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {
@@ -185,7 +182,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
-        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+        if (com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
             AppsFlyerLib.getInstance().setPreinstallAttribution(
                     com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
                     com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
@@ -198,6 +195,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     //aliasing
@@ -209,6 +207,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     @Override
     public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+        new AppsflyerEventValidation().validateAppsflyerData(eventName,eventValue);
     }
 
     public void sendDeeplinkData(Activity activity) {
@@ -233,26 +232,26 @@ public class AppsflyerAnalytics extends ContextAnalytics {
                 sharedPrefs.edit().putString(KEY_ADVERTISINGID, s).apply();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
-        .subscribe(new Observer<String>() {
-            @Override
-            public void onCompleted() {
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                callback.onErrorAFAdsID();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onErrorAFAdsID();
+                    }
 
-            @Override
-            public void onNext(String s) {
-                if (TextUtils.isEmpty(s)) {
-                    callback.onErrorAFAdsID();
-                } else {
-                    callback.onGetAFAdsID(s);
-                }
-            }
-        });
+                    @Override
+                    public void onNext(String s) {
+                        if (TextUtils.isEmpty(s)) {
+                            callback.onErrorAFAdsID();
+                        } else {
+                            callback.onGetAFAdsID(s);
+                        }
+                    }
+                });
     }
 
     @Deprecated

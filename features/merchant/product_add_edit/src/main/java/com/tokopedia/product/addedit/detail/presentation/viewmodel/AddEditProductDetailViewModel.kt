@@ -18,6 +18,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,13 +40,20 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAdding = false
 
-    var hasVariants = false
+    var isDrafting = false
+
+    var isFirstMoved = false
 
     var shouldUpdateVariant = false
 
     var productInputModel = ProductInputModel()
+    val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
+
+    var isAddingWholeSale = false
+
+    var isAddingValidationWholeSale = false
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
@@ -67,6 +75,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isWholeSalePriceActivated = MutableLiveData<Boolean>(false)
     var wholeSaleErrorCounter = MutableLiveData(0)
+    var isTheLastOfWholeSale = MutableLiveData<Boolean>()
 
     private val mIsProductStockInputError = MutableLiveData<Boolean>()
     val isProductStockInputError: LiveData<Boolean>
@@ -97,9 +106,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(isWholeSalePriceActivated) {
             this.value = isInputValid()
         }
-        addSource(wholeSaleErrorCounter) {
-            this.value = isInputValid()
-        }
         addSource(mIsProductStockInputError) {
             this.value = isInputValid()
         }
@@ -110,6 +116,17 @@ class AddEditProductDetailViewModel @Inject constructor(
             this.value = isInputValid()
         }
         addSource(mIsPreOrderDurationInputError) {
+            this.value = isInputValid()
+        }
+        addSource(isTheLastOfWholeSale) {
+            this.value = isInputValid()
+            // to avoid using default value of wholeSaleErrorCounter
+            // so we must check manual validation if we are in adding whole sale
+            if (isAddingWholeSale) {
+                this.value = !(isAddingValidationWholeSale)
+            }
+        }
+        addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
         }
     }
@@ -126,7 +143,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         // mandatory fields that empty by default (adding new product)
         val isProductNameError: Boolean
         val isProductPriceError: Boolean
-        if (isAdding) {
+        if (isAdding && isFirstMoved) {
             isProductNameError = mIsProductNameInputError.value ?: !isEditing
             isProductPriceError = mIsProductPriceInputError.value ?: !isEditing
         } else {
@@ -142,7 +159,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
         // if not activated; wholesale error is not countable
         val isWholeSaleActivated = isWholeSalePriceActivated.value ?: false
-        val isProductWholeSaleError = isWholeSaleActivated && wholeSaleErrorCounter.value?.let { it > 0 } ?: false
+        val isProductWholeSaleError = isWholeSaleActivated && wholeSaleErrorCounter.value?.let { it > 0 } ?: false || isTheLastOfWholeSale.value ?: false
 
         // if not activated; pre order duration error is not countable
         val isPreOrderActivated = isPreOrderActivated.value ?: false
@@ -322,7 +339,7 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param originalImageUrl is the list of product photo paths that returned from the image picker which contains all the original image path (it doesn't contain image path of any added or edited image)
      * @param editted is the list of image edit status any image added and edited will have true value
      **/
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>): DetailInputModel {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
         }.filterIndexed { index, _ -> !editted[index] }
@@ -332,12 +349,12 @@ class AddEditProductDetailViewModel @Inject constructor(
                     ?: urlOrPath
         }.toMutableList()
 
-        this.productInputModel.detailInputModel = productInputModel.detailInputModel.apply {
+        this.productPhotoPaths = imageUrlOrPathList
+
+        return DetailInputModel().apply {
             this.pictureList = pictureList
             this.imageUrlOrPathList = imageUrlOrPathList
         }
-
-        this.productPhotoPaths = imageUrlOrPathList
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {

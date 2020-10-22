@@ -8,16 +8,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.UpdateQuotaUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class EditQuotaViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
-        private val updateQuotaUseCase: UpdateQuotaUseCase): BaseViewModel(dispatcher) {
+        private val dispatchers: CoroutineDispatchers,
+        private val updateQuotaUseCase: UpdateQuotaUseCase): BaseViewModel(dispatchers.main) {
 
     private val mQuotaLiveData = MutableLiveData<Pair<Int, Int>>()
 
@@ -26,7 +24,7 @@ class EditQuotaViewModel @Inject constructor(
             launchCatchError(
                     block = {
                         updateQuotaUseCase.params = UpdateQuotaUseCase.createRequestParam(it.first, it.second)
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             updateQuotaUseCase.executeOnBackground()
                         })
                     },

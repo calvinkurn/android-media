@@ -18,6 +18,14 @@ public class ShipmentStateRequestData {
     @Expose
     private List<ShipmentStateShopProductData> shopProductDataList;
 
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public List<ShipmentStateShopProductData> getShopProductDataList() {
+        return shopProductDataList;
+    }
+
     public ShipmentStateRequestData(Builder builder) {
         addressId = builder.addressId;
         shopProductDataList = builder.shopProductDataList;

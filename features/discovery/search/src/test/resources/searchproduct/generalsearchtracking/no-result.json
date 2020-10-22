@@ -1,39 +1,25 @@
 {
-  "searchProduct": {
-    "query": "samsung",
-    "source": "search",
-    "shareUrl": "https://www.tokopedia.com/search?device=android&image_size=200&image_square=true&ob=203&q=samsung&related=true&rows=8&shipping=,&source=search&st=product&unique_id=a9e9525d4f5ab7285514eaaf6404ec03&user_id=19016871&xdevice=lite-0.0",
-    "isFilter": false,
-    "response_code": 0,
-    "keyword_process": "2",
-    "count": 734255,
-    "count_text": "4.3jt+",
-    "additional_params": "",
-    "isQuerySafe": true,
-    "autocomplete_applink": "tokopedia://search-autocomplete?q=samsung",
-    "errorMessage": "",
-    "lite_url": "",
-    "default_view": 1,
-    "redirection": {
-      "redirect_applink": ""
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 0,
+      "keywordProcess": "2",
+      "totalData": 734255,
+      "totalDataText": "4.3jt+",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "ticker": {
-      "text": "",
-      "query": ""
-    },
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "",
-      "suggestionCount": 0,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "",
-      "query": ""
-    },
-    "related": {
-      "related_keyword": "",
-      "other_related": []
-    },
-    "products": []
+    "data": {
+      "suggestion": {
+        "suggestion": "",
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": []
+    }
   }
 }

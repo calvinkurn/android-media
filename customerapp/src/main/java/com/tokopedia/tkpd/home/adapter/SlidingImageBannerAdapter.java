@@ -2,12 +2,13 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.content.Context;
 import android.os.Parcelable;
-import androidx.viewpager.widget.PagerAdapter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -52,7 +53,7 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout
-                .findViewById(com.tokopedia.events.R.id.banner_item);
+                .findViewById(R.id.banner_item);
 
         ImageHandler.loadImageCover2(imageView, bannerModelList.get(position).getBannerImg());
         view.addView(imageLayout, 0);

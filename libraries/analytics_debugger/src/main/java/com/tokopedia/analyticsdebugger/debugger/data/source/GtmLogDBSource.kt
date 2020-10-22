@@ -5,6 +5,8 @@ import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import rx.Emitter
 import rx.Observable
 import java.util.*
@@ -67,6 +69,18 @@ constructor(context: Context) {
             val results = gtmLogDao.getAll()
             emitter.onNext(results)
         }, Emitter.BackpressureMode.NONE)
+    }
+
+    suspend fun getLogs(): List<GtmLogDB> {
+        return withContext(Dispatchers.IO) {
+            gtmLogDao.getAll()
+        }
+    }
+
+    suspend fun delete() {
+        withContext(Dispatchers.IO) {
+            gtmLogDao.deleteAll()
+        }
     }
 
 }

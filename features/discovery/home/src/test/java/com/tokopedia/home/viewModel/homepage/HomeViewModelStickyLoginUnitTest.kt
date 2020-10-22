@@ -1,57 +1,60 @@
 package com.tokopedia.home.viewModel.homepage
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.helper.isError
 import com.tokopedia.home.beranda.helper.isSuccess
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import io.mockk.coEvery
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.mockk
+import org.junit.Rule
+import org.junit.Test
 import java.util.concurrent.TimeoutException
 
-class HomeViewModelStickyLoginUnitTest : Spek({
-    InstantTaskExecutorRuleSpek(this)
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
-    Feature("Test Search hint"){
-        lateinit var homeViewModel: HomeViewModel
-        createHomeViewModelTestInstance()
-        val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
-        Scenario("Get success data sticky"){
-            Given("Success data placeholder"){
-                coEvery{ getStickyLoginUseCase.executeOnBackground() } returns StickyLoginTickerPojo.TickerResponse()
-            }
+class HomeViewModelStickyLoginUnitTest {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-            }
+    private val getStickyLoginUseCase = mockk<StickyLoginUseCase>(relaxed = true)
+    private lateinit var homeViewModel: HomeViewModel
+    @Test
+    fun `Get success data sticky`(){
 
-            When("Get Sticky Content"){
-                homeViewModel.getStickyContent()
-            }
+        // Success data placeholder
+        coEvery{ getStickyLoginUseCase.executeOnBackground() } returns StickyLoginTickerPojo.TickerResponse(
+                StickyLoginTickerPojo(
+                        listOf(
+                                StickyLoginTickerPojo.TickerDetail(
+                                        layout = StickyLoginConstant.LAYOUT_FLOATING
+                                )
+                        )
+                )
+        )
 
-            Then("Check data observer"){
-                assert(homeViewModel.stickyLogin.value != null && homeViewModel.stickyLogin.value!!.isSuccess())
-            }
-        }
+        // Get Sticky Content
+        homeViewModel = createHomeViewModel(getStickyLoginUseCase = getStickyLoginUseCase)
+        homeViewModel.getStickyContent()
 
-        Scenario("Get timeout exception sticky content"){
-            Given("Error data"){
-                coEvery{ getStickyLoginUseCase.executeOnBackground() } throws TimeoutException()
-            }
-
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-            }
-
-            When("Get Sticky Content"){
-                homeViewModel.getStickyContent()
-            }
-
-            Then("Check data observer"){
-                assert(homeViewModel.stickyLogin.value != null && homeViewModel.stickyLogin.value!!.isError())
-            }
-        }
+        // Check data observer
+        assert(homeViewModel.stickyLogin.value != null && homeViewModel.stickyLogin.value!!.isSuccess())
     }
-})
+
+    @Test
+    fun `Get timeout exception sticky content`(){
+        // Error data
+        coEvery{ getStickyLoginUseCase.executeOnBackground() } throws TimeoutException()
+
+        // Get Sticky Content
+        homeViewModel = createHomeViewModel(getStickyLoginUseCase = getStickyLoginUseCase)
+        homeViewModel.getStickyContent()
+
+        // Check data observer
+        assert(homeViewModel.stickyLogin.value != null && homeViewModel.stickyLogin.value!!.isError())
+    }
+}

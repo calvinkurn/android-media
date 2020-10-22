@@ -116,6 +116,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         val variables = HashMap<String, Any>()
         variables["slug"] = uniqueCatalogCode
         variables["catalog_id"] = catalogId
+        variables["apiVersion"] = "2.0.0"
 
         val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
                 R.raw.promo_checkout_catalog_detail),

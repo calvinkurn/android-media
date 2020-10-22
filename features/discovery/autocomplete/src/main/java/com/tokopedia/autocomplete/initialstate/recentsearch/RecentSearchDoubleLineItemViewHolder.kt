@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -73,19 +72,8 @@ class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickList
     }
 
     private fun bindListener(item: BaseItemInitialStateSearch) {
-        itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item.title) }
-        itemView.autocompleteDoubleLineItem?.setOnClickListener { _ ->
-            AutocompleteTracking.eventClickRecentSearch(
-                    itemView.context,
-                    String.format(
-                            "value: %s - po: %s - applink: %s",
-                            item.title,
-                            (adapterPosition + 1).toString(),
-                            item.applink
-                    )
-            )
-            clickListener.onItemClicked(item.applink, item.url)
-        }
+        itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item) }
+        itemView.autocompleteDoubleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item, adapterPosition) }
     }
 
     private fun <T : View> T?.showWithAction(shouldShow: Boolean, action: (T) -> Unit) {

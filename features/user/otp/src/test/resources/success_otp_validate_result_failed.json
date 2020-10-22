@@ -1,0 +1,9 @@
+{
+  "OTPValidate": {
+    "success": false,
+    "message": "Failed",
+    "errorMessage": "Failed",
+    "validateToken": "",
+    "cookieList": []
+  }
+}

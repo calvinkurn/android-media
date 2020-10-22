@@ -6,6 +6,7 @@
     <application
         android:label="Home Test"
         tools:ignore="HardcodedDebugMode"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label"
         android:debuggable="false">
 
@@ -14,9 +15,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".environment.InstrumentationHomeTestActivity"/>
-
-        <activity android:name=".environment.BlankTestActivity"/>
+            android:name=".environment.InstrumentationHomeTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
 </manifest>

@@ -9,7 +9,7 @@ class FilterDatabaseClient private constructor(context: Context) {
             FilterDatabase::class.java, "Filter.db").fallbackToDestructiveMigration().build()
 
     companion object {
-        private var mInstance: FilterDatabaseClient? = null
+        @Volatile private var mInstance: FilterDatabaseClient? = null
 
         @Synchronized
         fun getInstance(context: Context): FilterDatabaseClient {

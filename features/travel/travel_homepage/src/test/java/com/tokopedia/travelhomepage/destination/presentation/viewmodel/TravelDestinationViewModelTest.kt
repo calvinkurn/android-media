@@ -104,394 +104,99 @@ class TravelDestinationViewModelTest {
     }
 
     @Test
-    fun getDestinationSummaryData_DestinationDataShouldUpdateModel() {
-        // given
-        val cityName = "Bandung"
-        val cityDescription = "niceCity"
-        val destinationSummaryData = TravelDestinationSummaryModel(title = cityName, description = cityDescription)
-
-        val result = HashMap<Type, Any>()
-        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response(destinationSummaryData)
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getDestinationSummaryData("", "")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.SUMMARY_ORDER] as TravelDestinationSummaryModel).title shouldBe cityName
-            (it[TravelDestinationViewModel.SUMMARY_ORDER] as TravelDestinationSummaryModel).description shouldBe cityDescription
-            (it[TravelDestinationViewModel.SUMMARY_ORDER] as TravelDestinationSummaryModel).isSuccess shouldBe true
-            (it[TravelDestinationViewModel.SUMMARY_ORDER] as TravelDestinationSummaryModel).isLoaded shouldBe true
-        }
-    }
-
-    @Test
-    fun getDestinationSummaryData_DestinationDataFailedToFetch() {
-        // given
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getDestinationSummaryData("", "")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.SUMMARY_ORDER] as TravelDestinationSummaryModel).isSuccess shouldBe false
-            viewModel.isAllError.value shouldBe true
-        }
-    }
-
-    @Test
-    fun getCityRecommendationData_DataShouldUpdateModel() {
-        // given
-        val title = "city recommendation"
-        val list = mutableListOf<TravelHomepageRecommendationModel.Item>()
-        for (i in 0 until 3) list.add(TravelHomepageRecommendationModel.Item(title = i.toString()))
-        val data = TravelHomepageRecommendationModel(travelMeta = TravelMetaModel(title), items = list)
-
-        val result = HashMap<Type, Any>()
-        result[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response(data)
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getCityRecommendationData("", "10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER] as TravelDestinationSectionModel).title shouldBe "city recommendation"
-            (it[TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER] as TravelDestinationSectionModel).list.size shouldBe 3
-            (it[TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER] as TravelDestinationSectionModel).list.forEach { item ->
-                assert(item.title.isNotEmpty())
-            }
-        }
-    }
-
-    @Test
-    fun getCityRecommendationData_DataShouldRepresentFailed() {
-        // given
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getCityRecommendationData("", "10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER] as TravelDestinationSectionModel).title shouldBe ""
-            (it[TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER] as TravelDestinationSectionModel).list.size shouldBe 0
-        }
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun getOrderListData_DataShouldUpdateModel() {
-        // given
-        val title = "ORDER LIST"
-        val list = mutableListOf<TravelHomepageOrderListModel.Order>()
-        for (i in 0 until 4) list.add(TravelHomepageOrderListModel.Order(title = i.toString()))
-        val data = TravelHomepageOrderListModel(travelMeta = TravelMetaModel(title), orders = list)
-
-        val result = HashMap<Type, Any>()
-        result[TravelHomepageOrderListModel.Response::class.java] = TravelHomepageOrderListModel.Response(data)
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getOrderList("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.ORDER_LIST_ORDER] as TravelDestinationSectionModel).title shouldBe "ORDER LIST"
-            (it[TravelDestinationViewModel.ORDER_LIST_ORDER] as TravelDestinationSectionModel).list.size shouldBe 4
-            (it[TravelDestinationViewModel.ORDER_LIST_ORDER] as TravelDestinationSectionModel).list.forEachIndexed { index, item ->
-                item.title shouldBe index.toString()
-            }
-        }
-    }
-
-    @Test
-    fun getOrderListData_DataShouldRepresentFailed() {
-        // given
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getOrderList("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.ORDER_LIST_ORDER] as TravelDestinationSectionModel).title shouldBe ""
-            (it[TravelDestinationViewModel.ORDER_LIST_ORDER] as TravelDestinationSectionModel).list.size shouldBe 0
-        }
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun getCityArticle_DataShouldUpdateModel() {
-        // given
-        val title = "City Article"
-        val list = mutableListOf<TravelArticleModel.Item>()
-        for (i in 0 until 2) list.add(TravelArticleModel.Item(title = i.toString()))
-        val data = TravelArticleModel(meta = TravelArticleModel.Meta(title), items = list)
-
-        val result = HashMap<Type, Any>()
-        result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response(data)
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getCityArticles("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.CITY_ARTICLE_ORDER] as TravelArticleModel).meta.title shouldBe title
-            (it[TravelDestinationViewModel.CITY_ARTICLE_ORDER] as TravelArticleModel).items.size shouldBe 2
-            (it[TravelDestinationViewModel.CITY_ARTICLE_ORDER] as TravelArticleModel).items.forEachIndexed { index, item ->
-                item.title shouldBe index.toString()
-            }
-        }
-    }
-
-    @Test
-    fun getCityArticle_DataShouldRepresentFailed() {
-        // given
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getCityArticles("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.travelDestinationItemList.value!!.let {
-            (it[TravelDestinationViewModel.CITY_ARTICLE_ORDER] as TravelArticleModel).meta.title shouldBe ""
-            (it[TravelDestinationViewModel.CITY_ARTICLE_ORDER] as TravelArticleModel).items.size shouldBe 0
-        }
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun checkIfAllError_ShouldBeNull() {
-        // given
-
-        // when
-        viewModel.checkIfAllError()
-
-        // then
-        viewModel.isAllError.value shouldBe null
-    }
-
-    @Test
-    fun checkIfAllError_IfPartialSuccess_ShouldReturnFalse() {
-        // given
-        val title = "City Article"
-        val list = mutableListOf<TravelArticleModel.Item>()
-        for (i in 0 until 2) list.add(TravelArticleModel.Item(title = i.toString()))
-        val data = TravelArticleModel(meta = TravelArticleModel.Meta(title), items = list)
-
-        // when
-        viewModel.getInitialList()
-        val result = HashMap<Type, Any>()
-        result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response(data)
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-
-        viewModel.getCityArticles("", "10")
-
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getOrderList("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun checkIfAllError_ifPartialSuccessPartialFailedAndAllLoaded() {
-        // given
-
-        // when
-        viewModel.getInitialList()
-
-        val result = HashMap<Type, Any>()
-        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getDestinationSummaryData("", "10")
-
-        val resultArticle = HashMap<Type, Any>()
-        resultArticle[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
-        val gqlResponseArticle = GraphqlResponse(resultArticle, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseArticle
-        viewModel.getCityArticles("", "10")
-
-        val resultRecommendation = HashMap<Type, Any>()
-        resultRecommendation[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response()
-        val gqlResponseRecommendation = GraphqlResponse(resultRecommendation, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseRecommendation
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_EVENT_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_DEALS_ORDER)
-
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getOrderList("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun checkIfAllError_ifAllLoadedAndFailed() {
-        // given
-        val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-
-        // when
-        viewModel.getInitialList()
-        viewModel.getOrderList("", "10")
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_EVENT_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_DEALS_ORDER)
-        viewModel.getCityArticles("", "10")
-        viewModel.getDestinationSummaryData("", "10")
-
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.isAllError.value shouldBe true
-    }
-
-    @Test
-    fun checkIfAllError_ifAllNotLoaded() {
+    fun getAllContents_allSuccess_shouldUpdateModel() {
         //given
-        viewModel.getInitialList()
-        viewModel.checkIfAllError()
+        val summaryModel = TravelDestinationSummaryModel(title = "summaryData")
+
+        val result = HashMap<Type, Any>()
+        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response(summaryModel)
+        result[TravelHomepageOrderListModel.Response::class.java] = TravelHomepageOrderListModel.Response(TravelHomepageOrderListModel())
+        result[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response(TravelHomepageRecommendationModel())
+        result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response(TravelArticleModel())
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getAllContent("", "", "", "", "10")
 
         //then
-        viewModel.isAllError.value shouldBe false
+        viewModel.travelDestinationItemList.value?.let {
+            assert(it.isNotEmpty())
+            assert(it.size == 6)
+        }
     }
 
     @Test
-    fun checkIfAllError_ifAllSuccessAllLoaded() {
-        // given
-
-        // when
-        viewModel.getInitialList()
+    fun getAllContents_partialSuccess_shouldUpdateModel() {
+        //given
+        val summaryModel = TravelDestinationSummaryModel(title = "summaryData")
 
         val result = HashMap<Type, Any>()
-        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getDestinationSummaryData("", "10")
-
-        val resultTravelArticle = HashMap<Type, Any>()
-        resultTravelArticle[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
-        val gqlResponseTravelArticle = GraphqlResponse(resultTravelArticle, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseTravelArticle
-        viewModel.getCityArticles("", "10")
-
-        val resultTravelHomepageRecommendation = HashMap<Type, Any>()
-        resultTravelHomepageRecommendation[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response()
-        val gqlResponseTravelHomepageRecommendation = GraphqlResponse(resultTravelHomepageRecommendation, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseTravelHomepageRecommendation
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_EVENT_ORDER)
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_DEALS_ORDER)
-
-        val resultTravelDestinationSummary = HashMap<Type, Any>()
-        resultTravelDestinationSummary[TravelHomepageOrderListModel.Response::class.java] = TravelHomepageOrderListModel.Response()
-        val gqlResponseTravelDestinationSummary = GraphqlResponse(resultTravelDestinationSummary, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseTravelDestinationSummary
-        viewModel.getOrderList("", "10")
-
-        viewModel.checkIfAllError()
-        // then
-
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.isAllError.value shouldBe false
-    }
-
-    @Test
-    fun checkIfAllError_ifPartialSuccessPartialFailedAndPartialLoading() {
-        // given
-
-        // when
-        viewModel.getInitialList()
-        val result = HashMap<Type, Any>()
-        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        viewModel.getDestinationSummaryData("", "10")
-
-        val resultTravelArticle = HashMap<Type, Any>()
-        resultTravelArticle[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
-        val gqlResponseTravelArticle = GraphqlResponse(resultTravelArticle, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseTravelArticle
-        viewModel.getCityArticles("", "10")
-
-        val resultTravelHomepageRecommendation = HashMap<Type, Any>()
-        resultTravelHomepageRecommendation[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response()
-        val gqlResponseTravelHomepageRecommendation = GraphqlResponse(resultTravelHomepageRecommendation, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseTravelHomepageRecommendation
-        viewModel.getCityRecommendationData("","10", "", TravelDestinationViewModel.CITY_RECOMMENDATION_ORDER)
-
+        result[TravelDestinationSummaryModel.Response::class.java] = TravelDestinationSummaryModel.Response(summaryModel)
+        result[TravelHomepageOrderListModel.Response::class.java] = TravelHomepageOrderListModel.Response(TravelHomepageOrderListModel())
         val errors = HashMap<Type, List<GraphqlError>>()
-        errors[GraphqlError::class.java] = listOf(GraphqlError())
-        val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        errors[TravelHomepageRecommendationModel.Response::class.java] = listOf(GraphqlError())
+        errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
+        val gqlResponse = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
-        viewModel.getOrderList("", "10")
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
-        // then
-        viewModel.travelDestinationItemList.value?.size shouldBe 6
-        viewModel.isAllError.value shouldBe false
+        //when
+        viewModel.getAllContent("", "", "", "", "10")
+
+        //then
+        assert(viewModel.travelDestinationItemList.value != null)
+        viewModel.travelDestinationItemList.value?.let {
+            assert(it.isNotEmpty())
+            assert(it.size == 2)
+        }
     }
+
+    @Test
+    fun getAllContents_partialSuccess2_shouldUpdateModel() {
+        //given
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TravelDestinationSummaryModel.Response::class.java] = listOf(GraphqlError())
+        errors[TravelHomepageOrderListModel.Response::class.java] = listOf(GraphqlError())
+        result[TravelHomepageRecommendationModel.Response::class.java] = TravelHomepageRecommendationModel.Response()
+        result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
+        val gqlResponse = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getAllContent("", "", "", "", "10")
+
+        //then
+        assert(viewModel.travelDestinationItemList.value != null)
+        viewModel.travelDestinationItemList.value?.let {
+            assert(it.isNotEmpty())
+            assert(it.size == 4)
+        }
+    }
+
+    @Test
+    fun getAllContents_allFailed_shouldNotUpdateModel() {
+        //given
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TravelDestinationSummaryModel.Response::class.java] = listOf(GraphqlError())
+        errors[TravelHomepageOrderListModel.Response::class.java] = listOf(GraphqlError())
+        errors[TravelHomepageRecommendationModel.Response::class.java] = listOf(GraphqlError())
+        errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        //when
+        viewModel.getAllContent("", "", "", "", "10")
+
+        //then
+        assert(viewModel.travelDestinationItemList.value != null)
+        viewModel.travelDestinationItemList.value?.let {
+            assert(it.isEmpty())
+        }
+    }
+
 }

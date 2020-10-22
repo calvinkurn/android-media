@@ -22,7 +22,7 @@ class CatalogDetailsAndSpecsPagerAdapter(
 
     override fun getPageTitle(position: Int): CharSequence? {
         return if(position == 0){
-            context?.getString(R.string.spesification)
+            context?.getString(R.string.catalog_spesification)
         } else {
             context?.getString(R.string.catalog_description)
         }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_4"
+    app:cardCornerRadius="@dimen/dp_8"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sisa Count 1" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,8 +62,8 @@
             android:paddingLeft="@dimen/tp_margin_medium"
             android:paddingTop="@dimen/tp_padding_small"
             android:paddingRight="@dimen/tp_margin_medium"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textColor="@color/clr_31353b"
+            app:typographyType="heading_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
@@ -91,16 +91,16 @@
             app:layout_constraintStart_toEndOf="@+id/img_points_stack"
             app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_point_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_medium"
             android:layout_marginLeft="@dimen/tp_margin_small"
             android:layout_marginTop="2dp"
-            android:fontFamily="sans-serif-medium"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             android:textColor="@color/medium_green"
-            android:textSize="@dimen/tp_text_size_small"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/img_points_stack"
             app:layout_constraintTop_toBottomOf="@+id/text_point_label" />
@@ -179,8 +179,8 @@
             android:id="@+id/text_disabled_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/tp_margin_xsmall"
             android:textColor="@color/red_error"
             android:textSize="@dimen/tp_text_size_small"

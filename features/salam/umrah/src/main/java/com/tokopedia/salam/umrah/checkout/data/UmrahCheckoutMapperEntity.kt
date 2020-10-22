@@ -6,6 +6,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by firman on 27/11/2019
@@ -29,7 +30,7 @@ class UmrahCheckoutMapperEntity(
     val termCondition: UmrahCheckoutTermConditionsEntity = UmrahCheckoutTermConditionsEntity()
 )
 
-
+@Parcelize
 class ContactUser(
         @SerializedName("id")
         @Expose
@@ -46,35 +47,6 @@ class ContactUser(
         @SerializedName("phoneCode")
         @Expose
         var phoneCode : Int = 62
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(name)
-        parcel.writeString(email)
-        parcel.writeString(phoneNumber)
-        parcel.writeInt(phoneCode)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ContactUser> {
-        override fun createFromParcel(parcel: Parcel): ContactUser {
-            return ContactUser(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ContactUser?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 

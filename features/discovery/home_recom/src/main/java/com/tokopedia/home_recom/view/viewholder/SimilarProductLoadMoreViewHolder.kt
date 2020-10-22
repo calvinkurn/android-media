@@ -1,13 +1,9 @@
 package com.tokopedia.home_recom.view.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AbsListView
-
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_recom.R
 
 /**
  * Created by Lukas on 31/08/19
@@ -20,7 +16,7 @@ class SimilarProductLoadMoreViewHolder(itemView: View) : AbstractViewHolder<Load
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
     }
 
 }

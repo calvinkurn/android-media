@@ -1,17 +1,13 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class CouponCatalogRepositoryTest {
 

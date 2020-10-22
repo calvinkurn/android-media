@@ -12,5 +12,6 @@
     <dimen name="power_merchant_back_btn_margin">10dp</dimen>
     <dimen name="power_merchant_notification_image_size">160dp</dimen>
     <dimen name="power_merchant_chevron_right_size">10dp</dimen>
+    <dimen name="power_merchant_ic_free_shipping_size">40dp</dimen>
     <dimen name="power_merchant_tips_btn_size">250dp</dimen>
 </resources>

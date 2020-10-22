@@ -1,0 +1,33 @@
+package com.tokopedia.discovery2.repository.discoveryPage
+
+import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataResponse
+import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.user.session.UserSession
+import javax.inject.Inject
+
+private const val IDENTIFIER = "identifier"
+private const val VERSION = "version"
+private const val DEVICE = "device"
+private const val DEVICE_VALUE = "Android"
+
+class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
+    lateinit var userSession: UserSession
+    override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
+        return (getGQLData(getGQLString(R.raw.query_discovery_data),
+                DataResponse::class.java, getQueryMap(pageIdentifier),
+                "discoveryPageInfo") as DataResponse).data
+    }
+
+    private fun getQueryMap(pageIdentifier: String): Map<String, Any> {
+        return mapOf(IDENTIFIER to pageIdentifier,
+                VERSION to GlobalConfig.VERSION_NAME,
+                DEVICE to DEVICE_VALUE)
+    }
+}
+
+
+
+

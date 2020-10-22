@@ -20,9 +20,9 @@ import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
 import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
-import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import javax.inject.Inject;
 
@@ -111,7 +111,7 @@ public class ReferralPhoneNumberVerificationFragment extends BaseDaggerFragment 
 
     private void initView(View view) {
         tvPhoneNumber = (EditText) view.findViewById(R.id.tv_phone_number);
-        tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
+        tvPhoneNumber.setText(PhoneNumberUtil.transform(
                 userSession.getPhoneNumber()));
         btnActivation = (TextView) view.findViewById(R.id.btn_activation);
         ivTokocash = (ImageView) view.findViewById(R.id.img_app_share);

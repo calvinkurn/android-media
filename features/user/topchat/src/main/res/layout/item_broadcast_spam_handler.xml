@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:background="@color/Neutral_N50"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/dp_topchat_10"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/dp_topchat_10">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title_bc_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/title_broadcast_handle_not_follow"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_stop_promo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/title_broadcast_stop_promo"
+        app:layout_constraintEnd_toStartOf="@+id/btn_follow_shop"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bc_handle"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_follow_shop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        android:text="@string/title_broadcast_follow_shop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_stop_promo"
+        app:layout_constraintTop_toBottomOf="@+id/title_bc_handle"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

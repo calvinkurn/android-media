@@ -1,9 +1,22 @@
 package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.ShopStatusTypeUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.domain.mapper.*
-import com.tokopedia.sellerhome.domain.usecase.*
+import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
+import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
+import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhomecommon.domain.mapper.*
+import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -83,5 +96,63 @@ class SellerHomeUseCaseModule {
             mapper: ShopInfoMapper
     ): GetShopInfoUseCase {
         return GetShopInfoUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTableDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TableMapper
+    ): GetTableDataUseCase {
+        return GetTableDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetPieChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: PieChartMapper
+    ): GetPieChartDataUseCase {
+        return GetPieChartDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetBarChartDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: BarChartMapper
+    ): GetBarChartDataUseCase {
+        return GetBarChartDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTickerUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: TickerMapper
+    ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper)
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetAllShopInfoUseCase(
+        userSession: UserSessionInterface,
+        balanceInfoUseCase: BalanceInfoUseCase,
+        getShopBadgeUseCase: GetShopBadgeUseCase,
+        getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
+        shopStatusTypeUseCase: ShopStatusTypeUseCase,
+        topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
+        topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+        dispatcher: SellerHomeCoroutineDispatcher
+    ): GetAllShopInfoUseCase {
+        return GetAllShopInfoUseCase(
+            userSession,
+            balanceInfoUseCase,
+            getShopBadgeUseCase,
+            getShopTotalFollowersUseCase,
+            shopStatusTypeUseCase,
+            topAdsAutoTopupUseCase,
+            topAdsDashboardDepositUseCase,
+            dispatcher
+        )
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import androidx.collection.ArrayMap;
 
+import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
@@ -79,6 +80,7 @@ public class PhoneVerificationInterceptor extends TkpdAuthInterceptor {
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_PATH, path);
 
         return headerMap;

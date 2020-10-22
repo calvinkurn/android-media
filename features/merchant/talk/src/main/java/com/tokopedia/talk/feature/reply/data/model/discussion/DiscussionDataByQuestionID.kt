@@ -24,5 +24,8 @@ data class DiscussionDataByQuestionID(
         val thumbnail: String = "",
         @SerializedName("url")
         @Expose
-        val url: String = ""
+        val url: String = "",
+        @SerializedName("productID")
+        @Expose
+        val productId: String = ""
 )

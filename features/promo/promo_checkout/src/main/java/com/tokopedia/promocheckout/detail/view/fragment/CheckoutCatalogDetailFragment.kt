@@ -168,7 +168,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         tvContentPopup.text = MethodChecker.fromHtml(message)
         val dialog = adb?.create()
         dialog?.let { alertDialog ->
-            alertDialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
             dialog.show()
         }
 

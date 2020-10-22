@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,8 +22,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
 import com.tokopedia.home.account.R;
@@ -35,6 +35,7 @@ import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -52,6 +53,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
+    private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
@@ -62,6 +64,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View addressMenu;
     private View passwordMenu;
     private View pinMenu;
+    private View pushNotifMenu;
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
@@ -93,6 +96,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
         pinMenu = view.findViewById(R.id.label_view_pin);
+        pushNotifMenu = view.findViewById(R.id.label_view_push_notif);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         bankAccount = view.findViewById(R.id.label_view_account_bank);
@@ -108,6 +112,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         setMenuClickListener(view);
         getMenuToggle();
+        showSignInNotif();
     }
 
     @Override
@@ -176,6 +181,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
         pinMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_PIN));
+        pushNotifMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_PUSH_NOTIF));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
         bankAccount.setOnClickListener(view1 ->
@@ -190,42 +197,46 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     public void onItemClicked(int settingId) {
-        if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
-            Intent intent;
-            switch (settingId) {
-                case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
-                    accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
-                    getActivity().startActivityForResult(intent, 0);
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_PASS_ID:
-                    accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    accountAnalytics.eventClickAccountPassword();
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
-                    startActivity(intent);
-                    break;
-                case SettingConstant.SETTING_PIN:
-                    accountAnalytics.eventClickPinSetting();
-                    onPinMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
-                    accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                    startActivity(router.getManageAddressIntent(getActivity()));
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_KYC_ID:
-                    onKycMenuClicked();
-                    break;
-                case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
-                    goToTokopediaCorner();
-                    break;
-                case SettingConstant.SETTING_BANK_ACCOUNT_ID:
-                    accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    gotoAccountBank();
-                    break;
-                default:
-                    break;
-            }
+
+        Intent intent;
+        switch (settingId) {
+            case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
+                accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
+                getActivity().startActivityForResult(intent, 0);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_PASS_ID:
+                accountAnalytics.eventClickAccountSetting(PASSWORD);
+                accountAnalytics.eventClickAccountPassword();
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_PIN:
+                accountAnalytics.eventClickPinSetting();
+                onPinMenuClicked();
+                break;
+            case SettingConstant.SETTING_PUSH_NOTIF:
+                accountAnalytics.eventClickSignInByPushNotifSetting();
+                onPushNotifClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
+                accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                startActivity(intent);
+                break;
+            case SettingConstant.SETTING_ACCOUNT_KYC_ID:
+                onKycMenuClicked();
+                break;
+            case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
+                goToTokopediaCorner();
+                break;
+            case SettingConstant.SETTING_BANK_ACCOUNT_ID:
+                accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
+                gotoAccountBank();
+                break;
+            default:
+                break;
+
         }
     }
 
@@ -288,13 +299,21 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
         sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
                 isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+
+        showSignInNotif();
         hideLoading();
+    }
+
+    private void showSignInNotif() {
+        FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        boolean isShowSignInNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false);
+        pushNotifMenu.setVisibility(isShowSignInNotif ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void logUnknownError(Throwable e) {
         try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(e);
+            if (!BuildConfig.DEBUG) FirebaseCrashlytics.getInstance().recordException(e);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -335,6 +354,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
             dialog.show();
         }
+    }
+
+    private void onPushNotifClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
     }
 
     private void showNoPasswordDialog() {

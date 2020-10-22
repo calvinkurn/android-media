@@ -42,11 +42,11 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
         this.shipmentInsuranceTncModel = shipmentInsuranceTncModel;
         if (shipmentInsuranceTncModel.isVisible()) {
             if (getAdapterPosition() == itemCount - 3) {
-                int padding = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16);
+                int padding = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16);
                 tvInsuranceTnc.setPadding(padding, 0, padding, padding);
             } else {
-                int padding = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16);
-                int paddingBottom = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_4);
+                int padding = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_16);
+                int paddingBottom = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4);
                 tvInsuranceTnc.setPadding(padding, padding, padding, paddingBottom);
             }
 
@@ -55,7 +55,7 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
             int startSpan = messageTosAgreement.indexOf(formatText);
             int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
             Spannable tosAgreementText = new SpannableString(messageTosAgreement);
-            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), R.color.tkpd_main_green);
+            int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), com.tokopedia.abstraction.R.color.tkpd_main_green);
             tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tosAgreementText.setSpan(new TypefaceSpan("sans-serif-medium"), startSpan, endSpan,

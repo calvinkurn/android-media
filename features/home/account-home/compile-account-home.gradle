@@ -10,7 +10,7 @@ include ':features:discovery:topadssdk'
 include ':features:discovery:wishlist_common'
 include ':features:fintech:common_wallet'
 include ':features:home:navigation-common'
-include ':features:merchant:gold_merchant_resource'
+include "features:merchant:gold_merchant_common"
 include ':features:top_ads:top_ads_management_common'
 include ':features:user:user_identification_common'
 include ':features:user:logout'

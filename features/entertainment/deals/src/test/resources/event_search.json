@@ -1,0 +1,685 @@
+{
+    "event_search": {
+      "brands": [],
+      "products": [
+        {
+          "id": "35693",
+          "brand_id": "3724",
+          "display_name": "Paket Kupon Makanan dan Minuman, Tokopedia",
+          "seo_url": "paket-kupon-makanan-dan-minuman-tokopedia-35693",
+          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/7/12/51998951/51998951_82dcd7d3-db2b-4abc-8e14-c92587a21019.jpg",
+          "mrp": "75000",
+          "sales_price": "25000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1594263600",
+          "max_end_date": "1598842800",
+          "sale_start_date": "1594263600",
+          "sale_end_date": "1598842800",
+          "custom_text_1": "1",
+          "saving_percentage": "66% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/paket-kupon-makanan-dan-minuman-tokopedia-35693/",
+          "app_url": "tokopedia://deals/paket-kupon-makanan-dan-minuman-tokopedia-35693",
+          "brand": {
+            "id": "3724",
+            "title": "Tokopedia Official Store",
+            "seo_url": "tokopedia-official-store-3724",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/8/23/2892668/2892668_450053e1-5707-46c0-bf69-a5077b4e7176.png"
+          },
+          "category": [
+            {
+              "id": "22",
+              "title": "Belanja",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+              "url": "lainnya"
+            }
+          ]
+        },
+        {
+          "id": "12760",
+          "brand_id": "2738",
+          "display_name": "Petik Buah Stroberi untuk 2 Orang (Free Strawberry + Makan + Minum)",
+          "seo_url": "petik-buah-stroberi-untuk-2-orang-free-strawberry-makan-minum-12760",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/ca7a00960c9b9aa4fe489f2710342e28ea0bcc18/store/fill/400/250/fbd76df7f7400fb0a51642f4450c1735c2a5eba76fe9f976e162375a4a03/activity_image.jpg",
+          "mrp": "200000",
+          "sales_price": "101871",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870197",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595870197",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "49% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/petik-buah-stroberi-untuk-2-orang-free-strawberry-makan-minum-12760/",
+          "app_url": "tokopedia://deals/petik-buah-stroberi-untuk-2-orang-free-strawberry-makan-minum-12760",
+          "brand": {
+            "id": "2738",
+            "title": "Rumah Stroberi",
+            "seo_url": "rumah-stroberi-2738",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/66059cf33a9468ffb54ccff31c1ba446d4203605/store/fill/200/200/bde4e958f400b34ae74198b5594044d9d61aadfccb749777046507e026d1/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "21",
+              "title": "Kegiatan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_591c685c-5143-40e0-b87d-5dd7ed548383.png",
+              "url": "kegiatan"
+            }
+          ]
+        },
+        {
+          "id": "35187",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Puas Dengan 12 Jenis Sambal di Sambala Nona Ratunya Sambal - 1 Nila Goreng  1 Nasi  1 IceHot Tea",
+          "seo_url": "grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-nila-goreng-1-nasi-1-icehot-tea-35187",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55070.jpg",
+          "mrp": "75000",
+          "sales_price": "55000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597251600",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596733200",
+          "custom_text_1": "1",
+          "saving_percentage": "26% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-nila-goreng-1-nasi-1-icehot-tea-35187/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-nila-goreng-1-nasi-1-icehot-tea-35187",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35185",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Puas Dengan 12 Jenis Sambal di Sambala Nona Ratunya Sambal - 2 Dory Goreng  1 Nasi  1 IceHot Tea",
+          "seo_url": "grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-dory-goreng-1-nasi-1-icehot-tea-35185",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55070.jpg",
+          "mrp": "65000",
+          "sales_price": "50000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597251600",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596733200",
+          "custom_text_1": "1",
+          "saving_percentage": "23% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-dory-goreng-1-nasi-1-icehot-tea-35185/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-dory-goreng-1-nasi-1-icehot-tea-35185",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35951",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Berdua  Berempat Puas di Sambala Nona Ratunya Sambal - Paket Berdua 1 Paket A  1 Paket B  1 Paket C",
+          "seo_url": "grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berdua-1-paket-a-1-paket-b-1-paket-c-35951",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55142.jpg",
+          "mrp": "150000",
+          "sales_price": "98000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1598029200",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1597510800",
+          "custom_text_1": "1",
+          "saving_percentage": "34% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berdua-1-paket-a-1-paket-b-1-paket-c-35951/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berdua-1-paket-a-1-paket-b-1-paket-c-35951",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35188",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Puas Dengan 12 Jenis Sambal di Sambala Nona Ratunya Sambal - 2 Ayam Ratu Goreng  1 Nasi  1 IceHot Tea",
+          "seo_url": "grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-ayam-ratu-goreng-1-nasi-1-icehot-tea-35188",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55070.jpg",
+          "mrp": "75000",
+          "sales_price": "55000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597251600",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596733200",
+          "custom_text_1": "1",
+          "saving_percentage": "26% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-ayam-ratu-goreng-1-nasi-1-icehot-tea-35188/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---2-ayam-ratu-goreng-1-nasi-1-icehot-tea-35188",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35950",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Berdua  Berempat Puas di Sambala Nona Ratunya Sambal - Paket Berempat 1 Paket A  1 Paket B  1 Paket C",
+          "seo_url": "grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berempat-1-paket-a-1-paket-b-1-paket-c-35950",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55142.jpg",
+          "mrp": "300000",
+          "sales_price": "188000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1598029200",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1597510800",
+          "custom_text_1": "1",
+          "saving_percentage": "37% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berempat-1-paket-a-1-paket-b-1-paket-c-35950/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-berdua-berempat-puas-di-sambala-nona-ratunya-sambal---paket-berempat-1-paket-a-1-paket-b-1-paket-c-35950",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "25658",
+          "brand_id": "4584",
+          "display_name": "Family Package: 4 Persons + 4 Ice Cream & FREE Toppings",
+          "seo_url": "family-package-4-persons-4-ice-cream-free-toppings-25658",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/07af12fd8efb96c4b24ed2890d900e1097a8c8a8/store/fill/400/250/58a539d85f7d81141ff764c6e9da21f1e93b8ff8aeb5bf8791f87eabd3dd/activity_image.jpg",
+          "mrp": "200000",
+          "sales_price": "169785",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870177",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595870177",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "15% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/family-package-4-persons-4-ice-cream-free-toppings-25658/",
+          "app_url": "tokopedia://deals/family-package-4-persons-4-ice-cream-free-toppings-25658",
+          "brand": {
+            "id": "4584",
+            "title": "Cats and Ice Cream",
+            "seo_url": "cats-and-ice-cream-4584",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/2b13f50876308e58c188d010c50d2bad05776727/store/fill/200/200/585fdda61f4b35459d3d218b65f20e1e281f669a9b8158ac05ca34efb979/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35189",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Puas Dengan 12 Jenis Sambal di Sambala Nona Ratunya Sambal - 1 Gurami Goreng  1 Nasi  1 IceHot Tea",
+          "seo_url": "grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-gurami-goreng-1-nasi-1-icehot-tea-35189",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55070.jpg",
+          "mrp": "85000",
+          "sales_price": "65000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597251600",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596733200",
+          "custom_text_1": "1",
+          "saving_percentage": "23% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-gurami-goreng-1-nasi-1-icehot-tea-35189/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-gurami-goreng-1-nasi-1-icehot-tea-35189",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35186",
+          "brand_id": "5840",
+          "display_name": "Grand Opening - Paket Makan Puas Dengan 12 Jenis Sambal di Sambala Nona Ratunya Sambal - 1 Ayam Kriuk  1 Nasi  1 IceHot Tea",
+          "seo_url": "grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-ayam-kriuk-1-nasi-1-icehot-tea-35186",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_sambalanona_55070.jpg",
+          "mrp": "45000",
+          "sales_price": "30000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597251600",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596733200",
+          "custom_text_1": "1",
+          "saving_percentage": "33% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-ayam-kriuk-1-nasi-1-icehot-tea-35186/",
+          "app_url": "tokopedia://deals/grand-opening---paket-makan-puas-dengan-12-jenis-sambal-di-sambala-nona-ratunya-sambal---1-ayam-kriuk-1-nasi-1-icehot-tea-35186",
+          "brand": {
+            "id": "5840",
+            "title": "Sambala Nona Ratunya Sambal",
+            "seo_url": "sambala-nona-ratunya-sambal-5840",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_sambalanona_10116.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "35511",
+          "brand_id": "5860",
+          "display_name": "REOPENING Paket Special Makan Hemat FREE PASS Kolam Renang KOPI MEDAN Hotel Pardede International Medan - 1 Main Course  IceHot Tea  Free Pass Kolam Renang",
+          "seo_url": "reopening-paket-special-makan-hemat-free-pass-kolam-renang-kopi-medan-hotel-pardede-international-medan---1-main-course-icehot-tea-free-pass-kolam-renang-35511",
+          "thumbnail_app": "https://s3.dealjava.com/content/thumb_med/hd/deal_kopimedanpardede_55097.jpg",
+          "mrp": "65000",
+          "sales_price": "29999",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869200",
+          "max_end_date": "1597510800",
+          "sale_start_date": "1595869200",
+          "sale_end_date": "1596992400",
+          "custom_text_1": "1",
+          "saving_percentage": "53% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/reopening-paket-special-makan-hemat-free-pass-kolam-renang-kopi-medan-hotel-pardede-international-medan---1-main-course-icehot-tea-free-pass-kolam-renang-35511/",
+          "app_url": "tokopedia://deals/reopening-paket-special-makan-hemat-free-pass-kolam-renang-kopi-medan-hotel-pardede-international-medan---1-main-course-icehot-tea-free-pass-kolam-renang-35511",
+          "brand": {
+            "id": "5860",
+            "title": "KOPI MEDAN Hotel Pardede International Medan",
+            "seo_url": "kopi-medan-hotel-pardede-international-medan-5860",
+            "featured_thumbnail_image": "https://s3.dealjava.com/content/merchant_logo/logo_kopimedanpardede_9834.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "21980",
+          "brand_id": "1890",
+          "display_name": "All You Can Eat Dimsum for 1 Person",
+          "seo_url": "all-you-can-eat-dimsum-for-1-person-21980",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/673cad6c49786a4d5aa31096f905bafb2f19f300/store/fill/400/250/c871fbbcc468f8eec7ab43dae9dc8392bd282c203f7554ed583e67791b14/activity_image.jpg",
+          "mrp": "110000",
+          "sales_price": "96211",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870201",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595870201",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "12% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/all-you-can-eat-dimsum-for-1-person-21980/",
+          "app_url": "tokopedia://deals/all-you-can-eat-dimsum-for-1-person-21980",
+          "brand": {
+            "id": "1890",
+            "title": "Harris Cafe at Harris Hotel Ciumbuleuit",
+            "seo_url": "harris-cafe-at-harris-hotel-ciumbuleuit-1890",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/dafe887aeed3c51bedd82118b041b6b6ac82887f/store/fill/200/200/0198582bf3c061065805cce9028b14d30c0606d3b1153c1ee3c2a97b04fa/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "22717",
+          "brand_id": "3324",
+          "display_name": "Family Morning Routine Package (Breakfast Buffet + Swimming Pool Access) for 4 Persons",
+          "seo_url": "family-morning-routine-package-for-4-persons-breakfast-buffet-swimming-pool-access-22717",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/5d9ef4b30421eb73fa1bf74c41094eae5d25dc43/store/fill/400/250/ac9acf799876e8f4a1e23376d2bacc8feda5dc198c1db1e64d6af5d3d10f/activity_image.jpg",
+          "mrp": "508200",
+          "sales_price": "204771",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870196",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595870196",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "59% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/family-morning-routine-package-for-4-persons-breakfast-buffet-swimming-pool-access-22717/",
+          "app_url": "tokopedia://deals/family-morning-routine-package-for-4-persons-breakfast-buffet-swimming-pool-access-22717",
+          "brand": {
+            "id": "3324",
+            "title": "de Braga by ARTOTEL",
+            "seo_url": "de-braga-by-artotel-3324",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/1aedea3d839f9947e8028cff8b0a105c7e8dbb00/store/fill/200/200/74e463766cf32fd3008d99c7d81d3e5746f0b6cedd587fd9dd652bf1bbe0/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "31287",
+          "brand_id": "5339",
+          "display_name": "Voucher Nasi Lemak Penang RasaPaket A (10 Nasi Lemak Ayam/Cakalang (Boleh Mix))",
+          "seo_url": "voucher-nasi-lemak-penang-rasapaket-a-10-nasi-lemak-ayamcakalang-boleh-mix-31287",
+          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/6/19/42857236/42857236_1e167ba7-7415-401a-bbd4-3d4a092b54bb.jpg",
+          "mrp": "260000",
+          "sales_price": "210000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1592362800",
+          "max_end_date": "1598374800",
+          "sale_start_date": "1592362800",
+          "sale_end_date": "1598374800",
+          "custom_text_1": "1",
+          "saving_percentage": "19% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/voucher-nasi-lemak-penang-rasapaket-a-10-nasi-lemak-ayamcakalang-boleh-mix-31287/",
+          "app_url": "tokopedia://deals/voucher-nasi-lemak-penang-rasapaket-a-10-nasi-lemak-ayamcakalang-boleh-mix-31287",
+          "brand": {
+            "id": "5339",
+            "title": "Nasi Lemak Penang Rasa",
+            "seo_url": "nasi-lemak-penang-rasa-5339",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2020/6/19/42857236/42857236_b5198974-d764-430b-8a72-2e9ff0b0d88f.png"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "36525",
+          "brand_id": "843",
+          "display_name": "[#FaveBirthday] Voucher Genki Senilai Rp 200.000 untuk Semua Menu - Dine In",
+          "seo_url": "favebirthday-voucher-genki-senilai-rp-200000-untuk-semua-menu---dine-in-36525",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/fc10974732642f3bf3b1d75c4872bc41d9954cd1/store/fill/400/250/ce233d13d0aa3a728ff18f84a745007572e4b63fe8fbcd9b1e05c6254d34/activity_image.jpg",
+          "mrp": "200000",
+          "sales_price": "144060",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595869871",
+          "max_end_date": "1596211199",
+          "sale_start_date": "1595869871",
+          "sale_end_date": "1596211199",
+          "custom_text_1": "1",
+          "saving_percentage": "27% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/favebirthday-voucher-genki-senilai-rp-200000-untuk-semua-menu---dine-in-36525/",
+          "app_url": "tokopedia://deals/favebirthday-voucher-genki-senilai-rp-200000-untuk-semua-menu---dine-in-36525",
+          "brand": {
+            "id": "843",
+            "title": "Genki Sushi",
+            "seo_url": "genki-sushi-843",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/6432b2826b33b3905a4d90cf08591fb78ecb0221/store/fill/200/200/97f641f381f7adda52011d1f15c02b79c0741171a5f1de1d5713adc9a8bf/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "6057",
+          "brand_id": "173",
+          "display_name": "Vacum 1 Set Sofa + 1 Bed + Free Anti Jamur + Anti Tungau  + Extra Parfume",
+          "seo_url": "vacum-1-set-sofa-1-bed-free-anti-jamur-anti-tungau-extra-parfume-6057",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/7fae5b511ec64a83b9f151c293c7dd5a948141c9/store/fill/400/250/483cb5e7f4d364de3c9d10b9f3745f4c87a2c7d4b2b9c9bb0f22d4e8a1f2/activity_image.jpg",
+          "mrp": "500000",
+          "sales_price": "153321",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870064",
+          "max_end_date": "1596038399",
+          "sale_start_date": "1595870064",
+          "sale_end_date": "1596038399",
+          "custom_text_1": "1",
+          "saving_percentage": "69% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/vacum-1-set-sofa-1-bed-free-anti-jamur-anti-tungau-extra-parfume-6057/",
+          "app_url": "tokopedia://deals/vacum-1-set-sofa-1-bed-free-anti-jamur-anti-tungau-extra-parfume-6057",
+          "brand": {
+            "id": "173",
+            "title": "99 Home  Clean Solutions",
+            "seo_url": "99-home-clean-solutions-173",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/1440249e4021d2f8a05efaa1b5bcc3d8d59a8f48/store/fill/200/200/e56511dda4422f0f93f4edd7b47d8722b88a8d9188b5f18e92fb63b46c22/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "19",
+              "title": "Jasa",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_87df1ae5-917e-4300-bd66-93bd10be5f2e.png",
+              "url": "jasa"
+            }
+          ]
+        },
+        {
+          "id": "31289",
+          "brand_id": "5339",
+          "display_name": "Voucher Nasi Lemak Penang RasaPaket B (5 Nasi Lemak Ayam/Cakalang (Boleh Mix) + 5 Nasi Lemak Telur)",
+          "seo_url": "voucher-nasi-lemak-penang-rasapaket-b-5-nasi-lemak-ayamcakalang-boleh-mix-5-nasi-lemak-telur-31289",
+          "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/6/19/42857236/42857236_78d921e7-f423-483e-8b2f-e536cdee362e.jpg",
+          "mrp": "250000",
+          "sales_price": "200000",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1592362800",
+          "max_end_date": "1598374800",
+          "sale_start_date": "1592362800",
+          "sale_end_date": "1598374800",
+          "custom_text_1": "1",
+          "saving_percentage": "20% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/voucher-nasi-lemak-penang-rasapaket-b-5-nasi-lemak-ayamcakalang-boleh-mix-5-nasi-lemak-telur-31289/",
+          "app_url": "tokopedia://deals/voucher-nasi-lemak-penang-rasapaket-b-5-nasi-lemak-ayamcakalang-boleh-mix-5-nasi-lemak-telur-31289",
+          "brand": {
+            "id": "5339",
+            "title": "Nasi Lemak Penang Rasa",
+            "seo_url": "nasi-lemak-penang-rasa-5339",
+            "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2020/6/19/42857236/42857236_b5198974-d764-430b-8a72-2e9ff0b0d88f.png"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "5966",
+          "brand_id": "173",
+          "display_name": "Vacum 2 Bed + 2 Bantal + 2 Guling + Free Anti Jamur + Anti Tungau + Extra Parfume",
+          "seo_url": "vacum-2-bed-2-bantal-2-guling-free-anti-jamur-anti-tungau-extra-parfume-5966",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/c623bba1abbfdc73035607b6f47f690fb69d6491/store/fill/400/250/16f271a689af3ad1dde9520276923eff5f73f976b3e232d49e88e8f3657b/activity_image.jpg",
+          "mrp": "400000",
+          "sales_price": "153321",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870064",
+          "max_end_date": "1596038399",
+          "sale_start_date": "1595870064",
+          "sale_end_date": "1596038399",
+          "custom_text_1": "1",
+          "saving_percentage": "61% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/vacum-2-bed-2-bantal-2-guling-free-anti-jamur-anti-tungau-extra-parfume-5966/",
+          "app_url": "tokopedia://deals/vacum-2-bed-2-bantal-2-guling-free-anti-jamur-anti-tungau-extra-parfume-5966",
+          "brand": {
+            "id": "173",
+            "title": "99 Home  Clean Solutions",
+            "seo_url": "99-home-clean-solutions-173",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/1440249e4021d2f8a05efaa1b5bcc3d8d59a8f48/store/fill/200/200/e56511dda4422f0f93f4edd7b47d8722b88a8d9188b5f18e92fb63b46c22/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "19",
+              "title": "Jasa",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_87df1ae5-917e-4300-bd66-93bd10be5f2e.png",
+              "url": "jasa"
+            }
+          ]
+        },
+        {
+          "id": "33404",
+          "brand_id": "4584",
+          "display_name": "Family Package: 4 Persons + 4 Ice Cream & FREE Toppings",
+          "seo_url": "family-package-4-persons-4-ice-cream-free-toppings-33404",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/fcababd376c7d7b1deb47a1f43a4a55843674f56/store/fill/400/250/ec0a527937b6d02d0b63abaeb2e861bf45b1c06ce0f685ba00a113117b10/activity_image.jpg",
+          "mrp": "280000",
+          "sales_price": "241815",
+          "display_tags": "",
+          "priority": "0",
+          "min_start_date": "1595870177",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595870177",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "13% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/family-package-4-persons-4-ice-cream-free-toppings-33404/",
+          "app_url": "tokopedia://deals/family-package-4-persons-4-ice-cream-free-toppings-33404",
+          "brand": {
+            "id": "4584",
+            "title": "Cats and Ice Cream",
+            "seo_url": "cats-and-ice-cream-4584",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/2b13f50876308e58c188d010c50d2bad05776727/store/fill/200/200/585fdda61f4b35459d3d218b65f20e1e281f669a9b8158ac05ca34efb979/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            }
+          ]
+        },
+        {
+          "id": "2126",
+          "brand_id": "683",
+          "display_name": "[Buy 1 Get 1] Buy 1 Medium Blizzard Oreo Flavor Get 1 Medium Any Flavor",
+          "seo_url": "buy-1-get-1-buy-1-medium-blizzard-oreo-flavor-get-1-medium-any-flavor-2126",
+          "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/62f49af1f285b81db783c75a147cf85eab5ecf31/store/fill/400/250/de984b623a9ac8e3a54bcd4849ece18041d1766c45f2d87c3f04747f7260/activity_image.jpg",
+          "mrp": "116000",
+          "sales_price": "59682",
+          "display_tags": " Trending",
+          "priority": "99",
+          "min_start_date": "1595905897",
+          "max_end_date": "1601135999",
+          "sale_start_date": "1595905897",
+          "sale_end_date": "1601135999",
+          "custom_text_1": "1",
+          "saving_percentage": "48% OFF",
+          "web_url": "https://www.tokopedia.com/deals/i/buy-1-get-1-buy-1-medium-blizzard-oreo-flavor-get-1-medium-any-flavor-2126/",
+          "app_url": "tokopedia://deals/buy-1-get-1-buy-1-medium-blizzard-oreo-flavor-get-1-medium-any-flavor-2126",
+          "brand": {
+            "id": "683",
+            "title": "Dairy Queen",
+            "seo_url": "dairy-queen-683",
+            "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/8cd918b139c55becd88c1f4f5b84e8a20b614e2d/store/fill/200/200/95ce2a8fdbe3918dd872c95608fa967f780751f1e4a0225efd04f59b61bb/logo.jpg"
+          },
+          "category": [
+            {
+              "id": "25",
+              "title": "Makanan",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+              "url": "makanan"
+            },
+            {
+              "id": "29",
+              "title": "Home Widget",
+              "media_url": "",
+              "url": "homewidget"
+            },
+            {
+              "id": "51",
+              "title": "Dessert",
+              "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_a7cb8356-8dfd-42b8-b875-856d16a49ddd.jpg",
+              "url": "dessert"
+            },
+            {
+              "id": "27",
+              "title": "Voucher populer",
+              "media_url": "",
+              "url": "topdeals"
+            }
+          ]
+        }
+      ]
+    }
+  }

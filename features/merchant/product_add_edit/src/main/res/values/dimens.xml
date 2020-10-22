@@ -33,4 +33,7 @@
     <dimen name="tooltip_image_size">64dp</dimen>
     <dimen name="tooltip_divider_padding_left">109dp</dimen>
 
+    <!--multiple variant select dimens-->
+    <dimen name="multiple_variant_selection_list_height">300dp</dimen>
+
 </resources>

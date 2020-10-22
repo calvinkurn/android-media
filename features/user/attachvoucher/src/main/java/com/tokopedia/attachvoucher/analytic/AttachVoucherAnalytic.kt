@@ -1,7 +1,7 @@
 package com.tokopedia.attachvoucher.analytic
 
 import com.tokopedia.attachvoucher.data.VoucherUiModel
-import com.tokopedia.attachvoucher.data.VoucherType
+import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -26,8 +26,8 @@ class AttachVoucherAnalytic @Inject constructor() {
     fun trackOnChangeFilter(type: Int) {
         if (type == AttachVoucherViewModel.NO_FILTER) return
         val label = when (type) {
-            VoucherType.CASH_BACK -> "cashback"
-            VoucherType.FREE_ONGKIR -> "gratis ongkir"
+            VoucherType.paramCashback -> "cashback"
+            VoucherType.paramFreeOngkir -> "gratis ongkir"
             else -> ""
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(

@@ -420,9 +420,9 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      * View Error Message (:Param) on Preparation Page
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
-        viewGeneralEvent(
+        viewCustomGeneralEvent(
                 action = "error state on preparation page",
-                label = " - $errorMessage"
+                label = "- $errorMessage"
         )
     }
 
@@ -508,8 +508,8 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      */
     fun viewErrorOnLivePage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
-                "error state on live room - $errorMessage",
-                "- $channelId - $titleChannel"
+                "error state on live room",
+                "- $channelId - $titleChannel - $errorMessage"
         )
     }
 
@@ -536,10 +536,10 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     /**
      * View Multiple Device Violation Pop Up
      */
-    fun viewDialogViolation(channelId: String, titleChannel: String) {
+    fun viewDialogViolation(channelId: String) {
         viewGeneralEvent(
                 "device violation popup message",
-                "- $channelId - $titleChannel"
+                "- $channelId"
         )
     }
 

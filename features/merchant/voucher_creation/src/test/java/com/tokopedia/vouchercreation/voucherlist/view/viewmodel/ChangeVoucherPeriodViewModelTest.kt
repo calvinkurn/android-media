@@ -6,6 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -16,7 +17,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,6 +45,8 @@ class ChangeVoucherPeriodViewModelTest {
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
+    lateinit var mViewModel: ChangeVoucherPeriodViewModel
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -52,22 +54,14 @@ class ChangeVoucherPeriodViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
+        mViewModel = ChangeVoucherPeriodViewModel(TestCoroutineDispatchers, changeVoucherPeriodUseCase, getTokenUseCase)
+
         mViewModel.updateVoucherSuccessLiveData.observeForever(updateVoucherSuccessObserver)
     }
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-
         mViewModel.updateVoucherSuccessLiveData.removeObserver(updateVoucherSuccessObserver)
-    }
-
-    private val testDispatcher by lazy {
-        TestCoroutineDispatcher()
-    }
-
-    private val mViewModel by lazy {
-        ChangeVoucherPeriodViewModel(testDispatcher, changeVoucherPeriodUseCase, getTokenUseCase)
     }
 
     @Test

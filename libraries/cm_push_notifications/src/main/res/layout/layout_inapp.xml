@@ -87,7 +87,7 @@
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
-            android:src="@drawable/ic_cross_inapp"
+            app:srcCompat="@drawable/cm_ic_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -101,7 +101,7 @@
         android:layout_alignParentRight="true"
         android:contentDescription="@string/app_name"
         android:layout_alignTop="@id/blank_iv"
-        android:src="@drawable/ic_cross_inapp"
+        app:srcCompat="@drawable/cm_ic_close"
         android:visibility="gone" />
 
     <ImageView

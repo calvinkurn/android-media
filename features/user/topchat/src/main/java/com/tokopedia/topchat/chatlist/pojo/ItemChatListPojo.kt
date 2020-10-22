@@ -24,8 +24,11 @@ data class ItemChatListPojo(
         @SerializedName("messageKey")
         @Expose
         var messageKey: String = ""
-) : Visitable<ChatListTypeFactory>{
+) : Visitable<ChatListTypeFactory> {
+
+    val label: String get() = attributes?.label ?: ""
     val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
@@ -35,6 +38,10 @@ data class ItemChatListPojo(
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
     }
 
     fun hasUnreadItem(): Boolean {
@@ -47,7 +54,11 @@ data class ItemChatListPojo(
     fun ids() = listOf(msgId)
 
     fun isUnread(): Boolean {
-        return attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+        return attributes?.readStatus == STATE_CHAT_UNREAD
+    }
+
+    fun isRead(): Boolean {
+        return attributes?.readStatus == STATE_CHAT_READ
     }
 
     fun markAsRead() {
@@ -73,6 +84,15 @@ data class ItemChatListPojo(
             OFFICIAL_TAG -> "OA"
             else -> ""
         }
+    }
+
+    fun isReplyTopBot(): Boolean {
+        return attributes?.isReplyByTopbot == true
+    }
+
+    fun updatePinStatus(isPinChat: Boolean) {
+        val pinStatus = if (isPinChat) 1 else 0
+        attributes?.pinStatus = pinStatus
     }
 
 }

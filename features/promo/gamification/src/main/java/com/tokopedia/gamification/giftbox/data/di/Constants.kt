@@ -11,3 +11,9 @@ const val GAMI_TAP_EGG_HOME = "GAMI_TAP_EGG_HOME"
 const val GAMI_TAP_CRACK_EGG = "GAMI_TAP_CRACK_EGG"
 const val IO = "IO"
 const val MAIN = "MAIN"
+
+const val GAMI_GIFT_DAILY_PLT_PREPARE_METRICS = "gami_gift_daily_plt_prepare_metrics"
+const val GAMI_GIFT_DAILY_PLT_NETWORK_METRICS = "gami_gift_daily_plt_network_metrics"
+const val GAMI_GIFT_DAILY_PLT_RENDER_METRICS = "gami_gift_daily_plt_render_metrics"
+
+const val GAMI_GIFT_DAILY_TRACE_PAGE = "gami_gift_daily_trace"

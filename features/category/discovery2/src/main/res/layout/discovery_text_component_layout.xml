@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_lvl3"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl3">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shimmer_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_component_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N700"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="Header test 123" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_component_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Body test 123" />
+
+</LinearLayout>

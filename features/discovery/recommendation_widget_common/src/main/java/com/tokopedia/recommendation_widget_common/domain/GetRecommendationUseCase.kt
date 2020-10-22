@@ -4,9 +4,8 @@ import android.text.TextUtils
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -28,12 +27,12 @@ constructor(
             private val userSession: UserSessionInterface) : UseCase<List<RecommendationWidget>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
-        val graphqlRequest = GraphqlRequest(recomRawString, RecomendationEntity::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(recomRawString, RecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map<List<RecomendationEntity.RecomendationData>> { graphqlResponse ->
-                    val entity = graphqlResponse.getData<RecomendationEntity>(RecomendationEntity::class.java)
+                .map<List<RecommendationEntity.RecomendationData>> { graphqlResponse ->
+                    val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
                     entity?.productRecommendationWidget?.data
                 }
                 .map(RecommendationEntityMapper())

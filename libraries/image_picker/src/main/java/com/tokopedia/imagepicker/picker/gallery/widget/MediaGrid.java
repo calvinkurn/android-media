@@ -69,13 +69,34 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-        Glide.with(getContext())
-                .load(mMedia.getContentUri())
-                .placeholder(mPreBindInfo.mPlaceholder)
-                .error(mPreBindInfo.error)
-                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-                .centerCrop()
-                .into(mThumbnail);
+        long width = mMedia.getWidth(getContext());
+        long height = mMedia.getHeight(getContext());
+        long min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
+        if (loadFitCenter) {
+            Glide.with(getContext())
+                    .load(mMedia.getContentUri())
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .fitCenter()
+                    .into(mThumbnail);
+        } else {
+            Glide.with(getContext())
+                    .load(mMedia.getContentUri())
+                    .placeholder(mPreBindInfo.mPlaceholder)
+                    .error(mPreBindInfo.error)
+                    .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                    .centerCrop()
+                    .into(mThumbnail);
+        }
     }
 
     private void setVideoDuration() {
@@ -88,7 +109,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setSelection(ArrayList<String> selectionIdList) {
-        if (selectionIdList.contains(mMedia.getRealPath())) {
+        if (selectionIdList.contains(mMedia.getPath())) {
             ivCheck.setVisibility(View.VISIBLE);
         } else {
             ivCheck.setVisibility(View.GONE);

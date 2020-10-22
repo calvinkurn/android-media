@@ -1,17 +1,12 @@
 package com.tokopedia.createpost.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.createpost.TYPE_AFFILIATE
-import com.tokopedia.createpost.TYPE_CONTENT_SHOP
+import com.tokopedia.createpost.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
@@ -24,60 +19,13 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
 
+
+const val PARAM_PRODUCT_ID = "product_id"
+const val PARAM_AD_ID = "ad_id"
+const val PARAM_POST_ID = "post_id"
+const val PARAM_TYPE = "author_type"
+
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
-    private var postId: String? = null
-
-    companion object {
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_AD_ID = "ad_id"
-        const val PARAM_POST_ID = "post_id"
-        const val PARAM_TYPE = "author_type"
-
-        fun getInstanceAffiliate(context: Context, productId: String, adId: String): Intent {
-            val intent = Intent(context, CreatePostActivity::class.java)
-            intent.putExtra(PARAM_PRODUCT_ID, productId)
-            intent.putExtra(PARAM_AD_ID, adId)
-            return intent
-        }
-    }
-
-    object DeepLinkIntents {
-        @DeepLink(ApplinkConst.AFFILIATE_CREATE_POST)
-        @JvmStatic
-        fun getInstanceAffiliate(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, CreatePostActivity::class.java)
-            intent.putExtras(bundle)
-            intent.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
-            return intent
-        }
-
-        @DeepLink(ApplinkConst.CONTENT_CREATE_POST)
-        @JvmStatic
-        fun getInstanceContent(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, CreatePostActivity::class.java)
-            intent.putExtras(bundle)
-            intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
-            return intent
-        }
-
-        @DeepLink(ApplinkConst.AFFILIATE_DRAFT_POST)
-        @JvmStatic
-        fun getInstanceDraftAffiliate(context: Context, bundle: Bundle): Intent {
-            return getInstanceAffiliate(context, bundle)
-        }
-
-        @DeepLink(ApplinkConst.CONTENT_DRAFT_POST)
-        @JvmStatic
-        fun getInstanceDraftContent(context: Context, bundle: Bundle): Intent {
-            return getInstanceContent(context, bundle)
-        }
-
-        @DeepLink(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
-        @JvmStatic
-        fun getInstanceDefaultAffiliate(context: Context, bundle: Bundle): Intent {
-            return getInstanceAffiliate(context, bundle)
-        }
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -87,18 +35,38 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        val uri = intent.data
-        if (uri != null && uri.scheme == DeeplinkConstant.SCHEME_INTERNAL){
+        intent.data?.let { uri ->
             val segmentUri = uri.pathSegments
-            intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
-            intent.putExtra(PARAM_TYPE, segmentUri[0])
+            if (uri.lastPathSegment == TYPE_EDIT && segmentUri.size == 3) {
+                intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
+                intent.putExtra(PARAM_TYPE, segmentUri[0])
+            }
+
+            if (segmentUri[0] == TYPE_CREATE_POST && segmentUri.size == 3) {
+                intent.putExtra(PARAM_PRODUCT_ID, segmentUri[1])
+                intent.putExtra(PARAM_AD_ID, segmentUri[2])
+                uri.getQueryParameter(TOKEN)?.let {
+                    intent.putExtra(TOKEN, uri.getQueryParameter(TOKEN))
+                }
+            }
+            if (segmentUri[0] == TYPE_DRAFT) {
+                intent.putExtra(DRAFT_ID, uri.lastPathSegment)
+            }
+
+            if (intent.getStringExtra(PARAM_TYPE) == null) {
+                if (uri.host?.contains(TYPE_CONTENT, false) == true) {
+                    intent.putExtra(PARAM_TYPE, TYPE_CONTENT_SHOP)
+                } else {
+                    intent.putExtra(PARAM_TYPE, TYPE_AFFILIATE)
+                }
+            }
+
+            if (intent.extras != null) {
+                bundle.putAll(intent.extras)
+            }
         }
 
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-
-        return when(intent?.extras?.get(PARAM_TYPE)) {
+        return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
             TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
             else -> {
@@ -112,15 +80,18 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         return R.layout.activity_create_post
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         backBtn.setOnClickListener {
             onBackPressed()
         }
         action_post.setOnClickListener {
-            val fragment = supportFragmentManager
-                    .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
-            return@setOnClickListener
+            val fragment = supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment
+                    ?: return@setOnClickListener
             fragment.saveDraftAndSubmit()
         }
         shareTo.apply {
@@ -143,25 +114,25 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
     }
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
-        if (isPostEnabled){
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
+        if (isPostEnabled) {
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_500))
         } else {
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
         }
     }
 
     override fun onBackPressed() {
         val dialog = Dialog(this, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.af_leave_warning))
-        dialog.setDesc(getString(R.string.af_leave_warning_desc))
-        dialog.setBtnOk(getString(R.string.af_leave_title))
-        dialog.setBtnCancel(getString(R.string.af_continue))
-        dialog.setOnOkClickListener{
+        dialog.setTitle(getString(R.string.cp_leave_warning))
+        dialog.setDesc(getString(R.string.cp_leave_warning_desc))
+        dialog.setBtnOk(getString(R.string.cp_leave_title))
+        dialog.setBtnCancel(getString(R.string.cp_continue))
+        dialog.setOnOkClickListener {
             (fragment as? AffiliateCreatePostFragment)?.clearCache()
             dialog.dismiss()
             finish()
         }
-        dialog.setOnCancelClickListener{
+        dialog.setOnCancelClickListener {
             dialog.dismiss()
         }
         dialog.setCancelable(true)

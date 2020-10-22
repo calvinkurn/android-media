@@ -11,14 +11,15 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
  * Created by lukas on 21/05/2019
  *
  * A class for holder view Recommendation Carousel
  */
-class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
+class RecommendationCarouselViewHolder(val view: View, val listener: RecommendationListener) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
@@ -44,13 +45,19 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        productRecommendation.listener.onProductClick(
+                        listener.onProductClick(
                                 productRecommendation.productItem,
                                 productRecommendation.productItem.type,
                                 productRecommendation.parentPosition,
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
-                            ImpresionTask(className).execute(productRecommendation.productItem.clickUrl)
+                            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                                    this.javaClass.simpleName,
+                                    productRecommendation.productItem.clickUrl,
+                                    productRecommendation.productItem.productId.toString(),
+                                    productRecommendation.productItem.name,
+                                    productRecommendation.productItem.imageUrl
+                            )
                         }
                     }
                 },
@@ -62,9 +69,15 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
-                            ImpresionTask(className).execute(productRecommendation.productItem.trackerImageUrl)
+                            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                                    this.javaClass.simpleName,
+                                    productRecommendation.productItem.trackerImageUrl,
+                                    productRecommendation.productItem.productId.toString(),
+                                    productRecommendation.productItem.name,
+                                    productRecommendation.productItem.imageUrl
+                            )
                         }
-                        productRecommendation.listener.onProductImpression(productRecommendation.productItem)
+                        listener.onProductImpression(productRecommendation.productItem)
                     }
                 },
                 productCardModelList = products.map {

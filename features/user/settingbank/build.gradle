@@ -59,7 +59,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.playCore)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -91,6 +90,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+    implementation rootProject.ext.playServicesDependencies.core
     
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -98,7 +98,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation project(rootProject.ext.libraries.playCore)
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     // For espresso test cases

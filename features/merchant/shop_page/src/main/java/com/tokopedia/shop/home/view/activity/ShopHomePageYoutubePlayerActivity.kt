@@ -84,7 +84,7 @@ class ShopHomePageYoutubePlayerActivity : AppCompatActivity(), YouTubePlayer.OnI
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setDisplayShowTitleEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_video_close)
+            setHomeAsUpIndicator(com.tokopedia.videoplayer.R.drawable.ic_video_close)
             title = getString(R.string.close_youtube)
         }
     }

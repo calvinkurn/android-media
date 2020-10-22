@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.*
-import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -48,7 +47,7 @@ class RechargeGeneralViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(RechargeGeneralMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
+                RechargeGeneralViewModel(graphqlRepository, RechargeGeneralTestDispatchersProvider())
     }
 
     @Test

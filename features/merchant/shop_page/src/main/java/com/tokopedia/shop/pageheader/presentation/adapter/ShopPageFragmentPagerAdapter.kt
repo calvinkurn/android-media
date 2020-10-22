@@ -60,7 +60,7 @@ internal class ShopPageFragmentPagerAdapter(
         }?.also { iconDrawable ->
             DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
                     this,
-                    if (isActive) R.color.Green_G500 else R.color.Neutral_N200
+                    if (isActive) R.color.color_green_shop_tab else R.color.color_gray_shop_tab
             ))
         }
     }

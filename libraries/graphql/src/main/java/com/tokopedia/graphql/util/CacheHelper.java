@@ -2,6 +2,8 @@ package com.tokopedia.graphql.util;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.model.BackendCache;
 
@@ -63,18 +65,18 @@ public class CacheHelper {
 
                 String[] keyHashPart = items.get(KEY_DIGEST_MD5).split("-");
 
-                if (keyHashPart.length != 3) {
+                if (keyHashPart.length != 2) {
                     continue;
                 }
 
                 BackendCache backendCache = new BackendCache();
-                backendCache.setDigest(keyHashPart[2]);
+                backendCache.setDigest(keyHashPart[1]);
                 backendCache.setCacheType(cType);
                 backendCache.setMaxAge(parseInt(items.get(KEY_EXPIRY_TIME)));
                 backendCache.setAutoPurgeTime(parseInt(items.get(KEY_DEATH_TIME)));
                 backendCache.setGuest(parseInt(items.get(KEY_IS_GUEST)) == 1);
 
-                objCaches.put(keyHashPart[2], backendCache);
+                objCaches.put(keyHashPart[1], backendCache);
             }
         }
 
@@ -123,7 +125,7 @@ public class CacheHelper {
 
         oName = oName.replaceAll(REGEX_NO_SPECIAL_CHAR, "");
 
-        return oName + "-v" + GlobalConfig.VERSION_NAME;
+        return oName;
     }
 
     private static Map<String, String> getCachingParamMap(String[] items) {
@@ -151,5 +153,20 @@ public class CacheHelper {
         }
 
         return paramMap;
+    }
+
+    @NonNull
+    public static String[] parseQueryHashHeader(String queryHashHeaderString){
+        String[] qhValues = {};
+        if(!TextUtils.isEmpty(queryHashHeaderString)) {
+            String[] splitFlagQh = queryHashHeaderString.split(";");
+            if(splitFlagQh.length > 0){
+                String[] splitValuesQh = splitFlagQh[0].split(",");
+                if(splitValuesQh.length > 0){
+                    qhValues = splitValuesQh;
+                }
+            }
+        }
+        return qhValues;
     }
 }

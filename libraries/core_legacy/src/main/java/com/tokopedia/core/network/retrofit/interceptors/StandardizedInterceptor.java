@@ -1,6 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
@@ -78,6 +80,7 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
+                .header(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .method(request.method(), request.body());
     }
 

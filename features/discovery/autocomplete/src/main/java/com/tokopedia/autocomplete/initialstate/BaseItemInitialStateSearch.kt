@@ -12,5 +12,8 @@ data class BaseItemInitialStateSearch(
         val label: String = "",
         val labelType: String = "",
         val shortcutImage: String = "",
-        val productId: String = ""
+        val productId: String = "",
+        val type: String = "",
+        val featureId: String = "",
+        val header: String = ""
 )

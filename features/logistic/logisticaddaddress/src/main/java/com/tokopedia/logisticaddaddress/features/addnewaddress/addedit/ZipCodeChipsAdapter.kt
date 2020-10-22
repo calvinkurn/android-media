@@ -1,11 +1,10 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.content.Context
-import android.content.res.Resources
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.chips_item.view.*
 
@@ -32,7 +31,7 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
             text = zipCodes[position]
-            setTextColor(res.getColor(R.color.font_black_secondary_54))
+            setTextColor(res.getColor(com.tokopedia.design.R.color.font_black_secondary_54))
             setOnClickListener {
                 setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onZipCodeClicked(zipCodes[position])

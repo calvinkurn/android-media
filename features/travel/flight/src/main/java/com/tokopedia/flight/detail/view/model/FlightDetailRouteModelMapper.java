@@ -3,9 +3,9 @@ package com.tokopedia.flight.detail.view.model;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderStopDetailEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
-import com.tokopedia.flight.search.data.api.single.response.Route;
-import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.searchV4.data.cloud.single.Route;
+import com.tokopedia.flight.searchV4.data.cloud.single.StopDetailEntity;
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel;
 
 import java.util.ArrayList;
 import java.util.List;

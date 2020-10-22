@@ -1,9 +1,6 @@
 package com.tokopedia.recommendation_widget_common.data.mapper;
 
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity;
-
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 

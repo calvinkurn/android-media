@@ -1,7 +1,7 @@
 
- query hachikoCouponDetail($code : String!){
+ query hachikoCouponDetail($code : String!,$apiVersion : String){
       status
-      hachikoCouponDetail(code:$code){
+      hachikoCouponDetail(code:$code , apiVersion: $apiVersion){
         id
         expired
         real_code

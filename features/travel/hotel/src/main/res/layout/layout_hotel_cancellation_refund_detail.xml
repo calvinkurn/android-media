@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/layout_payment_info">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_payment_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_4"
+        tools:text="Detail Refund"
+        android:layout_marginTop="@dimen/hotel_20dp" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/hotel_cancellation_ticker_refund_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        tools:layout_height="@dimen/layout_lvl3"
+        app:tickerType="announcement"
+        app:closeButtonVisibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/hotel_cancellation_refund_price_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:orientation="vertical"
+        tools:background="@color/Neutral_N700_96"
+        tools:layout_height="@dimen/layout_lvl2" />
+
+    <View
+        android:id="@+id/hotel_cancellation_refund_detail_seperator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:background="@drawable/bg_dash_stroke_hotel"
+        android:layout_marginTop="@dimen/layout_lvl2" />
+
+    <LinearLayout
+        android:id="@+id/hotel_cancellation_total_price_refund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:orientation="vertical"
+        tools:background="@color/Neutral_N700_96"
+        tools:layout_height="@dimen/layout_lvl2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_refund_additional_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        tools:text="Refund tidak tersedia untuk pesanan ini" />
+</LinearLayout>

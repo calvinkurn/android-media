@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.datepicker.range.data.repository.DatePickerRepositoryImpl;
@@ -16,17 +15,15 @@ import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenterImpl;
 import com.tokopedia.gm.common.di.scope.GMScope;
-import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
-import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
-import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
-import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
-import com.tokopedia.gm.featured.repository.GMFeaturedProductRepository;
-import com.tokopedia.gm.featured.repository.GMFeaturedProductRepositoryImpl;
-import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
-import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.gm.shopinfo.data.cloud.ShopApi;
+import com.tokopedia.gm.shopinfo.data.cloud.TomeProductApi;
+import com.tokopedia.gm.shopinfo.data.cloud.source.ShopInfoDataSource;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepository;
+import com.tokopedia.gm.shopinfo.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.common.usecase.JobExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.UIThread;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,6 +35,18 @@ import retrofit2.Retrofit;
 @GMScope
 @Module
 public class GMModule {
+
+    @GMScope
+    @Provides
+    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
+    }
+
+    @GMScope
+    @Provides
+    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
+        return uiThread;
+    }
 
     @GMScope
     @Provides
@@ -57,22 +66,6 @@ public class GMModule {
     @Provides
     GlobalCacheManager provideGlobalCacheManager(){
         return new GlobalCacheManager();
-    }
-
-    @GMScope
-    @Provides
-    GMFeaturedProductApi provideFeaturedProductApi(@GoldMerchantQualifier Retrofit retrofit) {
-        return retrofit.create(GMFeaturedProductApi.class);
-    }
-
-    @GMScope
-    @Provides
-    GMFeaturedProductRepository provideFeaturedProductRepository(
-            GMFeaturedProductDataSource gmFeaturedProductDataSource,
-            ShopInfoRepository shopInfoRepository,
-            GMFeaturedProductMapper gmFeaturedProductMapper,
-            GMFeaturedProductSubmitMapper gmFeaturedProductSubmitMapper) {
-        return new GMFeaturedProductRepositoryImpl(gmFeaturedProductDataSource, shopInfoRepository, gmFeaturedProductMapper, gmFeaturedProductSubmitMapper);
     }
 
     @GMScope

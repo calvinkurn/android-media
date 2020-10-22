@@ -15,38 +15,49 @@ import com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_success_create.view.*
 
-class SuccessCreateBottomSheet(parent: ViewGroup): BottomSheetUnify() {
+class SuccessCreateBottomSheet: BottomSheetUnify() {
 
     companion object {
+        @JvmStatic
+        fun createInstance(voucherUiModel: VoucherUiModel): SuccessCreateBottomSheet {
+            return SuccessCreateBottomSheet().apply {
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+
+                arguments = Bundle().apply {
+                    putParcelable(VOUCHER, voucherUiModel)
+                }
+            }
+        }
+
         val TAG: String = SuccessCreateBottomSheet::class.java.simpleName
 
         private const val DATE_FORMAT = "dd MMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
 
-        @JvmStatic
-        fun createInstance(parent: ViewGroup,
-                           voucherUiModel: VoucherUiModel): SuccessCreateBottomSheet {
-            return SuccessCreateBottomSheet(parent).apply {
-                this.voucherUiModel = voucherUiModel
-            }
-        }
+        private const val VOUCHER = "voucher"
     }
 
-    private var voucherUiModel: VoucherUiModel? = null
+    private val voucherUiModel by lazy {
+        arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
+    }
 
     private var onShareClickAction: (VoucherUiModel) -> Unit = {}
     private var onDownloadClickAction: (VoucherUiModel) -> Unit = {}
 
-    init {
-        val child = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_success_create, parent, false)
-        setChild(child)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet(container)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
+    }
+
+    private fun initBottomSheet(container: ViewGroup?) {
+        val child = LayoutInflater.from(context)
+                .inflate(R.layout.bottomsheet_mvc_success_create, container, false)
+        setChild(child)
     }
 
     private fun setupView(view: View) {

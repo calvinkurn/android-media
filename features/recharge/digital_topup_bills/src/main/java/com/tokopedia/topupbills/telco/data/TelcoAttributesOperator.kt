@@ -6,26 +6,14 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoAttributesOperator(
+data class TelcoAttributesOperator(
         @SerializedName("name")
         @Expose
-        val name: String,
-        @SerializedName("image")
-        @Expose
-        val image: String,
+        val name: String = "",
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String,
-        @SerializedName("lastorder_url")
-        @Expose
-        val lastOrderUrl: String,
+        val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int,
-        @SerializedName("ussd")
-        @Expose
-        val ussd: String,
-        @SerializedName("description")
-        @Expose
-        val description: String
+        val defaultProductId: Int = 0
 )

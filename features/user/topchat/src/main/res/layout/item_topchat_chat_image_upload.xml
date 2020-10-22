@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl2"
-    android:paddingLeft="@dimen/dp_topchat_15"
-    android:paddingRight="@dimen/dp_topchat_15">
+    android:layout_marginBottom="@dimen/spacing_lvl1"
+    android:paddingLeft="@dimen/dp_topchat_12"
+    android:paddingRight="@dimen/dp_topchat_12">
 
     <FrameLayout
         android:id="@+id/fl_image_container"
@@ -16,12 +16,12 @@
         android:layout_alignParentRight="true"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.topchat.chatroom.view.custom.ImageUploadView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="@dimen/dp_topchat_point8"
             android:scaleType="centerCrop"
-            app:borderRadius="@dimen/dp_topchat_20"
             tools:srcCompat="@tools:sample/avatars" />
 
         <FrameLayout

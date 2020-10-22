@@ -8,9 +8,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -97,11 +99,11 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
-        mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false));
-        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
-        mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
-        mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(mTvTotalItemPrice, shipmentCost.getTotalItemPrice() == 0 ? "-" :
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false)),mTvTotalItemPrice.getContext().getString(R.string.content_desc_tv_total_item_price_summary));
+        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(mTvShippingFee, getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()), mTvShippingFee.getContext().getString(R.string.content_desc_tv_shipping_fee_summary));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(mTvInsuranceFee, getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()), mTvInsuranceFee.getContext().getString(R.string.content_desc_tv_insurance_fee_summary));
         mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel, mTvOrderPrioritasFee, shipmentCost.getPriorityFee()));
         mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
         mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
@@ -144,15 +146,15 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductDiscount(ShipmentCostModel shipmentCost) {
-        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(R.string.label_product_discount));
+        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount));
         mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
-        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount));
+        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipping_discount));
         if (shipmentCost.getShippingDiscountAmount() > 0) {
             if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
-                mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
+                mTvShippingFee.setText(mTvShippingFee.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping));
                 mTvShippingDiscountPrice.setVisibility(View.GONE);
                 mTvShippingDiscountLabel.setVisibility(View.GONE);
             } else {
@@ -182,7 +184,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false);
+            return Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false));
         }
     }
 

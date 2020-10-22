@@ -16,13 +16,9 @@ class UploadRequestBody(
         private val callback: ProgressCallback?
 ): RequestBody() {
 
-    override fun contentType(): MediaType? {
-        return contentType
-    }
+    override fun contentType(): MediaType? = contentType
 
-    override fun contentLength(): Long {
-        return file.length()
-    }
+    override fun contentLength(): Long =file.length()
 
     override fun writeTo(sink: BufferedSink) {
         val fileLength = file.length()

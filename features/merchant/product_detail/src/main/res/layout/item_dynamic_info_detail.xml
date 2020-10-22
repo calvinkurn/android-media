@@ -25,6 +25,7 @@
         app:layout_constraintStart_toEndOf="@+id/ic_info_item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ic_info_item"
+        android:textColor="@color/Neutral_N700_68"
         tools:text="Dilayani oleh Bukalapak Dilayani oleh BukalapakDilayani oleh BukalapakDilayani oleh BukalapakDilayani oleh BukalapakDilayani oleh Bukalapak"
         app:typographyType="body_2"/>
 

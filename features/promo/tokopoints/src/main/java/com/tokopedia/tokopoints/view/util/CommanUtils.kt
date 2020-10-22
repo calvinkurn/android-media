@@ -1,5 +1,7 @@
 package com.tokopedia.tokopoints.view.util
 
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
@@ -33,4 +35,10 @@ fun convertLongToHourMinuteSec(l : Long) : String {
     val minutes = (l / (1000 * 60) % 60).toInt()
     val hours = (l / (1000 * 60 * 60) % 24).toInt()
     return String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
+}
+
+fun convertDpToPixel(dp: Int, context: Context): Int {
+    val resources = context.resources
+    val metrics = resources.displayMetrics
+    return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
 }

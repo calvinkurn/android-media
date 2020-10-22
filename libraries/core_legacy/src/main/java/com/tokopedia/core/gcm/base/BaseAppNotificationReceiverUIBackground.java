@@ -89,12 +89,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     public abstract void notifyReceiverBackgroundMessage(Bundle bundle);
 
-    protected Map<Integer, Visitable> getCommonDedicatiedObject() {
-        Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
-        return dedicatedNotification;
-    }
-
     protected Map<Integer, Visitable> getCommonDedicatedNotification() {
         Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));

@@ -2,6 +2,7 @@ package com.tokopedia.common_category.viewholders
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.model.productModel.BadgesItem
 import com.tokopedia.common_category.model.productModel.FreeOngkir
@@ -15,9 +16,13 @@ abstract class ProductCardViewHolder(itemView: View,
 
     protected val context = itemView.context!!
 
-    protected fun ProductsItem.toProductCardModel(isUsingBigImageUrl: Boolean): ProductCardModel {
+    protected fun ProductsItem.toProductCardModel(gridType: CategoryNavConstants.RecyclerView.GridType): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = if (isUsingBigImageUrl) imageURL700 else imageURL,
+                productImageUrl = when (gridType) {
+                    CategoryNavConstants.RecyclerView.GridType.GRID_1 -> imageURL300 ?: ""
+                    CategoryNavConstants.RecyclerView.GridType.GRID_2 -> imageURL
+                    CategoryNavConstants.RecyclerView.GridType.GRID_3 -> imageURL700
+                },
                 productName = name,
                 discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
                 slashedPrice = if (discountPercentage > 0) originalPrice else "",

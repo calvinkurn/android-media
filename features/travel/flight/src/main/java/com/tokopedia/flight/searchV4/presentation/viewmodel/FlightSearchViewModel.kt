@@ -3,6 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
@@ -12,22 +13,20 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.*
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
-import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.searchV4.domain.*
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
+import com.tokopedia.flight.searchV4.presentation.model.*
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -47,6 +46,7 @@ class FlightSearchViewModel @Inject constructor(
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val flightSearchCache: FlightSearchCache,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -57,6 +57,7 @@ class FlightSearchViewModel @Inject constructor(
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
     private var searchStatisticModel: FlightSearchStatisticModel? = null
+    private var searchNotFoundSent = false
     val isInFilterMode: Boolean
         get() {
             if (::filterModel.isInitialized) {
@@ -78,13 +79,21 @@ class FlightSearchViewModel @Inject constructor(
         get() = mutableTickerData
 
     val progress = MutableLiveData<Int>()
+    private var isSearchViewSent: Boolean = false
+    private var isSearchImpressionSent: Boolean = false
 
     init {
         progress.value = DEFAULT_PROGRESS_VALUE
+        isSearchViewSent = false
+        isSearchImpressionSent = false
         fetchTickerData()
     }
 
     fun initialize(needDeleteData: Boolean, isReturnTrip: Boolean) {
+        if (flightSearchPassData.linkUrl.contains(DeeplinkConstant.SCHEME_INTERNAL)) {
+            flightSearchPassData.linkUrl.replace(DeeplinkConstant.SCHEME_INTERNAL, DeeplinkConstant.SCHEME_TOKOPEDIA)
+        }
+
         if (needDeleteData) {
             if (isReturnTrip) {
                 deleteFlightReturnSearch {}
@@ -102,8 +111,7 @@ class FlightSearchViewModel @Inject constructor(
     fun generateSearchStatistics() {
         launchCatchError(context = dispatcherProvider.ui(), block = {
             if (::filterModel.isInitialized) {
-                searchStatisticModel = flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel))
+                searchStatisticModel = flightSearchStatisticUseCase.execute(filterModel)
             }
         }) {
             it.printStackTrace()
@@ -119,16 +127,18 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
+        searchNotFoundSent = false
+
         val date: String = flightSearchPassData.getDate(isReturnTrip)
-        val adult = flightSearchPassData.flightPassengerViewModel.adult
-        val child = flightSearchPassData.flightPassengerViewModel.children
-        val infant = flightSearchPassData.flightPassengerViewModel.infant
+        val adult = flightSearchPassData.flightPassengerModel.adult
+        val child = flightSearchPassData.flightPassengerModel.children
+        val infant = flightSearchPassData.flightPassengerModel.infant
         val classId = flightSearchPassData.flightClass.id
-        val searchRequestId = flightSearchPassData.searchRequestId ?: ""
+        val searchRequestId = flightSearchPassData.searchRequestId
 
         val requestModel = FlightSearchRequestModel(
-                flightAirportCombine.depAirport,
-                flightAirportCombine.arrAirport,
+                flightAirportCombine.departureAirport,
+                flightAirportCombine.arrivalAirport,
                 date, adult, child, infant, classId,
                 flightAirportCombine.airlines,
                 FlightRequestUtil.getLocalIpAddress(),
@@ -181,12 +191,12 @@ class FlightSearchViewModel @Inject constructor(
 
         val combineRequestModel = FlightCombineRequestModel(
                 routes,
-                flightSearchPassData.flightPassengerViewModel.adult,
-                flightSearchPassData.flightPassengerViewModel.children,
-                flightSearchPassData.flightPassengerViewModel.infant,
+                flightSearchPassData.flightPassengerModel.adult,
+                flightSearchPassData.flightPassengerModel.children,
+                flightSearchPassData.flightPassengerModel.infant,
                 flightSearchPassData.flightClass.id,
                 FlightRequestUtil.getLocalIpAddress(),
-                flightSearchPassData.searchRequestId ?: "")
+                flightSearchPassData.searchRequestId)
 
         launchCatchError(context = dispatcherProvider.ui(), block = {
             isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
@@ -215,7 +225,6 @@ class FlightSearchViewModel @Inject constructor(
     fun fetchSortAndFilter() {
         launchCatchError(context = dispatcherProvider.ui(), block = {
             flightSortAndFilterUseCase.execute(selectedSortOption, filterModel).let {
-                flightAnalytics.eventSearchView(flightSearchPassData, true)
                 mutableJourneyList.postValue(Success(it))
             }
         }) {
@@ -229,9 +238,13 @@ class FlightSearchViewModel @Inject constructor(
     fun onSearchItemClicked(journeyModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "") {
         if (selectedId.isEmpty()) {
             if (adapterPosition == -1) {
-                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel)
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                        FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             } else {
-                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel, adapterPosition)
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                        adapterPosition, FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             }
             journeyModel?.let {
                 deleteFlightReturnSearch { getOnNextDeleteReturnFunction(it) }
@@ -250,6 +263,20 @@ class FlightSearchViewModel @Inject constructor(
 
     fun isDoneLoadData(): Boolean {
         progress.value?.let {
+            if (it >= MAX_PROGRESS && !isSearchViewSent) {
+                flightAnalytics.eventSearchView(flightSearchPassData, true)
+                isSearchViewSent = true
+            }
+            if (it >= MAX_PROGRESS && !isSearchImpressionSent) {
+                journeyList.value?.let { journeyResult ->
+                    if (journeyResult is Success) {
+                        flightAnalytics.eventProductViewEnchanceEcommerce(flightSearchPassData, journeyResult.data,
+                                FlightAnalytics.Screen.SEARCH,
+                                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+                        isSearchImpressionSent = true
+                    }
+                }
+            }
             return it >= MAX_PROGRESS
         }
         return false
@@ -278,12 +305,21 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun sendQuickFilterTrack(filterName: String) {
-        flightAnalytics.eventQuickFilterClick(filterName)
+        flightAnalytics.eventQuickFilterClick(filterName,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun sendDetailClickTrack(journeyModel: FlightJourneyModel, adapterPosition: Int) {
         flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
         flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
+    }
+
+    fun sendProductNotFoundTrack() {
+        if (!searchNotFoundSent) {
+            flightAnalytics.eventProductViewNotFound(flightSearchPassData,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+            searchNotFoundSent = true
+        }
     }
 
     private fun deleteAllSearchData() {
@@ -353,19 +389,19 @@ class FlightSearchViewModel @Inject constructor(
     private fun runFireAndForgetForReturn(isReturnTrip: Boolean) {
         if (!isReturnTrip) {
             val date: String = flightSearchPassData.getDate(true)
-            val adult = flightSearchPassData.flightPassengerViewModel.adult
-            val child = flightSearchPassData.flightPassengerViewModel.children
-            val infant = flightSearchPassData.flightPassengerViewModel.infant
+            val adult = flightSearchPassData.flightPassengerModel.adult
+            val child = flightSearchPassData.flightPassengerModel.children
+            val infant = flightSearchPassData.flightPassengerModel.infant
             val classId = flightSearchPassData.flightClass.id
             val searchRequestId = flightSearchPassData.searchRequestId
 
             val requestModel = FlightSearchRequestModel(
-                    flightAirportCombine.arrAirport,
-                    flightAirportCombine.depAirport,
+                    flightAirportCombine.arrivalAirport,
+                    flightAirportCombine.departureAirport,
                     date, adult, child, infant, classId,
                     flightAirportCombine.airlines,
                     FlightRequestUtil.getLocalIpAddress(),
-                    searchRequestId ?: "")
+                    searchRequestId)
 
             launchCatchError(dispatcherProvider.ui(), {
                 flightSearchUseCase.execute(requestModel,

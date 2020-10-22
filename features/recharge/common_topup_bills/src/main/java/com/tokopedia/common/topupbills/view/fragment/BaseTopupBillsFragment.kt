@@ -29,6 +29,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
@@ -84,9 +85,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        topupBillsViewModel.enquiryData.observe(this, Observer {
+    private fun subscribeUi() {
+        topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processEnquiry(it.data)
@@ -102,7 +102,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.menuDetailData.observe(this, Observer {
+        topupBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processMenuDetail(it.data)
@@ -111,7 +111,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.catalogPluginData.observe(this, Observer {
+        topupBillsViewModel.catalogPluginData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processCatalogPluginData(it.data)
@@ -120,7 +120,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.favNumberData.observe(this, Observer {
+        topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> processFavoriteNumbers(it.data)
@@ -129,7 +129,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.checkVoucherData.observe(this, Observer {
+        topupBillsViewModel.checkVoucherData.observe(viewLifecycleOwner, Observer {
             it.run {
                 promoTicker?.toggleLoading(false)
                 when (it) {
@@ -139,7 +139,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-        topupBillsViewModel.expressCheckoutData.observe(this, Observer {
+        topupBillsViewModel.expressCheckoutData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
                     is Success -> {
@@ -167,6 +167,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        subscribeUi()
 
         savedInstanceState?.run {
             promoCode = getString(EXTRA_PROMO_CODE, promoCode)
@@ -215,6 +217,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                     data?.let {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                            // Stop check voucher job to prevent previous promo override
+                            topupBillsViewModel.stopCheckVoucher()
                             val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
                             setupPromoTicker(promoData)
                         }
@@ -278,10 +282,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
                 intent.putExtra(EXTRA_IS_USE, true)
                 intent.putExtra(EXTRA_COUPON_CODE, promoCode)
-                intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
                 requestCode = REQUEST_CODE_PROMO_DETAIL
             } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                 intent.putExtra(EXTRA_PROMO_CODE, promoCode)
                 intent.putExtra(EXTRA_COUPON_ACTIVE, true)
                 intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
@@ -341,6 +345,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getMenuDetail(menuId: Int) {
+        onLoadingMenuDetail(true)
         topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
@@ -385,15 +390,20 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
+        onLoadingMenuDetail(false)
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
     }
 
+    open fun onMenuDetailError(error: Throwable) {
+        onLoadingMenuDetail(false)
+    }
+
+    abstract fun onLoadingMenuDetail(showLoading:  Boolean)
+
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
     abstract fun onEnquiryError(error: Throwable)
-
-    abstract fun onMenuDetailError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 
@@ -455,6 +465,18 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+    }
+
+    protected fun getDefaultCheckoutPassDataBuilder(): DigitalCheckoutPassData.Builder {
+        return DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .instantCheckout("0")
+                .utmContent(GlobalConfig.VERSION_NAME)
+                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .voucherCodeCopied("")
+                .isFromPDP(true)
     }
 
     companion object {

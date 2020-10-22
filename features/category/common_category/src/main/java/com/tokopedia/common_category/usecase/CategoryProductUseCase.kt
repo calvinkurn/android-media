@@ -1,8 +1,6 @@
 package com.tokopedia.common_category.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common_category.R
+import com.tokopedia.common_category.data.raw.GQL_NAV_SEARCH_PRODUCT
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -12,12 +10,10 @@ import rx.Observable
 
 import javax.inject.Inject
 
-class CategoryProductUseCase @Inject constructor(private val context: Context,
-                                                 private val graphqlUseCase: GraphqlUseCase) : UseCase<ProductListResponse>() {
+class CategoryProductUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<ProductListResponse>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<ProductListResponse> {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_nav_search_product), ProductListResponse::class.java,requestParams?.parameters,false)
+        val graphqlRequest = GraphqlRequest(GQL_NAV_SEARCH_PRODUCT, ProductListResponse::class.java,requestParams?.parameters,false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map {

@@ -66,11 +66,17 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".settings.view.activity.MenuSettingActivity"
             android:exported="true"
             android:label="@string/menu_setting_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/MenuSettingStyle">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

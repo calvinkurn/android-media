@@ -150,6 +150,9 @@
     @com.tokopedia.tkpd.analytics.** *;
 }
 
+-keep class com.tokopedia.firebase.analytic.rules.** { *; }
+-keep class com.tokopedia.analyticparam.** { *; }
+
 -keep class android.support.design.widget.** { *; }
 -keep interface android.support.design.widget.** { *; }
 
@@ -342,6 +345,9 @@
 #tradein
 -keep class com.tokopedia.tradein.viewmodel.** { *; }
 
+#discovery
+-keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
+
 #agerestriction
 -keep class com.tokopedia.age_restriction.viewmodel.** { *; }
 
@@ -424,6 +430,16 @@
  -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
  -keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
  -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
-
+ -keep public class com.android.installreferrer.** { *; }
  -dontwarn com.squareup.javapoet.**
  -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+
+-keepclassmembers class com.google.android.material.textfield.TextInputLayout {
+    final com.google.android.material.internal.CollapsingTextHelper collapsingTextHelper;
+}
+-keepclassmembers class com.google.android.material.internal.CollapsingTextHelper {
+    private final android.graphics.Rect collapsedBounds;
+}
+-keep class com.google.android.material.internal.CollapsingTextHelper {
+    public void recalculate();
+}

@@ -22,7 +22,9 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import java.util.ArrayList;
 
@@ -37,13 +39,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
-    private TextView tvCod;
     private TextView tvTextDesc;
     private ImageView imgCheck;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
+    private Label labelCodAvailable;
 
     private int cartPosition;
 
@@ -59,8 +61,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         imgCheck = itemView.findViewById(R.id.img_check);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
-        tvCod = itemView.findViewById(R.id.tv_cod_availability);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
+        labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -109,11 +111,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
 
         }
-
-        tvDuration.setText(shippingDurationUiModel.getServiceData().getServiceName());
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDuration, shippingDurationUiModel.getServiceData().getServiceName(), tvDuration.getContext().getString(R.string.content_desc_tv_duration));
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-        tvCod.setText(shippingDurationUiModel.getCodText());
-        tvCod.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+        labelCodAvailable.setText(shippingDurationUiModel.getCodText());
+        labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -69,7 +69,7 @@ class AnalyticsDebuggerDetailFragment : TkpdBaseV4Fragment() {
             } else if (item.itemId == R.id.action_copy_text) {
                 val clipboard = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("tokopedia_analytics_debugger", viewModel!!.data)
-                clipboard.primaryClip = clip
+                clipboard.setPrimaryClip(clip)
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_LONG).show()
             }
         }

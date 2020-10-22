@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
 
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public interface OrderCourierInteractor {
     void onGetCourierList(
             String selectedCourierId,
             Map<String, String> params,
-            Subscriber<ListCourierViewModel> model
+            Subscriber<ListCourierUiModel> model
     );
 
     void confirmShipping(Map<String, String> params, Subscriber<String> subscriber);

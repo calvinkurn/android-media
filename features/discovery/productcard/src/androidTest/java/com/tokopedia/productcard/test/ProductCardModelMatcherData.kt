@@ -2,6 +2,7 @@ package com.tokopedia.productcard.test
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
@@ -10,7 +11,6 @@ import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
@@ -21,6 +21,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelGimmickNumberOfStock())
     it.add(testLabelSoldOut())
     it.add(testLabelNewProduct())
+    it.add(testLabelPriceAndSlashPrice())
     it.add(testLabelIntegrity())
     it.add(testLabelShippingInfo())
     it.add(testNoShopBadge())
@@ -43,7 +44,17 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testProductCardWithSpoilerPrice())
     it.add(testProductCardWithSpoilerPriceAndViewCount())
     it.add(testProductCardWithSpoilerPriceAndStockBar())
-    it.add(testOutOfStock())
+    it.add(testHasBadgeNoLocation())
+    it.add(testHasRatingReviewAndLabelIntegrity())
+    it.add(testHasFreeOngkirAndLabelShipping())
+    it.add(testShopRatingBlue())
+    it.add(testShopRatingBlue2())
+    it.add(testShopRatingBlue3())
+    it.add(testShopRatingBlue4())
+    it.add(testShopRatingBlue5())
+    it.add(testShopRatingYellow())
+    it.add(testHasRatingSales())
+    it.add(testNoLabelIntegrityAndHasRatingFloat())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -471,6 +482,41 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
+private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+
+    val productCardModel = ProductCardModel(
+            productName = "Slash Price and Label Price",
+            productImageUrl = productImageUrl,
+            discountPercentage = "20%",
+            slashedPrice = "Rp8.499.000",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelPrice)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
 private fun testLabelIntegrity(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
     val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
@@ -818,20 +864,490 @@ private fun testAddToCartButtonAndShortContent(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testOutOfStock(): ProductCardModelMatcher {
-    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
+private fun testHasBadgeNoLocation(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+
     val productCardModel = ProductCardModel(
-            isOutOfStock = true,
+            productName = "No shop location",
             productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "",
+            ratingString = "4.5",
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
             }
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.outOfStockOverlay] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageRatingString] = isDisplayed()
+        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Has Rating, Review, and Label Integrity",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageRatingString] = isDisplayed()
+        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testHasRatingSales(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Product with rating sales",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            countSoldRating = "4.6",
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelIntegrity)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product with rating float",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            countSoldRating = "4.6",
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testHasFreeOngkirAndLabelShipping(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Has Free Ongkir and Label Shipping",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageRatingString] = isDisplayed()
+        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingBlue(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Blue - Bold tag start",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            shopRating = "<b>14.5</b> Rating Toko",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageRatingString] = isDisplayed()
+        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
+        it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingBlue2(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Blue 2 - Bold tag end",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            shopRating = "Nilai Toko <b>14.5</b>",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
+        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai Toko 14.5 ")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingBlue3(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Blue 3 - Incorrect bold tag",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            shopRating = "Nilai Toko <b>14.5<b>",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
+        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai Toko 14.5")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingBlue4(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Blue 4 - Bold tag middle",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            shopRating = "Nilai <b>14.5</b> Toko",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
+        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai 14.5 Toko")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingBlue5(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Blue 5 - Multiple Bold tag",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            shopRating = "<b>14.5</b> Nilai <b>bold</b> Toko <b>bold</b>",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
+        it[R.id.textViewShopRating] = isDisplayedWithText("14.5 Nilai bold Toko bold")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testShopRatingYellow(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelShipping = LabelGroup(position = LABEL_SHIPPING, title = "Ongkir Rp11 rb", type = "#7031353b")
+
+    val productCardModel = ProductCardModel(
+            productName = "Shop Rating Yellow",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingString = "4.5",
+            reviewCount = 60,
+            shopRating = "<b>14.5</b> Rating Toko",
+            isShopRatingYellow = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelProductStatus)
+                labelGroups.add(labelGimmick)
+                labelGroups.add(labelPrice)
+                labelGroups.add(labelIntegrity)
+                labelGroups.add(labelShipping)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageRatingString] = isDisplayed()
+        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

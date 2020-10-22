@@ -2,11 +2,14 @@ package com.tokopedia.home.analytics.v2
 
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatHelper
-import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Value.LIST
 
-object MixTopTracking : BaseTracking() {
+object MixTopTracking : BaseTrackerConst() {
     private class CustomAction{
         companion object {
             val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel top carousel")
@@ -20,68 +23,98 @@ object MixTopTracking : BaseTracking() {
 
     private class CustomActionField{
         companion object {
-            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - %s")
+            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - product")
         }
     }
 
-    fun getMixTopView(products: List<Product>, headerName: String, positionOnWidgetHome: String) = getBasicProductView(
-            Event.PRODUCT_VIEW,
-            Category.HOMEPAGE,
-            CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
-            Label.NONE,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            products
-    )
-
-    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductChannelView(
-            Event.PRODUCT_VIEW_IRIS,
-            Category.HOMEPAGE,
-            CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
-            Label.NONE,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            products,
-            channelId
-    )
+    fun getMixTopView(products: List<Product>, positionOnWidgetHome: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
+                eventLabel = Label.NONE,
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
+                products = products)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .build()
+    }
 
 
-    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String) = getBasicProductChannelClick(
-            Event.PRODUCT_CLICK,
-            Category.HOMEPAGE,
-            CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
-            headerName,
-            CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            channelId,
-            campaignCode,
-            products
-    )
+    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        return trackingBuilder.constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
+                eventLabel = Label.NONE,
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
+                products = products)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendChannelId(channelId)
+                .build()
+    }
 
-    fun getMixTopSeeAllClick(channelId: String, headerName: String) = DataLayer.mapOf(
+    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String): Map<String, Any> {
+        val trackingBuilder = BaseTrackerBuilder()
+        return trackingBuilder.constructBasicProductClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
+                eventLabel = "$channelId - $headerName",
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
+                products = products)
+                .appendChannelId(channelId)
+                .appendCampaignCode(campaignCode)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .build()
+    }
+
+    fun getMixTopSeeAllClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, channelId + " - " + headerName
+            Label.KEY, "$channelId - $headerName",
+            ChannelId.KEY, channelId,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
+
     )
 
     fun getMixTopSeeAllCardClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_CARD,
-            Label.KEY, channelId + " - " + headerName,
+            Label.KEY, "$channelId - $headerName",
             Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channelId
+    )
+
+    fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String, userId: String) = DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
+            Label.KEY, "$channelId - $headerName",
+            ChannelId.KEY, channelId,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
-    fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String) = DataLayer.mapOf(
-            Event.KEY, Event.CLICK_HOMEPAGE,
-            Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
-            Label.KEY, channelId + " - " + headerName
-    )
-
-    fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -89,7 +122,7 @@ object MixTopTracking : BaseTracking() {
             channelId = channelId,
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
-            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
             categoryId = categoryId,
@@ -100,16 +133,49 @@ object MixTopTracking : BaseTracking() {
         mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
     }
 
-    fun getBackgroundClick(channels: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
+    //home component section
+
+    fun mapChannelToProductTracker(channels: ChannelModel) = channels.channelGrids.withIndex().map {
+        mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId, channels.channelHeader.name)
+    }
+
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String, headerName: String = "", pageName: String = "") = Product(
+            id = grid.id,
+            name = grid.name,
+            brand = "",
+            category = "",
+            channelId = channelId,
+            isFreeOngkir = grid.isFreeOngkirActive,
+            productPosition = position.toString(),
+            productPrice = convertRupiahToInt(grid.price).toString(),
+            variant = "",
+            persoType = persoType,
+            categoryId = categoryId,
+            isTopAds = grid.isTopads,
+            recommendationType = grid.recommendationType,
+            pageName = pageName,
+            isCarousel = true,
+            headerName = headerName
+    )
+
+    fun getBackgroundClickComponent(channels: ChannelModel, userId: String = "") = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BACKGROUND,
-            Label.KEY, channels.id + " - " + channels.header.name,
+            Label.KEY, channels.id + " - " + channels.channelHeader.name,
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channels.id,
+            CampaignCode.KEY, channels.trackingAttributionModel.campaignCode,
+            Label.ATTRIBUTION_LABEL, channels.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channels.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channels.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channels.trackingAttributionModel.brandId
     )
+
+    //end of home component section
 
 }

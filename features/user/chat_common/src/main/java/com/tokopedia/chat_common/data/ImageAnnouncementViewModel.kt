@@ -22,12 +22,13 @@ class ImageAnnouncementViewModel
  * @param blastId        blast id for campaign
  * @see AttachmentType for attachment types.
  */
-(messageId: String, fromUid: String, from: String,
- fromRole: String, attachmentId: String, attachmentType: String,
- replyTime: String, val imageUrl: String, val redirectUrl: String,
- message: String, val blastId: Int) : BaseChatViewModel(messageId,
-        fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message)
-        , Visitable<BaseChatTypeFactory> {
+constructor(
+        messageId: String, fromUid: String, from: String, fromRole: String,
+        attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
+        val redirectUrl: String, message: String, val blastId: Int, source: String
+) : BaseChatViewModel(
+        messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
+), Visitable<BaseChatTypeFactory> {
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)

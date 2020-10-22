@@ -15,11 +15,13 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
-import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
+import com.tokopedia.gamification.giftbox.data.entities.CouponType
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.giftbox.presentation.helpers.*
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
@@ -30,18 +32,20 @@ import com.tokopedia.utils.image.ImageUtils
 class RewardContainer : FrameLayout {
 
     lateinit var tvSmallReward: AppCompatTextView
-    lateinit var imageSmallReward: AppCompatImageView
+    lateinit var imageSmallReward: DeferredImageView
     lateinit var llRewardTextLayout: RelativeLayout
     lateinit var rvCoupons: RecyclerView
     lateinit var imageGreenGlow: AppCompatImageView
     lateinit var imageGlowCircleSmall: AppCompatImageView
     lateinit var imageGlowCircleLarge: AppCompatImageView
-    lateinit var imageCircleReward: AppCompatImageView
+    lateinit var imageCircleReward: DeferredImageView
 
     lateinit var couponAdapter: CouponAdapter
 
-    val couponList = ArrayList<GetCouponDetail>()
+    val couponList = ArrayList<CouponType>()
     val FADE_OUT_REWARDS_DURATION = 1000L
+    val FADE_OUT_REWARDS_DURATION_TAP_TAP = 600L
+    val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
     var userSession: UserSession? = null
 
     @RewardState
@@ -97,8 +101,8 @@ class RewardContainer : FrameLayout {
         rvCoupons.addItemDecoration(CouponItemDecoration(isTablet,
                 listItemWidthInTablet.toInt(),
                 getScreenWidth(),
-                rvCoupons.dpToPx(36).toInt(),
-                rvCoupons.dpToPx(13).toInt()
+                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_top_margin).toInt(),
+                rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
         couponAdapter = CouponAdapter(couponList, isTablet)
         rvCoupons.adapter = couponAdapter
@@ -116,7 +120,7 @@ class RewardContainer : FrameLayout {
         var hasCoupons = false
 
         //set coupons if available
-        val list = rewardEntity.couponDetailResponse?.couponList
+        val list = rewardEntity.couponDetailResponse?.couponMap?.values
         if (list != null && list.isNotEmpty()) {
             hasCoupons = true
             couponList.clear()
@@ -128,7 +132,7 @@ class RewardContainer : FrameLayout {
         var iconUrl: String? = ""
         rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
-                if (benefit.benefitType != "coupon") {
+                if (benefit.benefitType != BenefitType.COUPON) {
                     hasPoints = true
                     tvSmallReward.text = benefit.text
                     if (!benefit.color.isNullOrEmpty()) {
@@ -136,7 +140,7 @@ class RewardContainer : FrameLayout {
                     }
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
                     iconUrl = benefit.imageUrl
-                } else if (benefit.benefitType == "coupon") {
+                } else if (benefit.benefitType == BenefitType.COUPON) {
                     benefit.referenceID?.let {
                         GtmEvents.viewRewards(it.toString(), userSession?.userId)
                     }
@@ -185,31 +189,18 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun showSingleLargeRewardAnimationFadeOut(): Animator {
+    fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {
 
-        val anim2 = largeImageRewardAnimation(imageCircleReward)
-
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(imageCircleReward, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
-    }
-
-    fun showSingleLargeRewardAnimationFadeOut(startDelay: Long): Animator {
-
-        val anim2 = largeImageRewardAnimation(imageCircleReward)
+        val anim2 = largeImageRewardAnimation(imageCircleReward, FADE_IN_REWARDS_DURATION_TAP_TAP)
         anim2.startDelay = startDelay
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(imageCircleReward, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
+        return Pair(animatorSet, FADE_OUT_REWARDS_DURATION_TAP_TAP + FADE_IN_REWARDS_DURATION_TAP_TAP)
     }
 
     fun showCouponAndRewardAnimation(giftBoxTop: Int): Animator {
@@ -222,34 +213,25 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun showCouponAndRewardAnimationFadeOut(startDelay: Long): Animator {
-        val anim2 = rvCouponsAnimations()
-        anim2.startDelay = startDelay
+    fun showCouponAndRewardAnimationFadeOut(startDelay: Long): Pair<Animator, Long> {
+
+        val anim2 = rvCouponsAnimations() //500
+        anim2.startDelay = if (startDelay > 0)
+            startDelay + GiftBoxTapTapView.REWARD_START_DELAY
+        else
+            0
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rvCoupons, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
+        return Pair(animatorSet, FADE_IN_REWARDS_DURATION_TAP_TAP + FADE_OUT_REWARDS_DURATION_TAP_TAP)
     }
 
-    fun showCouponAndRewardAnimationFadeOut(): Animator {
-        val anim2 = rvCouponsAnimations()
+    private fun largeImageRewardAnimation(view: View, duration: Long = 800L): Animator {
 
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rvCoupons, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(anim2, alphaAnim)
-        return animatorSet
-    }
-
-    private fun largeImageRewardAnimation(view: View): Animator {
-
-        val duration = 800L
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(view, alphaProp)
 
@@ -281,16 +263,16 @@ class RewardContainer : FrameLayout {
         imageCircleReward.translationY = circleRewardY
     }
 
-    fun ovoPointsTextAnimation(): Animator {
-        return scaleAndAlphaAnimation(llRewardTextLayout)
+    fun ovoPointsTextAnimation(duration:Long = 800L): Animator {
+        return scaleAndAlphaAnimation(llRewardTextLayout, duration)
     }
 
     fun ovoPointsTextAnimationFadeOut(): Animator {
-        val anim1 = ovoPointsTextAnimation()
+        val anim1 = ovoPointsTextAnimation(FADE_IN_REWARDS_DURATION_TAP_TAP)
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardTextLayout, alphaProp)
-        alphaAnim.duration = FADE_OUT_REWARDS_DURATION
+        alphaAnim.duration = FADE_OUT_REWARDS_DURATION_TAP_TAP
 
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(anim1, alphaAnim)
@@ -298,8 +280,7 @@ class RewardContainer : FrameLayout {
     }
 
     private fun rvCouponsAnimations(): Animator {
-        val couponAnimator = scaleAndAlphaAnimation(rvCoupons)
-        return couponAnimator
+        return scaleAndAlphaAnimation(rvCoupons, FADE_IN_REWARDS_DURATION_TAP_TAP)
     }
 
     private fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {
@@ -336,8 +317,8 @@ class RewardContainer : FrameLayout {
         return alphaAnim
     }
 
-    private fun scaleAndAlphaAnimation(view: View): Animator {
-        val duration = 800L
+    private fun scaleAndAlphaAnimation(view: View, duration: Long = 800L): Animator {
+
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(view, alphaProp)
 

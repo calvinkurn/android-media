@@ -8,6 +8,4 @@ import com.tokopedia.play.view.type.ScreenOrientation
 interface PlayFragmentContract {
 
     fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean
-
-    fun onInterceptSystemUiVisibilityChanged(): Boolean
 }

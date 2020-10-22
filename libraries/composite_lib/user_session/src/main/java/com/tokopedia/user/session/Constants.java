@@ -1,5 +1,8 @@
 package com.tokopedia.user.session;
 
+/**
+ * this will be private soon
+ */
 public class Constants {
 
     public static final String ACCESS_TOKEN = "WuSPErw9GRWme+wuyUqShQ\u003d\u003d\n";
@@ -41,6 +44,11 @@ public class Constants {
     public static final String IS_SHOP_OFFICIAL_STORE = "2cd5pN0RDMVO/wQhSMASy5/yL1g8++2XNoeJ56eyixU=";
     public static final String GCM_ID_TIMESTAMP = "HL5mkaU60QIbsgmR3RupeDSRBIN4P2kSZYkiH19r3tU=";
 
+    public static final String  ANDROID_ID = "zcZGxRef7Jxbl2KULt4Uag==";
+    public static final String  KEY_ANDROID_ID = "QcqUHdK7KTmkjKXbOqdHFg==";
+    public static final String  ADVERTISINGID = "JVqg72pOPdZ8rcOuCiOKeQ==";
+    public static final String  KEY_ADVERTISINGID = "7a6fMifPnFC/l6bzt+AK9lLgP9BoWgwi0VEzhh+PudE=";
+
     /**
      * Twitter Prefs
      */
@@ -57,6 +65,11 @@ public class Constants {
             SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
-            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE
+            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE,
+            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID
+    };
+
+    public static final String[] newKeys = {
+            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID
     };
 }

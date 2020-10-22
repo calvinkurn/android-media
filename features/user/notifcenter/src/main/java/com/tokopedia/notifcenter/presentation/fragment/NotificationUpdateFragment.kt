@@ -304,8 +304,8 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
-    override fun trackOnClickCtaButton(templateKey: String) {
-        analytics.trackOnClickLongerContentBtn(templateKey)
+    override fun trackOnClickCtaButton(templateKey: String, notificationId: String) {
+        analytics.trackOnClickLongerContentBtn(templateKey, notificationId)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)

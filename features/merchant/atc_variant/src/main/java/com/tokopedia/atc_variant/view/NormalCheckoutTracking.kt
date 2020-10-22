@@ -112,6 +112,7 @@ class NormalCheckoutTracking {
                                      isFreeOngkir: Boolean,
                                      customEventLabel: String,
                                      customEventAction: String,
+                                     customDimension40: String,
                                      layoutName: String
     ) {
         eventClickAddToCartOrBuyInVariant(
@@ -121,7 +122,9 @@ class NormalCheckoutTracking {
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
                 trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
-                customEventLabel, customEventAction)
+                customEventLabel, customEventAction,
+                customDimension40 = customDimension40
+        )
     }
 
     fun eventClickBuyInVariant(
@@ -141,6 +144,7 @@ class NormalCheckoutTracking {
                                reference: String,
                                customEventLabel: String,
                                customEventAction: String,
+                               customDimension40: String,
                                layoutName: String?) {
         eventClickAddToCartOrBuyInVariant(irisSessionId,
                 originalProductInfoAndVariant,
@@ -148,7 +152,7 @@ class NormalCheckoutTracking {
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
                 trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
-                customEventLabel, customEventAction, layoutName ?: "")
+                customEventLabel, customEventAction, layoutName ?: "", customDimension40)
     }
 
     fun eventClickBuyTradeIn(irisSessionId: String,
@@ -192,7 +196,8 @@ class NormalCheckoutTracking {
                                                   isFreeOngkir: Boolean = false,
                                                   customEventLabel: String = "",
                                                   customEventAction: String = "",
-                                                  layoutName: String = ""
+                                                  layoutName: String = "",
+                                                  customDimension40: String = ""
     ) {
         val dimension83 = if (isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
@@ -225,7 +230,7 @@ class NormalCheckoutTracking {
         }
 
         val dimension40 = when {
-            reference == ApplinkConst.TOPCHAT -> "/chat"
+            reference == ApplinkConst.TOPCHAT && customDimension40.isNotEmpty() -> customDimension40
             else -> ""
         }
 

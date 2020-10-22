@@ -9,14 +9,12 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.unifycomponents.ticker.*
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import java.util.*
 
 /**
  * @author by DevAra on 02/04/20.
  */
 class TickerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<TickerDataModel?>(itemView) {
-    private val emptyTitle: String = ""
     private val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
     private val context: Context = itemView.context
     private val view: View = itemView
@@ -28,13 +26,13 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
-                    tickerDataList.add(TickerData(emptyTitle, tickerData.message, TYPE_ANNOUNCEMENT, true))
+                    tickerDataList.add(TickerData(tickerData.title, tickerData.message, tickerData.tickerType, true))
                 }
                 val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
                 tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
                 tickerPagerAdapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        HomePageTracking.eventClickTickerHomePage(context,tickerId)
+                        HomePageTracking.eventClickTickerHomePage(tickerId)
                         listener.onSectionItemClicked(linkUrl.toString())
                     }
 
@@ -45,7 +43,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                     }
 
                     override fun onDismiss() {
-                        HomePageTracking.eventClickOnCloseTickerHomePage(context,tickerId);
+                        HomePageTracking.eventClickOnCloseTickerHomePage(tickerId);
                         listener.onCloseTicker();
                     }
                 })

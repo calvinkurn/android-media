@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResultDataModel
-import kotlinx.android.synthetic.main.item_shop_product_etalase_chip.view.*
 import kotlinx.android.synthetic.main.shop_search_product_fixed_result_layout.view.*
 
 class ShopSearchProductFixResultViewHolder(

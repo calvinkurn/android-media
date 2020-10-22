@@ -1,3 +1,4 @@
+
 package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
@@ -11,8 +12,8 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
@@ -24,16 +25,20 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
-import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
+import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -119,8 +124,8 @@ class HomeUseCaseModule {
             "}\n" +
             "\n"
 
-    private val tokopointsQuery : String = "{\n" +
-            "    tokopointsDrawer{\n" +
+    val tokopointsQuery: String = "query(\$apiVersion:String){\n" +
+            "    tokopointsDrawer(apiVersion: \$apiVersion){\n" +
             "        iconImageURL\n" +
             "        redirectURL\n" +
             "        redirectAppLink\n" +
@@ -140,7 +145,7 @@ class HomeUseCaseModule {
             "}"
 
     private val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
+            "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
             "    rawBalance\n" +
@@ -168,12 +173,15 @@ class HomeUseCaseModule {
             "    help_applink\n" +
             "    tnc_applink\n" +
             "    show_announcement\n" +
+            "    is_show_topup\n" +
+            "    topup_applink\n" +
+            "    topup_limit\n" +
             "  }\n" +
             "}"
 
-    private val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!){\n" +
+    private val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!){\n" +
             "    dynamicHomeChannel {\n" +
-            "        channels(groupIDs: \$groupIDs){\n" +
+            "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token){\n" +
             "          id\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +
@@ -183,7 +191,16 @@ class HomeUseCaseModule {
             "          name\n" +
             "          layout\n" +
             "          type\n" +
+            "          pageName\n" +
             "          showPromoBadge\n" +
+            "          categoryID\n" +
+            "          perso_type\n" +
+            "          campaignCode\n" +
+            "          has_close_button\n" +
+            "          isAutoRefreshAfterExpired\n" +
+            "          token\n" +
+            "          widgetParam\n" +
+            "          contextualInfo\n" +
             "          header {\n" +
             "            id\n" +
             "            name\n" +
@@ -194,34 +211,51 @@ class HomeUseCaseModule {
             "            expiredTime\n" +
             "            backColor\n" +
             "            backImage\n" +
+            "            textColor\n" +
             "          }\n" +
-            "          hero {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            imageUrl\n" +
-            "            attribution\n" +
-            "          }\n" +
-            "          grids {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            price\n" +
-            "            slashedPrice\n" +
-            "            discount\n" +
-            "            imageUrl\n" +
-            "            label\n" +
-            "            soldPercentage\n" +
-            "            attribution\n" +
-            "            productClickUrl\n" +
-            "            impression\n" +
-            "            cashback\n" +
-            "            freeOngkir {\n" +
-            "              isActive\n" +
-            "              imageUrl\n" +
-            "            }\n" +
+            "           grids {\n" +
+            "             id\n" +
+            "             back_color\n" +
+            "             name\n" +
+            "             url\n" +
+            "             applink\n" +
+            "             price\n" +
+            "             slashedPrice\n" +
+            "             discount\n" +
+            "             imageUrl\n" +
+            "             label\n" +
+            "             soldPercentage\n" +
+            "             attribution\n" +
+            "             productClickUrl\n" +
+            "             impression\n" +
+            "             cashback\n" +
+            "             isTopads\n" +
+            "             freeOngkir {\n" +
+            "                isActive\n" +
+            "                imageUrl\n" +
+            "              }\n" +
+            "              productViewCountFormatted\n" +
+            "              isOutOfStock\n" +
+            "              warehouseID\n" +
+            "              minOrder\n" +
+            "              recommendationType\n" +
+            "              shop{\n" +
+            "                shopID\n" +
+            "               }\n" +
+            "              labelGroup {\n" +
+            "                title\n" +
+            "                position\n" +
+            "                type\n" +
+            "              }\n" +
+            "              has_buy_button\n" +
+            "              rating\n" +
+            "              ratingAverage\n" +
+            "              count_review\n" +
+            "              benefit {\n" +
+            "                 type\n" +
+            "                 value\n" +
+            "              }\n" +
+            "              textColor\n" +
             "          }\n" +
             "          banner {\n" +
             "            id\n" +
@@ -239,11 +273,74 @@ class HomeUseCaseModule {
             "            text_color\n" +
             "            image_url\n" +
             "            attribution\n" +
+            "            gradient_color\n" +
             "\n" +
             "          }\n" +
             "        }\n" +
             "    }\n" +
             "}"
+
+    private val homeQuery: String = "" +
+            "query homeData\n" +
+            "        {\n" +
+            "        status\n" +
+            "          ticker {\n" +
+            "            meta {\n" +
+            "              total_data\n" +
+            "            }\n" +
+            "            tickers\n" +
+            "            {\n" +
+            "              id\n" +
+            "              title\n" +
+            "              message\n" +
+            "              color\n" +
+            "              layout\n" +
+            "              ticker_type\n" +
+            "              title\n" +
+            "            }\n" +
+            "          }\n" +
+            "          slides(device: 32) {\n" +
+            "            meta { total_data }\n" +
+            "            slides {\n" +
+            "              id\n" +
+            "              galaxy_attribution\n" +
+            "              persona\n" +
+            "              brand_id\n" +
+            "              category_persona\n" +
+            "              image_url\n" +
+            "              redirect_url\n" +
+            "              applink\n" +
+            "              topads_view_url\n" +
+            "              promo_code\n" +
+            "              creative_name\n" +
+            "              type\n" +
+            "              category_id\n" +
+            "              campaignCode\n" +
+            "            }\n" +
+            "          }\n" +
+            "          dynamicHomeIcon {\n" +
+            "            dynamicIcon {\n" +
+            "              id\n" +
+            "              galaxy_attribution\n" +
+            "              persona\n" +
+            "              brand_id\n" +
+            "              category_persona\n" +
+            "              name\n" +
+            "              url\n" +
+            "              imageUrl\n" +
+            "              applinks\n" +
+            "              bu_identifier\n" +
+            "            }\n" +
+            "          }\n" +
+            "          homeFlag{\n" +
+            "                event_time\n" +
+            "                server_time\n" +
+            "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
+            "                    name\n" +
+            "                    is_active\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }"
 
     private val recommendationQuery : String = "{\n" +
             "  get_home_recommendation{\n" +
@@ -309,18 +406,11 @@ class HomeUseCaseModule {
             @ApplicationContext context: Context,
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase{
+    ): GetHomeRecommendationUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
         useCase.setGraphqlQuery(query)
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
-    }
-
-    @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
     }
 
     @Provides
@@ -415,10 +505,18 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
         useCase.setGraphqlQuery(dynamicChannelQuery)
-        return GetDynamicChannelsUseCase(useCase, homeDataMapper)
+        return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetHomeDataUseCase{
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(homeQuery)
+        return GetHomeDataUseCase(useCase)
     }
 
     @Provides
@@ -437,21 +535,32 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
+    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
+        return GetPlayWidgetUseCase(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
+        return PlayToggleChannelReminderUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
     }
 
     @Provides
     @HomeScope
-    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayGetWidgetEntity>(graphqlRepository)
-        return GetPlayWidgetUseCase(useCase)
+    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
+        return GetDisplayHeadlineAds(graphqlUseCase)
     }
 
-    @Provides
     @HomeScope
-    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelReminder>(graphqlRepository)
-        return PlayToggleChannelReminderUseCase(useCase)
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

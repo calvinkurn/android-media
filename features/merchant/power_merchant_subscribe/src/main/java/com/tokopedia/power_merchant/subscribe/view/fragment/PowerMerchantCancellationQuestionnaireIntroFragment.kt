@@ -12,16 +12,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.constant.GMParamTracker
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire_intro.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
+import javax.inject.Inject
 
 class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracker: PowerMerchantTracking
 
     private lateinit var parentActivity: PMCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
@@ -45,9 +53,15 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getQuestionnaireScreenName()
 
     override fun initInjector() {
+        getComponent(BaseAppComponent::class.java)?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                .baseAppComponent(it)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -108,17 +122,23 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
             val spannedDescription = spanBoldText(description, deactivateDate)
             tv_description.text = spannedDescription
             tv_question.text = pmCancellationQuestionnaireRateModel?.question
-            questionnaire_rating.setOnRatingBarChangeListener { _, rating, _ ->
+            questionnaire_rating.setOnRatingBarChangeListener { _, selectedRating, _ ->
                 stepperModel?.let {
+                    val rating = selectedRating.toInt()
                     if (it.listQuestionnaireAnswer[position].answers.isEmpty()) {
-                        it.listQuestionnaireAnswer[position].answers.add(rating.toInt().toString())
+                        it.listQuestionnaireAnswer[position].answers.add(rating.toString())
                     } else {
-                        it.listQuestionnaireAnswer[position].answers[0] = rating.toInt().toString()
+                        it.listQuestionnaireAnswer[position].answers[0] = rating.toString()
                     }
-                    mapRatingToTextView(rating.toInt())
+                    trackClickQuestionnaireRating(rating)
+                    mapRatingToTextView(rating)
                 }
             }
         }
+    }
+
+    private fun trackClickQuestionnaireRating(rating: Int) {
+        tracker.eventClickCancellationQuestionnaireRating(rating)
     }
 
     private fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {
@@ -164,8 +184,9 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
                 )
             }
         }
-
     }
 
-
+    private fun getQuestionnaireScreenName(): String {
+        return "${GMParamTracker.ScreenName.PM_CANCEL_QUESTIONNAIRE}${position+1}"
+    }
 }

@@ -245,7 +245,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         } else {
             hideInfoTitle();
         }
-        if (timeRemaining.getIsShow()) {
+        if (timeRemaining.isShow()) {
             Drawable counterBackground = textCountdownTimer.getBackground();
             if (counterBackground instanceof GradientDrawable) {
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
@@ -326,9 +326,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (tokenData.getActionButton() != null && tokenData.getActionButton().size() != 0) {
             for (int i = 0; i < tokenData.getActionButton().size(); i++) {
                 ActionButton actionButton = tokenData.getActionButton().get(i);
-                if (!actionButton.getIsDisable() && buttonUp.getVisibility() == View.GONE) {
+                if (!actionButton.isDisable() && buttonUp.getVisibility() == View.GONE) {
                     setActionButton(buttonUp, actionButton);
-                } else if (!actionButton.getIsDisable() && buttonDown.getVisibility() == View.GONE) {
+                } else if (!actionButton.isDisable() && buttonDown.getVisibility() == View.GONE) {
                     setActionButton(buttonDown, actionButton);
                 }
             }
@@ -452,7 +452,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         });
 
         TimeRemaining tokenRemaining = tokenData.getTimeRemaining();
-        if (tokenRemaining.getIsShow()) {
+        if (tokenRemaining.isShow()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
             showCountdownTimer(tokenRemaining.getSeconds());
         } else {
@@ -807,7 +807,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
 
     public boolean isShowBackPopup() {
-        return tokenData != null && tokenData.getBackButton().getIsShow();
+        return tokenData != null && tokenData.getBackButton().isShow();
     }
 
 

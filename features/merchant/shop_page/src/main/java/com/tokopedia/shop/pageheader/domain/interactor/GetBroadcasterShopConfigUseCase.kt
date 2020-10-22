@@ -48,9 +48,9 @@ class GetBroadcasterShopConfigUseCase(private val gqlUseCase: MultiRequestGraphq
 
         @JvmStatic
         fun createParams(
-                shopId: Int
+                shopId: String
         ): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, shopId.toString())
+            putObject(PARAM_SHOP_IDS, shopId)
         }
 
     }

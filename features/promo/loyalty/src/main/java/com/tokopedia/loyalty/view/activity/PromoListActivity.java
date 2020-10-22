@@ -5,9 +5,11 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -15,9 +17,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.design.component.ticker.TouchViewPager2;
+import com.tokopedia.loyalty.view.widget.TouchViewPager2;
+import com.tokopedia.device.info.DeviceConnectionInfo;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
@@ -49,12 +52,12 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
 
-    TouchViewPager2 viewPager;
-    TabLayout tabLayout;
-    View containerError;
-    Toolbar toolbar;
-
-    private PromoPagerAdapter adapter;
+    private TouchViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private View shimmerLayout;
+    private Toolbar toolbar;
+    private AppCompatImageView shimmerImageBack;
+    private GlobalError globalError;
 
     private String autoSelectedMenuId;
     private String autoSelectedCategoryId;
@@ -135,14 +138,22 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     protected void initView() {
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
-        containerError = findViewById(R.id.container_error);
+        shimmerLayout = findViewById(R.id.shimmer_layout);
+        shimmerImageBack = findViewById(R.id.shimmer_back);
         toolbar = (Toolbar) findViewById(com.tokopedia.abstraction.R.id.toolbar);
+        globalError = findViewById(R.id.global_error);
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(this.getTitle());
         }
+
+        shimmerImageBack.setOnClickListener(v -> onBackPressed());
+
+        globalError.getErrorAction().setOnClickListener(v -> {
+            dPresenter.processGetPromoMenu();
+        });
     }
 
     @Override
@@ -161,21 +172,31 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     @Override
     public void renderPromoMenuDataList(final List<PromoMenuData> promoMenuDataList) {
+        viewPager.setVisibility(View.VISIBLE);
+        tabLayout.setVisibility(View.VISIBLE);
+        toolbar.setVisibility(View.VISIBLE);
+
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
-        adapter = new PromoPagerAdapter(this, getSupportFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
+        PromoPagerAdapter adapter = new PromoPagerAdapter(this, getSupportFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        int indexMenuAutoSelected = Integer.parseInt(autoSelectedMenuId);
+        int indexMenuAutoSelected = 0;
+        if (!TextUtils.isEmpty(autoSelectedMenuId)) {
+            indexMenuAutoSelected = Integer.parseInt(autoSelectedMenuId);
+        }
+
 
         for (int i = 0; i < promoMenuDataList.size(); i++) {
             MenuPromoTab menuPromoTab = new MenuPromoTab(this);
             menuPromoTab.renderData(promoMenuDataList.get(i));
             tabLayout.getTabAt(i).setCustomView(menuPromoTab);
 
-            String menuId = promoMenuDataList.get(i).getMenuId();
-            if (menuId.equalsIgnoreCase(autoSelectedMenuId)) {
-                indexMenuAutoSelected = i;
+            if (!TextUtils.isEmpty(autoSelectedMenuId)) {
+                String menuId = promoMenuDataList.get(i).getMenuId();
+                if (menuId.equalsIgnoreCase(autoSelectedMenuId)) {
+                    indexMenuAutoSelected = i;
+                }
             }
         }
 
@@ -186,7 +207,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
                     autoSelectedMenuId = String.valueOf(tab.getPosition());
                 }
-                promoTrackingUtil.eventPromoListClickCategory(PromoListActivity.this,promoMenuDataList.get(tab.getPosition()).getTitle());
+                promoTrackingUtil.eventPromoListClickCategory(PromoListActivity.this, promoMenuDataList.get(tab.getPosition()).getTitle());
             }
 
             @Override
@@ -217,22 +238,26 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     @Override
     public void renderErrorGetPromoMenuDataList(String message) {
-        handlerError(message);
+        globalError.setType(GlobalError.Companion.getSERVER_ERROR());
+        handlerError();
     }
 
     @Override
     public void renderErrorHttpGetPromoMenuDataList(String message) {
-        handlerError(message);
+        globalError.setType(GlobalError.Companion.getSERVER_ERROR());
+        handlerError();
     }
 
     @Override
     public void renderErrorNoConnectionGetPromoMenuDataList(String message) {
-        handlerError(message);
+        globalError.setType(GlobalError.Companion.getNO_CONNECTION());
+        handlerError();
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetPromoMenuDataListt(String message) {
-        handlerError(message);
+        globalError.setType(GlobalError.Companion.getSERVER_ERROR());
+        handlerError();
     }
 
     @Override
@@ -242,52 +267,57 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        //Do nothing
     }
 
     @Override
     public void showInitialProgressLoading() {
-
+        //Do nothing
     }
 
     @Override
     public void hideInitialProgressLoading() {
-
+        //Do nothing
     }
 
     @Override
     public void clearContentRendered() {
-
+        //Do nothing
     }
 
     @Override
     public void showProgressLoading() {
-
+        viewPager.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        toolbar.setVisibility(View.GONE);
+        shimmerLayout.setVisibility(View.VISIBLE);
+        globalError.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgressLoading() {
-
+        shimmerLayout.setVisibility(View.GONE);
+        globalError.setVisibility(View.GONE);
     }
 
     @Override
     public void showToastMessage(String message) {
-
+        //Do nothing
     }
 
     @Override
     public void showDialog(Dialog dialog) {
-
+        //Do nothing
     }
 
     @Override
     public void dismissDialog(Dialog dialog) {
-
+        //Do nothing
     }
 
     @Override
     public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
+        //Do nothing
     }
 
     @Override
@@ -302,7 +332,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     @Override
     public void closeView() {
-
+        //Do nothing
     }
 
     @Override
@@ -310,20 +340,22 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
         autoSelectedCategoryId = categoryId;
     }
 
-    private void handlerError(String message) {
+    private void handlerError() {
+        if (!isConnectedToInternet()) {
+            globalError.setType(GlobalError.Companion.getNO_CONNECTION());
+        }
+
         viewPager.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
-        containerError.setVisibility(View.VISIBLE);
-        NetworkErrorHelper.showEmptyState(this, containerError,
-                message, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        dPresenter.processGetPromoMenu();
-                        containerError.setVisibility(View.GONE);
-                        viewPager.setVisibility(View.VISIBLE);
-                        tabLayout.setVisibility(View.VISIBLE);
-                    }
-                });
+        globalError.setVisibility(View.VISIBLE);
+        toolbar.setVisibility(View.VISIBLE);
+        shimmerLayout.setVisibility(View.GONE);
     }
 
+    private boolean isConnectedToInternet() {
+        if (getApplicationContext() != null) {
+            return DeviceConnectionInfo.isConnectCellular(getApplicationContext()) || DeviceConnectionInfo.isConnectWifi(getApplicationContext());
+        }
+        return false;
+    }
 }

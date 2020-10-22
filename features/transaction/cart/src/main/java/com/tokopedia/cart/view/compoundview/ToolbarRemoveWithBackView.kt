@@ -39,8 +39,8 @@ class ToolbarRemoveWithBackView : BaseCustomView {
         textView.text = title
     }
 
-    fun navigateUp(context: Activity) {
-        btnBack.setOnClickListener { context.finish() }
+    fun navigateUp(activity: Activity) {
+        btnBack.setOnClickListener { activity.onBackPressed() }
     }
 
 }

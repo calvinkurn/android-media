@@ -18,14 +18,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringDef;
-import androidx.exifinterface.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringDef;
+import androidx.exifinterface.media.ExifInterface;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,8 +42,10 @@ import static com.tokopedia.imagepicker.common.util.ImageUtils.DirectoryDef.DIRE
 
 /**
  * Created by hendry on 24/04/18.
+ * Use ImageUtil in common library instead.
+ * If there is no function in common lib, add the function in common lib
  */
-
+@Deprecated
 public class ImageUtils {
     private static final int IMAGE_WIDTH_MIN_HD = 1280;
 
@@ -55,6 +57,7 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
     public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
+    public static final long THRESHOLD_MODIFIED_FILE_TO_DELETE = 3_600_000; // 1 hour
 
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
@@ -63,8 +66,6 @@ public class ImageUtils {
         String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
         String DIRECTORY_TOKOPEDIA_EDIT_RESULT = FileUtils.TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
     }
-
-
 
 
     public static File getTokopediaPhotoPath(@DirectoryDef String directoryDef, boolean isPng) {
@@ -80,15 +81,18 @@ public class ImageUtils {
         File directory = getTokopediaPublicDirectory(directoryString);
         if (directory.exists()) {
             File[] files = directory.listFiles();
-            if (files == null) {
+            if (files == null || files.length == 0) {
                 return;
             }
+            long now = System.currentTimeMillis();
             for (int i = 0; i < files.length; i++) {
-                if (!files[i].isDirectory()) {
-                    files[i].delete();
+                File file = files[i];
+                if (!file.isDirectory()) {
+                    if (now - file.lastModified() > THRESHOLD_MODIFIED_FILE_TO_DELETE) {
+                        file.delete();
+                    }
                 }
             }
-            directory.delete();
         }
     }
 
@@ -279,6 +283,22 @@ public class ImageUtils {
 
     public static int[] getWidthAndHeight(String filePath) {
         return getWidthAndHeight(new File(filePath));
+    }
+
+    public static int[] getWidthAndHeight(Context context, Uri uri){
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream input = context.getContentResolver().openInputStream(uri);
+            BitmapFactory.decodeStream(input, null, options);
+            if (input != null) {
+                input.close();
+            }
+            return new int[]{options.outWidth, options.outHeight};
+        }
+        catch (Exception ignored){
+            return new int[]{0,0};
+        }
     }
 
     public static int[] getWidthAndHeight(File file) {

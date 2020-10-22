@@ -11,7 +11,6 @@ import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBo
 import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import dagger.Component
 
@@ -33,8 +32,6 @@ interface SellerHomeComponent {
     fun inject(sellerHomeActivity: SellerHomeActivity)
 
     fun inject(sellerHomeFragment: SellerHomeFragment)
-
-    fun inject(containerFragment: ContainerFragment)
 
     fun inject(sellerHomeFragment: MenuSettingFragment)
 

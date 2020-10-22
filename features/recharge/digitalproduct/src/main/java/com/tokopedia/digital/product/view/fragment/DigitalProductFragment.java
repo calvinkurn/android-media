@@ -36,7 +36,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -53,6 +52,7 @@ import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDet
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -81,8 +81,9 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -142,7 +143,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
-    private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
     private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
     private static final String CLICK_PDP = "clickPDP";
     private static final String DIGITAL_HOMEPAGE = "digital - homepage";
@@ -453,11 +453,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryData.getName(), categoryData.getCategoryId());
-
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
-        actionListener.updateTitleToolbar(categoryData.getName());
+        actionListener.updateTitleToolbar(categoryData.name);
         holderProductDetail.removeAllViews();
         if (this.digitalProductView == null) {
             this.digitalProductView = digitalProductView;
@@ -482,8 +480,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void sendOpenScreenEventTracking(CategoryData categoryData) {
-        rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn(), categoryData.getName(),
-                categoryData.getCategoryId());
+        if (categoryData.name != null && categoryData.categoryId != null) {
+            rechargeAnalytics.eventOpenScreen(
+                    userSession.getUserId(),
+                    categoryData.name,
+                    categoryData.categoryId
+            );
+        }
     }
 
     @Override
@@ -514,7 +517,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public boolean isDigitalSmartcardEnabled() {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false);
     }
 
     @Override
@@ -675,7 +678,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         String isInstant = isInstantCheckoutChecked ? "instant" : "no instant";
-        digitalAnalytics.eventClickBuyOnNative(categoryDataState.getName(), isInstant);
+        digitalAnalytics.eventClickBuyOnNative(categoryDataState.name, isInstant);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -733,32 +736,32 @@ public class DigitalProductFragment extends BaseDaggerFragment
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
             String carrierName = DeviceUtil.getOperatorName(getActivity(), simPosition);
             if (carrierName != null && !presenter.isCarrierSignalsNotAvailable(carrierName)
-                    && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.clientNumberList.get(0).getValidation(),
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
             }
-            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
-            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(@NotNull String permissionText) {
-                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
-                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
-                            getString(R.string.ussd_permission_denied_label));
-                }
-
-                @Override
-                public void onNeverAskAgain(@NotNull String permissionText) {
-                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
-                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
-                            getString(R.string.ussd_permission_denied_label));
-                }
-
-                @Override
-                public void onPermissionGranted() {
-                    checkBalanceByUSSD(simPosition, ussdCode);
-                }
-            }, "");
+//            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+//                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
+//            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+//                @Override
+//                public void onPermissionDenied(@NotNull String permissionText) {
+//                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
+//                            getString(R.string.ussd_permission_denied_label));
+//                }
+//
+//                @Override
+//                public void onNeverAskAgain(@NotNull String permissionText) {
+//                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+//                    digitalAnalytics.eventUssdAttempt(categoryDataState.name,
+//                            getString(R.string.ussd_permission_denied_label));
+//                }
+//
+//                @Override
+//                public void onPermissionGranted() {
+//                    checkBalanceByUSSD(simPosition, ussdCode);
+//                }
+//            }, "");
         }
     }
 
@@ -777,8 +780,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
                         getActivity(), categoryId, titleChooser,
-                        categoryDataState.getOperatorLabel(),
-                        categoryDataState.getName()
+                        categoryDataState.operatorLabel,
+                        categoryDataState.name
                 ),
                 REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -997,7 +1000,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
-                digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.getName());
+                digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.name);
             }
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
@@ -1041,12 +1044,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
         presenter.processToCheckBalance(null, simPosition, ussdCode);
 
         digitalAnalytics.eventUssd(
-                categoryDataState.getName(),
+                categoryDataState.name,
                 String.format("%s - %s", DeviceUtil.getOperatorName(getActivity(), simPosition),
                         presenter.getDeviceMobileNumber(simPosition)
                 )
         );
-        digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+        digitalAnalytics.eventUssdAttempt(categoryDataState.name,
                 getString(R.string.ussd_permission_allowed_label));
     }
 
@@ -1056,10 +1059,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
         if (orderClientNumber != null) {
-            digitalAnalytics.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+            digitalAnalytics.eventSelectNumberOnUserProfileNative(categoryDataState.name);
         }
         if (categoryDataState.isSupportedStyle()) {
-            switch (categoryDataState.getOperatorStyle()) {
+            switch (categoryDataState.operatorStyle) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
                 case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     handleStyle1(orderClientNumber);
@@ -1077,7 +1080,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private void handleStyleOther(OrderClientNumber orderClientNumber) {
         Operator selectedOperator = null;
         if (orderClientNumber.getOperatorId() != null) {
-            for (Operator operator : categoryDataState.getOperatorList()) {
+            for (Operator operator : categoryDataState.operatorList) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
                     selectedOperator = operator;
                     digitalProductView.renderUpdateOperatorSelected(operator);
@@ -1103,7 +1106,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
         if (orderClientNumber.getOperatorId() != null) {
-            for (Operator operator : categoryDataState.getOperatorList()) {
+            for (Operator operator : categoryDataState.operatorList) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
                     for (Product product : operator.getProductList()) {
                         if (orderClientNumber.getProductId() != null) {
@@ -1196,13 +1199,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
-                digitalAnalytics.eventUssdAttempt(categoryDataState.getName(), getString(R.string.status_success_label));
+                digitalAnalytics.eventUssdAttempt(categoryDataState.name, getString(R.string.status_success_label));
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
-                        categoryDataState.getClientNumberList().get(0).getValidation(),
-                        categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
+                        categoryDataState.clientNumberList.get(0).getValidation(),
+                        categoryId, categoryDataState.name, selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                digitalAnalytics.eventUssdAttempt(categoryDataState.getName(), getString(R.string.status_failed_label) + getString(R.string.error_message_ussd_msg_not_parsed));
+                digitalAnalytics.eventUssdAttempt(categoryDataState.name, getString(R.string.status_failed_label) + getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
@@ -1322,7 +1325,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
                     if (digitalAnalytics != null)
-                        digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
+                        digitalAnalytics.eventClickPanduanPage(categoryDataState.name);
                 }
             }
 

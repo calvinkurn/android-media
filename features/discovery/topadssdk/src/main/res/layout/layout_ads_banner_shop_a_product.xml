@@ -115,19 +115,59 @@
             tools:src="@drawable/topads_ic_rating_active"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewRatingCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageViewRating2"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:adjustViewBounds="true"
+            android:contentDescription="rating2"
             android:gravity="center"
-            android:paddingLeft="@dimen/dp_2"
-            android:textColor="@color/topads_product_rating_count"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/imageViewRating1"
             app:layout_constraintStart_toEndOf="@+id/imageViewRating1"
             app:layout_constraintTop_toTopOf="@+id/imageViewRating1"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="(3000)"
+            tools:src="@drawable/topads_ic_rating_active"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imageViewRating3"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:adjustViewBounds="true"
+            android:contentDescription="rating3"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toEndOf="@+id/imageViewRating2"
+            app:layout_constraintTop_toTopOf="@+id/imageViewRating2"
+            tools:src="@drawable/topads_ic_rating_active"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imageViewRating4"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:adjustViewBounds="true"
+            android:contentDescription="rating4"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewRating3"
+            app:layout_constraintStart_toEndOf="@+id/imageViewRating3"
+            app:layout_constraintTop_toTopOf="@+id/imageViewRating3"
+            tools:src="@drawable/topads_ic_rating_active"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imageViewRating5"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:adjustViewBounds="true"
+            android:contentDescription="rating5"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewRating4"
+            app:layout_constraintStart_toEndOf="@+id/imageViewRating4"
+            app:layout_constraintTop_toTopOf="@+id/imageViewRating4"
+            tools:src="@drawable/topads_ic_rating_active"
             tools:visibility="visible" />
 
 
@@ -138,9 +178,9 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_2"
             android:textColor="@color/topads_product_review_count"
-            app:layout_constraintBottom_toBottomOf="@+id/textViewRatingCount"
-            app:layout_constraintStart_toEndOf="@+id/textViewRatingCount"
-            app:layout_constraintTop_toTopOf="@+id/textViewRatingCount"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewRating5"
+            app:layout_constraintStart_toEndOf="@+id/imageViewRating5"
+            app:layout_constraintTop_toTopOf="@+id/imageViewRating5"
             app:typographyType="body_3"
             tools:text="(3000)"
             tools:visibility="visible" />

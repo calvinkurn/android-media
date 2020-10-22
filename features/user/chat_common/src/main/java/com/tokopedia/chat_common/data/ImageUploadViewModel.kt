@@ -14,13 +14,17 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
         private set
     var isRetry: Boolean = false
 
-    constructor(messageId: String, fromUid: String,
-                from: String, fromRole: String,
-                attachmentId: String, attachmentType: String,
-                replyTime: String, startTime: String,
-                isRead: Boolean, isDummy: Boolean, isSender: Boolean,
-                message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType,
-            replyTime, startTime, isRead, isDummy, isSender, message) {
+    constructor(
+            messageId: String, fromUid: String,
+            from: String, fromRole: String,
+            attachmentId: String, attachmentType: String,
+            replyTime: String, startTime: String,
+            isRead: Boolean, isDummy: Boolean, isSender: Boolean,
+            message: String, source: String
+    ) : super(
+            messageId, fromUid, from, fromRole, attachmentId, attachmentType,
+            replyTime, startTime, isRead, isDummy, isSender, message, source
+    ) {
     }
 
     /**
@@ -38,12 +42,17 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * @param imageUrlThumbnail thumbnail image url
      * !! startTime is not returned from API
      */
-    constructor(messageId: String, fromUid: String, from: String,
-                fromRole: String, attachmentId: String,
-                attachmentType: String, replyTime: String,
-                isSender: Boolean, imageUrl: String,
-                imageUrlThumbnail: String, isRead: Boolean, message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            "", isRead, false, isSender, message) {
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, isSender:
+            Boolean, imageUrl: String, imageUrlThumbnail: String, isRead: Boolean, message: String,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, "",
+            isRead, false, isSender, message,
+            source
+    ) {
         this.isRetry = false
         this.imageUrl = imageUrl
         this.imageUrlThumbnail = imageUrlThumbnail
@@ -64,12 +73,17 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * @param imageUrlThumbnail thumbnail image url
      * @param startTime         start uploading time in START_TIME_FORMAT [SendableViewModel]
      */
-    constructor(messageId: String, fromUid: String, from: String,
-                fromRole: String, attachmentId: String,
-                attachmentType: String, replyTime: String,
-                isSender: Boolean, imageUrl: String,
-                imageUrlThumbnail: String, startTime: String, message: String) : super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
-            startTime, false, false, isSender, message) {
+    constructor(
+            messageId: String, fromUid: String, from: String, fromRole: String,
+            attachmentId: String, attachmentType: String, replyTime: String, isSender: Boolean,
+            imageUrl: String, imageUrlThumbnail: String, startTime: String, message: String,
+            source: String
+    ) : super(
+            messageId, fromUid, from, fromRole,
+            attachmentId, attachmentType, replyTime, startTime,
+            false, false, isSender, message,
+            source
+    ) {
         this.isRetry = false
         this.imageUrl = imageUrl
         this.imageUrlThumbnail = imageUrlThumbnail
@@ -83,11 +97,14 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * @param fileLoc      file location
      * @param startTime    start uploading time in START_TIME_FORMAT [SendableViewModel]
      */
-    constructor(messageId: String, fromUid: String, attachmentId: String,
-                fileLoc: String, startTime: String) : super(messageId, fromUid, "", "", attachmentId,
-            AttachmentType.Companion.TYPE_IMAGE_UPLOAD, SendableViewModel.SENDING_TEXT,
-            startTime,
-            false, true, true, "") {
+    constructor(
+            messageId: String, fromUid: String, attachmentId: String, fileLoc: String,
+            startTime: String
+    ) : super(
+            messageId, fromUid, "", "",
+            attachmentId, AttachmentType.Companion.TYPE_IMAGE_UPLOAD, SendableViewModel.SENDING_TEXT, startTime,
+            false, true, true, "",
+            "") {
         this.isRetry = false
         this.imageUrl = fileLoc
         this.imageUrlThumbnail = imageUrl

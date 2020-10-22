@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -17,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -49,7 +49,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public static final int TYPE_PESAN = 2;
     public static final int TYPE_AJUKAN = 3;
     public static final int TYPE_JUAL = 4;
-    private static final String NAME_PINJAMAN_ONLINE = "Pinjaman Online";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
@@ -168,11 +167,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onGimickItemClicked(LayoutRows data) {
 
-        if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN);
-            return;
-        }
-
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
@@ -188,35 +182,30 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         switch (TYPE_FRAGMENT) {
             case TYPE_BELI:
                 HomePageTracking.eventClickExplorerItem(
-                        getActivity(),
                         HomePageTracking.BELI_INI_ITU_CLICK,
                         String.format("%s - %s", data.getCategoryId(), data.getName())
                 );
                 break;
             case TYPE_BAYAR:
                 HomePageTracking.eventClickExplorerItem(
-                        getActivity(),
                         HomePageTracking.BAYAR_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_PESAN:
                 HomePageTracking.eventClickExplorerItem(
-                        getActivity(),
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
-                        getActivity(),
                         HomePageTracking.AJUKAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_JUAL:
                 HomePageTracking.eventClickExplorerItem(
-                        getActivity(),
                         HomePageTracking.JUAL_INI_ITU_CLICK,
                         data.getName()
                 );
@@ -235,10 +224,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void openShopSetting() {
         String shopId = userSession.getShopId();
         if (!shopId.equals("0")) {
-            HomePageTracking.eventClickEditShop(getActivity());
+            HomePageTracking.eventClickEditShop();
             onGoToShopSetting();
         } else {
-            HomePageTracking.eventClickOpenShop(getActivity());
+            HomePageTracking.eventClickOpenShop();
             onGoToCreateShop();
         }
     }
@@ -276,7 +265,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                 intent.putExtra(EXTRA_TITLE, title);
                 intent.putExtra(EXTRA_URL, url);
                 getActivity().startActivity(intent);
-                HomePageTracking.eventHomeGimmick(getActivity(), label);
+                HomePageTracking.eventHomeGimmick(label);
             }
         }
     }
@@ -288,11 +277,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
-                HomePageTracking.eventClickOpenShop(getActivity());
+                HomePageTracking.eventClickOpenShop();
                 onGoToCreateShop();
             }
         } else {
-            HomePageTracking.eventClickOpenShop(getActivity());
+            HomePageTracking.eventClickOpenShop();
             onGoToLogin();
         }
     }

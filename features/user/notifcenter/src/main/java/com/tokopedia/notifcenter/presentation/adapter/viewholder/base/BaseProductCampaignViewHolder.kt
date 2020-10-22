@@ -14,6 +14,7 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
+import timber.log.Timber
 
 abstract class BaseProductCampaignViewHolder(
         itemView: View,
@@ -77,7 +78,11 @@ abstract class BaseProductCampaignViewHolder(
                     listener.onItemStockHandlerClick(element)
                 }
                 else -> {
-                    listener.showNotificationDetail(bottomSheetType, element)
+                    if(bottomSheetType != null) {
+                        listener.showNotificationDetail(bottomSheetType, element)
+                    } else {
+                        Timber.w("P2#ACCOUNT_HOME_ERROR#'NotifCenter';'bottomSheetType is Null';'${element}'")
+                    }
                 }
             }
         }

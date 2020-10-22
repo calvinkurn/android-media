@@ -29,7 +29,10 @@ data class CpmItem(
         val impression_url: String? = null,
 
         @field:SerializedName("badge_url")
-        val badge_url: String? = null
+        val badge_url: String? = null,
+
+        @field:SerializedName("id")
+        val id: String? = null
 
 
 )

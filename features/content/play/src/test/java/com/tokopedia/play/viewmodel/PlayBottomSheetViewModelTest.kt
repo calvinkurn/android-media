@@ -5,8 +5,6 @@ import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -14,6 +12,8 @@ import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
@@ -189,7 +189,8 @@ class PlayBottomSheetViewModelTest {
     @Test
     fun `when logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
-                product = modelBuilder.buildProductLineUiModel()
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
         )
 
         coEvery { userSession.isLoggedIn } returns true
@@ -205,7 +206,8 @@ class PlayBottomSheetViewModelTest {
     @Test
     fun `when not logged in, should be allowed to open product detail`() {
         val eventProductDetail = InteractionEvent.OpenProductDetail(
-                product = modelBuilder.buildProductLineUiModel()
+                product = modelBuilder.buildProductLineUiModel(),
+                position = 0
         )
 
         coEvery { userSession.isLoggedIn } returns false

@@ -16,7 +16,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_loading"
+        android:text="@string/checkout_common_module_title_loading"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

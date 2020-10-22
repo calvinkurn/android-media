@@ -8,7 +8,7 @@ import com.tokopedia.logisticorder.usecase.entity.RetryAvailability
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.logisticorder.view.ITrackingPageFragment
-import com.tokopedia.logisticorder.viewmodel.TrackingUiModel
+import com.tokopedia.logisticorder.uimodel.TrackingUiModel
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import org.junit.Before

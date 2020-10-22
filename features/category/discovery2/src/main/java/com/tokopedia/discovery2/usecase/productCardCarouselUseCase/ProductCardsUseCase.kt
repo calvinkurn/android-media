@@ -1,0 +1,151 @@
+package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
+
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import javax.inject.Inject
+
+class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
+    companion object {
+        private const val PRODUCT_PER_PAGE = 20
+        private const val RPC_FILTER_KEU = "rpc_"
+        private const val PAGE_START = 1
+        private const val RPC_PAGE_NUMBER = "rpc_page_number"
+        private const val RPC_PAGE__SIZE = "rpc_page_size"
+    }
+
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, queryMap: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        if (component?.noOfPagesLoaded == 1) return false
+        component?.let {
+            val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
+            val isDynamic = it.properties?.dynamic ?: false
+            val productListData = productCardsRepository.getProducts(
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                        component.dynamicOriginalId!! else componentId,
+                    getQueryParameterMap(PAGE_START,
+                            parentComponentsItem?.chipSelectionData,
+                            it.selectedFilters,
+                            it.selectedSort,
+                            queryMap,
+                            parentComponentsItem?.data,
+                            productsLimit),
+                    pageEndPoint, it.name)
+
+            it.showVerticalLoader = productListData.isNotEmpty()
+            if (productListData.isEmpty()) return false else it.pageLoadedCounter = 2
+            it.setComponentsItem(productListData)
+            it.noOfPagesLoaded = 1
+            return true
+        }
+        return false
+    }
+
+    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String, rpcDiscoQuery: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
+        parentComponent?.let { component1 ->
+            val isDynamic = component1.properties?.dynamic ?: false
+            val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
+            val productListData = productCardsRepository.getProducts(
+                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                        component1.dynamicOriginalId!! else component1.id,
+                    getQueryParameterMap(component1.pageLoadedCounter,
+                            parentComponentsItem?.chipSelectionData,
+                            component1.selectedFilters,
+                            component1.selectedSort,
+                            rpcDiscoQuery,
+                            parentComponentsItem?.data, productsLimit),
+                    pageEndPoint,
+                    component1.name)
+
+            if (productListData.isEmpty()) {
+                component1.showVerticalLoader = false
+            } else {
+                component1.pageLoadedCounter += 1
+                component1.showVerticalLoader = true
+                (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
+            }
+            return true
+        }
+        return false
+    }
+
+    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, rpcDiscoQuery: Map<String, String?>?, productsLimit: Int = PRODUCT_PER_PAGE): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        component?.let {
+            it.properties?.let { properties ->
+                if (properties.limitProduct && properties.limitNumber.toIntOrZero() == it.getComponentsItem()?.size) return false
+            }
+            val parentComponentsItem = getComponent(it.parentComponentId, pageEndPoint)
+            val isDynamic = it.properties?.dynamic ?: false
+            val productListData = productCardsRepository.getProducts(
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                    getQueryParameterMap(it.pageLoadedCounter,
+                            parentComponentsItem?.chipSelectionData,
+                            it.selectedFilters,
+                            it.selectedSort,
+                            rpcDiscoQuery,
+                            parentComponentsItem?.data,
+                            productsLimit),
+                    pageEndPoint,
+                    it.name)
+            if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
+            return true
+        }
+        return false
+    }
+
+    private fun getQueryParameterMap(pageNumber: Int,
+                                     chipSelectionData: DataItem?,
+                                     selectedFilters: HashMap<String, String>?,
+                                     selectedSort: HashMap<String, String>?,
+                                     queryMap: Map<String, String?>? = null,
+                                     data: List<DataItem>?,
+                                     productsPerPage: Int): MutableMap<String, Any> {
+
+        val queryParameterMap = mutableMapOf<String, Any>()
+
+        queryParameterMap[RPC_PAGE__SIZE] = productsPerPage.toString()
+        queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
+
+        chipSelectionData?.let {
+            queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
+        }
+        selectedFilters?.let {
+            for (map in it) {
+                queryParameterMap[RPC_FILTER_KEU + map.key] = map.value
+            }
+        }
+        selectedSort?.let {
+            for (map in it) {
+                queryParameterMap[RPC_FILTER_KEU + map.key] = map.value
+            }
+        }
+
+        queryMap?.let {
+            if (!it[PIN_PRODUCT].isNullOrEmpty()) {
+                queryParameterMap[PIN_PRODUCT] = it[PIN_PRODUCT] ?: ""
+                queryParameterMap[PRODUCT_ID] = it[PRODUCT_ID] ?: ""
+            } else if (!it[EMBED_CATEGORY].isNullOrEmpty()) {
+                queryParameterMap[EMBED_CATEGORY] = it[EMBED_CATEGORY] ?: ""
+                queryParameterMap[CATEGORY_ID] = it[CATEGORY_ID] ?: ""
+            }
+        }
+
+        if (!data.isNullOrEmpty()) {
+            val item = data[0]
+            if (!item.filterKey.isNullOrEmpty() && !item.filterValue.isNullOrEmpty()) {
+                queryParameterMap[RPC_FILTER_KEU + item.filterKey] = item.filterValue
+            }
+        }
+        return queryParameterMap
+    }
+}

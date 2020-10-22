@@ -243,9 +243,10 @@ class KeywordTabFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
-        //     totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
+        recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
             adapter.items.add(KeywordItemViewModel(result))
         }
@@ -277,7 +278,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view.let {
-                Toaster.make(it!!, String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(R.string.topads_common_batal), View.OnClickListener {
+                Toaster.make(it!!, String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size), TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
                     deleteCancel = true
 
                 })

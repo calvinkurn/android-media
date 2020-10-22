@@ -2,6 +2,7 @@ package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -69,8 +70,12 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        toolbar.setNavigationIcon(R.drawable.ic_action_back)
+        toolbar.setNavigationIcon(R.drawable.cat_ic_action_back)
         updateTitle(toolbarName)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     override fun setupFragment(savedInstance: Bundle?) {

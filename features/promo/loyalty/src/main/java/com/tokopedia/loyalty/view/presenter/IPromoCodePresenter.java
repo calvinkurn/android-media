@@ -17,8 +17,6 @@ public interface IPromoCodePresenter {
 
     void processCheckMarketPlaceCartListPromoCode(Activity activity, String voucherCode, String paramUpdateCart);
 
-    void processCheckEventPromoCode(String voucherId, JsonObject requestBody, boolean flag);
-
     void processCheckDealPromoCode(String voucherId,JsonObject requestBody, boolean flag);
 
     void processCheckTrainPromoCode(Activity activity, String trainReservationId,

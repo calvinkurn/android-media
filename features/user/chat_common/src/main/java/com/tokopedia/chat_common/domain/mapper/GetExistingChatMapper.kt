@@ -23,6 +23,7 @@ import javax.inject.Inject
 open class GetExistingChatMapper @Inject constructor() {
 
     protected var latestHeaderDate: String = ""
+    protected val gson = GsonBuilder().create()
 
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
         val listChat = mappingListChat(pojo)
@@ -30,14 +31,13 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
-        val minReplyTime = pojo.chatReplies.minReplyTime
         val attachmentIds = pojo.chatReplies.attachmentIds
         listChat.reverse()
         return ChatroomViewModel(
                 listChat, headerModel,
                 canLoadMore, isReplyable,
-                blockedStatus, minReplyTime,
-                latestHeaderDate, attachmentIds
+                blockedStatus, latestHeaderDate,
+                attachmentIds
         )
 
     }
@@ -108,7 +108,9 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.isRead,
                 false,
                 !chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.msg
+                chatItemPojoByDateByTime.msg,
+                chatItemPojoByDateByTime.source,
+                blastId = chatItemPojoByDateByTime.blastId
         )
     }
 
@@ -123,20 +125,21 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
         val imageAnnouncement = ImageAnnouncementViewModel(
-                item.msgId.toString(),
-                item.senderId.toString(),
-                item.senderName,
-                item.role,
-                item.attachment?.id ?: "",
-                item.attachment?.type.toString(),
-                item.replyTime,
-                pojoAttribute.imageUrl,
-                pojoAttribute.url,
-                item.msg,
-                item.blastId
+                messageId = item.msgId.toString(),
+                fromUid = item.senderId.toString(),
+                from = item.senderName,
+                fromRole = item.role,
+                attachmentId = item.attachment?.id ?: "",
+                attachmentType = item.attachment?.type.toString(),
+                replyTime = item.replyTime,
+                imageUrl = pojoAttribute.imageUrl,
+                redirectUrl = pojoAttribute.url,
+                message = item.msg,
+                blastId = item.blastId,
+                source = item.source
         )
         return imageAnnouncement
     }
@@ -147,40 +150,42 @@ open class GetExistingChatMapper @Inject constructor() {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(
-                chatItemPojoByDateByTime.msgId.toString(),
-                chatItemPojoByDateByTime.senderId.toString(),
-                chatItemPojoByDateByTime.senderName,
-                chatItemPojoByDateByTime.role,
-                chatItemPojoByDateByTime.attachment?.id ?: "",
-                chatItemPojoByDateByTime.attachment?.type.toString(),
-                chatItemPojoByDateByTime.replyTime,
-                fallbackMessage,
-                chatItemPojoByDateByTime.isOpposite
+                msgId = chatItemPojoByDateByTime.msgId.toString(),
+                fromUid = chatItemPojoByDateByTime.senderId.toString(),
+                from = chatItemPojoByDateByTime.senderName,
+                fromRole = chatItemPojoByDateByTime.role,
+                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
+                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
+                replyTime = chatItemPojoByDateByTime.replyTime,
+                message = fallbackMessage,
+                isOpposite = chatItemPojoByDateByTime.isOpposite,
+                source = chatItemPojoByDateByTime.source
         )
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ImageUploadAttributes::class.java)
         return ImageUploadViewModel(
-                chatItemPojoByDateByTime.msgId.toString(),
-                chatItemPojoByDateByTime.senderId.toString(),
-                chatItemPojoByDateByTime.senderName,
-                chatItemPojoByDateByTime.role,
-                chatItemPojoByDateByTime.attachment?.id ?: "",
-                chatItemPojoByDateByTime.attachment?.type.toString(),
-                chatItemPojoByDateByTime.replyTime,
-                !chatItemPojoByDateByTime.isOpposite,
-                pojoAttribute.imageUrl,
-                pojoAttribute.thumbnail,
-                chatItemPojoByDateByTime.isRead,
-                chatItemPojoByDateByTime.msg
+                messageId = chatItemPojoByDateByTime.msgId.toString(),
+                fromUid = chatItemPojoByDateByTime.senderId.toString(),
+                from = chatItemPojoByDateByTime.senderName,
+                fromRole = chatItemPojoByDateByTime.role,
+                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
+                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
+                replyTime = chatItemPojoByDateByTime.replyTime,
+                isSender = !chatItemPojoByDateByTime.isOpposite,
+                imageUrl = pojoAttribute.imageUrl,
+                imageUrlThumbnail = pojoAttribute.thumbnail,
+                isRead = chatItemPojoByDateByTime.isRead,
+                message = chatItemPojoByDateByTime.msg,
+                source = chatItemPojoByDateByTime.source
         )
     }
 
     open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
-        val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
+        val pojoAttribute = gson.fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
         val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
@@ -218,7 +223,10 @@ open class GetExistingChatMapper @Inject constructor() {
                     pojoAttribute.productProfile.remainingStock,
                     pojoAttribute.productProfile.status,
                     pojoAttribute.productProfile.wishList,
-                    pojoAttribute.productProfile.images
+                    pojoAttribute.productProfile.images,
+                    chatItemPojoByDateByTime.source,
+                    pojoAttribute.productProfile.rating,
+                    chatItemPojoByDateByTime.replyId
             )
         }
 
@@ -254,13 +262,16 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status,
                 pojoAttribute.productProfile.wishList,
-                pojoAttribute.productProfile.images
+                pojoAttribute.productProfile.images,
+                chatItemPojoByDateByTime.source,
+                pojoAttribute.productProfile.rating,
+                chatItemPojoByDateByTime.replyId
         )
     }
 
     private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
         val invoiceAttributes = pojo.attachment?.attributes
-        val invoiceSentPojo = GsonBuilder().create().fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
         return AttachInvoiceSentViewModel(
                 msgId = pojo.msgId.toString(),
                 fromUid = pojo.senderId.toString(),
@@ -279,7 +290,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 status = invoiceSentPojo.invoiceLink.attributes.status,
                 invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
                 invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                createTime = invoiceSentPojo.invoiceLink.attributes.createTime
+                createTime = invoiceSentPojo.invoiceLink.attributes.createTime,
+                source = pojo.source
         )
 
     }

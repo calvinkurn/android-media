@@ -37,6 +37,7 @@ interface FilterEventTracking {
             val CLICK_FILTER = "click filter"
             const val FILTER = "Filter"
             const val APPLY_FILTER = "apply filter"
+            const val CLICK_FILTER_PRICE_RANGE = "click - Price Pills: %d&%d - %d - outside lihat semua"
         }
     }
 

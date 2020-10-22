@@ -6,57 +6,90 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/reading_shimmer_inquirer_profile_picture"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerDataTitle"
+        android:id="@+id/reading_shimmer_inquirer_info"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        app:layout_constraintTop_toTopOf="@id/reading_shimmer_inquirer_profile_picture"
+        app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_inquirer_profile_picture"
+        app:layout_constraintStart_toEndOf="@id/reading_shimmer_inquirer_profile_picture" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/reading_shimmer_question"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/reading_shimmer_inquirer_profile_picture" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerDataSubtitle"
-        android:layout_width="@dimen/dp_215"
+        android:id="@+id/reading_shimmer_question_2"
+        android:layout_width="@dimen/dp_204"
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintStart_toStartOf="@id/shimmerDataTitle"
-        app:layout_constraintTop_toBottomOf="@id/shimmerDataTitle" />
+        app:layout_constraintStart_toStartOf="@id/reading_shimmer_question"
+        app:layout_constraintTop_toBottomOf="@id/reading_shimmer_question" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/reading_shimmer_bar"
+        android:layout_width="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/reading_shimmer_question_2"
+        app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_respondent_answer"
+        app:layout_constraintStart_toStartOf="@id/reading_shimmer_inquirer_profile_picture"
+        app:layout_constraintEnd_toEndOf="@id/reading_shimmer_inquirer_profile_picture"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/shimmerDataImage"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintStart_toStartOf="@id/shimmerDataTitle"
-        app:layout_constraintTop_toBottomOf="@id/shimmerDataSubtitle" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerDataBody"
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="@dimen/dp_12"
+        android:id="@+id/reading_shimmer_respondent_profile_picture"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@id/shimmerDataImage"
-        app:layout_constraintTop_toTopOf="@id/shimmerDataImage" />
+        app:layout_constraintTop_toTopOf="@id/reading_shimmer_bar"
+        app:layout_constraintStart_toEndOf="@id/reading_shimmer_bar" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerDataFooter"
-        android:layout_width="@dimen/dp_171"
+        android:id="@+id/reading_shimmer_respondent_info"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        app:layout_constraintTop_toTopOf="@id/reading_shimmer_respondent_profile_picture"
+        app:layout_constraintBottom_toBottomOf="@id/reading_shimmer_respondent_profile_picture"
+        app:layout_constraintStart_toEndOf="@id/reading_shimmer_respondent_profile_picture" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/reading_shimmer_respondent_answer"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintStart_toEndOf="@id/shimmerDataImage"
-        app:layout_constraintTop_toBottomOf="@id/shimmerDataBody" />
+        app:layout_constraintStart_toEndOf="@id/reading_shimmer_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reading_shimmer_respondent_profile_picture" />
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/shimmerDataDivider"
+        android:id="@+id/reading_shimmer_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/shimmerDataFooter" />
+        app:layout_constraintTop_toBottomOf="@id/reading_shimmer_respondent_answer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

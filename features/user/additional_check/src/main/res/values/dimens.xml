@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <dimen name="dp_32">32dp</dimen>
+
+    <dimen name="sp_16">16sp</dimen>
+
+    <dimen name="onboarding_img_width">280dp</dimen>
+    <dimen name="onboarding_img_height">210dp</dimen>
+</resources>

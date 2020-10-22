@@ -1,0 +1,21 @@
+{
+  "coupon_list_recommendation": {
+    "message": [],
+    "error_code": "200",
+    "status": "OK",
+    "data": {
+      "result_status": {
+        "code": "0",
+        "message": [
+          "Terjadi kesalahan pada server"
+        ],
+        "reason": "Server Error"
+      },
+      "empty_state": {
+        "title": "Terjadi kesalahan pada server",
+        "description": "Ulangi beberapa saat lagi",
+        "image_url": "https://ecs7.tokopedia.net/microsite-production/tokopoints/noHp@3x.png"
+      }
+    }
+  }
+}

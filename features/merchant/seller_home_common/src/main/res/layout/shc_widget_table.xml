@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTableWidgetTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl3"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Total Pendapatan" />
+
+        <ImageView
+            android:id="@+id/btnTableInformation"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:padding="7dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvTableWidgetTitle"
+            app:srcCompat="@drawable/ic_info"
+            tools:visibility="visible" />
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
+            android:id="@+id/shcTableView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_height="@dimen/shc_large_widget_height" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcTableOnEmpty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl6"
+            android:layout_marginLeft="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/layout_lvl5"
+            android:layout_marginEnd="@dimen/layout_lvl6"
+            android:layout_marginRight="@dimen/layout_lvl6"
+            android:layout_marginBottom="@dimen/layout_lvl5"
+            android:gravity="center"
+            android:text="@string/shc_table_widget_on_empty_message"
+            android:textAlignment="center"
+            android:textColor="@color/light_N700_68"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnTableCta"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:gravity="end"
+            android:paddingStart="@dimen/layout_lvl0"
+            android:paddingLeft="@dimen/layout_lvl0"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:textColor="@color/Green_G500"
+            android:textSize="@dimen/fontSize_lvl3"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/icTableCta"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shcTableView"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+        <ImageView
+            android:id="@+id/icTableCta"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnTableCta"
+            app:srcCompat="@drawable/ic_arrow_right_default" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/shc_large_widget_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <include
+            layout="@layout/shc_partial_widget_table_loading"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

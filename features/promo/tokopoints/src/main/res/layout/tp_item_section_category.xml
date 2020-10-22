@@ -4,21 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="64dp"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_2"
     android:layout_marginRight="@dimen/dp_2"
     android:layout_marginBottom="@dimen/dp_4"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardUseCompatPadding="true">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_bg"
-        android:layout_width="@dimen/dep_64"
-        android:layout_height="@dimen/dp_64"
-        android:background="@drawable/ic_squircle"
-        android:padding="@dimen/dp_10"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ic_squircle_new"
+        android:padding="@dimen/dp_12"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <View
         android:id="@+id/view_category_new"
@@ -41,8 +42,8 @@
         android:paddingLeft="@dimen/dp_2"
         android:paddingEnd="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
-        android:textColor="#f531353b"
-        android:textSize="10sp"
+        android:textColor="@color/tp_loyalty_color"
+        android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintTop_toBottomOf="@+id/iv_bg"
         tools:text="Kupon Membership" />
 </androidx.constraintlayout.widget.ConstraintLayout>

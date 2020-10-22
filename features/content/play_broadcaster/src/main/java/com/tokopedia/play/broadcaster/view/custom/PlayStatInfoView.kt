@@ -25,7 +25,7 @@ class PlayStatInfoView : ConstraintLayout {
 
     init {
         val view = View.inflate(context, R.layout.view_play_stats_info, this)
-        tvTotalView = view.findViewById(R.id.tv_total_views)
+        tvTotalView = view.findViewById(com.tokopedia.play_common.R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
 
         tvTotalView.text = context.getString(R.string.play_live_broadcast_stat_info_default)

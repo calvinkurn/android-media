@@ -87,10 +87,13 @@ class LoggerRepository(private val logDao: LoggerDao,
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
-        var ts = System.currentTimeMillis() * 1000000
+        var counter = 0
+        var ts: Long
         for (log in logs) {
             //to make sure each timestamp in each row is unique
-            ts += 1000
+            ts = log.timeStamp * 1000000
+            ts += counter
+            counter++
             val message = encryptor.decrypt(log.message, secretKey)
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }

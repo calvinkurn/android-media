@@ -162,9 +162,9 @@ class LoaderFragment : BaseDaggerFragment() {
         lottieTask?.addListener { result: LottieComposition? ->
             result?.let {
                 lottieAnimationView?.setComposition(result)
-                lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+                lottieAnimationView?.repeatCount = LottieDrawable.INFINITE
                 lottieAnimationView?.repeatMode = LottieDrawable.RESTART
-                lottieAnimationView.playAnimation()
+                lottieAnimationView?.playAnimation()
             }
         }
     }

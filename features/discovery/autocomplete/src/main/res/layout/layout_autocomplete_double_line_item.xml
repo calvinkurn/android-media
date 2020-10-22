@@ -8,6 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconImage"
+        android:contentDescription="@string/content_desc_dl_iconImage"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_16"
@@ -21,6 +22,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconTitle"
+        android:contentDescription="@string/content_desc_dl_iconTitle"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_8"
@@ -77,7 +79,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/dummy_recent_search_subtitle"
-        android:textColor="@color/charcoal_grey_44"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/iconImage"
         app:layout_constraintLeft_toRightOf="@id/iconSubtitle"

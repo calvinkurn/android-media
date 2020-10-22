@@ -105,6 +105,7 @@ class AddTalkFragment : BaseDaggerFragment(),
             analytics.trackClickSendNewTalk(productId)
             presenter.send(productId, message_talk.text.toString())
         }
+        message_talk.requestFocus()
     }
 
     class QuickReplyItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
@@ -145,13 +146,13 @@ class AddTalkFragment : BaseDaggerFragment(),
         if(source == TalkConstants.READING_SOURCE) {
             activity?.run {
                 setResult(Activity.RESULT_OK, intent)
-                finish()
             }
         } else {
             context?.let {
                 startActivity(RouteManager.getIntent(it, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, productId)).toString()))
             }
         }
+        activity?.finish()
     }
 
     override fun onDestroyView() {

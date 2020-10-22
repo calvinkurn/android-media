@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -41,13 +42,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     //Test
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.kotlinMockito
     testImplementation rootProject.ext.testDependencies.spekApi
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
-    testImplementation project(rootProject.ext.libraries.tkpddesign)
 }
 
 project.ext {

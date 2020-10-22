@@ -35,31 +35,29 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 27/04/20
  */
 
-class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
+class EditQuotaBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(parent: ViewGroup,
-                           voucher: VoucherUiModel) = EditQuotaBottomSheet(parent).apply {
-            this.voucher = voucher
+        fun createInstance(voucher: VoucherUiModel) = EditQuotaBottomSheet().apply {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+            isKeyboardOverlap = false
+            arguments = Bundle().apply {
+                putParcelable(VOUCHER, voucher)
+            }
         }
 
         private const val MIN_QUOTA = 1
         private const val MAX_QUOTA = 999
 
         private const val MAX_TEXTFIELD_LENGTH = 3
+
+        private const val VOUCHER = "voucher"
     }
 
-    init {
-        val child = LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_mvc_edit_quota, parent, false)
-
-        setChild(child)
-        setTitle(parent.context.getString(R.string.mvc_edit_quota))
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    private val voucher by lazy {
+        arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
-
-    private var voucher: VoucherUiModel? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -87,6 +85,11 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         initInjector()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
@@ -98,6 +101,12 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    private fun initBottomSheet() {
+        val child = View.inflate(context, R.layout.bottomsheet_mvc_edit_quota, null)
+        setChild(child)
+        setTitle(context?.getString(R.string.mvc_edit_quota).toBlankOrString())
     }
 
     private fun observeLiveData() {

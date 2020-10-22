@@ -7,10 +7,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
-import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -29,10 +29,9 @@ class ProfileRoleViewModel @Inject constructor(
         get() = mutableUserProfileRole
 
     fun getUserProfileRole(){
-        val rawQuery = rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]
-        if(!rawQuery.isNullOrEmpty()){
+        rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]?.let { query ->
             userProfileRoleUseCase.run {
-                setGraphqlQuery(rawQuery)
+                setGraphqlQuery(query)
                 execute(
                         {
                             mutableUserProfileRole.postValue(Success(it.profileRoleData))

@@ -8,6 +8,7 @@ kapt {
     useBuildCache = true
 }
 
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -19,6 +20,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled (project.hasProperty('coverage'))
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
     }
     buildTypes {
         debug{
@@ -50,6 +59,12 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        exclude 'META-INF/**'
+    }
+    lintOptions {
+        abortOnError false
+        xmlReport true
+        htmlReport false
     }
 }
 
@@ -70,7 +85,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.rxJavaMath
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.robust
@@ -78,7 +92,6 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.guava
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
@@ -89,7 +102,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation 'org.assertj:assertj-core:3.8.0'
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.powerMock
     testImplementation rootProject.ext.testDependencies.powerMockJUnit
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
@@ -103,6 +116,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
-    androidTestImplementation 'org.mockito:mockito-android:2.6.3'
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

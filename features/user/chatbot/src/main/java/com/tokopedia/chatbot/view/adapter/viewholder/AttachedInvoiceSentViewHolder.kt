@@ -1,16 +1,16 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +40,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
         productStatus = itemView.findViewById(R.id.attach_invoice_item_invoice_status)
         chatStatus = itemView.findViewById(R.id.chat_status)
         action = itemView.findViewById(R.id.left_action)
+        hour = itemView.findViewById(hourId)
     }
 
 
@@ -69,12 +70,21 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             else
                 com.tokopedia.chat_common.R.drawable.ic_chat_unread
         chatStatus.setImageDrawable(MethodChecker.getDrawable(chatStatus.getContext(),resource))
+        hour.text = getHourTime(element.replyTime ?: "")
     }
 
     override fun onViewRecycled() {
         if (productImage != null) {
             ImageHandler.clearImage(productImage)
         }
+    }
+
+    override fun getHourId(): Int {
+        return R.id.hour
+    }
+
+    override fun getHourTime(replyTime: String): String {
+        return ChatBotTimeConverter.getHourTime(replyTime)
     }
 
     companion object {

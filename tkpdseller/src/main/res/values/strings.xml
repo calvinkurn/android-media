@@ -13,6 +13,15 @@
     <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
+    <string name="product_notification_complete_upload_product">Sukses Mengunggah Produk</string>
+    <string name="product_notification_start_upload_product">Mulai mengunggah produk</string>
+    <string name="product_notification_progress_upload_product">Sedang mengunggah produk</string>
+    <string name="product_title_notification_upload_product">Mengunggah</string>
+    <string name="product_group_notification">com.tokopedia</string>
+    <string name="product_label_catalog">Katalog</string>
+    <string name="product_currency_value_idr">1</string>
+    <string name="product_currency_value_usd">2</string>
+    <string name="label_variant_save">Simpan</string>
 
     <string name="next">Selanjutnya</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
@@ -51,21 +60,6 @@
     <string name="title_shop_setting_location_address">Alamat Pickup</string>
 
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
-
-    <!-- reputation history -->
-    <string name="shop_reputation">Reputasi Toko</string>
-    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
-
-    <string name="point"> poin</string>
-    <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
-    <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
-    <string name="reputation_history_label_change_date">Ubah Tanggal</string>
-    <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
-    <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="best_deal">BEST DEAL!</string>
-    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
-    <string name="try_again">COBA KEMBALI</string>
-
 
     <!-- SHOP SETTING-->
     <string name="title_activity_payment_editor">Pembayaran</string>

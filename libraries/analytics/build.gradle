@@ -51,7 +51,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation 'org.json:json:20140107'
+    testImplementation rootProject.ext.testDependencies.json
+
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 }
 
 project.ext {

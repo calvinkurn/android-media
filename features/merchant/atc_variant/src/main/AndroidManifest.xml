@@ -7,7 +7,7 @@
 
         <activity
             android:name="com.tokopedia.atc_variant.view.NormalCheckoutActivity"
-            android:label="@string/activity_title_checkout_variant"
+            android:label="@string/title_normal_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

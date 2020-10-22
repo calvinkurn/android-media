@@ -44,6 +44,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         initInjector()
 
         if (!GlobalConfig.isSellerApp()) {
+            window.decorView.setBackgroundColor(Color.WHITE)
             setupLayout(savedInstanceState)
         }
 
@@ -75,7 +76,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     }
 
     override fun getComponent(): ProductManageListComponent {
-        return ProductManageListInstance.getComponent(application)
+        return ProductManageListInstance.getComponent(this)
     }
 
     private fun goToSellerAppDashboard() {

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/white"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
     android:paddingBottom="@dimen/dp_16"
@@ -33,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/title_other_product"
-            android:textColor="@color/charcoal_grey_88"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
@@ -53,6 +51,16 @@
             app:typographyType="heading_5"/>
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chip_filter_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
     <FrameLayout
         android:id="@+id/recom_container"
         android:layout_width="match_parent"
@@ -62,13 +70,12 @@
             android:id="@+id/rvProductRecom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:clipToPadding="false"
             android:descendantFocusability="blocksDescendants"
             android:scrollbars="none"
             android:visibility="gone"
             tools:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_product_recommendation"
             tools:orientation="horizontal"
             tools:visibility="visible" />
 
@@ -78,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </FrameLayout>
 </LinearLayout>

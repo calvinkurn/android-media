@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -111,7 +112,11 @@ data class SomDetailOrder(
 
                 @SerializedName("penalty_reject_info")
                 @Expose
-                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo()) {
+                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo(),
+
+                @SerializedName("ticker_info")
+                @Expose
+                val tickerInfo: TickerInfo = TickerInfo()) {
 
             data class Products(
                     @SerializedName("id")
@@ -399,6 +404,38 @@ data class SomDetailOrder(
                     @Expose
                     val additionalPriceText: String = "",
 
+                    @SerializedName("total_purchase_protection_fee")
+                    @Expose
+                    val totalPurchaseProtectionFee: Int = 0,
+
+                    @SerializedName("total_purchase_protection_fee_text")
+                    @Expose
+                    val totalPurchaseProtectionFeeText: String = "",
+
+                    @SerializedName("total_purchase_protection_quantity")
+                    @Expose
+                    val totalPurchaseProtectionQuantity: Int = 0,
+
+                    @SerializedName("total_readiness_insurance_fee")
+                    @Expose
+                    val totalReadinessInsuranceFee: Int = 0,
+
+                    @SerializedName("total_readiness_insurance_fee_text")
+                    @Expose
+                    val totalReadinessInsuranceFeeText: String = "",
+
+                    @SerializedName("total_readiness_insurance_quantity")
+                    @Expose
+                    val totalReadinessInsuranceQuantity: Int = 0,
+
+                    @SerializedName("cod_fee")
+                    @Expose
+                    val codFee: Int = 0,
+
+                    @SerializedName("cod_fee_text")
+                    @Expose
+                    val codFeeText: String = "",
+
                     @SerializedName("total_item")
                     @Expose
                     val totalItem: Int = 0,
@@ -442,7 +479,11 @@ data class SomDetailOrder(
 
                     @SerializedName("param")
                     @Expose
-                    val param: String = "")
+                    val param: String = "",
+
+                    @SerializedName("popup")
+                    @Expose
+                    val popUp: PopUp = PopUp())
 
             data class OnlineBookingRoot(
                     @SerializedName("is_hide_input_awb")
@@ -470,6 +511,34 @@ data class SomDetailOrder(
                     @Expose
                     val penaltyRejectWording: String = ""
             )
+
+            data class PopUp(
+                    @SerializedName("title")
+                    @Expose
+                    val title: String = "",
+
+                    @SerializedName("body")
+                    @Expose
+                    val body: String = "",
+
+                    @SerializedName("actionButton")
+                    @Expose
+                    val actionButtons: List<ActionButton> = emptyList()
+            ) {
+                data class ActionButton(
+                        @SerializedName("displayName")
+                        @Expose
+                        val displayName: String = "",
+
+                        @SerializedName("color")
+                        @Expose
+                        val color: String = "",
+
+                        @SerializedName("type")
+                        @Expose
+                        val type: String = ""
+                )
+            }
         }
     }
 }

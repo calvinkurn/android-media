@@ -96,7 +96,7 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
         super.onViewCreated(view, savedInstanceState);
         getRecyclerView(view).setPadding(
                 0,
-                getResources().getDimensionPixelOffset(R.dimen.dp_16),
+                getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16),
                 0,
                 0
         );

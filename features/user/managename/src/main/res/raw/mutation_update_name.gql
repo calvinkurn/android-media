@@ -1,0 +1,7 @@
+mutation updateName($fullname: String!) {
+    userProfileUpdate(fullname: $fullname) {
+        isSuccess
+        completionScore
+        errors
+    }
+}

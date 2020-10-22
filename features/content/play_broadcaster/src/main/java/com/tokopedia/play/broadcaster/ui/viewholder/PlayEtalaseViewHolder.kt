@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.content.Context
+import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,8 +12,9 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecora
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
+import com.tokopedia.play_common.util.extension.doOnPreDraw
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -67,7 +69,10 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
-            productPreviewAdapter.setItemsAndAnimateChanges(List(min(MAX_PREVIEW, totalProduct)) { ProductLoadingUiModel })
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return
+
+            val totalProductValidated = min(MAX_PREVIEW, max(MIN_PREVIEW, totalProduct))
+            productPreviewAdapter.setItemsAndAnimateChanges(List(totalProductValidated) { ProductLoadingUiModel })
         } else {
             productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
         }
@@ -75,6 +80,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     companion object {
         private const val MAX_PREVIEW = 4
+        private const val MIN_PREVIEW = 1
 
         val LAYOUT = R.layout.item_play_etalase
     }

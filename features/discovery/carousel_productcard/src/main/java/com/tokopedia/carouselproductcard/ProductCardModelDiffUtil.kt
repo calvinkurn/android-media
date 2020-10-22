@@ -2,12 +2,13 @@ package com.tokopedia.carouselproductcard
 
 import androidx.recyclerview.widget.DiffUtil
 
-internal class ProductCardModelDiffUtil: DiffUtil.ItemCallback<CarouselProductCardModel>() {
-    override fun areItemsTheSame(oldItem: CarouselProductCardModel, newItem: CarouselProductCardModel): Boolean {
-        return oldItem.productCardModel.productName == newItem.productCardModel.productName
+internal class ProductCardModelDiffUtil: DiffUtil.ItemCallback<BaseCarouselCardModel>() {
+
+    override fun areItemsTheSame(oldItem: BaseCarouselCardModel, newItem: BaseCarouselCardModel): Boolean {
+        return oldItem.areItemsTheSame(newItem)
     }
 
-    override fun areContentsTheSame(oldItem: CarouselProductCardModel, newItem: CarouselProductCardModel): Boolean {
-        return oldItem.productCardModel == newItem.productCardModel
+    override fun areContentsTheSame(oldItem: BaseCarouselCardModel, newItem: BaseCarouselCardModel): Boolean {
+        return oldItem.areContentsTheSame(newItem)
     }
 }

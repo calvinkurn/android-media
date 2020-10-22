@@ -42,9 +42,17 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
 
+
     override fun bind(element: ShopInvoice?) {
         element?.let {
-            tvShopName.text = element.shopName
+            if(element.shopName.isNullOrBlank()){
+                tvShopName.gone()
+
+            }else{
+                tvShopName.visible()
+                tvShopName.text = element.shopName
+
+            }
 
             addShopItems(llItemContainer, shopInvoice = element)
 
@@ -106,14 +114,15 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopItemShippingInsuranceValue.gone()
                 tvInvoiceShopItemShippingInsurance.gone()
             }
-            element.shippingAddress?.let {
+            if(element.shippingAddress.isNullOrBlank()){
+                tvInvoiceShopShippingAddressValue.gone()
+                tvInvoiceShopShippingAddress.gone()
+            }else{
                 tvInvoiceShopShippingAddressValue.text = element.shippingAddress
                 tvInvoiceShopShippingAddressValue.visible()
                 tvInvoiceShopShippingAddress.visible()
-            } ?: run {
-                tvInvoiceShopShippingAddressValue.gone()
-                tvInvoiceShopShippingAddress.gone()
             }
+
         }
     }
 
@@ -134,6 +143,9 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
                 .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemPrice)
+        if (orderedItem.isBBIProduct)
+            shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
+                    .append("\n${getString(R.string.thank_bbi_cash_back)}")
         return shopItemView
     }
 

@@ -92,9 +92,7 @@ public class GCMHandler {
                 if(!activity.isFinishing()){
                     googleAPI.getErrorDialog(activity, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
-                            Timber.w("P2#PLAY_SERVICE_ERROR#User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
-                                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
-                                    + " | "+Build.TAGS);
+                            Timber.w("P1#PLAY_SERVICE_ERROR#gcm;fingerprint='%s'", Build.FINGERPRINT);
                         }).show();
                 }
             }

@@ -4,13 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_tp_custom_dialog"
     android:layout_alignParentBottom="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_tp_custom_dialog"
-        android:padding="@dimen/dp_16">
+        android:padding="@dimen/tp_padding_medium">
 
         <ImageView
             android:id="@+id/iv_cancel"
@@ -24,7 +25,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/tp_margin_regular"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/tp_title_kirim_coupon"
             android:textColor="@color/clr_f531353b"
@@ -33,49 +34,30 @@
             app:layout_constraintTop_toTopOf="@id/iv_cancel"
             app:typographyType="heading_3" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_email"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/wrapper_email"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_24"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:text="@string/tp_label_email"
+            android:layout_marginTop="@dimen/tp_margin_large"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_cancel"
-            app:typographyType="body_3" />
+            app:text_field_input_type="textEmailAddress"
+            app:text_field_label="@string/tp_label_email"
+            app:text_field_label_static="true" />
 
-        <com.tokopedia.unifycomponents.TextAreaUnify
-            android:id="@+id/wrapper_email"
-            style="@style/HintTextInputLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_22"
-            android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_email" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_msg"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/wrapper_text_count"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_24"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:text="@string/tp_label_notes"
+            android:layout_marginTop="@dimen/tp_margin_regular"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/wrapper_email"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifycomponents.TextAreaUnify
-            android:id="@+id/wrapper_text_count"
-            style="@style/HintTextInputLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_22"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_msg" />
+            app:text_field_counter="20"
+            app:text_field_input_type="text"
+            app:text_field_label="@string/tp_label_notes"
+            app:text_field_label_static="true" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/button_send"

@@ -30,7 +30,7 @@ class ShopShare(private val activity: Activity) {
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
-        activity.startActivity(Intent.createChooser(shareIntent, activity.getString(R.string.other)))
+        activity.startActivity(Intent.createChooser(shareIntent, activity.getString(com.tokopedia.feedcomponent.R.string.other)))
     }
 
     private fun generateBranchLink(data: ShopShareData) {

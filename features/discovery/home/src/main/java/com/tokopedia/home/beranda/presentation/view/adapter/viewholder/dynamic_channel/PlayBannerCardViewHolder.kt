@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.PlayWidgetCarouselTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.PlayBannerCarousel
@@ -35,68 +35,78 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel == null){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            playBannerCarouselView?.removeRefreshShimmer()
+            element.playBannerCarouselDataModel.let {
+                if (it.channelList.isNotEmpty()) {
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        element?.playBannerCarouselDataModel?.let {
-            if(it.channelList.isNotEmpty()){
-                playBannerCarouselView?.setItem(it)
+        if(element?.playBannerCarouselDataModel == null){
+            playBannerCarouselView?.showRefreshShimmer()
+        } else {
+            playBannerCarouselView?.removeRefreshShimmer()
+            element.playBannerCarouselDataModel.let {
+                if(it.channelList.isNotEmpty()){
+                    playBannerCarouselView?.setItem(it)
+                }
             }
         }
     }
 
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
         listener.sendEETracking(
-                HomePageTrackingV2.PlayWidgetCarousel.getClickBanner(
+                PlayWidgetCarouselTracking.getClickBanner(
                         channelId = dataModel.channelId,
                         channelName = dataModel.channelTitle,
-                        autoPlay = autoPlay,
+                        autoPlay = playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                         shopId = dataModel.partnerId,
                         widgetPosition = adapterPosition.toString(),
                         creativeName = dataModel.coverUrl,
                         bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                         userId = listener.userId,
-                        position = playCarouselCardDataModel?.channel?.brandId ?: "1"
+                        position = position.toString(),
+                        positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
                 )
         )
-        RouteManager.route(itemView.context, dataModel.applink)
+        listener.onPlayV2Click(dataModel)
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        val autoPlay = if(playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay == true) "success" else "false"
-        listener.putEEToTrackingQueue(HomePageTrackingV2.PlayWidgetCarousel.getImpressionBanner(
+        listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionBanner(
                 channelId = dataModel.channelId,
                 channelName = dataModel.channelTitle,
-                autoPlay = autoPlay,
+                autoPlay = playCarouselCardDataModel?.playBannerCarouselDataModel?.isAutoPlay.toString(),
                 shopId = dataModel.partnerId,
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.coverUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1"
+                position = position.toString(),
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
         listener.sendEETracking(
-                if(dataModel.remindMe) {
-                    HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
+                if(!dataModel.remindMe) {
+                    PlayWidgetCarouselTracking.getClickRemoveRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
-                            notifierId = (position + 1).toString()
+                            notifierId = position.toString()
                     )
                 } else {
-                    HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                    PlayWidgetCarouselTracking.getClickAddRemind(
                             channelId = dataModel.channelId,
                             userId = listener.userId,
-                            notifierId = (position + 1).toString()
+                            notifierId = position.toString()
                     )
                 }
         )
@@ -104,38 +114,41 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeOtherContent(dataModel.imageUrl, if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1", listener.userId))
         RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickSeeAll(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(listener.userId, if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"))
         RouteManager.route(itemView.context, dataModel.seeMoreApplink)
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.sendEETracking(HomePageTrackingV2.PlayWidgetCarousel.getClickLeftBanner(
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickLeftBanner(
                 channelId = playCarouselCardDataModel?.channel?.id ?: "",
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.imageUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                position = adapterPosition.toString(),
                 shopName = playCarouselCardDataModel?.playBannerCarouselDataModel?.title ?: "",
-                promoCode = ""
+                promoCode = "",
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
+        RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        listener.putEEToTrackingQueue(HomePageTrackingV2.PlayWidgetCarousel.getImpressionLeftBanner(
+        listener.putEEToTrackingQueue(PlayWidgetCarouselTracking.getImpressionLeftBanner(
                 channelId = playCarouselCardDataModel?.channel?.id ?: "",
                 widgetPosition = adapterPosition.toString(),
                 creativeName = dataModel.imageUrl,
                 bannerId = playCarouselCardDataModel?.channel?.id ?: "",
                 userId = listener.userId,
-                position = playCarouselCardDataModel?.channel?.brandId ?: "1",
+                position = adapterPosition.toString(),
                 shopName = playCarouselCardDataModel?.playBannerCarouselDataModel?.title ?: "",
-                promoCode = ""
+                promoCode = "",
+                positionFold = if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"
         ))
     }
 

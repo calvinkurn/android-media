@@ -52,6 +52,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false, highlightAmountDigits = false)
             }
         }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+        } else {
+            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+        }
+
+
         initCheckPaymentWidgetData()
     }
 
@@ -109,8 +116,10 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             refreshThanksPageData()
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         }
-        btnShopAgain.setOnClickListener { gotoHomePage() }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun showDigitAnnouncementTicker() {
@@ -127,7 +136,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 showToastCopySuccessFully(context)
             }
         }
-        thankYouPageAnalytics.get().sendSalinButtonClickEvent(thanksPageData.gatewayName)
+        thankYouPageAnalytics.get()
+                .sendSalinButtonClickEvent(thanksPageData.profileCode,thanksPageData.gatewayName,
+                        thanksPageData.paymentID.toString())
     }
 
     private fun showToastCopySuccessFully(context: Context) {

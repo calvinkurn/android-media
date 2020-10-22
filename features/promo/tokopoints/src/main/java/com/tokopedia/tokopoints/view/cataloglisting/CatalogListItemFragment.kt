@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewFlipper
@@ -24,8 +25,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
@@ -111,8 +113,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         addLatestStatusObserver()
     }
 
-    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-      it?.let {
+    private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        it?.let {
             stopNetworkRequestPerformanceMonitoring()
             startRenderPerformanceMonitoring()
             refreshCatalog(it)
@@ -121,11 +123,11 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
@@ -138,7 +140,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         }
     })
 
-    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }
@@ -173,6 +175,14 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
     override fun onEmptyCatalog() {
         mContainer!!.displayedChild = CONTAINER_EMPTY
+        view?.findViewById<TextView>(R.id.text_title_error2)?.text = getString(R.string.tp_catalog_empty_title)
+        view?.findViewById<TextView>(R.id.text_label_error2)?.text = getString(R.string.tp_catalog_empty_description)
+        val btnCOntinue = view?.findViewById<TextView>(R.id.button_continue)
+        btnCOntinue?.text = getString(R.string.tp_catalog_empty_button)
+        btnCOntinue?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+        view?.findViewById<Button>(R.id.text_empty_action)?.hide()
     }
 
     override fun openWebView(url: String) {
@@ -275,7 +285,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                 title)
     }
 
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -335,7 +345,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                             "")
                 }
                 CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+                    startActivity(intent)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
@@ -423,29 +434,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             mHandler = null
         }
         mRunnableUpdateCatalogStatus = null
-    }
-
-    override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
-        if (activity == null || !isAdded) {
-            return
-        }
-        val adb = AlertDialog.Builder(activityContext)
-        val view = LayoutInflater.from(context)
-                .inflate(R.layout.layout_tp_network_error_large, null, false)
-        val img = view.findViewById<ImageView>(R.id.img_error)
-        val titleText = view.findViewById<TextView>(R.id.text_title_error)
-        if (title == null || title.isEmpty()) {
-            titleText.setText(R.string.tp_label_too_many_access)
-        } else {
-            titleText.text = title
-        }
-        val label = view.findViewById<TextView>(R.id.text_label_error)
-        label.text = desc
-        view.findViewById<View>(R.id.text_failed_action).setOnClickListener { view1: View? -> viewModel.startSaveCoupon(item) }
-        adb.setView(view)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
     }
 
     override fun onPreValidateError(title: String, message: String) {

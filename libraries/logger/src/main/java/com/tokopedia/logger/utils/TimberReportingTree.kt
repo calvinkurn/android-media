@@ -45,25 +45,27 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
-        val timeStamp = System.currentTimeMillis()
-        if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
-            return
-        }
-        if (!message.startsWith(PREFIX) || tags.isEmpty()) {
-            return
-        }
-        val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
-        if (messageSplit.size < SIZE_MESSAGE) {
-            return
-        }
-        val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
-        val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
-        tagMaps[messageKey]?.let {
-            val priority = it.postPriority
-            val classLine = tag ?: ""
-            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
-            LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
-        }
+        globalScopeLaunch({
+            val timeStamp = System.currentTimeMillis()
+            if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
+                return@globalScopeLaunch
+            }
+            if (!message.startsWith(PREFIX) || tags.isEmpty()) {
+                return@globalScopeLaunch
+            }
+            val messageSplit = message.split(DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }
+            if (messageSplit.size < SIZE_MESSAGE) {
+                return@globalScopeLaunch
+            }
+            val messageKey = messageSplit[0].plus(DELIMITER).plus(messageSplit[1])
+            val messageToBeSend = message.substringAfter(messageKey.plus(DELIMITER))
+            tagMaps[messageKey]?.let {
+                val priority = it.postPriority
+                val classLine = tag ?: ""
+                val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageToBeSend))
+                LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
+            }
+        })
     }
 
     override fun createStackElementTag(element: StackTraceElement): String? {

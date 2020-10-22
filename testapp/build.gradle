@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
@@ -44,8 +45,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299700000;
-        defaultVersionName = "3.70";
+        defaultVersionCode = 299800000;
+        defaultVersionName = "3.80";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -130,12 +131,17 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation (project(rootProject.ext.features.sessioncommon))
     implementation (project(rootProject.ext.libraries.remoteConfig))
+    implementation (project(rootProject.ext.libraries.remoteResourceRequest))
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -170,6 +176,21 @@ dependencies {
         exclude module: 'recyclerview-v7'
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
+
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.iris)
+
+    //you can delete below line if you use old login, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.logintestapp)
+
+    //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
+    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
+    //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation project(rootProject.ext.features.developerOptions)
 
 //    implementation project(rootProject.ext.libraries.logger)
 //    implementation (rootProject.ext.debugToolsDependencies.timber){

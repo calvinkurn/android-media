@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -25,12 +24,12 @@ import com.tokopedia.common_electronic_money.compoundview.ETollUpdateBalanceResu
 import com.tokopedia.common_electronic_money.compoundview.NFCDisabledView
 import com.tokopedia.common_electronic_money.compoundview.TapETollCardView
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
-import com.tokopedia.common_electronic_money.di.DaggerNfcCheckBalanceComponent
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -214,8 +213,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     abstract fun processTagIntent(intent: Intent)
 
     protected fun isDigitalSmartcardEnabled(): Boolean {
-        return true
-//        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
+        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
     }
 
     protected fun navigateToNFCSettings() {

@@ -1,14 +1,13 @@
 package com.tokopedia.createpost.domain.usecase
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.createpost.TYPE_CONTENT_SHOP
-import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -24,7 +23,7 @@ import javax.inject.Inject
  * @author by milhamj on 10/1/18.
  */
 open class SubmitPostUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
+        @ActivityContext private val context: Context,
         private val uploadMultipleImageUseCase: UploadMultipleImageUseCase,
         private val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitPostData>() {
 
@@ -38,7 +37,8 @@ open class SubmitPostUseCase @Inject constructor(
 
         uploadMultipleImageUseCase.notificationManager = notificationManager
 
-        val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>? ?: emptyList())
+        val media = (requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>?
+                ?: emptyList())
 
         return uploadMultipleImageUseCase
                 .createObservable(
@@ -88,7 +88,7 @@ open class SubmitPostUseCase @Inject constructor(
 
             val query = GraphqlHelper.loadRawString(
                     context.resources,
-                    R.raw.mutation_af_submit_post
+                    com.tokopedia.affiliatecommon.R.raw.mutation_af_submit_post
             )
 
             val variables = HashMap<String, Any>()
@@ -174,8 +174,7 @@ open class SubmitPostUseCase @Inject constructor(
                 //this is edit post
                 requestParams.putString(PARAM_ID, id)
                 requestParams.putString(PARAM_ACTION, ACTION_UPDATE)
-            }
-            else {
+            } else {
                 requestParams.putObject(PARAM_MEDIA_LIST, media)
             }
             return requestParams

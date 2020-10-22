@@ -112,7 +112,9 @@ class SelectImageNewPhoneFragment : BaseDaggerFragment() {
 
         continueButton?.setOnClickListener {
             analytics.eventClickPhotoProceed()
+            analytics.eventClickButtonNext()
             selectImageInterface?.onContinueButtonClick()
+            analytics.eventSuccessClickButtonNext()
         }
     }
 

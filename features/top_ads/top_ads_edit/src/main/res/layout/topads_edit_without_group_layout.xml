@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/dp_16"
     android:background="@color/white">
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:orientation="vertical"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/dp_16"
+        android:padding="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/atur_biaya"
@@ -33,9 +33,9 @@
             app:text_field_label="Biaya per klik"
             app:text_field_label_static="true"
             app:text_field_prepend_text="Rp" />
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:orientation="vertical"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/dp_16"
+        android:padding="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/card1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,7 +56,7 @@
                 style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/anggaran_harian"
+                android:text="@string/topads_common_anggaran_harian"
                 app:layout_constraintBottom_toTopOf="@+id/radio_group"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5" />
@@ -68,7 +68,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/select_budget">
 
-                <RadioButton
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                     android:id="@+id/radio1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     app:layout_constraintTop_toBottomOf="@id/select_budget" />
 
 
-                <RadioButton
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                     android:id="@+id/radio2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                 tools:layout_height="@dimen/dp_40" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/save_butt"

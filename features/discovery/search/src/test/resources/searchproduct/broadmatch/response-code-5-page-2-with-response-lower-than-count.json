@@ -1,21 +1,16 @@
 {
-  "searchProduct": {
-    "query": "baju kaos anak balapan",
-    "source": "search",
-    "isFilter": false,
-    "count": 12,
-    "additional_params": "",
-    "isQuerySafe": true,
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "",
-      "suggestionCount": 0,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "<strong>\"baju kaos anak balapan\"</strong> nggak ditemukan. Mau cek rekomendasi kami?",
-      "query": "q=baju kaos anak balapan&rf=true"
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 5,
+      "keywordProcess": "4",
+      "totalData": 12,
+      "totalDataText": "12",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "products": [
-    ]
+    "data": {
+      "products": []
+    }
   }
 }

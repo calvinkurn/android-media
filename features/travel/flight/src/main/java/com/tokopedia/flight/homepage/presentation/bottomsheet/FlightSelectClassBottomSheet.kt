@@ -3,7 +3,7 @@ package com.tokopedia.flight.homepage.presentation.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.flight.R
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_flight_select_class.*
 

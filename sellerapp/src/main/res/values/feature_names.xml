@@ -45,7 +45,7 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!-- Dynamic feature for Groupchat-->
-    <string name="groupchat_app_name">Play</string>
+    <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
@@ -102,6 +102,8 @@
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="topads_dash_desc_credit_label">Kredit TopAds</string>
+    <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
 
     <!--Auto Ads-->
     <string name="title_module_auto_ads">AutoAds Module</string>
@@ -129,7 +131,7 @@
     <string name="submit_ticket_title">Form Bantuan</string>
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
-    <string name="inbox">Inbox</string>
+    <string name="contact_us_inbox">Pesan Bantuan</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -209,7 +211,7 @@
 
     <!-- Dynamic feature for user talk-->
     <string name="write_new_talk">Kirim Pertanyaan</string>
-    <string name="title_product_discussion">Q&amp;A</string>
+    <string name="title_product_discussion">Diskusi</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
@@ -221,7 +223,7 @@
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
 
     <!-- Dynamic features Voucher Creation -->
-    <string name="title_voucher_creation">Voucher Create</string>
+    <string name="title_voucher_creation">Voucher Creation</string>
 
     <!-- Dynamic features Shop Score / Performa Toko -->
     <string name="title_shop_score_seller">Skor Performa Toko</string>
@@ -230,4 +232,35 @@
     <!-- Dynamic features Seller Search -->
     <string name="title_global_search_seller">Seller Search</string>
 
+    <!-- Content -->
+    <string name="kol_title_comment">Comments</string>
+    <string name="kol_title_post_detail">Post Detail</string>
+    <string name="kol_title_media_preview">Media Preview</string>
+    <string name="kol_title_video_detail">Video Detail</string>
+    <string name="kol_title_post_youtube">Post Youtube</string>
+    <string name="kol_title_report">Laporan Konten</string>
+    <string name="cp_title_create_post">Create Post</string>
+    <string name="cp_title_edit">Edit</string>
+    <string name="cp_title_image_picker">Tambah Foto</string>
+    <string name="cp_title_image_video">Tambah Video</string>
+    <string name="cp_title_image_editor">Edit</string>
+
+    <!-- Shop Page -->
+    <string name="shop_info_title">Shop Info</string>
+    <string name="shop_info_label_physical_shop">Toko Fisik</string>
+    <string name="note_title">Catatan</string>
+    <string name="shop_sort_title">Urutkan</string>
+    <string name="shop_product_title">Produk</string>
+    <string name="favorited_shop_title">Followers Toko</string>
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+
+    <!-- Dynamic feature Statistic -->
+    <string name="title_statistic">Statistic</string>
+
+    <string name="title_layanan">Layanan</string>
+
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
 </resources>

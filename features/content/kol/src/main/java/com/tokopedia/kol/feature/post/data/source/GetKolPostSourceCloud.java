@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.GetProfileKolDataMapper;
-import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -21,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static com.tokopedia.kol.feature.comment.data.raw.GqlQueryGetUserKolPostKt.GQL_QUERY_GET_USER_KOL_POST;
 import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.KOL_POST_LIMIT;
 import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.PARAM_CURSOR;
 import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.PARAM_LIMIT;
@@ -57,7 +57,7 @@ public class GetKolPostSourceCloud {
         variables.put(PARAM_LIMIT, requestParams.getInt(PARAM_LIMIT, KOL_POST_LIMIT));
 
         return new GraphqlRequest(
-                loadRawString(context.getResources(), R.raw.query_get_user_kol_post),
+                GQL_QUERY_GET_USER_KOL_POST,
                 variables
         );
     }

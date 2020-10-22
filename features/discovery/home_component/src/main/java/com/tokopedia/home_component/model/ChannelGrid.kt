@@ -24,5 +24,14 @@ data class ChannelGrid(
         val freeOngkirImageUrl: String = "",
         val shopId: String = "",
         val labelGroup: List<LabelGroup> = listOf(),
-        val hasBuyButton: Boolean = false
+        val hasBuyButton: Boolean = false,
+        val rating: Int = 0,
+        val ratingFloat: String = "",
+        val countReview: Int = 0,
+        val countReviewFormat: String = "",
+        val backColor: String = "",
+        val textColor: String = "",
+        val benefit: ChannelBenefit = ChannelBenefit(),
+        val recommendationType: String = "",
+        val shop: ChannelShop = ChannelShop()
 )

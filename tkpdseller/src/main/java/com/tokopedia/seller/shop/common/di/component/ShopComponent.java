@@ -5,20 +5,17 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.manageitem.domain.repository.ShopInfoRepository;
+import com.tokopedia.seller.manageitem.domain.usecase.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -55,8 +52,6 @@ public interface ShopComponent {
     Retrofit shopRetrofit();
 
     ShopInfoRepository shopInfoRepository();
-
-    SessionHandler sessionHandler();
 
     GlobalCacheManager globalCacheManager();
 

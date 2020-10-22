@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,6 +24,10 @@ import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
+import java.util.zip.ZipInputStream
+
+
+const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
 
 class InstantPaymentFragment : ThankYouBaseFragment() {
 
@@ -46,7 +52,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)!!
             }
         }
     }
@@ -58,11 +64,26 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActionMenu()
+        showCharacterAnimation()
         context?.let {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
     }
+
+    private fun showCharacterAnimation() {
+        context?.let {
+            val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
+            val lottieTask = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+            lottieTask?.addListener { result: LottieComposition? ->
+                result?.let {
+                    lottieAnimationView?.setComposition(result)
+                    lottieAnimationView?.playAnimation()
+                }
+            }
+        }
+    }
+
 
     private fun setActionMenu() {
         val headerUnify = (activity as ThankYouPageActivity).getHeader()
@@ -72,8 +93,23 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
-        tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
-        tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
+            tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
+        } else {
+            tv_payment_success.text = thanksPageData.thanksCustomization.customTitle
+        }
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()) {
+            tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
+        } else {
+            tv_payment_success_check_order.text = thanksPageData.thanksCustomization.customSubtitle
+        }
+
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
+            btn_see_transaction_list.text = getString(R.string.thank_see_transaction_list)
+        } else {
+            btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
+        }
+
         ImageLoader.LoadImage(iv_payment, thanksPageData.gatewayImage)
         if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
             tv_payment_method_name.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
@@ -84,7 +120,14 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         } else
             tv_payment_method_name.text = thanksPageData.gatewayName
         tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
-        btn_see_transaction_list.setOnClickListener { gotoOrderList() }
+        btn_see_transaction_list.setOnClickListener {
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
+                gotoOrderList()
+            } else {
+                gotoOrderList(thanksPageData.thanksCustomization.customOrderUrlApp)
+            }
+        }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun observeViewModel() {

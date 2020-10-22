@@ -5,16 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class InboxFilterAdapter(private val dataSet: List<String>,
-                         private val mPresenter: InboxListPresenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var selected = 0
+                         private var selected : Int,
+                         private val mPresenter: InboxListContract.Presenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(
                 parent.context)
@@ -28,10 +27,6 @@ class InboxFilterAdapter(private val dataSet: List<String>,
 
     override fun getItemCount(): Int {
         return dataSet.size
-    }
-
-    fun setSelected(index: Int) {
-        selected = index
     }
 
     internal inner class FilterHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -52,10 +47,8 @@ class InboxFilterAdapter(private val dataSet: List<String>,
             filterText?.text = valueItem
             if (adapterPosition == selected) {
                 tvDayTime?.show()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.green_nob))
             } else {
                 tvDayTime?.hide()
-                filterText?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_70))
             }
             locationDateItem?.setOnClickListener { onClickFilterItem() }
         }

@@ -14,13 +14,15 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.R;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridInspirationCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
@@ -122,7 +124,7 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     private boolean isStaggeredGridFullSpan(int viewType) {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT && viewType != RecommendationItemViewHolder.LAYOUT;
+        return viewType != SmallGridProductItemViewHolder.LAYOUT && viewType != RecommendationItemViewHolder.LAYOUT & viewType != SmallGridInspirationCardViewHolder.LAYOUT;
     }
 
     @Override
@@ -175,6 +177,13 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
                     notifyItemChanged(i, "wishlist");
+                }
+            } else if (list.get(i) instanceof BroadMatchViewModel) {
+                BroadMatchViewModel broadMatchViewModel = (BroadMatchViewModel) list.get(i);
+                for (BroadMatchItemViewModel broadMatchItemViewModel : broadMatchViewModel.getBroadMatchItemViewModelList()) {
+                    if (broadMatchItemViewModel.getId().equals(productId)) {
+                        broadMatchItemViewModel.setWishlisted(isWishlisted);
+                    }
                 }
             }
         }
@@ -280,14 +289,8 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
         }
     }
 
-    public void refreshQuickFilter() {
-        for(int i = 0; i < list.size(); i++) {
-            Visitable visitable = list.get(i);
-
-            if (visitable instanceof QuickFilterViewModel) {
-                notifyItemChanged(i);
-            }
-        }
+    public List<Visitable> getItemList() {
+        return list;
     }
 
     public interface OnItemChangeView {
