@@ -21,5 +21,10 @@
     <fragment
         android:id="@+id/categoryFragment"
         android:name="com.tokopedia.homenav.category.view.fragment.CategoryListFragment"
-        android:label="@string/title_category"/>
+        android:label="{title}">
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "androidx.navigation.safeargs"
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android{
     testOptions {
@@ -30,7 +30,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
+        classpath rootProject.ext.miscDependencies.navigationSafeArgs
     }
 }
 
@@ -96,6 +96,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.navigationUiKtx
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

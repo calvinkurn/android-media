@@ -8,10 +8,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.diffutil.HomeNavAdapter
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
@@ -105,9 +107,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         adapter.submitList(data.dataList)
     }
 
+    override fun onRefresh() {
+
+    }
+
+    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+
+    }
+
     private fun initClickListener() {
         testButton.setOnClickListener{
-            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY)
+            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY, bundleOf("title" to "Belanja"))
         }
     }
 

@@ -240,7 +240,7 @@ ext {
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",
-
+            navigationSafeArgs    : "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion",
             navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$navigationVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
