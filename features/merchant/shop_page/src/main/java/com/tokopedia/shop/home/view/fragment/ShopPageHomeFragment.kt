@@ -1580,9 +1580,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getPlayWidget(shopId)
     }
 
-    override fun onToggleReminderClicked(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+    override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
         if (isLogin) {
-            viewModel?.setToggleReminderPlayWidget(channel, remind, position)
+            viewModel?.setToggleReminderPlayWidget(channelId, remind, position)
         } else {
             shopHomeAdapter.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
                     remind = remind,

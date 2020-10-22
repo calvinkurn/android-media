@@ -22,7 +22,6 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -59,8 +58,8 @@ class PlayWidgetMediumView : ConstraintLayout {
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     private val adapter = PlayWidgetCardMediumAdapter(channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener{
-        override fun onToggleReminderClick(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
-            mListener?.onToggleReminderClicked(channel, remind, position)
+        override fun onToggleReminderClick(channelId: String, remind: Boolean, position: Int) {
+            mListener?.onToggleReminderClicked(channelId, remind, position)
         }
     })
 

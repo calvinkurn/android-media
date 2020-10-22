@@ -10,8 +10,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.player.PlayVideoPlayer
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -37,6 +35,8 @@ class PlayWidgetCardMediumChannelViewHolder(
     private val author: TextView = itemView.findViewById(R.id.play_widget_channel_name)
     private val totalView: TextView = itemView.findViewById(R.id.viewer)
 
+    private var originalReminderState = false
+
     fun bind(item: PlayWidgetMediumChannelUiModel) {
         setData(item)
         itemView.setOnClickListener {
@@ -61,19 +61,26 @@ class PlayWidgetCardMediumChannelViewHolder(
         startTime.text = item.startTime
         totalView.text = item.totalView
 
-        setToggleReminder(item.activeReminder)
+        originalReminderState = item.activeReminder
+
+        setIconToggleReminder(item.activeReminder)
         reminderBadge.setOnClickListener {
-            listener.onToggleReminderClick(item, !item.activeReminder, adapterPosition)
-            setToggleReminder(!item.activeReminder)
             item.activeReminder = !item.activeReminder
+            listener.onToggleReminderClick(item.channelId, item.activeReminder, adapterPosition)
+            setIconToggleReminder(item.activeReminder)
         }
     }
 
-    private fun setToggleReminder(active: Boolean) {
+    private fun setIconToggleReminder(active: Boolean) {
         val drawableIconReminder = if (active) com.tokopedia.play_common.R.drawable.ic_play_reminder else com.tokopedia.play_common.R.drawable.ic_play_reminder_non_active
         reminderBadge.setImageDrawable(
                 ContextCompat.getDrawable(itemView.context, drawableIconReminder)
         )
+    }
+
+    fun revertToOriginalReminderState() {
+        setIconToggleReminder(originalReminderState)
+
     }
 
     companion object {
@@ -82,7 +89,7 @@ class PlayWidgetCardMediumChannelViewHolder(
 
     interface Listener {
         fun onToggleReminderClick(
-                channel: PlayWidgetMediumChannelUiModel,
+                channelId: String,
                 remind: Boolean,
                 position: Int
         )

@@ -1,7 +1,5 @@
 package com.tokopedia.play.widget.ui.listener
 
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-
 
 /**
  * Created by mzennis on 21/10/20.
@@ -9,7 +7,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 interface PlayWidgetMediumListener : PlayWidgetListener {
 
     fun onToggleReminderClicked(
-            channel: PlayWidgetMediumChannelUiModel,
+            channelId: String,
             remind: Boolean,
             position: Int
     ) {

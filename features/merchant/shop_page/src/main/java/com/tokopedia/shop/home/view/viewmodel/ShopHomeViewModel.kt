@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -513,10 +512,10 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun setToggleReminderPlayWidget(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+    fun setToggleReminderPlayWidget(channelId: String, remind: Boolean, position: Int) {
         launchCatchError(block = {
             val response = playWidgetTools.setToggleReminder(
-                    channel.channelId,
+                    channelId,
                     remind,
                     dispatcherProvider.io()
             )

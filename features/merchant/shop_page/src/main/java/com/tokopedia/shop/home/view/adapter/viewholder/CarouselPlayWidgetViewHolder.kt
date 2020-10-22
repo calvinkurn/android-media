@@ -36,15 +36,15 @@ class CarouselPlayWidgetViewHolder(
 
         val newWidgetUiModel = element.widgetUiModel
         if (newWidgetUiModel is PlayWidgetUiModel.Medium && newWidgetUiModel.items.size > reminderUiModel.position) {
-            newWidgetUiModel.items.mapIndexed { index, item ->
+            val items = newWidgetUiModel.items.mapIndexed { index, item ->
+                var newItem = item
                 if (index == reminderUiModel.position && item is PlayWidgetMediumChannelUiModel) {
-                    item.activeReminder = reminderUiModel.remind
+                    newItem = item.copy(activeReminder = !reminderUiModel.remind)
                 }
-                item
+                newItem
             }
+            playWidgetView.setModel(newWidgetUiModel.copy(items = items))
         }
-
-        playWidgetView.setModel(newWidgetUiModel)
     }
 
     companion object {
