@@ -24,15 +24,19 @@ class InboxBottomNavigationView : BottomNavigationView {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     init {
+        initField()
         initMenuView()
         initBadgeLayout()
     }
 
     private fun initMenuView() {
-        menuView = getField(BottomNavigationView::class.java, this, "menuView")
-        buttons = getField(menuView?.javaClass, menuView, "buttons")
         disableItemShiftingMode()
         disableAnimation()
+    }
+
+    private fun initField() {
+        menuView = getField(BottomNavigationView::class.java, this, "menuView")
+        buttons = getField(menuView?.javaClass, menuView, "buttons")
     }
 
     private fun initBadgeLayout() {
