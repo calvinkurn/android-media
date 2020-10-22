@@ -41,6 +41,7 @@ class CartToolbarView : Toolbar, CartToolbar {
             btnWishlistLottie = it.findViewById(R.id.btn_wishlist_lottie)
 
             btnWishlist.setOnClickListener { listener.onWishlistClicked() }
+            btnWishlistLottie.setOnClickListener { listener.onWishlistClicked() }
         }
     }
 

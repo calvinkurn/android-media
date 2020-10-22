@@ -2933,7 +2933,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (this.wishLists == null || !forceReload) {
             val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
             cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_wishlist)
-            cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.WISHLIST
+            cartSectionHeaderHolderData.showAllAppLink = ApplinkConst.NEW_WISHLIST
             cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartWishlistHolderData)
         } else {
             val wishlistIndex = cartAdapter.updateCartWishlistData(cartWishlistHolderData)

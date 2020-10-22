@@ -44,6 +44,7 @@ class CartToolbarWithBackView : Toolbar, CartToolbar {
             btnWishlistLottie = it.findViewById(R.id.btn_wishlist_lottie)
 
             btnBack.setOnClickListener { listener.onBackPressed() }
+            btnWishlistLottie.setOnClickListener { listener.onWishlistClicked() }
             btnWishlist.setOnClickListener { listener.onWishlistClicked() }
         }
     }
