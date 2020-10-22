@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -61,7 +62,7 @@ object GlideBuilder {
     fun loadImage(
             imageView: ImageView,
             thumbnailUrl: String,
-            url: GlideUrl?,
+            url: Any?,
             radius: Float = 0f,
             signatureKey: Key?,
             cacheStrategy: MediaCacheStrategy?,
@@ -87,27 +88,24 @@ object GlideBuilder {
             imageView.setImageDrawable(drawableError)
         } else {
             GlideApp.with(imageView.context).load(url).apply {
+                if (thumbnailUrl.isNotEmpty()) {
+                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+                } else {
+                    if (url is String) {
+                        url.toUri()?.let {
+                            if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
+                                val blurHash = it.getQueryParameter(BLUR_HASH_QUERY)
+                                thumbnail(thumbnailLoader(imageView.context, blurring(imageView, blurHash)))
+                            }
+                        }
+                    }
+                }
+
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()
                     ImageView.ScaleType.CENTER_CROP -> centerCrop()
                     ImageView.ScaleType.CENTER_INSIDE -> centerInside()
                     else -> {}
-                }
-
-                if (thumbnailUrl.isNotEmpty()) {
-                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
-                } else {
-                    val imageUrl = url.toStringUrl()
-                    imageUrl.toUri()?.let {
-                        if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
-                            thumbnail(thumbnailLoader(imageView.context, BlurHashDecoder.decode(
-                                    blurHash = it.getQueryParameter(BLUR_HASH_QUERY),
-                                    width = if (imageView.maxWidth <= 0) 100 else imageView.maxWidth,
-                                    height = if (imageView.maxHeight <= 0) 100 else imageView.maxHeight,
-                                    useCache = true
-                            )))
-                        }
-                    }
                 }
 
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
@@ -132,12 +130,22 @@ object GlideBuilder {
         }
     }
 
+    fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
+        return BlurHashDecoder.decode(
+                blurHash = blurHash,
+                width = if (imageView.maxWidth <= 0) 100 else imageView.maxWidth,
+                height = if (imageView.maxHeight <= 0) 100 else imageView.maxHeight,
+                useCache = true
+        )
+    }
+
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Drawable> {
         return GlideApp.with(context)
                 .load(resource)
                 .dontAnimate()
                 .dontTransform()
                 .fitCenter()
+                .priority(Priority.HIGH)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
