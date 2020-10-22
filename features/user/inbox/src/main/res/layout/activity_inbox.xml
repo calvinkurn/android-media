@@ -21,6 +21,7 @@
             app:srcCompat="@drawable/ic_arrow_back_black" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_current_role_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 

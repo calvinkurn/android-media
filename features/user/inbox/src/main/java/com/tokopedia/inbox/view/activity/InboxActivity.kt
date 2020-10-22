@@ -5,24 +5,31 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
+import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.setSelectedPage
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 
 class InboxActivity : BaseActivity() {
 
+    private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
     private val bottomNav: InboxBottomNavigationView? by lazy(LazyThreadSafetyMode.NONE) {
         findViewById<InboxBottomNavigationView?>(R.id.inbox_bottom_nav)
+    }
+    private val currentRole: ConstraintLayout? by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById<ConstraintLayout?>(R.id.cl_current_role_container)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inbox)
+        setupSwitcher()
         setupNavigator()
         setupBackground()
         setupNotificationBar()
@@ -31,6 +38,13 @@ class InboxActivity : BaseActivity() {
 
         // TODO: remove later
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, 99)
+    }
+
+    private fun setupSwitcher() {
+        switcher = AccountSwitcherBottomSheet.create()
+        currentRole?.setOnClickListener {
+            switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
+        }
     }
 
     private fun setupNavigator() {

@@ -25,8 +25,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
 
     // TODO: remove later
     implementation project(rootProject.ext.libraries.tkpddesign)
