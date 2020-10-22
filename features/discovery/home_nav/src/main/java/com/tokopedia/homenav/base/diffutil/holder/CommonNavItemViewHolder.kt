@@ -10,7 +10,7 @@ class CommonNavItemViewHolder(itemView: View
 ): AbstractViewHolder<CommonNavItemViewModel>(itemView) {
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_main_nav_item
+        val LAYOUT = R.layout.holder_common_nav_item
     }
 
     override fun bind(element: CommonNavItemViewModel) {
