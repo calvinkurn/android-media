@@ -433,3 +433,15 @@
  -keep public class com.android.installreferrer.** { *; }
  -dontwarn com.squareup.javapoet.**
  -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+
+ # chucker update version to 3.3.0
+ -dontwarn java.lang.instrument.ClassFileTransformer
+ -dontwarn sun.misc.SignalHandler
+ -dontwarn java.lang.instrument.Instrumentation
+ -dontwarn sun.misc.Signal
+ -dontwarn kotlin.KotlinNothingValueException
+ -dontwarn kotlin.time.*
+ -dontwarn kotlin.jvm.internal.FunctionReferenceImpl
+
+ -keep class kotlinx.coroutines.DelayKt { *; }
+ -keep class kotlinx.coroutines.flow.internal.SafeCollectorKt { *; }
