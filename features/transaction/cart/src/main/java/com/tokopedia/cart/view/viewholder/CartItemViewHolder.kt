@@ -1,15 +1,11 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
-import android.graphics.Path
-import android.os.Build
 import android.text.*
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.PathInterpolator
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
@@ -24,7 +20,7 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELE
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_NOTES
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLIST
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
-import com.tokopedia.cart.view.adapter.CartItemAdapter
+import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.getScreenWidth

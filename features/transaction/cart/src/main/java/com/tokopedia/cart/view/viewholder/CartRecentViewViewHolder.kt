@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.adapter.CartRecentViewAdapter
+import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
 import kotlinx.android.synthetic.main.item_cart_recent_view.view.*

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.adapter.CartItemAdapter
+import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
