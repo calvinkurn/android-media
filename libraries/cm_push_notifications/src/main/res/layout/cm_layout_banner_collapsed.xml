@@ -32,7 +32,7 @@
                 android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="@string/cm_app_title_name"
-                android:textColor="@color/medium_green_70"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_12" />
 
             <ImageView
