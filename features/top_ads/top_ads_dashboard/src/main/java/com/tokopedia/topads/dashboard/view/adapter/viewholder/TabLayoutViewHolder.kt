@@ -22,7 +22,7 @@ class TabLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun toggleActivate(isActive: Boolean) {
-        val white = ContextCompat.getColor(itemView.context, com.tokopedia.topads.auto.R.color.white)
+        val white = ContextCompat.getColor(itemView.context, com.tokopedia.topads.common.R.color.topads_common_white)
         val black = ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_voucher)
         val blackDisabled = ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_disabled_38)
         if (isActive) {

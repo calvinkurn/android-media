@@ -140,7 +140,8 @@ class PlayBroadcastViewModel @Inject constructor(
             setChannelId(configUiModel.channelId)
 
             if (configUiModel.channelType == ChannelType.Unknown) createChannel() // create channel when there are no channel exist
-            if (configUiModel.channelType == ChannelType.Pause) { // get channel when channel status is paused
+            if (configUiModel.channelType == ChannelType.Pause // get channel when channel status is paused
+                    || configUiModel.channelType == ChannelType.CompleteDraft) { // also when complete draft is true
                 val err = getChannelById(configUiModel.channelId)
                 if (err != null) {
                     throw err
@@ -367,14 +368,15 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun stopPushStream(shouldNavigate: Boolean = false) {
         _observableLivePusherState.value = LivePusherState.Connecting
-        scope.launch {
+        scope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 playPusher.stopPush()
                 playPusher.stopTimer()
                 playPusher.stopPreview()
-                destroyPushStream()
                 updateChannelStatus(PlayChannelStatus.Stop)
             }
+            _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
+        }) {
             _observableLivePusherState.value = LivePusherState.Stopped(shouldNavigate)
         }
     }

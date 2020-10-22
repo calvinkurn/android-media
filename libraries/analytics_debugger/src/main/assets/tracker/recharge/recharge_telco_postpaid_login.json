@@ -3,21 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "openScreen",
-      "screenName": "/digital/pascabayar",
-      "isLoggedInStatus": "{{true|false}}",
-      "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "category": "{{.*}}",
-      "digitalCategoryId": "{{.*}}",
-      "clientId": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "shopId": "{{.*}}",
-      "appsflyerId": "{{.*}}",
-      "networkSpeed": "{{.*}}"
-    },
-    {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
