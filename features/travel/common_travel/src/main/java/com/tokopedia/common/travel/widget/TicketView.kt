@@ -72,7 +72,7 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         offsetDescendantRectToMyCoords(view1, rect)
         circlePosition1 = rect.bottom.toFloat()
 
-        if (view2 != null) {
+        if (view2 != null && anchorViewId2 != NO_VALUE) {
             view2.getDrawingRect(rect)
             offsetDescendantRectToMyCoords(view2, rect)
             circlePosition2 = rect.bottom.toFloat()
@@ -95,9 +95,9 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        if (anchorViewId1 != NO_VALUE || anchorViewId2 != NO_VALUE) {
+        if (anchorViewId1 != NO_VALUE) {
             val anchorView1 = findViewById<View>(anchorViewId1)
-            val anchorView2 = findViewById<View>(anchorViewId2)
+            val anchorView2 = if (anchorViewId2 != NO_VALUE) findViewById<View>(anchorViewId2) else null
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
