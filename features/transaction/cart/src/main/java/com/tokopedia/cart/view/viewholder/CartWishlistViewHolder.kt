@@ -24,7 +24,7 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
     }
 
     fun bind(element: CartWishlistHolderData) {
-        if (element.hasInitializeRecyclerView) {
+        if (element.hasInitializeRecyclerView && wishlistAdapter != null) {
             updateList(element)
         } else {
             initializeRecyclerView(element)
@@ -54,8 +54,10 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
 
     private fun updateList(element: CartWishlistHolderData) {
         itemView.rv_wishlist?.apply {
-            (adapter as CartWishlistAdapter).updateWishlistItems(element.wishList)
-            scrollToPosition(0)
+            adapter?.let {
+                (it as CartWishlistAdapter).updateWishlistItems(element.wishList)
+                scrollToPosition(0)
+            }
         }
     }
 
