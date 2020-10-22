@@ -14,12 +14,13 @@
         app:typographyType="heading_4"
         tools:text="Informasi Penting" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/product_detail_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:icon_color_light_disabled="@color/dark_N200"
+        app:icon_name="CHEVRON_DOWN"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -96,6 +96,7 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
+    newUnifyIconVersion = '1.0.0'
     unifyPrinciplesVersion = '1.3.0'
     unifyComponentsVersion = '1.1.48'
     unifyCoachMarkVersion = '1.2.6'
@@ -329,6 +330,7 @@ ext {
     ]
 
     unifyDependencies = [
+            unifyIcon       : "com.tokopedia.unify:icons:${newUnifyIconVersion}",
             icon            : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
             principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
             components      : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
