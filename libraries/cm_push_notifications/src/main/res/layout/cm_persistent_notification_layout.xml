@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_mainPersist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,8 +41,9 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_10" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -72,8 +73,9 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_10" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -103,8 +105,9 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_10" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -134,8 +137,9 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/sp_10" />
+
     </LinearLayout>
 
     <!--Don't convert these image to Vector: Strictly Prohibited-->
@@ -145,4 +149,5 @@
         android:layout_height="@dimen/dp_36"
         android:padding="@dimen/dp_11"
         android:src="@drawable/cm_ic_close_black" />
+
 </LinearLayout>

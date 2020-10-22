@@ -1,4 +1,5 @@
 <resources>
     <string name="cm_app_name">cm_push_notifications</string>
+    <string name="cm_app_title_name">Tokopedia</string>
     <string name="cm_tv_coupon_code_copied">Kode Disalin</string>
 </resources>
