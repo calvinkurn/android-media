@@ -8,6 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 interface HomeNavVisitable : Visitable<HomeNavTypeFactory>{
     fun id(): Any
-    fun isDifferent(visitable: HomeNavVisitable): Boolean
+    fun isContentTheSame(visitable: HomeNavVisitable): Boolean
     override fun type(factory: HomeNavTypeFactory): Int
 }
