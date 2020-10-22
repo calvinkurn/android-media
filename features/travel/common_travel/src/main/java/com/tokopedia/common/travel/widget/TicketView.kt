@@ -115,30 +115,6 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private fun drawHoles(canvas: Canvas) {
         circlesPath = Path()
         val w = width
-        val radius = circleRadius
-        val space = circleSpace
-        val circleWidth = radius * 2
-
-        var leftMargin = 0
-        if (layoutParams is MarginLayoutParams) {
-            val lp = layoutParams as MarginLayoutParams
-            leftMargin = lp.leftMargin
-        }
-
-        val left = left - leftMargin
-        val circleSpace = circleWidth + space
-        val count = (w / circleSpace).toInt()
-        val offset = w - circleSpace * count
-        val sideOffset = offset / 2
-        val halfCircleSpace = circleSpace / 2
-
-        for (i in 0 until count) {
-            var positionCircle = i * circleSpace + sideOffset + left.toFloat() - radius
-            if (i == 0) {
-                positionCircle = left + sideOffset - radius
-            }
-            this.circlesPath.addCircle(positionCircle + halfCircleSpace, -circleRadius / 4, radius, Path.Direction.CW)
-        }
 
         // add holes on the ticketView by erasing them
         with(circlesPath) {

@@ -16,4 +16,6 @@
     <color name="flight_departure_trip_label_background">#f9f9f9</color>
     <color name="flight_search_form_field_title">#ae31353b</color>
 
+    <color name="flight_ticket_dash_color">#DCDCDC</color>
+
 </resources>
