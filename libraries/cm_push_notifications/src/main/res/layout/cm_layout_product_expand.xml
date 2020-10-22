@@ -48,7 +48,7 @@
                     android:id="@+id/tv_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_R200"
+                    android:textColor="@color/Unify_R500"
                     android:layout_alignParentTop="true"
                     android:visibility="gone"
                     tools:visibility="visible"
@@ -63,7 +63,7 @@
                     android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N0"
+                    android:textColor="@color/Unify_N700"
                     android:textSize="@dimen/sp_14"
                     tools:text="Lorem ipsum dolor sit amet" />
 
@@ -84,7 +84,7 @@
                         android:paddingTop="@dimen/dp_2"
                         android:paddingRight="@dimen/dp_5"
                         android:paddingBottom="@dimen/dp_2"
-                        android:textColor="@color/Unify_R100_96"
+                        android:textColor="@color/Unify_R500"
                         android:textSize="@dimen/sp_12"
                         tools:text="20%" />
 
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:textColor="@color/Unify_N0_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_12"
                         tools:text="Rp1500000" />
 
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_oldPriceAndDiscount"
                     android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/Unify_N0_96"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_15"
                     android:textStyle="bold"
                     tools:text="Rp1500000" />
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textColor="@color/Unify_N0_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_12"
                         android:layout_marginStart="@dimen/dp_4"
                         tools:text="4.5" />
@@ -141,7 +141,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_12"
-                        android:textColor="@color/Unify_N0_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:layout_marginStart="@dimen/dp_4"
                         tools:text="(60)" />
 
@@ -181,7 +181,7 @@
                         android:background="@drawable/cm_background_buy"
                         android:gravity="center"
                         android:layout_toEndOf="@+id/btn_icon"
-                        android:textColor="@color/white"
+                        android:textColor="@color/Unify_N0"
                         android:textSize="@dimen/sp_14"
                         android:textStyle="bold"
                         tools:text="Beli Sekarang" />
