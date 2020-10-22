@@ -46,7 +46,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
     private lateinit var interestPickViewModel: InterestPickViewModel
 
     private var selectedCount = 0
-    private var isSaved = false
 
     override fun getScreenName() = null
 
@@ -70,7 +69,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
         super.onViewCreated(view, savedInstanceState)
         initView()
         setUpObservers()
-        interestPickViewModel.fetchData()
+        interestPickViewModel.onViewCreated()
     }
 
     private fun setUpObservers() {
@@ -131,7 +130,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
 
     private fun onErrorGetInterest(message: String) {
         NetworkErrorHelper.showEmptyState(context, view, message) {
-            interestPickViewModel.fetchData()
+            interestPickViewModel.onRetry()
         }
     }
 
@@ -175,7 +174,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
             RouteManager.route(context, ApplinkConst.FEED)
             activity?.finish()
         }
-        isSaved = true
     }
 
     private fun onErrorUpdateInterest(message: String) {
@@ -183,9 +181,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickAdapter.InterestP
     }
 
     fun onBackPressed() {
-        if (!isSaved) {
-            interestPickViewModel.updateInterestWIthSkip()
-        }
+        interestPickViewModel.onBackPressed()
     }
 
     private fun updateSaveButtonState() {

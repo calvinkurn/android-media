@@ -1,5 +1,6 @@
 package com.tokopedia.interestpick.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.interestpick.data.pojo.UpdateInterestData
 import com.tokopedia.interestpick.data.raw.GQL_MUTATION_UPDATE_INTEREST
@@ -10,13 +11,14 @@ import javax.inject.Inject
  * @author by milhamj on 10/09/18.
  */
 
+@GqlQuery("UpdateInterest", GQL_MUTATION_UPDATE_INTEREST)
 class UpdateInterestUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<UpdateInterestData>
 ) : UseCase<UpdateInterestData>() {
 
     init {
         graphqlUseCase.setTypeClass(UpdateInterestData::class.java)
-        graphqlUseCase.setGraphqlQuery(GQL_MUTATION_UPDATE_INTEREST)
+        graphqlUseCase.setGraphqlQuery(UpdateInterest.GQL_QUERY)
     }
 
     override suspend fun executeOnBackground(): UpdateInterestData {

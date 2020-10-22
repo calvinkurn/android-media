@@ -22,7 +22,17 @@ class InterestPickViewModel @Inject constructor(
 
     private var interestPickLiveData: MutableLiveData<InterestPickViewState> = MutableLiveData()
 
+    var isSaved = false
+
     fun getInterestPickLiveData(): LiveData<InterestPickViewState> = interestPickLiveData
+
+    fun onViewCreated(){
+        fetchData()
+    }
+
+    fun onRetry(){
+        fetchData()
+    }
 
     fun fetchData() {
         viewModelScope.launchCatchError(
@@ -55,7 +65,6 @@ class InterestPickViewModel @Inject constructor(
                     interestPickLiveData.value = it.message?.let { message -> InterestPickViewState.Error(onUpdate = true, error = message) }
                 }
         )
-
     }
 
     fun updateInterestWIthSkip() {
@@ -72,6 +81,7 @@ class InterestPickViewModel @Inject constructor(
             interestPickLiveData.value = InterestPickViewState.Error(onUpdate = true, error = feedInterestUserUpdate.error)
         } else {
             interestPickLiveData.value = InterestPickViewState.UpdateInterestSuccess
+            isSaved = true
         }
     }
 
@@ -105,6 +115,12 @@ class InterestPickViewModel @Inject constructor(
             header.title
         } else {
             DEFAULT_HEADER_TITLE
+        }
+    }
+
+    fun onBackPressed() {
+        if (!isSaved) {
+            updateInterestWIthSkip()
         }
     }
 }

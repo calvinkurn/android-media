@@ -28,7 +28,7 @@ class InterestPickViewModelTest {
 
     private lateinit var testDispatcher: TestCoroutineDispatcher
 
-    private val getInterestUseCase:GetInterestUseCase = mockk(relaxed = true)
+    private val getInterestUseCase: GetInterestUseCase = mockk(relaxed = true)
 
     private val updateInterestUseCase: UpdateInterestUseCase = mockk(relaxed = true)
 
@@ -50,15 +50,16 @@ class InterestPickViewModelTest {
     }
 
     private fun getDummyInterestList(): List<InterestsItem> {
-        val interestsItem1 = InterestsItem(id = 1,name = "test1", imageUrl = "testUrl1", relationships = Relationships(isSelected = false))
-        val interestsItem2 = InterestsItem(id = 2,name = "test2", imageUrl = "testUrl2", relationships = Relationships(isSelected = true))
+        val interestsItem1 = InterestsItem(id = 1, name = "test1", imageUrl = "testUrl1", relationships = Relationships(isSelected = false))
+        val interestsItem2 = InterestsItem(id = 2, name = "test2", imageUrl = "testUrl2", relationships = Relationships(isSelected = true))
         return listOf(interestsItem1, interestsItem2)
     }
+
     @Test
     fun `test convertToInterestList()`() {
         val dummyList = getDummyInterestList()
         val responseArray = interestPickViewModel.convertToInterestList(dummyList)
-        for(i in 0 until responseArray.size){
+        for (i in 0 until responseArray.size) {
             assertEquals(responseArray[i].id, dummyList[i].id)
             assertEquals(responseArray[i].name, dummyList[i].name)
             assertEquals(responseArray[i].image, dummyList[i].imageUrl)
@@ -75,6 +76,18 @@ class InterestPickViewModelTest {
         val dummyHeader2 = Header(title = "")
         val responseHeaderWhenEmpty = interestPickViewModel.getTitle(dummyHeader2)
         assertEquals(responseHeaderWhenEmpty, DEFAULT_HEADER_TITLE)
+    }
+
+    @Test
+    fun `test onViewCreated call fetchData() only once`() {
+        interestPickViewModel.onViewCreated()
+        coVerify(exactly = 1) { interestPickViewModel.fetchData() }
+    }
+
+    @Test
+    fun `test onRetry call fetchData() only once`() {
+        interestPickViewModel.onRetry()
+        coVerify(exactly = 1) { interestPickViewModel.fetchData() }
     }
 
     @Test
@@ -134,6 +147,7 @@ class InterestPickViewModelTest {
         coVerify(exactly = 1) { updateInterestUseCase.setRequestParams(listOf()) }
         coVerify(exactly = 1) { updateInterestUseCase.executeOnBackground() }
         assertEquals(interestPickViewModel.getInterestPickLiveData().value, InterestPickViewState.UpdateInterestSuccess)
+        assertEquals(interestPickViewModel.isSaved, true)
     }
 
     @Test
@@ -141,6 +155,18 @@ class InterestPickViewModelTest {
         interestPickViewModel.updateInterestWIthSkip()
         coVerify(exactly = 1) { updateInterestUseCase.setRequestParamsSkip() }
         coVerify(exactly = 1) { updateInterestUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `test onBackPressed call updateInterestWIthSkip`() {
+        //when isSaved is true
+        interestPickViewModel.isSaved = true
+        interestPickViewModel.onBackPressed()
+        coVerify(exactly = 0) { interestPickViewModel.updateInterestWIthSkip() }
+        //when isSaved is false
+        interestPickViewModel.isSaved = false
+        interestPickViewModel.onBackPressed()
+        coVerify(exactly = 1) { interestPickViewModel.updateInterestWIthSkip() }
     }
 
 }
