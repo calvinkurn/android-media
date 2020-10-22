@@ -285,9 +285,6 @@ data class DataItem(
         @SerializedName("shop_applink")
         val shopApplink: String? = "",
 
-        @SerializedName("count_review")
-        val countReview: String? = "",
-
         @SerializedName("preorder")
         val preorder: String? = "",
 
@@ -297,11 +294,14 @@ data class DataItem(
         @SerializedName("product_id")
         val productId: String? = "",
 
+        @SerializedName("count_review")
+        val countReview: String? = "",
+
         @SerializedName("rating")
         val rating: String? = "",
 
         @SerializedName("average_rating")
-        val averageRating: String? = "",
+        val averageRating: String = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",

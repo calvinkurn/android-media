@@ -14,4 +14,9 @@ object Constant {
         const val SQUARE_DESIGN = "v1"
         const val RECTANGLE_DESIGN = "v2"
     }
+
+    object BADGE_URL {
+        const val OFFICIAL_STORE_URL =  "https://ecs7.tokopedia.net/img/official_store_badge.png"
+        const val POWER_MERCHANT_URL = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
+    }
 }

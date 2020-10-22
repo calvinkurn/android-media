@@ -12,9 +12,12 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
+import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
+private const val DEFAULT_RATING = 0
 
 class DiscoveryDataMapper {
 
@@ -159,8 +162,9 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                ratingCount = dataItem.rating?.toIntOrZero() ?: 0,
-                reviewCount = dataItem.countReview?.toIntOrZero() ?: 0,
+                ratingCount = DEFAULT_RATING,
+                reviewCount = DEFAULT_RATING,
+                countSoldRating = dataItem.averageRating,
                 productImageUrl = dataItem.imageUrlMobile ?: "",
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
@@ -170,19 +174,18 @@ class DiscoveryDataMapper {
                     dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
                 },
                 shopLocation = getShopLocation(dataItem),
-                shopBadgeList = getShopBadgeList(dataItem),
-                countSoldRating = dataItem.averageRating ?: ""
+                shopBadgeList = getShopBadgeList(dataItem)
         )
     }
 
     private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
         return ArrayList<ProductCardModel.ShopBadge>().apply {
             if (dataItem.goldMerchant == true && dataItem.officialStore == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
             } else if (dataItem.goldMerchant == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"))
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = POWER_MERCHANT_URL))
             } else if (dataItem.officialStore == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
             } else {
                 add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
             }
