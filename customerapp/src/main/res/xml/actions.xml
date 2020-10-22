@@ -7,4 +7,23 @@
             >
         </fulfillment>
     </action>
+
+    <action intentName="actions.intent.CREATE_LODGING_RESERVATION">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.tkpd.travel_slice/book_hotel{?city,checkIn,description,name}" >
+            <parameter-mapping
+                urlParameter="city"
+                intentParameter="lodgingReservation.reservationFor.address"
+                required="true"
+                />
+            <parameter-mapping
+                urlParameter="checkIn"
+                intentParameter="lodgingReservation.reservationFor.checkinTime" />
+            <parameter-mapping urlParameter="description" intentParameter="lodgingReservation.reservationFor.description" />
+            <parameter-mapping urlParameter="name" intentParameter="lodgingReservation.reservationFor.brand.name" />
+        </fulfillment>
+        <fulfillment
+            urlTemplate="content://com.tokopedia.tkpd.travel_slice/book_hotel" />
+    </action>
 </actions>
