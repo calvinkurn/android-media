@@ -30,6 +30,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.analytics)
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide

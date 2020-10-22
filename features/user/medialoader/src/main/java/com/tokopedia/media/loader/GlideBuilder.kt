@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -18,6 +17,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.data.Resize
@@ -33,8 +33,12 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
+    private const val MEDIA_LOADER_TRACE = "mp_medialoader"
+    private const val URL_PREFIX = "https://ecs7-p.tokopedia.net/img/cache/"
+
     private fun glideListener(
-            listener: LoaderStateListener?
+            listener: LoaderStateListener?,
+            performanceMonitoring: PerformanceMonitoring?
     ) = object : RequestListener<Drawable> {
         override fun onLoadFailed(
                 e: GlideException?,
@@ -53,6 +57,7 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
+            performanceMonitoring?.stopTrace()
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
@@ -87,6 +92,11 @@ object GlideBuilder {
         if (url == null) {
             imageView.setImageDrawable(drawableError)
         } else {
+            var performanceMonitoring: PerformanceMonitoring? = null
+            if(url is GlideUrl) {
+                performanceMonitoring = getPerformanceMonitoring(url.toStringUrl(), imageView.context)
+            }
+
             GlideApp.with(imageView.context).load(url).apply {
                 if (thumbnailUrl.isNotEmpty()) {
                     thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
@@ -124,7 +134,7 @@ object GlideBuilder {
                     transform(MultiTransformation(localTransform))
                 }
 
-                listener(glideListener(stateListener))
+                listener(glideListener(stateListener, performanceMonitoring))
                 into(imageView)
             }
         }
@@ -151,6 +161,20 @@ object GlideBuilder {
                     .transform(RoundedCorners(10))
                     .into(this)
         }
+    }
+
+    private fun getPerformanceMonitoring(url: String, context: Context): PerformanceMonitoring {
+        val urlWithoutPrefix = url.removePrefix(URL_PREFIX)
+        val performanceMonitoring = PerformanceMonitoring.start(MEDIA_LOADER_TRACE)
+        performanceMonitoring?.putCustomAttribute("image_url", urlWithoutPrefix)
+        when(AttributeUtils.getQualitySetting(context)) {
+            0 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "Automatic")
+            1 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "Low")
+            2 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "High")
+        }
+        performanceMonitoring?.putCustomAttribute("date_time", AttributeUtils.getDateTime())
+
+        return performanceMonitoring
     }
 
 }
