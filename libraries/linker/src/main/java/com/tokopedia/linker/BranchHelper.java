@@ -126,7 +126,7 @@ public class BranchHelper {
                                 .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
                                 .setSku(linkerData.getSku())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
-                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
+                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getLevel3Name())));
         new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
@@ -167,7 +167,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.SKU, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
-                .setRevenue(Double.parseDouble(linkerData.getPrice()))
+                .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo)
                 .logEvent(context);
