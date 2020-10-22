@@ -14,8 +14,8 @@ class MainNavUseCase @Inject constructor(
         private val mainNavMapper: MainNavMapper
 ) {
 
-    fun getMainNavData(): Flow<MainNavigationDataModel> = flow {
-        mainNavRepo.getMainNavData().collect{data ->
+    fun getMainNavData(shopId: Int): Flow<MainNavigationDataModel> = flow {
+        mainNavRepo.getMainNavData(shopId).collect{data ->
             emit(mainNavMapper.mapData(data))
         }
     }

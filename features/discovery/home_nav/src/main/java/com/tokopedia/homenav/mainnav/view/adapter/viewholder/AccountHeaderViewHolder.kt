@@ -13,6 +13,7 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 
 class AccountHeaderViewHolder(itemView: View,
@@ -21,7 +22,7 @@ class AccountHeaderViewHolder(itemView: View,
 ): AbstractViewHolder<AccountHeaderViewModel>(itemView) {
 
     private lateinit var layoutNonLogin: ConstraintLayout
-
+    private lateinit var layoutLogin: ConstraintLayout
     private lateinit var layoutLoginAs: ConstraintLayout
 
     companion object {
@@ -32,28 +33,33 @@ class AccountHeaderViewHolder(itemView: View,
 
     override fun bind(element: AccountHeaderViewModel) {
         initViewHolder()
-        when {
-            userSession.isLoggedIn -> renderLoginState(element)
-            haveUserLogoutData() -> renderLoginAs()
+        when(element.loginState) {
+            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
+            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
             else -> renderNonLoginState()
         }
-//        when(element.loginState) {
-//            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> renderLoginState(element)
-//            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS -> renderLoginAs()
-//            else -> renderNonLoginState()
-//        }
     }
 
     private fun initViewHolder() {
+        layoutLogin = itemView.findViewById(R.id.layout_login)
         layoutNonLogin = itemView.findViewById(R.id.layout_nonlogin)
         layoutLoginAs = itemView.findViewById(R.id.layout_login_as)
 
         layoutNonLogin.visibility = View.GONE
         layoutLoginAs.visibility = View.GONE
+        layoutLogin.visibility = View.GONE
     }
 
     private fun renderLoginState(element: AccountHeaderViewModel) {
-
+        layoutLogin.visibility = View.VISIBLE
+        val userImage: ImageView = layoutLogin.findViewById(R.id.img_user_login)
+        val usrBadge: ImageView = layoutLogin.findViewById(R.id.usr_badge)
+        val usrOvoBadge: ImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
+        val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
+        val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
+        val tvOvo: ImageView = layoutLogin.findViewById(R.id.tv_ovo)
+        val shopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
+        val shopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
     }
 
     private fun renderNonLoginState() {

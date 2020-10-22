@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
 import com.tokopedia.homenav.mainnav.data.repository.MainNavRepo
 import com.tokopedia.homenav.mainnav.data.usecase.GetCoroutineWalletBalanceUseCase
+import com.tokopedia.homenav.mainnav.data.usecase.GetShopInfoUseCase
+import com.tokopedia.homenav.mainnav.data.usecase.GetUserMembershipUseCase
 import com.tokopedia.homenav.mainnav.domain.interactor.MainNavUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,7 +61,19 @@ class MainNavUseCaseModule {
         return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 
+
+    @MainNavScope
+    @Provides
+    fun provideUserMembershipUseCase(graphqlRepository: GraphqlRepository) = GetUserMembershipUseCase(graphqlRepository)
+
+
+    @MainNavScope
+    @Provides
+    fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) = GetShopInfoUseCase(graphqlRepository)
+
     @MainNavScope
     @Provides
     fun provideMainNavUseCase(mainNavRepo: MainNavRepo, mainNavMapper: MainNavMapper) = MainNavUseCase(mainNavRepo, mainNavMapper)
+
+
 }

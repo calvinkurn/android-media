@@ -11,6 +11,5 @@ data class MainNavigationDataModel(
 }
 
 class MainNavType{
-
     fun type(model: MainNavigationDataModel): Int = -1
 }
