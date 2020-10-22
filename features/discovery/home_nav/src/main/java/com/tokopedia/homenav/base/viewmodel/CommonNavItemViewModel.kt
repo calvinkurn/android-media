@@ -9,7 +9,8 @@ data class CommonNavItemViewModel(
         val id: Int = 0,
         val srcImage: String = "",
         val itemTitle: String = "",
-        val applink: String = ""
+        val applink: String = "",
+        val notifCount: String = ""
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -21,6 +22,6 @@ data class CommonNavItemViewModel(
 
 
     override fun type(factory: HomeNavTypeFactory): Int {
-        return (factory as MainNavTypeFactory).type(this)
+        return factory.type(this)
     }
 }
