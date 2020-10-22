@@ -9,13 +9,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselViewHintListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_list.view.*
 
 class InspirationCarouselOptionListViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView), InspirationCarouselViewHintListener {
+) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_list
@@ -66,6 +65,14 @@ class InspirationCarouselOptionListViewHolder(
         itemView.productImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
+    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
+            }
+        }
+    }
+
     private fun bindProductImage(imgUrl: String) {
         itemView.productImage?.shouldShowWithAction(imgUrl.isNotEmpty()) {
             ImageHandler.loadImageFitCenter(itemView.context, it, imgUrl)
@@ -107,13 +114,5 @@ class InspirationCarouselOptionListViewHolder(
 
     private fun getReviewCountFormattedAsText(reviewCount: Int): String {
         return "($reviewCount)"
-    }
-
-    override fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
-        return object: ViewHintListener {
-            override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
-            }
-        }
     }
 }

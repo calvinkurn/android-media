@@ -1717,20 +1717,6 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onInspirationCarouselInfoImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
-        if (getView() == null || inspirationCarouselProduct == null) return;
-
-        getView().sendImpressionInspirationCarouselInfo(inspirationCarouselProduct);
-    }
-
-    @Override
-    public void onInspirationCarouselListImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
-        if (getView() == null || inspirationCarouselProduct == null) return;
-
-        getView().sendImpressionInspirationCarouselList(inspirationCarouselProduct);
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
         if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.get().unsubscribe();

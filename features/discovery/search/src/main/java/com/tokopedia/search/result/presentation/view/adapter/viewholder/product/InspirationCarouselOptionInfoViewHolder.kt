@@ -10,13 +10,12 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselViewHintListener
 import kotlinx.android.synthetic.main.search_inspiration_carousel_option_info.view.*
 
 class InspirationCarouselOptionInfoViewHolder(
         itemView: View,
         private val inspirationCarouselListener: InspirationCarouselListener
-) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView), InspirationCarouselViewHintListener {
+) : AbstractViewHolder<InspirationCarouselViewModel.Option>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_info
@@ -45,6 +44,14 @@ class InspirationCarouselOptionInfoViewHolder(
         itemView.optionInfoImage?.addOnImpressionListener(product, createViewHintListener(product))
     }
 
+    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                inspirationCarouselListener.onImpressedInspirationCarouselInfoProduct(product)
+            }
+        }
+    }
+
     private fun bindOptionTitle(title: String) {
         itemView.optionInfoTitle?.shouldShowWithAction(title.isNotEmpty()) {
             itemView.optionInfoTitle?.text = MethodChecker.fromHtml(title)
@@ -68,14 +75,6 @@ class InspirationCarouselOptionInfoViewHolder(
         itemView.optionInfoCardView?.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselInfoProductClicked(product)
-        }
-    }
-
-    override fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
-        return object: ViewHintListener {
-            override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselInfoProduct(product)
-            }
         }
     }
 }

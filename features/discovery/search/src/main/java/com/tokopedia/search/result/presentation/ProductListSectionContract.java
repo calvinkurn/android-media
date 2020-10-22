@@ -105,10 +105,6 @@ public interface ProductListSectionContract {
 
         void reloadData();
 
-        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel.Option.Product inspirationCarouselProduct);
-
-        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel.Option.Product inspirationCarouselProduct);
-
         RemoteConfig getABTestRemoteConfig();
 
         void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist);
@@ -224,9 +220,5 @@ public interface ProductListSectionContract {
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
-
-        void onInspirationCarouselInfoImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct);
-
-        void onInspirationCarouselListImpressed(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct);
     }
 }

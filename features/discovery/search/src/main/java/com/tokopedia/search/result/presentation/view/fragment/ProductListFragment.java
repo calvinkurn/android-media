@@ -1347,33 +1347,23 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendImpressionInspirationCarouselList(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
-        List<Object> products = new ArrayList<>();
-        products.add(inspirationCarouselProduct.getInspirationCarouselListProductImpressionAsObjectDataLayer());
-
-        SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, inspirationCarouselProduct.getInspirationCarouselType(), getQueryKey(), products);
-    }
-
-    @Override
-    public void sendImpressionInspirationCarouselInfo(InspirationCarouselViewModel.Option.Product inspirationCarouselProduct) {
-        List<Object> products = new ArrayList<>();
-        products.add(inspirationCarouselProduct.getInspirationCarouselInfoProductAsObjectDataLayer());
-
-        SearchTracking.trackImpressionInspirationCarouselInfo(trackingQueue, inspirationCarouselProduct.getInspirationCarouselType(), getQueryKey(), products);
-    }
-
-    @Override
     public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselViewModel.Option.Product product) {
-        if (presenter == null) return;
+        if (product == null) return;
 
-        presenter.onInspirationCarouselInfoImpressed(product);
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer());
+
+        SearchTracking.trackImpressionInspirationCarouselInfo(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
     public void onImpressedInspirationCarouselListProduct(InspirationCarouselViewModel.Option.Product product) {
-        if (presenter == null) return;
+        if (product == null) return;
 
-        presenter.onInspirationCarouselListImpressed(product);
+        List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
+
+        SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
