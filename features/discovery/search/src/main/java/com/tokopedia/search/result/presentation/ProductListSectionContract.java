@@ -107,10 +107,6 @@ public interface ProductListSectionContract {
 
         void reloadData();
 
-        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
-        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
         RemoteConfig getABTestRemoteConfig();
 
         void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist);
@@ -149,7 +145,7 @@ public interface ProductListSectionContract {
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
-        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onQuickFilterSelected(Option option);
 

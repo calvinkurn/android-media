@@ -1354,29 +1354,23 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendImpressionInspirationCarouselList(InspirationCarouselViewModel inspirationCarouselViewModel) {
+    public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselViewModel.Option.Product product) {
+        if (product == null) return;
+
         List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer());
 
-        for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
-            for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
-                products.add(object.getInspirationCarouselListProductImpressionAsObjectDataLayer());
-            }
-        }
-
-        SearchTracking.trackImpressionInspirationCarouselList(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+        SearchTracking.trackImpressionInspirationCarouselInfo(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
-    public void sendImpressionInspirationCarouselInfo(InspirationCarouselViewModel inspirationCarouselViewModel) {
+    public void onImpressedInspirationCarouselListProduct(InspirationCarouselViewModel.Option.Product product) {
+        if (product == null) return;
+
         List<Object> products = new ArrayList<>();
+        products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
 
-        for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
-            for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
-                products.add(object.getInspirationCarouselInfoProductAsObjectDataLayer());
-            }
-        }
-
-        SearchTracking.trackImpressionInspirationCarouselInfo(inspirationCarouselViewModel.getType(), getQueryKey(), products);
+        SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
@@ -1521,8 +1515,11 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
-        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, getUserId(), impressionObjectDataLayer);
+    public void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel) {
+        List<Object> broadMatchItemAsObjectDataLayer = new ArrayList<>();
+        broadMatchItemAsObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
+
+        SearchTracking.trackEventImpressionBroadMatch(trackingQueue, getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), getUserId(), broadMatchItemAsObjectDataLayer);
     }
 
     @Override
