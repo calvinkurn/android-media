@@ -147,9 +147,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             mapFareParam[PARAM_CLASS] = classFlight.toString()
 
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
-                        GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
-                        mapFareParam, minDate, maxDate)
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

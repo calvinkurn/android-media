@@ -70,9 +70,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
             mapFareParam[PARAM_CLASS] = classFlight.toString()
 
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
-                        GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
-                        mapFareParam, minCalendarDate, maxCalendarDate,
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate,
                         true, TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate))
             }
 
