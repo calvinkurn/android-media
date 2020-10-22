@@ -12,6 +12,6 @@ object HomeNavDiffCallback : DiffUtil.ItemCallback<HomeNavVisitable>() {
     }
 
     override fun areContentsTheSame(oldItemShopHomeDisplay: HomeNavVisitable, newItemShopHomeDisplay: HomeNavVisitable): Boolean {
-        return oldItemShopHomeDisplay.isDifferent(newItemShopHomeDisplay)
+        return oldItemShopHomeDisplay.isContentTheSame(newItemShopHomeDisplay)
     }
 }

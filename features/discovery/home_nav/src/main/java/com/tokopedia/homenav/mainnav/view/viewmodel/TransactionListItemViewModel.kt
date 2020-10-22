@@ -13,7 +13,7 @@ data class TransactionListItemViewModel(
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isDifferent(visitable: HomeNavVisitable): Boolean =
+    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean =
             visitable is TransactionListItemViewModel &&
             srcImage == visitable.srcImage &&
             itemTitle == visitable.itemTitle &&

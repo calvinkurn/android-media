@@ -10,7 +10,7 @@ data class AccountHeaderViewModel(
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isDifferent(visitable: HomeNavVisitable): Boolean = id == visitable.id()
+    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean = id == visitable.id()
 
     override fun type(factory: HomeNavTypeFactory): Int {
         return (factory as MainNavTypeFactory).type(this)
