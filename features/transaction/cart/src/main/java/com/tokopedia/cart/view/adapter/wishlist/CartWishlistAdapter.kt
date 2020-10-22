@@ -1,8 +1,9 @@
-package com.tokopedia.cart.view.adapter
+package com.tokopedia.cart.view.adapter.wishlist
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.viewholder.CartWishlistItemViewHolder
@@ -14,7 +15,7 @@ import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 
 class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var wishlistItemHoldeDataList: List<CartWishlistItemHolderData> = arrayListOf()
+    private var list: MutableList<CartWishlistItemHolderData> = arrayListOf()
 
     override fun getItemViewType(position: Int): Int {
         return CartWishlistItemViewHolder.LAYOUT
@@ -27,13 +28,28 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
     }
 
     override fun getItemCount(): Int {
-        return wishlistItemHoldeDataList.size
+        return list.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val holderView = holder as CartWishlistItemViewHolder
-        val data = wishlistItemHoldeDataList.get(position)
+        val data = list.get(position)
         holderView.bind(data)
+    }
+
+    fun addWishlistItems(visitableList: List<CartWishlistItemHolderData>) {
+        val newList: MutableList<CartWishlistItemHolderData> = mutableListOf()
+        newList.addAll(visitableList)
+        updateList(newList)
+    }
+
+    private fun updateList(newList: List<CartWishlistItemHolderData>) {
+        val diffResult = DiffUtil.calculateDiff(WishlistDiffUtilCallback(list, newList))
+
+        list.clear()
+        list.addAll(newList)
+
+        diffResult.dispatchUpdatesTo(this)
     }
 
 }

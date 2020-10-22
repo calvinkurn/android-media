@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.adapter
+package com.tokopedia.cart.view.adapter.cart
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
+import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
+import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.*
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -566,27 +568,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(accordionHolderData)
     }
 
-    fun setAllShopSelected(selected: Boolean) {
-        for (i in cartDataList.indices) {
-            if (cartDataList[i] is CartShopHolderData) {
-                val cartShopHolderData = cartDataList[i] as CartShopHolderData
-                if (cartShopHolderData.shopGroupAvailableData.cartItemDataList?.size ?: 0 == 1) {
-                    cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
-                        for (cartItemHolderData in it) {
-                            if (cartItemHolderData.cartItemData?.isError == true && cartItemHolderData.cartItemData?.isSingleChild == true) {
-                                setShopSelected(i, false)
-                            } else {
-                                setShopSelected(i, selected)
-                            }
-                        }
-                    }
-                } else {
-                    setShopSelected(i, selected)
-                }
-            }
-        }
-    }
-
     fun setShopSelected(position: Int, selected: Boolean) {
         val any = cartDataList[position]
         if (any is CartShopHolderData) {
@@ -780,10 +761,20 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         if (wishlistIndex != 0) {
-            cartDataList.set(wishlistIndex, cartWishlistHolderData)
+            cartDataList[wishlistIndex] = cartWishlistHolderData
         }
 
         return wishlistIndex
+    }
+
+    fun getCartWishlistHolderData(): CartWishlistHolderData {
+        cartDataList.forEach {
+            if (it is CartWishlistHolderData) {
+                return it
+            }
+        }
+
+        return CartWishlistHolderData()
     }
 
     fun addCartRecommendationData(cartSectionHeaderHolderData: CartSectionHeaderHolderData?,
@@ -815,13 +806,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(recommendationIndex, cartRecommendationItemHolderDataList.size)
     }
 
     fun removeCartEmptyData() {
         cartEmptyHolderData?.let {
+            val index = cartDataList.indexOf(it)
             cartDataList.remove(it)
-            notifyDataSetChanged()
+            notifyItemRemoved(index)
 
             cartEmptyHolderData = null
         }
@@ -867,9 +859,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         if (canProcess && checkedCount > 0) {
-            actionListener?.onCartDataEnableToCheckout()
+            actionListener.onCartDataEnableToCheckout()
         } else {
-            actionListener?.onCartDataDisableToCheckout()
+            actionListener.onCartDataDisableToCheckout()
         }
     }
 
@@ -960,6 +952,31 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     }
                 }
                 break
+            }
+        }
+    }
+
+    fun removeWishlist(productId: String) {
+        var wishlistIndex = 0
+        var cartWishlistHolderData: CartWishlistHolderData? = null
+        for (any in cartDataList) {
+            if (any is CartWishlistHolderData) {
+                val wishlist = any.wishList
+                for ((index, data) in wishlist.withIndex()) {
+                    if (data.id == productId) {
+                        wishlistIndex = index
+                        cartWishlistHolderData = any
+                        break
+                    }
+                }
+                break
+            }
+        }
+
+        if (cartWishlistHolderData != null) {
+            cartWishlistAdapter?.let {
+                cartWishlistHolderData.wishList.removeAt(wishlistIndex)
+                cartWishlistAdapter?.notifyItemRemoved(wishlistIndex)
             }
         }
     }

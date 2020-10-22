@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.adapter;
+package com.tokopedia.cart.view.adapter.cart;
 
 import android.view.LayoutInflater;
 import android.view.View;
