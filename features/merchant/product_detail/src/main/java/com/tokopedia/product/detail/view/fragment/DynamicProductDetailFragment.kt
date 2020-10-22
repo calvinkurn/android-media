@@ -1581,14 +1581,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onButtonFollowNplClick() {
-        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
-
-        if (isFavorite) {
-            setupNplVisibility(ProductDetailConstant.HIDE_NPL_BS)
-        } else {
-            onShopFavoriteClick(isNplFollowType = true)
-        }
+        DynamicProductDetailTracking.Click.eventClickFollowNpl(viewModel.getDynamicProductInfoP1, viewModel.userId)
+        onShopFavoriteClick(isNplFollowType = true)
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
@@ -2597,7 +2591,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun setupNplVisibility(isFavorite: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo?.restrictionData
-        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true) {
+        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true && !viewModel.isShopOwner()) {
             isFavorite
         } else {
             false
