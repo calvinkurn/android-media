@@ -133,20 +133,13 @@ object GlideBuilder {
     fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = if (imageView.maxWidth <= 0) 100 else imageView.maxWidth,
-                height = if (imageView.maxHeight <= 0) 100 else imageView.maxHeight,
-                useCache = true
+                width = imageView.maxWidth,
+                height = imageView.maxHeight
         )
     }
 
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Drawable> {
-        return GlideApp.with(context)
-                .load(resource)
-                .dontAnimate()
-                .dontTransform()
-                .fitCenter()
-                .priority(Priority.NORMAL)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
+        return GlideApp.with(context).load(resource).fitCenter().diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
     fun loadGifImage(imageView: ImageView, url: String) {
