@@ -76,7 +76,7 @@ object TrackingUtil {
         val linkerData = LinkerData()
         linkerData.shopId = productInfo.basic.shopID
         linkerData.price = productInfo.finalPrice.toString()
-        linkerData.name = productInfo.getProductName
+        linkerData.productName = productInfo.getProductName
         linkerData.sku = productInfo.basic.productID
         linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
         productInfo.basic.category.detail.getOrNull(0)?.let {
@@ -84,7 +84,11 @@ object TrackingUtil {
             linkerData.level1Id = it.id
         }
         linkerData.userId = userId ?: ""
-        linkerData.content = JSONArray().put(JSONObject().put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID).put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock.value.toString())).toString()
+        linkerData.content = JSONArray().put(
+                JSONObject().apply {
+                    put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID)
+                    put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock.value.toString())
+                }).toString()
         productInfo.basic.category.detail.getOrNull(1)?.let {
             linkerData.level2Name = it.name
             linkerData.level2Id = it.id
@@ -92,8 +96,7 @@ object TrackingUtil {
         linkerData.contentId = productInfo.basic.productID
         linkerData.contentType = ProductTrackingConstant.Tracking.CONTENT_TYPE
         productInfo.basic.category.detail.getOrNull(2)?.let {
-            linkerData.level3Id = it.id
-            linkerData.level3Name = it.name
+            linkerData.productCategory = it.name
         }
         linkerData.quantity = productInfo.data.stock.value.toString()
         return linkerData
