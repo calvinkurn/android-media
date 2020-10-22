@@ -41,6 +41,8 @@ internal open class BannerView(activity: Activity) {
         // set transparent background only for interstitial_img
         if (data.type == TYPE_INTERSTITIAL_IMAGE_ONLY) {
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        } else {
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.WHITE))
         }
 
         dialog.show()
