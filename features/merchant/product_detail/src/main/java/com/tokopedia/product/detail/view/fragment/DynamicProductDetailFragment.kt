@@ -2597,7 +2597,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun setupNplVisibility(isFavorite: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo?.restrictionData
-        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true) {
+        nplFollowersButton?.setupVisibility = if (restrictionData?.isNotEmpty() == true && restrictionData.firstOrNull()?.action?.isNotEmpty() == true && !viewModel.isShopOwner()) {
             isFavorite
         } else {
             false
