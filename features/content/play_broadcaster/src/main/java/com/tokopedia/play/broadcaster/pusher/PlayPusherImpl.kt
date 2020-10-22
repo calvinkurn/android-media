@@ -134,6 +134,7 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
 
     override fun addPlayPusherTimerListener(listener: PlayPusherTimerListener) {
         this.mPlayPusherTimerListener = listener
+        this.mTimerDuration?.callback = mPlayPusherTimerListener
     }
 
     override fun addPlayPusherInfoListener(listener: PlayPusherInfoListener) {

@@ -267,10 +267,6 @@ class PlayBroadcastViewModel @Inject constructor(
                 }
             }
 
-            override fun onStop() {
-                retrievedReportDuration(playPusher.getTimeElapsed())
-            }
-
             override fun onRecovered() {
                 autoReconnectPushStream()
             }
@@ -413,6 +409,13 @@ class PlayBroadcastViewModel @Inject constructor(
         hydraConfigStore.setChannelId(channelId)
     }
 
+    fun getReportDuration() {
+        scope.launch {
+            val liveDuration = playPusher.getTimeElapsed()
+            _observableReportDuration.value = liveDuration
+        }
+    }
+
     private fun startWebSocket() {
         scope.launch {
             val socketCredential =  withContext(dispatcher.io) {
@@ -514,12 +517,6 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun retrieveNewChat(newChat: PlayChatUiModel) {
         scope.launch(dispatcher.io) {
             onRetrievedNewChat(newChat)
-        }
-    }
-
-    private fun retrievedReportDuration(timeElapsed: String) {
-        scope.launch(dispatcher.main) {
-            _observableReportDuration.value = timeElapsed
         }
     }
 

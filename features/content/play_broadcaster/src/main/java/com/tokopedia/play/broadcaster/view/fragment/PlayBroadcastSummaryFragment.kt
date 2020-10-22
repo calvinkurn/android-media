@@ -13,7 +13,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -25,7 +24,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
@@ -59,6 +57,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         observeChannelInfo()
         observeLiveDuration()
         observeLiveTrafficMetrics()
+
+        parentViewModel.getReportDuration()
 
         return view
     }
@@ -122,28 +122,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun setLiveDuration(timeElapsed: String) {
         summaryInfoView.setLiveDuration(timeElapsed)
-    }
-
-    private fun showToaster(
-            message: String,
-            type: Int = Toaster.TYPE_NORMAL,
-            duration: Int = Toaster.LENGTH_LONG,
-            actionLabel: String = "",
-            actionListener: View.OnClickListener = View.OnClickListener { }
-    ) {
-        if (toasterBottomMargin == 0) {
-            val offset24 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
-            toasterBottomMargin = btnFinish.height + offset24
-        }
-
-        view?.showToaster(
-                message = message,
-                duration = duration,
-                type = type,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
-        )
     }
 
     /**
