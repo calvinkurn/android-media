@@ -43,7 +43,7 @@ import javax.inject.Inject
  * Author errysuprayogi on 29,October,2019
  */
 
-private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan manual"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {

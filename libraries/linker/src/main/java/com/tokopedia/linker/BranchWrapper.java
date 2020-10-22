@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.linker.helper.BranchHelper;
+import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.interfaces.WrapperInterface;
@@ -11,6 +13,7 @@ import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerShareData;
+import com.tokopedia.linker.model.RechargeLinkerData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
@@ -183,6 +186,24 @@ public class BranchWrapper implements WrapperInterface {
                         linkerGenericRequest.getDataObj() instanceof LinkerData){
                     BranchHelper.sendFlightPurchaseEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
                 }
+                break;
+            // Recharge
+            case LinkerConstants.EVENT_DIGITAL_HOMEPAGE:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    RechargeBranchHelper.sendDigitalHomepageLaunchEvent(context,
+                            (LinkerData) linkerGenericRequest.getDataObj()
+                    );
+                }
+                break;
+            case LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof RechargeLinkerData){
+                    RechargeBranchHelper.sendDigitalScreenLaunchEvent(context,
+                            (RechargeLinkerData) linkerGenericRequest.getDataObj()
+                    );
+                }
+                break;
         }
     }
 
