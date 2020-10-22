@@ -506,9 +506,7 @@ class ShopPageFragment :
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
             if (!swipeToRefresh.isRefreshing) {
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: before setViewState(VIEW_LOADING)")
                 setViewState(VIEW_LOADING)
-                Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: after setViewState(VIEW_LOADING)")
             }
             initViews(view)
         }
