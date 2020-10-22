@@ -1478,6 +1478,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistCheckChanged(productId: String, cartId: Int) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
         val isLastItem = cartAdapter.allCartItemData.size == 1
         dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
@@ -2612,15 +2613,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         showToastMessageGreen(message, false)
-
-        when (source) {
-            WISHLIST_SOURCE_AVAILABLE_ITEM -> {
-                cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
-            }
-            WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
-                cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
-            }
-        }
 
         if (isLastItem) {
             resetRecentViewList()
