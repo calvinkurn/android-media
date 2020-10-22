@@ -129,9 +129,7 @@ dependencies {
         }
     }
 
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -175,10 +173,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
 }
 
 project.ext {

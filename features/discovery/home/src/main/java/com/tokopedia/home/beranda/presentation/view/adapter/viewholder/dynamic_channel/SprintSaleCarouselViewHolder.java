@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.TextViewCompat;
@@ -107,7 +107,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         Map<String, Object> evenMap = channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
                 countDownView.getCurrentCountDown(), grid.getLabel());
         HomePageTracking.eventEnhancedClickSprintSaleProduct(
-                context,
                 evenMap);
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));
@@ -151,14 +150,14 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             }
         } catch (Exception e) {
             if(!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, TAG, e.getLocalizedMessage());
+                FirebaseCrashlytics.getInstance().log("E/"+TAG+":"+e.getLocalizedMessage());
             }
         }
     }
 
     private void onClickSeeAll() {
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()));
-        HomePageTracking.eventClickSeeAllProductSprintBackground(context, channels.getId());
+        HomePageTracking.eventClickSeeAllProductSprintBackground(channels.getId());
         HomeTrackingUtils.homeSprintSaleViewAll(context,
                 DynamicLinkHelper.getActionLink(channels.getHeader()));
     }
@@ -229,7 +228,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                     holder.countainer.setOnClickListener(null);
                 }
             } catch (Exception e) {
-                Crashlytics.log(0, TAG, e.getLocalizedMessage());
+                FirebaseCrashlytics.getInstance().log("E/"+TAG+":"+e.getLocalizedMessage());
             }
         }
 
@@ -264,10 +263,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                 ViewCompat.setBackgroundTintList(stockProgress,
                         ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),
-                                R.color.grey_hint_full)));
+                                com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             } else {
                 stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat
-                        .getColor(itemView.getContext(), R.color.grey_hint_full)));
+                        .getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             }
         }
 

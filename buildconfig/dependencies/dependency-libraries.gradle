@@ -23,7 +23,8 @@ ext {
             analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.2",
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.3",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
-            gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21"
+            gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
+            lint                    : "com.tokopedia.library:lint:0.0.2"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -50,6 +51,7 @@ ext {
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
+            deviceFingerprint       : ":libraries:device_fingerprint",
             deviceInfo              : ":libraries:device_info",
             devMonitoringTools      : ":libraries:dev_monitoring_tools",
             dynamicFeatures         : ":libraries:dynamic_features",
@@ -96,6 +98,7 @@ ext {
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
+            screenshot_observer     : ":libraries:screenshot_observer",
             traceroute              : ":libraries:traceroute",
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
@@ -103,6 +106,5 @@ ext {
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
-            lint                    : ":libraries:lint"
     ]
 }

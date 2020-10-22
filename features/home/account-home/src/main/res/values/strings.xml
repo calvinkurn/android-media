@@ -28,6 +28,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
@@ -231,6 +232,8 @@
     <string name="account_home_seller_open_shop">Buka Toko Gratis</string>
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<strong>%1$s</strong>]]></string>
 
+    <string name="feedback_form">Feedback Form</string>
+
     <string name="image_quality_setting_screen">Kualitas Gambar</string>
     <string name="image_quality_setting_title">Atur kualitas gambar yang kamu lihat</string>
     <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
@@ -248,12 +251,7 @@
     <string name="image_quality_auto_toast">Pengaturan otomatis berhasil dipilih.</string>
 
     <!--CONTENT DESC-->
-    <string name="content_desc_text_shop_name">text nama toko</string>
-    <string name="content_desc_image_shop">image logo toko</string>
-    <string name="content_desc_image_badge">image badge toko</string>
-    <string name="content_desc_text_desc">text menu status pesanan</string>
     <string name="content_desc_tv_add_product_title">text tambah produk</string>
-    <string name="content_desc_text_view_title">text menu</string>
 
 
     <string name="account_buyer">Akun Pembeli</string>

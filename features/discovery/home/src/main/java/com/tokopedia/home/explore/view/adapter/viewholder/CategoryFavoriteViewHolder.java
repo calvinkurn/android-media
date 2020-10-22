@@ -67,8 +67,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         adapter.setData(rowModelList);
         if (!isImpressed()) {
             HomePageTracking.eventEnhancedImpressionFavoriteCategory(
-                    context,
-                element.getHomePageEnhanceDataLayer()
+                    element.getHomePageEnhanceDataLayer()
             );
             setImpressed(true);
         }
@@ -114,7 +113,6 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
                 @Override
                 public void onClick(View view) {
                     HomePageTracking.eventEnhancedClickFavoriteCategory(
-                            context,
                             rowModel.getHomePageEnhanceDataLayer(
                                     position + 1,
                                     "/explore beli - p1 - Kategori Favorit Anda"

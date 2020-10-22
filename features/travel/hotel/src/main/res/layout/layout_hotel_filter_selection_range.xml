@@ -40,6 +40,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_7"
-        android:paddingRight="@dimen/dp_7" />
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl1" />
 </LinearLayout>

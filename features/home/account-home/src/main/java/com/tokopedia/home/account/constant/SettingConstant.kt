@@ -33,13 +33,15 @@ object SettingConstant {
     const val SETTING_BANK_ACCOUNT_ID = 33
     const val SETTING_CREDIT_CARD_ID = 34
     const val SETTING_DEBIT_INSTANT = 35
+    const val SETTING_FEEDBACK_FORM = 37
     const val SETTING_DEV_OPTIONS = 0
     const val SETTING_APP_REVIEW_ID = 10
     const val SETTING_APP_ADVANCED_SETTING = 11
     const val SETTING_APP_ADVANCED_CLEAR_CACHE = 1
     const val SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2
     const val SETTING_ABOUT_US = 36
-    const val SETTING_IMAGE_QUALITY = 37
+    const val SETTING_PUSH_NOTIF= 37
+    const val SETTING_IMAGE_QUALITY = 38
     const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
     const val RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller"
     const val RESCENTER_BUYER = "https://m.tokopedia.com/resolution-center/inbox/buyer"
