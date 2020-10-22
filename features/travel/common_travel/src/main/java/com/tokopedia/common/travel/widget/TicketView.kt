@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import com.tokopedia.common.travel.R
+import kotlin.math.ceil
 
 /**
  * @author by furqan on 14/05/19
@@ -129,7 +130,7 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             0f -> 0
             else -> {
                 val density = resources.displayMetrics.density
-                Math.ceil((density * value).toDouble()).toInt()
+                ceil((density * value).toDouble()).toInt()
             }
         }
     }
