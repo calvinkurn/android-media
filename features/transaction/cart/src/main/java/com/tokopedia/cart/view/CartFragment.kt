@@ -1122,11 +1122,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isLastItem = cartAdapter.allCartItemData.size == 1
 
         // If unavailable item > 1 and state is collapsed, then expand first
+        var forceExpand = false
         if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
             collapseOrExpandDisabledItem()
+            forceExpand = true
         }
 
-        dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM)
+        dPresenter.processAddCartToWishlist(data.productId, data.cartId.toString(), isLastItem, WISHLIST_SOURCE_UNAVAILABLE_ITEM, forceExpand)
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -2466,34 +2468,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
+        val updateListResult = cartAdapter.removeCartItemById(deletedCartIds, context)
+        removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
+        hideProgressLoading()
+
         if (removeAllItems) {
-            hideProgressLoading()
             resetRecentViewList()
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
+            cartAdapter.removeTickerAnnouncement()
+            renderCartEmptyDefault()
+            cartAdapter.notifyItemInserted(0)
         } else {
-            val updateListResult = cartAdapter.removeCartItemById(deletedCartIds, context)
-            updateListResult.first.forEach {
-                onNeedToRemoveViewItem(it)
-            }
-            updateListResult.second.forEach {
-                onNeedToUpdateViewItem(it)
-            }
-
-            // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-            if (cartAdapter.allDisabledCartItemData.size > 1) {
-                if (forceExpandCollapsedUnavailableItems) {
-                    collapseOrExpandDisabledItem()
-                }
-            } else {
-                cartAdapter.removeAccordionDisabledItem()
-            }
-
-            dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-            notifyBottomCartParent()
-
-            cartAdapter.checkForSingleItemRemaining()
-
-            hideProgressLoading()
+            cartAdapter.setLastItemAlwaysSelected()
         }
     }
 
@@ -2518,14 +2504,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
+        val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
+        removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
         if (isLastItem) {
             resetRecentViewList()
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
+            cartAdapter.removeTickerAnnouncement()
+            renderCartEmptyDefault()
+            cartAdapter.notifyItemInserted(0)
         } else {
-            val updateListResult = cartAdapter.removeCartItemById(listOf(cartId), context)
-            removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
-
-            cartAdapter.checkForSingleItemRemaining()
+            cartAdapter.setLastItemAlwaysSelected()
         }
     }
 

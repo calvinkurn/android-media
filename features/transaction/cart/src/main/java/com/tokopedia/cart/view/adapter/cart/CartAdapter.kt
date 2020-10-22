@@ -1324,7 +1324,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return Pair(firstIndex, count)
     }
 
-    fun checkForSingleItemRemaining() {
+    fun setLastItemAlwaysSelected() {
         var cartItemCount = 0
         cartDataList.forEach outer@{ any ->
             if (any is CartShopHolderData) {
