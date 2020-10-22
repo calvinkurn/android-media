@@ -168,6 +168,13 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     toggleFollowButton()
+                    shopPageHomeTracking.clickTncBottomSheetFollowButtonNplFollower(
+                            isOwner,
+                            isFollowShop,
+                            shopId,
+                            viewModel?.userId.orEmpty(),
+                            customDimensionShopPage
+                    )
                 }
                 is Fail -> {
                     onErrorFollowShop(it.throwable)

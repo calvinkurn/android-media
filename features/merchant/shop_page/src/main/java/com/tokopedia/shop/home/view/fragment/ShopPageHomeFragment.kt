@@ -500,11 +500,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isRegisterCampaign,
                 true
         )
-        shopPageHomeTracking.clickNotifyMeButton(
-                isOwner,
-                data.action,
-                customDimensionShopPage
-        )
+        if(viewModel?.isCampaignFollower(data.campaignId) == true){
+            shopPageHomeTracking.clickNotifyMeNplFollowerButton(
+                    isOwner,
+                    data.action,
+                    viewModel?.userId.orEmpty(),
+                    customDimensionShopPage
+            )
+        }else{
+            shopPageHomeTracking.clickNotifyMeButton(
+                    isOwner,
+                    data.action,
+                    customDimensionShopPage
+            )
+        }
         view?.let {
             Toaster.make(
                     it,
