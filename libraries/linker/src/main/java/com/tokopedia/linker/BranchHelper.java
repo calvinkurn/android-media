@@ -126,7 +126,7 @@ public class BranchHelper {
                                 .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
                                 .setSku(linkerData.getSku())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
-                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
+                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getLevel3Name())));
         new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
