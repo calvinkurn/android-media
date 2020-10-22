@@ -75,15 +75,19 @@ class RechargeHomepageViewModel @Inject constructor(
                 Update local (viewmodel) section then update LiveData in order to
                 prevent missing section updates caused by postValue override
              */
-            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
-            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
+            withContext(dispatcher.Main) {
+                localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(localRechargeHomepageSections, data)
+                mutableRechargeHomepageSections.value = localRechargeHomepageSections
+            }
         }) {
             // Because error occured, remove sections
-            localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
-                    localRechargeHomepageSections,
-                    RechargeHomepageSections(requestIDs = requestIDs)
-            )
-            mutableRechargeHomepageSections.postValue(localRechargeHomepageSections)
+            withContext(dispatcher.Main) {
+                localRechargeHomepageSections = RechargeHomepageSectionMapper.updateSectionsData(
+                        localRechargeHomepageSections,
+                        RechargeHomepageSections(requestIDs = requestIDs)
+                )
+                mutableRechargeHomepageSections.value = localRechargeHomepageSections
+            }
         }
     }
 
