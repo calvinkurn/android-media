@@ -6,6 +6,7 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_product_wishlist.view.*
 
@@ -65,6 +66,13 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
     private fun renderShopName(element: CartWishlistItemHolderData) {
         itemView.text_shop_name?.apply {
             text = element.shopName
+            val marginFour = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+            val marginNine = itemView.context.resources.getDimension(R.dimen.dp_9).toInt()
+            if (itemView.img_shop_badge?.visibility == View.VISIBLE) {
+                setMargin(marginFour, marginFour, 0, 0)
+            } else {
+                setMargin(marginNine, marginFour, 0, 0)
+            }
         }
     }
 
