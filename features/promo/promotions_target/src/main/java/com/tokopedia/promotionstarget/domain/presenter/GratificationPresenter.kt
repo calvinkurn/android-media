@@ -39,8 +39,9 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity, Boolean>) {
+class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity, Boolean>? = null) {
     val TAG = "GratifTag"
+
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -119,7 +120,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                         weakActivity?.get()?.let { activity ->
                             if (notificationEntryType == NotificationEntryType.PUSH) {
                                 performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
-                            } else if (dialogIsShownMap[activity] != null) {
+                            } else if (dialogIsShownMap?.get(activity) != null) {
                                 Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                 gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                             } else {
@@ -160,16 +161,16 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                         gratifPopupCallback?.onShow(dialog)
                     }
                 }, screenName)
-        dialogIsShownMap[activity] = true
+        dialogIsShownMap?.set(activity, true)
 
         dialog?.setOnDismissListener { dialogInterface ->
-            dialogIsShownMap.remove(activity)
+            dialogIsShownMap?.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
             val userId = UserSession(activity).userId
             GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
         }
         dialog?.setOnCancelListener { dialogInterface ->
-            dialogIsShownMap.remove(activity)
+            dialogIsShownMap?.remove(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
     }
@@ -190,7 +191,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                 initSafeScope()
             }
             weakActivity?.get()?.let { activity ->
-                if (dialogIsShownMap[activity] != null) {
+                if (dialogIsShownMap?.get(activity) != null) {
                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                     gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                     return null
@@ -252,10 +253,10 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
         fun onShow(dialog: DialogInterface)
         fun onDismiss(dialog: DialogInterface)
         fun onIgnored(@GratifPopupIngoreType reason: Int)
-        fun onExeption(ex:Exception)
+        fun onExeption(ex: Exception)
     }
 
-    abstract class AbstractGratifPopupCallback:GratifPopupCallback{
+    abstract class AbstractGratifPopupCallback : GratifPopupCallback {
         override fun onShow(dialog: DialogInterface) {
 
         }
