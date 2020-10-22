@@ -40,7 +40,6 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
@@ -321,7 +320,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
-            somDetailViewModel.loadUserRoles(userSession.userId.toIntOrZero())
+            somDetailViewModel.getUserRoles()
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
         }
@@ -640,7 +639,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     setOnClickListener {
                         eventClickMainActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
                         when {
-                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId, userSession.shopId)
+                            buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
                             buttonResp.key.equals(KEY_REQUEST_PICKUP, true) -> setActionRequestPickup()
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
@@ -679,17 +678,17 @@ class SomDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    private fun setActionAcceptOrder(orderId: String, shopId: String) {
+    private fun setActionAcceptOrder(orderId: String) {
         if (detailResponse.flagOrderMeta.flagFreeShipping) {
-            showFreeShippingAcceptOrderDialog(orderId, shopId)
+            showFreeShippingAcceptOrderDialog(orderId)
         } else {
-            acceptOrder(orderId, shopId)
+            acceptOrder(orderId)
         }
     }
 
-    private fun acceptOrder(orderId: String, shopId: String) {
-        if (orderId.isNotBlank() && shopId.isNotBlank()) {
-            somDetailViewModel.acceptOrder(orderId, shopId)
+    private fun acceptOrder(orderId: String) {
+        if (orderId.isNotBlank()) {
+            somDetailViewModel.acceptOrder(orderId)
         }
     }
 
@@ -736,7 +735,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showFreeShippingAcceptOrderDialog(orderId: String, shopId: String) {
+    private fun showFreeShippingAcceptOrderDialog(orderId: String) {
         view?.context?.let {
             val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
                 setUnlockVersion()
@@ -758,8 +757,8 @@ class SomDetailFragment : BaseDaggerFragment(),
 
                     btn_batal?.setOnClickListener { dismiss() }
                     btn_terima?.setOnClickListener {
-                        if (orderId.isNotBlank() && shopId.isNotBlank()) {
-                            somDetailViewModel.acceptOrder(orderId, shopId)
+                        if (orderId.isNotBlank()) {
+                            somDetailViewModel.acceptOrder(orderId)
                             dismiss()
                         }
                     }
@@ -835,7 +834,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId, userSession.shopId)
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }
@@ -987,7 +986,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         SomOrderRequestCancelBottomSheet().apply {
             setListener(object : SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
                 override fun onAcceptOrder() {
-                    setActionAcceptOrder(orderId, userSession.shopId)
+                    setActionAcceptOrder(orderId)
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
