@@ -1,18 +1,29 @@
 package com.tokopedia.product.info.view.bottomsheet
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.crashlytics.android.Crashlytics
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.info.model.productdetail.uidata.*
+import com.tokopedia.product.info.model.specification.Specification
+import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
@@ -30,51 +41,73 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
-    }
+    private var viewModel: BsProductDetailInfoViewModel? = null
 
     private var productDetailComponent: ProductDetailComponent? = null
     private var rvBsProductDetail: RecyclerView? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
-
-    private var productId: String = ""
-    private var shopId: String = ""
-    private var itemList: List<ProductDetailInfoContent> = listOf()
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build(), adapterTypeFactory)
     }
+
     private val adapterTypeFactory by lazy {
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun setDaggerComponent(productId: String, shopId: String, listItem: List<ProductDetailInfoContent>, daggerProductDetailComponent: ProductDetailComponent?) {
+    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?) {
         this.productDetailComponent = daggerProductDetailComponent
-        this.productId = productId
-        this.shopId = shopId
-        this.itemList = listItem
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewLifecycleOwner.observe(viewModel.bottomSheetDetailData) { data ->
-            data.doSuccessOrFail({
-                Log.e("successs", "value " + it.data)
-            }) {
-                Log.e("successs", "fail " + it.message)
+        viewModel?.let { vm ->
+            viewLifecycleOwner.observe(vm.bottomSheetDetailData) { data ->
+                data.doSuccessOrFail({
+                    currentList = ArrayList(it.data)
+                    setupFullScreen(it.data)
+                    productDetailInfoAdapter.submitList(it.data)
+                }) {
+                    Log.e("successs", "fail " + it.message)
+                }
             }
         }
+    }
+
+    private fun setupFullScreen(data: List<ProductDetailInfoVisitable>) {
+        var isFullScreen = false
+        data.forEach {
+            if (it is ProductDetailInfoExpandableImageDataModel || it is ProductDetailInfoExpandableDataModel || it is ProductDetailInfoExpandableListDataModel) {
+                isFullScreen = true
+                return@forEach
+            }
+        }
+        isFullpage = isFullScreen
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productDetailComponent?.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel.setParams(productId, shopId)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+        getDataParcel()
         initView()
+    }
+
+    private fun getDataParcel() {
+        arguments?.let {
+            context?.let { ctx ->
+                val cacheId = it.getString("ParcelId")
+                val cacheManager = SaveInstanceCacheManager(ctx, cacheId)
+                val parcelData: ProductInfoParcelData = cacheManager.get(
+                        this::class.java.simpleName,
+                        ProductInfoParcelData::class.java
+                ) ?: ProductInfoParcelData()
+
+                viewModel?.setParams(parcelData)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,9 +115,42 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         productDetailInfoAdapter.submitList(listOf(ProductDetailInfoLoadingDataModel()))
     }
 
-    override fun onLoadingClick() {
-        currentList = listOf(ProductDetailInfoHeaderDataModel(componentId = 0, listOfInfo = itemList), ProductDetailInfoExpandableDataModel(componentName = 1, isShowable = true), ProductDetailInfoExpandableListDataModel(componentName = 2), ProductDetailInfoExpandableImageDataModel(componentName = 3), ProductDetailInfoDiscussionDataModel(componentName = 4, title = "Diskusi bro?", buttonValue = "Cek Diskusi"))
-        productDetailInfoAdapter.submitList(currentList)
+    override fun onBranchLinkClicked(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
+            startActivity(intent)
+        }
+    }
+
+    override fun goToVideoPlayer(url: List<String>, index: Int) {
+        context?.let {
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                startActivity(ProductYoutubePlayerActivity.createIntent(it, url, index))
+            } else {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])));
+                } catch (e: Throwable) {
+                    Crashlytics.logException(e)
+                }
+            }
+        }
+    }
+
+    override fun goToShopNotes(title: String, date: String, desc: String) {
+        context?.let {
+            val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
+            bsShopNotes.show(childFragmentManager, "shopNotes")
+        }
+    }
+
+    override fun goToSpecification(specification: List<Specification>) {
+        val bs = ProductSpecificationBottomSheet()
+        bs.getData(specification)
+        bs.show(childFragmentManager, "specBs")
     }
 
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
@@ -93,21 +159,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_product_detail))
-        isDragable = true
-        setShowListener {
-            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-            bottomSheet.peekHeight = 0
-            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(p0: View, p1: Int) {
-                    if (p1 == BottomSheetBehavior.STATE_COLLAPSED) {
-                        dismiss()
-                    }
-                }
-
-                override fun onSlide(p0: View, p1: Float) {
-                }
-            })
-        }
 
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
 

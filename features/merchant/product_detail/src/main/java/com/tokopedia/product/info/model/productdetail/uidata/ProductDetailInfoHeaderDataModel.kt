@@ -1,6 +1,7 @@
 package com.tokopedia.product.info.model.productdetail.uidata
 
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
@@ -11,6 +12,7 @@ data class ProductDetailInfoHeaderDataModel(
         var img: String = "",
         var productTitle: String = "",
         var listOfInfo: List<ProductDetailInfoContent> = listOf(),
+        var specification: List<Specification> = listOf(),
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
 

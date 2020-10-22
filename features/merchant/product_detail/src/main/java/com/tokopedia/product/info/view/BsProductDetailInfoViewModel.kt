@@ -1,15 +1,17 @@
 package com.tokopedia.product.info.view
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
+import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
+import com.tokopedia.product.info.util.ProductDetailInfoMapper
 import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 
@@ -21,24 +23,23 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: DynamicProdu
                                                        private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase)
     : BaseViewModel(dispatchers.io()) {
 
-    private val productShopId = MutableLiveData<Pair<String, String>>()
+    private val parcelData = MutableLiveData<ProductInfoParcelData>()
 
-    private val _bottomSheetDetailData = MediatorLiveData<Result<PdpGetDetailBottomSheet>>()
-    val bottomSheetDetailData: LiveData<Result<PdpGetDetailBottomSheet>>
-        get() = _bottomSheetDetailData
+    val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> = Transformations.switchMap(parcelData) {
+        val bottomSheetData = MutableLiveData<Result<List<ProductDetailInfoVisitable>>>()
+        launchCatchError(block = {
+            val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.productId, it.shopId, it.catalogId)
+            val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(requestParams).asSuccess().data
+            val visitableData = ProductDetailInfoMapper.generateVisitable(responseData, it)
 
-    init {
-        _bottomSheetDetailData.addSource(productShopId) {
-            launchCatchError(block = {
-                val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.first, it.second)
-                _bottomSheetDetailData.postValue(getProductDetailBottomSheetUseCase.executeOnBackground(requestParams).asSuccess())
-            }) {
-                _bottomSheetDetailData.postValue(it.asFail())
-            }
+            bottomSheetData.postValue(visitableData.asSuccess())
+        }) {
+            bottomSheetData.postValue(it.asFail())
         }
+        bottomSheetData
     }
 
-    fun setParams(productId: String, shopId: String) {
-        productShopId.value = productId to shopId
+    fun setParams(parcelData: ProductInfoParcelData) {
+        this.parcelData.value = parcelData
     }
 }

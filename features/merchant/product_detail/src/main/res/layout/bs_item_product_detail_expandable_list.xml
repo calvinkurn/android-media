@@ -23,9 +23,10 @@
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bs_product_detail_label_shop_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Baca info penting terkait pembelian dari toko ini."
+            android:text="@string/merchant_product_detail_shop_notes_label"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2" />
 

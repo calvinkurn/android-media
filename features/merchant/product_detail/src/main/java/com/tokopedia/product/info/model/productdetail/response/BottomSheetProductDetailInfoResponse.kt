@@ -1,6 +1,7 @@
 package com.tokopedia.product.info.model.productdetail.response
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.info.model.specification.Data
 
 data class BottomSheetProductDetailInfoResponse(
         @SerializedName("pdpGetDetailBottomSheet")
@@ -14,6 +15,8 @@ data class PdpGetDetailBottomSheet(
         val dataShopNotes: DataShopNotes = DataShopNotes(),
         @SerializedName("discussion")
         val discussion: Discussion = Discussion(),
+        @SerializedName("productCatalogDetail")
+        val specification: Data = Data(),
         @SerializedName("error")
         val error: Error = Error()
 )

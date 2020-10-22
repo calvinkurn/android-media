@@ -15,9 +15,5 @@ class ProductDetailInfoLoadingViewHolder(val view: View,private val listener: Pr
         val LAYOUT = R.layout.bs_item_product_detail_loading
     }
 
-    override fun bind(element: ProductDetailInfoLoadingDataModel) {
-        view.setOnClickListener {
-            listener.onLoadingClick()
-        }
-    }
+    override fun bind(element: ProductDetailInfoLoadingDataModel) {}
 }

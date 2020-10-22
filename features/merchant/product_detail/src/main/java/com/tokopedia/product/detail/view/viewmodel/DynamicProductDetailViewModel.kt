@@ -246,7 +246,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return p2Data.value?.shopInfo ?: ShopInfo()
     }
 
-    fun getCartTypeByProductId() : CartTypeData? {
+    fun getCartTypeByProductId(): CartTypeData? {
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
@@ -320,7 +320,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             forceRefresh = refreshPage
 
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
-                    ?: "", productParams.productName ?: "", productParams.warehouseId ?: "", layoutId).also {
+                    ?: "", productParams.productName ?: "", productParams.warehouseId
+                    ?: "", layoutId).also {
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -442,7 +443,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productID
             ))
             _topAdsImageView.postValue(result.asSuccess())
-        }){
+        }) {
             _topAdsImageView.postValue(it.asFail())
         }
     }
@@ -552,7 +553,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (!GlobalConfig.isSellerApp()) {
                 try {
                     withContext(dispatcher.io()) {
-                        val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
+                        val productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID
+                                ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
                         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
                         if (pageName == PDP_3) {
@@ -571,12 +573,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 productIds = productIds
                         )).toBlocking().first()
 
-                        if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
+                        if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                             val recomWidget = recomData.first().copy(
                                     recommendationFilterChips = recomFilterList
                             )
                             _loadTopAdsProduct.postValue(recomWidget.asSuccess())
-                        }else {
+                        } else {
                             _loadTopAdsProduct.postValue(Throwable(pageName).asFail())
                         }
                     }
@@ -587,20 +589,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int){
+    fun getRecommendation(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         launchCatchError(dispatcher.io(), block = {
             if (!GlobalConfig.isSellerApp()) {
                 val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = recommendationDataModel.recomWidgetData?.pageName ?: "",
-                        queryParam = if(annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
+                        queryParam = if (annotationChip.recommendationFilterChip.isActivated) annotationChip.recommendationFilterChip.value else "",
                         productIds = arrayListOf(getDynamicProductInfoP1?.basic?.productID ?: "")
                 )).toBlocking().first()
-                if(recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()){
+                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val newRecommendation = recomData.first()
                     _filterTopAdsProduct.postValue(recommendationDataModel.copy(
                             recomWidgetData = newRecommendation,
-                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData,annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
+                            filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
                     ))
                     _statusFilterTopAdsProduct.postValue(true.asSuccess())
                 } else {
@@ -618,7 +620,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun selectOrDeselectAnnotationChip(filterData: List<AnnotationChip>?, name: String, isActivated: Boolean): List<AnnotationChip>{
+    private fun selectOrDeselectAnnotationChip(filterData: List<AnnotationChip>?, name: String, isActivated: Boolean): List<AnnotationChip> {
         return filterData?.map {
             it.copy(
                     recommendationFilterChip = it.recommendationFilterChip.copy(

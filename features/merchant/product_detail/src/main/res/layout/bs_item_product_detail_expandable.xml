@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_16"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
@@ -16,10 +16,11 @@
         android:id="@+id/product_detail_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoLink="all"
+        android:longClickable="true"
+        android:paddingTop="@dimen/dp_12"
         android:visibility="gone"
-        app:typographyType="body_2"
-        android:layout_marginTop="@dimen/dp_13"
-        tools:text="@string/lorem" />
+        app:typographyType="body_2" />
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll_container"
@@ -33,7 +34,7 @@
             android:id="@+id/horizontal_view_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
 
     </HorizontalScrollView>
 

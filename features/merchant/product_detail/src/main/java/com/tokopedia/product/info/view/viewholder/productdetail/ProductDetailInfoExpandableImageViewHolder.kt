@@ -14,19 +14,21 @@ import kotlinx.android.synthetic.main.bs_item_product_detail_expandable_image.vi
 /**
  * Created by Yehezkiel on 14/10/20
  */
-class ProductDetailInfoExpandableImageViewHolder(private val view: View, private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableImageDataModel>(view) {
+class ProductDetailInfoExpandableImageViewHolder(private val view: View,
+                                                 private val listener: ProductDetailInfoListener) : AbstractViewHolder<ProductDetailInfoExpandableImageDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.bs_item_product_detail_expandable_image
     }
 
     override fun bind(element: ProductDetailInfoExpandableImageDataModel) {
-        view.expandable_title_chevron?.titleText = "Panduan Ukuran"
+        view.expandable_title_chevron?.titleText = element.title
         setupExpandableItem(element)
     }
 
     private fun setupExpandableItem(element: ProductDetailInfoExpandableImageDataModel) = with(view) {
-        expandable_image?.loadImage("https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/7/28/17211033/17211033_a30b5d37-0bf9-41da-8273-b32731d2553b_1180_1180")
+        expandable_image.loadImage(element.imageUrl)
+
         expandable_image?.showWithCondition(element.isShowable)
         expandable_title_chevron?.isExpand = element.isShowable
 
@@ -44,7 +46,10 @@ class ProductDetailInfoExpandableImageViewHolder(private val view: View, private
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
                 if (toggle) {
-                    ExpandableAnimation.expand(view.expandable_image)
+                    view.expandable_image.loadImage("")
+                    ExpandableAnimation.expand(view.expandable_image, customHeight = view.resources.displayMetrics.widthPixels){
+                        view.expandable_image.loadImage(element.imageUrl)
+                    }
                 } else {
                     ExpandableAnimation.collapse(view.expandable_image)
                 }

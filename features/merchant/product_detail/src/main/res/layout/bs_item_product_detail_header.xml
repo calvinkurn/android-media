@@ -25,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pdp_header_img"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_header_img"
         app:typographyType="heading_5"
         tools:text="UNIQLO Jacket Women Jaket Parka UV CUT Saku Wanita Blue" />
 

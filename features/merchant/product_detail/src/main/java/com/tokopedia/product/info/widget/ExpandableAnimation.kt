@@ -1,16 +1,15 @@
 package com.tokopedia.product.info.widget
 
+import android.animation.*
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
-import android.widget.LinearLayout
+
 
 /**
  * Created by Yehezkiel on 16/10/20
  */
 object ExpandableAnimation {
-    fun expand(view: View, customParentWidth: Int = view.width, onAnimationEndListener: (() -> Unit)? = null) {
+    fun expand(view: View, customParentWidth: Int = view.width, customHeight: Int = 0, onAnimationEndListener: (() -> Unit)? = null) {
         val widthSpec = View.MeasureSpec.makeMeasureSpec(customParentWidth, View.MeasureSpec.AT_MOST)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         if (view is ViewGroup) {
@@ -19,46 +18,59 @@ object ExpandableAnimation {
             view.measure(widthSpec, heightSpec)
         }
 
-        val actualheight = view.measuredHeight
+        val actualheight = if (customHeight != 0) customHeight else view.measuredHeight
 
         view.layoutParams.height = 0
         view.visibility = View.VISIBLE
+        view.alpha = 0F
 
-        val animation: Animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                view.layoutParams.height = if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT else (actualheight * interpolatedTime).toInt()
-                view.requestLayout()
-            }
+        val anim = ValueAnimator.ofInt(actualheight)
+        anim.addUpdateListener { valueAnimator ->
+            val `val` = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+            layoutParams.height = `val`
+            view.layoutParams = layoutParams
         }
+        val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 0F, 1F)
 
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(p0: Animation?) {}
+        alphaAnim.duration = 300
+        anim.duration = 300
 
-            override fun onAnimationEnd(p0: Animation?) {
+        val set = AnimatorSet()
+        set.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
                 onAnimationEndListener?.invoke()
             }
-
-            override fun onAnimationStart(p0: Animation?) {}
         })
-
-        animation.duration = (actualheight / view.context.resources.displayMetrics.density).toLong()
-        view.startAnimation(animation)
+        set.playTogether(anim, alphaAnim)
+        set.start()
     }
 
     fun collapse(view: View) {
         val actualHeight = view.measuredHeight
 
-        val animation: Animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                if (interpolatedTime == 1f) {
-                    view.visibility = View.GONE
-                } else {
-                    view.layoutParams.height = actualHeight - (actualHeight * interpolatedTime).toInt()
-                    view.requestLayout()
-                }
-            }
+        val anim = ValueAnimator.ofInt(actualHeight, 0)
+        anim.addUpdateListener { valueAnimator ->
+            val `val` = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams = view.layoutParams
+            layoutParams.height = `val`
+            view.layoutParams = layoutParams
         }
-        animation.duration = (actualHeight / view.context.resources.displayMetrics.density).toLong()
-        view.startAnimation(animation)
+
+        val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 1F, 0F)
+
+        alphaAnim.duration = 300
+        anim.duration = 300
+
+        val set = AnimatorSet()
+        set.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                view.visibility = View.GONE
+            }
+        })
+        set.playTogether(anim, alphaAnim)
+        set.start()
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.di.ProductDetailScope
 import com.tokopedia.product.info.model.productdetail.response.BottomSheetProductDetailInfoResponse
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.usecase.RequestParams
@@ -16,18 +17,20 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 13/10/20
  */
+@ProductDetailScope
 class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository)
     : UseCase<PdpGetDetailBottomSheet>() {
 
     companion object {
-        fun createParams(productId: String, shopId: String) = RequestParams.create().apply {
+        fun createParams(productId: String, shopId: String, catalogId: String): RequestParams = RequestParams.create().apply {
             putString(ProductDetailCommonConstant.PRODUCT_ID_PARAM, productId)
             putString(ProductDetailCommonConstant.SHOP_ID_PARAM, shopId)
+            putString(ProductDetailCommonConstant.PARAM_CATALOG_ID, catalogId)
         }
 
         val QUERY = """
-            query PdpGetDetailBottomSheet(${'$'}productId:String,${'$'}shopId:String){
-              pdpGetDetailBottomSheet(productID:${'$'}productId, shopID:${'$'}shopId){
+            query PdpGetDetailBottomSheet(${'$'}productId:String,${'$'}shopId:String,${'$'}catalogId:String){
+              pdpGetDetailBottomSheet(productID:${'$'}productId, shopID:${'$'}shopId, catalogID:${'$'}catalogId){
                 bottomsheetData{
                   title
                   componentName
@@ -52,6 +55,18 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
                   title
                   buttonType
                   buttonCopy
+                }
+                productCatalogDetail{
+                  catalog{
+                    id
+                    specification{
+                      name
+                      row{
+                        key
+                        value
+                      }
+                    }
+                  }
                 }
                 error{
                   Code

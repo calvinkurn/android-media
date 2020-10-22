@@ -260,5 +260,6 @@
     <string name="content_desc_img_pdp_video">image produk</string>
 
     <string name="double_string_builder">%1s %2s</string>
+    <string name="merchant_product_detail_shop_notes_label">Baca info penting terkait pembelian dari toko ini.</string>
 
 </resources>

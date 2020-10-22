@@ -6,6 +6,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -276,5 +277,14 @@ object DynamicProductDetailMapper {
                     review.reviewer?.fullName, image.uriThumbnail,
                     image.uriLarge, review.rating, hasNext, data.productReviewImageListQuery?.detail?.imageCount)
         } ?: listOf()
+    }
+
+    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>): ProductInfoParcelData {
+        val data = productInfoP1?.data
+        val basic = productInfoP1?.basic
+        return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
+                ?: "", basic?.catalogID ?: "", data?.name ?: "", data?.getProductImageUrl()
+                ?: "", variantGuideLine, productInfoP1?.data?.videos
+                ?: listOf(), productInfoContent)
     }
 }

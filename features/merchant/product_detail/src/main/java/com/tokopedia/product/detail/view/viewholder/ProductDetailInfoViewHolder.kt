@@ -1,15 +1,20 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import kotlinx.android.synthetic.main.item_dynamic_product_detail_info.view.*
@@ -61,6 +66,19 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             } else descFormatted
         } else {
             product_detail_info_description?.hide()
+        }
+
+        product_detail_info_description?.autoLinkMask = 0
+        Linkify.addLinks(product_detail_info_description, Linkify.WEB_URLS)
+        product_detail_info_description?.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
+    }
+
+    private fun onBranchClicked(url: String) = with(view) {
+        if (!GlobalConfig.isSellerApp()) {
+            val intent = RouteManager.getIntent(view.context, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
+            context.startActivity(intent)
         }
     }
 

@@ -378,9 +378,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
         activity?.let {
-            val data = viewModel.getDynamicProductInfoP1?.basic
-            productDetailInfoSheet.setDaggerComponent(data?.productID ?: "", data?.shopID
-                    ?: "", dataContent, productDaggerComponent)
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
+                    viewModel.getDynamicProductInfoP1,
+                    viewModel.variantData?.sizeChart ?: "",
+                    dataContent
+            )
+            cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
+            val bundleData = Bundle().apply {
+                putString("ParcelId", cacheManager.id)
+            }
+
+            productDetailInfoSheet.arguments = bundleData
+            productDetailInfoSheet.setDaggerComponent(productDaggerComponent)
             productDetailInfoSheet.show(it.supportFragmentManager, "bs product detail")
         }
     }

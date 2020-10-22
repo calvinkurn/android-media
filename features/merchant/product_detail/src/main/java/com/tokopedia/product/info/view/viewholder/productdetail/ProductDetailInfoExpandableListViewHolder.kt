@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.widget.ExpandableAnimation
@@ -30,8 +31,9 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
     private fun setupExpandableItem(element: ProductDetailInfoExpandableListDataModel) = with(view) {
         val inflater: LayoutInflater = context.layoutInflater
 
-        expandable_container?.removeAllViews()
-        repeat(3) {
+        expandable_container?.removeViews(1, expandable_container.childCount - 1)
+
+        element.shopNotes.forEachIndexed { index, it ->
             val layoutValuePoint = inflater.inflate(R.layout.partial_item_value_point, null)
             setupPartialView(layoutValuePoint, it)
             expandable_container?.addView(layoutValuePoint)
@@ -47,11 +49,13 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
         }
     }
 
-    private fun setupPartialView(rootView: View, position: Int) = with(view) {
+    private fun setupPartialView(rootView: View, shopNotesData: ShopNotesData) = with(view) {
         val title: Typography = rootView.findViewById(R.id.point_title)
-        val value: Typography = rootView.findViewById(R.id.point_action)
-
-        title.text = "Catatan $position"
+        val action: Typography = rootView.findViewById(R.id.point_action)
+        action.setOnClickListener {
+            listener.goToShopNotes(shopNotesData.title, shopNotesData.updateTime, shopNotesData.content)
+        }
+        title.text = shopNotesData.title
     }
 
     override fun bind(element: ProductDetailInfoExpandableListDataModel, payloads: MutableList<Any>) {
