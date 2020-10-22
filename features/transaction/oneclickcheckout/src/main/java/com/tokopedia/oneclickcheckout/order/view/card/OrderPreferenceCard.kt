@@ -278,19 +278,24 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             } else {
                 if (payment.errorMessage.message.isNotEmpty()) {
                     tvPaymentErrorMessage?.text = payment.errorMessage.message
-                    tvPaymentErrorAction?.text = payment.errorMessage.button.text
                     tvPaymentErrorMessage?.visible()
-                    tvPaymentErrorAction?.visible()
+                    val actionText = payment.errorMessage.button.text
+                    if (actionText.isNotEmpty()) {
+                        tvPaymentErrorAction?.text = actionText
+                        tvPaymentErrorAction?.setOnClickListener {
+                            if (payment.hasCreditCardOption()) {
+                                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                            } else {
+                                listener.onPreferenceEditClicked(preference)
+                            }
+                        }
+                        tvPaymentErrorAction?.visible()
+                    } else {
+                        tvPaymentErrorAction?.gone()
+                    }
                     tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvPaymentDetail?.setOnClickListener {
                         //do nothing
-                    }
-                    tvPaymentErrorAction?.setOnClickListener {
-                        if (payment.hasCreditCardOption()) {
-                            listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
-                        } else {
-                            listener.onPreferenceEditClicked(preference)
-                        }
                     }
                 } else {
                     tvPaymentErrorMessage?.gone()

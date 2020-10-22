@@ -8,21 +8,26 @@ data class OrderPayment(
         val isCalculationError: Boolean = false,
         val gatewayCode: String = "",
         val gatewayName: String = "",
-        val image: String = "",
-        val description: String = "",
+//        val image: String = "",
+//        val description: String = "",
         val minimumAmount: Long = 0,
         val maximumAmount: Long = 0,
         val fee: Double = 0.0,
         val walletAmount: Long = 0,
-        val metadata: String = "",
+//        val metadata: String = "",
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
         val errorTickerMessage: String = "",
         val isEnableNextButton: Boolean = false,
         val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
-        val isOvoOnlyCampaign: Boolean = false
+        val isOvoOnlyCampaign: Boolean = false,
+        val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
+        val ovoErrorData: OrderPaymentOvoErrorData = OrderPaymentOvoErrorData()
 ) {
+    val isOvo: Boolean
+        get() = gatewayCode.contains("OVO")
+
     fun isError(): Boolean {
         return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
     }
@@ -88,3 +93,26 @@ data class OrderPaymentInstallmentTerm(
         var fee: Double = 0.0,
         var monthlyAmount: Double = 0.0
 )
+
+data class OrderPaymentOvoAdditionalData(
+        val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData()
+) {
+    val isActivationRequired: Boolean
+        get() = activation.isRequired
+}
+
+data class OrderPaymentOvoActionData(
+        val isRequired: Boolean = false,
+        val buttonTitle: String = "",
+        val errorMessage: String = "",
+        val errorTicker: String = ""
+)
+
+data class OrderPaymentOvoErrorData(
+        val message: String = "",
+        val type: Int = 0
+) {
+    val TYPE_ACTIVATION = 1
+    val TYPE_TOP_UP = 2
+}
