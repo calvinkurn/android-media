@@ -559,7 +559,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     CreateReviewTracking.eventClickSendNow(title)
                 }
                 show()
-                CreateReviewTracking.eventViewBackDialog(title)
+                CreateReviewTracking.eventViewDialog(title)
             }
         }
     }
@@ -1023,7 +1023,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     activity?.finish()
                 }
                 show()
-                CreateReviewTracking.eventViewDialog(defaultTitle)
+                CreateReviewTracking.eventViewBackDialog(defaultTitle)
             }
         }
     }
