@@ -8,7 +8,8 @@ data class HomeNavMenuViewModel(
         val id: Int = 0,
         val srcImage: String = "",
         val itemTitle: String = "",
-        val applink: String = ""
+        val applink: String = "",
+        val notifCount: String = ""
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
