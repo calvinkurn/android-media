@@ -205,6 +205,8 @@ public interface CMConstant {
         String UTM_CAMPAIGN = "utm_campaign";
         String UTM_CONTENT = "utm_content";
         String UTM_TERM = "utm_term";
+        String SCREEN_NAME = "screenName";
+        String SCREEN_NAME_VALUE = "CM Applink Handler";
         String UTM_GCLID = "gclid";
     }
 

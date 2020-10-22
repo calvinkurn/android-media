@@ -239,16 +239,19 @@ object CMNotificationUtils {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
-    fun isValidCampaignUrl(uri: Uri): Boolean {
-        val maps: Map<String, String?> = splitQuery(uri)
-        return maps.containsKey(CMConstant.UTMParams.UTM_GCLID) ||
-                maps.containsKey(CMConstant.UTMParams.UTM_SOURCE) &&
-                maps.containsKey(CMConstant.UTMParams.UTM_MEDIUM) &&
-                maps.containsKey(CMConstant.UTMParams.UTM_CAMPAIGN)
+    private fun isValidCampaignUrl(uri: Uri): Boolean {
+        val maps: Map<String, String>? = splitQuery(uri)
+        maps?.let {
+            return it.containsKey(CMConstant.UTMParams.UTM_GCLID) ||
+                    it.containsKey(CMConstant.UTMParams.UTM_SOURCE) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_MEDIUM) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_CAMPAIGN)
+        } ?: return false
+
     }
 
 
-    fun splitQuery(url: Uri): Map<String, String?> {
+    private fun splitQuery(url: Uri): MutableMap<String, String>? {
         val queryPairs: MutableMap<String, String> = LinkedHashMap()
         val query = url.query
         if (!TextUtils.isEmpty(query)) {
@@ -273,7 +276,11 @@ object CMNotificationUtils {
             return
 
         val campaign = splitQuery(uri)
-        TrackApp.getInstance().gtm.sendCampaign(campaign)
+        campaign?.let {
+            it[CMConstant.UTMParams.UTM_TERM] = ""
+            it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
+        }
+        TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
     }
 }
 
