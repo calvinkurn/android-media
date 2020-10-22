@@ -35,7 +35,7 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
         if (wishlistAdapter == null) {
             wishlistAdapter = CartWishlistAdapter(listener)
         }
-        wishlistAdapter?.addWishlistItems(element.wishList)
+        wishlistAdapter?.updateWishlistItems(element.wishList)
 
         itemView.rv_wishlist?.apply {
             val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
@@ -54,7 +54,7 @@ class CartWishlistViewHolder(val view: View, val listener: ActionListener?) : Re
 
     private fun updateList(element: CartWishlistHolderData) {
         itemView.rv_wishlist?.apply {
-            (adapter as CartWishlistAdapter).addWishlistItems(element.wishList)
+            (adapter as CartWishlistAdapter).updateWishlistItems(element.wishList)
             scrollToPosition(0)
         }
     }

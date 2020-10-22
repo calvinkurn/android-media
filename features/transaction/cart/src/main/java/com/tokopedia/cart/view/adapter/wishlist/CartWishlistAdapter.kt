@@ -37,7 +37,7 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
         holderView.bind(data)
     }
 
-    fun addWishlistItems(visitableList: List<CartWishlistItemHolderData>) {
+    fun updateWishlistItems(visitableList: List<CartWishlistItemHolderData>) {
         val newList: MutableList<CartWishlistItemHolderData> = mutableListOf()
         newList.addAll(visitableList)
         updateList(newList)

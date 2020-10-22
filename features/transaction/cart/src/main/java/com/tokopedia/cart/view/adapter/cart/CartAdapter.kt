@@ -976,7 +976,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         if (cartWishlistHolderData != null) {
             cartWishlistAdapter?.let {
                 cartWishlistHolderData.wishList.removeAt(wishlistIndex)
-                cartWishlistAdapter?.notifyItemRemoved(wishlistIndex)
+                cartWishlistAdapter?.updateWishlistItems(cartWishlistHolderData.wishList)
             }
         }
     }
@@ -995,19 +995,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     }
                 }
                 break
-            }
-        }
-    }
-
-    fun notifyRecommendation(productId: String, isWishlist: Boolean) {
-        for (i in cartDataList.indices.reversed()) {
-            val any = cartDataList[i]
-            if (any is CartRecommendationItemHolderData) {
-                if (any.recommendationItem.productId.toString() == productId) {
-                    any.recommendationItem.isWishlist = isWishlist
-                    notifyItemChanged(i)
-                    break
-                }
             }
         }
     }
