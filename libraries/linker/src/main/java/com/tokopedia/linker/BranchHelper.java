@@ -167,7 +167,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.SKU, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
-                .setRevenue(Double.parseDouble(linkerData.getPrice()))
+                .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo)
                 .logEvent(context);

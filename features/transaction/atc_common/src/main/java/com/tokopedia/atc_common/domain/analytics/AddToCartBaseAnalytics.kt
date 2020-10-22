@@ -56,11 +56,13 @@ object AddToCartBaseAnalytics {
         try {
             val splitCategory = catLvl1.split(CATEGORY_SPLITTER)
             val isCategoryHasAllLevel = splitCategory.size == 3
+            val intQuantity = quantity.toIntOrNull()
+            val stringQuantity = if (intQuantity == null || intQuantity < 1) "1" else quantity
             val data = LinkerData().apply {
                 this.id = productId
                 this.productName = productName
                 this.price = convertPriceToIntString(price)
-                this.quantity = quantity
+                this.quantity = stringQuantity
                 this.catLvl1 = if (isCategoryHasAllLevel) splitCategory[2] else catLvl1
                 this.contentType = CONTENT_TYPE
                 this.level1Id = level1Id
@@ -71,7 +73,7 @@ object AddToCartBaseAnalytics {
                 // level3Name should use catLvl1 value if empty
                 this.level3Name = if (level3Name.isEmpty() && isCategoryHasAllLevel) splitCategory[2] else if (level3Name.isEmpty()) catLvl1 else level3Name
                 this.userId = userId
-                this.content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, quantity)).toString()
+                this.content = JSONArray().put(JSONObject().put(CONTENT_PARAM_PRODUCT_ID, productId).put(CONTENT_PARAM_QUANTITY, stringQuantity)).toString()
                 // sku value is productId
                 this.sku = productId
                 // contentId value is stringify array of productId
