@@ -1581,14 +1581,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onButtonFollowNplClick() {
-        val isFavorite = pdpUiUpdater?.shopInfoMap?.isFavorite
-                ?: pdpUiUpdater?.shopCredibility?.isFavorite ?: return
-
-        if (isFavorite) {
-            setupNplVisibility(ProductDetailConstant.HIDE_NPL_BS)
-        } else {
-            onShopFavoriteClick(isNplFollowType = true)
-        }
+        onShopFavoriteClick(isNplFollowType = true)
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
