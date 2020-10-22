@@ -13,12 +13,24 @@ import com.tokopedia.unifyprinciples.Typography
 class PageItemAdapter(var listener: OnPageMenuSelected): RecyclerView.Adapter<PageItemAdapter.PageItemViewHolder>() {
 
     val pageItemList = mutableListOf<LabelsItem>()
+    var pageData: List<LabelsItem> = listOf()
     var searchKey: String = ""
 
     fun renderData(data: List<LabelsItem>) {
+        pageData = data
         pageItemList.clear()
         pageItemList.addAll(data)
         notifyDataSetChanged()
+    }
+
+    fun renderDataSearch(searchKey: String) {
+        pageItemList.clear()
+        for (page in pageData) {
+            if (page.name.toLowerCase().contains(searchKey.toLowerCase())) {
+                pageItemList.add(page)
+                notifyDataSetChanged()
+            }
+        }
     }
 
     interface OnPageMenuSelected {

@@ -209,8 +209,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_help_center_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
                 getString(R.string.title_app_advanced_setting)))
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
-                getString(R.string.feedback_form)))
+
+
+        if (GlobalConfig.APPLICATION_TYPE == 3) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
+        }
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
@@ -286,7 +290,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
-            SettingConstant.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
+            SettingConstant.SETTING_FEEDBACK_FORM -> {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {

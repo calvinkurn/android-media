@@ -518,11 +518,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
             searchInput?.setListener(object : SearchInputView.Listener {
                 override fun onSearchSubmitted(text: String?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    if (text != null) {
+                        pagesAdapter.renderDataSearch(text)
+                    }
                 }
 
                 override fun onSearchTextChanged(text: String?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    if (text != null) {
+                        pagesAdapter.renderDataSearch(text)
+                    }
                 }
 
             })
