@@ -42,12 +42,12 @@ class CarouselBannerAdapter(
 
             imgCarouselBanner.setOnClickListener {
                 if (RouteManager.route(context, item.appLink)) {
-                    listener.sendCarouselImpressionEvent(dataKey, items, adapterPosition)
+                    listener.sendCarouselClickTracking(dataKey, items, adapterPosition)
                 }
             }
 
             addOnImpressionListener(item.impressHolder) {
-                listener.sendCarouselClickTracking(dataKey, items, adapterPosition)
+                listener.sendCarouselImpressionEvent(dataKey, items, adapterPosition)
             }
         }
     }

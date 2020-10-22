@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
-import com.tokopedia.otp.verification.common.IOnBackPressed
-import com.tokopedia.otp.verification.common.di.VerificationComponent
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
@@ -18,16 +19,16 @@ import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBin
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseVerificationFragment(), IOnBackPressed {
+class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
 
     override val viewBound = OnboardingMisscallViewBinding()
 
-    override fun getScreenName(): String = TrackingValidatorConstant.Screen.SCREEN_COTP_MISSCALL
+    override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_COTP_MISSCALL
 
-    override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
