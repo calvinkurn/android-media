@@ -8,7 +8,6 @@ import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,12 +78,10 @@ class HomeProductFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} HomeProductFragment: after onCreateView")
         return inflater.inflate(R.layout.item_shop_product_limited_promo, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} HomeProductFragment: after onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         shopId = arguments?.getString(SHOP_ID, "") ?: ""
         findViews()

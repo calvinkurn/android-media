@@ -319,9 +319,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.clearAllElements()
         recycler_view.visible()
         recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} before globalError_shopPage.hide")
         globalError_shopPage.hide()
-        Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()}} after globalError_shopPage.hide")
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
@@ -348,9 +346,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     onSuccessGetShopHomeLayoutData(it.data)
                 }
                 is Fail -> {
-                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()} after fail shopHomeLayoutData}")
                     onErrorGetShopHomeLayoutData(it.throwable)
-                    Log.i("SHOP_HOME_TEST", "{${System.currentTimeMillis()} after onErrorGetShopHomeLayoutData}")
                     stopPerformanceMonitor()
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(

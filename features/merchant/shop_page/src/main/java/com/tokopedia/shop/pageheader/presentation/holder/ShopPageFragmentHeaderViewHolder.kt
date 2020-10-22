@@ -1,7 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -80,8 +79,6 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             showLabelFreeOngkir(remoteConfig)
         else
             view.shop_page_main_profile_free_ongkir.hide()
-
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragmentHeaderViewHolder: after ShopPageFragmentHeaderViewHolder bind")
     }
 
     private fun setupTextContentSgcWidget(){

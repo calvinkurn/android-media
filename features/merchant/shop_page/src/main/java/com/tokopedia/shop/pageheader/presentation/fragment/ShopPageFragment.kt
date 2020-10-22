@@ -253,11 +253,9 @@ class ShopPageFragment :
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: before ShopPageFragmentHeaderViewHolder bind")
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, shopPageTrackingSGCPlay, view.context)
         initToolbar()
         initAdapter()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: after initAdapter")
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh.isEnabled = (verticalOffset == 0)
         })
@@ -559,9 +557,7 @@ class ShopPageFragment :
     private fun getInitialData() {
         isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: before setViewState(VIEW_LOADING)")
             setViewState(VIEW_LOADING)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: after setViewState(VIEW_LOADING)")
         startMonitoringNetworkPltShopPage()
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
@@ -829,9 +825,7 @@ class ShopPageFragment :
         shopPageTracking?.sendScreenShopPage(shopId, shopType)
         getShopPageHeaderContentData()
         setupTabs()
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: before setViewState(VIEW_CONTENT)")
         setViewState(VIEW_CONTENT)
-        Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: after setViewState(VIEW_CONTENT)")
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
@@ -1035,9 +1029,7 @@ class ShopPageFragment :
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
         context?.run {
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: before setViewState(VIEW_ERROR)")
             setViewState(VIEW_ERROR)
-            Log.i("SHOP_TEST", "{${System.currentTimeMillis()}} ShopPageFragment: after setViewState(VIEW_ERROR)")
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
             errorButton.setOnClickListener {
                 isRefresh = true
