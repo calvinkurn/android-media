@@ -87,7 +87,7 @@ class ProductDetailTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(7000)
+        Thread.sleep(15000)
     }
 
     private fun login() {
