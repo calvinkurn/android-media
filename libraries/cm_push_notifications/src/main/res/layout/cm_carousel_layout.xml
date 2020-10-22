@@ -84,7 +84,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="2dp"
         android:text=""
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="14sp" />
 
 </RelativeLayout>

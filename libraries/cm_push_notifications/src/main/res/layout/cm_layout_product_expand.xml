@@ -63,7 +63,7 @@
                     android:layout_below="@+id/tv_stock"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/sp_14"
                     tools:text="Lorem ipsum dolor sit amet" />
 

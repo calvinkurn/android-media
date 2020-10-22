@@ -34,7 +34,7 @@
                     android:ellipsize="marquee"
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="15sp"
                     tools:title="Tokopedia"/>
 
@@ -45,7 +45,7 @@
                     android:ellipsize="marquee"
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/cm_sp_13" />
 
                 <TextView
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:fadingEdge="horizontal"
                     android:visibility="gone"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/cm_sp_13" />
             </LinearLayout>
 
@@ -116,7 +116,7 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
@@ -145,7 +145,7 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
@@ -174,7 +174,7 @@
                     android:fadingEdge="horizontal"
                     android:singleLine="true"
                     android:textAllCaps="true"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_N700_96"
                     android:textSize="@dimen/cm_sp_13"
                     tools:text="Title" />
             </LinearLayout>
