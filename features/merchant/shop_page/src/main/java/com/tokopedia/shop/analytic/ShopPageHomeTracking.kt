@@ -903,7 +903,7 @@ class ShopPageHomeTracking(
                 getShopPageCategory(isOwner),
                 eventAction,
                 "",
-                BUSINESS_UNIT_PG,
+                PHYSICAL_GOODS,
                 TOKOPEDIA_MARKETPLACE,
                 userId,
                 customDimensionShopPage
@@ -923,7 +923,7 @@ class ShopPageHomeTracking(
                 getShopPageCategory(isOwner),
                 eventAction,
                 shopId,
-                BUSINESS_UNIT_PG,
+                PHYSICAL_GOODS,
                 TOKOPEDIA_MARKETPLACE,
                 userId,
                 customDimensionShopPage
