@@ -173,9 +173,6 @@ public class ShopPageTrackingConstant {
 
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
-    public static final String BUSINESS_UNIT_PG = "physical goods";
-
-
 
     //key
     public static final String EVENT = "event";
