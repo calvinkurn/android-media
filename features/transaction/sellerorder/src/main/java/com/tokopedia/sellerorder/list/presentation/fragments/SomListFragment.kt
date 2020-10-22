@@ -287,7 +287,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             checkBoxBulkAction.setIndeterminate(false)
         }
         this.shouldScrollToTop = shouldScrollToTop
-        refreshOrderList()
+        loadFilters(false)
+        if (shouldReloadOrderListImmediately()) {
+            refreshOrderList()
+        }
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -301,13 +304,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onSearchSubmitted(text: String?) {
         viewModel.setSearchParam(text.orEmpty())
         shouldScrollToTop = true
-        refreshOrderList()
+        loadFilters(false)
+        if (shouldReloadOrderListImmediately()) {
+            refreshOrderList()
+        }
     }
 
     override fun onSearchReset() {
         viewModel.setSearchParam("")
         shouldScrollToTop = true
-        refreshOrderList()
+        loadFilters(false)
+        if (shouldReloadOrderListImmediately()) {
+            refreshOrderList()
+        }
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -317,7 +326,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             viewModel.setSearchParam(text.orEmpty())
             if (!isJustRestored) {
                 shouldScrollToTop = true
-                refreshOrderList()
+                loadFilters(false)
+                if (shouldReloadOrderListImmediately()) {
+                    refreshOrderList()
+                }
             }
         }, onError = {
             // TODO: Log to crashlytics
@@ -416,10 +428,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             loadOrderList()
         }
         val stringBuilder = StringBuilder()
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 }
-                ?: "")
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 }
-                ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 } ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 } ?: "")
         showCommonToaster(stringBuilder.toString())
     }
 
@@ -484,7 +494,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                             activeFilter.isChecked = true
                             somListSortFilterTab.selectTab(activeFilter)
-                            onTabClicked(activeFilter, shouldScrollToTop)
+                            refreshOrderList()
                         }
                     }
                     somListSortFilterTab.show(result.data)
@@ -593,7 +603,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun refreshSelectedOrder() {
         adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.orderId == selectedOrderId }?.let { selectedOrder ->
             isRefreshingSelectedOrder = true
-            getSwipeRefreshLayout(view)?.isRefreshing = true
+            getSwipeRefreshLayout(view)?.apply {
+                isEnabled = true
+                isRefreshing = true
+            }
             viewModel.refreshSelectedOrder(selectedOrder.orderResi)
         }
     }
@@ -620,9 +633,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.getWaitingPaymentCounter()
     }
 
-    private fun loadFilters() {
-        sortFilterSomList.invisible()
-        shimmerViews.show()
+    private fun loadFilters(showShimmer: Boolean = true) {
+        if (showShimmer) {
+            sortFilterSomList.invisible()
+            shimmerViews.show()
+        }
         viewModel.getFilters()
     }
 
