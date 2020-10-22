@@ -152,7 +152,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             itemView.text_move_to_wishlist.text = actionData.message
             itemView.text_move_to_wishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
             itemView.text_move_to_wishlist.setOnClickListener {
-                actionListener?.onAddDisabledItemToWishlist(data)
+                itemView.iv_image_product?.let {
+                    actionListener?.onAddDisabledItemToWishlist(data, it)
+                }
             }
         }
         itemView.text_move_to_wishlist.show()

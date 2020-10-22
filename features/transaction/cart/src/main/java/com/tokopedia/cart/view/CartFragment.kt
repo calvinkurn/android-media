@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -56,8 +55,8 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MA
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
-import com.tokopedia.cart.view.adapter.CartAdapter
-import com.tokopedia.cart.view.adapter.CartItemAdapter
+import com.tokopedia.cart.view.adapter.cart.CartAdapter
+import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cart.view.bottomsheet.showSummaryTransactionBottomsheet
 import com.tokopedia.cart.view.compoundview.CartToolbar
@@ -510,7 +509,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun routeToWishlist() {
         activity?.let {
-            RouteManager.route(it, NEW_WISHLIST)
+            RouteManager.route(it, ApplinkConst.NEW_WISHLIST)
         }
     }
 
@@ -1007,7 +1006,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun onSuccessRemoveWishlist(productId: String) {
         showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success))
         cartAdapter.notifyByProductId(productId, false)
-        cartAdapter.notifyWishlist(productId, false)
+        cartAdapter.removeWishlist(productId)
         cartAdapter.notifyRecentView(productId, false)
         cartAdapter.notifyRecommendation(productId, false)
     }
@@ -1120,7 +1119,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return wishlistsWishlistActionListener as WishListActionListener
     }
 
-    override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData) {
+    override fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView) {
+        setProductImageAnimationData(imageView, true)
+
         cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, data.productId, data.errorType)
         val isLastItem = cartAdapter.allCartItemData.size == 1
 
@@ -1409,13 +1410,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistCheckChanged(productId: String, cartId: Int, imageView: ImageView) {
-        setProductImageAnimationData(imageView)
+        setProductImageAnimationData(imageView, false)
 
         val isLastItem = cartAdapter.allCartItemData.size == 1
         dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
 
-    private fun setProductImageAnimationData(imageView: ImageView) {
+    private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
         val imageSource = imageView.drawable.toBitmap()
         val location = IntArray(2)
         imageView.getLocationOnScreen(location)
@@ -1424,6 +1425,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         tmpAnimatedImage.apply {
             setImageBitmap(imageSource)
+            if (isUnavailableItem) {
+                val size = resources.getDimensionPixelOffset(R.dimen.dp_56)
+                layoutParams.width = size
+                layoutParams.width = size
+                alpha = 0.5f
+            } else {
+                val size = resources.getDimensionPixelOffset(R.dimen.dp_72)
+                layoutParams.width = size
+                layoutParams.width = size
+                alpha = 1.0f
+            }
 
             x = xCoordinate.toFloat()
             y = yCoordinate.toFloat() - (height / 3)
@@ -2518,7 +2530,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
             cartAdapter.checkForSingleItemRemaining()
-            dPresenter.processGetWishlistData()
         }
     }
 
@@ -2548,6 +2559,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     tmpAnimatedImage.gone()
                     toolbar.animateWishlistIcon()
                     showToastMessageGreen(message, false)
+                    dPresenter.processGetWishlistData()
                 }
 
                 override fun onAnimationCancel(animation: Animator) {}
@@ -2927,7 +2939,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartWishlistItemHolderDataList = wishlistMapper.convertToViewHolderModelList(wishlists)
         }
 
-        val cartWishlistHolderData = CartWishlistHolderData()
+        val cartWishlistHolderData = cartAdapter.getCartWishlistHolderData()
         cartWishlistHolderData.wishList = cartWishlistItemHolderDataList
 
         if (this.wishLists == null || !forceReload) {
