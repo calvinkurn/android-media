@@ -627,8 +627,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         view?.let {
-            it.showProgressLoading()
-
             val addCartToWishlistRequest = AddCartToWishlistRequest()
             addCartToWishlistRequest.cartIds = listOf(cartId)
 
