@@ -96,6 +96,8 @@ object TrackingUtil {
         linkerData.contentId = productInfo.basic.productID
         linkerData.contentType = ProductTrackingConstant.Tracking.CONTENT_TYPE
         productInfo.basic.category.detail.getOrNull(2)?.let {
+            linkerData.level3Name = it.name
+            linkerData.level3Id = it.id
             linkerData.productCategory = it.name
         }
         linkerData.quantity = productInfo.data.stock.value.toString()
