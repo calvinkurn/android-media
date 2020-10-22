@@ -1658,9 +1658,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopName(orderShop.shopName)
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
-            if (step == OrderSummaryPageEnhanceECommerce.STEP_2) {
-                setShippingPrice(_orderShipment.getRealShippingPrice().toString())
-            }
+            setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             setShippingDuration(_orderShipment.serviceDuration)
             setCampaignId(orderProduct.campaignId.toString())
         }.build(step, option)
