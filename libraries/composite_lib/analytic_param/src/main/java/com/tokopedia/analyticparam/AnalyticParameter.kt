@@ -1,6 +1,6 @@
 package com.tokopedia.analyticparam
 
-class AnalyticParameter {
+class AnalyticParameter    {
     val clazz: Any?
     val valueClass: Any?
     val keyClass: Any?
