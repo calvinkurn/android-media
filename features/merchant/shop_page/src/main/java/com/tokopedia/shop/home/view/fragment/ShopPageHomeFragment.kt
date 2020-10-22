@@ -173,8 +173,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var remoteConfig: RemoteConfig? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
-    private var timeNow = 0L
-    private var timeEnd = 0L
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -327,8 +325,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         showLoading()
         shopHomeAdapter.isOwner = isOwner
         startMonitoringPltNetworkRequest()
-        timeNow = System.currentTimeMillis()
-        Log.i("SHOP_HOME_TEST", "{${timeNow}} before get ShopPageHomeData")
         viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
@@ -350,9 +346,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    timeEnd = System.currentTimeMillis()
-                    Log.i("SHOP_HOME_TEST", "{${timeEnd}} after success get ShopHomeLayoutData")
-                    Log.i("SHOP_HOME_TEST", "{${timeEnd - timeNow}} result")
                     stopMonitoringPltRenderPage()
                     viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
