@@ -30,9 +30,6 @@ class GraphqlCacheDataStore @Inject constructor(private val mCacheManager: Graph
             if (cacheStrategy.type == CacheType.CACHE_FIRST) {
                 GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, indexOfEmptyCached)
             } else {
-                if (indexOfEmptyCached.isNotEmpty()) {
-                    throw Exception("Not all query is available on cache!")
-                }
                 GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, true)
             }
         }
