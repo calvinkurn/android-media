@@ -2485,8 +2485,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (removeAllItems) {
             resetRecentViewList()
-            val cartEmptyHolderData = buildCartEmptyHolderData()
-            cartAdapter.renderEmptyCart(cartEmptyHolderData)
+            cartListData?.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
+                if (lastApplyData.additionalInfo.emptyCartInfo.message.isNotEmpty()) {
+                    val cartEmptyHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
+                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
+                } else {
+                    val cartEmptyHolderData = buildCartEmptyHolderData()
+                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
+                }
+            }
             showEmptyCartContainer()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
@@ -2519,8 +2526,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isLastItem) {
             resetRecentViewList()
-            val cartEmptyHolderData = buildCartEmptyHolderData()
-            cartAdapter.renderEmptyCart(cartEmptyHolderData)
+            cartListData?.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
+                if (lastApplyData.additionalInfo.emptyCartInfo.message.isNotEmpty()) {
+                    val cartEmptyHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
+                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
+                } else {
+                    val cartEmptyHolderData = buildCartEmptyHolderData()
+                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
+                }
+            }
             showEmptyCartContainer()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
@@ -2605,9 +2619,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showMainContainer()
             dPresenter.processToUpdateAndReloadCartData(getCartId())
         } else {
-            if (dPresenter.getCartListData()?.shopGroupAvailableDataList?.isNotEmpty() == true) {
-                showMainContainer()
-            }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
         }
     }
