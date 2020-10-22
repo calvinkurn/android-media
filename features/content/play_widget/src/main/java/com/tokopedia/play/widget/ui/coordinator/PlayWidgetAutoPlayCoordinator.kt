@@ -1,11 +1,13 @@
 package com.tokopedia.play.widget.ui.coordinator
 
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
+import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
+import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import kotlinx.coroutines.*
@@ -22,6 +24,8 @@ class PlayWidgetAutoPlayCoordinator(
 
     private val videoPlayerMap = mutableMapOf<PlayVideoPlayer, PlayVideoPlayerReceiver?>()
 
+    private val autoPlayReceiverDecider: AutoPlayReceiverDecider = DefaultAutoPlayReceiverDecider()
+
     private val widgetViewListener = object : PlayWidgetViewListener {
 
         override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
@@ -31,8 +35,11 @@ class PlayWidgetAutoPlayCoordinator(
             autoPlayJob?.cancel()
             autoPlayJob = scope.launch(mainCoroutineDispatcher) {
                 delay(150)
-                val playerReceivers = visibleCards.filterIsInstance<PlayVideoPlayerReceiver>()
-                val autoPlayEligibleReceivers = getEligibleAutoPlayReceivers(playerReceivers)
+                val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+                        visibleCards = visibleCards,
+                        itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
+                        maxAutoPlay = FAKE_MAX_AUTOPLAY
+                )
 
                 videoPlayerMap.entries.forEach {
                     if (it.value !in autoPlayEligibleReceivers) {
@@ -93,11 +100,7 @@ class PlayWidgetAutoPlayCoordinator(
         return videoPlayerMap.entries.firstOrNull { it.value == null }?.key
     }
 
-    private fun getEligibleAutoPlayReceivers(playerReceivers: List<PlayVideoPlayerReceiver>): List<PlayVideoPlayerReceiver> {
-        return playerReceivers.take(FAKE_MAX_AUTOPLAY)
-    }
-
-    private fun getVisibleWidgetInRecyclerView(recyclerView: RecyclerView): List<View> {
+    private fun getVisibleWidgetInRecyclerView(recyclerView: RecyclerView): List<AutoPlayModel> {
         val layoutManager = recyclerView.layoutManager
         if (layoutManager !is LinearLayoutManager) return emptyList()
 
@@ -106,7 +109,9 @@ class PlayWidgetAutoPlayCoordinator(
             val lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
 
             val allVisibleViews = (firstCompleteVisiblePosition..lastCompleteVisiblePosition).mapNotNull {
-                layoutManager.findViewByPosition(it)
+                val view = layoutManager.findViewByPosition(it)
+                if (view == null) null
+                else AutoPlayModel(view, it)
             }
 
             allVisibleViews
