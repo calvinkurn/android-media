@@ -134,15 +134,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
-    private fun allPermissionsGranted(): Boolean {
-        for (permission in requiredPermissions) {
-            if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
-                return false
-            }
-        }
-        return true
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE -> {
@@ -165,8 +156,107 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 //                    selectedImage.add(arrayListOf(uriImage).toString())
                 }
             }
-           else -> super.onActivityResult(requestCode, resultCode, data)
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun showLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog?.show()
+        }
+    }
+
+    override fun hideLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog?.hide()
+        }
+    }
+
+    override fun setSubmitFlag() {
+        myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
+    }
+
+    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+        if (selectedImage.isNotEmpty()) {
+            val totalImage = selectedImage.size
+            var initCountImage = imageCount
+            for (image in selectedImage) {
+                initCountImage++
+                val originalFile = File(image)
+                val imageType = originalFile.absolutePath
+                val imageSize = originalFile.length()/1000
+
+                if (!imageType.contains(".mp4") && imageSize > 250) {
+                    resizeImage(image)
+                    val resizedData = resizedUriImage?.let { handleItem(it) }
+                    val resizedFile = File(resizedData?.path)
+                    sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
+                } else if (!imageType.contains(".mp4") && imageSize < 250) {
+                    sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
+                } else {
+                    sendAttachmentVideo(feedbackId, originalFile, totalImage, initCountImage)
+                }
+            }
+        } else {
+            feedbackPagePresenter.commitData(feedbackId)
+        }
+
+    }
+
+    override fun goToTicketCreatedActivity() {
+        activity?.finish()
+        Intent(context, TicketCreatedActivity::class.java).apply {
+            startActivityForResult(this, 1212)
+        }
+    }
+
+    override fun showError(throwable: Throwable) {
+        Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addImageClick() {
+        context?.let {
+            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
+                    GalleryType.ALL, DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(
+                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
+                    ))
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
+    }
+
+    override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
+        imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
+    }
+
+    override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
+        val imageUriClicked = data.imageUrl
+        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
+                REQUEST_CODE_EDIT_IMAGE)
+    }
+
+    override fun setFeedbackData(model: FeedbackModel) {
+        pagesAdapter.renderData(model.labels)
+    }
+
+    override fun onSelect(selection: Int, pageName: String) {
+        bottomSheetPage?.dismiss()
+        page.setText(pageName)
+        feedbackPagePresenter.setSelectedPage(selection)
+        labelsId = selection
+    }
+
+    private fun allPermissionsGranted(): Boolean {
+        for (permission in requiredPermissions) {
+            if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun initViews(){
@@ -182,7 +272,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
-                android.R.layout.simple_spinner_item
+                R.layout.item_spinner_bug
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             bugType.adapter = adapter
@@ -310,9 +400,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
 
             if(validate) {
-                val issueType = bugType.selectedItem.toString()
                 emailTokopedia = "$emailText@tokopedia.com"
-                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, affectedPageText, journeyText, issueType, expectedResultText, detailFeedback))
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
             }
         }
 
@@ -354,11 +443,11 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return ScreenshotData(id, fileName, path)
     }
 
-    private fun requestMapper(email: String, page: String, journey: String, issueType: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
+    private fun requestMapper(email: String, journey: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackFormRequest(
                 platformID = 2,
-                email = userSession?.email ,
+                email = userSession?.email,
                 appVersion =  affectedVersion,
                 bundleVersion = versionCode,
                 device = deviceInfo,
@@ -367,8 +456,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 tokopediaEmail = email,
                 sessionToken = sessionToken,
                 fcmToken = "",
-                loginState = "login",
-                lastAccessedPage = page,
+                loginState = loginState,
+                lastAccessedPage = lastAccessedPage,
                 category = categoryItem,
                 journey = journey,
                 expected = expectedResult,
@@ -378,48 +467,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         )
     }
 
-    override fun showLoadingDialog() {
-        if (loadingDialog != null) {
-            loadingDialog?.show()
-        }
-    }
-
-    override fun hideLoadingDialog() {
-        if (loadingDialog != null) {
-            loadingDialog?.hide()
-        }
-    }
-
-    override fun setSubmitFlag() {
-        myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
-    }
-
-    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
-        if (selectedImage.isNotEmpty()) {
-            val totalImage = selectedImage.size
-            var initCountImage = imageCount
-            for (image in selectedImage) {
-                initCountImage++
-                val originalFile = File(image)
-                val imageSize = originalFile.length()/1000
-
-                if (imageSize > 250) {
-                    resizeImage(image)
-                    val resizedData = resizedUriImage?.let { handleItem(it) }
-                    val resizedFile = File(resizedData?.path)
-                    sendAttachment(feedbackId, resizedFile, totalImage, initCountImage)
-                } else {
-                    sendAttachment(feedbackId, originalFile, totalImage, initCountImage)
-                }
-            }
-        } else {
-            feedbackPagePresenter.commitData(feedbackId)
-        }
-
-    }
-
-    private fun sendAttachment(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+    private fun sendAttachmentImage(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
+    }
+
+    private fun sendAttachmentVideo(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("video/*"), file)
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
@@ -441,70 +496,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         return Uri.parse(path)
     }
 
-    override fun goToTicketCreatedActivity() {
-        activity?.finish()
-        Intent(context, TicketCreatedActivity::class.java).apply {
-            startActivityForResult(this, 1212)
-        }
-    }
-
-    override fun showError(throwable: Throwable) {
-        Toast.makeText(activity, throwable.toString(), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun addImageClick() {
-        context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY),
-                    GalleryType.ALL, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                    null,
-                    ImagePickerMultipleSelectionBuilder(
-                            feedbackPagePresenter.getSelectedImageUrl(), null, -1, 5
-                    ))
-            val intent = ImagePickerActivity.getIntent(it, builder)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }
-    }
-
-    override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
-        imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
-    }
-
-    override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
-        val imageUriClicked = data.imageUrl
-        startActivityForResult(DrawOnPictureActivity.getIntent(requireContext(), Uri.parse(imageUriClicked)),
-                REQUEST_CODE_EDIT_IMAGE)
-    }
-
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {
         selected?.chipType = ChipsUnify.TYPE_SELECTED
         deselected?.chipType = ChipsUnify.TYPE_ALTERNATE
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(uri: Uri?, className: String?) : FeedbackPageFragment {
-            return FeedbackPageFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_URI_IMAGE, uri)
-                    putString(EXTRA_IS_CLASS_NAME, className)
-                }
-            }
-        }
-
-        private const val REQUEST_CODE_IMAGE = 111
-        private const val REQUEST_CODE_EDIT_IMAGE = 101
-
-        private val PROJECTION = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATA
-        )
-    }
-
-    override fun setFeedbackData(model: FeedbackModel) {
-       pagesAdapter.renderData(model.labels)
     }
 
     private fun openBottomSheetPage(){
@@ -544,16 +538,26 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
     }
 
-    override fun onSelect(selection: Int, pageName: String) {
-        bottomSheetPage?.dismiss()
-        page.setText(pageName)
-        feedbackPagePresenter.setSelectedPage(selection)
-        labelsId = selection
+    companion object {
+        @JvmStatic
+        fun newInstance(uri: Uri?, className: String?) : FeedbackPageFragment {
+            return FeedbackPageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_IS_CLASS_NAME, className)
+                }
+            }
+        }
+
+        private const val REQUEST_CODE_IMAGE = 111
+        private const val REQUEST_CODE_EDIT_IMAGE = 101
+        private const val DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO = 10240 // 10 * 1024KB (maks 10MB)
+
+
+        private val PROJECTION = arrayOf(
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATA
+        )
     }
-
-    /*here on Search*/
-    private fun performSearch(searchKey: String) {
-
-    }
-
 }
