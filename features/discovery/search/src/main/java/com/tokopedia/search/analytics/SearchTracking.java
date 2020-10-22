@@ -784,7 +784,7 @@ public class SearchTracking {
     public static void trackEventGoToShopPage(String keyword, Object item) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        TrackAppUtils.EVENT, Event.PRODUCTCLICK,
+                        TrackAppUtils.EVENT, SearchEventTracking.Event.PROMO_CLICK,
                         TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK,
                         TrackAppUtils.EVENT_LABEL, keyword,
