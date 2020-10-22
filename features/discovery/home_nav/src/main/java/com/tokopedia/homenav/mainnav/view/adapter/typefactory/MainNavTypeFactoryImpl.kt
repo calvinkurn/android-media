@@ -52,7 +52,6 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
-            CommonNavItemViewHolder.LAYOUT -> CommonNavItemViewHolder(view)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             else -> throw TypeNotSupportedException.create("Layout not supported")
