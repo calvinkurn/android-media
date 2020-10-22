@@ -64,7 +64,7 @@ data class PlayWidgetMediumChannelUiModel(
         val totalView: String,
         val totalViewVisible: Boolean,
         val hasPromo: Boolean,
-        val activeReminder: Boolean,
+        var activeReminder: Boolean,
         val partner: PlayWidgetPartnerUiModel,
         val video: PlayWidgetVideoUiModel,
         val channelType: PlayWidgetChannelType

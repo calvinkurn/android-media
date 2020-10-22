@@ -1,8 +1,12 @@
 package com.tokopedia.play.widget.util
 
 import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import dagger.Lazy
@@ -17,6 +21,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class PlayWidgetTools @Inject constructor(
         private val useCase: PlayWidgetUseCase,
+        private val reminderUseCase: PlayWidgetReminderUseCase,
         private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
 ) {
 
@@ -33,6 +38,23 @@ class PlayWidgetTools @Inject constructor(
         return withContext(coroutineContext) {
             val mapper = mapperProviders[PlayWidgetSize.getByTypeString(widgetResponse.meta.template)] ?: throw IllegalStateException("Mapper cannot be null")
             mapper.mapWidget(widgetResponse)
+        }
+    }
+
+    suspend fun setToggleReminder(channelId: String,
+                                  remind: Boolean,
+                                  coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
+        return withContext(coroutineContext) {
+            reminderUseCase.params = PlayWidgetReminderUseCase.createParams(channelId, remind)
+            reminderUseCase.executeOnBackground()
+        }
+    }
+
+    suspend fun mapWidgetToggleReminder(response: PlayWidgetReminder, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetReminderUiModel {
+        return withContext(coroutineContext) {
+            val mapper = mapperProviders[PlayWidgetSize.Medium]
+            if (mapper is PlayWidgetMediumUiMapper) mapper.mapWidgetToggleReminder(response)
+            else throw IllegalStateException("Mapper is not medium type")
         }
     }
 }

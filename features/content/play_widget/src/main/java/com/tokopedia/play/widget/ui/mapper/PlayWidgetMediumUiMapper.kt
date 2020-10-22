@@ -2,6 +2,8 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
+import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import javax.inject.Inject
@@ -29,6 +31,10 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 }
         )
     }
+
+    fun mapWidgetToggleReminder(data: PlayWidgetReminder) = PlayWidgetReminderUiModel(
+            success = data.header.status == PlayWidgetReminderUseCase.RESPONSE_STATUS_SUCCESS
+    )
 
     private fun mapWidgetBackground(data: PlayWidget): PlayWidgetBackgroundUiModel = PlayWidgetBackgroundUiModel(
             overlayImageUrl = data.meta.overlayImage,

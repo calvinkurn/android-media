@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.*
@@ -91,18 +93,6 @@ class ShopHomeAdapter(
         else
             notifyInsertedItemRange(lastIndex, productList.size)
     }
-
-//    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
-//        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
-//            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
-//                visitables.removeAt(index)
-//                notifyItemRemoved(index)
-//            } else if(index != -1){
-//                visitables[index] = playCarouselUiModel
-//                notifyItemChanged(index)
-//            }
-//        }
-//    }
 
     fun setEtalaseTitleData() {
         val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
@@ -457,7 +447,6 @@ class ShopHomeAdapter(
         }
     }
 
-
     fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
         visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
@@ -465,4 +454,27 @@ class ShopHomeAdapter(
         }
     }
 
+    /**
+     * Play widget
+     */
+    fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
+        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder) {
+                visitables.removeAt(position)
+                notifyItemRemoved(position)
+            } else {
+                visitables[position] = (visitables[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel)
+                notifyChangedItem(position)
+            }
+        }
+    }
+
+    fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {
+        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            if (reminderUiModel.position == -1) return@let
+            notifyItemChanged(position, reminderUiModel)
+        }
+    }
 }

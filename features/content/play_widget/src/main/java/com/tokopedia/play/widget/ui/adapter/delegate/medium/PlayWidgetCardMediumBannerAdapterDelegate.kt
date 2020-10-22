@@ -3,7 +3,6 @@ package com.tokopedia.play.widget.ui.adapter.delegate.medium
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
@@ -12,9 +11,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 /**
  * Created by mzennis on 07/10/20.
  */
-class PlayWidgetCardMediumBannerAdapterDelegate(
-        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
-) : TypedAdapterDelegate<PlayWidgetMediumBannerUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumBannerViewHolder>(
+class PlayWidgetCardMediumBannerAdapterDelegate : TypedAdapterDelegate<PlayWidgetMediumBannerUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumBannerViewHolder>(
         PlayWidgetCardMediumBannerViewHolder.layoutRes
 ) {
 
@@ -23,6 +20,6 @@ class PlayWidgetCardMediumBannerAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumBannerViewHolder {
-        return PlayWidgetCardMediumBannerViewHolder(basicView, cardMediumListener)
+        return PlayWidgetCardMediumBannerViewHolder(basicView)
     }
 }
