@@ -35,7 +35,6 @@ import retrofit2.Retrofit;
 public class AccessTokenRefresh {
 
     private static final String FORCE_LOGOUT = "forced_logout";
-    private static final String INVALID_REQUEST = "invalid_request";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String GRANT_TYPE = "grant_type";
     private static final String REFRESH_TOKEN = "refresh_token";

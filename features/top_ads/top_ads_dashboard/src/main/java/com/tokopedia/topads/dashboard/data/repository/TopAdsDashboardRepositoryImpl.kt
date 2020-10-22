@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.data.repository
 
+import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
@@ -15,15 +16,8 @@ import rx.Observable
 
 class TopAdsDashboardRepositoryImpl(private val topAdsDashboardDataSource: TopAdsDashboardDataSource) : TopAdsDashboardRepository {
 
-    override fun populateTotalAds(requestParams: RequestParams): Observable<TotalAd> {
-        return topAdsDashboardDataSource.populateTotalAd(requestParams)
-    }
-
     override fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
         return topAdsDashboardDataSource.getStatistics(requestParams)
     }
 
-    override fun getDashboardCredit(requestParams: RequestParams): Observable<List<DataCredit>> {
-        return topAdsDashboardDataSource.getDashboardCredit(requestParams)
-    }
 }

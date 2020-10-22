@@ -197,8 +197,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()
         endDate = Utils.getEndDate()
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
-        topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
