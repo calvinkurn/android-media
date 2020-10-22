@@ -1,15 +1,10 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
@@ -17,7 +12,12 @@ import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -25,7 +25,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -101,6 +104,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -126,6 +133,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
@@ -158,6 +169,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -184,6 +199,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
             }
@@ -201,6 +220,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
@@ -233,6 +256,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -260,6 +287,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
