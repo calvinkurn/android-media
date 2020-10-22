@@ -9,6 +9,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 
 /**
  * @author by furqan on 19/10/2020
@@ -24,10 +25,11 @@ class FlightOrderDetailViewModel(private val orderDetailUseCase: FlightOrderDeta
 
     fun fetchOrderDetailData(invoiceId: String) {
         launchCatchError(dispatcherProvider.ui(), block = {
-            orderDetailUseCase.execute(invoiceId)
+            val orderDetailData = orderDetailUseCase.execute(invoiceId)
+            mutableOrderDetailData.postValue(Success(orderDetailData))
         }) {
             it.printStackTrace()
-            mutableOrderDetailData.value = Fail(it)
+            mutableOrderDetailData.postValue(Fail(it))
         }
     }
 
