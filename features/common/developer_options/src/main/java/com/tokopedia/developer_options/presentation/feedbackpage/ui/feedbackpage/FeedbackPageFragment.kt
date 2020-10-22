@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI
@@ -39,7 +39,6 @@ import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPage
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.FeedbackModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.ImageFeedbackUiModel
-import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.LabelsItem
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.FeedbackFormRequest
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
@@ -59,7 +58,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottomsheet_pages_name.*
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -70,7 +68,7 @@ import java.io.File
 import javax.inject.Inject
 
 
-class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected, SearchView.OnQueryTextListener {
+class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
 
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
@@ -100,7 +98,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
     private var selectedImage: ArrayList<String> = arrayListOf()
-    private var listPages: List<LabelsItem> = listOf()
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -482,7 +479,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     private fun setActiveFilter(selected: ChipsUnify?, deselected: ChipsUnify?) {
         selected?.chipType = ChipsUnify.TYPE_SELECTED
-        deselected?.chipType = ChipsUnify.TYPE_DISABLE
+        deselected?.chipType = ChipsUnify.TYPE_ALTERNATE
     }
 
     companion object {
@@ -510,18 +507,25 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
        pagesAdapter.renderData(model.labels)
     }
 
-    private fun openBottomSheetPage() {
-
-
+    private fun openBottomSheetPage(){
         bottomSheetPage = BottomSheetUnify()
+        val searchKey = pagesAdapter.searchKey
         val viewBottomSheetPage = View.inflate(context, R.layout.bottomsheet_pages_name, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_pages)
+            val searchInput = findViewById<SearchInputView>(R.id.search_input_page)
             rvPages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvPages.adapter = pagesAdapter
 
-            search_input_page.setOnQueryTextListener(this@FeedbackPageFragment)
+            searchInput?.setListener(object : SearchInputView.Listener {
+                override fun onSearchSubmitted(text: String?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
 
+                override fun onSearchTextChanged(text: String?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
 
+            })
         }
 
         bottomSheetPage?.apply {
@@ -539,15 +543,13 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     override fun onSelect(selection: Int, pageName: String) {
         bottomSheetPage?.dismiss()
         page.setText(pageName)
+        feedbackPagePresenter.setSelectedPage(selection)
         labelsId = selection
     }
 
-    /*onSearchListener*/
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    /*here on Search*/
+    private fun performSearch(searchKey: String) {
+
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }

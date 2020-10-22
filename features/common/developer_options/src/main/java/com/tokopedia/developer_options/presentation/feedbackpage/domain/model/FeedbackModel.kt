@@ -13,5 +13,6 @@ data class CategoriesItem(
 data class LabelsItem(
         var id: Int = -1,
         var name: String = "",
-        var weight: String = ""
+        var weight: String = "",
+        var isSelected: Boolean = false
 )

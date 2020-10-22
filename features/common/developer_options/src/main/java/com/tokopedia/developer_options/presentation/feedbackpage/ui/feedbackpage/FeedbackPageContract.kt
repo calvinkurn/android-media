@@ -31,5 +31,6 @@ interface FeedbackPageContract {
         fun removeImage(image: BaseImageFeedbackUiModel) : MutableList<BaseImageFeedbackUiModel>
         fun getSelectedImageUrl(): ArrayList<String>
         fun drawOnPictureResult(uri: Uri?, oldPath: String): MutableList<BaseImageFeedbackUiModel>
+        fun setSelectedPage(pageInt: Int)
     }
 }

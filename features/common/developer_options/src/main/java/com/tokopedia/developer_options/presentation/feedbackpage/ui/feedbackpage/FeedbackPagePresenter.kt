@@ -22,6 +22,8 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     private val feedbackApi: FeedbackApiInterface = ApiClient.getAPIService()
     private var imageData: MutableList<BaseImageFeedbackUiModel> = mutableListOf()
+    private var pageModel: FeedbackModel? = null
+    private var selectedId = -1
 
     override fun getFeedbackData() {
         feedbackApi.getCategories()
@@ -31,6 +33,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     override fun onNext(t: FeedbackDataResponse?) {
                         if (t != null) {
                             view.setFeedbackData(mapper.mapData(t))
+                            pageModel = mapper.mapData(t)
                         }
                     }
 
@@ -142,6 +145,24 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
         }
 
         return imageData
+    }
+
+    /*set selected item radio button*/
+    override fun setSelectedPage(pageId: Int) {
+        val pageModel = pageModel
+        if (pageModel != null) {
+            selectedId = pageId
+            logicSelection(pageModel)
+        }
+    }
+
+    private fun logicSelection(pageModel: FeedbackModel) {
+        val pageList = pageModel.labels
+        for (item in pageList) {
+            item.isSelected = item.id == selectedId
+        }
+        pageModel.labels = pageList
+        view.setFeedbackData(pageModel)
     }
 
 
