@@ -71,7 +71,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         renderTabAndViewPager()
         header_toolbar?.actionTextView?.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
                 startActivityForResult(intent, AUTO_ADS_DISABLED)
             } else {
                 openCreateForm()
@@ -240,7 +240,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun openCreateForm() {
         if (AppUtil.isSellerInstalled(this)) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
             intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_CREATE_FORM_PATH)
             startActivity(intent)
         } else {

@@ -32,6 +32,8 @@ object ApplinkConstInternalTopAds {
     @JvmField
     val TOPADS_CREATE_CHOOSER = "${INTERNAL_TOPADS}/ad-picker"
     @JvmField
+    val TOPADS_ADS_SELECTION = "${INTERNAL_TOPADS}/ad-selection"
+    @JvmField
     val TOPADS_EDIT_ADS = "${INTERNAL_TOPADS}/edit-ads"
     @JvmField
     val TOPADS_CREATION_ONBOARD = "${INTERNAL_TOPADS}/creation-onboard"
