@@ -31,6 +31,8 @@ class PlaySearchSuggestionsViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
 
+    private val playBroadcastMapper = PlayBroadcastUiMapper()
+
     private val getProductInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
@@ -43,7 +45,8 @@ class PlaySearchSuggestionsViewModelTest {
         viewModel = PlaySearchSuggestionsViewModel(
                 dispatcherProvider,
                 getProductInEtalaseUseCase,
-                mockk(relaxed = true)
+                mockk(relaxed = true),
+                playBroadcastMapper
         )
     }
 
@@ -69,7 +72,7 @@ class PlaySearchSuggestionsViewModelTest {
                 )
                 .isEqualToComparingFieldByFieldRecursively(
                         NetworkResult.Success(
-                                PlayBroadcastUiMapper.mapSearchSuggestionList(keyword, mockProductsInEtalase)
+                                playBroadcastMapper.mapSearchSuggestionList(keyword, mockProductsInEtalase)
                         )
                 )
     }

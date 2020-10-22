@@ -49,6 +49,8 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var dataStore: PlayBroadcastDataStore
 
+    private val playBroadcastMapper = PlayBroadcastUiMapper()
+
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
     private lateinit var getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase
 
@@ -86,7 +88,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
     }
 
@@ -205,7 +208,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
 
         val result = viewModel.observableFollowers.getOrAwaitValue()
@@ -225,7 +229,8 @@ class PlayBroadcastPrepareViewModelTest {
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 getLiveFollowersDataUseCase = getLiveFollowersDataUseCase,
-                mDataStore = dataStore
+                mDataStore = dataStore,
+                playBroadcastMapper = playBroadcastMapper
         )
 
         val result = viewModel.observableFollowers.getOrAwaitValue()
@@ -233,7 +238,7 @@ class PlayBroadcastPrepareViewModelTest {
         Assertions
                 .assertThat(result)
                 .isEqualTo(
-                        PlayBroadcastUiMapper.mapLiveFollowers(liveFollowerResponse)
+                        playBroadcastMapper.mapLiveFollowers(liveFollowerResponse)
                 )
     }
 }
