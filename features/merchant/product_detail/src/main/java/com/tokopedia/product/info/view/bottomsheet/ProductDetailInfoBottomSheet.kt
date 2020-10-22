@@ -8,7 +8,6 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +31,6 @@ import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUti
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.concurrent.Executors
 import javax.inject.Inject
-
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -134,7 +132,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                     startActivity(Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://www.youtube.com/watch?v=" + url[index])));
                 } catch (e: Throwable) {
-                    Crashlytics.logException(e)
                 }
             }
         }
