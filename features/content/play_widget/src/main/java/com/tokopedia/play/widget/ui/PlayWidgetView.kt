@@ -14,7 +14,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 /**
  * Created by jegul on 08/10/20
  */
-class PlayWidgetView : LinearLayout, LifecycleObserver {
+class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -33,6 +33,13 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         super.onViewRemoved(child)
     }
 
+    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetViewListener(listener)
+        }
+    }
+
     fun setModel(model: PlayWidgetUiModel) {
         when (model) {
             is PlayWidgetUiModel.Small -> addSmallView(model)
@@ -45,13 +52,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         mAnalyticListener = listener
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setAnalyticListener(listener)
-        }
-    }
-
-    fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        mWidgetViewListener = listener
-        when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.setWidgetViewListener(listener)
         }
     }
 

@@ -30,7 +30,7 @@ class PlayWidgetAutoPlayCoordinator(
 
             autoPlayJob?.cancel()
             autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-                delay(200)
+                delay(150)
                 val playerReceivers = visibleCards.filterIsInstance<PlayVideoPlayerReceiver>()
                 val autoPlayEligibleReceivers = getEligibleAutoPlayReceivers(playerReceivers)
 

@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.applink.RouteManager
@@ -24,7 +23,7 @@ import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 /**
  * Created by jegul on 07/10/20
  */
-class PlayWidgetSmallView : ConstraintLayout {
+class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -84,12 +83,12 @@ class PlayWidgetSmallView : ConstraintLayout {
         setupView(view)
     }
 
-    fun setAnalyticListener(listener: PlayWidgetSmallAnalyticListener?) {
-        mAnalyticListener = listener
+    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
     }
 
-    fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        mWidgetViewListener = listener
+    fun setAnalyticListener(listener: PlayWidgetSmallAnalyticListener?) {
+        mAnalyticListener = listener
     }
 
     fun setData(data: PlayWidgetUiModel.Small) {
