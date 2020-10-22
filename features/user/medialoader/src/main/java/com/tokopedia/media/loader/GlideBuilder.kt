@@ -145,7 +145,7 @@ object GlideBuilder {
                 .dontAnimate()
                 .dontTransform()
                 .fitCenter()
-                .priority(Priority.HIGH)
+                .priority(Priority.NORMAL)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
