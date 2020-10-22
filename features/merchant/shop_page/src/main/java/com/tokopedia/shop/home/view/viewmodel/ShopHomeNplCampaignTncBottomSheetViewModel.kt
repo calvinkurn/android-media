@@ -33,6 +33,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
 
+    val userId: String
+        get() = userSession.userId ?: ""
+
     val campaignTncLiveData: LiveData<Result<ShopHomeCampaignNplTncUiModel>>
         get() = _campaignTncLiveData
     private val _campaignTncLiveData = MutableLiveData<Result<ShopHomeCampaignNplTncUiModel>>()

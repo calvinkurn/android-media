@@ -87,11 +87,13 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_CLOSE_TNC = "click close t&c - %1s";
     public static final String CLICK_ACTIVATE_REMINDER = "click activate reminder";
     public static final String CLICK_DEACTIVATE_REMINDER = "click deactivate reminder";
+    public static final String CAMPAIGN_SEGMENTATION = "campaign segmentation";
     public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
     public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
     public static final String CLICK_SHARE_DETAIL = "click share detail";
     public static final String CLICK_PRODUCT_LIST_TOGGLE = "click product list toggle";
+    public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -168,6 +170,7 @@ public class ShopPageTrackingConstant {
 
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
+    public static final String BUSINESS_UNIT_PG = "physical goods";
 
 
 
