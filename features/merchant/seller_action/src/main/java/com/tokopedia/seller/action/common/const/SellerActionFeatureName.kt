@@ -4,7 +4,7 @@ import androidx.annotation.StringDef
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(value = [SellerActionFeatureName.ORDER_DETAIL, SellerActionFeatureName.ALL_ORDER])
+@StringDef(SellerActionFeatureName.ORDER_DETAIL, SellerActionFeatureName.ALL_ORDER)
 annotation class SellerActionFeatureName {
     companion object {
         const val ORDER_DETAIL = "order_detail"

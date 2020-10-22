@@ -13,7 +13,6 @@ import com.tokopedia.seller.action.common.const.SellerActionFeatureName
 class SellerActionActivity: Activity() {
 
     companion object {
-        @JvmStatic
         fun createOrderDetailIntent(context: Context, orderId: String): Intent {
             return RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_ACTION).apply {
                 putExtra(SellerActionConst.Params.FEATURE_NAME, SellerActionFeatureName.ORDER_DETAIL)
@@ -21,8 +20,7 @@ class SellerActionActivity: Activity() {
             }
         }
 
-        @JvmStatic
-        fun createActionIntent(context: Context, @SellerActionFeatureName featureName: String): Intent {
+        fun createActionIntent(context: Context, featureName: String): Intent {
             return RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_ACTION).apply {
                 putExtra(SellerActionConst.Params.FEATURE_NAME, featureName)
             }
@@ -36,7 +34,7 @@ class SellerActionActivity: Activity() {
         }
     }
 
-    private fun redirectToSellerapp(@SellerActionFeatureName featureName: String) {
+    private fun redirectToSellerapp(featureName: String) {
         when(featureName) {
             SellerActionFeatureName.ALL_ORDER -> {
                 // TODO: Send Tracking
