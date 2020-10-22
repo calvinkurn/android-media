@@ -819,6 +819,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
     }
 
+    fun renderEmptyCart(cartEmptyHolderData: CartEmptyHolderData) {
+        if (cartDataList.isNotEmpty() && cartDataList[0] is TickerAnnouncementHolderData) {
+            cartDataList.set(0, cartEmptyHolderData)
+            notifyItemChanged(0)
+        } else {
+            cartDataList.add(0, cartEmptyHolderData)
+            notifyItemInserted(0)
+        }
+    }
+
     fun checkForShipmentForm() {
         var canProcess = true
         var checkedCount = 0

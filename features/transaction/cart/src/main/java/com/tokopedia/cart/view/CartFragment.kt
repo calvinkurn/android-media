@@ -2122,16 +2122,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCartEmptyDefault() {
+        val cartEmptyHolderData = buildCartEmptyHolderData()
+        cartAdapter.addCartEmptyData(cartEmptyHolderData)
+    }
+
+    private fun buildCartEmptyHolderData(): CartEmptyHolderData {
         val cartEmptyHolderData = CartEmptyHolderData(
                 title = getString(R.string.checkout_module_keranjang_belanja_kosong_new),
                 desc = getString(R.string.checkout_empty_cart_sub_message_new),
                 imgUrl = CART_EMPTY_DEFAULT_IMG_URL,
                 btnText = getString(R.string.checkout_module_mulai_belanja)
         )
-        cartAdapter.addCartEmptyData(cartEmptyHolderData)
+        return cartEmptyHolderData
     }
 
     private fun renderCartEmptyWithPromo(lastApplyData: LastApplyUiModel) {
+        val cartEmptyWithPromoHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
+
+        // analytics
+        cartAdapter.addCartEmptyData(cartEmptyWithPromoHolderData)
+        val listPromos = getAllPromosApplied(lastApplyData)
+        PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
+    }
+
+    private fun buildCartEmptyWithPromoHolderData(lastApplyData: LastApplyUiModel): CartEmptyHolderData {
         var title = getString(R.string.cart_empty_with_promo_title)
         var desc = getString(R.string.cart_empty_with_promo_desc)
         var imgUrl = CART_EMPTY_WITH_PROMO_IMG_URL
@@ -2145,11 +2159,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 imgUrl = imgUrl,
                 btnText = getString(R.string.cart_empty_with_promo_btn)
         )
-
-        // analytics
-        cartAdapter.addCartEmptyData(cartEmptyWithPromoHolderData)
-        val listPromos = getAllPromosApplied(lastApplyData)
-        PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
+        return cartEmptyWithPromoHolderData
     }
 
     private fun loadMacroInsurance(cartListData: CartListData) {
@@ -2475,9 +2485,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (removeAllItems) {
             resetRecentViewList()
-            cartAdapter.removeTickerAnnouncement()
-            renderCartEmptyDefault()
-            cartAdapter.notifyItemInserted(0)
+            val cartEmptyHolderData = buildCartEmptyHolderData()
+            cartAdapter.renderEmptyCart(cartEmptyHolderData)
+            showEmptyCartContainer()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
         }
@@ -2509,9 +2519,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isLastItem) {
             resetRecentViewList()
-            cartAdapter.removeTickerAnnouncement()
-            renderCartEmptyDefault()
-            cartAdapter.notifyItemInserted(0)
+            val cartEmptyHolderData = buildCartEmptyHolderData()
+            cartAdapter.renderEmptyCart(cartEmptyHolderData)
+            showEmptyCartContainer()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
         }
