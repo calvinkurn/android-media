@@ -626,10 +626,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun showLoading(isLoading: Boolean) {
-        val shortAnimTime = resources.getInteger(
+        val shortAnimTime = context?.resources?.getInteger(
                 android.R.integer.config_shortAnimTime)
 
-        progress_bar.animate().setDuration(shortAnimTime.toLong())
+        shortAnimTime?.toLong()?.let {
+            progress_bar.animate().setDuration(it)
                 .alpha((if (isLoading) 1 else 0).toFloat())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
@@ -639,17 +640,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     }
                 })
 
-        container.animate().setDuration(shortAnimTime.toLong())
-                .alpha((if (isLoading) 0 else 1).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        if (container != null) {
-                            container.visibility = if (isLoading) View.GONE else View.VISIBLE
+            container.animate().setDuration(it)
+                    .alpha((if (isLoading) 0 else 1).toFloat())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            if (container != null) {
+                                container.visibility = if (isLoading) View.GONE else View.VISIBLE
+                            }
                         }
-                    }
-                })
+                    })
+        }
         emailExtension?.hide()
-
     }
 
     private fun goToRegisterInitial(source: String) {
