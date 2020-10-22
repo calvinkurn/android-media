@@ -59,7 +59,7 @@ public class CMInAppManager implements CmInAppListener,
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
-
+    String TEMP_TAG = "GratifTag";
     static {
         inAppManager = new CMInAppManager();
     }
@@ -114,21 +114,24 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     @Override
-    public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode) {
+    public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {
         synchronized (lock) {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
+                Timber.d(TEMP_TAG + " in-app found for screen name=" + screenName + ",type=" + cmInApp.type);
                 sendEventInAppPrepared(cmInApp);
-                if (checkForOtherSources(cmInApp, entityHashCode)) return;
+                if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
+            }else{
+                Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
         }
     }
 
-    private boolean checkForOtherSources(CMInApp cmInApp, int entityHashCode) {
+    private boolean checkForOtherSources(CMInApp cmInApp, int entityHashCode, String screenName) {
         if (CmEventListener.INSTANCE.getInAppPopupContractMap().containsKey(cmInApp.type)) {
-            CmEventListener.INSTANCE.getInAppPopupContractMap().get(cmInApp.type).handleInAppPopup(cmInApp, entityHashCode);
+            CmEventListener.INSTANCE.getInAppPopupContractMap().get(cmInApp.type).handleInAppPopup(cmInApp, entityHashCode, screenName);
             return true;
         }
         return false;

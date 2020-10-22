@@ -28,16 +28,16 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
 
     val TAG = "CmDialogHandler"
 
-    fun showPushDialog(activity: Activity, gratificationId: String) {
+    fun showPushDialog(activity: Activity, gratificationId: String, screenName:String) {
         val tempWeakActivity = WeakReference(activity)
-        gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH, null)
+        gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH, object : GratificationPresenter.AbstractGratifPopupCallback() {},screenName)
     }
 
-    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String, gratifPopupCallback: GratifPopupCallback): Job? {
+    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String, gratifPopupCallback: GratifPopupCallback,screenName: String): Job? {
         try {
             val json = JSONObject(customValues)
             val gratificationId = json.getString("gratificationId")
-            return gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, gratifPopupCallback)
+            return gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, gratifPopupCallback,screenName)
         } catch (e: Exception) {
             gratifPopupCallback.onExeption(e)
         }
@@ -59,7 +59,7 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
         }
     }
 
-    override fun handleInAppPopup(data: CMInApp, entityHashCode: Int) {
+    override fun handleInAppPopup(data: CMInApp, entityHashCode: Int, screenName:String) {
         activityProvider.getActivity()?.get()?.let { currentActivity ->
 
             /*
@@ -72,17 +72,17 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                 val cmInApp = mapOfPendingInApp[entityHashCode]
                 if (cmInApp != null) {
                     mapOfPendingInApp.remove(entityHashCode)
-                    handleShowOrganic(currentActivity, data, entityHashCode)
+                    handleShowOrganic(currentActivity, data, entityHashCode, screenName)
                 } else {
                     mapOfPendingInApp[entityHashCode] = data
                 }
             } else {
-                handleShowOrganic(currentActivity, data, entityHashCode)
+                handleShowOrganic(currentActivity, data, entityHashCode, screenName)
             }
         }
     }
 
-    private fun handleShowOrganic(currentActivity: Activity, data: CMInApp, entityHashCode: Int) {
+    private fun handleShowOrganic(currentActivity: Activity, data: CMInApp, entityHashCode: Int, screenName: String) {
         val job = showOrganicDialog(WeakReference(currentActivity), data.customValues, object : GratificationPresenter.AbstractGratifPopupCallback() {
             override fun onShow(dialog: DialogInterface) {
                 dataConsumed(data)
@@ -99,18 +99,18 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                 dataConsumed(data)
                 cmInflateException(data)
             }
-        })
+        },screenName)
 
         if (job != null)
             mapOfGratifJobs[entityHashCode] = job
     }
 
-    fun executePendingInApp(activity: Activity) {
+    fun executePendingInApp(activity: Activity, screenName: String) {
         if (broadcastScreenNames.contains(activity.javaClass.name)) {
             val cmInApp = mapOfPendingInApp[activity.hashCode()]
             if (cmInApp != null) {
                 mapOfPendingInApp.remove(activity.hashCode())
-                handleShowOrganic(activity, cmInApp, activity.hashCode())
+                handleShowOrganic(activity, cmInApp, activity.hashCode(),screenName)
             }
         }
     }

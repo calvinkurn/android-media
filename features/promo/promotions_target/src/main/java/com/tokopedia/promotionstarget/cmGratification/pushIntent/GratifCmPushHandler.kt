@@ -36,9 +36,9 @@ class GratifCmPushHandler(val gratificationDialogHandler: GratificationDialogHan
             }
         }
         if (canShowPopupFromPush && !gratificationId.isNullOrEmpty()) {
-            gratificationDialogHandler.showPushDialog(activity, gratificationId)
+            gratificationDialogHandler.showPushDialog(activity, gratificationId, activity.javaClass.name)
         } else {
-            gratificationDialogHandler.executePendingInApp(activity)
+            gratificationDialogHandler.executePendingInApp(activity, activity.javaClass.name)
         }
     }
 }

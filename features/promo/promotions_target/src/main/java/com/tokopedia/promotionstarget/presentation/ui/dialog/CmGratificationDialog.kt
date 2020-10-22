@@ -75,10 +75,6 @@ class CmGratificationDialog {
     private var notificationEntryType = NotificationEntryType.ORGANIC
     private var screenName = ""
 
-    companion object {
-        val weakHashMap = WeakHashMap<Activity, Boolean>()
-    }
-
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
     }

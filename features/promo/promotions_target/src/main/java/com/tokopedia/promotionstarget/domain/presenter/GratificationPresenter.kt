@@ -35,10 +35,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import java.lang.ref.WeakReference
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity,Boolean>) {
+class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity, Boolean>) {
+    val TAG = "GratifTag"
     @Inject
     lateinit var notificationUseCase: NotificationUseCase
 
@@ -88,7 +90,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
         }
     }
 
-    private suspend fun processApis(weakActivity: WeakReference<Activity>,
+    private suspend fun processApis(weakActivity: WeakReference<Activity>?,
                                     notificationID: Int,
                                     @NotificationEntryType notificationEntryType: Int,
                                     paymentID: Long = 0,
@@ -114,10 +116,10 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                 val couponStatus = couponDetail?.coupon?.realCode ?: ""
                 if (couponStatus.isNotEmpty()) {
                     withContext(uiWorker) {
-                        weakActivity.get()?.let { activity ->
+                        weakActivity?.get()?.let { activity ->
                             if (notificationEntryType == NotificationEntryType.PUSH) {
                                 performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
-                            } else if (CmGratificationDialog.weakHashMap[activity] != null) {
+                            } else if (dialogIsShownMap[activity] != null) {
                                 Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                 gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                             } else {
@@ -173,7 +175,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
     }
 
 
-    fun showGratificationInApp(weakActivity: WeakReference<Activity>,
+    fun showGratificationInApp(weakActivity: WeakReference<Activity>?,
                                gratificationId: String? = "",
                                @NotificationEntryType notificationEntryType: Int,
                                gratifPopupCallback: GratifPopupCallback,
@@ -187,8 +189,8 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                 initSafeJob()
                 initSafeScope()
             }
-            weakActivity.get()?.let { activity ->
-                if (CmGratificationDialog.weakHashMap[activity] != null) {
+            weakActivity?.get()?.let { activity ->
+                if (dialogIsShownMap[activity] != null) {
                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                     gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                     return null
