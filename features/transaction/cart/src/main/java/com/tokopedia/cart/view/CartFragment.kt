@@ -984,7 +984,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyByProductId(productId, false)
         cartAdapter.notifyWishlist(productId, false)
         cartAdapter.notifyRecentView(productId, false)
-        cartAdapter.notifyRecommendation(productId, false)
     }
 
     private fun onSuccessAddWishlist(productId: String) {
@@ -992,7 +991,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
         cartAdapter.notifyRecentView(productId, true)
-        cartAdapter.notifyRecommendation(productId, true)
     }
 
     private fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
@@ -1000,7 +998,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
         cartAdapter.notifyRecentView(productId, true)
-        cartAdapter.notifyRecommendation(productId, true)
     }
 
     private fun onSuccessRemoveWishlist(productId: String) {
@@ -1008,7 +1005,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyByProductId(productId, false)
         cartAdapter.removeWishlist(productId)
         cartAdapter.notifyRecentView(productId, false)
-        cartAdapter.notifyRecommendation(productId, false)
     }
 
     private fun getRecommendationWishlistActionListener(): WishListActionListener {
