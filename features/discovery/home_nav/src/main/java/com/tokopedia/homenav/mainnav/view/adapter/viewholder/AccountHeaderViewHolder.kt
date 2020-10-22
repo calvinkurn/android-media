@@ -101,11 +101,6 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
     private fun getSharedPreference(): SharedPreferences {
         return itemView.context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }

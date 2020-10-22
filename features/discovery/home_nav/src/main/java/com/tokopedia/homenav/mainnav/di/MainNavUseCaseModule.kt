@@ -3,12 +3,10 @@ package com.tokopedia.homenav.mainnav.di
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
-import com.tokopedia.homenav.mainnav.data.repository.MainNavRepo
-import com.tokopedia.homenav.mainnav.data.usecase.GetCoroutineWalletBalanceUseCase
-import com.tokopedia.homenav.mainnav.data.usecase.GetShopInfoUseCase
-import com.tokopedia.homenav.mainnav.data.usecase.GetUserMembershipUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.MainNavUseCase
+import com.tokopedia.homenav.mainnav.domain.interactor.GetCoroutineWalletBalanceUseCase
+import com.tokopedia.homenav.mainnav.domain.interactor.GetShopInfoUseCase
+import com.tokopedia.homenav.mainnav.domain.interactor.GetUserInfoUseCase
+import com.tokopedia.homenav.mainnav.domain.interactor.GetUserMembershipUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -71,9 +69,8 @@ class MainNavUseCaseModule {
     @Provides
     fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) = GetShopInfoUseCase(graphqlRepository)
 
+
     @MainNavScope
     @Provides
-    fun provideMainNavUseCase(mainNavRepo: MainNavRepo, mainNavMapper: MainNavMapper) = MainNavUseCase(mainNavRepo, mainNavMapper)
-
-
+    fun provideGetUserInfoUseCase(graphqlRepository: GraphqlRepository) = GetUserInfoUseCase(graphqlRepository)
 }

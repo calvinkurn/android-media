@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.data.usecase
+package com.tokopedia.homenav.mainnav.domain.interactor
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil

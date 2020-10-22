@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.mainnav.data.usecase
+package com.tokopedia.homenav.mainnav.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType

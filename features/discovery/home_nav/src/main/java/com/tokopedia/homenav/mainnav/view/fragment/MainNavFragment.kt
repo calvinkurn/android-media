@@ -9,9 +9,11 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavAdapter
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
@@ -19,6 +21,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.usecase.coroutines.Fail
@@ -78,6 +81,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 is Fail -> {}
             }
         })
+
+        viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> populateAccountHeader(it.data)
+            }
+        })
     }
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
@@ -85,6 +94,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+    }
+
+    private fun populateAccountHeader(data: AccountHeaderViewModel) {
+        val dataList: List<HomeNavVisitable> = mutableListOf(data)
+        adapter.submitList(dataList)
     }
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
