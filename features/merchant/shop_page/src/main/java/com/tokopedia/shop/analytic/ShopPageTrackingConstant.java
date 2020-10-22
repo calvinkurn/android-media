@@ -64,6 +64,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_X_TAB = "click %1s tab";
     public static final String CLICK_SHOWCASE_X = "click etalase %1s";
     public static final String CLICK_SHOWCASE_LIST = "click etalase list";
+    public static final String CLICK_SHOWCASE_FOLLOW_NPL = "click %1s on etalase page";
+    public static final String CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL = "click ok on toaster follow shop";
     public static final String SORT_PRODUCT = "sort product";
     public static final String CLICK_SETTING = "click setting";
     public static final String CLICK_SHOP_DASHBOARD = "click shop dashboard";
@@ -129,6 +131,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_REMIND_ME_PLAY = "click remind me";
     public static final String BUSINESS_UNIT = "businessUnit";
     public static final String ADS_SOLUTION = "ads solution";
+    public static final String PHYSICAL_GOODS = "physical goods";
     public static final String CURRENT_SITE = "currentSite";
     public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
