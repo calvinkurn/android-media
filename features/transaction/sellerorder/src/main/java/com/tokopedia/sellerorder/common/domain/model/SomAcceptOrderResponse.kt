@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-10-09.
  */
-data class SomAcceptOrder (
+data class SomAcceptOrderResponse (
         @SerializedName("data")
         @Expose
         val data: Data = Data()) {

@@ -5,16 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
-import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
-import com.tokopedia.sellerorder.common.domain.model.SomRejectRequest
-import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
+import com.tokopedia.sellerorder.common.domain.model.*
+import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
-import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.domain.SomEditRefNumUseCase
+import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
@@ -40,20 +37,20 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
         get() = _orderDetailResult
 
-    private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
-    val acceptOrderResult: LiveData<Result<SomAcceptOrder.Data>>
+    private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrderResponse.Data>>()
+    val acceptOrderResult: LiveData<Result<SomAcceptOrderResponse.Data>>
         get() = _acceptOrderResult
 
     private val _rejectReasonResult = MutableLiveData<Result<SomReasonRejectData.Data>>()
     val rejectReasonResult: LiveData<Result<SomReasonRejectData.Data>>
         get() = _rejectReasonResult
 
-    private val _rejectOrderResult = MutableLiveData<Result<SomRejectOrder.Data>>()
-    val rejectOrderResult: LiveData<Result<SomRejectOrder.Data>>
+    private val _rejectOrderResult = MutableLiveData<Result<SomRejectOrderResponse.Data>>()
+    val rejectOrderResult: LiveData<Result<SomRejectOrderResponse.Data>>
         get() = _rejectOrderResult
 
-    private val _editRefNumResult = MutableLiveData<Result<SomEditAwbResponse.Data>>()
-    val editRefNumResult: LiveData<Result<SomEditAwbResponse.Data>>
+    private val _editRefNumResult = MutableLiveData<Result<SomEditRefNumResponse.Data>>()
+    val editRefNumResult: LiveData<Result<SomEditRefNumResponse.Data>>
         get() = _editRefNumResult
 
     private val _setDelivered = MutableLiveData<Result<SetDeliveredResponse>>()
@@ -78,7 +75,8 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun acceptOrder(orderId: String, shopId: String) {
         launchCatchError(block = {
-            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(orderId, shopId))
+            somAcceptOrderUseCase.setParams(orderId, shopId)
+            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute())
         }, onError = {
             _acceptOrderResult.postValue(Fail(it))
         })
@@ -92,17 +90,18 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun rejectOrder(rejectOrderRequest: SomRejectRequest) {
+    fun rejectOrder(rejectOrderRequestParam: SomRejectRequestParam) {
         launchCatchError(block = {
-            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequest))
+            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderRequestParam))
         }, onError = {
             _rejectOrderResult.postValue(Fail(it))
         })
     }
 
-    fun editAwb(queryString: String) {
+    fun editAwb(orderId: String, shippingRef: String) {
         launchCatchError(block = {
-            _editRefNumResult.postValue(somEditRefNumUseCase.execute(queryString))
+            somEditRefNumUseCase.setParams(SomEditRefNumRequestParam(orderId, shippingRef))
+            _editRefNumResult.postValue(somEditRefNumUseCase.execute())
         }, onError = {
             _editRefNumResult.postValue(Fail(it))
         })

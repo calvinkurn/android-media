@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.BulkAcceptOrderMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkAcceptOrderParam
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkAcceptOrderResponse
@@ -25,7 +26,7 @@ class SomListBulkAcceptOrderUseCase @Inject constructor(
 
     fun setParams(orderIds: List<String>, userId: String) {
         params = RequestParams.create().apply {
-            putObject("input", SomListBulkAcceptOrderParam(
+            putObject(PARAM_INPUT, SomListBulkAcceptOrderParam(
                     orderIds = orderIds.joinToString(","),
                     userId = userId
             ))

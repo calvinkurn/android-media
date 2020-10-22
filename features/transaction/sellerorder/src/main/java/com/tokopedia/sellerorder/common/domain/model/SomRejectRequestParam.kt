@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-10-10.
  */
-data class SomRejectRequest (
+data class SomRejectRequestParam (
         @SerializedName("order_id")
         @Expose
         var orderId: String = "",
@@ -78,12 +78,12 @@ data class SomRejectRequest (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<SomRejectRequest> {
-        override fun createFromParcel(parcel: Parcel): SomRejectRequest {
-            return SomRejectRequest(parcel)
+    companion object CREATOR : Parcelable.Creator<SomRejectRequestParam> {
+        override fun createFromParcel(parcel: Parcel): SomRejectRequestParam {
+            return SomRejectRequestParam(parcel)
         }
 
-        override fun newArray(size: Int): Array<SomRejectRequest?> {
+        override fun newArray(size: Int): Array<SomRejectRequestParam?> {
             return arrayOfNulls(size)
         }
     }

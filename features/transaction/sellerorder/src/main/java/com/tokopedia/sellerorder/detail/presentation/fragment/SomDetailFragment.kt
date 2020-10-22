@@ -45,10 +45,12 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
-import com.tokopedia.sellerorder.common.domain.model.SomRejectOrder
-import com.tokopedia.sellerorder.common.domain.model.SomRejectRequest
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
@@ -60,8 +62,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
@@ -93,7 +93,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PE
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
-import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
@@ -181,10 +180,10 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
-    private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
-    private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
-    private var successEditAwbResponse = SomEditAwbResponse.Data()
-    private var failEditAwbResponse = SomEditAwbResponse.Error()
+    private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
+    private var rejectOrderResponse = SomRejectOrderResponse.Data.RejectOrder()
+    private var successEditAwbResponse = SomEditRefNumResponse.Data()
+    private var failEditAwbResponse = SomEditRefNumResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
@@ -887,7 +886,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetPenalty.dismiss() }
             btn_cancel_order_confirmed?.setOnClickListener {
                 bottomSheetPenalty.dismiss()
-                val orderRejectRequest = SomRejectRequest(
+                val orderRejectRequest = SomRejectRequestParam(
                         orderId = detailResponse.orderId.toString(),
                         rCode = "0",
                         reason = tf_cancel_notes?.textFieldInput?.text.toString()
@@ -918,36 +917,18 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionUbahNoResi() {
-        val bottomSheetUbahResi = BottomSheetUnify()
-        val viewBottomSheetUbahResi = View.inflate(context, R.layout.bottomsheet_cancel_order, null).apply {
-            tf_cancel_notes?.setLabelStatic(true)
-            tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
-            tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
-            btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
-            btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
-            btn_cancel_order_confirmed?.setOnClickListener {
-                secondaryBottomSheet?.dismiss()
-                bottomSheetUbahResi.dismiss()
-                doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
-            }
-        }
-
-        bottomSheetUbahResi.apply {
-            setTitle(TITLE_UBAH_RESI)
-            setFullPage(false)
-            setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetUbahResi)
-        }
-        fragmentManager?.let {
-            bottomSheetUbahResi.show(it, getString(R.string.show_bottomsheet))
+        SomOrderEditAwbBottomSheet().apply {
+            setListener(object: SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                override fun onEditAwbButtonClicked(cancelNotes: String) {
+                    doEditAwb(cancelNotes)
+                }
+            })
+            show(this@SomDetailFragment.childFragmentManager, SomOrderEditAwbBottomSheet.TAG)
         }
     }
 
     private fun doEditAwb(shippingRef: String) {
-        val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_edit_awb)
-        val queryString = rawQuery.replace(INPUT_ORDER_ID, orderId, true)
-                .replace(INPUT_SHIPPING_REF, shippingRef, true)
-        somDetailViewModel.editAwb(queryString)
+        somDetailViewModel.editAwb(orderId, shippingRef)
     }
 
     private fun observingEditAwb() {
@@ -1010,7 +991,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
 
                 override fun onRejectOrder(reasonBuyer: String) {
-                    val orderRejectRequest = SomRejectRequest(
+                    val orderRejectRequest = SomRejectRequestParam(
                             orderId = detailResponse.orderId.toString(),
                             rCode = "0",
                             reason = reasonBuyer
@@ -1094,7 +1075,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.visibility = View.VISIBLE
             fl_btn_primary?.setOnClickListener {
                 bottomSheetProductEmpty.dismiss()
-                val orderRejectRequest = SomRejectRequest()
+                val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = detailResponse.orderId.toString()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
                 var strListPrd = ""
@@ -1166,7 +1147,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
             btn_reject_shop_closed?.setOnClickListener {
                 bottomSheetShopClosed.dismiss()
-                val orderRejectRequest = SomRejectRequest(
+                val orderRejectRequest = SomRejectRequestParam(
                         orderId = detailResponse.orderId.toString(),
                         rCode = rejectReason.reasonCode.toString(),
                         closedNote = tf_shop_closed_notes?.textFieldInput?.text.toString(),
@@ -1222,7 +1203,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.visibility = View.VISIBLE
             fl_btn_primary?.setOnClickListener {
                 bottomSheetCourierProblems?.dismiss()
-                val orderRejectRequest = SomRejectRequest()
+                val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = detailResponse.orderId.toString()
                 orderRejectRequest.rCode = rejectReason.reasonCode.toString()
 
@@ -1275,7 +1256,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetBuyerNoResponse.dismiss()
 
-                val orderRejectRequest = SomRejectRequest().apply {
+                val orderRejectRequest = SomRejectRequestParam().apply {
                     orderId = detailResponse.orderId.toString()
                     rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
@@ -1318,7 +1299,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             fl_btn_primary?.setOnClickListener {
                 bottomSheetBuyerOtherReason.dismiss()
 
-                val orderRejectRequest = SomRejectRequest().apply {
+                val orderRejectRequest = SomRejectRequestParam().apply {
                     orderId = detailResponse.orderId.toString()
                     rCode = rejectReason.reasonCode.toString()
                     reason = tf_extra_notes?.textFieldInput?.text.toString()
@@ -1355,11 +1336,11 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
+    private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
-            somDetailViewModel.rejectOrder(orderRejectRequest)
+            somDetailViewModel.rejectOrder(orderRejectRequestParam)
         }
-        SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
+        SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequestParam.reason)
     }
 
     private fun observingRejectOrder() {

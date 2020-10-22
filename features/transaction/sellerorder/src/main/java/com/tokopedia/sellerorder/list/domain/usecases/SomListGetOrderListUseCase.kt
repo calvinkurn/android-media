@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.OrderListMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
@@ -19,7 +20,7 @@ class SomListGetOrderListUseCase @Inject constructor(
     }
 
     private fun getSearchKeyword(): String {
-        params.parameters["input"]?.let { input ->
+        params.parameters[PARAM_INPUT]?.let { input ->
             return if (input is SomListGetOrderListParam) {
                 input.search
             } else {
