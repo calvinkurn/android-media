@@ -4,17 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.base.diffutil.HomeNavAdapter
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
+import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -27,8 +35,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
 
-    private lateinit var userSession: UserSessionInterface
+    lateinit var recyclerView: RecyclerView
+    lateinit var layoutManager: LinearLayoutManager
+    lateinit var adapter: MainNavAdapter
 
+    private lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String {
         return ""
@@ -47,7 +58,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_main_nav, container, false)
+        val view = inflater.inflate(R.layout.fragment_main_nav, container, false)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,8 +70,25 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.getMainNavData()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> populateAdapterData(it.data)
+                is Fail -> {}
+            }
+        })
+    }
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
+        adapter = MainNavAdapter(mainNavFactory)
+        layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+    }
+
+    private fun populateAdapterData(data: MainNavigationDataModel) {
+        adapter.submitList(data.dataList)
     }
 
     private fun initClickListener() {

@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.data.factory
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.data.pojo.MainNavPojo
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,7 +13,8 @@ class MainNavFactoryImpl (private val userSession: UserSessionInterface
 
     private lateinit var context: Context
 
-    private var visitableList: MutableList<Visitable<*>> = mutableListOf()
+    private var visitableList: MutableList<HomeNavVisitable> = mutableListOf()
+
 
     override fun buildVisitableList(context: Context): MainNavFactory {
         this.context = context
@@ -28,18 +30,18 @@ class MainNavFactoryImpl (private val userSession: UserSessionInterface
                 },
                 userName = userSession.name,
                 userImage = userSession.profilePicture,
-                badge = "",
+                badge = data?.membership?.tokopoints?.status?.tier?.eggImageURL ?: "",
                 ovoSaldo = data?.wallet?.cashBalance ?: "",
                 ovoPoint = data?.wallet?.pointBalance ?: "",
                 saldo = "",
-                shopName = userSession.shopName,
+                shopName = data?.shop?.shopCore?.name ?: "",
                 shopId = userSession.shopId,
                 shopNotifCount = ""
         ))
         return this
     }
 
-    override fun build(): List<Visitable<*>> {
+    override fun build(): List<HomeNavVisitable> {
         return visitableList
     }
 

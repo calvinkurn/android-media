@@ -42,6 +42,12 @@ class MainNavRepositoryImpl(
             walletResult?.let {
                 combinedData.wallet = it
             }
+            membershipResult?.let {
+                combinedData.membership = membershipResult
+            }
+            shopResult?.let {
+                combinedData.shop = shopResult
+            }
             combinedData
         })
     }

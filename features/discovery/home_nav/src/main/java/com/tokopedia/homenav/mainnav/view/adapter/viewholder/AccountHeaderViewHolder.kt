@@ -29,6 +29,7 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
+        const val TEXT_MY_SHOP = "Toko saya: %s"
     }
 
     override fun bind(element: AccountHeaderViewModel) {
@@ -57,9 +58,19 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadge: ImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
-        val tvOvo: ImageView = layoutLogin.findViewById(R.id.tv_ovo)
-        val shopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
-        val shopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+        val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
+        val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
+        val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
+
+        userImage.loadImageCircle(element.userImage)
+        tvName.text = element.userName
+        tvOvo.text = element.ovoSaldo
+        usrBadge.loadImage(element.badge)
+
+        if (element.shopName.isNotEmpty()) {
+            tvShopInfo.visibility = View.VISIBLE
+            tvShopInfo.text = String.format(TEXT_MY_SHOP, element.shopName)
+        }
     }
 
     private fun renderNonLoginState() {
