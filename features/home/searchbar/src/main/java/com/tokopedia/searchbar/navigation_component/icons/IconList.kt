@@ -2,9 +2,8 @@ package com.tokopedia.searchbar.navigation_component.icons
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.searchbar.R
-import com.tokopedia.searchbar.navigation_component.IconToolbar
 
-interface IconConfigItem { fun get(onClick: ()-> Unit = {}): IconToolbar }
+internal interface IconConfigItem { fun get(onClick: ()-> Unit = {}): IconToolbar }
 
 object IconList {
     const val ID_MESSAGE = 0

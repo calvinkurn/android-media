@@ -1,4 +1,4 @@
-package com.tokopedia.searchbar.navigation_component
+package com.tokopedia.searchbar.navigation_component.icons
 
 data class IconConfig(val iconList: List<IconToolbar>)
 

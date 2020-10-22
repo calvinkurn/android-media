@@ -1,8 +1,5 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
-import com.tokopedia.searchbar.navigation_component.IconConfig
-import com.tokopedia.searchbar.navigation_component.IconToolbar
-
 class IconBuilder {
     private val listIcon = mutableListOf<IconToolbar>()
 

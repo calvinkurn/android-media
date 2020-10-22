@@ -20,6 +20,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_CLOSE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_NONE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
@@ -28,16 +37,22 @@ import java.lang.ref.WeakReference
 
 class NavToolbar: Toolbar, LifecycleObserver {
     companion object {
-        const val TOOLBAR_DARK_TYPE = 0
-        const val TOOLBAR_LIGHT_TYPE = 1
+        object Theme {
+            const val TOOLBAR_DARK_TYPE = 0
+            const val TOOLBAR_LIGHT_TYPE = 1
+        }
 
-        private const val BACK_TYPE_NONE = 0
-        private const val BACK_TYPE_CLOSE = 1
-        private const val BACK_TYPE_BACK = 2
+        object BackType {
+            const val BACK_TYPE_NONE = 0
+            const val BACK_TYPE_CLOSE = 1
+            const val BACK_TYPE_BACK = 2
+        }
 
-        private const val TOOLBAR_TYPE_SEARCH = 0
-        private const val TOOLBAR_TYPE_TITLE = 1
-        private const val TOOLBAR_TYPE_CUSTOM = 2
+        object ContentType {
+            const val TOOLBAR_TYPE_SEARCH = 0
+            const val TOOLBAR_TYPE_TITLE = 1
+            const val TOOLBAR_TYPE_CUSTOM = 2
+        }
     }
 
     //public variable
@@ -54,6 +69,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private var toolbarTitle = ""
     private var toolbarDefaultHint = ""
     private var toolbarCustomReference: Int? = null
+    private var toolbarCustomViewContent: View? = null
 
     //helper variable
     private var shadowApplied: Boolean = false
@@ -61,7 +77,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
     private lateinit var navSearchBarController: NavSearchbarController
-    private lateinit var navIconAdapter: NavToolbarIconAdapter
+    private var navIconAdapter: NavToolbarIconAdapter? = null
 
     constructor(context: Context) : super(context) { init(context, null) }
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { init(context, attrs) }
@@ -88,7 +104,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         }
         toolbar?.background = ColorDrawable(toolbarFillColor)
         configureThemeBasedOnAttribute()
-        configureBackButtonBasedOnAttribute(context)
+        configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
         configureToolbarContentTypeBasedOnAttribute()
     }
@@ -105,9 +121,9 @@ class NavToolbar: Toolbar, LifecycleObserver {
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         if (toolbarThemeType == TOOLBAR_DARK_TYPE) {
-            navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
+            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
         } else {
-            navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
+            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
         }
     }
 
@@ -150,7 +166,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
      */
     fun switchToDarkToolbar() {
         if (toolbarThemeType != TOOLBAR_DARK_TYPE) {
-            navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
+            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
             toolbarThemeType = TOOLBAR_DARK_TYPE
             setBackButtonColor(getLightIconColor())
             setTitleTextColorBasedOnTheme()
@@ -164,7 +180,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
      */
     fun switchToLightToolbar() {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
-            navIconAdapter.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
+            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
             setBackButtonColor(getDarkIconColor())
             toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
@@ -194,7 +210,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
-        navIconAdapter.setIconCounter(iconId, counter)
+        navIconAdapter?.setIconCounter(iconId, counter)
     }
 
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
@@ -210,7 +226,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 showSearchbar()
             }
             TOOLBAR_TYPE_CUSTOM -> {
-                showCustomView()
+                setupCustomView()
             }
         }
     }
@@ -218,6 +234,47 @@ class NavToolbar: Toolbar, LifecycleObserver {
     fun getCustomViewContentView(): View? {
         if (toolbarCustomReference == null) return null
         return layout_custom_view
+    }
+
+    fun setBackButtonType(newBackType: Int? = null) {
+        newBackType?.let { backType = newBackType }
+
+        if (backType != BACK_TYPE_NONE) {
+            when (backType) {
+                BACK_TYPE_CLOSE -> {
+                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_close_dark)
+                }
+                BACK_TYPE_BACK -> {
+                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_back_dark)
+                }
+            }
+            backDrawable?.let {
+                setBackButtonColorBasedOnTheme()
+                nav_icon_back.visibility = VISIBLE
+                nav_icon_back.tag = backType
+                if (context is Activity) {
+                    nav_icon_back.setOnClickListener {
+                        (context as? Activity)?.onBackPressed()
+                    }
+                }
+            }
+        } else {
+            nav_icon_back.visibility = GONE
+        }
+    }
+
+    fun setToolbarTitle(title: String) {
+        toolbarTitle = title
+    }
+
+    fun setCustomViewContentRef(viewRef: Int) {
+        toolbarCustomReference = viewRef
+        toolbarCustomViewContent = null
+    }
+
+    fun setCustomViewContentView(view: View) {
+        toolbarCustomViewContent = view
+        toolbarCustomReference = null
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
@@ -263,16 +320,24 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 showTitle()
             }
             TOOLBAR_TYPE_CUSTOM -> {
-                if (toolbarCustomReference != null) {
-                    toolbarCustomReference?.let {
-                        showCustomView()
-                        val parentLayout = layout_custom_view
-                        val childView = LayoutInflater.from(context).inflate(it, parentLayout, false)
-                        childView.setId(generateViewId())
-                        parentLayout.addView(childView)
-                    }
-                }
+                setupCustomView()
             }
+        }
+    }
+
+    private fun setupCustomView() {
+        showCustomView()
+        toolbarCustomReference?.let {
+            val parentLayout = layout_custom_view
+            val childView = LayoutInflater.from(context).inflate(it, parentLayout, false)
+            childView.id = generateViewId()
+            parentLayout.addView(childView)
+        }
+
+        toolbarCustomViewContent?.let {
+            val parentLayout = layout_custom_view
+            it.id = generateViewId()
+            parentLayout.addView(it)
         }
     }
 
@@ -292,26 +357,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
         }
     }
 
-    private fun configureBackButtonBasedOnAttribute(context: Context) {
-        if (backType != BACK_TYPE_NONE) {
-            when (backType) {
-                BACK_TYPE_CLOSE -> {
-                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_close_dark)
-                }
-                BACK_TYPE_BACK -> {
-                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_back_dark)
-                }
-            }
-            backDrawable?.let {
-                setBackButtonColorBasedOnTheme()
-                nav_icon_back.visibility = VISIBLE
-                if (context is Activity) {
-                    nav_icon_back.setOnClickListener { context.onBackPressed() }
-                }
-            }
-        } else {
-            nav_icon_back.visibility = GONE
-        }
+    private fun configureBackButtonBasedOnAttribute() {
+        setBackButtonType()
     }
 
     private fun setBackButtonColor(color: Int) {
@@ -354,9 +401,6 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private fun showCustomView() {
         hideToolbarContent(hideCustomContent = false)
         showToolbarContent(showCustomContent = true)
-
-        toolbar_title.text = toolbarTitle
-        setTitleTextColorBasedOnTheme()
     }
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Neutral_N700)

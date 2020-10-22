@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.searchbar.R
-import com.tokopedia.searchbar.navigation_component.IconToolbar.Companion.TYPE_LOTTIE
+import com.tokopedia.searchbar.navigation_component.icons.IconConfig
+import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.TYPE_LOTTIE
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
@@ -85,6 +87,8 @@ class ImageIconHolder(view: View): IconHolder(view) {
     val context = itemView.context
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
+        iconImage.tag = iconToolbar.id.toString()
+
         val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
         unwrappedDrawable?.let {
             val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
@@ -118,6 +122,8 @@ class LottieIconHolder(view: View): IconHolder(view) {
     val context = itemView.context
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
+        iconImage.tag = iconToolbar.id.toString()
+
         iconImage.cancelAnimation()
         iconImage.progress = 0f
         iconImage.setAnimation(iconToolbar.imageRes)
