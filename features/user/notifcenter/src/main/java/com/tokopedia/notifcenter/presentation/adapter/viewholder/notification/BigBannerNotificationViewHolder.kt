@@ -22,7 +22,7 @@ class BigBannerNotificationViewHolder(
         val imageUrl = element.contentUrl
 
         contentImageBanner.loadImage(imageUrl)
-        contentImageBanner.loadImage(blurring(contentImageBannerBlur, "APL4W-D4.AtS"))
+        contentImageBannerBlur.loadImage(blurring(contentImageBannerBlur, "APL4W-D4.AtS"))
     }
 
     companion object {
