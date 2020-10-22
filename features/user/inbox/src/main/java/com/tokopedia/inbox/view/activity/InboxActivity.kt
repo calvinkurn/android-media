@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
@@ -50,7 +49,6 @@ class InboxActivity : BaseActivity() {
         bottomNav?.apply {
             setBackgroundColor(Color.TRANSPARENT)
             itemIconTintList = null
-            labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
             setOnNavigationItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
