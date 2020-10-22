@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -46,6 +47,7 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -96,6 +98,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
+
+    private var loadingProgressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -333,10 +337,27 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hotel_share_button.setOnClickListener {
             activity?.run {
                 HotelShare(this).shareEvent(propertyDetailData, isPromo,
-                        { /* show loading */ },
-                        { /* hide loading */ },
+                        { showProgressDialog() },
+                        { hideProgressDialog() },
                         this.applicationContext)
             }
+        }
+    }
+
+    private fun showProgressDialog() {
+        if (loadingProgressDialog == null) {
+            loadingProgressDialog = activity?.createDefaultProgressDialog(getString(R.string.hotel_detail_share_loading), false, null)
+        }
+        loadingProgressDialog?.run {
+            if (!isShowing) {
+                show()
+            }
+        }
+    }
+
+    private fun hideProgressDialog() {
+        if (loadingProgressDialog != null && loadingProgressDialog?.isShowing == true) {
+            loadingProgressDialog?.dismiss()
         }
     }
 
