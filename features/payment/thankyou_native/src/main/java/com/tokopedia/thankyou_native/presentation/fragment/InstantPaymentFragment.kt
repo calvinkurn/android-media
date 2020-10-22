@@ -86,7 +86,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         activity?.let {
             dialogController?.showGratifDialog(WeakReference(it),
                     thanksPageData.paymentID,
-                    object : GratificationPresenter.GratifPopupCallback {
+                    object : GratificationPresenter.AbstractGratifPopupCallback() {
 
                         override fun onShow(dialog: DialogInterface) {
 
@@ -172,7 +172,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     }
 
     private fun observeViewModel() {
-        checkWhiteListViewModel.whiteListResultLiveData.observe(this, Observer {
+        checkWhiteListViewModel.whiteListResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessFullyRegister()
                 is Fail -> onSingleAuthRegisterFail()
