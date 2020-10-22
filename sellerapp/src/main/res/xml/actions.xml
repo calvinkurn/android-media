@@ -3,14 +3,10 @@
     <action intentName="actions.intent.GET_ORDER">
         <fulfillment
             fulfillmentMode="actions.fulfillment.SLICE"
-            urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderType, orderDate}">
-            <parameter-mapping
-                intentParameter="order.@type"
-                required="true"
-                urlParameter="orderType"/>
+            urlTemplate="content://com.tokopedia.seller.action.slices/order{?orderDate}">
             <parameter-mapping
                 intentParameter="order.orderDate"
-                required="true"
+                required="false"
                 urlParameter="orderDate"/>
         </fulfillment>
     </action>

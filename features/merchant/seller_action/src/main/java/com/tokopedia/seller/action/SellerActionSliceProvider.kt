@@ -10,7 +10,6 @@ import androidx.slice.Slice
 import androidx.slice.SliceProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.kotlin.extensions.changeDateFormat
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.action.balance.presentation.mapper.SellerBalanceMapper
@@ -39,8 +38,7 @@ class SellerActionSliceProvider: SliceProvider(){
     companion object {
         private const val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
-        private const val SLICE_DATE_FORMAT = "yyyy-MM-ddTHH:mmZ"
-        private const val REQUEST_DATE_FORMAT = "dd/MM/yyyy"
+        private const val DATE_DELIMITER = "T"
     }
 
     @Inject
@@ -84,7 +82,7 @@ class SellerActionSliceProvider: SliceProvider(){
                     SellerActionConst.Deeplink.ORDER -> {
                         (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_TYPE) ?: SellerActionOrderType.ORDER_DEFAULT).let { orderType ->
                             (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
-                                val date = orderDate.changeDateFormat(SLICE_DATE_FORMAT, REQUEST_DATE_FORMAT)
+                                val date = orderDate?.split(DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
                                 orderListLiveData = getOrderListLiveData(sliceUri, orderType, date)
                             }
                         }

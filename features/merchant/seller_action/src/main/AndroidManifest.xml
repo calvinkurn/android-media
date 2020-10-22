@@ -4,6 +4,19 @@
     <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
 
     <application>
+        <activity android:name=".SellerActionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_action"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <provider
             android:authorities="com.tokopedia.seller.action.slices"
             android:name="com.tokopedia.seller.action.SellerActionSliceProvider"
