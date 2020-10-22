@@ -71,7 +71,7 @@ class GetNotificationUpdateSubscriber(
                       "data_notification": {
                         "app_link": "tokopedia://webview?allow_override=false&url=https%3A%2F%2Fm.tokopedia.com%2Fverify%2Fdevice%2Fdace840d-895b-4a60-a4a2-6052fa5d8f4e%3Fentry%3Dnotif_center",
                         "desktop_link": "https://tkp.me/tm/dace840d-895b-4a60-a4a2-6052fa5d8f4e?entry=notif_center",
-                        "info_thumbnail_url": "https://images-staging.tokopedia.net/img/cache/700/emojuk/2020/8/31/89cf3566-2a78-44d2-b00d-9eb7b20ede90.jpg",
+                        "info_thumbnail_url": "https://images-staging.tokopedia.net/img/martin/2020/9/7/e0ce27f1-4299-4afe-bb4c-f2fd72c57595.jpg?b=APL4W-D4.AtS",
                         "mobile_link": "https://m.tokopedia.com/verify/device/dace840d-895b-4a60-a4a2-6052fa5d8f4e?entry=notif_center",
                         "checkout_url": ""
                       },
@@ -106,7 +106,7 @@ class GetNotificationUpdateSubscriber(
                       "data_notification": {
                         "app_link": "tokopedia://webview?allow_override=false&url=https%3A%2F%2Fm.tokopedia.com%2Fverify%2Fdevice%2Fdace840d-895b-4a60-a4a2-6052fa5d8f4e%3Fentry%3Dnotif_center",
                         "desktop_link": "https://tkp.me/tm/dace840d-895b-4a60-a4a2-6052fa5d8f4e?entry=notif_center",
-                        "info_thumbnail_url": "https://images-staging.tokopedia.net/img/martin/2020/9/7/e0ce27f1-4299-4afe-bb4c-f2fd72c57595.jpg?b=APL4W-D4.AtS",
+                        "info_thumbnail_url": "https://images-staging.tokopedia.net/img/cache/700/emojuk/2020/8/31/89cf3566-2a78-44d2-b00d-9eb7b20ede90.jpg",
                         "mobile_link": "https://m.tokopedia.com/verify/device/dace840d-895b-4a60-a4a2-6052fa5d8f4e?entry=notif_center",
                         "checkout_url": ""
                       },
