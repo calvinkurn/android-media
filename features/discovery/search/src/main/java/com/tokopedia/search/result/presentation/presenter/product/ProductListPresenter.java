@@ -909,8 +909,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        boolean isGlobalNavWidgetAvailable
-                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+        boolean isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
 
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
@@ -967,6 +966,13 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean getIsGlobalNavWidgetAvailable(ProductViewModel productViewModel) {
+        return productViewModel.getGlobalNavViewModel() != null
+                && enableGlobalNavWidget
+                && !getView().isAnyFilterActive()
+                && !getView().isAnySortActive();
     }
 
     private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
