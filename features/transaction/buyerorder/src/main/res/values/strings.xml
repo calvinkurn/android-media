@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_order_list">Daftar Transaksi</string>
+    <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
     <string name="event_ticket_voucher_number">E-Voucher</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>

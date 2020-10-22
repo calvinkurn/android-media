@@ -298,7 +298,7 @@
     <string name="df_title_buyer_order">Daftar Transaksi</string>
     <string name="title_activity_people_reason">Ajukan Pembatalan</string>
     <string name="title_order_detail">Detail Pesanan</string>
-    <string name="title_order_list">Daftar Transaksi</string>
+    <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
 
