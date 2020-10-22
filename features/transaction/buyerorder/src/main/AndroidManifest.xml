@@ -68,7 +68,7 @@
             android:label="@string/title_order_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Green" >
+            android:theme="@style/Theme.White" >
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
