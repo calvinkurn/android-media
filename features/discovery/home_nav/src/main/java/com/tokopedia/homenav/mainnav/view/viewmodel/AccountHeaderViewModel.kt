@@ -16,7 +16,8 @@ data class AccountHeaderViewModel(
         val saldo: String = "",
         val shopName: String = "",
         val shopId: String = "",
-        val shopNotifCount: String = ""
+        val shopNotifCount: String = "",
+        val shopApplink: String = ""
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 

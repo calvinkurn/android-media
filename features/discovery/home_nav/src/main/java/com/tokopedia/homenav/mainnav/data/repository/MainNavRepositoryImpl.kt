@@ -13,7 +13,7 @@ class MainNavRepositoryImpl(
         private val mainNavRemoteDataSource: MainNavRemoteDataSource): MainNavRepo {
 
     override fun getMainNavData(): Flow<MainNavPojo?> = flow {
-        coroutineScope {
+        this.emit(coroutineScope {
             val walletData = async { mainNavRemoteDataSource.getWalletData() }
 
             val walletResult = try {
@@ -27,6 +27,8 @@ class MainNavRepositoryImpl(
                 combinedData.wallet = it
             }
             combinedData
-        }
+        })
     }
+
+
 }
