@@ -28,12 +28,12 @@ class PlayWidgetCardMediumChannelAdapterDelegate(
 
     override fun onBindViewHolderWithPayloads(item: PlayWidgetMediumChannelUiModel, holder: PlayWidgetCardMediumChannelViewHolder, payloads: Bundle) {
         if (payloads.isEmpty) return
-        if (payloads.containsKey(KEY_CHANNEL_REMINDER)) {
+        if (payloads.containsKey(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_REMINDER)) {
             holder.revertToOriginalReminderState()
         }
-    }
-
-    companion object {
-        const val KEY_CHANNEL_REMINDER = "channel_reminder"
+        if (payloads.containsKey(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW)) {
+            val totalView = payloads.getString(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW, "")
+            if (!totalView.isBlank()) holder.setTotalView(totalView)
+        }
     }
 }

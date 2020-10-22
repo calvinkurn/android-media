@@ -6,6 +6,8 @@ package com.tokopedia.play.widget.ui.listener
  */
 interface PlayWidgetMediumListener : PlayWidgetListener {
 
+    fun onCardChannelClick(appLink: String) {
+    }
     fun onToggleReminderClicked(
             channelId: String,
             remind: Boolean,

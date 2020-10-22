@@ -36,7 +36,12 @@ class PlayWidgetCardMediumAdapter(
     override fun getChangePayload(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Bundle? {
         val diffBundle = Bundle()
         if (oldItem is PlayWidgetMediumChannelUiModel && newItem is PlayWidgetMediumChannelUiModel) {
-            diffBundle.putBoolean(PlayWidgetCardMediumChannelAdapterDelegate.KEY_CHANNEL_REMINDER, newItem.activeReminder)
+            if (oldItem.activeReminder != newItem.activeReminder) {
+                diffBundle.putBoolean(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_REMINDER, newItem.activeReminder)
+            }
+            if (oldItem.totalView != newItem.totalView) {
+                diffBundle.putString(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW, newItem.totalView)
+            }
         }
         return if (diffBundle.size() == 0) null else diffBundle
     }
