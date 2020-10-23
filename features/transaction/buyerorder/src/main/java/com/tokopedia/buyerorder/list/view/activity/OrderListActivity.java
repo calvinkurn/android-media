@@ -70,6 +70,11 @@ public class OrderListActivity extends BaseSimpleActivity
     OrderListAnalytics orderListAnalytics;
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.buyer_order_list_toolbar;
+    }
+
+    @Override
     protected int getLayoutRes() {
         return R.layout.activity_order_list_module;
     }
