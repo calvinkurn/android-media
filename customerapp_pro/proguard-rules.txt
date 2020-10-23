@@ -442,6 +442,3 @@
  -dontwarn kotlin.KotlinNothingValueException
  -dontwarn kotlin.time.*
  -dontwarn kotlin.jvm.internal.FunctionReferenceImpl
-
- -keep class kotlinx.coroutines.DelayKt { *; }
- -keep class kotlinx.coroutines.flow.internal.SafeCollectorKt { *; }
