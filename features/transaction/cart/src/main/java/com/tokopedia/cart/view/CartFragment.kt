@@ -1708,7 +1708,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.desc = ""
         promoCheckoutBtn.setOnClickListener {
@@ -1720,7 +1720,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
         promoCheckoutBtn.setOnClickListener {
@@ -1733,7 +1733,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isApplied: Boolean
 
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
         val title: String = when {
             lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
@@ -1795,7 +1795,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderPromoCheckoutLoading() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.setOnClickListener { }
     }
 
@@ -3253,7 +3253,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showPromoCheckoutStickyButtonInactive() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.INACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_checkout_inactive_label)
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {
