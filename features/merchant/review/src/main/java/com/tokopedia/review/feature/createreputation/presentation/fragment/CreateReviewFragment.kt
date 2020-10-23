@@ -634,7 +634,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             ReviewTracking.onClickDismissIncentiveOvoTracker(it.subtitle, "")
                         }
                     })
-                    ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
+                    addOnImpressionListener(ImpressHolder()) {
+                        ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
+                    }
                 }
             }
             return

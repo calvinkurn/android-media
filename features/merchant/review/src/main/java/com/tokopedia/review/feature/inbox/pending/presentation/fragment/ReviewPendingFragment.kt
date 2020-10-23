@@ -374,7 +374,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         data?.productrevIncentiveOvo?.ticker?.let {
-            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
             (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
         }
     }
