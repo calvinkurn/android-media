@@ -402,7 +402,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         val over = resources.getString(R.string.ent_pdp_ticket_calendar_over)
         val less = resources.getString(R.string.ent_pdp_ticket_calendar_less)
         val errorMessage = resources.getString(R.string.ent_pdp_ticket_calendar,
-                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate)) over else less)
+                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate)) less else over)
         view?.let {
             Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
         }
