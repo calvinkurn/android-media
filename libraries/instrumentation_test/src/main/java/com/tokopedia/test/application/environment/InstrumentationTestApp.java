@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -28,6 +29,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -45,6 +47,7 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -72,6 +75,8 @@ public class InstrumentationTestApp extends BaseMainApplication
     private int topAdsProductCount = 0;
     private Long totalSizeInBytes = 0L;
     private Map<String, Interceptor> testInterceptors = new HashMap<>();
+
+    private CacheManager cacheManager;
 
     @Override
     public void onCreate() {
@@ -416,7 +421,10 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     @Override
     public CacheManager getGlobalCacheManager() {
-        return null;
+        if (cacheManager == null) {
+            cacheManager = new GlobalCacheManager();
+        }
+        return cacheManager;
     }
 
     @Override

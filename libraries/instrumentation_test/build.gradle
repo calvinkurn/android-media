@@ -71,6 +71,7 @@ dependencies {
     implementation rootProject.ext.testDependencies.assertJCore
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)

@@ -18,12 +18,12 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
-import com.tokopedia.logout.view.LogoutActivity
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.review.feature.reviewdetail.view.adapter.SortListAdapter
@@ -33,6 +33,7 @@ import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.RatingA
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.TopicViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
@@ -49,12 +50,6 @@ class SellerReviewDetailActivityTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
-
-    @get:Rule
-    val activityRuleLogin = IntentsTestRule(LoginActivity::class.java, false, false)
-
-    @get:Rule
-    val activityRuleLogout = IntentsTestRule(LogoutActivity::class.java, false, false)
 
     @get:Rule
     var activityRule: IntentsTestRule<SellerReviewDetailActivity> = object : IntentsTestRule<SellerReviewDetailActivity>(SellerReviewDetailActivity::class.java) {
@@ -81,7 +76,7 @@ class SellerReviewDetailActivityTest {
 
     @After
     fun finish() {
-        userLogout()
+        InstrumentationAuthHelper.clearUserSession()
     }
 
     @Test
@@ -233,6 +228,7 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun userLogin() {
+        val activityRuleLogin = ActivityTestRule(LoginActivity::class.java, false, false)
         val bundle = Bundle()
         bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_FILL, true)
         bundle.putString(LoginEmailPhoneFragment.AUTO_FILL_EMAIL, EMAIL_LOGIN)
@@ -240,19 +236,24 @@ class SellerReviewDetailActivityTest {
         intent.putExtras(bundle)
         activityRuleLogin.launchActivity(intent)
 
-        onView(withId(com.tokopedia.loginregister.R.id.password))
-                .check(matches(withText(PASSWORD_LOGIN)))
+        onView(withId(com.tokopedia.loginregister.R.id.register_btn)).perform(click())
+
+        waitForLoading()
+
+        onView(withId(com.tokopedia.loginregister.R.id.wrapper_password)).perform(click())
 
         onView(withId(com.tokopedia.loginregister.R.id.password))
                 .perform(ViewActions.typeText(PASSWORD_LOGIN))
+
+        onView(withId(com.tokopedia.loginregister.R.id.password))
+                .check(matches(withText(PASSWORD_LOGIN)))
 
         onView(withId(com.tokopedia.loginregister.R.id.register_btn))
                 .perform(click())
     }
 
-    private fun userLogout() {
-        val intent = Intent(targetContext, LogoutActivity::class.java)
-        activityRuleLogout.launchActivity(intent)
+    private fun waitForLoading() {
+        Thread.sleep(3000)
     }
 
     private fun waitForTrackerSent() {
