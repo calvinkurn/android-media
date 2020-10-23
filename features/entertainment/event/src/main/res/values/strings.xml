@@ -130,7 +130,4 @@
     <string name="ent_redeem_url_null">Tiket Scanner anda Kosong</string>
     <string name="ent_redeemed_time">Sudah di-redeem pada %s</string>
 
-    <string name="ent_pdp_ticket_calendar">Tanggal yang anda pilih %s dari yang ditentukan</string>
-    <string name="ent_pdp_ticket_calendar_over">melebihi</string>
-    <string name="ent_pdp_ticket_calendar_less">kurang</string>
 </resources>
