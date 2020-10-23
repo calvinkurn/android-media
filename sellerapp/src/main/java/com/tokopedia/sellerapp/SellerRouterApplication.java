@@ -163,12 +163,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
     }
 
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
-    }
-
     private void initTetraDebugger() {
         if(GlobalConfig.isAllowDebuggingTools()) {
             tetraDebugger = TetraDebugger.Companion.instance(this);
@@ -489,12 +483,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public long getLongRemoteConfig(@NotNull String key, long defaultValue) {
         return remoteConfig.getLong(key, defaultValue);
-    }
-
-    @Override
-    public String getUserId() {
-        UserSessionInterface userSession = new UserSession(this);
-        return userSession.getUserId();
     }
 
 }
