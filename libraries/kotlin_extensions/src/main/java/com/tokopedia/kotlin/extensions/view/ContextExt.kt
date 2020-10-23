@@ -32,29 +32,17 @@ fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
         resources.displayMetrics
 )
 
-
-fun Context.isAvailable(): Context? {
-    return when (this) {
-        is Activity -> {
-            if (!(isDestroyed || isFinishing)) {
-                this
-            } else {
-                null
-            }
-        }
-        else -> this
-    }
-}
-
 /**
  * Extension function to avoid java.lang.IllegalArgumentException when using activity context prior to its lifecycle
  */
-fun Context.whenAlive(predicate: (Context) -> Unit) {
-    if (this is Activity) {
-        if (!(isDestroyed || isFinishing)) {
+fun Context?.whenAlive(predicate: (Context) -> Unit) {
+    if (this != null) {
+        if (this is Activity) {
+            if (!(isDestroyed || isFinishing)) {
+                predicate(this)
+            }
+        } else {
             predicate(this)
         }
-    } else {
-        predicate(this)
     }
 }
