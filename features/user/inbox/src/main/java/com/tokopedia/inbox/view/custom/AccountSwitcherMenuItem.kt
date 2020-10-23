@@ -14,6 +14,7 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
     protected var name: Typography? = null
     protected var photoProfile: ImageView? = null
     protected var smallIcon: ImageView? = null
+    protected var unreadCounter: Typography? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -46,5 +47,6 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
         name = view.findViewById(R.id.tv_name)
         photoProfile = view.findViewById(R.id.iv_photo_profile)
         smallIcon = view.findViewById(R.id.iv_small_icon)
+        unreadCounter = view.findViewById(R.id.unread_counter)
     }
 }

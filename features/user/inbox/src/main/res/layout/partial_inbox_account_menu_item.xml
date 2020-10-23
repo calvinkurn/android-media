@@ -19,6 +19,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/unread_counter"
+        style="@style/BadgeCounter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/iv_photo_profile"
+        app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
+        tools:text="10"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/iv_small_icon"
         android:layout_width="@dimen/layout_lvl2"
@@ -50,10 +59,12 @@
         android:id="@+id/iv_checkmark"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
         app:srcCompat="@drawable/ic_inbox_check_mark"
-        tools:text="Dominicus Dennis Pratama " />
+        tools:text="Dominicus Dennis Pratama "
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
