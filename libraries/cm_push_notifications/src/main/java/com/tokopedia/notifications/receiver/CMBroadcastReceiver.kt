@@ -2,11 +2,13 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.analytics.ProductAnalytics.clickCollapsedBody
@@ -27,6 +29,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -43,10 +46,17 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         get() = Dispatchers.Main
 
     private fun initInjector(context: Context) {
-        DaggerCMNotificationComponent.builder()
-                .notificationModule(NotificationModule(context))
-                .build()
-                .inject(this)
+        try {
+            GraphqlClient.init(context)
+            DaggerCMNotificationComponent.builder()
+                    .notificationModule(NotificationModule(context))
+                    .build()
+                    .inject(this)
+        } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+        }
+
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -150,6 +160,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 }
             }
         } catch (e: Exception) {
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='$intent'")
             e.printStackTrace()
         }
     }
