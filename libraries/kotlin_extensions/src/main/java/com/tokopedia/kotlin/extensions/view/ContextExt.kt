@@ -33,10 +33,9 @@ fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
 )
 
 /**
- * Extension function to safely pass context to Glide
- * This should avoid java.lang.IllegalArgumentException when using context as glide context parameter
+ * Extension function to avoid java.lang.IllegalArgumentException when using activity context prior to its lifecycle
  */
-fun Context.isAvailableForGlide(): Context? {
+fun Context.isAvailable(): Context? {
     return when (this) {
         is Activity -> {
             if (!(isDestroyed || isFinishing)) {
