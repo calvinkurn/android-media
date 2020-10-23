@@ -1401,4 +1401,48 @@ object DynamicProductDetailTracking {
             trackingQueue.putEETracking(mapEvent)
         }
     }
+
+    object TradeIn {
+        fun eventAddToCartFinalPrice(phoneType: String, phonePrice:String, deviceId:String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val productId = productInfo?.basic?.productID ?: ""
+            val shopId = productInfo?.basic?.shopID ?: ""
+            val productName = productInfo?.data?.name ?: ""
+            val productPrice = productInfo?.finalPrice.toString()
+            val shopType = productInfo?.shopTypeString ?: ""
+            val shopName = productInfo?.basic?.shopName ?: ""
+
+            val categoryName = productInfo?.basic?.category?.detail?.map {
+                it.name
+            }?.joinToString("/", postfix = "/ ${productInfo.basic.category.id}") ?: ""
+
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, "harga final trade in",
+                    ProductTrackingConstant.Tracking.KEY_ACTION, "click beli sekarang",
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "phone type : $phoneType - phone price : $phonePrice - diagnostic id : $deviceId",
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME, "trade in - final price page",
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, "trade-in",
+                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
+                    ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.NAME, productName,
+                            ProductTrackingConstant.Tracking.ID, productId,
+                            ProductTrackingConstant.Tracking.PRICE, productPrice,
+                            ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.CATEGORY, categoryName,
+                            ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.QUANTITY, "1",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName
+                    )))))
+            )
+        }
+    }
 }

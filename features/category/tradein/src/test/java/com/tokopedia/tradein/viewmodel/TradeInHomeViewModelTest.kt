@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.tradein.Constants
+import com.tokopedia.tradein.TradeinConstants
 import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
@@ -90,7 +90,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.checkLogin()
 
-        assertEquals(tradeInHomeViewModel.askUserLogin.value, Constants.LOGIN_REQUIRED)
+        assertEquals(tradeInHomeViewModel.askUserLogin.value, TradeinConstants.LOGIN_REQUIRED)
     }
 
     @Test
@@ -99,7 +99,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.checkLogin()
 
-        assertEquals(tradeInHomeViewModel.askUserLogin.value, Constants.LOGEED_IN)
+        assertEquals(tradeInHomeViewModel.askUserLogin.value, TradeinConstants.LOGEED_IN)
     }
     /**************************** checkLogin() *******************************************/
 
@@ -108,7 +108,7 @@ class TradeInHomeViewModelTest {
     @Test
     fun processMessageException() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
+        coEvery { processMessageUseCase.processMessage(any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)
@@ -120,7 +120,7 @@ class TradeInHomeViewModelTest {
     @Test
     fun processMessage() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } returns response
+        coEvery { processMessageUseCase.processMessage(any(), any()) } returns response
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)

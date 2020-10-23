@@ -417,9 +417,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            _p2Data.postValue(p2DataDeffered.await())
-            updateTradeinParams(_p2Data.value?.validateTradeIn ?: ValidateTradeIn())
-
+            p2DataDeffered.await()?.let {
+                _p2Data.postValue(it)
+                updateTradeinParams(it.validateTradeIn)
+            }
             p2LoginDeferred?.let {
                 _p2Login.postValue(it.await())
             }
@@ -748,6 +749,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
+            tradeInParams.weight = it.basic.weight
+            tradeInParams.productImage = it.data.getFirstProductImage()
         }
     }
 
