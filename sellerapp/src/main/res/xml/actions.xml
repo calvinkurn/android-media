@@ -9,22 +9,4 @@
                 urlParameter="orderDate"/>
         </fulfillment>
     </action>
-    <action intentName="actions.intent.GET_REVIEW">
-        <fulfillment
-            fulfillmentMode="actions.fulfillment.SLICE"
-            urlTemplate="content://com.tokopedia.seller.action.slices/stars{?rating}">
-            <parameter-mapping
-                intentParameter="review.reviewRating.ratingValue"
-                required="true"
-                urlParameter="rating"/>
-        </fulfillment>
-        <fulfillment
-            fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://marketplace/review?is_my_review=true"/>
-    </action>
-    <action intentName="actions.intent.GET_ACCOUNT">
-        <fulfillment
-            fulfillmentMode="actions.fulfillment.SLICE"
-            urlTemplate="content://com.tokopedia.seller.action.slices/balance"/>
-    </action>
 </actions>

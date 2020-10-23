@@ -2,7 +2,6 @@ package com.tokopedia.seller.action
 
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
 import androidx.annotation.RequiresApi
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
@@ -10,31 +9,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.seller.action.balance.domain.usecase.SliceSellerBalanceUseCase
-import com.tokopedia.seller.action.balance.domain.usecase.SliceTopadsBalanceUseCase
-import com.tokopedia.seller.action.balance.presentation.mapper.SellerBalanceMapper
-import com.tokopedia.seller.action.balance.presentation.model.SellerActionBalance
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.presentation.model.SellerActionStatus
-import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActionPresenter
-import com.tokopedia.seller.action.common.presentation.presenter.SliceSellerActionPresenterImpl
 import com.tokopedia.seller.action.common.presentation.slices.SellerFailureSlice
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
-import com.tokopedia.seller.action.order.domain.mapper.SellerActionOrderCodeMapper
-import com.tokopedia.seller.action.order.domain.model.SellerActionOrderType
+import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
 import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
 import com.tokopedia.seller.action.order.presentation.mapper.SellerOrderMapper
-import com.tokopedia.seller.action.review.domain.usecase.SliceReviewStarsUseCase
-import com.tokopedia.seller.action.review.presentation.mapper.SellerReviewStarsMapper
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -44,19 +30,12 @@ class SellerActionSliceProvider: SliceProvider(){
         private const val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
         private const val DATE_DELIMITER = "T"
+        private const val DATE_FORMAT = "dd/MM/yyyy"
+        private const val DAYS_BEFORE = -90
     }
 
     @Inject
-    lateinit var sliceSellerActionPresenter: SliceSellerActionPresenter
-
-    @Inject
-    lateinit var handler: Handler
-
-    @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @Inject
     lateinit var dispatcher: SellerActionDispatcherProvider
@@ -64,18 +43,7 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var sliceMainOrderListUseCase: SliceMainOrderListUseCase
 
-    @Inject
-    lateinit var sliceReviewStarsUseCase: SliceReviewStarsUseCase
-
-    @Inject
-    lateinit var sliceSellerBalanceUseCase: SliceSellerBalanceUseCase
-
-    @Inject
-    lateinit var sliceTopadsBalanceUseCase: SliceTopadsBalanceUseCase
-
     private var mainOrderStatus: SellerActionStatus? = null
-    private var reviewStarsStatus: SellerActionStatus? = null
-    private var sellerBalanceStatus: SellerActionStatus? = null
 
     override fun onCreateSliceProvider(): Boolean {
         injectDependencies()
@@ -90,34 +58,16 @@ class SellerActionSliceProvider: SliceProvider(){
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
                         if (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) {
-                            (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_TYPE) ?: SellerActionOrderType.ORDER_DEFAULT).let { orderType ->
-                                (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
-                                    val date = orderDate?.split(DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
-                                    isLoading = true
-                                    loadMainOrderList(sliceUri, orderType, date)
-                                }
-                            }
-                        }
-                    }
-                    SellerActionConst.Deeplink.STARS -> {
-                        if (reviewStarsStatus == null || reviewStarsStatus == SellerActionStatus.NotLogin) {
-                            sliceUri.getQueryParameter(SellerActionConst.Params.RATING).let { ratingStar ->
+                            (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
+                                val date = orderDate?.split(DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
                                 isLoading = true
-                                loadReviewStarsList(sliceUri, ratingStar.toIntOrZero())
+                                loadMainOrderList(sliceUri, date)
                             }
-                        }
-                    }
-                    SellerActionConst.Deeplink.BALANCE -> {
-                        if (sellerBalanceStatus == null || sellerBalanceStatus == SellerActionStatus.NotLogin) {
-                            isLoading = true
-                            loadBalance(sliceUri, userSession.shopId.toIntOrZero())
                         }
                     }
                 }
             } else {
                 mainOrderStatus = SellerActionStatus.NotLogin
-                reviewStarsStatus = SellerActionStatus.NotLogin
-                sellerBalanceStatus = SellerActionStatus.NotLogin
             }
             createNewSlice(sliceUri, isLoading)?.getSlice()
         } else {
@@ -144,22 +94,6 @@ class SellerActionSliceProvider: SliceProvider(){
                     getSlice(mainOrderStatus)
                 }
             }
-            SellerActionConst.Deeplink.STARS -> {
-                SellerReviewStarsMapper(notNullContext, sliceUri).run {
-                    if (isLoading) {
-                        reviewStarsStatus = SellerActionStatus.Loading
-                    }
-                    getSlice(reviewStarsStatus)
-                }
-            }
-            SellerActionConst.Deeplink.BALANCE -> {
-                SellerBalanceMapper(notNullContext, sliceUri, remoteConfig).run {
-                    if (isLoading) {
-                        sellerBalanceStatus = SellerActionStatus.Loading
-                    }
-                    getSlice(sellerBalanceStatus)
-                }
-            }
             else -> SellerFailureSlice(notNullContext, sliceUri)
         }
     }
@@ -168,10 +102,10 @@ class SellerActionSliceProvider: SliceProvider(){
         context?.contentResolver?.notifyChange(sliceUri, null)
     }
 
-    private fun loadMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?) {
+    private fun loadMainOrderList(sliceUri: Uri, date: String?) {
         GlobalScope.launch(dispatcher.io()) {
             try {
-                getSliceMainOrderList(sliceUri, orderType, date)
+                getSliceMainOrderList(sliceUri, date)
             } catch (ex: Exception) {
                 mainOrderStatus = SellerActionStatus.Fail
                 updateSlice(sliceUri)
@@ -179,67 +113,13 @@ class SellerActionSliceProvider: SliceProvider(){
         }
     }
 
-    private fun loadReviewStarsList(sliceUri: Uri, stars: Int) {
-        GlobalScope.launch(dispatcher.io()) {
-            try {
-                getSliceReviewStarsList(sliceUri, stars)
-            } catch (ex: Exception) {
-                reviewStarsStatus = SellerActionStatus.Fail
-                updateSlice(sliceUri)
-            }
-        }
-    }
-
-    private fun loadBalance(sliceUri: Uri, shopId: Int) {
-        GlobalScope.launch(dispatcher.io()) {
-            try {
-                val balance = async { getSliceBalanceData() }
-                val topAdsBalance = async { getSliceTopAdsData(shopId) }
-                sellerBalanceStatus = SellerActionStatus.Success(listOf(SellerActionBalance(balance.await(), topAdsBalance.await())))
-                updateSlice(sliceUri)
-            } catch (ex: Exception) {
-                SellerActionStatus.Fail
-                updateSlice(sliceUri)
-            }
-        }
-    }
-
-    private suspend fun getSliceMainOrderList(sliceUri: Uri, @SellerActionOrderType orderType: String, date: String?) {
-        val startDate = date ?: getCalculatedFormattedDate(SliceSellerActionPresenterImpl.DATE_FORMAT, SliceSellerActionPresenterImpl.DAYS_BEFORE)
-        val endDate = date ?: Date().toFormattedString(SliceSellerActionPresenterImpl.DATE_FORMAT)
+    private suspend fun getSliceMainOrderList(sliceUri: Uri, date: String?) {
+        val startDate = date ?: getCalculatedFormattedDate(DATE_FORMAT, DAYS_BEFORE)
+        val endDate = date ?: Date().toFormattedString(DATE_FORMAT)
         with(sliceMainOrderListUseCase) {
-            params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate, SellerActionOrderCodeMapper.mapOrderCodeByType(orderType))
-            sellerBalanceStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
+            params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
+            mainOrderStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
             updateSlice(sliceUri)
-        }
-    }
-
-    private suspend fun getSliceReviewStarsList(sliceUri: Uri, stars: Int) {
-        with(sliceReviewStarsUseCase) {
-            params = SliceReviewStarsUseCase.createRequestParams(stars)
-            reviewStarsStatus = SellerActionStatus.Success(sliceReviewStarsUseCase.executeOnBackground())
-            updateSlice(sliceUri)
-        }
-    }
-
-    private suspend fun getSliceBalanceData(): String? {
-        return withContext(dispatcher.io()) {
-            try {
-                sliceSellerBalanceUseCase.executeOnBackground()
-            } catch (ex: Exception) {
-                null
-            }
-        }
-    }
-
-    private suspend fun getSliceTopAdsData(shopId: Int): String? {
-        sliceTopadsBalanceUseCase.params = SliceTopadsBalanceUseCase.createRequestParams(shopId)
-        return withContext(dispatcher.io()) {
-            try {
-                sliceTopadsBalanceUseCase.executeOnBackground()
-            } catch (ex: Exception) {
-                null
-            }
         }
     }
 
