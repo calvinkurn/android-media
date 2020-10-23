@@ -32,9 +32,7 @@ fun Context.pxToDp(px: Int): Float = TypedValue.applyDimension(
         resources.displayMetrics
 )
 
-/**
- * Extension function to avoid java.lang.IllegalArgumentException when using activity context prior to its lifecycle
- */
+
 fun Context.isAvailable(): Context? {
     return when (this) {
         is Activity -> {
@@ -45,5 +43,18 @@ fun Context.isAvailable(): Context? {
             }
         }
         else -> this
+    }
+}
+
+/**
+ * Extension function to avoid java.lang.IllegalArgumentException when using activity context prior to its lifecycle
+ */
+fun Context.whenAlive(predicate: (Context) -> Unit) {
+    if (this is Activity) {
+        if (!(isDestroyed || isFinishing)) {
+            predicate(this)
+        }
+    } else {
+        predicate(this)
     }
 }

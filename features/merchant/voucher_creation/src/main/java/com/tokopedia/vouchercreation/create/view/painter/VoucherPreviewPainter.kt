@@ -17,8 +17,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.isAvailable
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.whenAlive
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
@@ -124,7 +124,7 @@ class VoucherPreviewPainter(private val context: Context,
     fun drawInitial(uiModel: BannerVoucherUiModel) {
         uiModel.run {
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
-            context.isAvailable()?.let {
+            context.whenAlive {
                 Glide.with(it)
                         .asBitmap()
                         .load(shopAvatar)
@@ -172,7 +172,7 @@ class VoucherPreviewPainter(private val context: Context,
 
             canvas.translate(-promoNameX, -promoNameY)
 
-            context.isAvailable()?.let {
+            context.whenAlive {
                 Glide.with(it)
                         .asBitmap()
                         .load(shopAvatar)
@@ -199,7 +199,7 @@ class VoucherPreviewPainter(private val context: Context,
         uiModel.run {
             when(imageType) {
                 is VoucherImageType.FreeDelivery -> {
-                    context.isAvailable()?.let {
+                    context.whenAlive {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.freeDeliveryLabelUrl)
@@ -209,8 +209,8 @@ class VoucherPreviewPainter(private val context: Context,
                                     }
 
                                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        imageType.value.let {
-                                            canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                                        imageType.value.let { value ->
+                                            canvas.drawPromotionLabel(resource, middleLabelY, value, VoucherValuePosition.CENTER)
                                         }
                                         return false
                                     }
@@ -219,7 +219,7 @@ class VoucherPreviewPainter(private val context: Context,
                     }
                 }
                 is VoucherImageType.Rupiah -> {
-                    context.isAvailable()?.let {
+                    context.whenAlive {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
@@ -229,18 +229,17 @@ class VoucherPreviewPainter(private val context: Context,
                                     }
 
                                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        imageType.value.let {
-                                            canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                                        imageType.value.let { value ->
+                                            canvas.drawPromotionLabel(resource, middleLabelY, value, VoucherValuePosition.CENTER)
                                         }
                                         return false
                                     }
                                 })
                                 .submit()
                     }
-
                 }
                 is VoucherImageType.Percentage -> {
-                    context.isAvailable()?.let {
+                    context.whenAlive {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
@@ -250,8 +249,8 @@ class VoucherPreviewPainter(private val context: Context,
                                     }
 
                                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        (imageType as? VoucherImageType.Percentage)?.percentage?.let {
-                                            canvas.drawPromotionLabel(resource, topLabelY, it, VoucherValuePosition.TOP)
+                                        (imageType as? VoucherImageType.Percentage)?.percentage?.let { value ->
+                                            canvas.drawPromotionLabel(resource, topLabelY, value, VoucherValuePosition.TOP)
                                         }
                                         return false
                                     }
@@ -259,7 +258,7 @@ class VoucherPreviewPainter(private val context: Context,
                                 .submit()
                     }
 
-                    context.isAvailable()?.let {
+                    context.whenAlive {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackUntilLabelUrl)
@@ -269,8 +268,8 @@ class VoucherPreviewPainter(private val context: Context,
                                     }
 
                                     override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                        (imageType as? VoucherImageType.Percentage)?.value?.let {
-                                            canvas.drawPromotionLabel(resource, bottomLabelY, it, VoucherValuePosition.BOTTOM)
+                                        (imageType as? VoucherImageType.Percentage)?.value?.let { value ->
+                                            canvas.drawPromotionLabel(resource, bottomLabelY, value, VoucherValuePosition.BOTTOM)
                                         }
                                         return false
                                     }

@@ -13,8 +13,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.isAvailable
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.whenAlive
 import com.tokopedia.vouchercreation.create.view.enums.PostImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
@@ -162,7 +162,7 @@ class SquareVoucherPainter(private val context: Context,
     }
 
     private fun Canvas.drawShopAvatar(avatarUrl: String) {
-        context.isAvailable()?.let {
+        context.whenAlive {
             Glide.with(it)
                     .asBitmap()
                     .load(avatarUrl)
@@ -190,7 +190,7 @@ class SquareVoucherPainter(private val context: Context,
                 } else {
                     postBaseUiModel.cashbackLabelUrl
                 }
-        context.isAvailable()?.let {
+        context.whenAlive {
             Glide.with(it)
                     .asBitmap()
                     .load(leftLabelImageUrl)
@@ -218,7 +218,7 @@ class SquareVoucherPainter(private val context: Context,
         }
 
         if (imageType is VoucherImageType.Percentage) {
-            context.isAvailable()?.let {
+            context.whenAlive {
                 Glide.with(it)
                         .asBitmap()
                         .load(postBaseUiModel.cashbackUntilLabelUrl)
