@@ -157,11 +157,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
             // configure live streaming duration
             if (configUiModel.channelType == ChannelType.Pause)
-                playPusher.addStreamDuration(configUiModel.remainingTime)
-            else playPusher.addStreamDuration(configUiModel.durationConfig.duration)
+                playPusher.setStreamDuration(configUiModel.remainingTime)
+            else playPusher.setStreamDuration(configUiModel.durationConfig.duration)
 
-            playPusher.addMaxStreamDuration(configUiModel.durationConfig.duration)
-            playPusher.addMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
+            playPusher.setMaxStreamDuration(configUiModel.durationConfig.duration)
+            playPusher.setMaxPauseDuration(configUiModel.durationConfig.pauseDuration) // configure maximum pause duration
 
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { this.getConfiguration() }
@@ -229,7 +229,7 @@ class PlayBroadcastViewModel @Inject constructor(
      */
     fun initPushStream() {
         playPusher.init()
-        playPusher.addPlayPusherInfoListener(object : PlayPusherInfoListener {
+        playPusher.setPlayPusherInfoListener(object : PlayPusherInfoListener {
             override fun onStarted() {
                 scope.launchCatchError(block = {
                     updateChannelStatus(PlayChannelStatus.Live)
@@ -287,7 +287,7 @@ class PlayBroadcastViewModel @Inject constructor(
             }
 
         })
-        playPusher.addPlayPusherTimerListener(object : PlayPusherTimerListener {
+        playPusher.setPlayPusherTimerListener(object : PlayPusherTimerListener {
             override fun onCountDownActive(timeLeft: String) {
                 _observableLiveDurationState.value = LivePusherTimerState.Active(timeLeft)
             }
