@@ -54,6 +54,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/**'
+        exclude "META-INF/versions/**/*.class"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
