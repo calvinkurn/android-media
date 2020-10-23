@@ -12,26 +12,36 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
 import com.tokopedia.seller.action.common.const.SellerActionFeatureName
 import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.isOrderDateToday
 import com.tokopedia.seller.action.order.domain.model.Order
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
+                       private val date: String? = null,
                        private val orderList: List<Order>): SellerSuccessSlice<Order>(orderList, context, sliceUri) {
+
+    companion object {
+        private const val MAX_ORDERS_PER_SLICE = 3
+    }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun getSuccessSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
-                    title = context.getString(R.string.seller_action_order_title)
+                    title =
+                            if (date == null || date.isOrderDateToday()) {
+                                context.getString(R.string.seller_action_order_success_title_today)
+                            }
+                            else {
+                                context.getString(R.string.seller_action_order_success_title_specific_date, date)
+                            }
                     primaryAction = createHeaderPrimaryAction()
                 }
-                orderList.forEach {
+                orderList.take(MAX_ORDERS_PER_SLICE).forEach {
                     row {
                         val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, it.orderId).let { intent ->
                             PendingIntent.getActivity(context, 0, intent, 0)
@@ -47,10 +57,6 @@ class SellerOrderSlice(context: Context,
                         subtitle = it.status
                     }
                 }
-                seeMoreRow {
-                    title = context.getString(R.string.seller_action_order_see_all)
-                    primaryAction = createSeeMorePrimaryAction()
-                }
             }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -63,20 +69,6 @@ class SellerOrderSlice(context: Context,
             )
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private fun createSeeMorePrimaryAction(): SliceAction{
-        RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL).let { intent ->
-            PendingIntent.getActivity(context, 0, intent, 0).let { pendingIntent ->
-                return SliceAction.create(
-                        pendingIntent,
-                        IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
-                        ListBuilder.ICON_IMAGE,
-                        context.getString(R.string.seller_action_order_title)
-                )
-            }
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createHeaderPrimaryAction(): SliceAction{
         SellerActionActivity.createActionIntent(context, SellerActionFeatureName.ALL_ORDER).let { intent ->
             PendingIntent.getActivity(context, 0, intent, 0)
@@ -84,8 +76,8 @@ class SellerOrderSlice(context: Context,
             return SliceAction.create(
                     pendingIntent,
                     IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
-                    ListBuilder.ICON_IMAGE,
-                    context.getString(R.string.seller_action_order_title)
+                    ICON_IMAGE,
+                    context.getString(R.string.seller_action_open_app)
             )
         }
     }

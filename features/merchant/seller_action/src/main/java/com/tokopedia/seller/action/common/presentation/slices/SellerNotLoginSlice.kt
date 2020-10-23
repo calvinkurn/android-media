@@ -22,8 +22,8 @@ class SellerNotLoginSlice(context: Context,
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 row {
-                    title = context.getString(R.string.seller_action_not_login)
-                    subtitle = context.getString(R.string.seller_action_not_login_desc)
+                    title = context.getString(R.string.seller_action_not_login_title)
+                    subtitle = context.getString(R.string.seller_action_order_not_login_desc)
                     primaryAction = createLoginAction()
                 }
                 setIsError(true)

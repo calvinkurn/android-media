@@ -31,7 +31,8 @@ abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: L
     private fun getEmptySuccessSlice(): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
-                title = context.getString(R.string.seller_action_empty)
+                title = context.getString(R.string.seller_action_order_empty_title)
+                subtitle = context.getString(R.string.seller_action_order_empty_desc)
             }
         }
     }

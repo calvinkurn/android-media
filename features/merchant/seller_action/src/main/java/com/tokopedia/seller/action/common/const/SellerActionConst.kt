@@ -14,4 +14,7 @@ object SellerActionConst {
         internal const val ORDER_ID = "orderId"
     }
 
+    internal const val DATE_DELIMITER = "T"
+    internal const val DATE_FORMAT = "dd/MM/yyyy"
+
 }

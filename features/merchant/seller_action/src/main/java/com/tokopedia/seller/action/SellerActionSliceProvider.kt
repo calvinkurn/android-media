@@ -7,7 +7,6 @@ import androidx.slice.Slice
 import androidx.slice.SliceProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
@@ -29,7 +28,6 @@ class SellerActionSliceProvider: SliceProvider(){
     companion object {
         private const val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
-        private const val DATE_DELIMITER = "T"
         private const val DATE_FORMAT = "dd/MM/yyyy"
         private const val DAYS_BEFORE = -90
     }
@@ -58,11 +56,9 @@ class SellerActionSliceProvider: SliceProvider(){
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
                         if (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) {
-                            (sliceUri.getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
-                                val date = orderDate?.split(DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
-                                isLoading = true
-                                loadMainOrderList(sliceUri, date)
-                            }
+                            val date = sliceUri.getDateFromOrderUri()
+                            isLoading = true
+                            loadMainOrderList(sliceUri, date)
                         }
                     }
                 }
@@ -87,7 +83,8 @@ class SellerActionSliceProvider: SliceProvider(){
         val notNullContext = requireNotNull(context)
         return when (sliceUri.path) {
             SellerActionConst.Deeplink.ORDER -> {
-                SellerOrderMapper(notNullContext, sliceUri).run {
+                val date = sliceUri.getDateFromOrderUri()
+                SellerOrderMapper(notNullContext, sliceUri, date).run {
                     if (isLoading) {
                         mainOrderStatus = SellerActionStatus.Loading
                     }
@@ -114,12 +111,17 @@ class SellerActionSliceProvider: SliceProvider(){
     }
 
     private suspend fun getSliceMainOrderList(sliceUri: Uri, date: String?) {
-        val startDate = date ?: getCalculatedFormattedDate(DATE_FORMAT, DAYS_BEFORE)
-        val endDate = date ?: Date().toFormattedString(DATE_FORMAT)
+        val filteredDate = date ?: Date().toFormattedString(DATE_FORMAT)
         with(sliceMainOrderListUseCase) {
-            params = SliceMainOrderListUseCase.createRequestParam(startDate, endDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
+            params = SliceMainOrderListUseCase.createRequestParam(filteredDate, filteredDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
             mainOrderStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
             updateSlice(sliceUri)
+        }
+    }
+
+    private fun Uri.getDateFromOrderUri(): String? {
+        (getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
+            return orderDate?.split(SellerActionConst.DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
         }
     }
 

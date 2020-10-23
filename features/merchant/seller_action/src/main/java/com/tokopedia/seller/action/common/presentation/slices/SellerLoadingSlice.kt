@@ -17,7 +17,8 @@ class SellerLoadingSlice(context: Context,
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
-                    title = context.getString(R.string.seller_action_loading)
+                    title = context.getString(R.string.seller_action_loading_title)
+                    subtitle = context.getString(R.string.seller_action_order_loading_desc)
                 }
             }
 
