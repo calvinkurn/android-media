@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
@@ -83,9 +84,19 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null) {
-            imgMvc.setVisibility(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() ? View.VISIBLE : View.GONE);
-            tvMvc.setVisibility(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() ? View.VISIBLE : View.GONE);
+        if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+        } else if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 0){
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+            ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
+            tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
+        } else {
+            imgMvc.setVisibility(View.GONE);
+            tvMvc.setVisibility(View.GONE);
         }
 
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));

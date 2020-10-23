@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class MerchantVoucherProductModel(
-        var isMvc: Boolean = false,
+        var isMvc: Int = -1,
         var mvcLogo: String = "",
         var mvcErrorMessage: String = ""
 ) : Parcelable

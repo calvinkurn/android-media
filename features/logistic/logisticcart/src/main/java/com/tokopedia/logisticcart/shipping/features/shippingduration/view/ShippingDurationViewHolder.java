@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
@@ -120,11 +121,20 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
 
-        if (shippingDurationUiModel.getMerchantVoucherModel() != null) {
-            imgMvc.setVisibility(shippingDurationUiModel.getMerchantVoucherModel().isMvc() ? View.VISIBLE : View.GONE);
+        if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == 1 ) {
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
             tvMvc.setVisibility(View.VISIBLE);
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+        } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
+            tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
         } else {
+            imgMvc.setVisibility(View.GONE);
             tvMvc.setVisibility(View.GONE);
         }
 

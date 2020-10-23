@@ -86,7 +86,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_duration"
@@ -120,13 +120,23 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon_chevron_choose_duration" />
 
+                <ImageView
+                    android:id="@+id/img_mvc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_kebab"
+                    android:layout_marginTop="@dimen/dp_13"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    android:visibility="gone"/>
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_courier"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
                     app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_courier"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/img_mvc"
                     app:layout_constraintTop_toBottomOf="@+id/divider"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold"
@@ -193,7 +203,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="0dp"

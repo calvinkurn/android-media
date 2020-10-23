@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_kebab"
         android:layout_marginBottom="@dimen/dp_8"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_mvc_text"
@@ -27,7 +27,7 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="@string/tv_mvc_text"
-        android:visibility="gone"
+        android:visibility="visible"
         android:textColor="@color/text_mvc"/>
 
     <TextView
