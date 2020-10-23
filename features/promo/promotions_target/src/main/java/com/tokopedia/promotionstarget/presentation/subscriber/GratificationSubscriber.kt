@@ -393,7 +393,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
             appContext.registerActivityLifecycleCallbacks(cmActivityLifecycleCallbacks)
 
-            CmEventListenerManager.register(pushHandler, fragmentLifecycleCallback)
+            CmEventListenerManager.register(pushHandler, fragmentLifecycleCallback, arrayListOf("gratification"), dialogHandler)
         }
     }
 

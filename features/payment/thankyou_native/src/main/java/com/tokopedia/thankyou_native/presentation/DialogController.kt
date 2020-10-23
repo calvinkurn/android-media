@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference
 
 class DialogController(private val presenter: GratificationPresenter) {
 
-    var job:Job? = null
+    var job: Job? = null
 
     fun showGratifDialog(weakReference: WeakReference<Activity>,
                          paymentId: Long,
@@ -19,11 +19,12 @@ class DialogController(private val presenter: GratificationPresenter) {
                 paymentID = paymentId,
                 gratifPopupCallback = gratifPopupCallback,
                 notificationEntryType = NotificationEntryType.ORGANIC,
-                screenName = screenName)
+                screenName = screenName,
+                timeout = 6000L)
         return job
     }
 
-    fun cancelJob(){
+    fun cancelJob() {
         job?.cancel()
     }
 }

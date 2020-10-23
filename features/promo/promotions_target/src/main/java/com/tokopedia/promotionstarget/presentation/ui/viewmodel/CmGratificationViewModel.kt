@@ -1,6 +1,7 @@
 package com.tokopedia.promotionstarget.presentation.ui.viewmodel
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
@@ -22,7 +23,8 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
                                                    val workerDispatcher: CoroutineDispatcher,
                                                    val autoApplyUseCase: AutoApplyUseCase,
                                                    val updateGratifNotificationUsecase: UpdateGratifNotification,
-                                                   val app: Application
+                                                   val app: Application,
+                                                   val sharedPreferences: SharedPreferences
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
     val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
@@ -40,13 +42,18 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
         })
     }
 
-    fun updateGratification(notificationID: String?, notificationEntryType: Int){
+    fun updateGratification(notificationID: String?, notificationEntryType: Int) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
-                if(!notificationID.isNullOrEmpty()) {
+                if (!notificationID.isNullOrEmpty()) {
                     Locks.notificationMutex.withLock {
-                        val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
-                        updateGratifNotificationUsecase.getResponse(map)
+                        val excludeParams = sharedPreferences.getBoolean("exclude_params", false)
+                        if (excludeParams) {
+                            updateGratifNotificationUsecase.getResponse(HashMap())
+                        } else {
+                            val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
+                            updateGratifNotificationUsecase.getResponse(map)
+                        }
                     }
                 }
             }

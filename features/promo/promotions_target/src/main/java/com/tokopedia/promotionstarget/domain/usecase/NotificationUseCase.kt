@@ -33,6 +33,10 @@ class NotificationUseCase @Inject constructor(@Named(GRATIFF_NOTIFICATION) val q
     }
 
     suspend fun getFakeResponse(map: HashMap<String, Any>): GratifNotificationResponse {
+        val delayInSecs = sharedPreferences.getInt("get_notification_delay", 0)
+        if (delayInSecs > 0)
+            Thread.sleep(delayInSecs * 1000L)
+
         val gson = Gson()
         val response = FakeResponse.GRATIF_RESPONSE
         val json = JSONObject(response)

@@ -135,6 +135,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private AppCompatTextView btnDelayGratif;
     private CheckBox cbGratifDebugToast;
     private AppCompatTextView btnShowLogs;
+    private CheckBox cbUpdateGratifNotif;
 
     @Override
     public String getScreenName() {
@@ -144,14 +145,14 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (GlobalConfig.isAllowDebuggingTools() && getIntent()!=null && getIntent().getData()!=null) {
+        if (GlobalConfig.isAllowDebuggingTools() && getIntent() != null && getIntent().getData() != null) {
             userSession = new UserSession(this);
 
             Uri uri = getIntent().getData();
             boolean isChangeUrlApplink
                     = (uri.getPathSegments().size() == 3) && uri.getPathSegments().get(1).equals(CHANGEURL);
 
-            if(isChangeUrlApplink) {
+            if (isChangeUrlApplink) {
                 handleUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -165,9 +166,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void handleUri(Uri uri) {
-        if(uri.getLastPathSegment().startsWith(STAGING)){
+        if (uri.getLastPathSegment().startsWith(STAGING)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.STAGING);
-        } else if (uri.getLastPathSegment().startsWith(LIVE)){
+        } else if (uri.getLastPathSegment().startsWith(LIVE)) {
             TokopediaUrl.Companion.setEnvironment(DeveloperOptionActivity.this, Env.LIVE);
         }
         TokopediaUrl.Companion.deleteInstance();
@@ -260,6 +261,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         btnDelayGratif = findViewById(R.id.btn_delay_gratif_pop_up);
         cbGratifDebugToast = findViewById(R.id.cb_gratif_debug_toast);
         btnShowLogs = findViewById(R.id.btn_log_viewer);
+        cbUpdateGratifNotif = findViewById(R.id.cb_update_gratif_notif);
     }
 
     private void initListener() {
@@ -312,7 +314,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                 } else {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -377,11 +379,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        reviewNotifBtn.setOnClickListener(v ->{
+        reviewNotifBtn.setOnClickListener(v -> {
             Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777,notifReview);
-                });
+            notificationManagerCompat.notify(777, notifReview);
+        });
 
         toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
         toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
@@ -436,10 +438,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
             if (state) {
                 Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
+                        "(TODO) UI Block is enabled with delay " + delay, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(DeveloperOptionActivity.this,
-                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
+                        "(TODO) UI Block is disabled", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -497,47 +499,53 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
 
         SharedPreferences gratifSp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-        int delayGraif = gratifSp.getInt("get_notification_delay",0);
+        int delayGraif = gratifSp.getInt("get_notification_delay", 0);
         etDelayGratif.setText(String.valueOf(delayGraif));
 
-        btnDelayGratif.setOnClickListener(v->{
+        btnDelayGratif.setOnClickListener(v -> {
             String delay = etDelayGratif.getText().toString();
             try {
                 int delayInNum = Integer.parseInt(delay);
                 SharedPreferences sp1 = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-                sp1.edit().putInt("get_notification_delay",delayInNum).apply();
-            }catch (Exception e){
+                sp1.edit().putInt("get_notification_delay", delayInNum).apply();
+            } catch (Exception e) {
                 Timber.e(e);
-                Toast.makeText(btnDelayGratif.getContext(),"Unable to save",Toast.LENGTH_SHORT).show();
+                Toast.makeText(btnDelayGratif.getContext(), "Unable to save", Toast.LENGTH_SHORT).show();
             }
 
 
         });
 
-        boolean isDebugGratifChecked = gratifSp.getBoolean("gratif_debug_toast",false);
+        boolean isDebugGratifChecked = gratifSp.getBoolean("gratif_debug_toast", false);
 
         cbGratifDebugToast.setChecked(isDebugGratifChecked);
 
         cbGratifDebugToast.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-            sp.edit().putBoolean("gratif_debug_toast",isChecked).apply();
+            sp.edit().putBoolean("gratif_debug_toast", isChecked).apply();
         });
 
         btnShowLogs.setOnClickListener(v -> {
-            try{
+            try {
                 String className = "com.tokopedia.logger.viewer.LogcatActivity";
-                Intent i = new Intent(v.getContext(),Class.forName(className));
+                Intent i = new Intent(v.getContext(), Class.forName(className));
                 startActivity(i);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        });
+
+        boolean exludeParamsInGratifUpdateApi = gratifSp.getBoolean("exclude_params", false);
+        cbUpdateGratifNotif.setChecked(exludeParamsInGratifUpdateApi);
+        cbUpdateGratifNotif.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            gratifSp.edit().putBoolean("exclude_params", isChecked).apply();
         });
     }
 
     private int toInt(String str) {
         try {
             return Integer.parseInt(str);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return 0;
         }
     }

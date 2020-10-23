@@ -37,12 +37,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
 
-    private val dialogController: DialogController? by lazy {
-        activity?.let {
-            DialogController(GratificationPresenter(it.application))
-        }
-    }
-
     private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
@@ -79,30 +73,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
-//        showDialog()
     }
-
-    private fun showDialog() {
-        activity?.let {
-            dialogController?.showGratifDialog(WeakReference(it),
-                    thanksPageData.paymentID,
-                    object : GratificationPresenter.AbstractGratifPopupCallback() {
-
-                        override fun onShow(dialog: DialogInterface) {
-
-                        }
-
-                        override fun onDismiss(dialog: DialogInterface) {
-                        }
-
-                        override fun onIgnored(reason: Int) {
-                        }
-
-                    },
-                    this.javaClass.name)
-        }
-    }
-
+    
     private fun showCharacterAnimation() {
         context?.let {
             val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
@@ -116,14 +88,25 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        cancelGratifDialog()
+    }
+
     override fun onStop() {
         super.onStop()
-        dialogController?.cancelJob()
+        cancelGratifDialog()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        dialogController?.cancelJob()
+        cancelGratifDialog()
+    }
+
+    private fun cancelGratifDialog(){
+        if(activity is ThankYouPageActivity){
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
     }
 
     private fun setActionMenu() {

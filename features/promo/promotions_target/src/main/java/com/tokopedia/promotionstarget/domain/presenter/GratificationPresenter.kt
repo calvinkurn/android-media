@@ -24,6 +24,7 @@ import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Com
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.DIALOG_ALREADY_ACTIVE
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.INVALID_COUPON
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.NO_SUCCESS
+import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.TIMEOUT
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType.Companion.UNKOWN_ERROR
 import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
@@ -80,9 +81,15 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
         return scope?.launch(worker + ceh) {
             Locks.notificationMutex.withLock {
                 if (timeout > 0L) {
-                    withTimeout(timeout, block = {
+                    var responseReceived = false
+                    withTimeout(timeout) {
                         processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName)
-                    })
+                        responseReceived = true
+                    }
+                    if (!responseReceived) {
+                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.TIMEOUT)
+                        Timber.d("$TAG GRATIF ENGINE - Manual Cancellation timeout reached $timeout ")
+                    }
                 } else {
                     processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName)
                 }
@@ -100,20 +107,20 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
 
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
         Timber.d("$TAG GRATIF ENGINE API START with=$map")
-        val notifResponse = notificationUseCase.getResponse(map)
-//                val notifResponse = notificationUseCase.getFakeResponse(map)
+//        val notifResponse = notificationUseCase.getResponse(map)
+        val notifResponse = notificationUseCase.getFakeResponse(map)
         Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
         //todo Rahul verify key later
         val reason = notifResponse.response?.resultStatus?.code
         if (reason == GratifResultStatus.SUCCESS) {
             //todo Rahul refactor later
-            val code = notifResponse.response.promoCode
-//                    val code = "NUPLBDAY5D7RUU5M329"
+//            val code = notifResponse.response.promoCode
+            val code = "NUPLBDAY5D7RUU5M329"
 //                    val code = "UNDIANMITRA05D7RUC66K7ZJDG8JA"  //expired
 //                    val code = "UNDIANMITRA205D7RUC66K7ZJ9QUR9"  //used
             if (!code.isNullOrEmpty()) {
-                val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
-//                    val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
+//                val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
+                val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
                 val couponStatus = couponDetail?.coupon?.realCode ?: ""
                 if (couponStatus.isNotEmpty()) {
                     withContext(uiWorker) {
@@ -191,22 +198,21 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                 initSafeScope()
             }
             weakActivity?.get()?.let { activity ->
-                if (dialogIsShownMap?.get(activity) != null) {
+                if (dialogIsShownMap?.get(activity) != null && (notificationEntryType == NotificationEntryType.ORGANIC)) {
                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                     gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                     return null
                 }
             }
-            if (!gratificationId.isNullOrEmpty()) {
-                return getNotification(weakActivity,
-                        gratificationId.toInt(),
-                        notificationEntryType,
-                        gratifPopupCallback = gratifPopupCallback,
-                        screenName = screenName,
-                        paymentID = paymentID,
-                        timeout = timeout
-                )
-            }
+            val tempGratifId = if (gratificationId.isNullOrEmpty()) 0 else gratificationId.toInt()
+            return getNotification(weakActivity,
+                    tempGratifId,
+                    notificationEntryType,
+                    gratifPopupCallback = gratifPopupCallback,
+                    screenName = screenName,
+                    paymentID = paymentID,
+                    timeout = timeout
+            )
 
         } catch (ex: Exception) {
             Timber.d("$TAG unexpected error for gratifId=$gratificationId")
@@ -281,7 +287,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(COUPON_CODE_EMPTY, NO_SUCCESS, UNKOWN_ERROR, INVALID_COUPON, DIALOG_ALREADY_ACTIVE)
+@IntDef(COUPON_CODE_EMPTY, NO_SUCCESS, UNKOWN_ERROR, INVALID_COUPON, DIALOG_ALREADY_ACTIVE, TIMEOUT)
 annotation class GratifPopupIngoreType {
     companion object {
         const val COUPON_CODE_EMPTY = 0
@@ -289,6 +295,7 @@ annotation class GratifPopupIngoreType {
         const val UNKOWN_ERROR = 2
         const val INVALID_COUPON = 3
         const val DIALOG_ALREADY_ACTIVE = 4
+        const val TIMEOUT = 5
     }
 }
 

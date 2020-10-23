@@ -35,7 +35,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     lateinit var thanksPageData: ThanksPageData
 
     private val dialogController: DialogController by lazy {
-        DialogController(GratificationPresenter(this.application))
+        DialogController(GratificationPresenter(this))
     }
 
     fun getHeader(): HeaderUnify = thank_header
@@ -83,23 +83,35 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
         if (selectedFragment is InstantPaymentFragment) {
-            showAppFeedbackBottomSheet(thanksPageData)
-//            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.GratifPopupCallback {
-//
-//                override fun onShow(dialog: DialogInterface) {
-//
-//                }
-//
-//                override fun onDismiss(dialog: DialogInterface) {
-//                }
-//
-//                override fun onIgnored(reason: Int) {
-//                }
-//
-//            }, selectedFragment::class.java.name)
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.AbstractGratifPopupCallback() {
+
+                override fun onShow(dialog: DialogInterface) {
+
+                }
+
+                override fun onDismiss(dialog: DialogInterface) {
+                }
+
+                override fun onIgnored(reason: Int) {
+                    showAppFeedbackBottomSheet(thanksPageData)
+                }
+
+            }, selectedFragment::class.java.name)
         } else {
             showAppFeedbackBottomSheet(thanksPageData)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    fun cancelGratifDialog(){
+        dialogController.cancelJob()
     }
 
     private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData) {

@@ -81,7 +81,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             if (it.isFinishing) {
                 return null
             } else {
-                return@let
+                return it
             }
         }
         return null
