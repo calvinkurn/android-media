@@ -5,7 +5,7 @@ object KeywordSearchHintQuery {
     private const val uniqueId = "\$uniqueId"
 
     val query = """
-        query universe_placeholder($firstInstall: Boolean){
+        query universe_placeholder($firstInstall: Boolean, $uniqueId:String){
             universe_placeholder(navsource:"home", first_install:$firstInstall, unique_id:$uniqueId){
                 data { 
                     placeholder 
