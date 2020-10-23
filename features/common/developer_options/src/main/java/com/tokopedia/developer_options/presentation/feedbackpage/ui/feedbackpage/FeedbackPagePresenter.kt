@@ -114,7 +114,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     override fun onNext(t: CommitResponse?) {
                         view.hideLoadingDialog()
                         /*send jiraURL here*/
-                        view.goToTicketCreatedActivity()
+                        view.goToTicketCreatedActivity(t?.data?.jiraIssueURL)
                     }
 
                     override fun onCompleted() {

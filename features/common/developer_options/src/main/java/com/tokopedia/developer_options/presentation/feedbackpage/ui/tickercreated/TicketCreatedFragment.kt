@@ -11,7 +11,10 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.feedbackpage.analytics.FeedbackPageAnalytics
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_TICKET_LINK
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -38,16 +41,27 @@ class TicketCreatedFragment: Fragment() {
         tickerLink = mainView.findViewById(R.id.ticket_url)
         imageCopy = mainView.findViewById(R.id.copy_ticket)
 
-//        val issueId = arguments?.getString(EXTRA_IS_TICKET_LINK)
+        val issueUrl = arguments?.getString(EXTRA_IS_TICKET_LINK)
 
         imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
         ticketText1.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_1)).spannedString }
         ticketText2.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_2)).spannedString }
-//        tickerLink.text = "https://tokopedia.atlassian.net/browse/$issueId"
-//        imageCopy.setOnClickListener {
-//            onTextCopied(mainView, "label", tickerLink.text.toString())
-//        }
+        tickerLink.text = issueUrl
+        tickerLink.setOnClickListener {
+            FeedbackPageAnalytics.eventClickJiraLink()
+            goToJiraLinkWebView(issueUrl)
+        }
+        imageCopy.setOnClickListener {
+            onTextCopied(mainView, "label", tickerLink.text.toString())
+        }
 
+    }
+
+    private fun goToJiraLinkWebView(issueUrl: String?) {
+        if (activity != null) {
+            val intent = RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, issueUrl))
+            this.startActivity(intent)
+        }
     }
 
     private fun onTextCopied(view: View, label: String, str: String) {

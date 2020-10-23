@@ -23,6 +23,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

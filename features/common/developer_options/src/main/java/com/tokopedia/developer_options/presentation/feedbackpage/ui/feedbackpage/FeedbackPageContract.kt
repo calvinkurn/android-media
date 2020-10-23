@@ -15,7 +15,7 @@ interface FeedbackPageContract {
         fun hideLoadingDialog()
         fun setSubmitFlag()
         fun checkUriImage(feedbackId: Int, imageCount: Int)
-        fun goToTicketCreatedActivity()
+        fun goToTicketCreatedActivity(issueUrl: String?)
         fun showError(throwable: Throwable)
         fun setFeedbackData(model: FeedbackModel)
     }

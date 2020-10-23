@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +34,7 @@ import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawO
 import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment.Companion.EXTRA_DRAW_IMAGE_URI_OLD
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.ImageFeedbackAdapter
 import com.tokopedia.developer_options.presentation.feedbackpage.adapter.PageItemAdapter
+import com.tokopedia.developer_options.presentation.feedbackpage.analytics.FeedbackPageAnalytics
 import com.tokopedia.developer_options.presentation.feedbackpage.di.FeedbackPageComponent
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.FeedbackModel
@@ -43,9 +43,7 @@ import com.tokopedia.developer_options.presentation.feedbackpage.domain.request.
 import com.tokopedia.developer_options.presentation.feedbackpage.listener.ImageClickListener
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.dialog.LoadingDialog
 import com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreated.TicketCreatedActivity
-import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_CLASS_NAME
-import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_URI_IMAGE
-import com.tokopedia.developer_options.presentation.feedbackpage.utils.TITLE_PAGE_LIST
+import com.tokopedia.developer_options.presentation.feedbackpage.utils.*
 import com.tokopedia.developer_options.presentation.preference.Preferences
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -94,6 +92,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private var categoryItem: Int = -1
     private var reportType: Int = 0
     private var labelsId: Int = 0
+    private var isFromScreenshot: Boolean = false
 
     private var userSession: UserSessionInterface? = null
     private var loadingDialog: LoadingDialog? = null
@@ -203,9 +202,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     }
 
-    override fun goToTicketCreatedActivity() {
+    override fun goToTicketCreatedActivity(issueUrl: String?) {
         activity?.finish()
         Intent(context, TicketCreatedActivity::class.java).apply {
+            putExtra(EXTRA_IS_TICKET_LINK, issueUrl)
             startActivityForResult(this, 1212)
         }
     }
@@ -266,10 +266,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences = Preferences(context)
         loadingDialog = context?.let { LoadingDialog(it) }
 
-        uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
-        lastAccessedPage = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
-        Log.d("Class_name", lastAccessedPage)
-
         context?.let { ArrayAdapter.createFromResource(it,
                 R.array.bug_type_array,
                 R.layout.item_spinner_bug
@@ -279,6 +275,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         } }
         userSession = UserSession(activity)
         feedbackPagePresenter.getFeedbackData()
+        uriImage = arguments?.getParcelable(EXTRA_URI_IMAGE)
+        lastAccessedPage = arguments?.getString(EXTRA_IS_CLASS_NAME, "")
+        isFromScreenshot = arguments?.getBoolean(EXTRA_IS_FROM_SCREENSHOT)?: false
+
+        if (isFromScreenshot) {
+            FeedbackPageAnalytics.eventOpenFeedbackFromScreenshot()
+        } else {
+            FeedbackPageAnalytics.eventOpenFeedbackFromSettings()
+        }
     }
 
     private fun initImageUri() {
@@ -402,6 +407,12 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             if(validate) {
                 emailTokopedia = "$emailText@tokopedia.com"
                 feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
+
+                if (reportType == 1) {
+                    FeedbackPageAnalytics.eventClickSubmitButtonBug()
+                } else {
+                    FeedbackPageAnalytics.eventClickSubmitButtonFeedback()
+                }
             }
         }
 
@@ -540,11 +551,12 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     companion object {
         @JvmStatic
-        fun newInstance(uri: Uri?, className: String?) : FeedbackPageFragment {
+        fun newInstance(uri: Uri?, className: String?, isFromScreenshot: Boolean) : FeedbackPageFragment {
             return FeedbackPageFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
                     putString(EXTRA_IS_CLASS_NAME, className)
+                    putBoolean(EXTRA_IS_FROM_SCREENSHOT, isFromScreenshot)
                 }
             }
         }

@@ -62,7 +62,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         val bottomSheetFeedback = BottomSheetUnify()
         val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
             btn_add_feedback.setOnClickListener {
-                mListener.onFeedbackClicked(uri, className)
+                mListener.onFeedbackClicked(uri, className, true)
                 bottomSheetFeedback.dismiss()
             }
             btn_dismiss.setOnClickListener {
@@ -86,7 +86,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     interface BottomSheetListener {
-        fun onFeedbackClicked(uri: Uri?, className: String)
+        fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean)
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -125,6 +125,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         savedUri = uri
         currentActivity?.let {
             if (!allPermissionsGranted(it) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ScreenshotAnalytics.eventUseScreenshot()
                 openBottomSheetFeedback(it, uri, className)
             } else {
                 handleItem(uri)
@@ -143,6 +144,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
                 if (Name != null) {
+                    ScreenshotAnalytics.eventUseScreenshot()
                     openBottomSheetFeedback(currentActivity, uri, className)
                 }
             }
