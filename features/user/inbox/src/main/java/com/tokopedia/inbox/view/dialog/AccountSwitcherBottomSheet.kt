@@ -25,6 +25,7 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInject()
+        initTitle()
     }
 
     private fun initInject() {
@@ -32,6 +33,10 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    private fun initTitle() {
+        setTitle("Ganti akun")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
