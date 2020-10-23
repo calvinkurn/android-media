@@ -157,7 +157,7 @@ public interface ProductListSectionContract {
 
         void setQuickFilter(List<SortFilterItem> items);
 
-        void showOnBoarding(int firstProductPosition);
+        void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding);
 
         boolean isQuickFilterSelected(Option option);
 

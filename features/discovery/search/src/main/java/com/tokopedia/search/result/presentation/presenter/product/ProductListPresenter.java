@@ -1656,19 +1656,19 @@ final class ProductListPresenter
 
     public void onFreeOngkirOnBoardingShown() {
         if (getView() != null && !isSearchOnBoardingShown()) {
-            getView().showOnBoarding(firstProductPosition);
+            getView().showOnBoarding(firstProductPosition, hasFullThreeDotsOptions);
             toggleSearchOnBoardingShown();
         }
     }
 
     private Boolean isSearchOnBoardingShown() {
         return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN)
-                && searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN);
+                && (searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions);
     }
 
     private void toggleSearchOnBoardingShown() {
         searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true);
-        searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
+        if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }
 

@@ -148,7 +148,7 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
     private fun `Given AB Test will return control variant`() {
         every {
             productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
-        } returns AB_TEST_THREE_DOTS_SEARCH_CONTROL
+        } returns ""
     }
 
     private fun `Then verify product card options does not have full options `() {

@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH
+import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN
 import com.tokopedia.search.jsonToObject
@@ -22,12 +24,27 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
 
     private fun `Test show on boarding`(searchProductModel: SearchProductModel, firstProductPosition: Int) {
         `Configure on boarding shown`(filterShown = false, threeDotsShown = false)
+        `Given AB test for full options`()
+        setUp()
         `Given view already load data`(searchProductModel)
 
         `When free ongkir on boarding shown`()
 
         `Then assert view show search on boarding`(firstProductPosition)
         `Then assert search on boarding toggled as shown`()
+    }
+
+    private fun `Configure on boarding shown`(
+            filterShown: Boolean, threeDotsShown: Boolean
+    ) {
+        every { searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN) } answers { filterShown }
+        every { searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) } answers { threeDotsShown }
+    }
+
+    private fun `Given AB test for full options`() {
+        every {
+            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+        } returns AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS
     }
 
     private fun `Given view already load data`(searchProductModel: SearchProductModel) {
@@ -38,20 +55,13 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadData(mapOf())
     }
 
-    private fun `Configure on boarding shown`(
-            filterShown: Boolean, threeDotsShown: Boolean
-    ) {
-        every { searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN) } answers { filterShown }
-        every { searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) } answers { threeDotsShown }
-    }
-
     private fun `When free ongkir on boarding shown`() {
         productListPresenter.onFreeOngkirOnBoardingShown()
     }
 
     private fun `Then assert view show search on boarding`(firstProductPosition: Int) {
         verify {
-            productListView.showOnBoarding(firstProductPosition)
+            productListView.showOnBoarding(firstProductPosition, true)
         }
     }
 
@@ -72,17 +82,64 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `Show search on boarding when one of the flag is false`() {
+    fun `Show search on boarding when three dots on boarding not shown and has full options`() {
         val searchProductModel = "searchproduct/common-response.json".jsonToObject<SearchProductModel>()
         val firstProductPosition = 0
 
         `Configure on boarding shown`(filterShown = true, threeDotsShown = false)
+        `Given AB test for full options`()
+        setUp()
         `Given view already load data`(searchProductModel)
 
         `When free ongkir on boarding shown`()
 
         `Then assert view show search on boarding`(firstProductPosition)
         `Then assert search on boarding toggled as shown`()
+    }
+
+    @Test
+    fun `Show search on boarding without three dots`() {
+        val searchProductModel = "searchproduct/common-response.json".jsonToObject<SearchProductModel>()
+        val firstProductPosition = 0
+
+        `Configure on boarding shown`(filterShown = false, threeDotsShown = false)
+        `Given AB test for control variant option`()
+        setUp()
+        `Given view already load data`(searchProductModel)
+
+        `When free ongkir on boarding shown`()
+
+        verify {
+            productListView.showOnBoarding(firstProductPosition, false)
+        }
+
+        verify {
+            searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true)
+            searchOnBoardingLocalCache.applyEditor()
+        }
+        verify (exactly = 0) {
+            searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true)
+        }
+    }
+
+    @Test
+    fun `Do not show search on boarding when three dots on boarding not shown and does not have full options`() {
+        val searchProductModel = "searchproduct/common-response.json".jsonToObject<SearchProductModel>()
+
+        `Configure on boarding shown`(filterShown = true, threeDotsShown = false)
+        `Given AB test for control variant option`()
+        setUp()
+        `Given view already load data`(searchProductModel)
+
+        `When free ongkir on boarding shown`()
+
+        `Then assert view not show search on boarding`()
+    }
+
+    private fun `Given AB test for control variant option`() {
+        every {
+            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+        } returns ""
     }
 
     @Test
@@ -97,7 +154,7 @@ internal class SearchProductOnBoardingTest: ProductListPresenterTestFixtures() {
 
     private fun `Then assert view not show search on boarding`() {
         verify(exactly = 0) {
-            productListView.showOnBoarding(any())
+            productListView.showOnBoarding(any(), any())
         }
     }
 }

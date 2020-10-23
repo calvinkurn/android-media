@@ -1607,15 +1607,15 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding(int firstProductPosition) {
+    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
         if (recyclerView == null) return;
 
         recyclerView.post(() -> {
-            View threeDots = getThreeDotsOfFirstProductItem(firstProductPosition);
+            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
 
-            if (searchSortFilter == null || threeDots == null) return;
+            if (searchSortFilter == null) return;
 
-            if (firstProductPosition > 0)
+            if (firstProductPosition > 0 && threeDots != null)
                 recyclerView.smoothScrollToPosition(firstProductPosition);
 
             ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
@@ -1641,11 +1641,11 @@ public class ProductListFragment
             return null;
     }
 
-    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, View threeDots) {
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, @Nullable View threeDots) {
         ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
         coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
-        coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
 
         return coachMarkItemList;
     }
