@@ -91,6 +91,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.view.DoubleTextView;
 
@@ -787,14 +788,63 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_ID, status.status());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
+
                 } else {
-                    /*if (getContext() != null) {
+                    if (getContext() != null) {
                         DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-                        dialogUnify.setUnlockVersion();
-                        dialogUnify.setChild();
-                        dialogUnify.setTitle(actionButton.getActionButtonPopUp().getTitle());
-                        dialogUnify.setDescription(actionButton.getActionButtonPopUp().getBody());
+                        View childView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_seller_finish, null);
+                        Typography title = childView.findViewById(R.id.tv_title_dialog);
+                        Typography desc = childView.findViewById(R.id.tv_desc_dialog);
+
+                        title.setText(actionButton.getActionButtonPopUp().getTitle());
+                        desc.setText(actionButton.getActionButtonPopUp().getBody());
+
                         if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
+                            Typography btnOk = childView.findViewById(R.id.btn_ok_dialog);
+                            Typography btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
+
+                            btnOk.setText(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
+                            btnOk.setOnClickListener(view1 -> {
+                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
+                                        presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
+                                        dialogUnify.dismiss();
+                                    } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
+                                        Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));
+                                        startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
+                                        dialogUnify.dismiss();
+                                    } else {
+                                        if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                            orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
+                                            startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                        } else
+                                            RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    }
+                                } else {
+                                    dialogUnify.dismiss();
+                                }
+                            });
+
+                            btnCancel.setText(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel());
+                            btnCancel.setOnClickListener(view12 -> {
+                                if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
+                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
+                                } else {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                                    }
+                                    dialogUnify.dismiss();
+                                }
+                            });
+                        }
+
+                        dialogUnify.setUnlockVersion();
+                        dialogUnify.setChild(childView);
+                        dialogUnify.show();
+
+                        // dialogUnify.setTitle(actionButton.getActionButtonPopUp().getTitle());
+                        // dialogUnify.setDescription(actionButton.getActionButtonPopUp().getBody());
+                        /*if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
                             dialogUnify.setPrimaryCTAText(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
                             dialogUnify.setPrimaryCTAClickListener(() -> {
                                 if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
@@ -831,10 +881,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                 return Unit.INSTANCE;
                             });
                         }
-                        dialogUnify.show();
-                    }*/
+                        dialogUnify.show();*/
+                    }
 
-                    Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
+                    /*Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
                         @Override
                         public int layoutResId() {
                             if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
@@ -887,7 +937,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             }
                         });
                     }
-                    dialog.show();
+                    dialog.show();*/
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
