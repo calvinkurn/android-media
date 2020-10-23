@@ -21,6 +21,15 @@ class MediaSettingPreferences constructor(val context: Context) {
         return pref().contains(KEY_QUALITY_SETTING)
     }
 
+    fun getQualitySetting(index: Int): String {
+        return when(index) {
+            0 -> "Automatic"
+            1 -> "Low"
+            2 -> "High"
+            else -> "Unknown"
+        }
+    }
+
     companion object {
         private const val MEDIA_QUALITY_PREF = "media_image_quality"
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"

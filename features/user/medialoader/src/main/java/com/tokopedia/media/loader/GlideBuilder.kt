@@ -18,12 +18,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
+import com.tokopedia.media.loader.utils.AttributeUtils
 import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
 import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -165,13 +167,12 @@ object GlideBuilder {
 
     private fun getPerformanceMonitoring(url: String, context: Context): PerformanceMonitoring {
         val urlWithoutPrefix = url.removePrefix(URL_PREFIX)
+        val mediaSetting = MediaSettingPreferences(context)
+        val mediaSettingIndex = mediaSetting.qualitySettings()
+
         val performanceMonitoring = PerformanceMonitoring.start(MEDIA_LOADER_TRACE)
         performanceMonitoring?.putCustomAttribute("image_url", urlWithoutPrefix)
-        when(AttributeUtils.getQualitySetting(context)) {
-            0 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "Automatic")
-            1 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "Low")
-            2 -> performanceMonitoring?.putCustomAttribute("image_quality_setting", "High")
-        }
+        performanceMonitoring?.putCustomAttribute("image_quality_setting", mediaSetting.getQualitySetting(mediaSettingIndex))
         performanceMonitoring?.putCustomAttribute("date_time", AttributeUtils.getDateTime())
 
         return performanceMonitoring
