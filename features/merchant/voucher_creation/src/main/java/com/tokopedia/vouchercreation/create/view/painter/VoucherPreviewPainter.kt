@@ -17,7 +17,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.isAvailableForGlide
+import com.tokopedia.kotlin.extensions.view.isAvailable
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -124,7 +124,7 @@ class VoucherPreviewPainter(private val context: Context,
     fun drawInitial(uiModel: BannerVoucherUiModel) {
         uiModel.run {
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
-            context.isAvailableForGlide()?.let {
+            context.isAvailable()?.let {
                 Glide.with(it)
                         .asBitmap()
                         .load(shopAvatar)
@@ -172,7 +172,7 @@ class VoucherPreviewPainter(private val context: Context,
 
             canvas.translate(-promoNameX, -promoNameY)
 
-            context.isAvailableForGlide()?.let {
+            context.isAvailable()?.let {
                 Glide.with(it)
                         .asBitmap()
                         .load(shopAvatar)
@@ -199,7 +199,7 @@ class VoucherPreviewPainter(private val context: Context,
         uiModel.run {
             when(imageType) {
                 is VoucherImageType.FreeDelivery -> {
-                    context.isAvailableForGlide()?.let {
+                    context.isAvailable()?.let {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.freeDeliveryLabelUrl)
@@ -219,7 +219,7 @@ class VoucherPreviewPainter(private val context: Context,
                     }
                 }
                 is VoucherImageType.Rupiah -> {
-                    context.isAvailableForGlide()?.let {
+                    context.isAvailable()?.let {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
@@ -240,7 +240,7 @@ class VoucherPreviewPainter(private val context: Context,
 
                 }
                 is VoucherImageType.Percentage -> {
-                    context.isAvailableForGlide()?.let {
+                    context.isAvailable()?.let {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
@@ -259,7 +259,7 @@ class VoucherPreviewPainter(private val context: Context,
                                 .submit()
                     }
 
-                    context.isAvailableForGlide()?.let {
+                    context.isAvailable()?.let {
                         Glide.with(it)
                                 .asBitmap()
                                 .load(bannerBaseUiModel.cashbackUntilLabelUrl)
