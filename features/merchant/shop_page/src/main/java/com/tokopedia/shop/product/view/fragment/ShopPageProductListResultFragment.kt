@@ -53,6 +53,7 @@ import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.SelectedFilter
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
@@ -102,6 +103,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopId: String? = null
     private var shopRef: String = ""
     private var keyword: String = ""
+    private var productListName: String = ""
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -359,6 +361,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val totalProductData =  it.data.totalProductData
                     renderProductList(productList, hasNextPage, totalProductData)
                     isNeedToReloadData = false
+                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -950,6 +953,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun setSortFilterMeasureHeight(measureHeight: Int) { }
     override fun onFilterClicked() {
+        shopPageTracking?.clickFilterChips(productListName, customDimensionShopPage)
         showBottomSheetFilter()
     }
 
@@ -989,6 +993,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         ))
         shopProductAdapter.refreshSticky()
         loadInitialData()
+        applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -1045,4 +1050,25 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
         changeProductListGridView(gridType)
     }
+
+    private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
+        val selectedFilter = SelectedFilter()
+        selectedFilterMap.forEach { (key, value) ->
+            when(key) {
+                PMIN_PARAM_KEY -> selectedFilter.pmin = value
+                PMAX_PARAM_KEY -> selectedFilter.pmax = value
+                RATING_PARAM_KEY -> selectedFilter.rating = value
+            }
+        }
+        if (selectedSortName.isNotBlank()) {
+            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
+        }
+        if (!selectedFilter.pmax.isNullOrBlank() || !selectedFilter.pmin.isNullOrBlank()) {
+            shopPageTracking?.clickFilterPrice(productListName, selectedFilter.pmin ?: "0", selectedFilter.pmax ?: "0", customDimensionShopPage)
+        }
+        if (!selectedFilter.rating.isNullOrBlank()) {
+            shopPageTracking?.clickFilterRating(productListName, selectedFilter.rating ?: "0", customDimensionShopPage)
+        }
+    }
+
 }
