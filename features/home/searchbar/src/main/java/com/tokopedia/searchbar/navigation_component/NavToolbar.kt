@@ -28,7 +28,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-import com.tokopedia.searchbar.navigation_component.icons.IconConfig
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
@@ -114,8 +114,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * @see
      * IconList.kt
      */
-    fun setIcon(iconConfig: IconConfig) {
-        navIconAdapter = NavToolbarIconAdapter(iconConfig)
+    fun setIcon(iconBuilder: IconBuilder) {
+        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build())
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -211,6 +211,10 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
         navIconAdapter?.setIconCounter(iconId, counter)
+    }
+
+    fun triggerLottieAnimation(lottieIconId: Int) {
+        navIconAdapter?.triggerLottieAnimation(lottieIconId)
     }
 
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {

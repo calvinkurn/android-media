@@ -124,6 +124,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
@@ -434,10 +435,10 @@ open class HomeFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setIcon(
                     IconBuilder()
-                            .addNavGlobalIcon {  }
-                            .addMessageIcon {  }
-                            .addNotificationIcon {  }
-                            .build()
+                            .addIcon(IconList.ID_MESSAGE) {}
+                            .addIcon(IconList.ID_NOTIFICATION) {}
+                            .addIcon(IconList.ID_CART) {}
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
         }
         activity?.let {

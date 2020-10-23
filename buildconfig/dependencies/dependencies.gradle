@@ -110,7 +110,7 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
-    newUnifyIconVersion = '0.0.1'
+    newUnifyIconVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -344,6 +344,6 @@ ext {
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
-            unifyIcon       : "com.tokopedia.unify:unify_icon:${newUnifyIconVersion}@aar"
+            unifyIcon       : "com.tokopedia.unify:icons:${newUnifyIconVersion}@aar"
     ]
 }

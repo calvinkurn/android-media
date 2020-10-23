@@ -16,7 +16,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
-class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Adapter<IconHolder>() {
+internal class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Adapter<IconHolder>() {
     companion object {
         const val STATE_THEME_DARK = 0
         const val STATE_THEME_LIGHT = 1
@@ -24,6 +24,8 @@ class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Ad
         const val VIEW_TYPE_IMAGE = 0
         const val VIEW_TYPE_LOTTIE = 1
     }
+
+    private var iconRecyclerView: RecyclerView? = null
     private var themeState = STATE_THEME_LIGHT
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IconHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,6 +41,11 @@ class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Ad
         }
         val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
         return ImageIconHolder(view)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.iconRecyclerView = recyclerView
     }
 
     override fun onBindViewHolder(holder: IconHolder, position: Int) {
@@ -68,7 +75,19 @@ class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Ad
         val selectedIcon = this.iconConfig.iconList.find { it.id == iconId }
         val selectedIconPosition = this.iconConfig.iconList.indexOf(selectedIcon)
         selectedIcon?.badgeCounter = counter
-        notifyItemChanged(selectedIconPosition)
+        selectedIcon?.let {
+            this.iconConfig.iconList[selectedIconPosition] = selectedIcon
+            notifyItemChanged(selectedIconPosition)
+        }
+    }
+
+    fun triggerLottieAnimation(lottieIconId: Int) {
+        val selectedIcon = this.iconConfig.iconList.find { it.id == lottieIconId }
+        val selectedIconPosition = this.iconConfig.iconList.indexOf(selectedIcon)
+        val iconViewHolder = iconRecyclerView?.findViewHolderForAdapterPosition(selectedIconPosition)
+        iconViewHolder?.let {
+            (it as? LottieIconHolder)?.iconImage?.playAnimation()
+        }
     }
 
     fun setThemeState(newState: Int) {
@@ -77,11 +96,11 @@ class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Ad
     }
 }
 
-abstract class IconHolder(view: View): RecyclerView.ViewHolder(view) {
+internal abstract class IconHolder(view: View): RecyclerView.ViewHolder(view) {
     abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
 }
 
-class ImageIconHolder(view: View): IconHolder(view) {
+internal class ImageIconHolder(view: View): IconHolder(view) {
     val iconImage = view.nav_icon_image
     val iconBadge = view.nav_icon_badge
     val context = itemView.context
@@ -90,20 +109,28 @@ class ImageIconHolder(view: View): IconHolder(view) {
         iconImage.tag = iconToolbar.id.toString()
         iconBadge.tag = constructCounterTagById(iconToolbar.id)
 
-        val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
-        unwrappedDrawable?.let {
-            val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
-            if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.white))
-            } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Neutral_N700))
+        if (iconToolbar.imageRes != null) {
+            val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
+            unwrappedDrawable?.let {
+                val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
+                if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.white))
+                } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Neutral_N700))
+                }
+                iconImage.setImageDrawable(wrappedDrawable)
             }
-            iconImage.setImageDrawable(wrappedDrawable)
+        } else {
+            if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.white))
+            } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Neutral_N700))
+            }
         }
 
         iconImage.setOnClickListener {
             iconToolbar.onIconClicked.invoke()
-            if (iconToolbar.applink.isNotEmpty()) {
+            if (iconToolbar.applink.isNotEmpty() && !iconToolbar.disableRouteManager) {
                 RouteManager.route(context, iconToolbar.applink)
             }
         }
@@ -120,7 +147,7 @@ class ImageIconHolder(view: View): IconHolder(view) {
             context.getString(R.string.tag_counter_id) + id
 }
 
-class LottieIconHolder(view: View): IconHolder(view) {
+internal class LottieIconHolder(view: View): IconHolder(view) {
     val iconImage = view.nav_icon_lottieav
     val iconBadge = view.nav_icon_badge_lottieav
     val context = itemView.context
@@ -128,14 +155,12 @@ class LottieIconHolder(view: View): IconHolder(view) {
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.id.toString()
         iconBadge.tag = constructCounterTagById(iconToolbar.id)
-
         iconImage.cancelAnimation()
         iconImage.progress = 0f
-        iconImage.setAnimation(iconToolbar.imageRes)
+        iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
             iconToolbar.onIconClicked.invoke()
-            iconImage.playAnimation()
-            if (iconToolbar.applink.isNotEmpty()) {
+            if (iconToolbar.applink.isNotEmpty() && !iconToolbar.disableRouteManager) {
                 RouteManager.route(context, iconToolbar.applink)
             }
         }

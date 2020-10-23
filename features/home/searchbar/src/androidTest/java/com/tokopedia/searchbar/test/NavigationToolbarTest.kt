@@ -46,14 +46,12 @@ class NavigationToolbarTest {
             //set 3 icon
             navToolbar.setIcon(
                     IconBuilder()
-                            .addNotificationIcon { }
-                            .addMessageIcon { }
-                            .addNavGlobalIcon { }
-                            .addLottieWishlistIcon { }
-                            .build()
+                            .addIcon(IconList.ID_NOTIFICATION) {}
+                            .addIcon(IconList.ID_MESSAGE) {}
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
+                            .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST) {}
             )
         }
-
 
         Thread.sleep(1000)
         val viewIcon1 = navToolbarIconRv.findViewHolderForAdapterPosition(0)?.itemView?.findViewById<ImageView>(R.id.nav_icon_image)
@@ -71,7 +69,6 @@ class NavigationToolbarTest {
         Assert.assertEquals(IconList.ID_MESSAGE.toString(), viewIcon2?.tag.toString())
         Assert.assertEquals(IconList.ID_NAV_GLOBAL.toString(), viewIcon3?.tag.toString())
         Assert.assertEquals(IconList.ID_NAV_LOTTIE_WISHLIST.toString(), viewIcon4?.tag.toString())
-
         Assert.assertEquals(ICON_COUNT_AFTER_UPDATE, currentIconCount)
     }
 
@@ -84,7 +81,7 @@ class NavigationToolbarTest {
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             //set 3 icon
-            navToolbar.setIcon(IconBuilder().addNotificationIcon { }.addCartIcon {  }.build())
+            navToolbar.setIcon(IconBuilder().addIcon(IconList.ID_NOTIFICATION) {}.addIcon(IconList.ID_CART) {})
             navToolbar.setBadgeCounter(IconList.ID_NOTIFICATION, defaultCounter)
         }
         Thread.sleep(1000)
@@ -141,6 +138,7 @@ class NavigationToolbarTest {
             navToolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
         }
 
+        onView(withId(R.id.layout_search)).check(matches(isDisplayed()))
         onView(withId(R.id.et_search)).check(matches(isDisplayed()))
         onView(withId(R.id.et_search)).check(matches(withHint(HINT_VALUE)));
     }

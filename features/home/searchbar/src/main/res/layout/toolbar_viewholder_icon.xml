@@ -8,10 +8,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:layout_height="50dp">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/nav_icon_image"
         tools:layout_width="50dp"
         tools:layout_height="50dp"
+        android:padding="@dimen/dp_2"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
