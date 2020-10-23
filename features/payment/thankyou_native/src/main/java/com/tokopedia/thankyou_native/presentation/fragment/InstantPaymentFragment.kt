@@ -74,7 +74,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
         observeViewModel()
     }
-    
+
     private fun showCharacterAnimation() {
         context?.let {
             val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
