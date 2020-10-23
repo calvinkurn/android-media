@@ -32,14 +32,15 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
-import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
-import com.tokopedia.otp.common.util.SmsBroadcastReceiver
-import com.tokopedia.otp.common.util.SmsBroadcastReceiver.ReceiveSMSListener
-import com.tokopedia.otp.verification.common.IOnBackPressed
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver.ReceiveSMSListener
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
-import com.tokopedia.otp.verification.common.di.VerificationComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
@@ -59,11 +60,10 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
+class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
-    lateinit var analytics: TrackingValidatorUtil
-
+    lateinit var analytics: TrackingOtpUtil
     @Inject
     lateinit var verificationPref: VerificationPref
 
@@ -91,10 +91,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override fun getScreenName() = when (otpData.otpType) {
         OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
-        else -> TrackingValidatorConstant.Screen.SCREEN_COTP + modeListData.modeText
+        else -> TrackingOtpConstant.Screen.SCREEN_COTP + modeListData.modeText
     }
 
-    override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -206,27 +206,31 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
         return { otpRequestData ->
-            if (otpRequestData.success) {
-                if (!isFirstSendOtp) {
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
+            when {
+                otpRequestData.success -> {
+                    if (!isFirstSendOtp) {
+                        when (otpData.otpType) {
+                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                                analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                            }
+                            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                                analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                            }
                         }
                     }
+                    hideLoading()
+                    setPrefixMiscall(otpRequestData.prefixMisscall)
+                    startCountDown()
+                    viewBound.containerView?.let {
+                        Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
                 }
-                hideLoading()
-                setPrefixMiscall(otpRequestData.prefixMisscall)
-                startCountDown()
-                viewBound.containerView?.let {
-                    Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                otpRequestData.errorMessage.isNotEmpty() -> {
+                    onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
                 }
-            } else if (otpRequestData.errorMessage.isNotEmpty()) {
-                onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
-            } else {
-                onFailedSendOtp().invoke(Throwable())
+                else -> {
+                    onFailedSendOtp().invoke(Throwable())
+                }
             }
 
             isFirstSendOtp = false

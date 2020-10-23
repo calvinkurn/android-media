@@ -64,7 +64,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -90,6 +89,7 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -178,6 +178,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+    private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
 
 
     @Override
@@ -430,7 +431,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getHomeIntent(Context context) {
-        return MainParentActivity.start(context);
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override

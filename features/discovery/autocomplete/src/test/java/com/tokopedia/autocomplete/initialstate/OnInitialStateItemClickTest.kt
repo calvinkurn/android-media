@@ -140,4 +140,42 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         recentSearchViewModel.list.size shouldBe recentSearchResponse?.items?.size
     }
+
+    @Test
+    fun `Test click Dynamic Section Search`() {
+        val item = BaseItemInitialStateSearch(
+            template = "list_double_line",
+            imageUrl = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/23/21722219/21722219_a958c3c3-1599-435b-92a3-3fdcef496102_600_600",
+            applink = "tokopedia://search?q=Samsung+A11&source=universe&st=product",
+            url =  "/search?q=Samsung+A11&source=universe&st=product",
+            title =  "Samsung A11",
+            subtitle =  "914 pencarian"
+        )
+
+        `given initial state use case capture request params`(initialStateCommonData)
+
+        `When recent dynamic section item is clicked`(item, 0)
+        `Then verify view interaction is correct for dynamic section`(item)
+    }
+
+    private fun `When recent dynamic section item is clicked`(item: BaseItemInitialStateSearch, position: Int) {
+        initialStatePresenter.onDynamicSectionItemClicked(item, position)
+    }
+
+    private fun `Then verify view interaction is correct for dynamic section`(item: BaseItemInitialStateSearch) {
+        verifyOrder {
+            initialStateView.onClickDynamicSectionItem(item)
+        }
+
+        confirmVerified(initialStateView)
+    }
+
+    private fun InitialStateContract.View.onClickDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
+        val userId = "0"
+
+        trackEventClickDynamicSectionItem(userId, expectedLabel, item.featureId)
+        route(item.applink, initialStatePresenter.getSearchParameter())
+        finish()
+    }
 }

@@ -36,6 +36,10 @@
     <string name="shop_page_bottom_sheet_product_quality_review_info">dari %1$s ulasan</string>
     <string name="shop_page_bottom_sheet_speed_shop_info_last_12_months">(dihitung dalam 12 bulan terakhir)</string>
 
+    <string name="shop_page_reload">Muat Ulang</string>
+    <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
+    <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
@@ -282,12 +286,10 @@
     <string name="content_desc_shop_page_main_profile_badge">image badge toko</string>
     <string name="content_desc_shop_page_main_profile_name">text nama toko</string>
     <string name="content_desc_shop_page_main_profile_location">text lokasi toko</string>
-    <string name="content_desc_shop_page_main_profile_follower">text jumlah follower toko</string>
+    <string name="content_desc_shop_page_main_profile_follower">text follower toko</string>
     <string name="content_desc_shop_page_main_profile_free_ongkir">text toko bebas ongkir</string>
-    <string name="content_desc_image_view_shop_reputation_badge">text reputasi toko</string>
-    <string name="content_desc_shop_page_follow_unfollow_button">button follow unfollow</string>
+    <string name="content_desc_image_view_shop_reputation_badge">image reputasi toko</string>
     <string name="content_desc_tvSeeAll">text lihat semua</string>
-    <string name="content_desc_shopInfoDescription">text deskripsi toko</string>
     <string name="content_desc_button_chat">button chat</string>
 
 </resources>
