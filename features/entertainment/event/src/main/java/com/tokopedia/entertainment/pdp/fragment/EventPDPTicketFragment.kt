@@ -198,9 +198,15 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(listActiveDates))
-                        ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                        ?.withSelectedDate(Date(selectedDate.toLong() * DATE_MULTIPLICATION))
+                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate) && pdpData.dates.size > 1) {
+                    calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(listActiveDates))
+                            ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                            ?.withSelectedDate(Date(selectedDate.toLong() * DATE_MULTIPLICATION))
+                } else {
+                    calendarPickerView?.init(Date(startDate.toLong() * DATE_MULTIPLICATION), Date(endDate.toLong() * DATE_MULTIPLICATION), listHoliday, getActiveDate(listActiveDates))
+                            ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                }
+
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
@@ -301,13 +307,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         viewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
-            if (pdpData.dates.size > 1) {
-                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
-                    setupBottomSheet(pdpData.dates)
-                } else {
-                    setErrorCalendar()
-                }
-            }
+            setupBottomSheet(pdpData.dates)
         })
     }
 
@@ -319,13 +319,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun setupUbahButton() {
         activity?.txtUbah?.setOnClickListener {
-            if (pdpData.dates.size > 1) {
-                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
-                    showUpBottomSheet()
-                } else {
-                    setErrorCalendar()
-                }
-            }
+            showUpBottomSheet()
         }
     }
 
@@ -369,14 +363,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun clickRecommendation(list: List<String>) {
-        if (pdpData.dates.size > 1) {
-            if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
-                setupBottomSheet(list)
-                showUpBottomSheet()
-            } else {
-                setErrorCalendar()
-            }
-        }
+        setupBottomSheet(list)
+        showUpBottomSheet()
     }
 
     private fun showUpBottomSheet() {
@@ -387,7 +375,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun changeLabel() {
         val bitwiseIsHiburan = pdpData.customText1.toInt() and IS_HIBURAN
-        if(pdpData.dates.size > 1){
+        if (pdpData.dates.size > 1) {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
         } else if (bitwiseIsHiburan > 0) {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_berlaku_hingga)
@@ -395,16 +383,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         } else {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
             activity?.txtDate?.text = getTimestamptoText(pdpData.dates.first().isNotBlank())
-        }
-    }
-
-    private fun setErrorCalendar() {
-        val over = resources.getString(R.string.ent_pdp_ticket_calendar_over)
-        val less = resources.getString(R.string.ent_pdp_ticket_calendar_less)
-        val errorMessage = resources.getString(R.string.ent_pdp_ticket_calendar,
-                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate)) less else over)
-        view?.let {
-            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
         }
     }
 
