@@ -65,7 +65,7 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
         private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
         private val shopProductSortMapper: ShopProductSortMapper,
-        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase
+        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
         private val playWidgetTools: PlayWidgetTools
 ) : BaseViewModel(dispatcherProvider.main()) {
 
