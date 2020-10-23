@@ -112,8 +112,8 @@
 
                 <data
                     android:host="@string/host_seller"
-                    android:pathPattern="@string/path_order"
-                    android:scheme="@string/internal_scheme" />
+                    android:path="@string/path_order"
+                    android:scheme="@string/internal_scheme"/>
 
             </intent-filter>
 

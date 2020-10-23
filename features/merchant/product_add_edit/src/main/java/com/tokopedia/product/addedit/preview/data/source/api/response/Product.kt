@@ -68,7 +68,7 @@ data class Product(
         val lock: Lock = Lock(),
         @SerializedName("stats")
         val stats: Stats = Stats(),
-        @SerializedName("TxStats")
+        @SerializedName("txStats")
         val txStats: TxStats = TxStats(),
         @SerializedName("variant")
         val variant: Variant = Variant()

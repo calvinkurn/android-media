@@ -50,7 +50,6 @@
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
-/features/merchant/inbox_reputation/                    @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
@@ -61,7 +60,7 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
 /features/merchant/report/                              @tokopedia/android-minionstuart-dev
-/features/merchant/reputation/                          @tokopedia/android-minionstuart-dev
+/features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
@@ -179,6 +178,7 @@
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
 /features/user/loginphone/                      		@tokopedia/android-minionkevin-dev
 /features/user/managename/                      		@tokopedia/android-minionkevin-dev
+/features/user/managepassword/                          @tokopedia/android-minionkevin-dev
 /features/user/notif-troubleshooter/                    @tokopedia/android-minionkevin-dev
 /features/user/notifcenter/                     		@tokopedia/android-minionkevin-dev
 /features/user/attachproduct/                   		@tokopedia/android-minionkevin-dev
@@ -189,7 +189,7 @@
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_common/      		@tokopedia/android-minionkevin-dev
 /features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
-/features/fcm_common/                                   @tokopedia/android-minionkevin-dev
+/features/user/fcm_common/                              @tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
 /features/user/attachinvoice/                           @tokopedia/android-minionkevin-dev
@@ -220,6 +220,8 @@
 /features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
 /features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
 /features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
+/features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
+/features/promo/promotions_ui_common					@tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionsolo-dev
 
 
@@ -248,6 +250,7 @@
 /libraries/base_list/							        @tokopedia/android-core-dev
 /libraries/base_list_seller/							@tokopedia/android-core-dev
 /libraries/bottom_sheet_builder/						@tokopedia/android-core-dev
+/libraries/cassavatest/						            @tokopedia/android-core-dev
 /libraries/cache_api/									@tokopedia/android-core-dev
 /libraries/cameraview/									@tokopedia/android-core-dev
 /libraries/charts/				    		            @tokopedia/android-core-dev
@@ -265,7 +268,6 @@
 /libraries/dynamic_features/							@tokopedia/android-core-dev
 /libraries/encryption/							        @tokopedia/android-core-dev
 /libraries/fingerprint/									@tokopedia/android-core-dev
-/libraries/graph_view/									@tokopedia/android-core-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_preview/								@tokopedia/android-core-dev
@@ -283,16 +285,13 @@
 /libraries/mapviewer/								    @tokopedia/android-core-dev
 /libraries/mediauploader/			                    @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
-/libraries/permissionchecker/							@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
-/libraries/promotions_target/							@tokopedia/android-core-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
 /libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
-/libraries/sharedata/									@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
 /libraries/smart_recycler_diffutil_helper/			    @tokopedia/android-core-dev
 /libraries/track/										@tokopedia/android-gatekeeperanalytic-dev

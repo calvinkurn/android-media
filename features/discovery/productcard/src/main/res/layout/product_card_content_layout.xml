@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Best Seller"
-        tools:textColor="#ff8b00"
+        tools:textColor="@color/Unify_Y400"
         tools:visibility="visible" />
 
     <ImageView
@@ -44,19 +44,18 @@
         app:layout_constraintTop_toTopOf="@+id/imageViewPdpView"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewPdpView"
         app:typographyType="small"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="989jt orang"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewProductName"
-        android:contentDescription="@string/content_desc_textViewProductName"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_card_text_view_product_name_margin_top"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +80,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewSlashedPrice"
-        android:contentDescription="@string/content_desc_textViewSlashedPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_14"
         android:layout_marginTop="@dimen/product_card_label_discount_margin_top"
@@ -90,7 +88,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:textColor="@color/charcoal_grey_44"
+        android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,13 +120,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"
-        android:contentDescription="@string/content_desc_textViewPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_view_price_height"
         android:layout_marginTop="@dimen/product_card_text_view_price_margin_top"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -152,7 +149,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewShopLocation"
-        android:contentDescription="@string/content_desc_textViewShopLocation" 
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/product_card_text_shop_location_height"
         android:layout_marginStart="@dimen/dp_4"
@@ -161,7 +157,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
@@ -194,7 +190,7 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginTop="@dimen/product_card_text_rating_string_margin_top"
         android:gravity="center_vertical"
-        android:textColor="@color/charcoal_grey_68"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/imageRatingString"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
@@ -277,7 +273,7 @@
         android:layout_height="@dimen/product_card_text_review_count_height"
         android:layout_marginTop="@dimen/product_card_text_review_count_margin_top"
         android:gravity="center_vertical"
-        android:textColor="@color/charcoal_grey_44"
+        android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/barrierRatingView"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
@@ -299,12 +295,37 @@
         tools:text="Terjual 122"
         tools:visibility="gone" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewSales"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_text_view_integrity_height"
+        android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Terjual 122" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/salesRatingFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_text_view_integrity_height"
+        android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
+        android:layout_marginStart="@dimen/product_card_text_view_integrity_margin_top"
+        app:layout_constraintStart_toEndOf="@+id/textViewSales"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewSales"
+        app:layout_constraintBottom_toBottomOf="@id/textViewSales"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="small"
+        tools:text="(4.8)"/>
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierCredibility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageRatingString,textViewRatingString,textViewReviewCount,textViewIntegrity" />
+        app:constraint_referenced_ids="imageRatingString,textViewRatingString,textViewReviewCount,textViewIntegrity,salesRatingFloat,textViewSales" />
 
     <ImageView
         android:id="@+id/imageShopRating"
@@ -328,7 +349,7 @@
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginTop="@dimen/product_card_text_shop_rating_margin_top"
         android:gravity="center_vertical"
-        android:textColor="@color/charcoal_grey_44"
+        android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/imageShopRating"
         app:layout_constraintTop_toBottomOf="@id/barrierCredibility"

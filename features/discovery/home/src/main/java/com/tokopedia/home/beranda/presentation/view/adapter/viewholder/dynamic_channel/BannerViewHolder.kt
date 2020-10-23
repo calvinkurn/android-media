@@ -35,8 +35,8 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
-        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
-        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
         seeAllPromo.setLabelType("#31353b")
         seeAllPromo.opacityLevel = 0.9f
@@ -114,7 +114,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     private fun onPromoScrolled(position: Int) {
-        if (listener?.isMainViewVisible?:false) {
+        if (listener?.isMainViewVisible?:false && !isCache) {
             slidesList?.let {
                 listener?.onPromoScrolled(it[position])
                 it[position].invoke()
@@ -131,12 +131,12 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     fun onResume(){
-        circularViewPager.resetImpressions()
+        circularViewPager.resetScrollToStart()
         circularViewPager.resumeAutoScroll()
     }
 
     fun resetImpression(){
-        circularViewPager.reset()
+        circularViewPager.resetScrollToStart()
     }
 
     fun onPause(){

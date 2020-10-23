@@ -113,4 +113,17 @@
     <string name="ent_checkout_data_tambahan_item_value">&#160; %s</string>
     <string name="ent_form_data_bottomsheet">Pilih %s</string>
     <string name="ent_checkout_data_nullable_form">Data belum diisi</string>
+    <string name="ent_bottomsheet_placeholder">Cari %s</string>
+    <string name="ent_pdp_form_error_all_msg">%s yang Anda isi belum lengkap</string>
+
+    <string name="ent_redeem_title">Redeem Your Ticket</string>
+    <string name="ent_redeem_title_owner">Data Pemilik Tiket</string>
+    <string name="ent_redeem_title_total">Jumlah Tiket</string>
+    <string name="ent_redeem_title_btn_redeem">Redeem Tiket</string>
+    <string name="ent_redeem_title_btn_back">Kembali</string>
+    <string name="ent_redeem_data_redeemed">Tiket Berhasil di Redeem</string>
+    <string name="ent_redeem_data_already_redeemed">Tiket Sudah di Redeem </string>
+    <string name="ent_redeem_not_login">Anda Belum Login</string>
+    <string name="ent_redeem_url_null">Tiket Scanner anda Kosong</string>
+    <string name="ent_redeemed_time">Sudah di-redeem pada %s</string>
 </resources>

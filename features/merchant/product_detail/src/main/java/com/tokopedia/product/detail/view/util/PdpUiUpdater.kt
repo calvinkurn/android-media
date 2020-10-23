@@ -97,9 +97,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val shopCredibility: ProductShopCredibilityDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
 
-    val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
-        it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
-                || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
+    val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterValues {
+        it is ProductRecommendationDataModel
     }.map {
         it.value as ProductRecommendationDataModel
     }
@@ -360,11 +359,15 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     fun updateRecommendationData(data: RecommendationWidget): ProductRecommendationDataModel?{
-        return listProductRecomMap?.find { it.name == data.pageName }?.apply {
+        return listProductRecomMap?.find { data.pageName.contains(it.name) }?.apply {
             recomWidgetData = data
             cardModel = mapToCardModel(data)
             filterData = mapToAnnotateChip(data)
         }
+    }
+
+    fun getRecommendationData(pageName: String): List<ProductRecommendationDataModel>?{
+        return listProductRecomMap?.filter { pageName.contains(it.name) }
     }
 
     fun updateFilterRecommendationData(data: ProductRecommendationDataModel): ProductRecommendationDataModel?{

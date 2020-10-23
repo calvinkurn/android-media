@@ -35,11 +35,11 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+        if(element?.playBannerCarouselDataModel == null){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
             playBannerCarouselView?.removeRefreshShimmer()
-            element?.playBannerCarouselDataModel?.let {
+            element.playBannerCarouselDataModel.let {
                 if (it.channelList.isNotEmpty()) {
                     playBannerCarouselView?.setItem(it)
                 }
@@ -49,11 +49,11 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
-        if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true){
+        if(element?.playBannerCarouselDataModel == null){
             playBannerCarouselView?.showRefreshShimmer()
         } else {
             playBannerCarouselView?.removeRefreshShimmer()
-            element?.playBannerCarouselDataModel?.let {
+            element.playBannerCarouselDataModel.let {
                 if(it.channelList.isNotEmpty()){
                     playBannerCarouselView?.setItem(it)
                 }
@@ -114,12 +114,12 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onSeeMoreBannerClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
-        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeOtherContent(dataModel.imageUrl, listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeOtherContent(dataModel.imageUrl, if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1", listener.userId))
         RouteManager.route(itemView.context, dataModel.applink)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselDataModel) {
-        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(listener.userId))
+        listener.sendEETracking(PlayWidgetCarouselTracking.getClickSeeAll(listener.userId, if((playCarouselCardDataModel?.position ?: -1) <= 2) "0" else "1"))
         RouteManager.route(itemView.context, dataModel.seeMoreApplink)
     }
 

@@ -58,8 +58,8 @@ object AddEditProductMapper {
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
         productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
         productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
-        productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
-        productDraft.detailInputModel.sku = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.condition = productInputModel.detailInputModel.condition
+        productDraft.detailInputModel.sku = productInputModel.detailInputModel.sku
         productDraft.detailInputModel.imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
         productDraft.detailInputModel.pictureList = mapProductInputModelPictureListToDraftPictureList(productInputModel.detailInputModel.pictureList)
         productDraft.detailInputModel.preorder.apply {
@@ -73,6 +73,7 @@ object AddEditProductMapper {
         productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
             ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
         }
+        productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkListModel>()
@@ -108,8 +109,8 @@ object AddEditProductMapper {
             price = productDraft.detailInputModel.price
             stock = productDraft.detailInputModel.stock
             minOrder = productDraft.detailInputModel.minOrder
-            condition = productDraft.detailInputModel.sku
-            sku = productDraft.detailInputModel.condition
+            condition = productDraft.detailInputModel.condition
+            sku = productDraft.detailInputModel.sku
             imageUrlOrPathList = productDraft.detailInputModel.imageUrlOrPathList
             pictureList = mapDraftPictureListToProductInputModelPictureList(productDraft.detailInputModel.pictureList)
         }
@@ -124,6 +125,7 @@ object AddEditProductMapper {
         productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
             ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
         }
+        productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
             productDescription = productDraft.descriptionInputModel.productDescription
             val videoLinkList = mutableListOf<VideoLinkModel>()

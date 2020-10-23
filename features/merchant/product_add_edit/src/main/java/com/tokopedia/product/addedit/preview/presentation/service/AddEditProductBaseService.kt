@@ -27,6 +27,7 @@ import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_UPLOAD_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -34,7 +35,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.io.File
 import java.net.URLEncoder
@@ -64,11 +64,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var gson: Gson
 
     private var notificationManager: AddEditProductNotificationManager? = null
+    private var errorMessages: MutableList<String> = mutableListOf()
 
     companion object {
         const val JOB_ID = 13131314
-        const val NOTIFICATION_CHANGE_DELAY = 500L
         const val REQUEST_ENCODE = "UTF-8"
+        const val ERROR_IMAGE_ID_IS_EMPTY = "Error upload image because imageId is empty"
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
@@ -99,25 +100,37 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val uploadIdList: ArrayList<String> = ArrayList()
         val primaryImagePathOrUrl = imageUrlOrPathList.getOrNull(0).orEmpty()
 
-        launchCatchError(block = {
-            notificationManager = getNotificationManager(pathImageCount)
-            notificationManager?.onStartUpload(primaryImagePathOrUrl)
+        notificationManager = getNotificationManager(pathImageCount)
+        notificationManager?.onStartUpload(primaryImagePathOrUrl)
 
+        launchCatchError(block = {
             repeat(pathImageCount) { i ->
                 val imageId = uploadImageAndGetId(imagePathList[i])
-                uploadIdList.add(imageId)
+                if (imageId.isNotEmpty()) {
+                    notificationManager?.onAddProgress()
+                    uploadIdList.add(imageId)
+                } else {
+                    throw Exception(ERROR_IMAGE_ID_IS_EMPTY)
+                }
             }
 
             variantInputModel.products = uploadProductVariantImages(variantInputModel.products)
             variantInputModel.sizecharts = uploadProductSizechart(variantInputModel.sizecharts)
 
-            delay(NOTIFICATION_CHANGE_DELAY)
-            onUploadProductImagesSuccess(uploadIdList, variantInputModel)
+            if (errorMessages.isEmpty()) {
+                onUploadProductImagesSuccess(uploadIdList, variantInputModel)
+            } else {
+                val message = errorMessages.joinToString("\n")
+                Timber.w("P2#PRODUCT_UPLOAD#%s", message.replace("\n", ";"))
+                setUploadProductDataError(message)
+            }
         }, onError = { throwable ->
-            setUploadProductDataError(getErrorMessage(throwable))
-            logError(RequestParams.EMPTY, throwable)
+            setUploadProductDataError(UploaderUseCase.NETWORK_ERROR)
+            logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
     }
+
+
 
     protected fun getErrorMessage(throwable: Throwable): String {
         // don't display gql error message to user
@@ -131,14 +144,27 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
-                "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",params: \"%s\"",
+                "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
                 userSession.userId,
                 userSession.email,
                 getErrorMessage(throwable),
                 URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
-        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
+        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
+        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
+    }
+
+    protected fun logError(title: String, throwable: Throwable) {
+        val errorMessage = String.format(
+                "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
+                title,
+                userSession.userId,
+                userSession.email,
+                throwable.message ?: "")
+        val exception = AddEditProductUploadException(errorMessage, throwable)
+
+        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
         Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
     }
 
@@ -154,10 +180,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     private suspend fun uploadProductSizechart(
             sizecharts: PictureVariantInputModel
     ): PictureVariantInputModel {
-        val uploadId = uploadImageAndGetId(sizecharts.urlOriginal)
-        if (uploadId.isNotEmpty()) {
-            sizecharts.uploadId = uploadId
-            sizecharts.urlOriginal = ""
+        if (sizecharts.picID.isEmpty() && sizecharts.urlOriginal.isNotEmpty()) {
+            val uploadId = uploadImageAndGetId(sizecharts.urlOriginal)
+            if (uploadId.isNotEmpty()) {
+                sizecharts.uploadId = uploadId
+                sizecharts.urlOriginal = ""
+            }
         }
 
         return sizecharts
@@ -168,22 +196,24 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
             it.pictures.firstOrNull()?.let { picture ->
-                val uploadId = uploadImageAndGetId(picture.urlOriginal)
-                if (uploadId.isNotEmpty()) {
-                    picture.uploadId = uploadId
+                if (picture.picID.isEmpty() && picture.urlOriginal.isNotEmpty()) {
+                    val uploadId = uploadImageAndGetId(picture.urlOriginal)
+                    if (uploadId.isNotEmpty()) {
+                        picture.uploadId = uploadId
 
-                    // clear existing data
-                    picture.picID = ""
-                    picture.description = ""
-                    picture.filePath = ""
-                    picture.fileName = ""
-                    picture.width = 0
-                    picture.height = 0
-                    picture.isFromIG = ""
-                    picture.urlOriginal = ""
-                    picture.urlThumbnail = ""
-                    picture.url300 = ""
-                    picture.status = false
+                        // clear existing data
+                        picture.picID = ""
+                        picture.description = ""
+                        picture.filePath = ""
+                        picture.fileName = ""
+                        picture.width = 0
+                        picture.height = 0
+                        picture.isFromIG = ""
+                        picture.urlOriginal = ""
+                        picture.urlThumbnail = ""
+                        picture.url300 = ""
+                        picture.status = false
+                    }
                 }
             }
         }
@@ -199,22 +229,22 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
         // check picture availability
         if (!filePath.exists()) {
-            return ""
+            val message = UploaderUseCase.FILE_NOT_FOUND
+            throw Exception(message)
         }
 
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
-                notificationManager?.onAddProgress()
                 result.uploadId
             }
             is UploadResult.Error -> {
                 val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
+                errorMessages.add(result.message)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
                 onUploadProductImagesFailed(result.message)
-                setUploadProductDataError(result.message)
                 ""
             }
         }

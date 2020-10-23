@@ -35,6 +35,7 @@ private const val SOLD_PERCENTAGE_UPPER_LIMIT = 100
 private const val SOLD_PERCENTAGE_LOWER_LIMIT = 0
 private const val SALE_PRODUCT_STOCK = 100
 private const val PRODUCT_STOCK = 0
+private const val PRODUCT_CAROUSEL_WIDTH = 2.3
 
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -83,31 +84,29 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
-        lifecycleOwner?.let {
+        lifecycleOwner?.let { lifecycleOwner ->
             productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
                 dataItem = it
                 populateData(it)
             })
 
-            productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                if (showLogin == true) {
+            productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer {
+                if (it == true) {
                     componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
-            productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
-                updateNotifyMeState(status)
+            productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer {
+                updateNotifyMeState(it)
             })
 
-            productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
-                showNotifyResultToast(message)
+            productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer {
+                showNotifyResultToast(it)
             })
             productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
                 componentPosition = it
             })
-            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
-                if (needResync) {
-                    (fragment as DiscoveryFragment).reSync()
-                }
+            productCardItemViewModel.getSyncPageLiveData().observe(lifecycleOwner, Observer {
+                if (it) (fragment as DiscoveryFragment).reSync()
             })
         }
     }
@@ -119,9 +118,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
             productCardItemViewModel.showNotifyToastMessage().removeObservers(it)
             productCardItemViewModel.getShowLoginData().removeObservers(it)
+            productCardItemViewModel.getComponentPosition().removeObservers(it)
         }
     }
-
 
     private fun populateData(dataItem: DataItem) {
         if (productCardName == ComponentNames.ProductCardRevampItem.componentName || productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
@@ -129,10 +128,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setSlashedPrice(dataItem.discountedPrice)
             textViewPrice.setTextAndCheckShow(dataItem.price)
             showOutOfStockLabel(dataItem.stock, PRODUCT_STOCK)
-            if(productCardName == ComponentNames.ProductCardCarouselItem.componentName){
-                val displayMetrics = getDisplayMetric(context)
-                productCardView.layoutParams.width = (displayMetrics.widthPixels/2.3).toInt()
-            }
         } else {
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
@@ -140,6 +135,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setStockProgress(dataItem.stockSoldPercentage)
             showOutOfStockLabel(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
         }
+        carouselProductWidth()
         setLabelDiscount(dataItem.discountPercentage.toString())
         dataItem.rating?.let { setRating(it, dataItem.countReview) }
         setProductImage(dataItem.imageUrlMobile)
@@ -153,8 +149,15 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         showStatusLabel(dataItem)
     }
 
+    private fun carouselProductWidth() {
+        if(productCardName == ComponentNames.ProductCardCarouselItem.componentName || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName){
+            val displayMetrics = getDisplayMetric(context)
+            productCardView.layoutParams.width = (displayMetrics.widthPixels/PRODUCT_CAROUSEL_WIDTH).toInt()
+        }
+    }
+
     private fun showStatusLabel(dataItem: DataItem) {
-        if(statusLabel.visibility == View.GONE){
+        if (statusLabel.visibility == View.GONE) {
             statusLabel.initLabelGroup(dataItem.getLabelProductStatus())
         }
     }
@@ -165,9 +168,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         return displayMetrics
     }
 
-    private fun showOutOfStockLabel(productStock: String?, saleStockValidation : Int = 0) {
-        when(saleStockValidation) {
-            productStock?.toIntOrNull()-> {
+    private fun showOutOfStockLabel(productStock: String?, saleStockValidation: Int = 0) {
+        when (saleStockValidation) {
+            productStock?.toIntOrNull() -> {
                 statusLabel.apply {
                     unlockFeature = true
                     val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
@@ -325,9 +328,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setRating(rating: String, countReview: String?) {
-        val rating = rating.toIntOrZero()
-        if (rating in 1..5) {
-            for (r in 0 until rating) {
+        val ratingData = rating.toIntOrZero()
+        if (ratingData in 1..5) {
+            for (r in 0 until ratingData) {
                 linearLayoutImageRating.show()
                 (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
             }
@@ -361,10 +364,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
-        if (!toastData.first && !toastData.second.isNullOrEmpty()) {
-            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        } else if (!toastData.second.isNullOrEmpty()) {
-            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        try {
+            if (!toastData.first && !toastData.second.isNullOrEmpty()) {
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            } else if (!toastData.second.isNullOrEmpty()) {
+                Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

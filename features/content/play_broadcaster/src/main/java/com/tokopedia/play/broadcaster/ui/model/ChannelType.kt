@@ -3,16 +3,18 @@ package com.tokopedia.play.broadcaster.ui.model
 
 /**
  * Created by mzennis on 24/05/20.
+ * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/844006102/Broadcaster+Constants+-+Status+Types
  */
 enum class ChannelType(val value: String) {
     Draft("0"),
     Active("1"),
     Pause("3"),
+    CompleteDraft("-2"),
     Unknown("-1");
 
     companion object {
 
-        private val values = ChannelType.values()
+        private val values = values()
 
         fun getByValue(value: String): ChannelType {
             values.forEach {
@@ -24,7 +26,8 @@ enum class ChannelType(val value: String) {
         fun getChannelType(
                 activeLiveChannel: Int,
                 pausedChannel: Int,
-                draftChannel: Int
+                draftChannel: Int,
+                completeDraft: Boolean
         ): Pair<String, ChannelType> {
             var channelId = 0
             var playChannelStatus = Unknown
@@ -36,6 +39,10 @@ enum class ChannelType(val value: String) {
                 pausedChannel > 0 -> {
                     channelId = pausedChannel
                     playChannelStatus = Pause
+                }
+                completeDraft && draftChannel > 0 -> {
+                    channelId = draftChannel
+                    playChannelStatus = CompleteDraft
                 }
                 draftChannel > 0 -> {
                     channelId = draftChannel

@@ -114,27 +114,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createDynamicChannel(channel = channel)
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
-                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-                    createRecommendationListCarouselComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createMixLeftComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-                    createProductHighlightComponent(channel, position, isCache)
-
-                }
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> { createRecommendationListCarouselComponent(channel, position, isCache) }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> { createMixLeftComponent(channel, position, isCache) }
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> { createProductHighlightComponent(channel, position, isCache) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
-                    createMixTopComponent(channel, position, isCache)
-                }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createMixTopComponent(channel, position, isCache) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
-                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
-                    createReminderWidget(ReminderEnum.SALAM)
-                }
+                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> { createReminderWidget(ReminderEnum.SALAM) }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                             channel,
@@ -147,13 +136,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             isCombined = false
                     )
                 }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
-                    createTopAdsBannerModel(channel)
-                }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> { createTopAdsBannerModel(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel, position) }
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
-                    createLego4AutoComponent(channel, position, isCache)
-                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> { createLego4AutoComponent(channel, position, isCache) }
+                DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> { createFeaturedShopComponent(channel, position, isCache) }
             }
         }
 
@@ -162,6 +148,19 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
 
         return this
+    }
+
+    private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(FeaturedShopDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        ))
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
     }
 
     private fun createDynamicChannelLoadingMore() {

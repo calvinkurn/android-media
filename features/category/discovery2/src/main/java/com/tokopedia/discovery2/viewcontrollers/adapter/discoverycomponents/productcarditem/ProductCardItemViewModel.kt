@@ -6,6 +6,7 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.PDP_APPLINK
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.Utils
@@ -48,13 +49,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
-
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
-
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
 
     init {
         initDaggerInject()
@@ -204,7 +202,13 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     fun handleNavigation() {
-        dataItem.value?.applinks?.let { applink ->
+        val applink = dataItem.value?.applinks
+        if (applink.isNullOrEmpty()) {
+            val productId = dataItem.value?.productId
+            if (!productId.isNullOrEmpty()) {
+                navigate(context, "$PDP_APPLINK${productId}")
+            }
+        } else {
             navigate(context, applink)
         }
     }
@@ -213,10 +217,9 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return components.properties?.buttonNotification
     }
 
-    fun subscribeUser(syncSelectedTab: Boolean = false) {
+    fun subscribeUser() {
         if (isUserLoggedIn()) {
             dataItem.value?.let { productItemData ->
-
                 launchCatchError(block = {
                     val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
                     campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
@@ -224,7 +227,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                             productItemData.notifyMe = !productItemData.notifyMe
                             notifyMeCurrentStatus.value = productItemData.notifyMe
                             showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
+                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
                         } else {
                             showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
                         }
@@ -240,14 +243,15 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     override fun loggedInCallback() {
-        subscribeUser(true)
+        subscribeUser()
     }
 
     fun sendTopAdsClick() {
         dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
             }
         }
     }
@@ -256,7 +260,8 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
                 components.topAdsTrackingStatus = true
             }
         }
@@ -281,5 +286,4 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                 .build()
                 .inject(this)
     }
-
 }

@@ -37,6 +37,7 @@ import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.R
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
@@ -186,6 +187,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
+            case TYPE_SILENT:
+                break;
             default:
                 showLegacyDialog(data);
                 break;
@@ -247,8 +250,6 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
                 } else {
                     Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
                 }
-            } else {
-                Timber.w("%ssvalidation;reason='cmInApp_null';data=''", CMConstant.TimberTags.TAG);
             }
         } catch (Exception e) {
             Map<String, String> data = remoteMessage.getData();

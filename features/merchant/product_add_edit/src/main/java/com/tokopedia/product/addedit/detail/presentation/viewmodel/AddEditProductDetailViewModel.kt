@@ -54,6 +54,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
+    val hasTransaction get() = productInputModel.itemSold > 0
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
 

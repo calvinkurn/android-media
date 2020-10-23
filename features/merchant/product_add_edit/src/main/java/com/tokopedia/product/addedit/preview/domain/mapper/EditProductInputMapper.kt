@@ -229,7 +229,8 @@ class EditProductInputMapper @Inject constructor() {
                     ))
                 }
             } else {
-                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+                val uploadId = uploadIdList.getOrNull(idxUploadIdList++) ?: ""
+                data.add(Picture(uploadId = uploadId))
             }
         }
         return Pictures(data)

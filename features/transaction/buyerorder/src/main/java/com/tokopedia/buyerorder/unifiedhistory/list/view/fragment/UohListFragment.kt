@@ -293,6 +293,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        isFetchRecommendation = false
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
@@ -947,6 +948,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
                         var dateOption = ""
+                        var labelTrackingDate = ""
                         if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
                                 paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
@@ -958,8 +960,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             val splitEndDate = paramUohOrder.createTimeEnd.split('-')
                             dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                             filter1?.title = dateOption
+                            labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
+                            labelTrackingDate = dateOption
 
                             if (currFilterDateKey == "0") {
                                 filter1?.title = ALL_DATE
@@ -967,7 +971,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 filter1?.title = currFilterDateLabel
                             }
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(dateOption, it1) }
+
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         currFilterStatusKey = tempFilterStatusKey
@@ -1043,6 +1048,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1119,6 +1125,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                 uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
             }
+            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1372,7 +1379,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             ))
                             i++
                         }
-                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts) }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
                     }
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
@@ -1443,6 +1450,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                         uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+
+                        // analytics
+                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+                        var i = 0
+                        order.metadata.products.forEach {
+                            val objProduct = jsonArray.get(i).asJsonObject
+                            arrayListProducts.add(ECommerceAdd.Add.Products(
+                                    name = it.title,
+                                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                                    quantity = objProduct.get(EE_QUANTITY).asString,
+                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
+                            ))
+                            i++
+                        }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, order.verticalCategory) }
                     }
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
@@ -1535,14 +1558,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        UohAnalytics.productViewRecommendation(ECommerceImpressions.Impressions(
+        userSession?.userId?.let {
+            UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
                 position = index.toString(),
                 list = list
-        ))
+        ), topAds)
+        }
     }
 
     override fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -1552,12 +1577,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        UohAnalytics.productClickRecommendation(ECommerceClick.Products(
+        userSession?.userId?.let {
+            UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds)
+                position = index.toString()), topAds, it)
+        }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
         onProductClicked(productId)
@@ -1570,20 +1597,43 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
-        val product = ECommerceAddRecommendation.Add.ActionField.Product(
-                name = recommendationItem.name,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                quantity = recommendationItem.quantity.toString(),
-                dimension45 = recommendationItem.cartId
+    override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
+        val jsonArrayAtc = JsonArray()
+        val atcJsonObject = JsonObject()
+        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
+        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
+        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
+        atcJsonObject.addProperty(UohConsts.NOTES, "")
+        jsonArrayAtc.add(atcJsonObject)
+        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
 
-        )
+        // analytics
+        trackAtcRecommendationItem(recommendationItem)
+    }
+
+    private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val productPrice = recommendationItem.price
+        val productCategory = recommendationItem.categoryBreadcrumbs
+        val qty = recommendationItem.quantity.toString()
+        val imageUrl = recommendationItem.imageUrl
+        val cartId = recommendationItem.cartId
+        val isTopAds = recommendationItem.isTopAds
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        val product = ECommerceAddRecommendation.Add.ActionField.Product(
+                name = productName,
+                id = productId,
+                price = productPrice,
+                category = productCategory,
+                quantity = qty,
+                dimension45 = cartId)
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
+        if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
