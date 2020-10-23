@@ -119,7 +119,10 @@ class PlayPusherImpl(@ApplicationContext private val mContext: Context) : PlayPu
     }
 
     override fun stopTimer() {
-        this.mTimerDuration?.stop()
+        try {
+            this.mTimerDuration?.stop()
+        } catch (throwable: Throwable){
+        }
     }
 
     override fun restartStreamDuration(durationInMillis: Long) {
