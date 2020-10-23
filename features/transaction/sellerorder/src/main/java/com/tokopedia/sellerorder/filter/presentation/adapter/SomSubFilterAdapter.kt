@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.oldlist.presentation.adapter
+package com.tokopedia.sellerorder.filter.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,22 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.presenter.model.SomSubFilter
-import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
-import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_CHECKBOX
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_LABEL
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
-import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.oldlist.presentation.activity.SomSubFilterActivity
 import kotlinx.android.synthetic.main.filter_checkbox_item.view.*
 import kotlinx.android.synthetic.main.filter_radio_item.view.*
 
-/**
- * Created by fwidjaja on 2019-09-17.
- */
 class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHolder<*>>(), SomSubFilterActivity.ActionListener {
+
     var listSubFilter = mutableListOf<SomSubFilter>()
     var currentFilterParam = SomListOrderParam()
     var category: String = ""
@@ -55,8 +46,8 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
 
     override fun getItemViewType(position: Int): Int {
         return when (listSubFilter[position].typeFilter) {
-            FILTER_TYPE_RADIO -> TYPE_RADIO
-            FILTER_TYPE_CHECKBOX -> TYPE_CHECKBOX
+            SomConsts.FILTER_TYPE_RADIO -> TYPE_RADIO
+            SomConsts.FILTER_TYPE_CHECKBOX -> TYPE_CHECKBOX
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -94,13 +85,13 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
             itemView.label_radio.setOnClickListener(clickHandlerRadio(item))
 
             when {
-                item.typeView.equals(FILTER_TYPE_SEPARATOR, true) -> {
+                item.typeView.equals(SomConsts.FILTER_TYPE_SEPARATOR, true) -> {
                     titleRadio.visibility = View.GONE
                     radioBtn.visibility = View.GONE
                     divider.visibility = View.VISIBLE
 
                 }
-                item.typeView.equals(FILTER_TYPE_LABEL, true) -> {
+                item.typeView.equals(SomConsts.FILTER_TYPE_LABEL, true) -> {
                     divider.visibility = View.GONE
                     radioBtn.visibility = View.GONE
                     titleRadio.visibility = View.VISIBLE
@@ -116,7 +107,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
 
         private fun clickHandlerRadio(item: SomSubFilter): (View) -> Unit = {
             listSubFilter.forEach {
-                if (it.typeFilter == FILTER_TYPE_RADIO) it.isChecked = false
+                if (it.typeFilter == SomConsts.FILTER_TYPE_RADIO) it.isChecked = false
             }
 
             item.isChecked = true
@@ -139,14 +130,14 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
                 checkbox.isChecked = false
 
             } else {
-                if (category.equals(CATEGORY_COURIER_TYPE, true)) {
+                if (category.equals(SomConsts.CATEGORY_COURIER_TYPE, true)) {
                     if (currentFilterParam.shippingList.isNotEmpty()) {
                         currentFilterParam.shippingList.filter { it == item.id }.map {
                             listId.add(item.id)
                             checkbox.isChecked = it == item.id
                         }
                     }
-                } else if (category.equals(CATEGORY_ORDER_TYPE, true)) {
+                } else if (category.equals(SomConsts.CATEGORY_ORDER_TYPE, true)) {
                     if (currentFilterParam.orderTypeList.isNotEmpty()) {
                         currentFilterParam.orderTypeList.filter { it == item.id }.map {
                             listId.add(item.id)
@@ -171,7 +162,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
 
     override fun onResetClicked() {
         listSubFilter.forEach {
-            if (it.key == STATUS_ALL_ORDER) {
+            if (it.key == SomConsts.STATUS_ALL_ORDER) {
                 it.isChecked = true
                 listId = it.listValue as ArrayList<Int>
             } else {
@@ -184,9 +175,9 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
 
     override fun saveSubFilter(): SomListOrderParam {
         when {
-            category.equals(CATEGORY_COURIER_TYPE, true) -> currentFilterParam.shippingList = listId
-            category.equals(CATEGORY_ORDER_TYPE, true) -> currentFilterParam.orderTypeList = listId
-            category.equals(CATEGORY_ORDER_STATUS, true) -> currentFilterParam.statusList = listId
+            category.equals(SomConsts.CATEGORY_COURIER_TYPE, true) -> currentFilterParam.shippingList = listId
+            category.equals(SomConsts.CATEGORY_ORDER_TYPE, true) -> currentFilterParam.orderTypeList = listId
+            category.equals(SomConsts.CATEGORY_ORDER_STATUS, true) -> currentFilterParam.statusList = listId
         }
         return currentFilterParam
     }
@@ -194,4 +185,5 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     override fun saveSubFilterKey(): String {
         return listSubFilter.find { it.isChecked }?.key.orEmpty()
     }
+
 }

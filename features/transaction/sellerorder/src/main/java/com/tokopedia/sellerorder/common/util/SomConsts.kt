@@ -154,6 +154,20 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
+    const val CHIPS_SORT_DESC = "Paling Baru"
+    const val CHIPS_SORT_ASC = "Paling Lama"
+
+    const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
+    const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
+    const val NOT_YET_PRINTED = 0
+    const val ALREADY_PRINT = 1
+
+    const val TODAY_LABEL = "Hari ini"
+    const val TOMORROW_LABEL = "Besok"
+    const val TODAY_TOMORROW_LABEL = "Lusa"
+    const val TODAY = 1
+    const val TOMORROW = 2
+    const val TODAY_TOMORROW = 3
 
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
     const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
@@ -175,4 +189,13 @@ object SomConsts {
     const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
 
     const val IS_WAREHOUSE = 1
+
+    //SOM FILTER LABEL
+    const val FILTER_SORT = "Urutkan"
+    const val FILTER_STATUS_ORDER = "Status Pesanan"
+    const val FILTER_TYPE_ORDER = "Tipe Pesanan"
+    const val FILTER_COURIER = "Kurir"
+    const val FILTER_LABEL = "Label"
+    const val FILTER_DEADLINE = "Jatuh Tempo"
+    const val FILTER_DATE = "Tanggal"
 }

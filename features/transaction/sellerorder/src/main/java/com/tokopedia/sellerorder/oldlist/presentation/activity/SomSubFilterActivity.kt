@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
+import com.tokopedia.sellerorder.common.presenter.model.SomSubFilter
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
-import com.tokopedia.sellerorder.oldlist.data.model.SomSubFilter
 import com.tokopedia.sellerorder.oldlist.presentation.adapter.SomSubFilterAdapter
 import kotlinx.android.synthetic.main.activity_filter_sublist.*
 import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*

@@ -45,8 +45,10 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickWaitingPaymentOrderCard
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -71,12 +73,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.oldlist.data.model.SomListFilter
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.oldlist.data.model.SomListTicker
 import com.tokopedia.sellerorder.oldlist.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.oldlist.presentation.activity.SomFilterActivity

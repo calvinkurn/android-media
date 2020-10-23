@@ -1,9 +1,9 @@
 package com.tokopedia.sellerorder.oldlist.domain.list
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
