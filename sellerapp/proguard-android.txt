@@ -208,5 +208,3 @@ public protected *;
 
 -keep class com.alibaba.livecloud.** { *; }
 -keep class com.alivc.** { *; }
-
--dontwarn module-info
