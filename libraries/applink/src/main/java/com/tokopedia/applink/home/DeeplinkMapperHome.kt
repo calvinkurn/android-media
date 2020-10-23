@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.startsWithPattern
 
 object DeeplinkMapperHome {
@@ -26,6 +27,8 @@ object DeeplinkMapperHome {
             return ApplinkConsInternalHome.HOME_NAVIGATION
         else if (deeplink.startsWith(ApplinkConst.HOME_CATEGORY) && uri.pathSegments.size == 1)
             return ApplinkConsInternalHome.HOME_NAVIGATION
+        else if (deeplink.startsWith(ApplinkConst.Navigation.MAIN_NAV))
+            return ApplinkConsInternalNavigation.MAIN_NAVIGATION
         else if (deeplink.startsWith(ApplinkConst.HOME_FEED) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
         else if (deeplink.startsWith(ApplinkConst.HOME_ACCOUNT_SELLER) && uri.pathSegments.size == 2)
@@ -37,6 +40,7 @@ object DeeplinkMapperHome {
         else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION,
                     mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true))
+
 
 
         return deeplink
