@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -50,5 +51,7 @@ interface ChatbotViewState : BaseChatViewState {
     fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>)
 
     fun hideActionBubble(model: ChatActionSelectionBubbleViewModel)
+
+    fun hideOptionList(model: HelpFullQuestionsViewModel)
 
 }

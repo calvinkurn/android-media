@@ -25,6 +25,7 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -37,6 +38,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -44,6 +46,8 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -81,7 +85,9 @@ class ChatbotPresenter @Inject constructor(
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
         private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
         private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase
+        private val getTickerDataUseCase: GetTickerDataUseCase,
+        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
 
@@ -92,6 +98,7 @@ class ChatbotPresenter @Inject constructor(
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
+        const val QUERY_SORCE_TYPE = "Apps"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -321,19 +328,21 @@ class ChatbotPresenter @Inject constructor(
 
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
-                                 onSuccess: (ChatroomViewModel) -> Unit) {
+                                 onSuccess: (ChatroomViewModel) -> Unit,
+                                 onGetChatRatingListMessageError: (String) -> Unit) {
         if (messageId.isNotEmpty()) {
             getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
-                    GetExistingChatSubscriber(onError, onSuccess))
+                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
         }
     }
 
     override fun loadPrevious(messageId: String, page: Int,
                               onError: (Throwable) -> Unit,
-                              onSuccess: (ChatroomViewModel) -> Unit) {
+                              onSuccess: (ChatroomViewModel) -> Unit,
+                              onGetChatRatingListMessageError: (String) -> Unit) {
         if (messageId.isNotEmpty()) {
             getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId, page),
-                    GetExistingChatSubscriber(onError, onSuccess))
+                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
         }
     }
 
@@ -481,6 +490,27 @@ class ChatbotPresenter @Inject constructor(
         leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
     }
 
+    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
+        val input = genrateInput(selectedValue, model)
+        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(onSubmitError))
+    }
+
+    private val onSubmitError: (Throwable) -> Unit = {
+        it.printStackTrace()
+    }
+
+    private fun genrateInput(selectedValue: Int, model: HelpFullQuestionsViewModel?): SubmitOptionInput {
+        val input = SubmitOptionInput()
+        with(input) {
+            caseChatID = model?.helpfulQuestion?.caseChatId ?: ""
+            caseID = model?.helpfulQuestion?.caseId ?: ""
+            messageID = model?.messageId ?: ""
+            source = QUERY_SORCE_TYPE
+            value = selectedValue
+        }
+        return input
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
@@ -489,6 +519,8 @@ class ChatbotPresenter @Inject constructor(
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         getTickerDataUseCase.unsubscribe()
+        chipGetChatRatingListUseCase.unsubscribe()
+        chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         super.detachView()
     }
 

@@ -39,6 +39,7 @@ import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -49,15 +50,13 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
@@ -94,7 +93,7 @@ private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 private const val FIRST_PAGE = 1
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener,ChatOptionListListener, View.OnClickListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -218,6 +217,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
+                this,
                 this
         )
     }
@@ -328,7 +328,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun loadInitialData() {
         showLoading()
-        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
         presenter.connectWebSocket(messageId)
     }
 
@@ -361,6 +361,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (canLoadMore) super.showLoading()
     }
 
+    private val onGetChatRatingListMessageError: (String) -> Unit = {
+        if (view != null) {
+            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
@@ -370,7 +376,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat())
+        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat(), onGetChatRatingListMessageError)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -730,6 +736,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         getViewState().showErrorWebSocket(isWebSocketError)
+    }
+
+    override fun chatOptionListSelected(selected: HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions, model: HelpFullQuestionsViewModel?) {
+        model?.let { getViewState().hideOptionList(it) }
+        sendOptionListSelectedMessage(selected.text ?: "")
+
+        selected.value?.let { presenter.hitGqlforOptionList(it, model) }
+    }
+
+    private fun sendOptionListSelectedMessage(selectedMessage: String) {
+        val sendMessage = selectedMessage
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
+                onSendingMessage(sendMessage, startTime))
     }
 
     override fun onBackPressed(): Boolean {

@@ -11,15 +11,13 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ConnectionDividerViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 
 /**
  * @author by nisie on 27/11/18.
@@ -32,7 +30,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val attachedInvoiceSelectionListener:
                                   AttachedInvoiceSelectionListener,
                                   private val chatRatingListener: ChatRatingListener,
-                                  private val chatActionListBubbleListener: ChatActionListBubbleListener) :
+                                  private val chatActionListBubbleListener: ChatActionListBubbleListener,
+                                  private val chatOptionListListener: ChatOptionListListener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -43,6 +42,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     override fun type(connectionDividerViewModel: ConnectionDividerViewModel): Int {
         return ConnectionDividerViewHolder.LAYOUT
+    }
+
+    override fun type(helpFullQuestionsViewModel: HelpFullQuestionsViewModel): Int {
+        return ChatHelpfullQuestionViewHolder.LAYOUT
     }
 
     override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
@@ -79,6 +82,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatRatingListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener)
             ChatBotMessageViewHolder.LAYOUT -> ChatBotMessageViewHolder(parent, chatLinkHandlerListener)
+            ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener)
             else -> super.createViewHolder(parent, type)
         }
     }
