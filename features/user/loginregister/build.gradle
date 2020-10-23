@@ -61,13 +61,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+    implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.profileCommon)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.seamlesslogin)
+    implementation rootProject.ext.playServicesDependencies.location
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
@@ -90,7 +92,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.auth
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

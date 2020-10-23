@@ -53,7 +53,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
@@ -64,7 +64,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -90,6 +89,7 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -101,7 +101,6 @@ import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
@@ -187,7 +186,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         super.onCreate();
         initialiseHansel();
         initFirebase();
-        GraphqlClient.init(getApplicationContext(), remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
+        GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();
@@ -196,31 +195,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initResourceDownloadManager();
     }
 
-    private void warmUpGQLClient(){
-        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
-            try{
-            GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
-            Call<String> gqlPingCall = gqlPing.pingGQL();
-            gqlPingCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                    if(response != null && response.body() != null) {
-                        Timber.d("Success %s", response.body());
+    private void warmUpGQLClient() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try {
+                GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
+                Call<String> gqlPingCall = gqlPing.pingGQL();
+                gqlPingCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                        if (response != null && response.body() != null) {
+                            Timber.d("Success %s", response.body());
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Timber.d("Failure");
-                }
-            });
-            } catch (Exception ex){
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Timber.d("Failure");
+                    }
+                });
+            } catch (Exception ex) {
                 Timber.d("GQL Ping exception %s", ex.getMessage());
             }
         }
     }
 
-    private void performLibraryInitialisation(){
+    private void performLibraryInitialisation() {
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -231,13 +230,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
-    private boolean initLibraries(){
+    private boolean initLibraries() {
         initCMPushNotification();
         initTetraDebugger();
         return true;
     }
 
-    private void initialiseHansel(){
+    private void initialiseHansel() {
         WeaveInterface hanselWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -248,7 +247,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
     }
 
-    private boolean executeHanselInit(){
+    private boolean executeHanselInit() {
         Hansel.init(ConsumerRouterApplication.this);
         return true;
     }
@@ -273,7 +272,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
-    private boolean executeIrisInitialize(){
+    private boolean executeIrisInitialize() {
         mIris.initialize();
         return true;
     }
@@ -417,10 +416,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        sessionHandler.forceLogout();
+
+        forceLogout();
+
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
+    }
+
+    private void forceLogout() {
+        PasswordGenerator.clearTokenStorage(context);
+        TrackApp.getInstance().getMoEngage().logoutEvent();
+        UserSessionInterface userSession = new UserSession(context);
+        userSession.logoutSession();
     }
 
     public Intent getHomeIntent(Context context) {
@@ -438,7 +445,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private ReactNativeComponent getReactNativeComponent() {
-        if(daggerReactNativeBuilder == null){
+        if (daggerReactNativeBuilder == null) {
             daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                     .appComponent(getApplicationComponent())
                     .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
@@ -456,8 +463,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onForceLogout(Activity activity) {
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
+        forceLogout();
         Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -474,16 +480,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+        ServerErrorHandler.sendForceLogoutAnalytics(url,
                 isInvalidToken, isRequestDenied);
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    public void showForceLogoutTokenDialog(String path) {
+        ServerErrorHandler.showForceLogoutDialog(path);
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
     @Override
@@ -527,12 +533,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
     }
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        if(omsComponent == null){
+        if (omsComponent == null) {
             omsComponent = DaggerOmsComponent.builder()
                     .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
                     .build();
@@ -682,7 +688,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
     }
 
-    private boolean executeAppflyerInit(){
+    private boolean executeAppflyerInit() {
         TkpdAppsFlyerMapper.getInstance(ConsumerRouterApplication.this).mapAnalytics();
         return true;
     }
@@ -746,7 +752,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
+    public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
 }

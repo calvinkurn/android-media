@@ -41,7 +41,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 }
 
 project.ext {

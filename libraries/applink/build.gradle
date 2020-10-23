@@ -29,8 +29,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.testCore
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
 }
 
 project.ext {
@@ -41,3 +45,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'
+apply from: '../../sonar_config.gradle'

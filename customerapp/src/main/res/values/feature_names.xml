@@ -232,6 +232,7 @@
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
+    <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
 
 
     <!-- Dynamic feature for Umrah-->
@@ -269,6 +270,7 @@
     <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
     <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
     <string name="ent_pdp_title_form">Data Pemesan</string>
+    <string name="ent_redeem_title">Redeem Your Ticket</string>
 
 
 
@@ -288,7 +290,6 @@
     <!--Transaction-->
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="checkout_module_title_activity_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
@@ -320,4 +321,7 @@
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_page_setting_title">Toko Kamu</string>
 
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+    <string name="title_seller_settings">Pengaturan Toko</string>
 </resources>

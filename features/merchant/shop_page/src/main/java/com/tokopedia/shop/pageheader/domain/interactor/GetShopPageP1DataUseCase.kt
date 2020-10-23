@@ -8,8 +8,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
@@ -17,6 +18,7 @@ import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopPmUseCase
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
@@ -40,7 +42,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
         private const val PARAM_PAGE = "page"
         private const val PARAM_ITEM_PER_PAGE = "itemPerPage"
-        private const val PARAM_SORT_ID = "sortId"
+        private const val PARAM_SHOP_PRODUCT_FILTER_PARAMETER = "shopProductFilterParameter"
         private const val PARAM_KEYWORD = "keyword"
         private const val PARAM_ETALASE_ID = "etalaseId"
 
@@ -50,7 +52,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
                 shopDomain: String,
                 page: Int,
                 itemPerPage: Int,
-                sortId: Int,
+                shopProductFilterParameter: ShopProductFilterParameter,
                 keyword: String,
                 etalaseId: String
         ): RequestParams = RequestParams.create().apply {
@@ -58,7 +60,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
             putObject(PARAM_PAGE, page)
             putObject(PARAM_ITEM_PER_PAGE, itemPerPage)
-            putObject(PARAM_SORT_ID, sortId)
+            putObject(PARAM_SHOP_PRODUCT_FILTER_PARAMETER, shopProductFilterParameter)
             putObject(PARAM_KEYWORD, keyword)
             putObject(PARAM_ETALASE_ID, etalaseId)
         }
@@ -72,7 +74,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val shopDomain: String = params.getString(PARAM_SHOP_DOMAIN, "")
         val page = params.getInt(PARAM_PAGE,0)
         val perPage = params.getInt(PARAM_ITEM_PER_PAGE, 0)
-        val sortId = params.getInt(PARAM_SORT_ID, 0)
+        val shopProductFilterParameter = params.getObject(PARAM_SHOP_PRODUCT_FILTER_PARAMETER) as? ShopProductFilterParameter
         val keyword = params.getString(PARAM_KEYWORD , "")
         val etalaseId = params.getString(PARAM_ETALASE_ID, "")
         val listRequest = mutableListOf<GraphqlRequest>().apply {
@@ -88,7 +90,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
                     perPage,
                     keyword,
                     etalaseId,
-                    sortId
+                    shopProductFilterParameter
             ))
         }
         gqlUseCase.clearRequest()
@@ -123,11 +125,20 @@ class GetShopPageP1DataUseCase @Inject constructor(
             perPage: Int,
             keyword: String,
             etalaseId: String,
-            sortId: Int
+            shopProductFilterParameter: ShopProductFilterParameter?
     ): GraphqlRequest {
         val params = GqlGetShopProductUseCase.createParams(
                 shopId,
-                ShopProductFilterInput(page, perPage, keyword, etalaseId, sortId)
+                ShopProductFilterInput(
+                        page,
+                        perPage,
+                        keyword,
+                        etalaseId,
+                        shopProductFilterParameter?.getSortId().toIntOrZero(),
+                        shopProductFilterParameter?.getRating().orEmpty(),
+                        shopProductFilterParameter?.getPmax().orZero(),
+                        shopProductFilterParameter?.getPmin().orZero()
+                )
         )
         return createGraphqlRequest<ShopProduct.Response>(
                 mapQuery[GQLQueryConstant.SHOP_PRODUCT].orEmpty(),

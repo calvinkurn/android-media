@@ -102,8 +102,11 @@ object ApplinkConstInternalMarketplace {
     // InboxReputationActivity
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
+    //ReviewDetailActivity
+    val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
+
     // InboxReputationDetailActivity
-    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -148,10 +151,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
-    //ReviewShopInfoActiviy
-    @JvmField
-    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
-
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
@@ -195,6 +194,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
 
+    @JvmField
+    val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
@@ -215,6 +217,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
+    @JvmField
+    val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
     @JvmField
     val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
@@ -324,4 +328,7 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val ARGS_LAYOUT_ID = "layoutID"
+
+    @JvmField
+    val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 }

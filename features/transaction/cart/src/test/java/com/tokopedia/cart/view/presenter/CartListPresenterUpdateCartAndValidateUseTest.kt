@@ -4,8 +4,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.domain.model.cartlist.UpdateAndValidateUseData
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
@@ -35,7 +35,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterUpdateCartAndValidateUseTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -61,14 +63,14 @@ object CartListPresenterUpdateCartAndValidateUseTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                    updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                    getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                    addToCartUseCase, addToCartExternalUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase,
-                    TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 

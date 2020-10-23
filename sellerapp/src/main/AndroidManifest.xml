@@ -27,6 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tokopedia3"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         tools:replace="android:icon,android:label,android:hasCode,android:roundIcon,android:allowBackup">
         <activity
             android:name=".SplashScreenActivity"
@@ -77,13 +78,6 @@
                 android:name="APPS_HOME"
                 android:value="true" />
         </activity>
-
-        <activity
-            android:name="com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity"
-            android:exported="true"
-            android:label="@string/drawer_title_home"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:screenOrientation="portrait"
@@ -256,7 +250,7 @@
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-         <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+         <receiver android:name=".receiver.SellerAppMediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>

@@ -13,6 +13,8 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -47,8 +49,9 @@ class ProductManageNetworkModule {
     @ProductManageListScope
     @Provides
     fun provideGMAuthInterceptor(@ApplicationContext context: Context,
-                                 abstractionRouter: AbstractionRouter): GMAuthInterceptor {
-        return GMAuthInterceptor(context, abstractionRouter)
+                                 userSession: UserSessionInterface,
+                                 abstractionRouter: NetworkRouter): GMAuthInterceptor {
+        return GMAuthInterceptor(context, userSession, abstractionRouter)
     }
 
     @GMProductManageQualifier

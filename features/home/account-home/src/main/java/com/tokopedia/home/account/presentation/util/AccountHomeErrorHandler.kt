@@ -25,14 +25,12 @@ object AccountHomeErrorHandler {
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
         val errorMessage = String.format(
-                "userId='%s';email='%s';error_msg='%s';error_code='%s'",
+                "userId='%s';error_msg='%s';error_code='%s'",
                 userId,
-                email,
                 getExceptionMessage(t),
                 errorCode)
         val exception = AccountHomeException(errorMessage, t)
-
-        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage;'$exception'")
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';'${getExceptionMessage(t)}';'${errorCode}'")
         try {
             FirebaseCrashlytics.getInstance().recordException(exception)
         } catch (exception: Exception) {

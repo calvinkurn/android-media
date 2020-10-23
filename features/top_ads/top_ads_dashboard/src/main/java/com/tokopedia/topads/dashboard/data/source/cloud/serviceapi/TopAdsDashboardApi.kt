@@ -23,6 +23,4 @@ interface TopAdsDashboardApi {
     @GET(TopAdsDashboardConstant.PATH_DASHBOARD_TOTAL_AD)
     fun populateTotalAd(@QueryMap params: Map<String, String>): Observable<Response<DataResponse<TotalAd>>>
 
-    @GET(TopAdsDashboardConstant.PATH_DASHBOARD_STATISTIC)
-    fun getStatistics(@QueryMap params: Map<String, String>): Observable<Response<DataResponse<DataStatistic>>>
 }

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.tkpd">
 
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,6 +17,7 @@
         tools:replace="label,android:allowBackup,android:theme"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat"

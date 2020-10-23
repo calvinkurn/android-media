@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android.sourceSets {
-    main.java.srcDirs += "src/main/kotlin"
-    debug.java.srcDirs += "src/debug/kotlin"
-    test.java.srcDirs += "src/test/kotlin"
-    androidTest.java.srcDirs += "src/androidTest/kotlin"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -78,5 +71,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'
+//apply from: '../../../jacoco_task.gradle'
+//apply from: '../../../sonar_config.gradle'

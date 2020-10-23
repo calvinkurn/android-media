@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -34,6 +36,7 @@ import kotlin.text.Charsets.UTF_8
 
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
+    private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
@@ -116,10 +119,28 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         wishlistCrossfader.startTransition(0)
         notifCrossfader.startTransition(0)
         inboxCrossfader.startTransition(0)
+
         btnWishlist.setImageDrawable(wishlistCrossfader)
         btnNotification.setImageDrawable(notifCrossfader)
         btnInbox.setImageDrawable(inboxCrossfader)
-        switchToLightToolbar()
+
+        if (toolbarType == TOOLBAR_DARK_TYPE) {
+            wishlistCrossfader.resetTransition()
+            notifCrossfader.resetTransition()
+            inboxCrossfader.resetTransition()
+
+            wishlistCrossfader.reverseTransition(0)
+            notifCrossfader.reverseTransition(0)
+            inboxCrossfader.reverseTransition(0)
+        } else if (toolbarType == TOOLBAR_LIGHT_TYPE) {
+            wishlistCrossfader.resetTransition()
+            notifCrossfader.resetTransition()
+            inboxCrossfader.resetTransition()
+
+            wishlistCrossfader.startTransition(0)
+            notifCrossfader.startTransition(0)
+            inboxCrossfader.startTransition(0)
+        }
     }
 
     fun hideShadow() {
@@ -132,7 +153,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             }
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -178,7 +199,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         toolbar!!.background = drawable
     }
 
-
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
@@ -188,6 +208,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_DARK_TYPE
         } else if (!crossfaderIsInitialized()) {
             initToolbarIcon()
+            toolbarType = TOOLBAR_DARK_TYPE
         }
     }
 
@@ -226,6 +247,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_LIGHT_TYPE
         } else if (!crossfaderIsInitialized()) {
             initToolbarIcon()
+            toolbarType = TOOLBAR_LIGHT_TYPE
         }
     }
 

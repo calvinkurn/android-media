@@ -19,7 +19,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
@@ -51,6 +51,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.productCard)
+
 
 }
 

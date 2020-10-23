@@ -22,13 +22,13 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -49,6 +49,8 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,7 @@ import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class InstrumentationTestApp extends BaseMainApplication
+public class InstrumentationTestApp extends CoreNetworkApplication
         implements AbstractionRouter,
         TkpdCoreRouter,
         NetworkRouter,
@@ -127,7 +129,10 @@ public class InstrumentationTestApp extends BaseMainApplication
 
     public void enableSizeDetector(@Nullable List<String> listToAnalyze) {
         if (GlobalConfig.DEBUG) {
-            addInterceptor(new GqlNetworkAnalyzerInterceptor(listToAnalyze));
+            GqlNetworkAnalyzerInterceptor.reset();
+            GqlNetworkAnalyzerInterceptor.addGqlQueryListToAnalyze(listToAnalyze);
+
+            addInterceptor(new GqlNetworkAnalyzerInterceptor());
         }
     }
 
@@ -137,6 +142,10 @@ public class InstrumentationTestApp extends BaseMainApplication
             ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
             GraphqlClient.reInitRetrofitWithInterceptors(interceptorList, this);
         }
+    }
+
+    public void setInterceptor(Interceptor interceptor) {
+        GraphqlClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override
@@ -262,25 +271,13 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this) {
-
-            @Override
-            public String getLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getRefreshToken() {
-                return "null";
-            }
-
-        };
+    public GCMHandler legacyGCMHandler() {
+        return new GCMHandler(this);
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        return new GCMHandler(this);
+    public Intent getMaintenancePageIntent() {
+        return new Intent();
     }
 
     @Override
@@ -309,7 +306,7 @@ public class InstrumentationTestApp extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
 

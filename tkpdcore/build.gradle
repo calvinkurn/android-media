@@ -38,7 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.analytics)
@@ -103,7 +103,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true	        }
+        transitive = true
+    }
     
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

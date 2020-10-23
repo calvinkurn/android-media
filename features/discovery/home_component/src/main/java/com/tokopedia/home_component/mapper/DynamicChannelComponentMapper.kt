@@ -46,6 +46,7 @@ object DynamicChannelComponentMapper {
                         channel.showPromoBadge,
                         channel.hasCloseButton,
                         ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channel.header.serverTimeUnix),
+                        channel.timestamp,
                         channel.isAutoRefreshAfterExpired
                 ),
                 trackingAttributionModel = TrackingAttributionModel(
@@ -91,6 +92,7 @@ object DynamicChannelComponentMapper {
                                 )
                             },
                             rating = it.rating,
+                            ratingFloat = it.ratingFloat,
                             countReview = it.countReview,
                             backColor = it.backColor,
                             benefit = ChannelBenefit(

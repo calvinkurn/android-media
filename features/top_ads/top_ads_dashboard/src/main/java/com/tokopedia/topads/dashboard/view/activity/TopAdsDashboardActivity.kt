@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -20,9 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.seller_migration_common.presentation.fragment.bottomsheet.SellerMigrationCommunicationBottomSheet
-import com.tokopedia.seller_migration_common.presentation.model.CommunicationInfo
-import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationCommunicationTicker
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -52,10 +50,11 @@ import javax.inject.Inject
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight, TopAdsProductIklanFragment.AdInfo {
 
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 2
+    private var adType = "-1"
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -63,17 +62,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val sellerMigrationStaticCommunicationBottomSheet by lazy {
-        SellerMigrationCommunicationBottomSheet.createInstance(
-                this,
-                CommunicationInfo.TopAds,
-                screenName.orEmpty(),
-                userSession.userId)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         setContentView(R.layout.topads_dash_activity_base_layout)
         renderTabAndViewPager()
@@ -134,10 +126,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             }
         })
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
-
-        if (!GlobalConfig.isSellerApp()) {
-            setupSellerMigrationTicker()
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -248,6 +236,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         return false
     }
 
+    fun getAdInfo(): String? = adType
+
     private fun openCreateForm() {
         if (AppUtil.isSellerInstalled(this)) {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
@@ -256,10 +246,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }
-    }
-
-    private fun setupSellerMigrationTicker() {
-        initializeSellerMigrationCommunicationTicker(sellerMigrationStaticCommunicationBottomSheet, ticker_seller_migration_topads, CommunicationInfo.TopAds)
     }
 
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
@@ -272,5 +258,18 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun gotToInsights() {
         view_pager?.currentItem = INSIGHT_PAGE
+    }
+
+    override fun adInfo(adInfo: String) {
+        adType = adInfo
+        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        for (frag in fragments) {
+            when (frag.fragment) {
+                is BerandaTabFragment -> {
+                    (frag.fragment as BerandaTabFragment).loadStatisticsData()
+                }
+            }
+        }
+
     }
 }

@@ -18,7 +18,7 @@ dependencies {
 project.ext {
     artifactId = 'central'
     groupId = 'com.tokopedia.annotation'
-    versionName = "0.0.2-xxxx"
+    versionName = "0.0.2"
     artifactName = "annotation_proc_central-debug"
 }
 

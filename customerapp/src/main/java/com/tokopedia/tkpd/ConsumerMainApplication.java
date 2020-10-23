@@ -32,6 +32,7 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.authentication.AuthHelper;
@@ -58,8 +59,10 @@ import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubsc
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -114,6 +117,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         System.loadLibrary("native-lib");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
@@ -215,16 +219,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         return true;
     }
 
-    private void setVersionName(){
+    private void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if(!version.equalsIgnoreCase(AuthHelper.ERROR)){
+        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
             GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        }else{
+        } else {
             GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         }
@@ -250,6 +254,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        }
+        if (BuildConfig.DEBUG_TRACE_NAME != null) {
+            com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
         generateConsumerAppNetworkKeys();
     }

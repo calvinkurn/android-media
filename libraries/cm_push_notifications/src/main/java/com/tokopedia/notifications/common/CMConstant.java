@@ -126,6 +126,8 @@ public interface CMConstant {
         String FREE_DELIVERY = "bebasOngkir";
         String STOCK_AVAILABLE = "stockAvailable";
         String REVIEW_SCORE = "reviewScore";
+        String REVIEW_NUMBER = "reviewNumber";
+        String REVIEW_ICON = "reviewIcon";
     }
 
     interface NotificationProductType {
@@ -190,6 +192,11 @@ public interface CMConstant {
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+    }
+
+    interface TimberTags {
+        String TAG = "P2#CM_VALIDATION#";
+        int MAX_LIMIT = 1000;
     }
 
 }
