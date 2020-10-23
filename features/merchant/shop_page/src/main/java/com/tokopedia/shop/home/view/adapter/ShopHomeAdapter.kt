@@ -120,6 +120,18 @@ class ShopHomeAdapter(
                 }
     }
 
+    fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+        visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
+            if(shopHomeVoucherUiModel.data.isNullOrEmpty() && !shopHomeVoucherUiModel.isError){
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            } else if(index != -1){
+                visitables[index] = shopHomeVoucherUiModel
+                notifyItemChanged(index)
+            }
+        }
+    }
+
     override fun hideLoading() {
         if (visitables.contains(loadingModel)) {
             val itemPosition = visitables.indexOf(loadingModel)

@@ -55,19 +55,16 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
+import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
-import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
-import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -76,19 +73,20 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -132,6 +130,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
+        const val NUM_VOUCHER_DISPLAY = 10
 
         fun createInstance(
                 shopId: String,
@@ -357,6 +356,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
+                    stopMonitoringPltRenderPage()
+                    viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
@@ -368,9 +369,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
                                     ";error_trace='${Log.getStackTraceString(throwable)}'"
                     )
+                    stopMonitoringPltRenderPage()
                 }
             }
-            stopMonitoringPltRenderPage()
         })
 
         viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
@@ -451,6 +452,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopProductFilterCount(it.data)
+                }
+            }
+        })
+
+        viewModel?.shopHomeMerchantVoucherLayoutData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    shopHomeAdapter.setHomeMerchantVoucherData(it.data)
+                }
+                is Fail -> {
+                    shopPageHomeLayoutUiModel?.listWidget?.indexOfFirst { uiModel -> uiModel is ShopHomeVoucherUiModel }?.let { index ->
+                        val data = shopPageHomeLayoutUiModel?.listWidget?.get(index) as ShopHomeVoucherUiModel
+                        shopHomeAdapter.setHomeMerchantVoucherData(data.copy(isError = true))
+                    }
                 }
             }
         })
@@ -861,6 +876,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             startActivity(intentMerchantVoucherDetail)
         }
+    }
+
+    override fun onVoucherReloaded() {
+        viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
     }
 
     override fun onVoucherSeeAllClicked() {
