@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.otaliastudios.cameraview.CameraListener
-import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Mode
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.request
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 import kotlinx.android.synthetic.main.fragment_inactive_phone_camera_view.*
 import java.io.File
 

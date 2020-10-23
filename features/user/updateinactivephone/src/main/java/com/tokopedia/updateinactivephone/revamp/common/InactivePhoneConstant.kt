@@ -17,6 +17,8 @@ object InactivePhoneConstant {
     const val REQUEST_CAPTURE_SELFIE = 200
     const val REQUEST_CAPTURE_SAVING_BOOK = 300
 
+    const val PARAM_USER_DETAIL_DATA = "userData"
+
     fun filePath(context: Context, fileType: Int): String {
         return when(fileType) {
             CameraViewMode.ID_CARD.id -> {

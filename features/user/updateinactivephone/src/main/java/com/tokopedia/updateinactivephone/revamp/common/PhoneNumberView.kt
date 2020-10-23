@@ -8,6 +8,7 @@ import android.view.View.OnFocusChangeListener
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
@@ -40,16 +41,16 @@ class PhoneNumberView @JvmOverloads constructor(
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(ContextCompat.getColor(context, R.color.dark_N300))
-            line.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_N300))
+            textMessage.setTextColor(MethodChecker.getColor(context, R.color.dark_N300))
+            line.setBackgroundColor(MethodChecker.getColor(context, R.color.dark_N300))
         }
 
     var error: String
         get() = textMessage.text.toString()
         set(value) {
             textMessage.text = value
-            textMessage.setTextColor(ContextCompat.getColor(context, R.color.Red_R500))
-            line.setBackgroundColor(ContextCompat.getColor(context, R.color.Red_R500))
+            textMessage.setTextColor(MethodChecker.getColor(context, R.color.Red_R500))
+            line.setBackgroundColor(MethodChecker.getColor(context, R.color.Red_R500))
         }
 
     var label: String
@@ -91,9 +92,9 @@ class PhoneNumberView @JvmOverloads constructor(
     private fun focusListener(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                line.setBackgroundColor(ContextCompat.getColor(context, R.color.Green_G500))
+                line.setBackgroundColor(MethodChecker.getColor(context, R.color.Green_G500))
             } else {
-                line.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_N500))
+                line.setBackgroundColor(MethodChecker.getColor(context, R.color.dark_N500))
             }
         }
     }

@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneAccountListActivity
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
@@ -37,14 +38,15 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         userSession = UserSession(context)
 
         btnNext?.setOnClickListener {
-            // check has multiple account ?
             // check login with phone number ?
             // need improvement on login / register page to set login method
 //            if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
 //                gotoChooseAccount()
 //            } else {
-                gotoOnboardingPage()
+//                gotoOnboardingPage()
 //            }
+
+            gotoAccountListPage()
         }
     }
 
@@ -55,17 +57,15 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun gotoChooseAccount() {
-        context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, TokenGenerator().createBasicTokenGQL())
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, "089683328209")
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
-        }
-    }
-
     private fun gotoOnboardingPage() {
         fragmentTransactionInterface.replace(InactivePhoneOnboardingIdCardFragment())
+    }
+
+    private fun gotoAccountListPage() {
+        context?.let {
+            val intent = InactivePhoneAccountListActivity.createIntent(it)
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        }
     }
 
     companion object {

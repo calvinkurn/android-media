@@ -32,10 +32,10 @@
       android:layout_width="@dimen/spacing_lvl5"
       android:layout_height="@dimen/spacing_lvl5"
       app:srcCompat="@drawable/ic_success"
-      app:layout_constraintBottom_toBottomOf="@id/imgSampleRight"
-      app:layout_constraintRight_toRightOf="@id/imgSampleRight"
-      app:layout_constraintLeft_toRightOf="@id/imgSampleRight"
-      app:layout_constraintTop_toBottomOf="@id/imgSampleRight" />
+      app:layout_constraintBottom_toBottomOf="@+id/imgSampleRight"
+      app:layout_constraintRight_toRightOf="@+id/imgSampleRight"
+      app:layout_constraintLeft_toRightOf="@+id/imgSampleRight"
+      app:layout_constraintTop_toBottomOf="@+id/imgSampleRight" />
     
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/result_text_ktp"
@@ -56,7 +56,7 @@
       android:layout_margin="@dimen/spacing_lvl6"
       app:srcCompat="@drawable/ic_sample_receipt_false"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintLeft_toRightOf="@id/imgSampleRight"
+      app:layout_constraintLeft_toRightOf="@+id/imgSampleRight"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintRight_toRightOf="parent" />
     
@@ -65,10 +65,10 @@
       android:layout_width="@dimen/spacing_lvl5"
       android:layout_height="@dimen/spacing_lvl5"
       app:srcCompat="@drawable/ic_error"
-      app:layout_constraintBottom_toBottomOf="@id/imgSampleFalse"
-      app:layout_constraintRight_toRightOf="@id/imgSampleFalse"
-      app:layout_constraintLeft_toRightOf="@id/imgSampleFalse"
-      app:layout_constraintTop_toBottomOf="@id/imgSampleFalse" />
+      app:layout_constraintBottom_toBottomOf="@+id/imgSampleFalse"
+      app:layout_constraintRight_toRightOf="@+id/imgSampleFalse"
+      app:layout_constraintLeft_toRightOf="@+id/imgSampleFalse"
+      app:layout_constraintTop_toBottomOf="@+id/imgSampleFalse" />
     
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/result_text_face"
@@ -77,9 +77,9 @@
       android:layout_marginTop="@dimen/spacing_lvl3"
       android:text="@string/text_onboarding_false"
       app:typographyType="small"
-      app:layout_constraintTop_toBottomOf="@id/imgSampleFalse"
-      app:layout_constraintLeft_toLeftOf="@id/imgSampleFalse"
-      app:layout_constraintRight_toRightOf="@id/imgSampleFalse" />
+      app:layout_constraintTop_toBottomOf="@+id/imgSampleFalse"
+      app:layout_constraintLeft_toLeftOf="@+id/imgSampleFalse"
+      app:layout_constraintRight_toRightOf="@+id/imgSampleFalse" />
   
   </androidx.constraintlayout.widget.ConstraintLayout>
   
@@ -92,7 +92,7 @@
     android:text="@string/text_onboarding_receipt_description"
     android:textColor="@color/dark_N200"
     app:typographyType="body_2"
-    app:layout_constraintTop_toBottomOf="@id/layoutSample"
+    app:layout_constraintTop_toBottomOf="@+id/layoutSample"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"/>
 

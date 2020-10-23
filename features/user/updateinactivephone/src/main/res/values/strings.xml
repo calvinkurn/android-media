@@ -107,5 +107,6 @@
   <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_button">Ke Home</string>
   <string name="item_dot">●</string>
+  <string name="text_account_list_title">Mau ubah nomor HP di akun yang mana?</string>
 
 </resources>

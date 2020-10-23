@@ -67,9 +67,9 @@
     android:layout_height="wrap_content"
     android:textColor="@color/Neutral_N0"
     app:typographyType="heading_3"
-    app:layout_constraintBottom_toBottomOf="@id/btnBack"
-    app:layout_constraintLeft_toRightOf="@id/btnBack"
-    app:layout_constraintTop_toTopOf="@id/btnBack"
+    app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+    app:layout_constraintLeft_toRightOf="@+id/btnBack"
+    app:layout_constraintTop_toTopOf="@+id/btnBack"
     app:layout_constraintRight_toRightOf="parent" />
   
   <FrameLayout

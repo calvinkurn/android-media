@@ -1,0 +1,138 @@
+package com.tokopedia.updateinactivephone.revamp.view.activity
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_USER_DETAIL_DATA
+import com.tokopedia.updateinactivephone.revamp.di.DaggerInactivePhoneComponent
+import com.tokopedia.updateinactivephone.revamp.di.InactivePhoneComponent
+import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneModule
+import com.tokopedia.updateinactivephone.revamp.domain.data.AccountList
+import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
+import com.tokopedia.updateinactivephone.revamp.domain.data.UserDetailDataModel
+import com.tokopedia.updateinactivephone.revamp.view.adapter.AccountListAdapter
+import com.tokopedia.updateinactivephone.revamp.view.viewholder.AccountListViewHolder
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.AccountListViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.activity_inactive_phone_account_list.*
+import javax.inject.Inject
+
+class InactivePhoneAccountListActivity: BaseSimpleActivity(), HasComponent<InactivePhoneComponent> {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(AccountListViewModel::class.java) }
+
+    private var accountListAdapter = AccountListAdapter(object : AccountListViewHolder.Listener {
+        override fun onItemClick(userDetailDataModel: UserDetailDataModel) {
+            onUserSelected(userDetailDataModel)
+        }
+    })
+
+    override fun getLayoutRes(): Int = R.layout.activity_inactive_phone_account_list
+    override fun getToolbarResourceID(): Int = R.id.toolbarInactivePhoneAccountList
+
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun getComponent(): InactivePhoneComponent {
+        return DaggerInactivePhoneComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .inactivePhoneModule(InactivePhoneModule(this))
+                .build()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        super.setupLayout(savedInstanceState)
+        updateTitle(getString(R.string.text_title))
+        toolbar.setTitleTextAppearance(this, R.style.BoldToolbar)
+        toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_inactive_phone)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            elevation = 0f
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        component.inject(this)
+
+        initObserver()
+        initView()
+    }
+
+    private fun initView() {
+        recyclerViewAccountList?.apply {
+            adapter = accountListAdapter
+        }
+
+        accountListAdapter.addAccountList(generateMockResponse().accountList.userDetailDataModels)
+    }
+
+    private fun initObserver() {
+        viewModel.accountList.observe(this, Observer { result ->
+            when(result) {
+                is Success -> { onGetAccountListSuccess(result.data) }
+                is Fail -> { onGetAccountListFail(result.throwable) }
+            }
+        })
+    }
+
+    private fun onGetAccountListSuccess(accountListDataModel: AccountListDataModel) {
+        val accountList = accountListDataModel.accountList
+
+        when {
+            accountList.userCount > 1 -> {
+                accountListAdapter.clearAllItems()
+                accountListAdapter.addAccountList(accountListDataModel.accountList.userDetailDataModels)
+            }
+            accountList.userCount == 1 -> {
+                onUserSelected(accountList.userDetailDataModels[0])
+            }
+            else -> {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+    }
+
+    private fun onUserSelected(userDetailDataModel: UserDetailDataModel) {
+        val intent = Intent()
+        intent.putExtra(PARAM_USER_DETAIL_DATA, userDetailDataModel)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun onGetAccountListFail(throwable: Throwable) {
+
+    }
+
+    private fun generateMockResponse(): AccountListDataModel {
+        return AccountListDataModel(AccountList(userDetailDataModels = mutableListOf(
+                UserDetailDataModel(userId = "1", fullname = "Nama 1", email = "email1@tokopedia.com", image = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcReriDdeolSfL_BPwDCIU1k1HXgrSVnDlktXg&usqp=CAU"),
+                UserDetailDataModel(userId = "2", fullname = "Nama 2", email = "email2@tokopedia.com", image = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcReriDdeolSfL_BPwDCIU1k1HXgrSVnDlktXg&usqp=CAU"),
+                UserDetailDataModel(userId = "3", fullname = "Nama 3", email = "email3@tokopedia.com", image = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcReriDdeolSfL_BPwDCIU1k1HXgrSVnDlktXg&usqp=CAU"),
+                UserDetailDataModel(userId = "4", fullname = "Nama 4", email = "email4@tokopedia.com", image = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcReriDdeolSfL_BPwDCIU1k1HXgrSVnDlktXg&usqp=CAU")
+        )))
+    }
+
+    companion object {
+        fun createIntent(context: Context): Intent {
+            return Intent(context, InactivePhoneAccountListActivity::class.java)
+        }
+    }
+}

@@ -5,6 +5,7 @@ import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneQueryModule
 import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneUseCaseModule
 import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneViewModelModule
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneOnboardingFragment
 import dagger.Component
 
@@ -18,5 +19,7 @@ import dagger.Component
     BaseAppComponent::class
 ])
 interface InactivePhoneComponent {
-    fun inject(inactivePhoneOnboardingFragment: InactivePhoneOnboardingFragment)
+    fun inject(activity: InactivePhoneAccountListActivity)
+
+    fun inject(fragment: InactivePhoneOnboardingFragment)
 }

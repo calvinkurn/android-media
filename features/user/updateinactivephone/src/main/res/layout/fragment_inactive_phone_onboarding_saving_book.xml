@@ -16,7 +16,7 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/imgIconVerified">
+    app:layout_constraintBottom_toTopOf="@+id/imgIconVerified">
     
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -45,7 +45,7 @@
         app:chipText="Buku Tabungan"
         app:chipType="selected"
         app:chipSize="small"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
         app:layout_constraintLeft_toLeftOf="parent"/>
     
       <com.tokopedia.unifycomponents.ChipsUnify
@@ -57,15 +57,15 @@
         app:chipText="Bukti Pembayaran"
         app:chipType="normal"
         app:chipSize="small"
-        app:layout_constraintTop_toTopOf="@id/chipSavingBook"
-        app:layout_constraintLeft_toRightOf="@id/chipSavingBook"/>
+        app:layout_constraintTop_toTopOf="@+id/chipSavingBook"
+        app:layout_constraintLeft_toRightOf="@+id/chipSavingBook"/>
     
       <FrameLayout
         android:id="@+id/contentDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/chipSavingBook"
+        app:layout_constraintTop_toBottomOf="@+id/chipSavingBook"
         app:layout_constraintLeft_toRightOf="parent">
       
         <include layout="@layout/item_inactive_phone_onboarding_saving_book"
@@ -89,7 +89,7 @@
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginBottom="@dimen/spacing_lvl4"
     app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/btnNext"/>
+    app:layout_constraintBottom_toTopOf="@+id/btnNext"/>
   
   <com.tokopedia.unifyprinciples.Typography
     android:layout_width="@dimen/layout_lvl0"
@@ -100,10 +100,10 @@
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:textSize="@dimen/fontSize_lvl2"
     app:typographyType="body_3"
-    app:layout_constraintTop_toTopOf="@id/imgIconVerified"
-    app:layout_constraintLeft_toRightOf="@id/imgIconVerified"
+    app:layout_constraintTop_toTopOf="@+id/imgIconVerified"
+    app:layout_constraintLeft_toRightOf="@+id/imgIconVerified"
     app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintBottom_toBottomOf="@id/imgIconVerified"/>
+    app:layout_constraintBottom_toBottomOf="@+id/imgIconVerified"/>
   
   <com.tokopedia.unifycomponents.UnifyButton
     android:id="@+id/btnNext"

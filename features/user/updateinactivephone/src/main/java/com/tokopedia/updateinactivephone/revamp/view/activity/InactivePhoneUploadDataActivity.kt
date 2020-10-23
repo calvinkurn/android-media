@@ -1,5 +1,6 @@
 package com.tokopedia.updateinactivephone.revamp.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +31,7 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
         }
     }
 
+    @SuppressLint("DialogUnifyUsage")
     override fun onBackPressed() {
         DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.text_exit_title))

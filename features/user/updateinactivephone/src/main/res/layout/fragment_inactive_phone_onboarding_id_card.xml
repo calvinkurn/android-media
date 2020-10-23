@@ -36,7 +36,7 @@
       android:text="@string/text_title_id_card"
       app:typographyType="heading_2"
       app:typographyWeight="bold"
-      app:layout_constraintTop_toBottomOf="@id/imgHeader"
+      app:layout_constraintTop_toBottomOf="@+id/imgHeader"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"/>
   
@@ -47,7 +47,7 @@
       android:layout_marginTop="@dimen/spacing_lvl3"
       android:layout_marginStart="@dimen/spacing_lvl4"
       android:layout_marginEnd="@dimen/spacing_lvl4"
-      app:layout_constraintTop_toBottomOf="@id/txtTitle"
+      app:layout_constraintTop_toBottomOf="@+id/txtTitle"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent">
     
@@ -69,7 +69,7 @@
         android:textColor="@color/dark_N500"
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/item_dot"
-        app:layout_constraintTop_toBottomOf="@id/textDescriptionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/textDescriptionTitle"
         app:layout_constraintLeft_toLeftOf="parent"/>
     
       <com.tokopedia.unifyprinciples.Typography
@@ -82,8 +82,8 @@
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/text_onboarding_id_card_description_1"
         app:typographyType="body_2"
-        app:layout_constraintTop_toBottomOf="@id/textDescriptionTitle"
-        app:layout_constraintLeft_toRightOf="@id/item1"
+        app:layout_constraintTop_toBottomOf="@+id/textDescriptionTitle"
+        app:layout_constraintLeft_toRightOf="@+id/item1"
         app:layout_constraintRight_toRightOf="parent"/>
     
       <com.tokopedia.unifyprinciples.Typography
@@ -94,7 +94,7 @@
         android:textColor="@color/dark_N500"
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/item_dot"
-        app:layout_constraintTop_toBottomOf="@id/step1"
+        app:layout_constraintTop_toBottomOf="@+id/step1"
         app:layout_constraintLeft_toLeftOf="parent"/>
     
       <com.tokopedia.unifyprinciples.Typography
@@ -108,8 +108,8 @@
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/text_onboarding_id_card_description_2"
         app:typographyType="body_2"
-        app:layout_constraintTop_toBottomOf="@id/step1"
-        app:layout_constraintLeft_toRightOf="@id/item2"
+        app:layout_constraintTop_toBottomOf="@+id/step1"
+        app:layout_constraintLeft_toRightOf="@+id/item2"
         app:layout_constraintRight_toRightOf="parent"/>
     
       <com.tokopedia.unifyprinciples.Typography
@@ -120,7 +120,7 @@
         android:textColor="@color/dark_N500"
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/item_dot"
-        app:layout_constraintTop_toBottomOf="@id/step2"
+        app:layout_constraintTop_toBottomOf="@+id/step2"
         app:layout_constraintLeft_toLeftOf="parent"/>
     
       <com.tokopedia.unifyprinciples.Typography
@@ -134,8 +134,8 @@
         android:textSize="@dimen/fontSize_lvl3"
         android:text="@string/text_onboarding_id_card_description_3"
         app:typographyType="body_2"
-        app:layout_constraintTop_toBottomOf="@id/step2"
-        app:layout_constraintLeft_toRightOf="@id/item3"
+        app:layout_constraintTop_toBottomOf="@+id/step2"
+        app:layout_constraintLeft_toRightOf="@+id/item3"
         app:layout_constraintRight_toRightOf="parent"/>
   
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -147,7 +147,7 @@
       app:srcCompat="@drawable/ic_shield"
       android:layout_marginStart="@dimen/spacing_lvl4"
       android:layout_marginTop="@dimen/spacing_lvl6"
-      app:layout_constraintTop_toBottomOf="@id/layoutDescription"
+      app:layout_constraintTop_toBottomOf="@+id/layoutDescription"
       app:layout_constraintLeft_toLeftOf="parent"/>
   
     <com.tokopedia.unifyprinciples.Typography
@@ -159,10 +159,10 @@
       android:layout_marginEnd="@dimen/spacing_lvl4"
       android:textSize="@dimen/fontSize_lvl2"
       app:typographyType="body_3"
-      app:layout_constraintTop_toTopOf="@id/imgIconVerified"
-      app:layout_constraintLeft_toRightOf="@id/imgIconVerified"
+      app:layout_constraintTop_toTopOf="@+id/imgIconVerified"
+      app:layout_constraintLeft_toRightOf="@+id/imgIconVerified"
       app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintBottom_toBottomOf="@id/imgIconVerified"/>
+      app:layout_constraintBottom_toBottomOf="@+id/imgIconVerified"/>
   
     <com.tokopedia.unifycomponents.UnifyButton
       android:id="@+id/btnNext"
@@ -172,7 +172,7 @@
       android:text="@string/text_title_id_card"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/imgIconVerified"/>
+      app:layout_constraintTop_toBottomOf="@+id/imgIconVerified"/>
     
   </androidx.constraintlayout.widget.ConstraintLayout>
 
