@@ -112,7 +112,10 @@
             tools:listitem="@layout/toolbar_viewholder_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_6"
+            android:paddingTop="@dimen/dp_6"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>

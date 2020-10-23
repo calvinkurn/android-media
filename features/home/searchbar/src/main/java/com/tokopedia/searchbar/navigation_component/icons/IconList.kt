@@ -57,7 +57,7 @@ object IconList {
         override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
-                    applink = "",
+                    applink = ApplinkConst.HOME_NAVIGATION,
                     disableRouteManager = disableRouteManager
             ) {
                 onClick.invoke()

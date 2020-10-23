@@ -124,7 +124,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
@@ -1698,7 +1697,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun isLightThemeStatusBar(): Boolean {
         homeMainToolbar?.let {
-            return it.toolbarThemeType != NavToolbar.TOOLBAR_DARK_TYPE
+            return it.toolbarThemeType != NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
         }
         return false
     }
