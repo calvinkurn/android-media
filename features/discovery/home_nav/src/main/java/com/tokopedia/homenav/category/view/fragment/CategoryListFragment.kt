@@ -13,6 +13,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.viewmodel.HomeNavGlobalErrorViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.category.analytics.CategoryTracking
 import com.tokopedia.homenav.category.view.adapter.CategoryListAdapter
 import com.tokopedia.homenav.category.view.adapter.model.CategoryListLoadingViewModel
 import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeFactory
@@ -72,7 +73,14 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
-        RouteManager.route(context, homeNavMenuViewModel.applink)
+        arguments?.getString(TITLE_ARGS, "")?.let {
+            if(!it.contains(OTHER)){
+                CategoryTracking.onClickItem(homeNavMenuViewModel.id.toString(), userSessionInterface.userId)
+            } else {
+                CategoryTracking.onClickLainnyaItem(homeNavMenuViewModel.itemTitle, userSessionInterface.userId)
+            }
+            RouteManager.route(context, homeNavMenuViewModel.applink)
+        }
     }
 
     private fun initViewModel(){
@@ -99,6 +107,7 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
 
     companion object{
         const val PAGE_NAME = "CATEGORY_LIST"
+        const val OTHER = "lainnya"
         private const val TITLE_ARGS = "title"
     }
 
