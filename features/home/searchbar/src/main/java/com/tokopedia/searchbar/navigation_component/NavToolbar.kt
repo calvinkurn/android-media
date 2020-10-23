@@ -414,10 +414,10 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private fun setTitleTextColorBasedOnTheme() {
         when(toolbarThemeType) {
             TOOLBAR_DARK_TYPE -> {
-                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.white))
+                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0))
             }
             TOOLBAR_LIGHT_TYPE -> {
-                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
             }
         }
     }

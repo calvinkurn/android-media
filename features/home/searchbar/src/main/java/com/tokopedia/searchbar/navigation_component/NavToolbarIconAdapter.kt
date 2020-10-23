@@ -114,17 +114,17 @@ internal class ImageIconHolder(view: View): IconHolder(view) {
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.white))
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Unify_N0))
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Neutral_N700))
+                    DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, R.color.Unify_N700))
                 }
                 iconImage.setImageDrawable(wrappedDrawable)
             }
         } else {
             if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.white))
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Unify_N0))
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Neutral_N700))
+                iconImage.setImage(newIconId = iconToolbar.id, newLightEnable = ContextCompat.getColor(context, R.color.Unify_N700))
             }
         }
 
