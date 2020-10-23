@@ -108,12 +108,14 @@ class SomListViewModel @Inject constructor(
     fun refreshSelectedOrder(invoice: String) {
         launchCatchError(block = {
             val currentSearchParam = getOrderListParams.search
+            val currentNextOrderId = getOrderListParams.nextOrderId
             setSearchParam(invoice)
+            resetNextOrderId()
             somListGetOrderListUseCase.setParam(getOrderListParams)
             val result = somListGetOrderListUseCase.execute()
             setSearchParam(currentSearchParam)
             getUserRolesJob?.join()
-            getOrderListParams.nextOrderId = result.first
+            getOrderListParams.nextOrderId = currentNextOrderId
             _orderListResult.postValue(Success(result.second))
         }, onError = {
             _orderListResult.postValue(Fail(it))

@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -236,6 +238,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (it is BottomSheetUnify) it.dismiss()
         }
         super.onPause()
+    }
+
+    override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
+        return EndlessLayoutManagerListener { rvSomList.layoutManager }
     }
 
     override fun loadInitialData() {
@@ -894,6 +900,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     (adapter as SomListOrderAdapter).removeOrder(selectedOrderId)
                     somListSortFilterTab.decrementOrderCount()
                     updateOrderCounter()
+                    checkLoadMore()
                 } else {
                     (adapter as SomListOrderAdapter).updateOrder(newOrder)
                 }
@@ -907,6 +914,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         updateScrollListenerState(viewModel.hasNextPage())
         isLoadingInitialData = false
         isJustRestored = false
+    }
+
+    private fun checkLoadMore() {
+        rvSomList.layoutManager?.apply {
+            if (this is LinearLayoutManager && findLastVisibleItemPosition() == adapter.dataSize - 1) {
+                if (viewModel.hasNextPage()) {
+                    endlessRecyclerViewScrollListener.loadMoreNextPage()
+                }
+            }
+        }
     }
 
     private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
