@@ -75,6 +75,26 @@ class NavigationToolbarTest {
         Assert.assertEquals(ICON_COUNT_AFTER_UPDATE, currentIconCount)
     }
 
+    // Configurable icon list
+    @Test
+    fun testWhenSetCounterOnIcon_NavToolbar_shouldUpdateCounterNumberOnlyOnSelectedIcon() {
+        val navToolbar: NavToolbar = getNavToolbar()
+        val navToolbarIconRv: RecyclerView = getNavToolbarRecyclerView()
+        val defaultCounter = 99
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            //set 3 icon
+            navToolbar.setIcon(IconBuilder().addNotificationIcon { }.addCartIcon {  }.build())
+            navToolbar.setBadgeCounter(IconList.ID_NOTIFICATION, defaultCounter)
+        }
+        Thread.sleep(1000)
+
+        onView(CommonMatcher.withTagStringValue(getCounterTagById(IconList.ID_NOTIFICATION))).check(matches(isDisplayed()))
+        onView(CommonMatcher.withTagStringValue(getCounterTagById(IconList.ID_NOTIFICATION))).check(matches(withText(defaultCounter.toString())))
+
+        onView(CommonMatcher.withTagStringValue(getCounterTagById(IconList.ID_CART))).check(matches(not(isDisplayed())))
+    }
+
     // Back button
     @Test
     fun testWhenSetBackButtonTypeBack_NavToolbar_shouldShowTypeBackButton() {
@@ -190,7 +210,6 @@ class NavigationToolbarTest {
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             navToolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM)
-
             val customTextView = TextView(activity)
             customTextView.tag = customViewTag
 
@@ -210,4 +229,7 @@ class NavigationToolbarTest {
 
     private fun getNavToolbarRecyclerView(): RecyclerView =
             activityRule.activity.findViewById(R.id.rv_icon_list)
+
+    private fun getCounterTagById(id: Int) =
+            context.getString(com.tokopedia.searchbar.R.string.tag_counter_id) + id
 }

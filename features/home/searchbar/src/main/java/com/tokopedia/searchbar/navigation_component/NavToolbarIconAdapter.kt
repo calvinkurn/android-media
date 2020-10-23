@@ -88,6 +88,7 @@ class ImageIconHolder(view: View): IconHolder(view) {
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.id.toString()
+        iconBadge.tag = constructCounterTagById(iconToolbar.id)
 
         val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
         unwrappedDrawable?.let {
@@ -114,6 +115,9 @@ class ImageIconHolder(view: View): IconHolder(view) {
             iconBadge.text = iconToolbar.badgeCounter.toString()
         }
     }
+
+    private fun constructCounterTagById(id: Int) =
+            context.getString(R.string.tag_counter_id) + id
 }
 
 class LottieIconHolder(view: View): IconHolder(view) {
@@ -123,6 +127,7 @@ class LottieIconHolder(view: View): IconHolder(view) {
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.id.toString()
+        iconBadge.tag = constructCounterTagById(iconToolbar.id)
 
         iconImage.cancelAnimation()
         iconImage.progress = 0f
@@ -142,4 +147,7 @@ class LottieIconHolder(view: View): IconHolder(view) {
             iconBadge.text = iconToolbar.badgeCounter.toString()
         }
     }
+
+    private fun constructCounterTagById(id: Int) =
+            context.getString(R.string.tag_counter_id) + id
 }
