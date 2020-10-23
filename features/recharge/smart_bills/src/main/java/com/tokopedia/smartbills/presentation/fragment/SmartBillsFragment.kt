@@ -276,6 +276,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         }
     }
 
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
+
     override fun onDestroyView() {
         performanceMonitoring.stopTrace()
         super.onDestroyView()
