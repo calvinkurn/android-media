@@ -2,5 +2,5 @@
 <resources>
     <string name="play_widget_success_add_reminder">Berhasil pasang pengingat</string>
     <string name="play_widget_success_remove_reminder">Berhasil menghapus pengingat</string>
-    <string name="play_widget_error_reminder">Oops, internet terputus. Cek ulang koneksimu.</string>
+    <string name="play_widget_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 </resources>
