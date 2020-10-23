@@ -165,6 +165,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         })
 
         viewModel.multiCheckout.observe(viewLifecycleOwner, Observer {
+            smart_bills_checkout_view.getCheckoutButton().isLoading = false
             when (it) {
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
@@ -191,7 +192,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                                     getString(R.string.smart_bills_item_default_error)
                                 }
                                 adapter.data[errorItem.index] = bill
-                                adapter.notifyItemChanged(errorItem.index)
+                                adapter.updateListByCheck(false, errorItem.index)
                             }
                         }
                     }
@@ -426,7 +427,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun onClickNextBuyButton() {
-        if (adapter.checkedDataList.isNotEmpty()) {
+        // Prevent multiple checkout calls when one is already underway
+        if (adapter.checkedDataList.isNotEmpty() && !smart_bills_checkout_view.getCheckoutButton().isLoading) {
             // Reset error in bill items
             for ((index, bill) in adapter.data.withIndex()) {
                 if (bill.errorMessage.isNotEmpty()) {
@@ -436,6 +438,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
             }
 
+            smart_bills_checkout_view.getCheckoutButton().isLoading = true
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )

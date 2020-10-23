@@ -3,7 +3,6 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -27,7 +26,7 @@ class SmartBillsViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val smartBillsRepository: SmartBillsRepository,
         private val dispatcher: SmartBillsDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.IO) {
 
     private val mutableStatementMonths = MutableLiveData<Result<List<RechargeStatementMonths>>>()
     val statementMonths: LiveData<Result<List<RechargeStatementMonths>>>
