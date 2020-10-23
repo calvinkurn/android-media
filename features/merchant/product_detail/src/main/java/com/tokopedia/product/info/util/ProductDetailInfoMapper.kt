@@ -39,19 +39,27 @@ object ProductDetailInfoMapper {
                     }
                 }
                 GUIDELINE_DETAIL_KEY -> {
-                    val shopNotes = responseData.dataShopNotes
-                    if (shopNotes.error.isEmpty() && shopNotes.shopNotesData.isNotEmpty()) {
-                        listOfComponent.add(ProductDetailInfoExpandableListDataModel(index, it.title, responseData.dataShopNotes.shopNotesData, it.isShowable))
-                    }
-                }
-                SHOP_NOTES_DETAIL_KEY -> {
                     val variantGuideline = parcelData.variantGuideline
                     if (variantGuideline.isNotEmpty()) {
                         listOfComponent.add(ProductDetailInfoExpandableImageDataModel(index, it.title, variantGuideline, it.isShowable))
                     }
                 }
+                SHOP_NOTES_DETAIL_KEY -> {
+                    val shopNotes = responseData.dataShopNotes
+                    if (shopNotes.error.isEmpty() && shopNotes.shopNotesData.isNotEmpty()) {
+                        listOfComponent.add(ProductDetailInfoExpandableListDataModel(index, it.title, responseData.dataShopNotes.shopNotesData, it.isShowable))
+                    }
+                }
+                else -> {
+                    if (it.value.isNotEmpty()) {
+                        listOfComponent.add(ProductDetailInfoExpandableDataModel(index, it.title, it.value, listOf(), it.isShowable))
+                    }
+                }
             }
         }
+
+        listOfComponent.add(ProductDetailInfoDiscussionDataModel(componentName = listOfComponent.count() + 1, title = responseData.discussion.title, discussionCount = parcelData.discussionCount, isShowable = false))
+
         return listOfComponent
     }
 }

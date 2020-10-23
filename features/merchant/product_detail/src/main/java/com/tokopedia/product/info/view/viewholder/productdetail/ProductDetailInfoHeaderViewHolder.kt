@@ -67,7 +67,9 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             if (data.applink.isNotEmpty()) {
                 setTextColor(MethodChecker.getColor(context, R.color.light_G500))
                 setWeight(Typography.BOLD)
-                setOnClickListener {}
+                setOnClickListener {
+                    listener.goToApplink(data.applink)
+                }
             } else {
                 setTextColor(MethodChecker.getColor(context, R.color.light_N700_68))
                 setWeight(Typography.REGULAR)
@@ -75,5 +77,4 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             }
         }
     }
-
 }

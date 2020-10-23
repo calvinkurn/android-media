@@ -93,6 +93,7 @@ import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
@@ -110,6 +111,7 @@ import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.info.view.ProductFullDescriptionTabActivity
+import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -154,7 +156,12 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
+        DynamicProductDetailListener,
+        ProductVariantListener,
+        ProductAccessRequestDialogFragment.Listener,
+        PartialButtonActionListener,
+        ProductDetailBottomSheetListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -222,6 +229,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
+    private var shouldRefreshProductInfoBottomSheet = false
 
     //View
     private lateinit var varToolbar: Toolbar
@@ -234,13 +242,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var menu: Menu? = null
     private val BUNDLE = "bundle"
 
-    val productDaggerComponent by lazy {
-        activity?.let {
-            DaggerProductDetailComponent.builder()
-                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                    .build()
-        }
-    }
+    private var productDaggerComponent: ProductDetailComponent? = null
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
@@ -285,6 +287,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onSwipeRefresh() {
         recommendationCarouselPositionSavedState.clear()
+        shouldRefreshProductInfoBottomSheet = true
         isLoadingInitialData = true
         ticker_occ_layout.gone()
         loadProductData(true)
@@ -294,6 +297,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (savedInstanceState != null) {
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
         }
+        activity?.let {
+            productDaggerComponent = DaggerProductDetailComponent.builder()
+                    .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                    .build()
+        }
+
         super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ProductDetailConstant.ARG_PRODUCT_ID)
@@ -388,7 +397,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
                     viewModel.getDynamicProductInfoP1,
                     viewModel.variantData?.sizeChart ?: "",
-                    dataContent
+                    dataContent, shouldRefreshProductInfoBottomSheet
             )
             cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
             val bundleData = Bundle().apply {
@@ -396,7 +405,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             productDetailInfoSheet.arguments = bundleData
-            productDetailInfoSheet.setDaggerComponent(productDaggerComponent)
+            productDetailInfoSheet.setDaggerComponent(productDaggerComponent, this)
+            shouldRefreshProductInfoBottomSheet = false
             productDetailInfoSheet.show(it.supportFragmentManager, "bs product detail")
         }
     }
@@ -488,8 +498,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
-                        is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity((viewModel.variantData?.getBuyableVariantCount()
-                                ?: 0).toString())
+                        is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                     }
                 }
@@ -997,7 +1006,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel) {
+    override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
         doActionOrLogin({
             val totalAvailableVariants = (viewModel.variantData?.getBuyableVariantCount()
                     ?: 0).toString()
@@ -1005,7 +1014,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
                         ?: false, totalAvailableVariants)
             }
-            goToWriteActivity(totalAvailableVariants)
+            goToWriteActivity()
         })
         viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
     }
@@ -2966,7 +2975,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun goToReadingActivity() {
+    override fun goToReadingActivity() {
         viewModel.getDynamicProductInfoP1?.let {
             val intent = RouteManager.getIntent(context,
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID))
@@ -2995,7 +3004,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun goToWriteActivity(availableVariants: String) {
+    private fun goToWriteActivity() {
         viewModel.getDynamicProductInfoP1?.basic?.productID?.let {
             val intent = RouteManager.getIntent(
                     context,
@@ -3004,7 +3013,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .appendQueryParameter(ProductDetailConstant.PARAM_PRODUCT_ID, it)
                             .appendQueryParameter(PARAM_APPLINK_IS_VARIANT_SELECTED, (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
                                     ?: false).toString())
-                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
+                            .appendQueryParameter(PARAM_APPLINK_AVAILABLE_VARIANT, (viewModel.variantData?.getBuyableVariantCount()
+                                    ?: 0).toString())
                             .build().toString())
             startActivity(intent)
         }

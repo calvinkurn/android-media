@@ -26,13 +26,19 @@ class ProductDetailInfoExpandableImageViewHolder(private val view: View,
         setupExpandableItem(element)
     }
 
-    private fun setupExpandableItem(element: ProductDetailInfoExpandableImageDataModel) = with(view) {
-        expandable_image.loadImage(element.imageUrl)
+    private fun setupExpandableItem(element: ProductDetailInfoExpandableImageDataModel) = with(itemView) {
+        expandable_image?.loadImage(element.imageUrl)
 
         expandable_image?.showWithCondition(element.isShowable)
+        expandable_image?.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View?) {
+                listener.goToImagePreview(element.imageUrl)
+            }
+
+        })
         expandable_title_chevron?.isExpand = element.isShowable
 
-        setOnClickListener {
+        expandable_title_chevron?.setOnClickListener {
             expandable_title_chevron?.isExpand = expandable_title_chevron?.isExpand != true
             listener.closeAllExpand(element.uniqueIdentifier(), expandable_title_chevron?.isExpand
                     ?: false)
@@ -46,8 +52,7 @@ class ProductDetailInfoExpandableImageViewHolder(private val view: View,
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
                 if (toggle) {
-                    view.expandable_image.loadImage("")
-                    ExpandableAnimation.expand(view.expandable_image, customHeight = view.resources.displayMetrics.widthPixels){
+                    ExpandableAnimation.expand(view.expandable_image, customHeight = view.resources.displayMetrics.widthPixels) {
                         view.expandable_image.loadImage(element.imageUrl)
                     }
                 } else {

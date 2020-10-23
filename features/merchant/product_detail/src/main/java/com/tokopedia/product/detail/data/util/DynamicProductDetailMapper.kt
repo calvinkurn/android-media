@@ -279,12 +279,12 @@ object DynamicProductDetailMapper {
         } ?: listOf()
     }
 
-    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>): ProductInfoParcelData {
+    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
         val data = productInfoP1?.data
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", basic?.catalogID ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.data?.videos
-                ?: listOf(), productInfoContent)
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.videos
+                ?: listOf(), productInfoContent, forceRefresh)
     }
 }

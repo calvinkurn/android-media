@@ -11,4 +11,7 @@ interface ProductDetailInfoListener {
     fun goToVideoPlayer(url: List<String>, index: Int)
     fun goToShopNotes(title: String, date: String, desc: String)
     fun goToSpecification(specification: List<Specification>)
+    fun goToImagePreview(url: String)
+    fun goToApplink(url: String)
+    fun goToDiscussion(discussionCount: Int)
 }

@@ -8,7 +8,7 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 data class ProductDetailInfoDiscussionDataModel(
         var componentName: Int = 0,
         var title: String = "",
-        var buttonValue: String = "",
+        var discussionCount :Int = 0,
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
     override fun uniqueIdentifier(): Int = componentName
@@ -17,7 +17,7 @@ data class ProductDetailInfoDiscussionDataModel(
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
         return if (newData is ProductDetailInfoDiscussionDataModel) {
-            title == newData.title && buttonValue == newData.buttonValue
+            title == newData.title
         } else false
     }
 

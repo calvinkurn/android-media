@@ -33,8 +33,8 @@ object ExpandableAnimation {
         }
         val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 0F, 1F)
 
-        alphaAnim.duration = 300
-        anim.duration = 300
+        alphaAnim.duration = if (actualheight > 2000) 600 else 300
+        anim.duration = if (actualheight > 2000) 600 else 300
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {
@@ -60,8 +60,8 @@ object ExpandableAnimation {
 
         val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 1F, 0F)
 
-        alphaAnim.duration = 300
-        anim.duration = 300
+        alphaAnim.duration = if (actualHeight > 2000) 600 else 300
+        anim.duration = if (actualHeight > 2000) 600 else 300
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {

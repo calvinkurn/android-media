@@ -19,7 +19,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/product_detail_discussion_button"
-        android:layout_width="@dimen/dp_110"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:gravity="center"

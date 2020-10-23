@@ -18,7 +18,16 @@ class ProductDetailInfoDiscussionViewHolder(private val view: View,
     }
 
     override fun bind(element: ProductDetailInfoDiscussionDataModel) {
-        view.product_detail_discussion_button?.text = element.buttonValue
+        view.product_detail_discussion_button?.text = if (element.discussionCount > 0) {
+            view.context.getString(R.string.product_detail_check_discussion_label)
+        } else {
+            view.context.getString(R.string.product_detail_ask_discussion_label)
+        }
+
+        view.product_detail_discussion_button?.setOnClickListener {
+            listener.goToDiscussion(element.discussionCount)
+        }
+
         view.product_detail_discussion_title?.text = element.title
     }
 }

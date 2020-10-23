@@ -78,16 +78,18 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
     }
 
     private var requestParams = RequestParams.EMPTY
+    private var forceRefresh = false
 
-    suspend fun executeOnBackground(requestParams: RequestParams): PdpGetDetailBottomSheet {
+    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): PdpGetDetailBottomSheet {
         this.requestParams = requestParams
+        this.forceRefresh = forceRefresh
         return executeOnBackground()
     }
 
     override suspend fun executeOnBackground(): PdpGetDetailBottomSheet {
         val request = GraphqlRequest(QUERY,
                 BottomSheetProductDetailInfoResponse::class.java, requestParams.parameters)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+        val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
                 .setSessionIncluded(false)
                 .build()
 

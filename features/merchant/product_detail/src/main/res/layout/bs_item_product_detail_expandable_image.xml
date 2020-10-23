@@ -10,15 +10,15 @@
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
         android:id="@+id/expandable_title_chevron"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_12" />
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/expandable_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:scaleType="fitXY"
+        android:layout_marginTop="@dimen/dp_16"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         tools:src="@tools:sample/avatars"
         tools:visibility="gone" />

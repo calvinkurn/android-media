@@ -38,6 +38,7 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
 
     private fun setupVideoItem(video: List<Video>, isShowable: Boolean) = with(view) {
         horizontal_scroll_container.showWithCondition(isShowable && video.isNotEmpty())
+        horizontal_view_container.removeAllViews()
         video.forEachIndexed { index, it ->
             val layout = context.layoutInflater.inflate(R.layout.bs_item_product_detail_youtube_img, null)
             layout.img_youtube_item.loadImage(it.thumbnailUrl)

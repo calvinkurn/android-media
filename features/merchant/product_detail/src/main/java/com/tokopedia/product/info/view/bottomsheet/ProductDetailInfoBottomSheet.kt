@@ -3,8 +3,9 @@ package com.tokopedia.product.info.view.bottomsheet
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
@@ -44,6 +46,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private var productDetailComponent: ProductDetailComponent? = null
     private var rvBsProductDetail: RecyclerView? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
+    private var listener: ProductDetailBottomSheetListener? = null
 
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
@@ -55,8 +58,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?) {
+    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?, listener: ProductDetailBottomSheetListener) {
         this.productDetailComponent = daggerProductDetailComponent
+        this.listener = listener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -65,12 +69,24 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             viewLifecycleOwner.observe(vm.bottomSheetDetailData) { data ->
                 data.doSuccessOrFail({
                     currentList = ArrayList(it.data)
-                    setupFullScreen(it.data)
+                    rvBsProductDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            rvBsProductDetail?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                            setupFullScreen(it.data)
+                        }
+                    })
                     productDetailInfoAdapter.submitList(it.data)
                 }) {
-                    Log.e("successs", "fail " + it.message)
                 }
             }
+        }
+    }
+
+    override fun goToDiscussion(discussionCount: Int) {
+        if (discussionCount > 0) {
+            listener?.goToReadingActivity()
+        } else {
+            listener?.onDiscussionSendQuestionClicked(null)
         }
     }
 
@@ -82,13 +98,21 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 return@forEach
             }
         }
-        isFullpage = isFullScreen
+
+        frameDialogView.layoutParams.height = if (isFullScreen) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+        frameDialogView.requestLayout()
+    }
+
+    override fun goToApplink(url: String) {
+        listener?.goToApplink(url)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         productDetailComponent?.inject(this)
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+        if (::viewModelFactory.isInitialized) {
+            viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+        }
         getDataParcel()
         initView()
     }
@@ -111,6 +135,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         productDetailInfoAdapter.submitList(listOf(ProductDetailInfoLoadingDataModel()))
+        view.post {
+            if (!::viewModelFactory.isInitialized && isVisible) {
+                dismiss()
+            }
+        }
     }
 
     override fun onBranchLinkClicked(url: String) {
@@ -150,13 +179,19 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         bs.show(childFragmentManager, "specBs")
     }
 
+    override fun goToImagePreview(url: String) {
+        listener?.onVariantGuideLineClicked(url)
+    }
+
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
         productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
     }
 
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_product_detail))
-
+        setShowListener {
+            frameDialogView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
 
         setupRecyclerView(childView)
@@ -167,6 +202,14 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         rvBsProductDetail = childView.findViewById(R.id.bs_product_info_rv)
         rvBsProductDetail?.itemAnimator = null
         rvBsProductDetail?.adapter = productDetailInfoAdapter
+        rvBsProductDetail?.isNestedScrollingEnabled = false
     }
 
+}
+
+interface ProductDetailBottomSheetListener {
+    fun goToReadingActivity()
+    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onVariantGuideLineClicked(url: String)
+    fun goToApplink(url: String)
 }

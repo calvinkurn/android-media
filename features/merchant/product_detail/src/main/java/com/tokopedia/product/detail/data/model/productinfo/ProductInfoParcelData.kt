@@ -9,9 +9,11 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoConten
 data class ProductInfoParcelData(
         val productId: String = "",
         val shopId: String = "",
-        val catalogId:String = "",
+        val catalogId: String = "",
         val productTitle: String = "",
         val productImageUrl: String = "",
         val variantGuideline: String = "",
-        val listOfVideo:List<Video> = listOf(),
-        val data: List<ProductDetailInfoContent> = listOf())
+        val discussionCount: Int = 0,
+        val listOfVideo: List<Video> = listOf(),
+        val data: List<ProductDetailInfoContent> = listOf(),
+        val forceRefresh: Boolean = false)
