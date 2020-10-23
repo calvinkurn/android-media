@@ -61,7 +61,7 @@ public class CMInApp {
     @Expose
     @ColumnInfo(name = "s")
     @SerializedName("s")
-    public String screen = "*"; //todo Rahul
+    public String screen = "*";
 
     @Expose
     @SerializedName("d")
