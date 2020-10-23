@@ -329,7 +329,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         null,
                         ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-                        iconUnify = IconUnify.SPEAKER),
+                        iconUnify = IconUnify.PROMO_ADS),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),
