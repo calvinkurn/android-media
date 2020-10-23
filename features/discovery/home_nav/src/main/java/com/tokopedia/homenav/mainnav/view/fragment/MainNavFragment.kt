@@ -7,21 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.base.diffutil.HomeNavAdapter
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
-import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
@@ -32,7 +28,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 

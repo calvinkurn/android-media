@@ -115,7 +115,7 @@ class TestMainNavViewModel {
             } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir"))
 
 
-            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN)
+            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
 
             rule.testDispatcher.resumeDispatcher()
             val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -136,7 +136,7 @@ class TestMainNavViewModel {
             } returns UserPojo(ProfilePojo(name = "", profilePicture = "Tingkir"))
 
 
-            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN)
+            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
 
             rule.testDispatcher.resumeDispatcher()
             val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -157,7 +157,7 @@ class TestMainNavViewModel {
             } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = ""))
 
 
-            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN)
+            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
 
             rule.testDispatcher.resumeDispatcher()
             val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
@@ -178,7 +178,7 @@ class TestMainNavViewModel {
             } returns UserPojo(ProfilePojo(name = "", profilePicture = ""))
 
 
-            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN)
+            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
 
             rule.testDispatcher.resumeDispatcher()
             val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()

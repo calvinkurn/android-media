@@ -65,7 +65,8 @@ class AccountHeaderViewHolder(itemView: View,
         userImage.loadImageCircle(element.userImage)
         tvName.text = element.userName
         tvOvo.text = element.ovoSaldo
-        usrBadge.loadImage(element.badge)
+        usrBadge.loadImageCircle(element.badge)
+        usrOvoBadge.loadImageCircle(element.badge)
 
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
