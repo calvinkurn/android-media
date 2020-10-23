@@ -9,4 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <com.tokopedia.inbox.view.custom.BuyerAccountSwitcherMenuItem
+        android:id="@+id/switcher_buyer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

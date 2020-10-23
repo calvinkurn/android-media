@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 
 class SellerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(

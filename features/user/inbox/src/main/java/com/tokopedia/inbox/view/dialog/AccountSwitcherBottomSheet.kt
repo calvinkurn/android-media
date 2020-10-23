@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.view.custom.AccountSwitcherMenuItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -18,6 +20,7 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
     lateinit var userSession: UserSessionInterface
 
     private var sellerItem: AccountSwitcherMenuItem? = null
+    private var buyerItem: AccountSwitcherMenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,24 +43,36 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
 
     private fun initViewBinding(view: View) {
         sellerItem = view.findViewById(R.id.switcher_seller)
+        buyerItem = view.findViewById(R.id.switcher_buyer)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSellerMenu()
+        initBuyerMenuItem()
+        initSellerMenuItem()
     }
 
-    private fun initSellerMenu() {
-        bindSellerName()
-        bindSellerProfilePicture()
+    private fun initBuyerMenuItem() {
+        bindItemName(buyerItem, userSession.name)
+        bindSellerProfilePicture(buyerItem, userSession.profilePicture)
     }
 
-    private fun bindSellerName() {
-        sellerItem?.setName(userSession.shopName)
+    private fun initSellerMenuItem() {
+        if (userSession.hasShop()) {
+            sellerItem?.show()
+            bindItemName(sellerItem, userSession.shopName)
+            bindSellerProfilePicture(sellerItem, userSession.shopAvatar)
+        } else {
+            sellerItem?.hide()
+        }
     }
 
-    private fun bindSellerProfilePicture() {
-        sellerItem?.loadProfilePicture(userSession.shopAvatar)
+    private fun bindItemName(item: AccountSwitcherMenuItem?, value: String) {
+        item?.setName(value)
+    }
+
+    private fun bindSellerProfilePicture(item: AccountSwitcherMenuItem?, url: String) {
+        item?.loadProfilePicture(url)
     }
 
     private fun initContentView() {

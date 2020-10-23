@@ -11,8 +11,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 abstract class AccountSwitcherMenuItem : ConstraintLayout {
 
-    private var name: Typography? = null
-    private var photoProfile: ImageView? = null
+    protected var name: Typography? = null
+    protected var photoProfile: ImageView? = null
+    protected var smallIcon: ImageView? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -35,11 +36,15 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
     private fun initView() {
         View.inflate(context, R.layout.partial_inbox_account_menu_item, this)?.apply {
             initViewBinding(this)
+            onCreateView(this)
         }
     }
+
+    protected open fun onCreateView(view: View) {}
 
     private fun initViewBinding(view: View) {
         name = view.findViewById(R.id.tv_name)
         photoProfile = view.findViewById(R.id.iv_photo_profile)
+        smallIcon = view.findViewById(R.id.iv_small_icon)
     }
 }

@@ -5,6 +5,7 @@
     android:id="@+id/cl_seller_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:paddingVertical="@dimen/dp_inbox_12"
     android:paddingStart="@dimen/dp_inbox_12"
     android:paddingEnd="@dimen/spacing_lvl4">
@@ -35,6 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_inbox_6"
         android:layout_marginEnd="@dimen/dp_inbox_18"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
         app:layout_constraintEnd_toStartOf="@+id/iv_checkmark"
         app:layout_constraintStart_toEndOf="@+id/iv_small_icon"
@@ -50,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
-        tools:srcCompat="@tools:sample/avatars"
+        app:srcCompat="@drawable/ic_inbox_check_mark"
         tools:text="Dominicus Dennis Pratama " />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
