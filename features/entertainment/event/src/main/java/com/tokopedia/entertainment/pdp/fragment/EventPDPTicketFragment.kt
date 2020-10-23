@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -40,6 +41,8 @@ import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isMaxDateNotMoreThanSelected
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isMinDateNotLessThanSelected
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getInitialVerify
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemIds
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemMap
@@ -51,6 +54,7 @@ import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
@@ -297,7 +301,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
         viewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
-            setupBottomSheet(pdpData.dates)
+            if (pdpData.dates.size > 1) {
+                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
+                    setupBottomSheet(pdpData.dates)
+                } else {
+                    setErrorCalendar()
+                }
+            }
         })
     }
 
@@ -309,7 +319,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     private fun setupUbahButton() {
         activity?.txtUbah?.setOnClickListener {
-            showUpBottomSheet()
+            if (pdpData.dates.size > 1) {
+                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
+                    showUpBottomSheet()
+                } else {
+                    setErrorCalendar()
+                }
+            }
         }
     }
 
@@ -353,20 +369,43 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun clickRecommendation(list: List<String>) {
-        setupBottomSheet(list)
-        showUpBottomSheet()
+        if (pdpData.dates.size > 1) {
+            if (isMaxDateNotMoreThanSelected(pdpData, selectedDate) && isMinDateNotLessThanSelected(pdpData, selectedDate)) {
+                setupBottomSheet(list)
+                showUpBottomSheet()
+            } else {
+                setErrorCalendar()
+            }
+        }
     }
 
-    private fun showUpBottomSheet(){
+    private fun showUpBottomSheet() {
         fragmentManager?.let {
             bottomSheets.show(it, "")
         }
     }
 
-    private fun changeLabel(){
+    private fun changeLabel() {
         val bitwiseIsHiburan = pdpData.customText1.toInt() and IS_HIBURAN
-        activity?.txtPlaceHolderTglKunjungan?.text = if( bitwiseIsHiburan > 0) resources.getString(R.string.ent_pdp_berlaku_hingga)
-        else resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+        if(pdpData.dates.size > 1){
+            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+        } else if (bitwiseIsHiburan > 0) {
+            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_berlaku_hingga)
+            activity?.txtDate?.text = getTimestamptoText(pdpData.maxEndDate.isNotBlank())
+        } else {
+            activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
+            activity?.txtDate?.text = getTimestamptoText(pdpData.dates.first().isNotBlank())
+        }
+    }
+
+    private fun setErrorCalendar() {
+        val over = resources.getString(R.string.ent_pdp_ticket_calendar_over)
+        val less = resources.getString(R.string.ent_pdp_ticket_calendar_less)
+        val errorMessage = resources.getString(R.string.ent_pdp_ticket_calendar,
+                if (isMaxDateNotMoreThanSelected(pdpData, selectedDate)) over else less)
+        view?.let {
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
+        }
     }
 
     companion object {
