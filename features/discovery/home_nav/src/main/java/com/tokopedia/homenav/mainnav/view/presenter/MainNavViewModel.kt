@@ -1,11 +1,8 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.mainnav.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.homenav.mainnav.domain.interactor.GetShopInfoUseCase
@@ -16,111 +13,123 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
-import retrofit2.Response.error
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
-        @ApplicationContext private val context: Context,
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
-        private val userSession: Lazy<UserSessionInterface>,
         private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
-    val mainNavLiveData: LiveData<Result<MainNavigationDataModel>>
+    val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
-    private val _mainNavLiveData: MutableLiveData<Result<MainNavigationDataModel>> = MutableLiveData()
+    private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData()
 
     val accountLiveData: LiveData<Result<AccountHeaderViewModel>>
         get() = _accountLiveData
     private val _accountLiveData: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
-    fun getMainNavData() {
-        getProfileSection()
 
-//        launchCatchError(coroutineContext, block = {
-//            mainNavUseCase.get().getMainNavData(userSession.get().shopId.toInt()).flowOn(baseDispatcher.get().io()).collect {
-//                _mainNavLiveData.postValue(Success(it))
-//            }
-//        }){
-//            _mainNavLiveData.postValue(Fail(it))
-//        }
+    val profileResultListener: LiveData<Result<AccountHeaderViewModel>>
+        get() = _profileResultListener
+    private val _profileResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
+
+    val membershipResultListener: LiveData<Result<AccountHeaderViewModel>>
+        get() = _membershipResultListener
+    private val _membershipResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
+
+    val ovoResultListener: LiveData<Result<AccountHeaderViewModel>>
+        get() = _ovoResultListener
+    private val _ovoResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
+
+    val shopResultListener: LiveData<Result<AccountHeaderViewModel>>
+        get() = _shopResultListener
+    private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
+
+
+    fun getMainNavData(loginState: Int, shopId: Int) {
+        getProfileSection(loginState, shopId)
     }
 
-    private fun getProfileSection() {
-        getUserNameAndPictureData()
-        getUserBadgeImage()
-        getShopData()
-        getOvoData()
+    fun getProfileSection(loginState: Int, shopId: Int) {
+        when (loginState) {
+            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
+                getUserNameAndPictureData(loginState)
+                getUserBadgeImage()
+                getShopData(shopId)
+                getOvoData()
+            }
+            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
+            AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {
+                val accountData = AccountHeaderViewModel(loginState = loginState)
+                _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
+            }
+        }
     }
 
-    private fun getUserNameAndPictureData() {
+    fun getUserNameAndPictureData(loginState: Int) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getUserInfoUseCase.get().executeOnBackground()
             }
-            _accountLiveData.postValue(Success(AccountHeaderViewModel(
+            val accountData = AccountHeaderViewModel(
                     userName = result.profile.name,
                     userImage = result.profile.profilePicture,
-                    loginState = when {
-                        userSession.get().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-                        haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-                        else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-                    })))
+                    loginState = loginState)
+            _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
         }){
-            _accountLiveData.postValue(Fail(it))
+            _profileResultListener.postValue(Fail(it))
         }
 
     }
 
-    private fun getShopData() {
+    fun getShopData(shopId: Int) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
-                getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = userSession.get().shopId.toInt())
+                getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
                 getShopInfoUseCase.get().executeOnBackground()
             }
-            _accountLiveData.postValue(Success(AccountHeaderViewModel(shopName = result.shopCore.name)))
+            val accountData = _mainNavLiveData.value?.dataList?.firstOrNull()
+            (accountData as AccountHeaderViewModel).shopName = result.shopCore.name
+
+            _mainNavLiveData.postValue( _mainNavLiveData.value)
         }){
-            _accountLiveData.postValue(Fail(it))
+            _shopResultListener.postValue(Fail(it))
         }
     }
 
-    private fun getUserBadgeImage() {
+    fun getUserBadgeImage() {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getUserMembershipUseCase.get().executeOnBackground()
             }
-            _accountLiveData.postValue(Success(AccountHeaderViewModel(badge = result.tokopoints.status.tier.eggImageURL)))
+            val accountData = _mainNavLiveData.value?.dataList?.firstOrNull()
+            (accountData as AccountHeaderViewModel).badge = result.tokopoints.status.tier.eggImageURL
+            _mainNavLiveData.postValue(_mainNavLiveData.value)
         }){
-            _accountLiveData.postValue(Fail(it))
+            _membershipResultListener.postValue(Fail(it))
         }
     }
 
-    private fun getOvoData() {
+    fun getOvoData() {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getWalletUseCase.get().executeOnBackground()
             }
-            _accountLiveData.postValue(Success(AccountHeaderViewModel(ovoSaldo = result.cashBalance, ovoPoint = result.pointBalance)))
+            val accountData = _mainNavLiveData.value?.dataList?.firstOrNull()
+            (accountData as AccountHeaderViewModel).let {
+                it.ovoSaldo = result.cashBalance
+                it.ovoPoint = result.pointBalance
+            }
+            _mainNavLiveData.postValue(_mainNavLiveData.value)
         }){
-            _accountLiveData.postValue(Fail(it))
+            //post error get ovo with new livedata
+            _ovoResultListener.postValue(Fail(it))
         }
     }
 
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
-    }
 }

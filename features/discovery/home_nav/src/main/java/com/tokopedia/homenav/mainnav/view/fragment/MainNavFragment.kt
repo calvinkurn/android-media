@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,16 +74,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickListener()
-        viewModel.getMainNavData()
+        viewModel.getMainNavData(getLoginState(), getUserSession().shopId.toInt())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> populateAdapterData(it.data)
-                is Fail -> {}
-            }
+            populateAdapterData(it)
         })
 
         viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
@@ -89,7 +88,45 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 is Success -> populateAccountHeader(it.data)
             }
         })
+
+        viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Fail -> {
+
+                }
+            }
+        })
+        viewModel.membershipResultListener.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Fail -> {
+
+                }
+            }
+        })
+        viewModel.ovoResultListener.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Fail -> {
+
+                }
+            }
+        })
+        viewModel.shopResultListener.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Fail -> {
+
+                }
+            }
+        })
     }
+
+    override fun onRefresh() {
+
+    }
+
+    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+
+    }
+
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavAdapter(mainNavFactory)
@@ -107,13 +144,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         adapter.submitList(data.dataList)
     }
 
-    override fun onRefresh() {
-
-    }
-
-    override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
-
-    }
 
     private fun initClickListener() {
         testButton.setOnClickListener{
@@ -128,5 +158,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
+    }
+
+    private fun getLoginState(): Int {
+        return when {
+            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
+            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
+            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
+        }
+    }
+
+    private fun haveUserLogoutData(): Boolean {
+        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        return name.isNotEmpty()
+    }
+
+    private fun getSharedPreference(): SharedPreferences {
+        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }
