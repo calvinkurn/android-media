@@ -110,6 +110,8 @@ object GlideBuilder {
                         }
 
                         listener(glideListener(target))
+
+                        into(imageView)
                     }
                 }
             }
