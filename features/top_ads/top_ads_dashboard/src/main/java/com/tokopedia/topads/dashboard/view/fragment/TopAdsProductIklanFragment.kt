@@ -31,18 +31,18 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.topads.auto.view.activity.AutoAdsOnboardingActivity
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_ONBOARDING_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
@@ -101,7 +101,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private var totalCount = 0
     private var totalPage = 0
 
-    val autoAdsWidget: AutoAdsWidget?
+    val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
@@ -186,7 +186,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             else {
                 if (AppUtil.isSellerInstalled(context)) {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
-                    intent.component = ComponentName(SELLER_PACKAGENAME, AutoAdsOnboardingActivity::class.java.name)
+                    intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_ONBOARDING_PATH)
                     startActivity(intent)
                 } else {
                     RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
@@ -197,8 +197,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()
         endDate = Utils.getEndDate()
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
-        topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -372,7 +370,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_layout.visibility = View.GONE
         autoAdsWidget?.visibility = View.GONE
         if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
-            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.auto.R.drawable.topads_blue_bg)
+            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             autoadsOnboarding.visibility = View.GONE
         } else {
@@ -550,11 +548,11 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         snackbarRetry?.showRetrySnackbar()
     }
 
-    fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         swipe_refresh_layout.isRefreshing = false
         snackbarRetry?.hideRetrySnackbar()
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment

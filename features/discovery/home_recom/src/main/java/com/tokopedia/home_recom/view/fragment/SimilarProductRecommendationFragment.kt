@@ -27,8 +27,10 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.adapter.SimilarRecommendationFilterAdapter
@@ -45,11 +47,11 @@ import javax.inject.Inject
 /**
  * Created by Lukas on 26/08/19
  */
-open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener, SimilarRecommendationFilterAdapter.FilterChipListener {
+open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener, SimilarRecommendationFilterAdapter.FilterChipListener, RecommendationErrorListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl() }
+    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this) }
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
@@ -110,7 +112,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                 when {
                     it.status.isLoading() || it.status.isLoadMore()  -> showLoading()
                     it.status.isEmpty() -> showEmpty()
-                    it.status.isError() -> showGetListError(Throwable(it.message))
+                    it.status.isError() -> showGetListError(it.exception)
                     it.status.isSuccess() -> {
                         if(it.data?.isNotEmpty() == true){
                             it.data[0].let {
@@ -141,7 +143,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 if(position >= 0 && adapter.data.size > position) {
-                    (adapter.data[position] as SimilarProductRecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
+                    (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
             }
@@ -152,6 +154,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                         handleWishlistAction(productCardOptionsModel)
                     }
                 })
+    }
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable) {
+        if (activity != null) {
+            adapter.showRecommendationError(RecommendationErrorDataModel(throwable))
+            if (swipeToRefresh != null) {
+                swipeToRefresh.isEnabled = false
+            }
+        }
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
@@ -186,7 +197,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if(position > -1 && adapter.itemCount > 0 &&
                 adapter.itemCount > position) {
-            (adapter.data[position] as SimilarProductRecommendationItemDataModel).productItem.isWishlist = isWishlist
+            (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
             adapter.notifyItemChanged(position, isWishlist)
         }
     }
@@ -241,11 +252,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
 
-    override fun createAdapterInstance(): BaseListAdapter<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl> {
+    override fun createAdapterInstance(): BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl> {
         return adapter
     }
 
-    override fun onItemClicked(item: SimilarProductRecommendationDataModel?) {
+    override fun onItemClicked(item: HomeRecommendationDataModel?) {
 
     }
 
@@ -273,6 +284,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
         return EndlessLayoutManagerListener { recyclerViewLayoutManager }
+    }
+
+    override fun refresh() {
+        showLoading()
+        loadInitialData()
     }
 
     /**
@@ -358,8 +374,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      * @param listRecommendationModel list pojo recommendationWidget from API
      * @return list of dataModel
      */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<SimilarProductRecommendationDataModel>{
-        return listRecommendationModel.map { SimilarProductRecommendationItemDataModel(it, this) }
+    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel>{
+        return listRecommendationModel.map { RecommendationItemDataModel(it) }
     }
 
     private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {
