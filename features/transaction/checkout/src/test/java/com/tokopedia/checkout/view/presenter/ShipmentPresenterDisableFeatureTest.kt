@@ -94,7 +94,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                     analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                     getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                    validateUsePromoRevampUseCase)
+                    validateUsePromoRevampUseCase, gson)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
@@ -125,7 +126,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 gson: Gson): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -134,7 +136,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson)
     }
 
     @Provides

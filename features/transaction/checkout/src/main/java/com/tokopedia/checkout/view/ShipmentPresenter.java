@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -106,6 +107,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
@@ -171,10 +173,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
+    private Gson gson;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private CheckoutData checkoutData;
-    private boolean partialCheckout;
     private boolean couponStateChanged;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
@@ -186,9 +188,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     private CheckoutAnalyticsCourierSelection mTrackerShipment;
     private CodAnalytics mTrackerCod;
-    private String PARAM_GLOBAL = "global";
-    private String PARAM_MERCHANT = "merchant";
-    private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
@@ -215,7 +214,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
-                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
+                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
+                             Gson gson) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
@@ -238,6 +238,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
+        this.gson = gson;
     }
 
     @Override
@@ -784,7 +785,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
             dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList, false);
-            partialCheckout = true;
         }
     }
 
@@ -1743,12 +1743,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
 
-        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+        String mvc = getRatesMvcParams();
+
+        RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
                 .codHistory(counter)
                 .isLeasing(isLeasing)
-                .promoCode(pslCode)
-                .build();
+                .mvc(mvc)
+                .promoCode(pslCode);
+
+        RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
@@ -1766,6 +1770,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
                                 isInitialLoad, isTradeInDropOff
                         ));
+    }
+
+    private String getRatesMvcParams() {
+        String mvc = "";
+        if (lastApplyData != null) {
+            List<PromoSpIdUiModel> promoSpIdUiModels = lastApplyData.getAdditionalInfo().getPromoSpIds();
+            if (promoSpIdUiModels.size() > 0) {
+                mvc = gson.toJson(promoSpIdUiModels);
+            }
+        } else if (validateUsePromoRevampUiModel != null) {
+            List<PromoSpIdUiModel> promoSpIdUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+            if (promoSpIdUiModels.size() > 0) {
+                mvc = gson.toJson(promoSpIdUiModels);
+            }
+        }
+
+        return mvc;
     }
 
     @NonNull
@@ -1964,8 +1985,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel
-                                                         validateUsePromoRevampUiModel) {
+    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
     }
 
