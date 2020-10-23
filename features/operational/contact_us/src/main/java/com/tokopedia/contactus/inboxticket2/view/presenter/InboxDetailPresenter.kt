@@ -18,7 +18,7 @@ import com.tokopedia.contactus.inboxticket2.domain.*
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.activity.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
@@ -42,15 +42,15 @@ private const val AGENT = "agent"
 private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
 private const val ROLE_TYPE_CUSTOMER = "customer"
 
-class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
-                               private val postMessageUseCase2: PostMessageUseCase2,
-                               private val postRatingUseCase: PostRatingUseCase,
-                               private val inboxOptionUseCase: InboxOptionUseCase,
-                               private val submitRatingUseCase: SubmitRatingUseCase,
-                               private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
-                               private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
-                               private val userSession: UserSessionInterface,
-                               private val defaultDispatcher: CoroutineDispatcher) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
+class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
+                           private val postMessageUseCase2: PostMessageUseCase2,
+                           private val postRatingUseCase: PostRatingUseCase,
+                           private val inboxOptionUseCase: InboxOptionUseCase,
+                           private val submitRatingUseCase: SubmitRatingUseCase,
+                           private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
+                           private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
+                           private val userSession: UserSessionInterface,
+                           private val defaultDispatcher: CoroutineDispatcher) : InboxDetailContract.Presenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
     var mTicketDetail: Tickets? = null
         get() = field

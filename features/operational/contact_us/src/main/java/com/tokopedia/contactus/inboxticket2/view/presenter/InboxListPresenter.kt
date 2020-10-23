@@ -15,7 +15,7 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
@@ -37,8 +37,8 @@ const val FILTER_NEED_RATING = 1
 const val FILTER_CLOSED = 2
 const val FIRST_PAGE = 1
 
-class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase,
-                             private val userSession: UserSessionInterface) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
+class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
+                         private val userSession: UserSessionInterface) : InboxListContract.Presenter, CustomEditText.Listener, CoroutineScope {
     private var status: Int = 0
     private var rating: Int = 0
     private var mView: InboxListView? = null
