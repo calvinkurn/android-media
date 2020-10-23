@@ -52,6 +52,7 @@ class TicketCreatedFragment: Fragment() {
             goToJiraLinkWebView(issueUrl)
         }
         imageCopy.setOnClickListener {
+            FeedbackPageAnalytics.eventCopyJiraLink()
             onTextCopied(mainView, "label", tickerLink.text.toString())
         }
 
@@ -59,7 +60,7 @@ class TicketCreatedFragment: Fragment() {
 
     private fun goToJiraLinkWebView(issueUrl: String?) {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, issueUrl))
+            val intent = RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, issueUrl))
             this.startActivity(intent)
         }
     }

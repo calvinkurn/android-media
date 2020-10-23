@@ -11,6 +11,7 @@ object FeedbackPageAnalytics {
     private const val OPEN_FEEDBACK = "open feedback form"
     private const val CLICK_SUBMIT = "click submit"
     private const val CLICK_JIRA = "click jira"
+    private const val COPY_JIRA = "copy jira"
     private const val LABEL_SCREENSHOT = "screenshot"
     private const val LABEL_SETTING = "setting"
     private const val LABEL_FEEDBACK = "feedback"
@@ -51,5 +52,9 @@ object FeedbackPageAnalytics {
 
     fun eventClickJiraLink() {
         sendEventCategoryAction(CLICK_FEEDBACK, FEEDBACK_FORM, CLICK_JIRA)
+    }
+
+    fun eventCopyJiraLink() {
+        sendEventCategoryAction(CLICK_FEEDBACK, FEEDBACK_FORM, COPY_JIRA)
     }
 }
