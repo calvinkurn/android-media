@@ -2,9 +2,7 @@ package com.tokopedia.applink.digital
 
 import android.content.Context
 import android.net.Uri
-import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.JsonConstant
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
@@ -19,26 +17,14 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperDigital {
 
-    /**
-     * Cache to variable to speed up performance
-     */
-    var whiteList: Whitelist? = null
-
     const val TEMPLATE_PARAM = "template"
     const val PLATFORM_ID_PARAM = "platform_id"
 
-    private fun readWhitelistFromFile(): List<WhitelistItem> {
-        if (whiteList == null) {
-            val gson = Gson()
-            whiteList = gson.fromJson(JsonConstant.DIGITAL, Whitelist::class.java)
-        }
-        return whiteList?.data ?: listOf()
-    }
-
     fun getRegisteredNavigationFromHttpDigital(deeplink: String): String {
-        val path = Uri.parse(deeplink).pathSegments.joinToString("/")
-        return readWhitelistFromFile().firstOrNull { it.path.equals(path, false) }?.applink
-                ?: ""
+//        val path = Uri.parse(deeplink).pathSegments.joinToString("/")
+//        return readWhitelistFromFile().firstOrNull { it.path.equals(path, false) }?.applink
+//                ?: ""
+        return ""
     }
 
     fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
