@@ -33,7 +33,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -124,7 +123,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.navigation_component.IconConfig
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
@@ -149,7 +148,6 @@ import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -435,10 +433,11 @@ open class HomeFragment : BaseDaggerFragment(),
         homeMainToolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setIcon(
-                    IconConfig(listOf(
-                            IconList.MessageIcon.get(),
-                            IconList.NavGlobalIcon.get()
-                    ))
+                    IconBuilder()
+                            .addIcon(IconList.ID_MESSAGE) {}
+                            .addIcon(IconList.ID_NOTIFICATION) {}
+                            .addIcon(IconList.ID_CART) {}
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
         }
         activity?.let {
@@ -1441,11 +1440,11 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-            homeMainToolbar?.setupSearchbar(
-                    listOf(HintData(placeholder = "Devara Fikry Akmal", keyword = "Devara Fikry Akmal")),
-                    durationAutoTransition = 500,
-                    shouldShowTransition = true
-            )
+//            homeMainToolbar?.setupSearchbar(
+//                    listOf(HintData(placeholder = "Devara Fikry Akmal", keyword = "Devara Fikry Akmal")),
+//                    durationAutoTransition = 500,
+//                    shouldShowTransition = true
+//            )
 //            homeMainToolbar?.setSearchBarHint(
 //                    placeholderToHint(data),
 //                    isFirstInstall(),
@@ -1698,7 +1697,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun isLightThemeStatusBar(): Boolean {
         homeMainToolbar?.let {
-            return it.toolbarType != NavToolbar.TOOLBAR_DARK_TYPE
+            return it.toolbarThemeType != NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
         }
         return false
     }

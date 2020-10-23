@@ -1,58 +1,106 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
-import com.tokopedia.searchbar.navigation_component.IconToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_MESSAGE
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NOTIFICATION
 
-interface IconConfigItem { fun get(): IconToolbar }
+internal interface IconConfigItem { fun get(disableRouteManager: Boolean = false, onClick: ()-> Unit = {}): IconToolbar }
 
 object IconList {
-    const val ID_MESSAGE = 0
-    const val ID_NOTIFICATION = 1
-    const val ID_CART = 2
-    const val ID_NAV_GLOBAL = 3
+    const val ID_MESSAGE = IconUnify.MESSAGE
+    const val ID_NOTIFICATION = IconUnify.BELL
+    const val ID_CART = IconUnify.CART
+    const val ID_NAV_GLOBAL = IconUnify.MENU_HAMBURGER
+    const val ID_WISHLIST = IconUnify.HEART
+    const val ID_SHARE = IconUnify.SHARE_MOBILE
 
-    object MessageIcon: IconConfigItem {
-        override fun get(): IconToolbar {
+    const val ID_NAV_LOTTIE_WISHLIST = 91
+
+    //Image icon
+    internal object MessageIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
-                    imageRes = R.drawable.ic_home_nav_message_light,
-                    applink = ApplinkConst.INBOX
-            )
+                    applink = ApplinkConst.INBOX,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
         }
     }
 
-    object NotificationIcon: IconConfigItem {
-        override fun get(): IconToolbar {
+    internal object NotificationIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NOTIFICATION,
-                    imageRes = R.drawable.ic_home_nav_notification_light,
-                    applink = ApplinkConst.NOTIFICATION
-            )
+                    applink = ApplinkConst.NOTIFICATION,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
         }
     }
 
-    object CartIcon: IconConfigItem {
-        override fun get(): IconToolbar {
+    internal object CartIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_CART,
-                    imageRes = R.drawable.ic_home_nav_cart_light,
-                    applink = ApplinkConst.CART
-            )
+                    applink = ApplinkConst.CART,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
         }
     }
 
-    object NavGlobalIcon: IconConfigItem {
-        override fun get(): IconToolbar {
+    internal object NavGlobalIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
-                    imageRes = R.drawable.ic_home_nav_global_light,
-                    applink = ""
-            )
+                    applink = ApplinkConst.HOME_NAVIGATION,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object WishlistIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_WISHLIST,
+                    applink = ApplinkConst.NEW_WISHLIST,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object ShareIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_SHARE,
+                    applink = "",
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    //Lottie icon
+    internal object LottieWishlistIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_NAV_LOTTIE_WISHLIST,
+                    imageRes = R.raw.toolbar_lottie_wishlist,
+                    applink = "",
+                    iconType = IconToolbar.TYPE_LOTTIE,
+                    disableRouteManager = disableRouteManager
+            ) {
+                onClick.invoke()
+            }
         }
     }
 }
