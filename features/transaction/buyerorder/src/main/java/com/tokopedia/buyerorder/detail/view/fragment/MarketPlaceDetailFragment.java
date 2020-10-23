@@ -788,8 +788,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
                 } else {
-                    if (getContext() != null) {
+                    /*if (getContext() != null) {
                         DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+                        dialogUnify.setUnlockVersion();
+                        dialogUnify.setChild();
                         dialogUnify.setTitle(actionButton.getActionButtonPopUp().getTitle());
                         dialogUnify.setDescription(actionButton.getActionButtonPopUp().getBody());
                         if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
@@ -830,10 +832,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             });
                         }
                         dialogUnify.show();
-                    }
+                    }*/
 
-                    // using this leads to crash
-                    /*final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
+                    Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
                         @Override
                         public int layoutResId() {
                             if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai")) {
@@ -886,7 +887,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             }
                         });
                     }
-                    dialog.show();*/
+                    dialog.show();
                 }
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
