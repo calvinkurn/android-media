@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 
 class BuyerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
@@ -13,6 +14,8 @@ class BuyerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
     constructor(
             context: Context?, attrs: AttributeSet?, defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
+
+    override val role: Int = RoleType.BUYER
 
     override fun onCreateView(view: View) {
         initSmallIcon()

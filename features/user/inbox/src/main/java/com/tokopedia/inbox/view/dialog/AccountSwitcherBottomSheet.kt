@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.RoleType
+import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.view.custom.AccountSwitcherMenuItem
 import com.tokopedia.kotlin.extensions.view.hide
@@ -55,6 +57,7 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         initBuyerMenuItem()
         initSellerMenuItem()
+        initCheckMark()
     }
 
     private fun initBuyerMenuItem() {
@@ -69,6 +72,19 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
             bindSellerProfilePicture(sellerItem, userSession.shopAvatar)
         } else {
             sellerItem?.hide()
+        }
+    }
+
+    private fun initCheckMark() {
+        when (InboxConfig.role) {
+            RoleType.SELLER -> {
+                sellerItem?.showCheckMark()
+                buyerItem?.hideCheckMark()
+            }
+            RoleType.BUYER -> {
+                buyerItem?.showCheckMark()
+                sellerItem?.hideCheckMark()
+            }
         }
     }
 

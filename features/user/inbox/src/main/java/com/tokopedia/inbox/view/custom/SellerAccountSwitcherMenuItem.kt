@@ -2,6 +2,7 @@ package com.tokopedia.inbox.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
+import com.tokopedia.inbox.common.RoleType
 
 class SellerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
 
@@ -11,5 +12,6 @@ class SellerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
             context: Context?, attrs: AttributeSet?, defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
+    override val role: Int = RoleType.SELLER
 
 }
