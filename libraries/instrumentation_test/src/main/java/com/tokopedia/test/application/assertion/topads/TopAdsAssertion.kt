@@ -50,6 +50,10 @@ class TopAdsAssertion(val context: Context,
         val allCount = listTopAdsDbFirst.size
         val callerClass = Class.forName(Thread.currentThread().stackTrace[3].className).simpleName
 
+        for (item in listTopAdsDbFirst) {
+            logTestMessage("eventType: ${item.eventType} componentName: ${item.componentName} sourceName: ${item.sourceName} productName: ${item.productName} imageUrl: ${item.imageUrl}")
+        }
+
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
         verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
         verifyUrlWithTopAdsVerificator(callerClass)

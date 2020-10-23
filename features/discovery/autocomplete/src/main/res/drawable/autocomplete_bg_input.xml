@@ -4,6 +4,6 @@
     android:shape="rectangle">
 
     <corners android:radius="8dp" />
-    <solid android:color="#f4f5f7" />
+    <solid android:color="@color/Unify_N50" />
 
 </shape>

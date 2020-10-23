@@ -1,13 +1,20 @@
 package com.tokopedia.attachproduct.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.os.Handler;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -15,7 +22,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.attachproduct.R;
@@ -29,10 +36,13 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.SearchBarUnify;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -42,7 +52,7 @@ import static com.tokopedia.attachproduct.view.activity.AttachProductActivity.MA
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductFragment extends BaseSearchListFragment<AttachProductItemViewModel, AttachProductListAdapterTypeFactory>
+public class AttachProductFragment extends BaseListFragment<AttachProductItemViewModel, AttachProductListAdapterTypeFactory>
         implements CheckableInteractionListenerWithPreCheckedAction,
         AttachProductContract.View {
     private static final String IS_SELLER = "isSeller";
@@ -51,6 +61,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     private static final String HIDDEN_PRODUCTS = "hidden_products";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SearchBarUnify searchBar;
 
     @Inject
     AttachProductPresenter presenter;
@@ -97,6 +108,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initSearchBar();
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -112,6 +124,43 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         }
 
         updateButtonBasedOnChecked(adapter.getCheckedCount());
+    }
+
+    private void initSearchBar() {
+        searchBar = getActivity().findViewById(R.id.search_input_view);
+        searchBar.getSearchBarTextField().addTextChangedListener(new TextWatcher() {
+            Timer timer;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Handler mainHandler = new Handler(searchBar.getContext().getMainLooper());
+                        Runnable myRunnable = () -> onSearchTextChanged(s.toString());
+                        mainHandler.post(myRunnable);
+                    }
+                }, 300);
+            }
+        });
+        searchBar.getSearchBarTextField().setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchBar.clearFocus();
+                InputMethodManager in = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+                onSearchSubmitted();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -145,14 +194,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         }
     }
 
-    @Override
-    public void onSearchSubmitted(String text) {
+    private void onSearchSubmitted() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         loadInitialData();
     }
 
-    @Override
-    public void onSearchTextChanged(String text) {
+    private void onSearchTextChanged(String text) {
         if (TextUtils.isEmpty(text)) loadInitialData();
     }
 
@@ -173,8 +220,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         if (activityContract != null
                 && activityContract.getShopId() != null
                 && presenter != null
-                && searchInputView != null) {
-            presenter.loadProductData(searchInputView.getSearchText(), activityContract.getShopId(), page);
+                && searchBar != null) {
+            presenter.loadProductData(searchBar.getSearchBarTextField().getText().toString(), activityContract.getShopId(), page);
         } else if (getActivity() != null) {
             getActivity().finish();
         }
@@ -269,7 +316,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
-        if (TextUtils.isEmpty(searchInputView.getSearchText())) {
+        if (TextUtils.isEmpty(searchBar.getSearchBarTextField().getText())) {
             if (activityContract.isSeller()) {
                 emptyResultViewModel.setContent(getString(R.string
                         .string_attach_product_my_empty_product));
