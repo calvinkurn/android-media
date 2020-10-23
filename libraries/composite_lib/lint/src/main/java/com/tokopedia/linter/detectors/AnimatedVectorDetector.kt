@@ -79,7 +79,6 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
         if(evaluator.isMemberInClass(method, ANIMATED_VECTOR_CLASS)) {
             scanAnimatedVector(context)
             scanJavaError(context, node)
-            reportJavaError(context, node)
         }
     }
 
