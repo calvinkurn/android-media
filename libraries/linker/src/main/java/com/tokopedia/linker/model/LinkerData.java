@@ -110,7 +110,7 @@ public class LinkerData implements Parcelable {
         journeyId = in.readString();
         invoiceId = in.readString();
         paymentId = in.readString();
-        throwOnError = in.readBoolean();
+        throwOnError = in.readByte() != 0;
         content = in.readString();
         contentType = in.readString();
         level1Name = in.readString();
@@ -153,7 +153,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(journeyId);
         dest.writeString(invoiceId);
         dest.writeString(paymentId);
-        dest.writeBoolean(throwOnError);
+        dest.writeByte((byte) (throwOnError ? 1 : 0));
         dest.writeString(content);
         dest.writeString(contentType);
         dest.writeString(level1Name);
