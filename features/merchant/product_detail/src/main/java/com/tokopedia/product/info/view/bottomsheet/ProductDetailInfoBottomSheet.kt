@@ -99,8 +99,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             }
         }
 
-        frameDialogView.layoutParams.height = if (isFullScreen) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-        frameDialogView.requestLayout()
+        try {
+            frameDialogView.layoutParams.height = if (isFullScreen) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            frameDialogView.requestLayout()
+        } catch (e: Throwable) {}
     }
 
     override fun goToApplink(url: String) {
