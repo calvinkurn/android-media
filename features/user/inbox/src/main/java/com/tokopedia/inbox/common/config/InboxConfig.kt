@@ -22,7 +22,8 @@ object InboxConfig {
         this.listener.remove(listener)
     }
 
-    fun setRole(@RoleType role: Int) {
+    fun setRole(@RoleType role: Int?) {
+        if (role == null) return
         this.role = role
         listener.forEach {
             it?.onRoleChanged(role)

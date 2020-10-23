@@ -43,9 +43,14 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initContentView()
+        initViewConfig()
         return super.onCreateView(inflater, container, savedInstanceState)?.also {
             initViewBinding(it)
         }
+    }
+
+    private fun initViewConfig() {
+        clearContentPadding = true
     }
 
     private fun initViewBinding(view: View) {
@@ -58,6 +63,7 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
         initBuyerMenuItem()
         initSellerMenuItem()
         initCheckMark()
+        initClickListener()
     }
 
     private fun initBuyerMenuItem() {
@@ -85,6 +91,17 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
                 buyerItem?.showCheckMark()
                 sellerItem?.hideCheckMark()
             }
+        }
+    }
+
+    private fun initClickListener() {
+        sellerItem?.setOnClickListener {
+            InboxConfig.setRole(sellerItem?.role)
+            dismiss()
+        }
+        buyerItem?.setOnClickListener {
+            InboxConfig.setRole(buyerItem?.role)
+            dismiss()
         }
     }
 
