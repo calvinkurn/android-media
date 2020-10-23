@@ -104,6 +104,9 @@ object Utils {
     fun convertToCurrencyString(value: Long): String {
         return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
     }
+    fun convertToCurrency(value: Long): String {
+        return (NumberFormat.getNumberInstance(locale).format(value))
+    }
 
-    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").trim()
+    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp","").trim()
 }

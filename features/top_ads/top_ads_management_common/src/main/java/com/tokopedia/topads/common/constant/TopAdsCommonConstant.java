@@ -11,7 +11,6 @@ import com.tokopedia.url.TokopediaUrl;
 public class TopAdsCommonConstant {
     public static String BASE_DOMAIN_URL = TokopediaUrl.getInstance().getTA();
 
-    public static final String PATH_TOPADS_SHOP_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String TOPADS_SELLER_CENTER = "https://seller.tokopedia.com/about-topads/";
 
     public static final String PARAM_SHOP_ID = "shop_id";
