@@ -21,8 +21,6 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -55,7 +53,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
-        PhoneVerificationApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })

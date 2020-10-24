@@ -45,8 +45,6 @@ import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
-import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -92,7 +90,6 @@ import timber.log.Timber;
         ExploreApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
-        PhoneVerificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         WebViewApplinkModule.class,
