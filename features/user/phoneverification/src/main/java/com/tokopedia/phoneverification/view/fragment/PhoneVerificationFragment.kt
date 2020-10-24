@@ -44,8 +44,7 @@ open class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.V
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    val phoneVerificationViewModel = ViewModelProvider.NewInstanceFactory().create(PhoneVerificationViewModel::class.java)
-
+    private val phoneVerificationViewModel by lazy { ViewModelProvider(this).get(PhoneVerificationViewModel::class.java) }
     public override fun initInjector() {
 //        if (activity != null && activity!!.application != null) {
 //            val baseAppComponent = (activity!!.application as BaseMainApplication).baseAppComponent
