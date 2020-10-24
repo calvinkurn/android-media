@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/tv_title_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:textSize="@dimen/sp_16"
         tools:text="Selesaikan Pesanan" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/tv_desc_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,20 +36,21 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:layout_width="7dp"
             android:layout_height="7dp"
             android:layout_marginStart="@dimen/dp_24"
             android:background="@drawable/green_dot_selesai_dialog" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_16"
             android:text="@string/selsesai_dialog_text_1"
-            android:textSize="16sp" />
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,19 +59,20 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:layout_width="7dp"
             android:layout_height="7dp"
             android:layout_marginStart="@dimen/dp_24"
             android:background="@drawable/green_dot_selesai_dialog" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_16"
             android:text="@string/selesai_dialog_text_2"
-            android:textSize="16sp" />
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +83,7 @@
         android:layout_gravity="end"
         android:orientation="horizontal">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/btn_cancel_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,7 +95,7 @@
             android:textSize="@dimen/sp_14"
             tools:text="Kembali" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/btn_ok_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
