@@ -14,6 +14,6 @@ import dagger.Component
     PhoneVerificationQueryModule::class]
 , dependencies = [BaseAppComponent::class])
 interface PhoneVerificationComponent {
-//    fun inject(activity: PhoneVerificationProfileActivity)
+    fun inject(activity: PhoneVerificationProfileActivity)
     fun inject(fragment: PhoneVerificationFragment)
 }

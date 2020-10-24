@@ -1,5 +1,6 @@
 package com.tokopedia.phoneverification.di.revamp
 
+import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.user.session.UserSession
@@ -10,7 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class PhoneVerificationModule {
+class PhoneVerificationModule(private val activity: Activity) {
 
     @PhoneVerificationScope
     @Provides
