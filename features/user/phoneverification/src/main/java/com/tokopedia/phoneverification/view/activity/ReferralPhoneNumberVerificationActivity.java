@@ -76,7 +76,7 @@ public class ReferralPhoneNumberVerificationActivity extends BaseSimpleActivity 
             @Override
             public void onClickVerification(String phoneNumber) {
                 PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
-                PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+                PhoneVerificationFragment fragment = PhoneVerificationFragment.Companion.createInstance
                         (getPhoneVerificationListener(), false);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 if (getFragmentManager().findFragmentById(R.id.container_header) == null) {

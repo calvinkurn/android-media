@@ -30,7 +30,7 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
 
     override fun setViewListener() {
         super.setViewListener()
-        skipButton.visibility = View.GONE
+        skipButton?.visibility = View.GONE
         txtSkip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
     }
 
@@ -42,7 +42,7 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
         txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
         txtSkip?.visibility = View.GONE
         if (data?.phone != null) {
-            phoneNumberEditText.text = transform(data?.phone?: "")
+            phoneNumberEditText?.text = transform(data?.phone?: "")
         } else {
             SnackbarManager.make(activity,
                     getString(R.string.please_fill_phone_number),

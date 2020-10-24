@@ -15,8 +15,6 @@ public interface PhoneVerification {
 
         void onErrorVerifyPhoneNumber(String errorMessage);
 
-        UserSession getUserSession();
-
         Context getContext();
     }
 

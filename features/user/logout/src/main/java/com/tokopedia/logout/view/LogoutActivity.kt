@@ -163,11 +163,13 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
         PersistentCacheManager.instance.delete()
-        AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
-        NotificationModHandler.clearCacheAllNotification(applicationContext)
+//        AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
+
+
+//        NotificationModHandler.clearCacheAllNotification(applicationContext)
         CacheApiClearAllUseCase(applicationContext).executeSync()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        NotificationModHandler(applicationContext).dismissAllActivedNotifications()
+//        NotificationModHandler(applicationContext).dismissAllActivedNotifications()
         clearWebView()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)

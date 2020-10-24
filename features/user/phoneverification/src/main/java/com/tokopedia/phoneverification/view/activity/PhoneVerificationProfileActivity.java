@@ -31,18 +31,18 @@ public class PhoneVerificationProfileActivity extends BaseSimpleActivity {
 
     private void initView() {
         PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.Companion.createInstance
                 (getPhoneVerificationListener(), false);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
-            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
-                    .setPhoneVerificationListener(getPhoneVerificationListener());
-        }
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());}
+//        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container)).listener == null) {
+//            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
+//                    .setPhoneVerificationListener(getPhoneVerificationListener());
+//        }
         fragmentTransaction.commit();
 
     }
