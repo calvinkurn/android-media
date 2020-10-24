@@ -10,7 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
-import com.tokopedia.shop.R
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
@@ -90,34 +89,6 @@ class ShopPageHomeModule {
                       totalReview
                       isPO
                       cashback
-                    }
-                    ... on PromoWidget {
-                      voucherID
-                      imageUrl
-                      name
-                      voucherType {
-                          voucherType
-                          identifier
-                      }
-                      voucherCode
-                      amount {
-                        amountType
-                        amount
-                        amountFormatted
-                      }
-                      minimumSpend
-                      minimumSpendFormatted
-                      owner {
-                        ownerID
-                        identifier
-                      }
-                      validThru
-                      tnc
-                      inUseExpiry
-                      status {
-                        status
-                        identifier
-                      }
                     }
                     ... on CampaignWidget {
                       campaignID
