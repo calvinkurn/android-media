@@ -115,7 +115,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
-                    new PhoneVerificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader()

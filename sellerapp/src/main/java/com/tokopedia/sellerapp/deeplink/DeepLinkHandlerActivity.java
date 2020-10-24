@@ -73,7 +73,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
-                new PhoneVerificationApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
