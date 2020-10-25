@@ -165,7 +165,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         })
 
         viewModel.multiCheckout.observe(viewLifecycleOwner, Observer {
-            smart_bills_checkout_view.getCheckoutButton().isLoading = false
             when (it) {
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
@@ -206,6 +205,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
                 }
             }
+            smart_bills_checkout_view.getCheckoutButton().isLoading = false
         })
     }
 
