@@ -41,7 +41,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     (it.itemName == PaymentDeductionKey.TOTAL_DISCOUNT)
 
         }?.forEach {
-            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr))
+            invoiceSummaryMapList.add(InvoiceSummaryMap(it.itemDesc, it.amountStr, true))
         }
         val totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(),
                 false)

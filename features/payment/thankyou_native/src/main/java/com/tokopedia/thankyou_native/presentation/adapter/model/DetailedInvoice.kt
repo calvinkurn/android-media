@@ -15,7 +15,8 @@ data class InvoiceSummery(
 
 data class InvoiceSummaryMap(
         val title : String,
-        val value : String
+        val value : String,
+        var isDiscounted : Boolean = false
 )
 
 data class TotalFee(val totalBillAmountStr: String,

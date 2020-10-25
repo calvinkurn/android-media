@@ -22,8 +22,12 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
             addInvoiceSummaryRow(getString(R.string.thank_invoice_total_price, element.totalCount.toString()),
                     getString(R.string.thankyou_rp_without_space, element.totalPriceStr))
             invoiceSummaryMapList.forEach {
-                addInvoiceSummaryRow(it.title,
-                        getString(R.string.thankyou_rp_without_space, it.value))
+                val valueStr = if(it.isDiscounted){
+                    getString(R.string.thankyou_discounted_rp, it.value)
+                } else {
+                    getString(R.string.thankyou_rp_without_space, it.value)
+                }
+                addInvoiceSummaryRow(it.title, valueStr)
             }
         }
     }
