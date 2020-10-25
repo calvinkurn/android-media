@@ -79,7 +79,7 @@
     <string name="tradein_step1_of_4">Langkah 1 dari 4</string>
     <string name="tradein_step2_of_4">Langkah 2 dari 4</string>
     <string name="tradein_lanjut">Lanjut</string>
-    <string name="tradein_ticker_continue">Yay, toko menjangkau lokasimu. Lanjut Tukar Tambah sekarang!</string>
+    <string name="tradein_ticker_continue">Yay, toko menjangkau lokasimu. Langsung lanjut Tukar Tambah sekarang, yuk!</string>
     <string name="tradein_similar_items">Cari di Toko Lain</string>
     <string name="tradein_outside_coverage_heading">Toko ini belum melayani Tukar Tambah di wilayahmu</string>
     <string name="tradein_outside_coverage_description">Coba cari barang serupa di toko lain yang melayani Tukar Tambah di wilayahmu, ya.</string>
