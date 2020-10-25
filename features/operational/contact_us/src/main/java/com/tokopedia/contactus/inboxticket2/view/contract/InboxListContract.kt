@@ -18,6 +18,8 @@ interface InboxListContract {
         fun addFooter()
         fun getLayoutManager(): LinearLayoutManager
         fun scrollRv()
+        fun showChatBotWidget()
+        fun hideChatBotWidget()
     }
 
     interface Presenter : InboxBasePresenter {
@@ -28,5 +30,6 @@ interface InboxListContract {
         fun onRecyclerViewScrolled(layoutManager: LinearLayoutManager)
         fun getSearchListener(): CustomEditText.Listener?
         fun getTicketList(requestParams: RequestParams?)
+        fun getTopBotStatus()
     }
 }

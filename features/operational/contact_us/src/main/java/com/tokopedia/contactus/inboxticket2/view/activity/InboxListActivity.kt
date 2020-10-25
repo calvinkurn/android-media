@@ -18,6 +18,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomChatWidgetView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var clearSearch: View? = null
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
+    private var chatWidget: CustomChatWidgetView? = null
 
     override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
@@ -96,6 +98,14 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         rvEmailList?.scrollBy(0, 0)
     }
 
+    override fun showChatBotWidget() {
+        chatWidget?.show()
+    }
+
+    override fun hideChatBotWidget() {
+        chatWidget?.hide()
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.layout_ticket_list_activity
     }
@@ -112,6 +122,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     override fun initView() {
         this.findingViewsId()
         (mPresenter as InboxListContract.Presenter).getTicketList(null)
+        (mPresenter as InboxListContract.Presenter).getTopBotStatus()
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
@@ -129,6 +140,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         editText = findViewById(R.id.custom_search)
         clearSearch = findViewById(R.id.close_search)
         btnFilterTv = findViewById(R.id.btn_filter_tv)
+        chatWidget = findViewById(R.id.chat_widget)
     }
 
     private fun settingOnClickListener() {

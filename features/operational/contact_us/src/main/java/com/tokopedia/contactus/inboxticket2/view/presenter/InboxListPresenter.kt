@@ -11,6 +11,7 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
+import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter
@@ -38,6 +39,7 @@ const val FILTER_CLOSED = 2
 const val FIRST_PAGE = 1
 
 class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
+                         private val topBotStatusUseCase: ChipTopBotStatusUseCase,
                          private val userSession: UserSessionInterface) : InboxListContract.Presenter, CustomEditText.Listener, CoroutineScope {
     private var status: Int = 0
     private var rating: Int = 0
@@ -93,6 +95,24 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
 
                 },
                 onError = {
+                    it.printStackTrace()
+                }
+        )
+    }
+
+    override fun getTopBotStatus() {
+        launchCatchError(
+                block = {
+                    val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
+                    if (topBotStatusResponse?.chipTopBotStatus?.statusData?.isSuccess == 1
+                            && topBotStatusResponse.chipTopBotStatus?.statusData?.isActive == true) {
+                        mView?.showChatBotWidget()
+                    } else {
+                        mView?.hideChatBotWidget()
+                    }
+                },
+                onError = {
+                    mView?.hideChatBotWidget()
                     it.printStackTrace()
                 }
         )

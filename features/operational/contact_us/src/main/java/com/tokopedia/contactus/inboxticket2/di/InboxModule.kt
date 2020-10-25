@@ -50,8 +50,8 @@ class InboxModule(private val context: Context) {
 
     @Provides
     @Named("InboxListPresenter")
-    fun provideTicketListPresenter(useCase: GetTicketListUseCase, userSession: UserSessionInterface): InboxBasePresenter {
-        return InboxListPresenter(useCase, userSession)
+    fun provideTicketListPresenter(useCase: GetTicketListUseCase, chipTopBotStatusUseCase: ChipTopBotStatusUseCase, userSession: UserSessionInterface): InboxBasePresenter {
+        return InboxListPresenter(useCase, chipTopBotStatusUseCase, userSession)
     }
 
     @Provides
