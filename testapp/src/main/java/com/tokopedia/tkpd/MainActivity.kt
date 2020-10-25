@@ -1,15 +1,20 @@
 package com.tokopedia.tkpd
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
+import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
@@ -34,6 +39,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val loginButton = findViewById<Button>(R.id.loginButton)
+        val toggleDarkMode = findViewById<CheckBox>(R.id.toggle_dark_mode)
+
+        toggleDarkMode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        toggleDarkMode.setOnCheckedChangeListener { view: CompoundButton?, state: Boolean ->
+            AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+        }
 
         loginButton.setOnClickListener {
             if (!userSession.isLoggedIn()) {

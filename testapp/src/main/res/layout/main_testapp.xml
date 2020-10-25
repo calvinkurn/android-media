@@ -36,6 +36,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <CheckBox
+        android:id="@+id/toggle_dark_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:padding="@dimen/margin_small"
+        android:text="Force Dark Mode" />
+
     <Button
         android:id="@+id/useOldPageButton"
         android:text="use old login page"
