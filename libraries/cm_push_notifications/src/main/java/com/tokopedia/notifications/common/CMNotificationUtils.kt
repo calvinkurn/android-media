@@ -277,8 +277,10 @@ object CMNotificationUtils {
 
         val campaign = splitQuery(uri)
         campaign?.let {
-            it[CMConstant.UTMParams.UTM_TERM] = ""
-            it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
+            if (!it.containsKey(CMConstant.UTMParams.UTM_TERM) || it[CMConstant.UTMParams.UTM_TERM] == null)
+                it[CMConstant.UTMParams.UTM_TERM] = ""
+            if (!it.containsKey(CMConstant.UTMParams.SCREEN_NAME) || it[CMConstant.UTMParams.SCREEN_NAME] == null)
+                it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
         }
         TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
     }
