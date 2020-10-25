@@ -120,7 +120,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_8"
         android:text="@string/label_read_detail"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
