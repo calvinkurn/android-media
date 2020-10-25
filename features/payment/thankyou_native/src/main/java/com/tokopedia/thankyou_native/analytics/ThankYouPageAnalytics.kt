@@ -13,6 +13,7 @@ import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.adapter.model.FeatureListItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -324,6 +325,14 @@ class ThankYouPageAnalytics @Inject constructor(
         } else {
             category.replace("_", " / ")
         }
+    }
+
+    fun onFeatureItemDisplayed(featureListItem: FeatureListItem) {
+        //todo
+    }
+
+    fun onFeatureItemCLicked(featureListItem: FeatureListItem) {
+        //todo
     }
 
 

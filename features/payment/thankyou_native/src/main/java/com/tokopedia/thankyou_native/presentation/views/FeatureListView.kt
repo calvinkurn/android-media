@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.presentation.adapter.FeatureListingAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.FeatureListingAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.factory.FeatureListingFactory
+import com.tokopedia.thankyou_native.presentation.adapter.model.FeatureListItem
 import com.tokopedia.webview.KEY_NEED_LOGIN
 
 class FeatureListView @JvmOverloads constructor(
@@ -26,6 +28,7 @@ class FeatureListView @JvmOverloads constructor(
 
     private val layout = R.layout.thank_feature_listing
     private lateinit var recyclerView: RecyclerView
+    private lateinit var analytics: ThankYouPageAnalytics
 
 
     val adapter: FeatureListingAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -48,6 +51,16 @@ class FeatureListView @JvmOverloads constructor(
             adapter.addItems(FeatureRecommendationMapper.getFeatureList(featureEngineData.featureEngineItem))
             adapter.notifyDataSetChanged()
         }
+    }
+
+    override fun onItemDisplayed(featureListItem: FeatureListItem) {
+        if (::analytics.isInitialized)
+            analytics.onFeatureItemDisplayed(featureListItem)
+    }
+
+    override fun onItemClicked(featureListItem: FeatureListItem) {
+        if (::analytics.isInitialized)
+            analytics.onFeatureItemCLicked(featureListItem)
     }
 
     override fun openAppLink(appLink: String) {

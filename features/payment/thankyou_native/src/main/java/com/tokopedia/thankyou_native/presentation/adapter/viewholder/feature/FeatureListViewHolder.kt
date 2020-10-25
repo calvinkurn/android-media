@@ -8,7 +8,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.FeatureListingAdapterL
 import com.tokopedia.thankyou_native.presentation.adapter.model.FeatureListItem
 import kotlinx.android.synthetic.main.thank_item_feature_list.view.*
 
-class FeatureListViewModel(val view: View, val listener : FeatureListingAdapterListener)
+class FeatureListViewHolder(val view: View, val listener : FeatureListingAdapterListener)
     : AbstractViewHolder<FeatureListItem>(view) {
 
     private val ivFeatureItem = itemView.ivFeatureItem
@@ -17,11 +17,13 @@ class FeatureListViewModel(val view: View, val listener : FeatureListingAdapterL
 
     override fun bind(element: FeatureListItem?) {
         element?.apply {
+            listener.onItemDisplayed(element)
             ivFeatureItem.scaleType =  ImageView.ScaleType.CENTER_INSIDE
             ivFeatureItem.setImageUrl(image)
             tvFeatureItemTitle.text = title
             tvFeatureItemDescription.text = description
             view.setOnClickListener {
+                listener.onItemClicked(element)
                 urlApp?.let {
                     listener.openAppLink(urlApp)
                 }?: run {
