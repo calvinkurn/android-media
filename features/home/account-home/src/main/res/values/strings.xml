@@ -28,6 +28,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -31,18 +30,18 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.topads.auto.view.activity.AutoAdsOnboardingActivity
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidget
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_ONBOARDING_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.START_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
@@ -101,7 +100,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private var totalCount = 0
     private var totalPage = 0
 
-    val autoAdsWidget: AutoAdsWidget?
+    val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
@@ -186,7 +185,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             else {
                 if (AppUtil.isSellerInstalled(context)) {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
-                    intent.component = ComponentName(SELLER_PACKAGENAME, AutoAdsOnboardingActivity::class.java.name)
+                    intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_ONBOARDING_PATH)
                     startActivity(intent)
                 } else {
                     RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
@@ -243,7 +242,16 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun renderManualViewPager() {
         tab_layout.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {}
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                loadStatisticsData()
+            }
+
+        })
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
@@ -372,7 +380,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoads_layout.visibility = View.GONE
         autoAdsWidget?.visibility = View.GONE
         if (adCurrentState == STATUS_IN_PROGRESS_INACTIVE) {
-            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.auto.R.drawable.topads_blue_bg)
+            imgBg.background = AppCompatResources.getDrawable(context!!, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             autoadsOnboarding.visibility = View.GONE
         } else {
@@ -392,7 +400,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun autoAds() {
-        adTypeCallBack?.adInfo(AUTO_AD)
+        adTypeCallBack?.adInfo(SINGLE_AD)
         setAutoAdsAdapter()
         autoAdsWidget?.loadData(0)
         autoAdsWidget?.visibility = View.VISIBLE
@@ -504,8 +512,13 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
-                ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
+        var adType = (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD
+
+        if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.selectedTabPosition == 1)
+            adType = SINGLE_AD
+
+        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
@@ -708,9 +721,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     companion object {
-        val MILLISECONDS_PER_INCH = 200f
-        val MANUAL_AD = "-1"
-        val AUTO_AD = "-2"
+        const val MILLISECONDS_PER_INCH = 200f
+        const val MANUAL_AD = "-1"
+        const val SINGLE_AD = "-2"
         fun createInstance(): TopAdsProductIklanFragment {
             return TopAdsProductIklanFragment()
         }
