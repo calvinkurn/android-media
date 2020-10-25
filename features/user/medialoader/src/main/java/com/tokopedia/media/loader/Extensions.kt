@@ -4,22 +4,24 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.target.ImageViewTarget
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.HEADER_ECT
+import com.tokopedia.media.loader.utils.mediaSignature
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
 fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
-fun ImageView.loadImage(resource: Int) = call(resource, Properties())
+fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(url: String) = call(url, Properties())
 
-fun ImageView.loadImage(uri: Uri) = call(uri, Properties())
+fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
@@ -54,12 +56,51 @@ fun ImageView?.clearImage() {
 internal fun ImageView.call(url: Any?, properties: Properties) {
     val imageView = this
 
-    GlideBuilder.loadImage(properties.apply {
-        target = ImageViewTarget(imageView, properties.loaderListener)
-        data = if (url is String) {
-            Loader.glideUrl(url)
+    with(properties) {
+        if (url is String) {
+            if (url.toEmptyStringIfNull().isEmpty()) {
+                // if there's no url found, then show the placeholder
+                imageView.loadImage(properties.placeHolder)
+                return
+            }
+
+            val glideUrl = Loader.glideUrl(url)
+
+            GlideBuilder.loadImage(
+                    signatureKey = signature.mediaSignature(glideUrl),
+                    stateListener = loaderListener,
+                    cacheStrategy = cacheStrategy,
+                    thumbnailUrl = thumbnailUrl,
+                    overrideSize = overrideSize,
+                    decodeFormat = decodeFormat,
+                    placeHolder = placeHolder,
+                    isCircular = isCircular,
+                    transforms = transforms,
+                    radius = roundedRadius,
+                    isAnimate = isAnimate,
+                    transform = transform,
+                    imageView = imageView,
+                    resOnError = error,
+                    url = glideUrl
+            )
         } else {
-            url
+            GlideBuilder.loadImage(
+                    stateListener = loaderListener,
+                    cacheStrategy = cacheStrategy,
+                    thumbnailUrl = thumbnailUrl,
+                    overrideSize = overrideSize,
+                    decodeFormat = decodeFormat,
+                    placeHolder = placeHolder,
+                    signatureKey = signature,
+                    isCircular = isCircular,
+                    transforms = transforms,
+                    radius = roundedRadius,
+                    isAnimate = isAnimate,
+                    transform = transform,
+                    imageView = imageView,
+                    resOnError = error,
+                    url = url
+            )
         }
-    })
+    }
 }
