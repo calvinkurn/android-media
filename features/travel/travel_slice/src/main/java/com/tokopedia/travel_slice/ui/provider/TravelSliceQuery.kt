@@ -19,22 +19,20 @@ object TravelSliceQuery {
         query PropertySearch(${'$'}data:PropertySearchRequest!){
             propertySearch(input: ${'$'}data){
               propertyList {
+                id
                 name
-                type
-                address
-                roomPrice{
+                roomPrice {
                   totalPrice
                 }
-                star
-                review {
-                  reviewScore
+                image {
+                  urlMax300
                 }
                 location {
-                  description
+                  cityName
                 }
               }
             }
-            }
+        }
     """
 
 }

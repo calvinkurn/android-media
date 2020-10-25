@@ -45,7 +45,7 @@ android {
 
     project.ext {
         defaultVersionCode = 299800000;
-        defaultVersionName = "3.80";
+        defaultVersionName = "3.93";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -143,6 +143,7 @@ dependencies {
     }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation 'androidx.slice:slice-core:1.0.0'
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation project(rootProject.ext.libraries.commonNetwork)

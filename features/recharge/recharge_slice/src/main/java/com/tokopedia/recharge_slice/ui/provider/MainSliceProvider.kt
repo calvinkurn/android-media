@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.StrictMode
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat.createWithBitmap
@@ -58,11 +59,24 @@ class MainSliceProvider : SliceProvider() {
     var alreadyLoadData: Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
+        contextNonNull = context ?: return null
         userSession = UserSession(contextNonNull)
+        loadString = contextNonNull.resources.getString(R.string.slice_loading)
+
+        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             createGetInvoiceSlice(sliceUri)
         } else {
             return null
+        }
+    }
+
+    fun <T> allowReads(block: () -> T): T {
+        val oldPolicy = StrictMode.allowThreadDiskReads()
+        try {
+            return block()
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy)
         }
     }
 
@@ -71,8 +85,8 @@ class MainSliceProvider : SliceProvider() {
             PendingIntent.getActivity(
                     contextNonNull,
                     it,
-                    RouteManager.getIntent(contextNonNull, applink)
-                            .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick),
+                    allowReads {  RouteManager.getIntent(contextNonNull, applink)
+                            .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick) },
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
         }
@@ -238,10 +252,7 @@ class MainSliceProvider : SliceProvider() {
     fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
     override fun onCreateSliceProvider(): Boolean {
-        contextNonNull = context?.applicationContext ?: return false
-        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
-        loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
 

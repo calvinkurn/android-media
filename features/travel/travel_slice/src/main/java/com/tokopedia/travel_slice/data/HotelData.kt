@@ -8,33 +8,26 @@ import com.google.gson.annotations.SerializedName
  */
 
 class HotelData(
+        @SerializedName("id")
+        @Expose
+        val id: Long = 0,
+
         @SerializedName("name")
         @Expose
         val name: String = "",
-
-        @SerializedName("type")
-        @Expose
-        val type: String = "",
-
-        @SerializedName("address")
-        @Expose
-        val address: String = "",
 
         @SerializedName("roomPrice")
         @Expose
         val roomPrice: List<PropertyPrice> = listOf(),
 
-        @SerializedName("star")
-        @Expose
-        val star: Int = 0,
-
-        @SerializedName("review")
-        @Expose
-        val review: Review = Review(),
-
         @SerializedName("location")
         @Expose
-        val location: Location = Location()
+        val location: Location = Location(),
+
+        @SerializedName("image")
+        @Expose
+        val image: List<Image> = listOf()
+
 ) {
     data class PropertyPrice(
             @SerializedName("totalPrice")
@@ -42,15 +35,15 @@ class HotelData(
             val totalPrice: String = ""
     )
 
-    data class Review(
-            @SerializedName("reviewScore")
+    data class Image(
+            @SerializedName("urlMax300")
             @Expose
-            val reviewScore: Float = 0.0f
+            val urlMax300: String = ""
     )
 
     data class Location(
-            @SerializedName("description")
+            @SerializedName("cityName")
             @Expose
-            val description: String = ""
+            val cityName: String = ""
     )
 }
