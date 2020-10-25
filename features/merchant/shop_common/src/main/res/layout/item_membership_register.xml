@@ -41,7 +41,7 @@
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_14"
             app:layout_constraintTop_toTopOf="parent"
-            tools:textColor="@color/black"
+            tools:textColor="@color/Unify_N700"
             tools:text="Dapatkan Gratis Ongkir , Cashback, dan Diskon Total senilai 1 juta rupiah" />
 
 

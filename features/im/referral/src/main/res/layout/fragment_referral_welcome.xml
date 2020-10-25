@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="Selamat!"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_N700"
                 android:textSize="@dimen/sp_24"
                 android:textStyle="bold"/>
 

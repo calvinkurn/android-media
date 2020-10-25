@@ -80,7 +80,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/dp_4"
                         android:layout_marginRight="@dimen/dp_4"
-                        tools:background="@color/black" />
+                        tools:background="@color/Unify_N700" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_variant_color"

@@ -92,7 +92,7 @@
                             android:paddingLeft="@dimen/margin_xlarge"
                             android:paddingRight="@dimen/margin_large"
                             android:text="@string/menu_copy"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Unify_N700"
                             android:textSize="@dimen/font_medium" />
 
 

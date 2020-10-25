@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:gravity="center_vertical"
         android:text="@string/topads_common_keyword_edit_bid_sheet_title"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="@id/title"
