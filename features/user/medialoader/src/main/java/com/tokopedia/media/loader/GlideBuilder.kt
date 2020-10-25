@@ -2,6 +2,7 @@ package com.tokopedia.media.loader
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -88,14 +89,15 @@ object GlideBuilder {
             imageView.setImageDrawable(drawableError)
         } else {
             GlideApp.with(imageView.context).load(url).apply {
-                if (thumbnailUrl.isNotEmpty()) {
-                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+
+                if (placeHolder != 0) {
+                    placeholder(placeHolder)
                 } else {
                     if (url is String) {
                         url.toUri()?.let {
                             if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
                                 val blurHash = it.getQueryParameter(BLUR_HASH_QUERY)
-                                thumbnail(thumbnailLoader(imageView.context, blurring(imageView, blurHash)))
+                                placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, blurHash)))
                             }
                         }
                     }
@@ -108,6 +110,7 @@ object GlideBuilder {
                     else -> {}
                 }
 
+                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))

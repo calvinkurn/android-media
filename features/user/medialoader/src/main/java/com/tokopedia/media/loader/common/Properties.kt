@@ -18,7 +18,7 @@ open class Properties(
         var roundedRadius: Float = 0f,
         var signature: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
-        var placeHolder: Int = R.drawable.ic_media_default_placeholder,
+        var placeHolder: Int = 0, // R.drawable.ic_media_default_placeholder
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.ALL,
         var overrideSize: Resize? = null,
         var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
