@@ -84,14 +84,12 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.view.DoubleTextView;
 
@@ -792,16 +790,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 } else {
                     if (getContext() != null) {
                         DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-                        View childView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_seller_finish, null);
-                        Typography title = childView.findViewById(R.id.tv_title_dialog);
-                        Typography desc = childView.findViewById(R.id.tv_desc_dialog);
+                        View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
+                        TextView title = childView.findViewById(R.id.tv_title_dialog);
+                        TextView desc = childView.findViewById(R.id.tv_desc_dialog);
 
                         title.setText(actionButton.getActionButtonPopUp().getTitle());
                         desc.setText(actionButton.getActionButtonPopUp().getBody());
 
                         if (actionButton.getActionButtonPopUp().getActionButtonList() != null && actionButton.getActionButtonPopUp().getActionButtonList().size() > 0) {
-                            Typography btnOk = childView.findViewById(R.id.btn_ok_dialog);
-                            Typography btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
+                            TextView btnOk = childView.findViewById(R.id.btn_ok_dialog);
+                            TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
 
                             btnOk.setText(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel());
                             btnOk.setOnClickListener(view1 -> {
