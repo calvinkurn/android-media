@@ -7,6 +7,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -166,13 +167,22 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+                                   userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context.applicationContext as NetworkRouter, userSession)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
+                                     okHttpRetryPolicy: OkHttpRetryPolicy,
+                                     tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         return builder
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
