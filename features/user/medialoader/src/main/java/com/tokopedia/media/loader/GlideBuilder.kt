@@ -36,11 +36,11 @@ object GlideBuilder {
 
     private fun glideListener(
             listener: LoaderStateListener?
-    ) = object : RequestListener<Drawable> {
+    ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
                 e: GlideException?,
                 model: Any?,
-                target: Target<Drawable>?,
+                target: Target<Bitmap>?,
                 isFirstResource: Boolean
         ): Boolean {
             listener?.failedLoad(e)
@@ -48,13 +48,13 @@ object GlideBuilder {
         }
 
         override fun onResourceReady(
-                resource: Drawable?,
+                resource: Bitmap?,
                 model: Any?,
-                target: Target<Drawable>?,
+                target: Target<Bitmap>?,
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
-            listener?.successLoad(resource, mapToDataSource(dataSource))
+            //listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
     }
@@ -88,7 +88,7 @@ object GlideBuilder {
         if (url == null) {
             imageView.setImageDrawable(drawableError)
         } else {
-            GlideApp.with(imageView.context).load(url).apply {
+            GlideApp.with(imageView.context).asBitmap().apply {
 
                 if (placeHolder != 0) {
                     placeholder(placeHolder)
@@ -128,8 +128,8 @@ object GlideBuilder {
                 }
 
                 listener(glideListener(stateListener))
-                into(imageView)
-            }
+
+            }.load(url).into(imageView)
         }
     }
 
@@ -141,8 +141,12 @@ object GlideBuilder {
         )
     }
 
-    private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Drawable> {
-        return GlideApp.with(context).load(resource).fitCenter().diskCacheStrategy(DiskCacheStrategy.DATA)
+    private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
+        return GlideApp.with(context)
+                .asBitmap()
+                .load(resource)
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
     fun loadGifImage(imageView: ImageView, url: String) {
