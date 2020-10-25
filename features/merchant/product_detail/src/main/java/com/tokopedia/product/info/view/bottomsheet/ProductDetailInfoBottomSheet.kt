@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -48,6 +49,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private var currentList: List<ProductDetailInfoVisitable>? = null
     private var listener: ProductDetailBottomSheetListener? = null
 
+    companion object {
+        const val PRODUCT_DETAIL_INFO_PARCEL_KEY = "parcelId"
+    }
+
     private val productDetailInfoAdapter by lazy {
         BsProductDetailInfoAdapter(AsyncDifferConfig.Builder(ProductDetailInfoDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -58,9 +63,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun setDaggerComponent(daggerProductDetailComponent: ProductDetailComponent?, listener: ProductDetailBottomSheetListener) {
+    fun show(childFragmentManager: FragmentManager, daggerProductDetailComponent: ProductDetailComponent?, listener: ProductDetailBottomSheetListener) {
         this.productDetailComponent = daggerProductDetailComponent
         this.listener = listener
+
+        show(childFragmentManager, "product detail info bs")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,7 +109,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         try {
             frameDialogView.layoutParams.height = if (isFullScreen) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
             frameDialogView.requestLayout()
-        } catch (e: Throwable) {}
+        } catch (e: Throwable) {
+        }
     }
 
     override fun goToApplink(url: String) {
@@ -122,7 +130,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private fun getDataParcel() {
         arguments?.let {
             context?.let { ctx ->
-                val cacheId = it.getString("ParcelId")
+                val cacheId = it.getString(PRODUCT_DETAIL_INFO_PARCEL_KEY)
                 val cacheManager = SaveInstanceCacheManager(ctx, cacheId)
                 val parcelData: ProductInfoParcelData = cacheManager.get(
                         this::class.java.simpleName,

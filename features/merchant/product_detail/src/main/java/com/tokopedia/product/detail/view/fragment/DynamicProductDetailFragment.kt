@@ -400,14 +400,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     dataContent, shouldRefreshProductInfoBottomSheet
             )
             cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
-            val bundleData = Bundle().apply {
-                putString("ParcelId", cacheManager.id)
-            }
 
-            productDetailInfoSheet.arguments = bundleData
-            productDetailInfoSheet.setDaggerComponent(productDaggerComponent, this)
+            productDetailInfoSheet.arguments = Bundle().apply {
+                putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
+            }
             shouldRefreshProductInfoBottomSheet = false
-            productDetailInfoSheet.show(it.supportFragmentManager, "bs product detail")
+            productDetailInfoSheet.show(it.supportFragmentManager, productDaggerComponent, this)
         }
     }
 
