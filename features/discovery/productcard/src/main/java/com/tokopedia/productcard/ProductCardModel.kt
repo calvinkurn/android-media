@@ -109,6 +109,10 @@ data class ProductCardModel (
         return countSoldRating.isNotEmpty() && getLabelIntegrity() != null
     }
 
+    fun willShowRating(): Boolean{
+        return countSoldRating.isNotEmpty()
+    }
+
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
 
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()

@@ -39,7 +39,6 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextShipping(productCardModel)
 }
 
-
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
     textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
 }
@@ -83,7 +82,7 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
+        it.contentDescription = context.getString(R.string.content_desc_textViewPrice, priceToRender)
         it.text = priceToRender
     }
 }
@@ -146,7 +145,7 @@ private fun View.setImageRating(rating: Int) {
 
 @DrawableRes
 private fun getRatingDrawable(isActive: Boolean): Int {
-    return if(isActive) R.drawable.product_card_ic_rating_active
+    return if (isActive) R.drawable.product_card_ic_rating_active
     else R.drawable.product_card_ic_rating_default
 }
 
@@ -170,23 +169,23 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
         textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
             it.setShopRatingText(productCardModel.shopRating)
         }
-    }
-    else {
+    } else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
     }
 }
 
-private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
-    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
+    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()) {
         textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
     }
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
-        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
+
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating() || productCardModel.willShowRating()) {
+        val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
         val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
         drawableStar?.let {
-            drawableStar.setBounds(0, 0, 25, 25)
-            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            drawableStar.setBounds(0, 0, 20, 20)
+            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
         salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
@@ -198,8 +197,7 @@ private fun Typography.setShopRatingText(shopRating: String) {
 
     if (boldTypeface != null && regularTypeface != null) {
         setShopRatingTextWithMultipleTypeface(shopRating, regularTypeface, boldTypeface)
-    }
-    else {
+    } else {
         text = MethodChecker.fromHtml(shopRating)
     }
 }
@@ -210,8 +208,7 @@ private fun Typography.setShopRatingTextWithMultipleTypeface(shopRating: String,
 
     if (startBold in 0 until endBold) {
         changeFontInsideBoldTag(shopRating, startBold, endBold, regularTypeface, boldTypeface)
-    }
-    else {
+    } else {
         text = MethodChecker.fromHtml(shopRating)
     }
 }
@@ -237,8 +234,7 @@ private fun Typography.changeFontInsideBoldTag(shopRating: String, startBold: In
         spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), inBoldTagEnd, afterBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         text = spannableShopRating
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
         text = MethodChecker.fromHtml(shopRating)
     }
 }

@@ -290,13 +290,13 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
-        app:typographyType="body_3"
+        app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Terjual 122"
         tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewSales"
+        android:id="@+id/salesRatingFloat"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_view_integrity_height"
         android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
@@ -305,20 +305,23 @@
         app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Terjual 122" />
+        android:textColor="@color/Unify_N700_68"
+        tools:text="4.8 | "
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/salesRatingFloat"
+        android:id="@+id/textViewSales"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_view_integrity_height"
         android:layout_marginTop="@dimen/product_card_text_view_integrity_margin_top"
-        android:layout_marginStart="@dimen/product_card_text_view_integrity_margin_top"
-        app:layout_constraintStart_toEndOf="@+id/textViewSales"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textViewSales"
-        app:layout_constraintBottom_toBottomOf="@id/textViewSales"
-        app:layout_constraintHorizontal_bias="0"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/salesRatingFloat"
+        app:layout_constraintStart_toEndOf="@+id/salesRatingFloat"
+        app:layout_constraintTop_toTopOf="@id/salesRatingFloat"
         app:typographyType="small"
-        tools:text="(4.8)"/>
+        app:typographyWeight="bold"
+        tools:text="Terjual 122"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierCredibility"

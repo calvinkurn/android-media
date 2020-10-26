@@ -162,17 +162,26 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                ratingCount = DEFAULT_RATING,
-                reviewCount = DEFAULT_RATING,
-                countSoldRating = dataItem.averageRating,
+
+//                ratingCount = DEFAULT_RATING,
+//                reviewCount = DEFAULT_RATING,
+
+                countSoldRating = "4.8",
+//                countSoldRating = dataItem.averageRating,
                 productImageUrl = dataItem.imageUrlMobile ?: "",
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
                 pdpViewCount = dataItem.pdpView.takeIf { it.toIntOrZero() != 0 } ?: "",
+
+
                 labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
-                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                    add(ProductCardModel.LabelGroup("integrity", "Terjual 5,2rb", "textDarkGrey"))
                 },
+
+//                labelGroupList = ArrayList<ProductCardModel.LabelGroup>().apply {
+//                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+//                },
                 shopLocation = getShopLocation(dataItem),
                 shopBadgeList = getShopBadgeList(dataItem)
         )
