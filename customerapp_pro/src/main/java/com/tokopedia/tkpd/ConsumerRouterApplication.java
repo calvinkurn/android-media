@@ -171,7 +171,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
 
-    private CacheManager cacheManager;
+    protected CacheManager cacheManager;
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;

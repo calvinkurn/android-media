@@ -81,6 +81,8 @@ public class InstrumentationTestApp extends BaseMainApplication
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
         FpmLogger.init(this);
+        PersistentCacheManager.init(this);
+
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
@@ -94,7 +96,6 @@ public class InstrumentationTestApp extends BaseMainApplication
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
-        PersistentCacheManager.init(this);
 
         super.onCreate();
 

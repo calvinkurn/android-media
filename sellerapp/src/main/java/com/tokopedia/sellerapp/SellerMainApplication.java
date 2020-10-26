@@ -142,14 +142,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
         initRemoteConfig();
+        initCacheManager();
+
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-
-        PersistentCacheManager.init(this);
 
         TimberWrapper.init(this);
         super.onCreate();
@@ -165,6 +165,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void setVersionName(){

@@ -111,6 +111,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private TetraDebugger tetraDebugger;
+    protected CacheManager cacheManager;
 
     @Override
     public void onCreate() {
@@ -176,7 +177,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public CacheManager getPersistentCacheManager() {
-        return PersistentCacheManager.instance;
+        if(cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override

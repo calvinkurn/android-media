@@ -129,7 +129,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
-        PersistentCacheManager.init(ConsumerMainApplication.this);
+        initCacheManager();
 
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -143,6 +143,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         registerActivityLifecycleCallbacks();
 
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void registerActivityLifecycleCallbacks() {
