@@ -8,6 +8,7 @@ import com.tokopedia.home_account.data.model.CommonDataView
  */
 interface HomeAccountUserListener {
     fun onEditProfileClicked()
-    fun onSettingItemClicked(applink: String)
+    fun onSettingItemClicked(item: CommonDataView)
+    fun onMemberItemClicked(applink: String)
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean)
 }

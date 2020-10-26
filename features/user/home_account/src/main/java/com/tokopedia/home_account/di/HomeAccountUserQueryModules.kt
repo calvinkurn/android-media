@@ -1,6 +1,13 @@
 package com.tokopedia.home_account.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.R
 import dagger.Module
+import dagger.Provides
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 
 /**
  * Created by Ade Fulki on 2019-10-09.
@@ -17,5 +24,19 @@ class HomeAccountUserQueryModules {
 //    @StringKey(AdditionalCheckConstants.QUERY_CHECK_BOTTOM_SHEET)
 //    fun provideRawQueryStatusPin(@AdditionalCheckContext context: Context): String =
 //            GraphqlHelper.loadRawString(context.resources, R.raw.query_show_interrupt)
+
+    @HomeAccountUserScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME)
+    fun provideRawQueryUserData(@HomeAccountUserContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_account_buyer)
+
+    @HomeAccountUserScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.QUERY_USER_REWARDSHORCUT)
+    fun provideRawQueryShortcut(@HomeAccountUserContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_account_shortcut)
 
 }
