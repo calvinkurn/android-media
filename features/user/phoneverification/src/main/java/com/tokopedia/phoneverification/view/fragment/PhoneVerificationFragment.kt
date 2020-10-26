@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
@@ -36,7 +37,7 @@ import javax.inject.Inject
 /**
  * Created by nisie on 2/22/17.
  */
-open class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.View {
+class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.View {
     override fun getScreenName(): String {
         return PhoneVerificationConst.SCREEN_PHONE_VERIFICATION
     }
@@ -44,7 +45,8 @@ open class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.V
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val phoneVerificationViewModel by lazy { ViewModelProvider(this).get(PhoneVerificationViewModel::class.java) }
+    private val phoneVerificationViewModel: PhoneVerificationViewModel
+            by lazy { ViewModelProvider(this).get(PhoneVerificationViewModel::class.java) }
 
     public override fun initInjector() {
 //        if (activity != null && activity!!.application != null) {
