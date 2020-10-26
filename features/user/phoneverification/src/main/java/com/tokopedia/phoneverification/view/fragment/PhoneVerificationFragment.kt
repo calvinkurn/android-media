@@ -37,7 +37,7 @@ import javax.inject.Inject
 /**
  * Created by nisie on 2/22/17.
  */
-class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.View {
+open class PhoneVerificationFragment : BaseDaggerFragment(), PhoneVerification.View {
     override fun getScreenName(): String {
         return PhoneVerificationConst.SCREEN_PHONE_VERIFICATION
     }
