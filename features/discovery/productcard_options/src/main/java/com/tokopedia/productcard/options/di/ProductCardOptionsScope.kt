@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.options
+package com.tokopedia.productcard.options.di
 
 import javax.inject.Scope
 
