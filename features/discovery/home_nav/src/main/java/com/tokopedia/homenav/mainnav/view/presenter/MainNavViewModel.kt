@@ -9,10 +9,7 @@ import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.common.util.ResultCommandProcessor
 import com.tokopedia.homenav.common.util.UpdateNavigationData
-import com.tokopedia.homenav.mainnav.domain.interactor.GetCoroutineWalletBalanceUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetShopInfoUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetUserInfoUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetUserMembershipUseCase
+import com.tokopedia.homenav.mainnav.domain.interactor.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -29,7 +26,8 @@ class MainNavViewModel @Inject constructor(
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val navProcessor: Lazy<NavCommandProcessor>
+        private val navProcessor: Lazy<NavCommandProcessor>,
+        private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()), ResultCommandProcessor {
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
@@ -85,8 +83,13 @@ class MainNavViewModel @Inject constructor(
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
-    fun getMainNavData(loginState: Int, shopId: Int) {
-        getProfileSection(loginState, shopId)
+    fun getMainNavData() {
+        launchCatchError(coroutineContext, block = {
+           val result = getMainNavDataUseCase.get().executeOnBackground()
+            _mainNavLiveData.postValue(result)
+        }){
+            //apply global error for mainnav
+        }
     }
 
     fun getProfileSection(loginState: Int, shopId: Int) {
@@ -101,6 +104,7 @@ class MainNavViewModel @Inject constructor(
             }
         }
     }
+
 
     fun getUserNameAndPictureData(loginState: Int, shopId: Int) {
         launchCatchError(coroutineContext, block = {

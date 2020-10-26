@@ -1,7 +1,12 @@
 package com.tokopedia.homenav.mainnav.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
+import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
+import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactoryImpl
+import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -20,4 +25,15 @@ class MainNavModule {
     @MainNavScope
     @Provides
     fun provideMainNavCommandProcessor(dispatcher: NavDispatcherProvider) = NavCommandProcessor(dispatcher.io())
+
+    @MainNavScope
+    @Provides
+    fun provideMainNavDataFactory(@ApplicationContext context: Context,
+                                  userSession: UserSessionInterface): MainNavDataFactory
+            = MainNavDataFactoryImpl(context, userSession)
+
+    @MainNavScope
+    @Provides
+    fun provideMainNavMapper(mainNavDataFactory: MainNavDataFactory) = MainNavMapper(mainNavDataFactory)
+
 }

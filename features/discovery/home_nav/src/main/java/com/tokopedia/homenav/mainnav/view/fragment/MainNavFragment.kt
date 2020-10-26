@@ -1,7 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +30,6 @@ import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
-
 
     @Inject
     lateinit var viewModel: MainNavViewModel
@@ -69,7 +66,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickListener()
-        viewModel.getMainNavData(getLoginState(), getUserSession().shopId.toInt())
+        viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -153,22 +150,5 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
-    }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }

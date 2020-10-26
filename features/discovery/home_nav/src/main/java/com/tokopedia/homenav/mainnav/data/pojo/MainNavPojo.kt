@@ -6,12 +6,11 @@ import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 
 data class MainNavPojo(
         @SerializedName("id")
         @Expose
         val id: String = "",
-        var wallet: WalletBalanceModel = WalletBalanceModel(),
-        var membership: MembershipPojo = MembershipPojo(),
-        var shop: ShopInfoPojo = ShopInfoPojo()
+        var userPojo: UserPojo = UserPojo()
 )
