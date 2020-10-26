@@ -10,7 +10,7 @@
             android:id="@+id/inspirationCardTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             android:text="@string/search_inspiration_card_title"
             android:maxLines="2"
             android:ellipsize="end"

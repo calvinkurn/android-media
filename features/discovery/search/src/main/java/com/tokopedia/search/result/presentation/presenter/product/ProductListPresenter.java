@@ -112,6 +112,7 @@ final class ProductListPresenter
     private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
+    private static final List<String> showInspirationCarouselLayout = Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -830,23 +831,8 @@ final class ProductListPresenter
 
         if (relatedViewModel != null) {
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
-            trackBroadMatchImpression();
 
             relatedViewModel = null;
-        }
-    }
-
-    private void trackBroadMatchImpression() {
-        for (BroadMatchViewModel broadMatchViewModel: relatedViewModel.getBroadMatchViewModelList()) {
-            List<Object> broadMatchItemAsImpressionObjectDataLayer = new ArrayList<>();
-
-            for(BroadMatchItemViewModel broadMatchItemViewModel: broadMatchViewModel.getBroadMatchItemViewModelList())
-                broadMatchItemAsImpressionObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
-
-            getView().trackBroadMatchImpression(
-                    broadMatchViewModel.getKeyword(),
-                    broadMatchItemAsImpressionObjectDataLayer
-            );
         }
     }
 
@@ -908,8 +894,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        boolean isGlobalNavWidgetAvailable
-                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+        boolean isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
 
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
@@ -966,6 +951,13 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean getIsGlobalNavWidgetAvailable(ProductViewModel productViewModel) {
+        return productViewModel.getGlobalNavViewModel() != null
+                && enableGlobalNavWidget
+                && !getView().isAnyFilterActive()
+                && !getView().isAnySortActive();
     }
 
     private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
@@ -1054,11 +1046,10 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= productList.size()) {
+                if (data.getPosition() <= productList.size() && shouldShowInspirationCarousel(data.getLayout())) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
-                        impressedInspirationCarousel(data);
                         inspirationCarouselViewModelIterator.remove();
                     }
                     catch (Exception exception) {
@@ -1068,6 +1059,10 @@ final class ProductListPresenter
                 }
             }
         }
+    }
+
+    private boolean shouldShowInspirationCarousel(String layout) {
+        return showInspirationCarouselLayout.contains(layout);
     }
 
     private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
@@ -1120,14 +1115,6 @@ final class ProductListPresenter
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
 
         list.addAll(broadMatchIndex, broadMatchVisitableList);
-    }
-
-    private void impressedInspirationCarousel(InspirationCarouselViewModel data) {
-        if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
-            getView().sendImpressionInspirationCarouselList(data);
-        } else if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
-            getView().sendImpressionInspirationCarouselInfo(data);
-        }
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
@@ -1704,8 +1691,14 @@ final class ProductListPresenter
 
     @Override
     public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        if (getView() == null || !broadMatchItemViewModel.isOrganicAds()) return;
+        if (getView() == null) return;
 
+        if (broadMatchItemViewModel.isOrganicAds()) getViewToImpressBroadMatchAdsItem(broadMatchItemViewModel);
+
+        getView().trackBroadMatchImpression(broadMatchItemViewModel);
+    }
+
+    private void getViewToImpressBroadMatchAdsItem(BroadMatchItemViewModel broadMatchItemViewModel) {
         topAdsUrlHitter.hitImpressionUrl(
                 getView().getClassName(),
                 broadMatchItemViewModel.getTopAdsViewUrl(),
