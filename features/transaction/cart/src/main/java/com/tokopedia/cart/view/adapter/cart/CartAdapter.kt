@@ -968,13 +968,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
     fun removeWishlist(productId: String) {
         var wishlistIndex = 0
+        var wishlistItemIndex = 0
         var cartWishlistHolderData: CartWishlistHolderData? = null
-        for (any in cartDataList) {
+        for ((i, any) in cartDataList.withIndex()) {
             if (any is CartWishlistHolderData) {
+                wishlistIndex = i
                 val wishlist = any.wishList
-                for ((index, data) in wishlist.withIndex()) {
+                for ((j, data) in wishlist.withIndex()) {
                     if (data.id == productId) {
-                        wishlistIndex = index
+                        wishlistItemIndex = j
                         cartWishlistHolderData = any
                         break
                     }
@@ -984,9 +986,17 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         }
 
         if (cartWishlistHolderData != null) {
-            cartWishlistAdapter?.let {
-                cartWishlistHolderData.wishList.removeAt(wishlistIndex)
-                cartWishlistAdapter?.updateWishlistItems(cartWishlistHolderData.wishList)
+            if (cartWishlistHolderData.wishList.size > 1) {
+                cartWishlistAdapter?.let {
+                    cartWishlistHolderData.wishList.removeAt(wishlistItemIndex)
+                    cartWishlistAdapter?.updateWishlistItems(cartWishlistHolderData.wishList)
+                }
+            } else {
+                // Remove wishlist holder & wishlist header
+                cartDataList.removeAt(wishlistIndex)
+                val headerIndex = wishlistIndex - 1
+                cartDataList.removeAt(headerIndex)
+                notifyItemRangeRemoved(headerIndex, 2)
             }
         }
     }
