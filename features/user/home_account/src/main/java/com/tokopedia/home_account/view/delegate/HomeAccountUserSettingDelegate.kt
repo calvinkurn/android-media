@@ -17,6 +17,7 @@ class HomeAccountUserSettingDelegate (val listener: HomeAccountUserListener):
                 SettingViewHolder.LAYOUT
         ) {
 
+    private var mExpandedPosition = -1
     override fun onBindViewHolder(item: SettingDataView, holder: SettingViewHolder) {
         holder.bind(item)
     }
