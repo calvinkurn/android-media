@@ -1597,7 +1597,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.getPlayWidget(shopId)
     }
 
-    override fun onCardChannelClick(appLink: String) {
+    override fun onChannelClicked(appLink: String) {
         val intent = RouteManager.getIntent(requireContext(), appLink)
         startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
     }

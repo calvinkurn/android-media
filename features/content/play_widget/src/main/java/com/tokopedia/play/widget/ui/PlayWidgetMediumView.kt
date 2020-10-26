@@ -62,7 +62,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     private val adapter = PlayWidgetCardMediumAdapter(channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener{
         override fun onChannelClicked(appLink: String) {
-            mWidgetListener?.onCardChannelClick(appLink)
+            mWidgetListener?.onChannelClicked(appLink)
         }
 
         override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
