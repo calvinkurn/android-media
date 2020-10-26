@@ -108,4 +108,7 @@
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
+
+    <!-- Product Review -->
+    <string name="title_product_review">Product Review</string>
 </resources>

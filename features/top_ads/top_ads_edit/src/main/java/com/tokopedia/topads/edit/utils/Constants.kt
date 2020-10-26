@@ -22,6 +22,8 @@ object Constants {
     const val POSITIVE_CREATE = "createdPositiveKeyword"
     const val POSITIVE_DELETE = "deletedPositiveKeyword"
     const val POSITIVE_EDIT = "editedPositiveKeyword"
+    const val POSITIVE_KEYWORD_ALL = "editedAllPositiveKeyword"
+    const val NEGATIVE_KEYWORD_ALL = "editedAllNegativeKeyword"
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
     const val GROUP_NAME = "group_name"
@@ -74,5 +76,7 @@ object Constants {
     const val CURRENT_KEY_TYPE = "currentKeyType"
     const val ITEM_POSITION = "pos"
     const val GROUPID = "group_id"
+    const val KEYWORD_ID = "keywordId"
+    const val KEYWORD_TYPE = "keywordType"
 
 }

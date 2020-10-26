@@ -109,7 +109,6 @@ class ShopHomeSliderBannerViewHolder(
                     addItems(R.layout.widget_slider_banner_item, it, itmListener)
                     Handler().post {
                         activeIndex = 0
-                        autoplay = true
                     }
                 }
             }
@@ -127,6 +126,15 @@ class ShopHomeSliderBannerViewHolder(
                 show()
             }
         }
+    }
+
+    fun pauseTimer() {
+        carouselShopPage?.autoplay = false
+    }
+
+    fun resumeTimer() {
+        carouselShopPage?.timer = Timer()
+        carouselShopPage?.autoplay = true
     }
 
     private fun onClickBannerItem(

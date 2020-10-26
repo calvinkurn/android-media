@@ -62,7 +62,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -88,6 +87,7 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -423,7 +423,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getHomeIntent(Context context) {
-        return MainParentActivity.start(context);
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override
