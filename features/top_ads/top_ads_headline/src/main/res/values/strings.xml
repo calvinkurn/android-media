@@ -5,4 +5,5 @@
     <string name="topads_headline_ad_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
     <string name="topads_headline_ad_name_hint">Masukkan nama iklan</string>
     <string name="topads_headline_continue">Lanjutkan</string>
+    <string name="topads_headline_ad_name_required">Nama iklan harus diisi</string>
 </resources>

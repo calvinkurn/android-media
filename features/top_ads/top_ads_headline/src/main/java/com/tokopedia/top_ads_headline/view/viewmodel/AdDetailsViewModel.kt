@@ -16,7 +16,7 @@ class AdDetailsViewModel @Inject constructor(
                     topAdsGroupValidateNameUseCase.setParams(shopId, adName)
                     val response = topAdsGroupValidateNameUseCase.executeOnBackground()
                     if (response.topAdsGroupValidateName.errors.isEmpty()){
-                        onSuccess
+                        onSuccess()
                     } else{
                         onError(response.topAdsGroupValidateName.errors[0].detail)
                     }
