@@ -90,23 +90,6 @@ object GlideBuilder {
         } else {
             GlideApp.with(imageView.context).asBitmap().apply {
 
-                if (placeHolder != 0) {
-                    placeholder(placeHolder)
-                } else {
-                    if (url is GlideUrl) {
-                        val blurHash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
-//                        blurHash?.let {
-//                            placeholder(
-//                                    BitmapDrawable(
-//                                            imageView.context.resources,
-//                                            blurring(imageView, blurHash)
-//                                    )
-//                            )
-//                        }
-                        blurHash?.let { thumbnail(thumbnailLoader(imageView.context, blurring(imageView, blurHash))) }
-                    }
-                }
-
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()
                     ImageView.ScaleType.CENTER_CROP -> centerCrop()
@@ -129,6 +112,22 @@ object GlideBuilder {
 
                 if (localTransform.isNotEmpty()) {
                     transform(MultiTransformation(localTransform))
+                }
+
+                if (placeHolder != 0) {
+                    placeholder(placeHolder)
+                } else {
+                    if (url is GlideUrl) {
+                        val blurHash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
+                        blurHash?.let {
+                            placeholder(
+                                    BitmapDrawable(
+                                            imageView.context.resources,
+                                            blurring(imageView, blurHash)
+                                    )
+                            )
+                        }
+                    }
                 }
 
                 listener(glideListener(stateListener))
