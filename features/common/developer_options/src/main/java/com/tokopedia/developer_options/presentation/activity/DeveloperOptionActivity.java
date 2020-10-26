@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,11 +28,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -89,6 +92,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private View sendTimberButton;
     private EditText editTextTimberMessage;
 
+    private View sendFirebaseCrash;
+    private EditText editTextFirebaseCrash;
+
     private View routeManagerButton;
     private EditText editTextRouteManager;
     private EditText editTextChangeVersionName;
@@ -107,6 +113,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
+    private CheckBox toggleDarkMode;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
     private CheckBox toggleTopAdsNotif;
@@ -206,6 +213,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
+        toggleDarkMode = findViewById(R.id.toggle_dark_mode);
         toggleAnalytics = findViewById(R.id.toggle_analytics);
         toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
         toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
@@ -228,6 +236,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+
+        editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
+        sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
 
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
@@ -308,6 +319,19 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+        sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String crashMessage = editTextFirebaseCrash.getText().toString();
+                if (TextUtils.isEmpty(crashMessage)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Crash message should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseCrashlytics.getInstance().recordException(new DeveloperOptionException(crashMessage));
+                }
+            }
+        });
+
         routeManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -373,6 +397,9 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777,notifReview);
                 });
+
+        toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
+        toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
 
         toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
         toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
@@ -558,5 +585,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void initTranslator() {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+    }
+
+    private class DeveloperOptionException extends RuntimeException{
+        public DeveloperOptionException(String message) {
+            super(message);
+        }
     }
 }

@@ -23,7 +23,5 @@
             <parameter-mapping urlParameter="description" intentParameter="lodgingReservation.reservationFor.description" />
             <parameter-mapping urlParameter="name" intentParameter="lodgingReservation.reservationFor.brand.name" />
         </fulfillment>
-        <fulfillment
-            urlTemplate="content://com.tokopedia.tkpd.travel_slice/book_hotel" />
     </action>
 </actions>

@@ -19,6 +19,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import javax.inject.Inject
@@ -35,10 +36,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    @Inject
+    lateinit var pageMonitoring: PlayPltPerformanceCallback
+
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
-
-    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -136,25 +138,12 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
         onBackPressed(true)
     }
 
-    fun getPageMonitoring(): PageLoadTimePerformanceInterface {
-        return pageMonitoring
-    }
-
     fun getPltPerformanceResultData(): PltPerformanceData? {
         return pageMonitoring.getPltPerformanceData()
     }
 
     private fun startPageMonitoring() {
-        pageMonitoring = PageLoadTimePerformanceCallback(
-                PLAY_TRACE_PREPARE_PAGE,
-                PLAY_TRACE_REQUEST_NETWORK,
-                PLAY_TRACE_RENDER_PAGE
-        )
-        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
-        starPrepareMonitoring()
-    }
-
-    private fun starPrepareMonitoring() {
+        pageMonitoring.startPlayMonitoring()
         pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 

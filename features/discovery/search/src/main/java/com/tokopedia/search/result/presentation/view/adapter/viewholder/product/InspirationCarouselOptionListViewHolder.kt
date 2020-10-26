@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
@@ -24,6 +26,7 @@ class InspirationCarouselOptionListViewHolder(
 
         val productOption = item.product.getOrNull(0) ?: return
 
+        bindImpressionListener(productOption)
         bindProductImage(productOption.imgUrl)
         bindProductName(productOption.name)
         bindProductPrice(productOption.priceStr)
@@ -55,6 +58,18 @@ class InspirationCarouselOptionListViewHolder(
         itemView.optionListCardView?.setOnClickListener { _ ->
             val product = item.product.getOrNull(0) ?: return@setOnClickListener
             inspirationCarouselListener.onInspirationCarouselListProductClicked(product)
+        }
+    }
+
+    private fun bindImpressionListener(product: InspirationCarouselViewModel.Option.Product) {
+        itemView.productImage?.addOnImpressionListener(product, createViewHintListener(product))
+    }
+
+    private fun createViewHintListener(product: InspirationCarouselViewModel.Option.Product): ViewHintListener {
+        return object: ViewHintListener {
+            override fun onViewHint() {
+                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
+            }
         }
     }
 
