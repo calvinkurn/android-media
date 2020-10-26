@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
 import android.content.Context
@@ -344,6 +345,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         initImageUri()
     }
 
+    @SuppressLint("ResourceType")
     private fun initListener() {
         val separator = "@"
         val loginEmail = userSession?.email
@@ -373,6 +375,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         page.setOnClickListener {
             openBottomSheetPage()
         }
+
+        expectedResult.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                et_expected_result_wrapper.setHintTextAppearance(R.color.black)
+            } else {
+                et_expected_result_wrapper.setHintTextAppearance(R.color.transparent)
+            }
+        }
+
 
         submitButton.setOnClickListener {
             val emailText= email.text.toString()

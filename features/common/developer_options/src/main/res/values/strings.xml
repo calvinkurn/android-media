@@ -15,8 +15,8 @@
 
     <!--Feedback Page-->
     <string name="category">Category*</string>
-    <string name="email">Tokopedia Email</string>
-    <string name="bugs_detail">Bugs_detail</string>
+    <string name="email">Email Address*</string>
+    <string name="bugs_detail">Bugs Detail</string>
     <string name="actual_result">Actual Result</string>
     <string name="expected_result">Expected Result</string>
     <string name="page">Page Name</string>

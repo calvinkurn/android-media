@@ -3,6 +3,8 @@ package com.tokopedia.developer_options.presentation.feedbackpage.ui.tickercreat
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +13,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.feedbackpage.analytics.FeedbackPageAnalytics
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_TICKET_LINK
@@ -49,20 +49,14 @@ class TicketCreatedFragment: Fragment() {
         tickerLink.text = issueUrl
         tickerLink.setOnClickListener {
             FeedbackPageAnalytics.eventClickJiraLink()
-            goToJiraLinkWebView(issueUrl)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(issueUrl))
+            startActivity(intent)
         }
         imageCopy.setOnClickListener {
             FeedbackPageAnalytics.eventCopyJiraLink()
             onTextCopied(mainView, "label", tickerLink.text.toString())
         }
 
-    }
-
-    private fun goToJiraLinkWebView(issueUrl: String?) {
-        if (activity != null) {
-            val intent = RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, issueUrl))
-            this.startActivity(intent)
-        }
     }
 
     private fun onTextCopied(view: View, label: String, str: String) {
