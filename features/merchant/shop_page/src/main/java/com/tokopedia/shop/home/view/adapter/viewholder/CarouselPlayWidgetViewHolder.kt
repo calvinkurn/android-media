@@ -4,6 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 
@@ -24,6 +28,44 @@ class CarouselPlayWidgetViewHolder(
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
         playWidgetCoordinator.connect(playWidgetView, element.widgetUiModel)
+    }
+
+    override fun bind(element: CarouselPlayWidgetUiModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.size <= 0) return
+        val payload = payloads[0]
+        val widgetUiModel = element.widgetUiModel
+        if (widgetUiModel !is PlayWidgetUiModel.Medium) return
+
+        if (payload is PlayWidgetReminderUiModel) {
+            playWidgetView.setModel(updateToggleReminder(payload, widgetUiModel))
+        } else if (payload is PlayWidgetTotalViewUiModel) {
+            playWidgetView.setModel(updateTotalView(payload, widgetUiModel))
+        }
+    }
+
+    private fun updateToggleReminder(reminderUiModel: PlayWidgetReminderUiModel, widgetUiModel: PlayWidgetUiModel.Medium): PlayWidgetUiModel {
+        if (widgetUiModel.items.size > reminderUiModel.position) {
+            val items = widgetUiModel.items.mapIndexed { index, item ->
+                if (index == reminderUiModel.position && item is PlayWidgetMediumChannelUiModel) {
+                    item.copy(activeReminder = !reminderUiModel.remind)
+                } else {
+                    item
+                }
+            }
+            return widgetUiModel.copy(items = items)
+        }
+        return widgetUiModel
+    }
+
+    private fun updateTotalView(totalViewUiModel: PlayWidgetTotalViewUiModel, widgetUiModel: PlayWidgetUiModel.Medium): PlayWidgetUiModel {
+        val items = widgetUiModel.items.map { item ->
+            if (item is PlayWidgetMediumChannelUiModel && totalViewUiModel.channelId == item.channelId) {
+                item.copy(totalView = totalViewUiModel.totalView)
+            } else {
+                item
+            }
+        }
+        return widgetUiModel.copy(items = items)
     }
 
     companion object {

@@ -7,6 +7,7 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
@@ -89,34 +90,6 @@ class ShopPageHomeModule {
                       totalReview
                       isPO
                       cashback
-                    }
-                    ... on PromoWidget {
-                      voucherID
-                      imageUrl
-                      name
-                      voucherType {
-                          voucherType
-                          identifier
-                      }
-                      voucherCode
-                      amount {
-                        amountType
-                        amount
-                        amountFormatted
-                      }
-                      minimumSpend
-                      minimumSpendFormatted
-                      owner {
-                        ownerID
-                        identifier
-                      }
-                      validThru
-                      tnc
-                      inUseExpiry
-                      status {
-                        status
-                        identifier
-                      }
                     }
                     ... on CampaignWidget {
                       campaignID
@@ -378,10 +351,14 @@ class ShopPageHomeModule {
         return ShopProductSortMapper()
     }
 
+    /**
+     * Play widget
+     */
     @ShopPageHomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, mapperProviders)
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
     }
 }

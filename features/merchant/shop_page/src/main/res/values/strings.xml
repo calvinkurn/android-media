@@ -36,6 +36,10 @@
     <string name="shop_page_bottom_sheet_product_quality_review_info">dari %1$s ulasan</string>
     <string name="shop_page_bottom_sheet_speed_shop_info_last_12_months">(dihitung dalam 12 bulan terakhir)</string>
 
+    <string name="shop_page_reload">Muat Ulang</string>
+    <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
+    <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
@@ -236,9 +240,6 @@
     <string name="video_not_found">Video tidak ditemukan</string>
 
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
-    <string name="shop_page_play_card_success_add_reminder">Berhasil pasang pengingat</string>
-    <string name="shop_page_play_card_success_remove_reminder">Berhasil menghapus pengingat</string>
-    <string name="shop_page_play_card_error_reminder">Oops, internet terputus. Cek ulang koneksimu.</string>
     <string name="shop_page_play_widget_title"><![CDATA[Ayo cobain <b>live streaming</b>]]></string>
     <string name="shop_page_play_widget_sgc_content">dan bikin tokomu makin terkenal!</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>

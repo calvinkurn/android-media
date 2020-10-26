@@ -31,6 +31,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
@@ -568,7 +569,8 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, mapperProviders)
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
     }
 }

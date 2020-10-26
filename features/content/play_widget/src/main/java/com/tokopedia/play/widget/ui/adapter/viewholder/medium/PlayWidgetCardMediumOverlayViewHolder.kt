@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 
 
@@ -13,8 +12,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
  * Created by mzennis on 07/10/20.
  */
 class PlayWidgetCardMediumOverlayViewHolder(
-        itemView: View,
-        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
+        itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: PlayWidgetMediumOverlayUiModel) {
@@ -25,12 +23,6 @@ class PlayWidgetCardMediumOverlayViewHolder(
         itemView.setOnClickListener {
             RouteManager.route(it.context, item.appLink)
         }
-//        itemView.setOnClickListener {
-//            cardMediumListener.onCardClicked(item, adapterPosition)
-//        }
-//        itemView.addOnImpressionListener(item.impress) {
-//            cardMediumListener.onCardVisible(item, adapterPosition)
-//        }
     }
 
     companion object {

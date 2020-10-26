@@ -1,6 +1,6 @@
 package com.tokopedia.play.widget.ui.adapter
 
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMediumBannerAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMediumChannelAdapterDelegate
@@ -8,21 +8,20 @@ import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMedium
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
 /**
  * Created by mzennis on 07/10/20.
  */
 class PlayWidgetCardMediumAdapter(
-        private val listener: CardMediumListener
+        channelCardListener: PlayWidgetCardMediumChannelViewHolder.Listener
 ) : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(listener))
-                .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(listener))
-                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate(listener))
+                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate())
+                .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(channelCardListener))
+                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate())
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {
@@ -34,28 +33,16 @@ class PlayWidgetCardMediumAdapter(
         return oldItem == newItem
     }
 
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is PlayWidgetCardMediumChannelViewHolder
-                && (holder.getChannelType() == PlayWidgetChannelType.Live
-                        || holder.getChannelType() == PlayWidgetChannelType.Vod)) {
-            listener.onCardAttachedToWindow(holder)
+    override fun getChangePayload(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Bundle? {
+        val diffBundle = Bundle()
+        if (oldItem is PlayWidgetMediumChannelUiModel && newItem is PlayWidgetMediumChannelUiModel) {
+            if (oldItem.activeReminder != newItem.activeReminder) {
+                diffBundle.putBoolean(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_REMINDER, newItem.activeReminder)
+            }
+            if (oldItem.totalView != newItem.totalView) {
+                diffBundle.putString(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW, newItem.totalView)
+            }
         }
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is PlayWidgetCardMediumChannelViewHolder
-                && (holder.getChannelType() == PlayWidgetChannelType.Live
-                        || holder.getChannelType() == PlayWidgetChannelType.Vod)) {
-            listener.onCardDetachedFromWindow(holder)
-        }
-    }
-
-    interface CardMediumListener {
-        fun onCardClicked(item: PlayWidgetMediumItemUiModel, position: Int)
-        fun onCardVisible(item: PlayWidgetMediumItemUiModel, position: Int)
-        fun onCardAttachedToWindow(card: PlayWidgetCardMediumChannelViewHolder)
-        fun onCardDetachedFromWindow(card: PlayWidgetCardMediumChannelViewHolder)
+        return if (diffBundle.size() == 0) null else diffBundle
     }
 }

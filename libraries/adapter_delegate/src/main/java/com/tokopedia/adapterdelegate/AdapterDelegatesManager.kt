@@ -54,22 +54,24 @@ class AdapterDelegatesManager<T: Any>(
     private fun getAdapterDelegate(itemList: List<T>, position: Int): AdapterDelegate<T> {
         val item = itemList[position]
         val itemClass = item::class.java
+
+        if (typedAdapterDelegatesMap.containsKey(itemClass)) {
+            return adapterDelegates[typedAdapterDelegatesMap[itemClass]!!] ?: throw IllegalStateException("Index of adapter delegates found but does not exist in adapter delegate list")
+        }
+        else {
+            specialAdapterDelegates.forEach { delegateIndex ->
+                val adapterDelegate = adapterDelegates[delegateIndex]
+                if (adapterDelegate?.isForViewType(itemList, position, isFlexibleType) == true) return adapterDelegate
+            }
+        }
+
         if (isFlexibleType) {
             for (index in 0 until adapterDelegates.size()) {
                 val adapterDelegate = adapterDelegates[index]
                 if (adapterDelegate?.isForViewType(itemList, position, isFlexibleType) == true) return adapterDelegate
             }
-        } else {
-            if (typedAdapterDelegatesMap.containsKey(itemClass)) {
-                return adapterDelegates[typedAdapterDelegatesMap[itemClass]!!] ?: throw IllegalStateException("Index of adapter delegates found but does not exist in adapter delegate list")
-            }
-            else {
-                specialAdapterDelegates.forEach { delegateIndex ->
-                    val adapterDelegate = adapterDelegates[delegateIndex]
-                    if (adapterDelegate?.isForViewType(itemList, position, isFlexibleType) == true) return adapterDelegate
-                }
-            }
         }
+
         throw IllegalArgumentException("No delegate is found for item: $item with type: $itemClass on position: $position")
     }
 }

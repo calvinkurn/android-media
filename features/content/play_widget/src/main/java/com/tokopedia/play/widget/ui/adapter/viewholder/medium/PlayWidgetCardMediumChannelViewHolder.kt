@@ -10,8 +10,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.player.PlayVideoPlayer
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -20,7 +18,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  */
 class PlayWidgetCardMediumChannelViewHolder(
         itemView: View,
-        private val cardMediumListener: PlayWidgetCardMediumAdapter.CardMediumListener
+        private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail: AppCompatImageView = itemView.findViewById(R.id.play_widget_thumbnail)
@@ -32,35 +30,22 @@ class PlayWidgetCardMediumChannelViewHolder(
     private val totalViewBadge: View = itemView.findViewById(R.id.play_widget_badge_total_view)
     private val promoBadge: View = itemView.findViewById(R.id.play_widget_badge_promo)
 
-    private val startTime: TextView = itemView.findViewById(R.id.play_widget_channel_date)
-    private val title: TextView = itemView.findViewById(R.id.play_widget_channel_title)
-    private val author: TextView = itemView.findViewById(R.id.play_widget_channel_name)
-    private val totalView: TextView = itemView.findViewById(R.id.viewer)
+    private val tvStartTime: TextView = itemView.findViewById(R.id.play_widget_channel_date)
+    private val tvTitle: TextView = itemView.findViewById(R.id.play_widget_channel_title)
+    private val tvAuthor: TextView = itemView.findViewById(R.id.play_widget_channel_name)
+    private val tvTotalView: TextView = itemView.findViewById(R.id.viewer)
 
-    private var channelType: PlayWidgetChannelType = PlayWidgetChannelType.Unknown
-
-    private var videoUrl: String = ""
-
-    private val videoPlayerListener = object : PlayVideoPlayer.VideoPlayerListener {
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            videoPlayerView.visibility = if (isPlaying) View.VISIBLE else View.INVISIBLE
-        }
-    }
+    private var originalReminderState = false
 
     fun bind(item: PlayWidgetMediumChannelUiModel) {
         setData(item)
         itemView.setOnClickListener {
-            RouteManager.route(it.context, item.appLink)
+            if (item.channelType == PlayWidgetChannelType.Live || item.channelType ==  PlayWidgetChannelType.Vod) {
+                listener.onCardChannelClick(item.appLink)
+            } else {
+                RouteManager.route(it.context, item.appLink)
+            }
         }
-
-//        itemView.setOnClickListener {
-//            cardMediumListener.onCardClicked(item, adapterPosition)
-//        }
-//        itemView.addOnImpressionListener(item.impress) {
-//            cardMediumListener.onCardVisible(item, adapterPosition)
-//        }
-
-        channelType = item.channelType
     }
 
     private fun setData(item: PlayWidgetMediumChannelUiModel) {
@@ -71,36 +56,58 @@ class PlayWidgetCardMediumChannelViewHolder(
         liveBadge.visibility = if (item.video.isLive) View.VISIBLE else View.GONE
         reminderBadge.visibility = if (item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
-        val iconReminder = if (item.activeReminder) com.tokopedia.play_common.R.drawable.ic_play_reminder else com.tokopedia.play_common.R.drawable.ic_play_reminder_non_active
+        tvTitle.visibility = if (item.title.isNotEmpty()) View.VISIBLE else View.GONE
+        tvAuthor.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
+        tvStartTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
+
+        tvAuthor.text = item.partner.name
+        tvTitle.text = item.title
+        tvStartTime.text = item.startTime
+        tvTotalView.text = item.totalView
+
+        originalReminderState = item.activeReminder
+
+        setIconToggleReminder(item.activeReminder)
+        reminderBadge.setOnClickListener {
+            item.activeReminder = !item.activeReminder
+            listener.onToggleReminderClick(item.channelId, item.activeReminder, adapterPosition)
+            setIconToggleReminder(item.activeReminder)
+        }
+    }
+
+    private fun setIconToggleReminder(active: Boolean) {
+        val drawableIconReminder = if (active) com.tokopedia.play_common.R.drawable.ic_play_reminder else com.tokopedia.play_common.R.drawable.ic_play_reminder_non_active
         reminderBadge.setImageDrawable(
-                ContextCompat.getDrawable(itemView.context, iconReminder)
+                ContextCompat.getDrawable(itemView.context, drawableIconReminder)
         )
-
-        author.text = item.partner.name
-        title.text = item.title
-        startTime.text = item.startTime
-        totalView.text = item.totalView
-
-        title.visibility = if (item.title.isNotEmpty()) View.VISIBLE else View.GONE
-        author.visibility = if (item.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        startTime.visibility = if (item.startTime.isNotEmpty() && item.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
-
-        videoUrl = item.video.videoUrl
     }
 
-    fun setPlayer(playVideoPlayer: PlayVideoPlayer) {
-        playVideoPlayer.videoUrl = videoUrl
-        playVideoPlayer.listener = videoPlayerListener
-        videoPlayerView.player = playVideoPlayer.getPlayer()
+    fun revertToOriginalReminderState() {
+        setIconToggleReminder(originalReminderState)
     }
 
-    fun getPlayer(): PlayVideoPlayer? {
-        return videoPlayerView.player as? PlayVideoPlayer
+    fun setTotalView(totalView: String) {
+        tvTotalView.text = totalView
     }
-
-    fun getChannelType(): PlayWidgetChannelType = channelType
 
     companion object {
         @LayoutRes val layoutRes = R.layout.item_play_widget_card_channel_medium
+
+        const val KEY_CHANNEL_REMINDER = "channel_reminder"
+        const val KEY_CHANNEL_TOTAL_VIEW = "channel_total_view"
+
+        const val KEY_EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        const val KEY_EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        const val KEY_PLAY_WIDGET_REQUEST_CODE = 2567
+    }
+
+    interface Listener {
+        fun onCardChannelClick(appLink: String)
+        fun onToggleReminderClick(
+                channelId: String,
+                remind: Boolean,
+                position: Int
+        )
     }
 }
