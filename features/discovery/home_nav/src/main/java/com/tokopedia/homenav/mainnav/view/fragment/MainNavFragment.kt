@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
@@ -26,7 +25,6 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -37,7 +35,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var viewModel: MainNavViewModel
 
     lateinit var recyclerView: RecyclerView
-    lateinit var swipeRefresh: SwipeToRefresh
     lateinit var layoutManager: LinearLayoutManager
     lateinit var adapter: MainNavAdapter
 
@@ -60,16 +57,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_main_nav, container, false)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
-        return view
+        return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.recycler_view)
         initAdapter()
-        viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -80,9 +74,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
 
         viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> populateAccountHeader(it.data)
-            }
+
         })
 
         viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
@@ -128,15 +120,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun observeCategoryListData(){
         onRefresh()
         viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            hideSwipeRefresh()
-            if(it is Success) {
-                adapter.submitList(it.data)
+            if(it is Fail){
+
             }
         })
-    }
-
-    private fun hideSwipeRefresh(){
-        swipeRefresh.isRefreshing = false
     }
 
     private fun initAdapter() {
@@ -163,14 +150,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
     }
 
     private fun haveUserLogoutData(): Boolean {
