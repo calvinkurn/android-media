@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
             android:layout_marginTop="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             app:layout_behavior="com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior"
             app:elevation="@dimen/dp_4">
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -92,7 +92,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="visible"
         app:titleTextAppearance="@style/Wishlist.TextAppearance"
         app:theme="@style/Toolbar.Wishlist"/>
