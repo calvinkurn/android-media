@@ -220,6 +220,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         activity?.let {
             return when (item.itemId) {
                 R.id.action_cart -> {
+                    WishlistTracking.clickCartIcon(userId = viewModel.getUserId())
                     RouteManager.route(it, ApplinkConst.CART)
                     it.finish()
                     true

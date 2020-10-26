@@ -60,6 +60,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_TRADEIN = "viewTradeIn";
         String CLICK_TRADEIN = "clickTradeIn";
         String CART = "Cart";
+        String CLICK_WISHLIST = "clickWishlist";
     }
 
     interface EventCategory {
@@ -468,6 +469,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_INFORMATION_LABEL_IN_PRODUCT_CARD = "view information label in product card";
         String CLICK_DETAIL_TAGIHAN = "click detail tagihan";
         String ADD_WISHLIST_CART_LOGIN = "add wishlist - cart - login";
+        String REMOVE_WISHLIST_CART_LOGIN = "remove wishlist - cart - login";
         String CLICK_DELETE_PRODUCT_ON_UNAVAILABLE_SECTION = "click delete product on unavailable section";
         String CLICK_LIHAT_PRODUK_SERUPA_ON_UNAVAILABLE_SECTION = "click lihat produk serupa on unavailable section";
         String CLICK_CHECKOUT_MELALUI_BROWSER_ON_UNAVAILABLE_SECTION = "click checkout melalui browser on unavailable section";
@@ -475,6 +477,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT = "click %s on unavailable section";
         String CLICK_UNDO_AFTER_DELETE_PRODUCT = "click undo after delete product";
         String VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart";
+        String CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page";
     }
 
     interface EventLabel {
@@ -541,6 +544,8 @@ public interface ConstantTransactionAnalytics {
         String USER_ID = "userId";
         String PROMO_CODE = "promoCode";
         String PAYMENT_TYPE = "paymentType";
+        String BUSINESS_UNIT = "businessUnit";
+        String CURRENT_SITE = "currentSite";
     }
 
     interface ScreenName {
@@ -563,5 +568,6 @@ public interface ConstantTransactionAnalytics {
 
     interface CustomDimension {
         String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
+        String DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform";
     }
 }

@@ -624,6 +624,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistClicked() {
+        cartPageAnalytics.eventClickWishlistIcon(userSession.userId)
         routeToWishlist()
     }
 
@@ -1201,6 +1202,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onRemoveWishlistFromWishlist(productId: String) {
+        cartPageAnalytics.eventClickRemoveWishlist(userSession.userId, productId)
         dPresenter.processRemoveFromWishlist(productId, userSession.userId, getWishlistsWishlistActionListener())
     }
 

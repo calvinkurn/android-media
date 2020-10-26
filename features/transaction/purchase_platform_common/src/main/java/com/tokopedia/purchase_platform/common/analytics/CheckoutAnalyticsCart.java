@@ -1154,4 +1154,33 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
         sendGeneralEvent(gtmData);
     }
+
+    public void eventClickWishlistIcon(String userId){
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_WISHLIST,
+                EventCategory.CART,
+                EventAction.CLICK_WISHLIST_ICON_IN_CART_PAGE,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickRemoveWishlist(String userId, String productId){
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_WISHLIST,
+                EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_CART_LOGIN,
+                productId + " - wishlist section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+
+        sendGeneralEvent(gtmData);
+    }
+
 }
