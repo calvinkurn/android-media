@@ -64,7 +64,7 @@ class PltProductPerformanceTest {
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    performanceData)
+                    performanceData,performanceData.attribution[ProductDetailActivity.PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY] ?: "")
         }
     }
 }

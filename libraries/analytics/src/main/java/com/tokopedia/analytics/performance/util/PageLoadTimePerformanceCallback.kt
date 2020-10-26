@@ -21,6 +21,7 @@ open class PageLoadTimePerformanceCallback(
     var isNetworkDone = false
     var isRenderDone = false
     var traceName = ""
+    var attributionValue: HashMap<String, String> = hashMapOf()
 
     override fun getPltPerformanceData(): PltPerformanceData {
         return PltPerformanceData(
@@ -28,11 +29,13 @@ open class PageLoadTimePerformanceCallback(
                 networkRequestDuration = requestNetworkDuration,
                 renderPageDuration = renderDuration,
                 overallDuration = overallDuration,
-                isSuccess = (isNetworkDone && isRenderDone)
+                isSuccess = (isNetworkDone && isRenderDone),
+                attribution = attributionValue
         )
     }
 
     override fun addAttribution(attribution: String, value: String) {
+        attributionValue[attribution] = value
         performanceMonitoring?.putCustomAttribute(attribution, value)
     }
 

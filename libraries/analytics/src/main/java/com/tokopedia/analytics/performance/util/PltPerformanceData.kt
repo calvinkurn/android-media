@@ -6,5 +6,6 @@ class PltPerformanceData(
         var renderPageDuration: Long = 0,
         var overallDuration: Long = 0,
         var isSuccess: Boolean = true,
-        var isCache: Boolean = false) {
+        var isCache: Boolean = false,
+        var attribution: HashMap<String, String> = hashMapOf()) {
 }
