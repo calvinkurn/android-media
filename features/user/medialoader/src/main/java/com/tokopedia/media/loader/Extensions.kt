@@ -10,8 +10,8 @@ import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
-import com.tokopedia.media.loader.utils.HEADER_ECT
 import com.tokopedia.media.loader.utils.mediaSignature
+import androidx.appcompat.content.res.AppCompatResources.getDrawable as getDrawable
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
@@ -60,7 +60,10 @@ internal fun ImageView.call(url: Any?, properties: Properties) {
         if (url is String) {
             if (url.toEmptyStringIfNull().isEmpty()) {
                 // if there's no url found, then show the placeholder
-                imageView.loadImage(properties.placeHolder)
+                imageView.setImageDrawable(getDrawable(
+                        imageView.context,
+                        R.drawable.ic_media_default_placeholder
+                ))
                 return
             }
 

@@ -94,12 +94,9 @@ object GlideBuilder {
                     placeholder(placeHolder)
                 } else {
                     if (url is String) {
-                        url.toUri()?.let {
-                            if (it.getQueryParameters(BLUR_HASH_QUERY).isNotEmpty()) {
-                                val blurHash = it.getQueryParameter(BLUR_HASH_QUERY)
-                                placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, blurHash)))
-                            }
-                        }
+                        val blurHash = url.toUri()?.getQueryParameter(BLUR_HASH_QUERY)
+                        blurHash?.let { placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, blurHash))) }
+                        blurHash?.let { thumbnail(thumbnailLoader(imageView.context, blurring(imageView, blurHash))) }
                     }
                 }
 
@@ -145,7 +142,7 @@ object GlideBuilder {
         return GlideApp.with(context)
                 .asBitmap()
                 .load(resource)
-                .fitCenter()
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
