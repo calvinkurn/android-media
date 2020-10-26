@@ -99,6 +99,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
 
+    // TkpdPaySettingActivity
+    // tokopedia-android-internal://global/payment-setting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
+
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
     @JvmField
