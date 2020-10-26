@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.SpannableStringBuilder
@@ -14,10 +15,12 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.net.MalformedURLException
+import java.net.URLDecoder
 import java.net.UnknownHostException
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -234,6 +237,52 @@ object CMNotificationUtils {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private fun isValidCampaignUrl(uri: Uri): Boolean {
+        val maps: Map<String, String>? = splitQuery(uri)
+        maps?.let {
+            return it.containsKey(CMConstant.UTMParams.UTM_GCLID) ||
+                    it.containsKey(CMConstant.UTMParams.UTM_SOURCE) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_MEDIUM) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_CAMPAIGN)
+        } ?: return false
+
+    }
+
+
+    private fun splitQuery(url: Uri): MutableMap<String, String>? {
+        val queryPairs: MutableMap<String, String> = LinkedHashMap()
+        val query = url.query
+        if (!TextUtils.isEmpty(query)) {
+            val pairs = query!!.split("&|\\?".toRegex()).toTypedArray()
+            for (pair in pairs) {
+                val indexKey = pair.indexOf("=")
+                if (indexKey > 0 && indexKey + 1 <= pair.length) {
+                    try {
+                        queryPairs[URLDecoder.decode(pair.substring(0, indexKey), "UTF-8")] = URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8")
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        return queryPairs
+    }
+
+    fun sendUTMParamsInGTM(appLink: String?) {
+        val uri = Uri.parse(appLink)
+        if (!isValidCampaignUrl(uri))
+            return
+
+        val campaign = splitQuery(uri)
+        campaign?.let {
+            if (!it.containsKey(CMConstant.UTMParams.UTM_TERM) || it[CMConstant.UTMParams.UTM_TERM] == null)
+                it[CMConstant.UTMParams.UTM_TERM] = ""
+            if (!it.containsKey(CMConstant.UTMParams.SCREEN_NAME) || it[CMConstant.UTMParams.SCREEN_NAME] == null)
+                it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
+        }
+        TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
     }
 }
 
