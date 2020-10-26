@@ -434,6 +434,7 @@
         "title": "Cek kategori berikut - should not be shown (position error)",
         "type": "category",
         "position": 9,
+        "layout": "info",
         "options": [
           {
             "title": "Android OS",

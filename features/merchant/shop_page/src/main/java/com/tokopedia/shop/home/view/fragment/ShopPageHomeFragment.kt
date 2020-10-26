@@ -123,6 +123,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
+        const val NUM_VOUCHER_DISPLAY = 10
 
         fun createInstance(
                 shopId: String,
@@ -285,12 +286,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onResume() {
         super.onResume()
         shopHomeAdapter.resumePlayCarousel()
+        shopHomeAdapter.resumeSliderBannerAutoScroll()
     }
 
     override fun onPause() {
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pausePlayCarousel()
+        shopHomeAdapter.pauseSliderBannerAutoScroll()
     }
 
     override fun onDestroy() {
@@ -317,7 +320,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.clearAllElements()
         recycler_view.visible()
         recyclerViewTopPadding = recycler_view?.paddingTop ?: 0
-        scrollView_globalError_shopPage.hide()
         globalError_shopPage.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
@@ -343,6 +345,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
+                    stopMonitoringPltRenderPage()
+                    viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
@@ -354,9 +358,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
                                     ";error_trace='${Log.getStackTraceString(throwable)}'"
                     )
+                    stopMonitoringPltRenderPage()
                 }
             }
-            stopMonitoringPltRenderPage()
         })
 
         viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
@@ -461,6 +465,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
+        viewModel?.shopHomeMerchantVoucherLayoutData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    shopHomeAdapter.setHomeMerchantVoucherData(it.data)
+                }
+                is Fail -> {
+                    shopPageHomeLayoutUiModel?.listWidget?.indexOfFirst { uiModel -> uiModel is ShopHomeVoucherUiModel }?.let { index ->
+                        val data = shopPageHomeLayoutUiModel?.listWidget?.get(index) as ShopHomeVoucherUiModel
+                        shopHomeAdapter.setHomeMerchantVoucherData(data.copy(isError = true))
+                    }
+                }
+            }
+        })
     }
 
 
@@ -624,8 +641,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         } else {
             globalError_shopPage.setType(GlobalError.NO_CONNECTION)
         }
-
-        scrollView_globalError_shopPage.visible()
         globalError_shopPage.visible()
         recycler_view.hide()
 
@@ -868,6 +883,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             startActivity(intentMerchantVoucherDetail)
         }
+    }
+
+    override fun onVoucherReloaded() {
+        viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
     }
 
     override fun onVoucherSeeAllClicked() {

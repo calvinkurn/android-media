@@ -54,6 +54,14 @@
     <string name="topads_edit_search_empty_tip_desc1">Pilih kata yang sama dengan nama produk.</string>
     <string name="topads_edit_search_empty_tip_desc2">Lebih efektif dengan kata kunci spesifik.</string>
     <string name="topads_edit_search_empty_tip_desc3">Gunakan kata kunci umum dengan  maksimum 2 kata.</string>
+    <string name="topads_edit_filter">Filter</string>
+
+    <string-array name="sort_product_list_array">
+        <item>Terlaris</item>
+        <item>Terbaru</item>
+        <item>Harga Tertinggi</item>
+        <item>Harga Terendah</item>
+    </string-array>
 
 
 </resources>
