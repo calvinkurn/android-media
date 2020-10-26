@@ -13,7 +13,7 @@ data class AccountHeaderViewModel(
         var badge: String = "",
         var ovoSaldo: String = "",
         var ovoPoint: String = "",
-        var saldo: String = "",
+        val saldo: String = "",
         var shopName: String = "",
         val shopId: String = "",
         val shopNotifCount: String = "",
@@ -21,19 +21,13 @@ data class AccountHeaderViewModel(
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean{
-        return visitable is AccountHeaderViewModel
-                && visitable.loginState == loginState
-                && visitable.userName == userName
-                && visitable.userImage == userImage
-                && visitable.badge == badge
-                && visitable.ovoSaldo == ovoSaldo
-                && visitable.ovoPoint == ovoPoint
-                && visitable.saldo == saldo
-                && visitable.shopName == shopName
-                && visitable.shopId == shopId
-                && visitable.shopNotifCount == shopNotifCount
-                && visitable.shopApplink == shopApplink
+    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean {
+        return visitable is AccountHeaderViewModel &&
+                loginState == visitable.loginState && userName == visitable.userImage &&
+                badge == visitable.badge && ovoSaldo == visitable.ovoSaldo &&
+                ovoPoint == visitable.ovoPoint && saldo == visitable.saldo &&
+                shopName == visitable.shopName && shopId == visitable.shopId &&
+                shopNotifCount == visitable.shopNotifCount && shopApplink == visitable.shopApplink
     }
 
     override fun type(factory: HomeNavTypeFactory): Int {

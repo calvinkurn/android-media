@@ -2,8 +2,7 @@ package com.tokopedia.homenav.category.view.adapter.mapper
 
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.base.viewmodel.HomeNavTitleViewModel
-import com.tokopedia.homenav.category.domain.model.DynamicHomeIconEntity
+import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 
 /**
  * Created by Lukas on 21/10/20.

@@ -2,14 +2,15 @@ package com.tokopedia.homenav.mainnav.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.common.util.ResultCommandProcessor
 import com.tokopedia.homenav.common.util.UpdateNavigationData
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
+import com.tokopedia.homenav.common.util.UpdateWidgetCommand
 import com.tokopedia.homenav.mainnav.domain.interactor.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
@@ -38,10 +39,13 @@ class MainNavViewModel @Inject constructor(
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData()
 
+    val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
+        get() = _businessListLiveData
+    private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
+
     val accountLiveData: LiveData<Result<AccountHeaderViewModel>>
         get() = _accountLiveData
     private val _accountLiveData: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
 
     val profileResultListener: LiveData<Result<AccountHeaderViewModel>>
         get() = _profileResultListener
@@ -67,19 +71,29 @@ class MainNavViewModel @Inject constructor(
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
-    override suspend fun updateWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun updateWidget(visitable: HomeNavVisitable, position: Int) {
+        val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
+        if(newMainLiveData.getOrNull(position)?.id() == visitable.id()){
+            newMainLiveData[position] = visitable
+        } else {
+            newMainLiveData.indexOfFirst { it.id() == visitable.id() }.let { index ->
+                newMainLiveData[index] = visitable
+            }
+        }
+        withContext(baseDispatcher.get().ui()){
+            _mainNavLiveData.value = _mainNavLiveData.value?.copy(dataList = newMainLiveData)
+        }
     }
 
-    override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun addWidget(visitable: HomeNavVisitable, position: Int) {
     }
 
-    override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
+    override suspend fun deleteWidget(visitable: HomeNavVisitable, position: Int) {
     }
 
     override suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
-        logChannelUpdate("Update channel: (Update all home data) data: ${navigationDataModel.dataList.map { it.javaClass.simpleName }}")
         withContext(baseDispatcher.get().ui()) {
-            _mainNavLiveData.postValue(navigationDataModel)
+            _mainNavLiveData.value = navigationDataModel
         }
     }
 
@@ -95,14 +109,18 @@ class MainNavViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
            val result = getMainNavDataUseCase.get().executeOnBackground()
             _mainNavLiveData.postValue(result)
-
-
-            getShopData(userSession.get().shopId.toInt())
-            getOvoData()
-            getSaldoData()
-            getUserBadgeImage()
+            getUserSection(result)
         }){
             //apply global error for mainnav
+        }
+    }
+
+    private fun getUserSection(mainNavigationDataModel: MainNavigationDataModel){
+        mainNavigationDataModel.dataList.find { it is AccountHeaderViewModel }?.let {
+            val accountHeader = it as AccountHeaderViewModel
+            getUserBadgeImage(accountHeader)
+            getOvoData(accountHeader)
+            getShopData(accountHeader.shopId.toInt(), accountHeader)
         }
     }
 
@@ -119,7 +137,6 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-
     fun getUserNameAndPictureData(loginState: Int, shopId: Int) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
@@ -130,69 +147,51 @@ class MainNavViewModel @Inject constructor(
                     userImage = result.profile.profilePicture,
                     loginState = loginState)
             _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
-            getUserBadgeImage()
-            getShopData(shopId)
-            getOvoData()
+
         }){
             _profileResultListener.postValue(Fail(it))
         }
-
     }
 
-    fun getShopData(shopId: Int) {
+    fun getShopData(shopId: Int, accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
                 getShopInfoUseCase.get().executeOnBackground()
             }
-            val dataList =  _mainNavLiveData.value?.dataList ?: listOf()
-            val accountData = dataList.withIndex().find {
-                (_, visitable) -> visitable is AccountHeaderViewModel
-            }
-            (accountData?.value as AccountHeaderViewModel).shopName = result.shopCore.name
-            navProcessor.get().sendWithQueueMethod(UpdateNavigationData(
-                    _mainNavLiveData.value!!, this@MainNavViewModel
-            ))
+            val newAccountData = accountData.copy(
+                    shopName = result.shopCore.name
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
         }){
             _shopResultListener.postValue(Fail(it))
         }
     }
 
-    fun getUserBadgeImage() {
+    fun getUserBadgeImage(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getUserMembershipUseCase.get().executeOnBackground()
             }
-            val dataList =  _mainNavLiveData.value?.dataList ?: listOf()
-            val accountData = dataList.withIndex().find {
-                (_, visitable) -> visitable is AccountHeaderViewModel
-            }
-            (accountData?.value as AccountHeaderViewModel).badge = result.tokopoints.status.tier.eggImageURL
-            navProcessor.get().sendWithQueueMethod(UpdateNavigationData(
-                    _mainNavLiveData.value!!, this@MainNavViewModel
-            ))
+            val newAccountData = accountData.copy(
+                    badge = result.tokopoints.status.tier.eggImageURL
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
         }){
             _membershipResultListener.postValue(Fail(it))
         }
     }
 
-    fun getOvoData() {
+    fun getOvoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getWalletUseCase.get().executeOnBackground()
             }
-
-            val dataList =  _mainNavLiveData.value?.dataList ?: listOf()
-            val accountData = dataList.withIndex().find {
-                (_, visitable) -> visitable is AccountHeaderViewModel
-            }
-            (accountData?.value as AccountHeaderViewModel).let {
-                it.ovoSaldo = result.cashBalance
-                it.ovoPoint = result.pointBalance
-            }
-            navProcessor.get().sendWithQueueMethod(UpdateNavigationData(
-                    _mainNavLiveData.value!!, this@MainNavViewModel
-            ))
+            val newAccountData = accountData.copy(
+                    ovoSaldo = result.cashBalance,
+                    ovoPoint = result.pointBalance
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
         }){
             //post error get ovo with new livedata
             _ovoResultListener.postValue(Fail(it))

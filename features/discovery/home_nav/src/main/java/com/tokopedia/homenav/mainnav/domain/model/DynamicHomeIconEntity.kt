@@ -1,4 +1,4 @@
-package com.tokopedia.homenav.category.domain.model
+package com.tokopedia.homenav.mainnav.domain.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -16,6 +16,16 @@ data class DynamicHomeIconEntity(
     )
 
     data class Category(
+            @SerializedName("id")
+            val id: Int = -1,
+            @SerializedName("title")
+            val name: String = "",
+            @SerializedName("imageUrl")
+            val imageUrl: String = "",
+            @SerializedName("applink")
+            val applink: String = "",
+            @SerializedName("url")
+            val url: String = "",
             @SerializedName ("categoryRows")
             val categoryRows: List<CategoryRow> = listOf()
     )
