@@ -53,6 +53,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -163,6 +164,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
     @Inject
+    lateinit var shopPlayWidgetAnalytic: ShopPlayWidgetAnalyticListener
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModel: ShopHomeViewModel? = null
     private var shopId: String = ""
@@ -219,6 +222,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        setupPlayWidgetAnalyticListener()
     }
 
     private fun initPltMonitoring() {
@@ -1625,6 +1629,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    private fun setupPlayWidgetAnalyticListener() {
+        playWidgetCoordinator.apply {
+            shopPlayWidgetAnalytic.shopId = shopId
+            setAnalyticListener(shopPlayWidgetAnalytic)
+        }
+    }
+
     private fun notifyPlayWidgetTotalView(data: Intent) {
         val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
         val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
@@ -1632,8 +1643,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observePlayWidget() {
-        viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { widgetUiModel ->
-            shopHomeAdapter.updatePlayWidget(widgetUiModel)
+        viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { carouselPlayWidgetUiModel ->
+            shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
+            shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.widgetUiModel)
         })
     }
 

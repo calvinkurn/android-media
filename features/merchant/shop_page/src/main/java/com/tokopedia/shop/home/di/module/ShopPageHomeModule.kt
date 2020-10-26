@@ -13,6 +13,7 @@ import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
@@ -360,5 +361,13 @@ class ShopPageHomeModule {
                           playWidgetReminderUseCase: PlayWidgetReminderUseCase,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+    }
+
+
+    @ShopPageHomeScope
+    @Provides
+    fun providePlayWidgetTracking(@ShopPageContext context: Context,
+                                  userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
+        return ShopPlayWidgetAnalyticListener(TrackingQueue(context), userSession)
     }
 }

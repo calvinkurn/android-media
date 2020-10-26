@@ -38,6 +38,10 @@ class PlayWidgetViewHolder(
         coordinator.connect(playWidgetView, item)
     }
 
+    fun bind(item: PlayWidgetUiModel, payloads: MutableList<Any>) {
+        playWidgetView.setModel(item)
+    }
+
     fun setListener(listener: Listener) {
         mListener = listener
     }

@@ -22,10 +22,6 @@ class PlayWidgetCardMediumBannerViewHolder(
 
     fun bind(item: PlayWidgetMediumBannerUiModel) {
         background.loadImage(item.imageUrl)
-        setupListener(item)
-    }
-
-    private fun setupListener(item: PlayWidgetMediumBannerUiModel) {
         itemView.setOnClickListener {
             listener.onBannerClicked(it)
             RouteManager.route(it.context, item.appLink)

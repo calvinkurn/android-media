@@ -24,7 +24,6 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
@@ -171,7 +170,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private fun setupView(view: View) {
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(configureParallax())
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
 
@@ -180,6 +178,24 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
 
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (layoutManager.findFirstVisibleItemPosition() != 0) return
+
+                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+                firstView?.let {
+                    val distanceFromLeft = it.left
+                    val translateX = distanceFromLeft * 0.2f
+                    overlay.translationX = translateX
+
+                    if (distanceFromLeft <= 0) {
+                        val itemSize = it.width.toFloat()
+                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                        overlayImage.alpha = 1 - alpha
+                    }
+                }
+            }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -194,7 +210,10 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     fun setData(data: PlayWidgetUiModel.Medium) {
         title.text = data.title
         actionTitle.text = data.actionTitle
-        actionTitle.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
+        actionTitle.setOnClickListener {
+            mAnalyticListener?.onClickViewAll(this)
+            RouteManager.route(context, data.actionAppLink)
+        }
 
         configureBackgroundOverlay(data.background)
 
@@ -229,29 +248,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.setGradientBackground(data.gradientColors)
         } else if (data.backgroundUrl.isNotBlank() && data.backgroundUrl.isNotEmpty()) {
             overlayBackground.loadImage(data.backgroundUrl)
-        }
-    }
-
-    private fun configureParallax(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() != 0) return
-
-                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
-                firstView?.let {
-                    val distanceFromLeft = it.left
-                    val translateX = distanceFromLeft * 0.2f
-                    overlay.translationX = translateX
-
-                    if (distanceFromLeft <= 0) {
-                        val itemSize = it.width.toFloat()
-                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                        overlayImage.alpha = 1 - alpha
-                    }
-                }
-            }
         }
     }
 }
