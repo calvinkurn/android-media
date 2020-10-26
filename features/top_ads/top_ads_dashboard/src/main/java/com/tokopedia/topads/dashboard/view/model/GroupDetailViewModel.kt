@@ -1,8 +1,15 @@
 package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -10,16 +17,21 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUs
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import timber.log.Timber
+import java.lang.reflect.Type
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -45,20 +57,29 @@ class GroupDetailViewModel @Inject constructor(
 
     fun getGroupProductData(resources: Resources, page: Int, groupId: Int, search: String, sort: String, status: Int?,
                             startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
-        topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+        topAdsGetGroupProductDataUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
-        topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
-        topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
-                {
-                    if (it.topadsDashboardGroupProducts.data.isEmpty()) {
-                        onEmpty()
-                    } else
-                        onSuccess(it.topadsDashboardGroupProducts)
-                },
-                {
-                    it.printStackTrace()
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
+        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
 
-                })
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
+                val nonGroupResponse = response.data.topadsDashboardGroupProducts
+                if(nonGroupResponse.data.isEmpty()) {
+                    onEmpty()
+                } else {
+                    onSuccess(nonGroupResponse)
+                }
+            }
+        })
     }
 
     fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
@@ -161,15 +182,20 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
-        topAdsGroupActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+        topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_group_action))
         topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.executeQuerySafeMode(
-                {
-                },
-                {
-                    it.printStackTrace()
-                })
+        topAdsGroupActionUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
+
+            override fun onNext(t: Map<Type, RestResponse>?) {
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+        })
     }
 
     fun setKeywordAction(action: String, keywordIds: List<String>, resources: Resources, onSuccess: (() -> Unit)) {
@@ -188,11 +214,11 @@ class GroupDetailViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
-        topAdsGetGroupProductDataUseCase.cancelJobs()
+        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsKeywordsActionUseCase.cancelJobs()
         topAdsProductActionUseCase.cancelJobs()
         topAdsGetGroupListUseCase.cancelJobs()
-        topAdsGroupActionUseCase.cancelJobs()
+        topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
     }

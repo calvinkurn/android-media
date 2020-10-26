@@ -33,9 +33,9 @@ constructor(private val topAdsDashboardRepository: TopAdsDashboardRepository) : 
             requestParams.putString(TopAdsCommonConstant.PARAM_SHOP_ID, shopId)
             requestParams.putString(GROUP, groupId)
             requestParams.putString(TopAdsDashboardConstant.PARAM_TYPE, type.toString())
-            requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,
+            requestParams.putObject(TopAdsDashboardConstant.GROUP_PARAM_START_DATE,
                     SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate))
-            requestParams.putObject(TopAdsDashboardConstant.PARAM_END_DATE,
+            requestParams.putObject(TopAdsDashboardConstant.GROUP_PARAM_END_DATE,
                     SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate))
             return requestParams
         }
