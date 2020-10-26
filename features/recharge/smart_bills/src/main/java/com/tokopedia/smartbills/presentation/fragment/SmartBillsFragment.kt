@@ -205,7 +205,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
                 }
             }
-            smart_bills_checkout_view.getCheckoutButton().isLoading = false
+            loading_view.hide()
         })
     }
 
@@ -442,7 +442,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
             }
 
-            smart_bills_checkout_view.getCheckoutButton().isLoading = true
+            loading_view.show()
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )

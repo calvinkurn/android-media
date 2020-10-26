@@ -87,6 +87,23 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_smart_bills_title"
                     tools:visibility="visible" />
 
+                <FrameLayout
+                    android:id="@+id/loading_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:alpha="0.5"
+                    android:background="@color/white"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifycomponents.LoaderUnify
+                        android:layout_width="@dimen/spacing_lvl8"
+                        android:layout_height="@dimen/spacing_lvl8"
+                        android:layout_gravity="center" />
+
+                </FrameLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
