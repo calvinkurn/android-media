@@ -89,7 +89,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun validateShopName(shopName: String) {
         if(shopName == currentShop?.name) return
 
-        _validateShopNameJob?.cancel()
+        cancelValidateShopName()
 
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
@@ -110,7 +110,7 @@ class ShopEditBasicInfoViewModel @Inject constructor(
     fun validateShopDomain(domain: String) {
         if(domain == currentShop?.domain) return
 
-        _validateShopDomainJob?.cancel()
+        cancelValidateShopDomain()
 
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {

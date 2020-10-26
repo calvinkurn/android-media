@@ -199,4 +199,15 @@ public interface CMConstant {
         int MAX_LIMIT = 1000;
     }
 
+    interface UTMParams {
+        String UTM_SOURCE = "utm_source";
+        String UTM_MEDIUM = "utm_medium";
+        String UTM_CAMPAIGN = "utm_campaign";
+        String UTM_CONTENT = "utm_content";
+        String UTM_TERM = "utm_term";
+        String SCREEN_NAME = "screenName";
+        String SCREEN_NAME_VALUE = "CM Applink Handler";
+        String UTM_GCLID = "gclid";
+    }
+
 }
