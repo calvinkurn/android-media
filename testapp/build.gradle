@@ -90,10 +90,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icon
-    implementation rootProject.ext.unifyDependencies.principles
-
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
