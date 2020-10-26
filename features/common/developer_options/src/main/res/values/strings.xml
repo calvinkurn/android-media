@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
-    <string name="feedback_page_title">Feedback Page</string>
+    <string name="create_report_title">Create Report</string>
     <string name="screen_name">Developer page</string>
 
     <string name="remote_config_prefix_placeholder">(Optional) Find Remote Config by Prefix</string>
@@ -16,7 +16,7 @@
     <!--Feedback Page-->
     <string name="category">Category*</string>
     <string name="email">Tokopedia Email</string>
-    <string name="step_to_reproduce">Step to Reproduce</string>
+    <string name="bugs_detail">Bugs_detail</string>
     <string name="actual_result">Actual Result</string>
     <string name="expected_result">Expected Result</string>
     <string name="page">Page Name</string>

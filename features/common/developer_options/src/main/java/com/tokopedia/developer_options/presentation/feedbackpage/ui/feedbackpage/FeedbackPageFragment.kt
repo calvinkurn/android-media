@@ -514,7 +514,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     private fun openBottomSheetPage(){
         bottomSheetPage = BottomSheetUnify()
-        val searchKey = pagesAdapter.searchKey
         val viewBottomSheetPage = View.inflate(context, R.layout.bottomsheet_pages_name, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_pages)
             val searchInput = findViewById<SearchInputView>(R.id.search_input_page)
@@ -539,9 +538,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
         bottomSheetPage?.apply {
             setTitle(TITLE_PAGE_LIST)
-            setCloseClickListener { dismiss() }
+            setCloseClickListener {
+                pagesAdapter.renderDataSearch("")
+                dismiss()
+            }
             setChild(viewBottomSheetPage)
-            setOnDismissListener { dismiss() }
+            setOnDismissListener {
+                pagesAdapter.renderDataSearch("")
+                dismiss()
+            }
         }
 
         fragmentManager?.let {

@@ -6,6 +6,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:enabled="false"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -191,7 +192,7 @@
                     app:layout_constraintTop_toBottomOf="@id/et_affected_page_wrapper"
                     app:layout_constraintStart_toStartOf="parent"
                     android:textColorHint="@color/transparent"
-                    android:hint="@string/step_to_reproduce">
+                    android:hint="@string/bugs_detail">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/journey"
