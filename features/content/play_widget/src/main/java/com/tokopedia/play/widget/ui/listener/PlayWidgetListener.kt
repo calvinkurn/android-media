@@ -1,11 +1,11 @@
 package com.tokopedia.play.widget.ui.listener
 
-import android.view.View
+import com.tokopedia.play.widget.ui.PlayWidgetView
 
 /**
  * Created by jegul on 13/10/20
  */
-interface PlayWidgetListener {
+interface PlayWidgetListener : PlayWidgetSmallListener, PlayWidgetMediumListener {
 
-    fun onWidgetShouldRefresh(view: View)
+    fun onWidgetShouldRefresh(view: PlayWidgetView)
 }

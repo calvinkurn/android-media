@@ -9,12 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 08/10/20
  */
-class PlayWidgetView : LinearLayout, LifecycleObserver {
+class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -24,13 +25,21 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
-    private var mListener: PlayWidgetListener? = null
+    private var mWidgetListener: PlayWidgetListener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     override fun onViewRemoved(child: View?) {
         when (child) {
             is PlayWidgetSmallView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
+    }
+
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        mWidgetInternalListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
+        }
     }
 
     fun setModel(model: PlayWidgetUiModel) {
@@ -48,10 +57,11 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         }
     }
 
-    fun setListener(listener: PlayWidgetListener?) {
-        mListener = listener
+    fun setWidgetListener(listener: PlayWidgetListener?) {
+        mWidgetListener = listener
         when (val child = getFirstChild()) {
-            is PlayWidgetMediumView -> child.setListener(listener)
+            is PlayWidgetSmallView -> child.setWidgetListener(listener)
+            is PlayWidgetMediumView -> child.setWidgetListener(listener)
         }
     }
 
@@ -60,13 +70,16 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
 
         widgetView.setData(model)
         widgetView.setAnalyticListener(mAnalyticListener)
+        widgetView.setWidgetListener(mWidgetListener)
+        widgetView.setWidgetInternalListener(mWidgetInternalListener)
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
         widgetView.setData(model)
-        widgetView.setListener(mListener)
+        widgetView.setWidgetListener(mWidgetListener)
+        widgetView.setWidgetInternalListener(mWidgetInternalListener)
     }
 
     private fun addPlaceholderView() {

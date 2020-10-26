@@ -2,12 +2,13 @@ package com.tokopedia.play.widget.ui.coordinator
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.*
 
@@ -35,6 +36,8 @@ class PlayWidgetCoordinator(
         }
     }
 
+    private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
+
     private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
             scope,
             mainCoroutineDispatcher,
@@ -42,12 +45,20 @@ class PlayWidgetCoordinator(
             this
     )
 
+    private val mWidgetInternalListener = object : PlayWidgetInternalListener {
+
+        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
+            autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        }
+    }
+
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        autoPlayCoordinator.onPause()
         autoRefreshCoordinator.onPause()
     }
 
@@ -57,6 +68,7 @@ class PlayWidgetCoordinator(
         if (currentModel is PlayWidgetConfigProvider) {
             autoRefreshCoordinator.configureAutoRefresh(currentModel.config)
         }
+        autoPlayCoordinator.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -71,7 +83,8 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
         widget.setAnalyticListener(mAnalyticListener)
-        widget.setListener(mListener)
+        widget.setWidgetInternalListener(mWidgetInternalListener)
+        widget.setWidgetListener(mListener)
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
@@ -81,7 +94,7 @@ class PlayWidgetCoordinator(
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
-        mWidget?.setListener(mListener)
+        mWidget?.setWidgetListener(mListener)
     }
 
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
@@ -95,6 +108,7 @@ class PlayWidgetCoordinator(
 
         if (model is PlayWidgetConfigProvider) {
             autoRefreshCoordinator.configureAutoRefresh(model.config)
+            autoPlayCoordinator.configureAutoPlay(widget, model.config)
         }
     }
 

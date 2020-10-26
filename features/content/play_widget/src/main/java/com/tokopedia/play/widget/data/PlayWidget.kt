@@ -69,8 +69,8 @@ data class PlayWidgetMeta(
     @SerializedName("gradient") val gradient: List<String> = emptyList(),
     @SerializedName("isAutoRefresh") val autoRefresh: Boolean = false,
     @SerializedName("autoRefreshTimer") val autoRefreshTimer: Long = 0,
-    @SerializedName("autoplayAmount") val autoplayAmount: Long = 0,
+    @SerializedName("autoplayAmount") val autoplayAmount: Int = 0,
     @SerializedName("autoplay") val autoplay: Boolean = false,
-    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Long = 0,
+    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0,
     @SerializedName("template") val template: String = ""
 )

@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.SnapHelper
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -33,7 +34,7 @@ import kotlin.math.abs
 /**
  * Created by mzennis on 06/10/20.
  */
-class PlayWidgetMediumView : ConstraintLayout {
+class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -54,16 +55,17 @@ class PlayWidgetMediumView : ConstraintLayout {
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
-    private var mListener: PlayWidgetMediumListener? = null
+    private var mWidgetListener: PlayWidgetMediumListener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     private val adapter = PlayWidgetCardMediumAdapter(channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener{
-        override fun onCardChannelClick(appLink: String) {
-            mListener?.onCardChannelClick(appLink)
+        override fun onChannelClicked(appLink: String) {
+            mWidgetListener?.onWidgetOpenAppLink(this@PlayWidgetMediumView, appLink)
         }
 
-        override fun onToggleReminderClick(channelId: String, remind: Boolean, position: Int) {
-            mListener?.onToggleReminderClicked(channelId, remind, position)
+        override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
+            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, channelId, remind, position)
         }
     })
 
@@ -84,12 +86,8 @@ class PlayWidgetMediumView : ConstraintLayout {
         setupView(view)
     }
 
-    private fun setupView(view: View) {
-        recyclerViewItem.layoutManager = layoutManager
-        recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(configureParallax())
-
-        snapHelper.attachToRecyclerView(recyclerViewItem)
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        mWidgetInternalListener = listener
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
@@ -102,15 +100,36 @@ class PlayWidgetMediumView : ConstraintLayout {
         adapter.setItemsAndAnimateChanges(data.items)
     }
 
-    fun setListener(listener: PlayWidgetListener?) {
-        if (listener is PlayWidgetMediumListener) {
-            mListener = listener
-        }
+    fun setWidgetListener(listener: PlayWidgetMediumListener?) {
+        mWidgetListener = listener
     }
 
     /**
      * Setup view
      */
+    private fun setupView(view: View) {
+        recyclerViewItem.layoutManager = layoutManager
+        recyclerViewItem.adapter = adapter
+        recyclerViewItem.addOnScrollListener(configureParallax())
+
+        snapHelper.attachToRecyclerView(recyclerViewItem)
+
+        recyclerViewItem.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
+        }
+
+        recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
+                }
+            }
+        })
+    }
+
     private fun configureBackgroundOverlay(data: PlayWidgetBackgroundUiModel) {
         if (data.overlayImageUrl.isEmpty() || data.overlayImageUrl.isBlank()) background.hide()
         else {

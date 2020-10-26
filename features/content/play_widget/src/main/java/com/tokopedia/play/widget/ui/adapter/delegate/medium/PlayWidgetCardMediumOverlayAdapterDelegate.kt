@@ -3,10 +3,9 @@ package com.tokopedia.play.widget.ui.adapter.delegate.medium
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 
 
 /**

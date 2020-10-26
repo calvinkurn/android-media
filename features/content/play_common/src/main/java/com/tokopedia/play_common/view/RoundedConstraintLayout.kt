@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.custom
+package com.tokopedia.play_common.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -11,10 +11,10 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.play.R
+import com.tokopedia.play_common.R
 
 /**
- * Created by jegul on 03/02/20
+ * Created by jegul on 21/10/20
  */
 class RoundedConstraintLayout : ConstraintLayout {
 
