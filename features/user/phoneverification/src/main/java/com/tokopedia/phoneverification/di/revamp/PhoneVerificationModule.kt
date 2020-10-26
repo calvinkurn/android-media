@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class PhoneVerificationModule(private val activity: Activity) {
+class PhoneVerificationModule {
 
     @PhoneVerificationScope
     @Provides

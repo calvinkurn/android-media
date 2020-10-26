@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
@@ -24,7 +23,6 @@ import com.tokopedia.phoneverification.R
 import com.tokopedia.phoneverification.di.revamp.PhoneVerificationComponent
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity
 import com.tokopedia.phoneverification.view.listener.PhoneVerification
-import com.tokopedia.phoneverification.view.presenter.VerifyPhoneNumberPresenter
 import com.tokopedia.phoneverification.view.viewmodel.PhoneVerificationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL

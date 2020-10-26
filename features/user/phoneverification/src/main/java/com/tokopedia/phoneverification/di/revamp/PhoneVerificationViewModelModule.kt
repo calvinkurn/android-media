@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@PhoneVerificationScope
 abstract class PhoneVerificationViewModelModule {
 
     @Binds

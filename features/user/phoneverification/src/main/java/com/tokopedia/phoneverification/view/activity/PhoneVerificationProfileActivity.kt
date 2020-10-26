@@ -12,6 +12,7 @@ import com.tokopedia.phoneverification.R
 import com.tokopedia.phoneverification.di.revamp.DaggerPhoneVerificationComponent
 import com.tokopedia.phoneverification.di.revamp.PhoneVerificationComponent
 import com.tokopedia.phoneverification.di.revamp.PhoneVerificationModule
+import com.tokopedia.phoneverification.di.revamp.PhoneVerificationQueryModule
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment.Companion.createInstance
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment.PhoneVerificationFragmentListener
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFragment.Companion.createInstance
@@ -89,7 +90,7 @@ class PhoneVerificationProfileActivity : BaseSimpleActivity(), HasComponent<Phon
     override fun getComponent(): PhoneVerificationComponent {
         return DaggerPhoneVerificationComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .phoneVerificationModule(PhoneVerificationModule(this))
+                .phoneVerificationQueryModule(PhoneVerificationQueryModule(this))
                 .build()
     }
 }

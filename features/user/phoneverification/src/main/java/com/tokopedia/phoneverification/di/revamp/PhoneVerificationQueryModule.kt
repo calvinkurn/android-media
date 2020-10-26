@@ -11,9 +11,7 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 @Module
-@PhoneVerificationScope
 class PhoneVerificationQueryModule(private val activity: Activity)  {
-
 
     @PhoneVerificationScope
     @Provides
