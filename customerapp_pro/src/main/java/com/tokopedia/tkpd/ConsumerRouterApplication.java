@@ -514,7 +514,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public CacheManager getPersistentCacheManager() {
         if (cacheManager == null) {
-            cacheManager = PersistentCacheManager.instance;
+            cacheManager = new PersistentCacheManager(this);
         }
         return cacheManager;
     }

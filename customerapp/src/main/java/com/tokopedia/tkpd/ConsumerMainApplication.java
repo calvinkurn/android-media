@@ -129,6 +129,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
+        PersistentCacheManager.init(ConsumerMainApplication.this);
 
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -166,7 +167,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
 
     private void createAndCallPreSeq() {
-        PersistentCacheManager.init(ConsumerMainApplication.this);
+
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
