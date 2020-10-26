@@ -41,9 +41,11 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -55,7 +57,6 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
-import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -105,7 +106,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeCampaignNplWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
-        PlayWidgetMediumListener {
+        PlayWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -1591,18 +1592,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     /**
-     * Play widget
+     * Play Widget
      */
-    override fun onWidgetShouldRefresh(view: View) {
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         viewModel?.getPlayWidget(shopId)
     }
 
-    override fun onCardChannelClick(appLink: String) {
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
         val intent = RouteManager.getIntent(requireContext(), appLink)
         startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
     }
 
-    override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
         if (isLogin) {
             viewModel?.setToggleReminderPlayWidget(channelId, remind, position)
         } else {

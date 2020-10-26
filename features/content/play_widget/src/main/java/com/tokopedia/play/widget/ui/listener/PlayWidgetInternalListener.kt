@@ -5,8 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by jegul on 21/10/20
  */
-interface PlayWidgetViewListener {
+interface PlayWidgetInternalListener {
 
     fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView)
-
 }
