@@ -80,9 +80,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
 
         viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> populateAccountHeader(it.data)
-            }
+
         })
 
         viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
@@ -128,9 +126,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun observeCategoryListData(){
         onRefresh()
         viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            hideSwipeRefresh()
-            if(it is Success) {
-                adapter.submitList(it.data)
+            if(it is Fail){
+
             }
         })
     }
