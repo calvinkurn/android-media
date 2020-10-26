@@ -1,18 +1,21 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.os.bundleOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
+import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
@@ -26,7 +29,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -35,6 +37,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var viewModel: MainNavViewModel
 
     lateinit var recyclerView: RecyclerView
+    lateinit var swipeRefresh: SwipeToRefresh
     lateinit var layoutManager: LinearLayoutManager
     lateinit var adapter: MainNavAdapter
 
@@ -59,18 +62,19 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main_nav, container, false)
         recyclerView = view.findViewById(R.id.recycler_view)
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        initClickListener()
         viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        observeCategoryListData()
         viewModel.mainNavLiveData.observe(viewLifecycleOwner, Observer {
             populateAdapterData(it)
         })
@@ -112,11 +116,27 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onRefresh() {
-
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
+        view?.let {
+            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+                    bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+        }
+    }
 
+    private fun observeCategoryListData(){
+        onRefresh()
+        viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
+            hideSwipeRefresh()
+            if(it is Success) {
+                adapter.submitList(it.data)
+            }
+        })
+    }
+
+    private fun hideSwipeRefresh(){
+        swipeRefresh.isRefreshing = false
     }
 
     private fun initAdapter() {
@@ -136,13 +156,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         adapter.submitList(data.dataList)
     }
 
-
-    private fun initClickListener() {
-        testButton.setOnClickListener{
-            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY, bundleOf("title" to "Belanja"))
-        }
-    }
-
     private fun getUserSession() : UserSessionInterface{
         if(!::userSession.isInitialized){
             activity?.let {
@@ -151,4 +164,26 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
         return userSession
     }
+
+    private fun getLoginState(): Int {
+        return when {
+            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
+            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
+            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
+        }
+    }
+
+    private fun haveUserLogoutData(): Boolean {
+        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
+        return name.isNotEmpty()
+    }
+
+    private fun getSharedPreference(): SharedPreferences {
+        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+    }
+
+    companion object{
+        private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
+    }
+
 }

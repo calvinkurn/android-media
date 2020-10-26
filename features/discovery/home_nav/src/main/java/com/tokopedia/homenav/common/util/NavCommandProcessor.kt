@@ -1,6 +1,6 @@
 package com.tokopedia.homenav.common.util
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,14 +17,14 @@ interface SubmitCommand {
 }
 
 interface ResultCommandProcessor{
-    suspend fun updateWidget(visitable: Visitable<*>, position: Int)
-    suspend fun addWidget(visitable: Visitable<*>, position: Int)
-    suspend fun deleteWidget(visitable: Visitable<*>, position: Int)
+    suspend fun updateWidget(visitable: HomeNavVisitable, position: Int)
+    suspend fun addWidget(visitable: HomeNavVisitable, position: Int)
+    suspend fun deleteWidget(visitable: HomeNavVisitable, position: Int)
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel)
 }
 
 
-class AddWidgetCommand(private val visitable: Visitable<*>, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class AddWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
     override suspend fun send() {
         callback.addWidget(visitable, position)
     }
@@ -36,13 +36,13 @@ class UpdateNavigationData(private val navigationDataModel: MainNavigationDataMo
     }
 }
 
-class UpdateWidgetCommand(private val visitable: Visitable<*>, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class UpdateWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
     override suspend fun send() {
         callback.updateWidget(visitable, position)
     }
 }
 
-class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class DeleteWidgetCommand(private val visitable: HomeNavVisitable?, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
     override suspend fun send() {
         visitable?.let {
             callback.deleteWidget(visitable, position)
