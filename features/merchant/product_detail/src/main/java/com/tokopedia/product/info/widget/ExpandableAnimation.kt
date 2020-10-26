@@ -9,19 +9,20 @@ import android.view.ViewGroup
  * Created by Yehezkiel on 16/10/20
  */
 object ExpandableAnimation {
-    fun expand(view: View, customParentWidth: Int = view.width, customHeight: Int = 0, onAnimationEndListener: (() -> Unit)? = null) {
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(customParentWidth, View.MeasureSpec.AT_MOST)
-        val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    fun expand(view: View, customHeight: Int = 0, onAnimationEndListener: (() -> Unit)? = null) {
+        view.visibility = View.VISIBLE
+
         if (view is ViewGroup) {
             view.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         } else {
-            view.measure(widthSpec, heightSpec)
+            view.measure(
+                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.AT_MOST),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
         }
 
         val actualheight = if (customHeight != 0) customHeight else view.measuredHeight
 
         view.layoutParams.height = 0
-        view.visibility = View.VISIBLE
         view.alpha = 0F
 
         val anim = ValueAnimator.ofInt(actualheight)

@@ -58,37 +58,46 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
             listener.closeAllExpand(element.uniqueIdentifier(), expandable_title_chevron?.isExpand
                     ?: false)
         }
-        product_detail_value?.text = HtmlLinkHelper(context,
+        view.product_detail_value?.text = HtmlLinkHelper(view.context,
                 element.textValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
+        setSelectableText()
         setSelectClickableTextView()
     }
 
-    private fun setSelectClickableTextView() = with(view) {
-        product_detail_value?.autoLinkMask = 0
-        Linkify.addLinks(product_detail_value, Linkify.WEB_URLS)
-
+    private fun setSelectableText() = with(view) {
         val selectable = when (Build.VERSION.SDK_INT) {
             Build.VERSION_CODES.O -> false
             else -> true
         }
         product_detail_value?.setTextIsSelectable(selectable)
+    }
+
+    private fun setSelectClickableTextView() = with(view) {
+
+        product_detail_value?.autoLinkMask = 0
+        Linkify.addLinks(product_detail_value, Linkify.WEB_URLS)
         product_detail_value?.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
     }
 
-    override fun bind(element: ProductDetailInfoExpandableDataModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ProductDetailInfoExpandableDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         if (payloads.isNotEmpty()) {
             val bundle = payloads[0] as Bundle
             if (bundle.containsKey("toggle")) {
                 val toggle = bundle.getBoolean("toggle")
                 if (toggle) {
-                    ExpandableAnimation.expand(view.product_detail_value, itemView.width) {
+                    view.product_detail_value?.setTextIsSelectable(true)
+                    ExpandableAnimation.expand(view.product_detail_value) {
                         view.horizontal_scroll_container.showWithCondition(toggle)
                     }
                 } else {
+                    //Need to set selectable to false, to prevent glitch
+                    view.product_detail_value?.setTextIsSelectable(false)
                     view.horizontal_scroll_container.hide()
                     ExpandableAnimation.collapse(view.product_detail_value)
                 }
+                //Also we need to re-assign linkify, if not the link will not be clickable
+                setSelectClickableTextView()
                 view.expandable_title_chevron?.isExpand = toggle
             }
         }

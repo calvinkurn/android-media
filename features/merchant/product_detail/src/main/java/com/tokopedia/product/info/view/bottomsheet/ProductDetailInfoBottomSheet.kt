@@ -1,6 +1,7 @@
 package com.tokopedia.product.info.view.bottomsheet
 
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -210,6 +212,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun setupRecyclerView(childView: View) {
         rvBsProductDetail = childView.findViewById(R.id.bs_product_info_rv)
+
+        rvBsProductDetail?.layoutManager = object : LinearLayoutManager(context) {
+            override fun requestChildRectangleOnScreen(parent: RecyclerView, child: View, rect: Rect, immediate: Boolean, focusedChildVisible: Boolean): Boolean {
+                return false
+            }
+        }
+
         rvBsProductDetail?.itemAnimator = null
         rvBsProductDetail?.adapter = productDetailInfoAdapter
         rvBsProductDetail?.isNestedScrollingEnabled = false
