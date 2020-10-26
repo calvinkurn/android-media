@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="2dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_marginLeft="6dp"
+        tools:srcCompat="@drawable/ic_account_bank"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/home_account_member_layout_member_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_member_layout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintStart_toEndOf="@+id/home_account_member_layout_member_icon"
+        app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_member_icon"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="Title" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/home_account_member_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:card_type="shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_member_layout_title">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_account_member_layout_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+    </com.tokopedia.unifycomponents.CardUnify>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

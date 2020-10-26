@@ -1,4 +1,19 @@
 <resources>
-    <string name="home_account_title">Home Account</string>
+    <string name="home_account_title">Akun Saya</string>
+
+    <string name="account_home_clear_cache_warning">Peringatan</string>
+    <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="account_home_label_clear_cache_ok">Lakukan</string>
+    <string name="account_home_label_clear_cache_cancel">Batal</string>
+
+    <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_no_password_no">Tutup</string>
+
+    <string name="account_home_label_logout">Keluar dari Tokopedia</string>
+    <string name="account_home_button_logout">Keluar</string>
+    <string name="account_home_label_logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="account_home_label_cancel">Batal</string>
 
 </resources>
