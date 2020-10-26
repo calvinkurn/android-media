@@ -8,62 +8,18 @@ kapt {
     correctErrorTypes = true
     generateStubs = false
 }
-def allowDistribution() {
-    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
-        return "true";
-    }
-    return "false";
-}
-def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
-}
-def getTkpdVersionName() {
-    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
-}
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://maven.google.com" }
-        mavenCentral()
-        jcenter()
-    }
-    dependencies{
-        classpath rootProject.ext.gradlePlugin.googleServices
-    }
-}
 android {
     packagingOptions {
         exclude 'META-INF/**'
     }
 
     project.ext {
-        defaultVersionCode = 299900000;
-        defaultVersionName = "3.90";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'
-    sourceSets {
-        main {
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src/main/java']
-            aidl.srcDirs = ['src/main/java']
-            renderscript.srcDirs = ['src/main/java']
-            res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
-        }
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
-    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -79,8 +35,9 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             testCoverageEnabled false
-            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
             ext.enableHansel = false
+            ext.enableCrashlytics = false
         }
         release {
             signingConfig signingConfigs.debug
@@ -89,10 +46,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
-        multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
-        versionCode getTkpdVersionCode()
-        versionName getTkpdVersionName()
+        versionCode 299900000
+        versionName "3.90"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -105,7 +61,6 @@ android {
     }
 }
 dependencies {
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.applink)
     implementation (project(rootProject.ext.features.sessioncommon))
     implementation (project(rootProject.ext.libraries.remoteConfig))
@@ -135,12 +90,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
-    } else {
-        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
-    }
-
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
@@ -148,7 +97,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
-    implementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
