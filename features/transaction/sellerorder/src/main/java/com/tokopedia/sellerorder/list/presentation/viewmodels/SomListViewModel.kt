@@ -44,8 +44,8 @@ class SomListViewModel @Inject constructor(
 
     companion object {
         private const val DATE_FORMAT = "dd/MM/yyyy"
-        private const val MAX_RETRY = 20
-        private const val DELAY = 1000L
+        private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
+        private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 
     private var retryCount = 0
@@ -96,9 +96,9 @@ class SomListViewModel @Inject constructor(
                         }
                         if (it.data.data.success + it.data.data.fail == it.data.data.totalOrder) {
                             bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
-                        } else if (retryCount < MAX_RETRY) {
+                        } else if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
                             retryCount++
-                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY)
+                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
                         } else {
                             bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         }
@@ -107,9 +107,9 @@ class SomListViewModel @Inject constructor(
                         lastBulkAcceptOrderStatusSuccessResult?.apply {
                             if (this is Success) data.data.shouldRecheck = true
                         }
-                        if (retryCount < MAX_RETRY) {
+                        if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
                             retryCount++
-                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY)
+                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
                         } else {
                             bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         }
