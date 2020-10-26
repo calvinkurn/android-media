@@ -8,13 +8,10 @@ data class OrderPayment(
         val isCalculationError: Boolean = false,
         val gatewayCode: String = "",
         val gatewayName: String = "",
-//        val image: String = "",
-//        val description: String = "",
         val minimumAmount: Long = 0,
         val maximumAmount: Long = 0,
         val fee: Double = 0.0,
         val walletAmount: Long = 0,
-//        val metadata: String = "",
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
         val errorTickerMessage: String = "",
@@ -110,9 +107,13 @@ data class OrderPaymentOvoActionData(
 )
 
 data class OrderPaymentOvoErrorData(
+        val isBlockingError: Boolean = false,
         val message: String = "",
+        val buttonTitle: String = "",
         val type: Int = 0
 ) {
-    val TYPE_ACTIVATION = 1
-    val TYPE_TOP_UP = 2
+    companion object {
+        val TYPE_ACTIVATION = 1
+        val TYPE_TOP_UP = 2
+    }
 }
