@@ -165,14 +165,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return userSession
     }
 
-    private fun getLoginState(): Int {
-        return when {
-            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
-    }
-
     private fun haveUserLogoutData(): Boolean {
         val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
         return name.isNotEmpty()
