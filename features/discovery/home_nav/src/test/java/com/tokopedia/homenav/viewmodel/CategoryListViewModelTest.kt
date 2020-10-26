@@ -1,8 +1,8 @@
 package com.tokopedia.homenav.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.homenav.category.domain.model.DynamicHomeIconEntity
-import com.tokopedia.homenav.category.domain.usecases.GetCategoryListUseCase
+import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
+import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.category.viewModel.CategoryListViewModel
 import com.tokopedia.homenav.rule.CoroutinesTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +31,7 @@ class CategoryListViewModelTest {
     val rule = CoroutinesTestRule()
 
     @RelaxedMockK
-    private lateinit var getCategoryListUseCase: GetCategoryListUseCase
+    private lateinit var getCategoryGroupUseCase: GetCategoryGroupUseCase
     private lateinit var viewModel : CategoryListViewModel
 
     @Before
@@ -45,10 +45,10 @@ class CategoryListViewModelTest {
             rule.testDispatcher.pauseDispatcher()
 
             coEvery {
-                getCategoryListUseCase.executeOnBackground()
+                getCategoryGroupUseCase.executeOnBackground()
             } returns Success(listOf(DynamicHomeIconEntity.CategoryRow(id = 1)))
 
-            viewModel = CategoryListViewModel(getCategoryListUseCase, rule.testDispatcher)
+            viewModel = CategoryListViewModel(getCategoryGroupUseCase, rule.testDispatcher)
 
 //            viewModel.getCategory()
 
@@ -65,10 +65,10 @@ class CategoryListViewModelTest {
             rule.testDispatcher.pauseDispatcher()
 
             coEvery {
-                getCategoryListUseCase.executeOnBackground()
+                getCategoryGroupUseCase.executeOnBackground()
             } returns Fail(TimeoutException())
 
-            viewModel = CategoryListViewModel(getCategoryListUseCase, rule.testDispatcher)
+            viewModel = CategoryListViewModel(getCategoryGroupUseCase, rule.testDispatcher)
 
 //            viewModel.getCategory()
 

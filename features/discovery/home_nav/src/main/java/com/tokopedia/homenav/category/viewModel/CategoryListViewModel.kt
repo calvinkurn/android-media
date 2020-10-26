@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
-import com.tokopedia.homenav.category.domain.usecases.GetCategoryListUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.category.view.adapter.mapper.toVisitable
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,8 +19,8 @@ import javax.inject.Inject
  */
 
 class CategoryListViewModel @Inject constructor(
-    private val getCategoryListUseCase: GetCategoryListUseCase,
-    private val dispatcher: CoroutineDispatcher
+        private val getCategoryGroupUseCase: GetCategoryGroupUseCase,
+        private val dispatcher: CoroutineDispatcher
 ): ViewModel(){
 
     private val _categoryList = MutableLiveData<Result<List<HomeNavVisitable>>>()
@@ -28,10 +28,10 @@ class CategoryListViewModel @Inject constructor(
 
     fun getCategory(page: String) {
         viewModelScope.launch(dispatcher) {
-            getCategoryListUseCase.createParams(page)
-            val result = getCategoryListUseCase.executeOnBackground()
+            getCategoryGroupUseCase.createParams(page)
+            val result = getCategoryGroupUseCase.executeOnBackground()
             if(result is Success){
-                _categoryList.postValue(Success(result.data.toVisitable()))
+                _categoryList.postValue(Success(result.data.firstOrNull()?.categoryRows?.toVisitable() ?: listOf()))
             } else {
                 _categoryList.postValue(result as Fail)
             }

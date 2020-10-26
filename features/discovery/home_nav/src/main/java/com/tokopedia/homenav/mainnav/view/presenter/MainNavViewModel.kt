@@ -2,29 +2,38 @@ package com.tokopedia.homenav.mainnav.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.common.util.ResultCommandProcessor
 import com.tokopedia.homenav.common.util.UpdateNavigationData
+import com.tokopedia.homenav.mainnav.data.mapper.toVisitable
 import com.tokopedia.homenav.mainnav.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.homenav.mainnav.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.homenav.mainnav.domain.interactor.GetUserInfoUseCase
 import com.tokopedia.homenav.mainnav.domain.interactor.GetUserMembershipUseCase
+import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
+import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
+import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase.Companion.GLOBAL_MENU
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
+        private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
@@ -36,10 +45,13 @@ class MainNavViewModel @Inject constructor(
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData()
 
+    val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
+        get() = _businessListLiveData
+    private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
+
     val accountLiveData: LiveData<Result<AccountHeaderViewModel>>
         get() = _accountLiveData
     private val _accountLiveData: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
-
 
     val profileResultListener: LiveData<Result<AccountHeaderViewModel>>
         get() = _profileResultListener
@@ -73,7 +85,7 @@ class MainNavViewModel @Inject constructor(
     override suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${navigationDataModel.dataList.map { it.javaClass.simpleName }}")
         withContext(baseDispatcher.get().ui()) {
-            _mainNavLiveData.postValue(navigationDataModel)
+            _mainNavLiveData.value = navigationDataModel
         }
     }
 
@@ -118,7 +130,6 @@ class MainNavViewModel @Inject constructor(
         }){
             _profileResultListener.postValue(Fail(it))
         }
-
     }
 
     fun getShopData(shopId: Int) {
@@ -181,4 +192,13 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    fun getCategory() {
+        viewModelScope.launch(baseDispatcher.get().io()){
+            getCategoryGroupUseCase.get().createParams(GLOBAL_MENU)
+            val result: Result<List<DynamicHomeIconEntity.Category>> = getCategoryGroupUseCase.get().executeOnBackground()
+            if (result is Success){
+                _businessListLiveData.postValue(Success(result.data.toVisitable()))
+            }
+        }
+    }
 }
