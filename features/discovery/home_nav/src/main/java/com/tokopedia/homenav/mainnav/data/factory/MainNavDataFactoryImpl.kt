@@ -24,8 +24,7 @@ class MainNavDataFactoryImpl(
     }
 
     override fun addProfileSection(): MainNavDataFactory {
-        val loginState = getLoginState()
-        when (loginState) {
+        when (val loginState = getLoginState()) {
             AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
                 visitableList.add(AccountHeaderViewModel(
                         userName = userPojo.profile.name,
