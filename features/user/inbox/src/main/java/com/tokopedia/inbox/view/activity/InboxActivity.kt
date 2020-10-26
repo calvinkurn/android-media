@@ -9,13 +9,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
+import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.setSelectedPage
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
+import com.tokopedia.inboxcommon.RoleType
 
-class InboxActivity : BaseActivity() {
+class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
 
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
@@ -29,6 +31,7 @@ class InboxActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inbox)
+        setupConfig()
         setupSwitcher()
         setupNavigator()
         setupBackground()
@@ -38,6 +41,20 @@ class InboxActivity : BaseActivity() {
 
         // TODO: remove later
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, 99)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        InboxConfig.removeListener(this)
+    }
+
+    override fun onRoleChanged(@RoleType role: Int) {
+        navigator?.notifyRoleChanged(role)
+    }
+
+    private fun setupConfig() {
+        InboxConfig.cleanListener()
+        InboxConfig.addConfigListener(this)
     }
 
     private fun setupSwitcher() {

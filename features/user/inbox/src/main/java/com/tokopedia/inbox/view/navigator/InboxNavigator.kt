@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
+import com.tokopedia.inboxcommon.InboxCommonFragment
+import com.tokopedia.inboxcommon.RoleType
 
 class InboxNavigator constructor(
         private val context: Context,
@@ -62,6 +64,14 @@ class InboxNavigator constructor(
                 setSelectedPage(page)
             }
 //            updateFragmentVisibilityHint(fragment)
+        }
+    }
+
+    fun notifyRoleChanged(@RoleType role: Int) {
+        pages.keys.forEach {
+            if (it is InboxCommonFragment) {
+                it.onRoleChanged(role)
+            }
         }
     }
 
@@ -199,6 +209,8 @@ class InboxNavigator constructor(
         }
     }
 
+//    }
+
     //
 //    @Suppress("DEPRECATION")
 //    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
@@ -235,7 +247,6 @@ class InboxNavigator constructor(
 //    private fun setupSellerOrderPage(page: PageFragment): Fragment? {
 //        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
 //        return somListFragment
-//    }
 
     private fun addPage(fragment: Fragment?, title: String?) {
         fragment?.let { pages[it] = title }

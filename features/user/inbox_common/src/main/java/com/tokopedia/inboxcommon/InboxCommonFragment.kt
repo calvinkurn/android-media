@@ -1,5 +1,5 @@
 package com.tokopedia.inboxcommon
 
 interface InboxCommonFragment {
-    fun onRoleChanged()
+    fun onRoleChanged(@RoleType role: Int)
 }

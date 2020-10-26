@@ -8,11 +8,11 @@ object InboxConfig {
     var role: Int = RoleType.BUYER
         private set
 
-    private val listener = arrayListOf<ConfigListener?>()
-
     interface ConfigListener {
         fun onRoleChanged(@RoleType role: Int)
     }
+
+    private val listener = arrayListOf<ConfigListener?>()
 
     fun addConfigListener(listener: ConfigListener) {
         this.listener.add(listener)
@@ -28,6 +28,10 @@ object InboxConfig {
         listener.forEach {
             it?.onRoleChanged(role)
         }
+    }
+
+    fun cleanListener() {
+        listener.clear()
     }
 
 }
