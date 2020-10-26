@@ -23,6 +23,7 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
         const val KEY_QUERY_PLAY_WIDGET = "qPlayGetWidgetV2"
         const val KEY_GET_MERCHANT_CAMPAIGN_TNC = "get_merchant_campaign_tnc"
         const val KEY_MUTATION_CHECK_CAMPAIGN_NOTIFY_ME = "check_campaign_notify_me"
+        const val KEY_QUERY_GET_PUBLIC_MERCHANT_VOUCHER = "GetPublicMerchantVoucherList"
 
     }
 
@@ -111,6 +112,11 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
         addMockResponse(
                 KEY_MUTATION_CHECK_CAMPAIGN_NOTIFY_ME,
                 getRawString(context, R.raw.response_mock_data_mutation_check_campaign_notify_me),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_QUERY_GET_PUBLIC_MERCHANT_VOUCHER,
+                getRawString(context, R.raw.response_mock_data_shop_public_merchant_voucher_list),
                 FIND_BY_CONTAINS)
 
         return this

@@ -19,6 +19,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -88,6 +89,7 @@ class ShopProductSearchPageAnalyticTest {
     @After
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
     private fun waitForData(ms: Long = 2000) {

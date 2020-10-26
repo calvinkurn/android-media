@@ -29,6 +29,7 @@ import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
@@ -305,6 +306,7 @@ class ShopPageBuyerAnalyticTest {
     @After
     fun afterTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
     private fun waitForData(ms: Long) {

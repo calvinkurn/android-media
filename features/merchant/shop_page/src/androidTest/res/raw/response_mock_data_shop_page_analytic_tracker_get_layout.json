@@ -220,64 +220,7 @@
               "ratio": "",
               "isATC": 0
             },
-            "data": [
-              {
-                "voucherID": 1344791,
-                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/9/30/29402544/29402544_a935ab3a-94ec-41bd-a4b8-f10fa3e82240",
-                "name": "DETTOL CASHBACK OCT 10K",
-                "voucherType": {
-                  "voucherType": 3,
-                  "identifier": "cashback"
-                },
-                "voucherCode": "DETTOSMS6E",
-                "amount": {
-                  "amountType": 1,
-                  "amount": 10000,
-                  "amountFormatted": "10rb"
-                },
-                "minimumSpend": 140000,
-                "minimumSpendFormatted": "140rb",
-                "owner": {
-                  "ownerID": 1,
-                  "identifier": "merchant-voucher"
-                },
-                "validThru": "1603557000",
-                "tnc": "\u003col\u003e\u003cb\u003e\u003cli\u003eGunakan kode voucher : DETTOSMS6E\u003c/li\u003e\u003c/b\u003e\u003cli\u003eVoucher Cashback dapat digunakan dengan membuka halaman promo di Keranjang\u003c/li\u003e\u003cli\u003eVoucher Cashback hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada voucher.\u003c/li\u003e\u003cli\u003eNominal cashback yang bisa didapatkan sebesar Rp 10.000.\u003c/li\u003e\u003cli\u003eVoucher Cashback berlaku untuk transaksi minimal Rp 140.000 (tidak termasuk ongkos kirim dan biaya tambahan lainnya).\u003c/li\u003e\u003cli\u003eVoucher Cashback hanya berlaku untuk pembelanjaan di Dettol Official Store.\u003c/li\u003e\u003cli\u003e1 (satu) Pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher Cashback ini.\u003c/li\u003e\u003cli\u003eCashback akan diberikan dalam bentuk OVO Points pada saat transaksi selesai. Pengguna diharapkan untuk memastikan bahwa Pengguna sudah mengaktifkan OVO. Jika tidak mengaktifkan dalam 7 hari setelah mengikuti promo, Cashback akan hangus.\u003c/li\u003e\u003cli\u003eJika transaksi dibatalkan atau masuk ke Pusat Resolusi, dana yang kembali ke pembeli akan sesuai dengan nominal pembayaran yang dilakukan.\u003c/li\u003e\u003cli\u003eTokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan yang dilakukan oleh Pengguna dan/atau yang melanggar Syarat dan Ketentuan Situs dan/atau merugikan pihak Tokopedia.\u003c/li\u003e\u003cli\u003eDengan menggunakan Voucher Cashback ini, pengguna dianggap telah memahami dan menyetujui semua Syarat \u0026 Ketentuan yang berlaku.\u003c/li\u003e\u003c/ol\u003e",
-                "inUseExpiry": "0",
-                "status": {
-                  "status": 3,
-                  "identifier": "used"
-                }
-              },
-              {
-                "voucherID": 1344793,
-                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/9/30/29402544/29402544_eef7acb7-06d4-47f0-a381-473dfab868b3",
-                "name": "DETTOL ONGKIR 20K OCT",
-                "voucherType": {
-                  "voucherType": 1,
-                  "identifier": "free-ongkir"
-                },
-                "voucherCode": "DETTHKN0MM",
-                "amount": {
-                  "amountType": 1,
-                  "amount": 20000,
-                  "amountFormatted": "20rb"
-                },
-                "minimumSpend": 200000,
-                "minimumSpendFormatted": "200rb",
-                "owner": {
-                  "ownerID": 1,
-                  "identifier": "merchant-voucher"
-                },
-                "validThru": "1603557000",
-                "tnc": "\u003col\u003e\u003cb\u003e\u003cli\u003eGunakan kode voucher : DETTHKN0MM\u003c/li\u003e\u003c/b\u003e\u003cli\u003eVoucher Gratis Ongkir dapat digunakan dengan membuka halaman promo di Keranjang.\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir hanya berlaku apabila pembelian Pengguna sudah memenuhi syarat dan ketentuan yang tertera pada voucher.\u003c/li\u003e\u003cli\u003eNominal Gratis Ongkir yang bisa didapatkan sebesar Rp 20.000.\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir berlaku untuk transaksi minimal Rp 200.000 (tidak termasuk ongkos kirim dan biaya tambahan lainnya).\u003c/li\u003e\u003cli\u003eVoucher Gratis Ongkir hanya berlaku untuk pembelanjaan di Dettol Official Store.\u003c/li\u003e\u003cli\u003e1 (satu) Pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher Gratis Ongkir ini.\u003c/li\u003e\u003cli\u003eTokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan yang dilakukan oleh  Pengguna dan/atau melanggar Syarat dan Ketentuan Situs dan/atau merugikan pihak Tokopedia.\u003c/li\u003e\u003cli\u003eDengan menggunakan Voucher Gratis Ongkir, Pengguna dianggap telah memahami dan menyetujui semua Syarat dan Ketentuan yang berlaku.\u003c/li\u003e\u003c/ol\u003e",
-                "inUseExpiry": "0",
-                "status": {
-                  "status": 3,
-                  "identifier": "used"
-                }
-              }
-            ]
+            "data": [{}, {}, {}]
           },
           {
             "widgetID": 0,
