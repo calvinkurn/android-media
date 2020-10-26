@@ -49,7 +49,6 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHS
 import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -108,7 +107,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-//    internal var menu: Menu? = null
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -179,21 +177,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         return componentType.cast((activity as HasComponent<C>?)?.getComponent())
     }
 
-/*
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.wishlist_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-        this.menu = menu
-    }
-*/
-
-/*
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        showOnBoarding()
-    }
-*/
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.manage -> manageDeleteWishlist()
@@ -230,8 +213,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-//            menu?.findItem(R.id.manage)?.isVisible = false
-//            searchView?.hideTextManage()
             viewModel.getWishlistData(searchView?.getSearchText() ?: "")
         }
     }
@@ -320,9 +301,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 }
             }
             recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
-
-//            menu?.findItem(R.id.manage)?.isVisible = state.isSuccess()
-//            if (state.isSuccess()) searchView?.show() else searchView?.gone()
         })
 
 
@@ -345,10 +323,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         viewModel.isInBulkModeState.observe(viewLifecycleOwner, Observer { isInBulkMode ->
             if (isInBulkMode) {
                 updateBottomMargin()
-//                menu?.findItem(R.id.cancel)?.isVisible = true
-//                menu?.findItem(R.id.manage)?.isVisible = false
-
-//                searchView?.setTextManageWording(context?.resources?.getString(R.string.label_cancel) ?: "")
 
                 containerDelete?.show()
 
@@ -357,11 +331,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
                 swipeToRefresh?.isEnabled = false
             } else {
-//                menu?.findItem(R.id.cancel)?.isVisible = false
-//                menu?.findItem(R.id.manage)?.isVisible = true
-
-//                searchView?.setTextManageWording(context?.resources?.getString(R.string.label_manage) ?: "")
-
                 containerDelete?.hide()
 
                 showSearchView()
@@ -370,7 +339,6 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 swipeToRefresh?.isEnabled = true
             }
         })
-
 
     }
 

@@ -18,10 +18,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView.OnEditorActionListener
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.wishlist_partial_shimmering_list.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -69,14 +66,6 @@ class CustomSearchView : FrameLayout {
 
     fun setFocusChangeListener(focusChangeListener: FocusChangeListener?) {
         this.focusChangeListener = focusChangeListener
-    }
-
-    fun hideTextManage() {
-        textManage?.gone()
-    }
-
-    fun showTextManage() {
-        textManage?.show()
     }
 
     fun setTextManageWording(text: String) {
