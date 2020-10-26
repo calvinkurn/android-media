@@ -18,13 +18,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/bgDoPUndo"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_color_round_shape"
+        app:layout_constraintBottom_toBottomOf="@id/bgDoPencil"
+        app:layout_constraintRight_toLeftOf="@id/bgDoPencil"
+        app:layout_constraintTop_toTopOf="@id/bgDoPencil" />
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btnDoPUndo"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="@id/bgDoPencil"
-        app:layout_constraintRight_toLeftOf="@id/bgDoPencil"
-        app:layout_constraintTop_toTopOf="@id/bgDoPencil"
+        app:layout_constraintBottom_toBottomOf="@id/bgDoPUndo"
+        app:layout_constraintLeft_toLeftOf="@id/bgDoPUndo"
+        app:layout_constraintRight_toRightOf="@id/bgDoPUndo"
+        app:layout_constraintTop_toTopOf="@id/bgDoPUndo"
         app:srcCompat="@drawable/ic_undo_active" />
 
     <androidx.appcompat.widget.AppCompatImageView
