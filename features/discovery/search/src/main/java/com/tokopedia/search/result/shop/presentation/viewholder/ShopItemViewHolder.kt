@@ -175,7 +175,7 @@ internal class ShopItemViewHolder(
             textViewShopItemProductPrice: Typography?
     ) {
         imageViewShopItemProductImage?.let {
-            it.loadImage(productPreviewItem.imageUrl) {
+            it.loadImage("https://images-staging.tokopedia.net/img/martin/2020/9/7/e0ce27f1-4299-4afe-bb4c-f2fd72c57595.jpg?b=APL4W-D4.AtS") {
                 cacheStrategy = MediaCacheStrategy.RESOURCE
             }
         }
