@@ -7,6 +7,7 @@
     android:layout_height="?actionBarSize"
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp"
+    android:background="@color/transparent"
     app:contentInsetStartWithNavigation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

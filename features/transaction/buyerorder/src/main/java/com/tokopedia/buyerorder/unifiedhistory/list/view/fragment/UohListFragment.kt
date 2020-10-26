@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -65,6 +67,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
@@ -121,6 +125,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -288,6 +293,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     override fun onRefresh(view: View?) {
         onLoadMore = false
+        isFetchRecommendation = false
         onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
@@ -333,7 +339,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarTextField?.addTextChangedListener(object: TextWatcher{
+        search_bar?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 textChangedJob?.cancel()
                 textChangedJob = GlobalScope.launch(Dispatchers.Main) {
@@ -942,6 +948,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
                         var dateOption = ""
+                        var labelTrackingDate = ""
                         if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
                                 paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
@@ -953,8 +960,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             val splitEndDate = paramUohOrder.createTimeEnd.split('-')
                             dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                             filter1?.title = dateOption
+                            labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
+                            labelTrackingDate = dateOption
 
                             if (currFilterDateKey == "0") {
                                 filter1?.title = ALL_DATE
@@ -962,7 +971,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 filter1?.title = currFilterDateLabel
                             }
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(dateOption, it1) }
+
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         currFilterStatusKey = tempFilterStatusKey
@@ -1038,6 +1048,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             btn_ajukan_komplain?.setOnClickListener {
                 RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                userSession?.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
             }
         }
 
@@ -1075,7 +1086,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun showBottomSheetSendEmail(gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
-        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object: TextWatcher{
+        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -1114,6 +1125,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
                 uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
             }
+            userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1154,7 +1166,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 cl_choose_date?.gone()
                             }
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
-                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            val endDate = Date().toFormattedString("yyyy-MM-dd")
                             paramUohOrder.createTimeStart = startDate
                             paramUohOrder.createTimeEnd = endDate
 
@@ -1164,7 +1176,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 cl_choose_date?.gone()
                             }
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-                            val endDate= Date().toFormattedString("yyyy-MM-dd")
+                            val endDate = Date().toFormattedString("yyyy-MM-dd")
                             paramUohOrder.createTimeStart = startDate
                             paramUohOrder.createTimeEnd = endDate
 
@@ -1219,7 +1231,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
-        context?.let {  context ->
+        context?.let { context ->
             val minDate = Calendar.getInstance()
 
             val resultMinDate = orderList.dateLimit.split('-')
@@ -1264,7 +1276,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             if (splitDate.isNotEmpty()) {
                 splitDate.let {
-                    currentDate.set(it[0].toInt(), it[1].toInt()-1, it[2].toInt())
+                    currentDate.set(it[0].toInt(), it[1].toInt() - 1, it[2].toInt())
                     val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
                     fragmentManager?.let { it1 -> datePicker.show(it1, "") }
                     datePicker.datePickerButton.setOnClickListener {
@@ -1343,7 +1355,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     showBottomSheetSendEmail(GQL_TRAIN_EMAIL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
-                    RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+                    doChatSeller(dotMenu.appURL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
                     bottomSheetKebabMenu?.dismiss()
@@ -1367,7 +1379,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             ))
                             i++
                         }
-                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts) }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
                     }
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
@@ -1438,6 +1450,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
                         uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+
+                        // analytics
+                        val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+                        var i = 0
+                        order.metadata.products.forEach {
+                            val objProduct = jsonArray.get(i).asJsonObject
+                            arrayListProducts.add(ECommerceAdd.Add.Products(
+                                    name = it.title,
+                                    id = objProduct.get(EE_PRODUCT_ID).asString,
+                                    price = objProduct.get(EE_PRODUCT_PRICE).asString,
+                                    quantity = objProduct.get(EE_QUANTITY).asString,
+                                    dimension79 = objProduct.get(EE_SHOP_ID).asString
+                            ))
+                            i++
+                        }
+                        userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, order.verticalCategory) }
                     }
                 }
                 button.actionType.equals(GQL_TRACK, true) -> {
@@ -1530,14 +1558,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        UohAnalytics.productViewRecommendation(ECommerceImpressions.Impressions(
+        userSession?.userId?.let {
+            UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
                 position = index.toString(),
                 list = list
-        ))
+        ), topAds)
+        }
     }
 
     override fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -1547,12 +1577,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
 
-        UohAnalytics.productClickRecommendation(ECommerceClick.Products(
+        userSession?.userId?.let {
+            UohAnalytics.productClickRecommendation(ECommerceClick.Products(
                 name = productName,
                 id = recommendationItem.productId.toString(),
                 price = recommendationItem.price,
                 category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds)
+                position = index.toString()), topAds, it)
+        }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
         onProductClicked(productId)
@@ -1565,19 +1597,70 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun trackAddToCartRecommendation(recommendationItem: RecommendationItem) {
-        val product = ECommerceAddRecommendation.Add.ActionField.Product(
-                name = recommendationItem.name,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                quantity = recommendationItem.quantity.toString(),
-                dimension45 = recommendationItem.cartId
+    override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
+        val jsonArrayAtc = JsonArray()
+        val atcJsonObject = JsonObject()
+        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
+        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
+        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
+        atcJsonObject.addProperty(UohConsts.NOTES, "")
+        jsonArrayAtc.add(atcJsonObject)
+        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
 
-        )
+        // analytics
+        trackAtcRecommendationItem(recommendationItem)
+    }
+
+    private fun trackAtcRecommendationItem(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val productName = recommendationItem.name
+        val productPrice = recommendationItem.price
+        val productCategory = recommendationItem.categoryBreadcrumbs
+        val qty = recommendationItem.quantity.toString()
+        val imageUrl = recommendationItem.imageUrl
+        val cartId = recommendationItem.cartId
+        val isTopAds = recommendationItem.isTopAds
+        val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click";
+
+        val product = ECommerceAddRecommendation.Add.ActionField.Product(
+                name = productName,
+                id = productId,
+                price = productPrice,
+                category = productCategory,
+                quantity = qty,
+                dimension45 = cartId)
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        UohAnalytics.productAtcRecommendation(listProduct = arrayListProduct, isTopads = recommendationItem.isTopAds)
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
+        if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
+    }
+
+    private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
+        var invoiceCode = ""
+        var invoiceUrl = ""
+
+        try {
+            val parser = JsonParser()
+            val queryParams: JsonObject = parser.parse(order.metadata.queryParams).asJsonObject
+            invoiceCode = queryParams.get(QUERY_PARAM_INVOICE).asString
+            invoiceUrl = queryParams.get(QUERY_PARAM_INVOICE_URL).asString
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val intent = RouteManager.getIntent(context, URLDecoder.decode(appUrl, UohConsts.UTF_8))
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
+        if (order.metadata.products.isNotEmpty()) {
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
+        }
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, order.verticalStatus)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
+        startActivity(intent)
     }
 }

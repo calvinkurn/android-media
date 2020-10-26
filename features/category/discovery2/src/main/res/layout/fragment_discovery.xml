@@ -25,34 +25,28 @@
             tools:layout_height="@dimen/dp_56"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone"
-        tools:visbility="visible" />
-
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
-        android:padding="@dimen/dp_10"
-        android:visibility="gone" />
+        app:loader_corner_radius="@dimen/dp_10"
+        app:loader_type="circular"
+        android:visibility="gone"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <include
-        android:id="@+id/item_discovery_fragment_view"
-        layout="@layout/item_discovery_fragment_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<include
+    android:id="@+id/item_discovery_fragment_view"
+    layout="@layout/item_discovery_fragment_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

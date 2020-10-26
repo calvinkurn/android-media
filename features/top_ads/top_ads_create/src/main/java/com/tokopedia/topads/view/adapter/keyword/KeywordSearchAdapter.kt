@@ -10,7 +10,6 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
-import java.lang.Exception
 
 /**
  * Created by Pika on 20/8/20.

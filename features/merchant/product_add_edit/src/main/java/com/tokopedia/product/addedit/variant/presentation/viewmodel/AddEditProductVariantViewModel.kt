@@ -19,8 +19,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_MODE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_CUSTOM_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
@@ -249,12 +249,17 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         // if identifier exist, then update sizechart visibility
         if (isSizechartIdentifierExist) {
-            when (index) {
-                VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
-                }
-                VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                    mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
+            if (selectedVariantDetails.size == VARIANT_VALUE_LEVEL_ONE_COUNT) {
+                // handling for 1 leveled variant detail
+                mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty() || unitValuesLevel2.isNotEmpty()
+            } else {
+                when (index) {
+                    VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                        mIsVariantSizechartVisible.value = unitValuesLevel1.isNotEmpty()
+                    }
+                    VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                        mIsVariantSizechartVisible.value = unitValuesLevel2.isNotEmpty()
+                    }
                 }
             }
         }
@@ -321,6 +326,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun removeVariant() {
+        mIsRemovingVariant.value = true
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
         // keep the selections before being cleared
@@ -374,21 +380,6 @@ class AddEditProductVariantViewModel @Inject constructor(
             pictureVariantInputModel ?: PictureVariantInputModel()
         } else {
             PictureVariantInputModel()
-        }
-    }
-
-    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
-        val unitValue = value.firstOrNull()
-        return if (unitValue?.variantUnitValueID == VARIANT_CUSTOM_UNIT_VALUE_ID) {
-            // condition for custom value (get first unit)
-            variantDetail.units.firstOrNull()
-        } else {
-            // condition for main value
-            variantDetail.units.firstOrNull { unit ->
-                unit.unitValues.any {
-                    it.variantUnitValueID == unitValue?.variantUnitValueID
-                }
-            }
         }
     }
 

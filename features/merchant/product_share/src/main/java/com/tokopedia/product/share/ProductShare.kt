@@ -23,8 +23,14 @@ import java.io.File
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
+    private var cancelShare: Boolean = false
 
-    fun share(data: ProductData, preBuildImage: ()->Unit, postBuildImage: ()-> Unit){
+    fun cancelShare(cancelShare: Boolean) {
+        this.cancelShare = cancelShare
+    }
+
+    fun share(data: ProductData, preBuildImage: () -> Unit, postBuildImage: () -> Unit) {
+        cancelShare = false
         if (mode == MODE_IMAGE) {
             preBuildImage()
             val target = object : CustomTarget<Bitmap>(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT) {
@@ -53,13 +59,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
-
                 }
-
             }
 
             ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, target)
         } else {
+            preBuildImage.invoke()
             generateBranchLink(null, data, postBuildImage)
         }
     }
@@ -79,7 +84,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
 
-        activity.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+        if (!cancelShare) {
+            activity.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+        }
     }
 
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
@@ -121,6 +128,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         linkerData.ogUrl = null
         linkerData.type = LinkerData.PRODUCT_TYPE
         linkerData.uri =  productData.renderShareUri
+        linkerData.isThrowOnError = true
         var linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData

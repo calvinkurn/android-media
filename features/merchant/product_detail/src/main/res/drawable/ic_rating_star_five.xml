@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/ic_rating_star_item" android:left="@dimen/layout_lvl0" android:right="@dimen/layout_lvl7" />
+    <item android:drawable="@drawable/ic_rating_star_item" android:left="@dimen/layout_lvl2" android:right="@dimen/layout_lvl6"/>
+    <item android:drawable="@drawable/ic_rating_star_item" android:left="@dimen/layout_lvl4" android:right="@dimen/layout_lvl4"/>
+    <item android:drawable="@drawable/ic_rating_star_item" android:left="@dimen/layout_lvl6" android:right="@dimen/layout_lvl2"/>
+    <item android:drawable="@drawable/ic_rating_star_item" android:left="@dimen/layout_lvl7" android:right="@dimen/layout_lvl0"/>
+
+</layer-list>

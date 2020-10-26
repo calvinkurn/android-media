@@ -12,5 +12,4 @@ class OtherSettingsUiModel (buttonName: String,
                             override val impressionEventName: String = SettingTrackingConstant.VIEW_SHOP_SETTING_IRIS,
                             override val impressionEventCategory: String = SettingTrackingConstant.SETTINGS,
                             override val impressionEventAction: String = "${SettingTrackingConstant.IMPRESSION} ${SettingTrackingConstant.APPLICATION_SETTING} - $trackingAlias")
-    : SettingShopInfoClickTrackable, SettingShopInfoImpressionTrackable {
-}
+    : SettingShopInfoClickTrackable, SettingShopInfoImpressionTrackable

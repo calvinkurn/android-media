@@ -10,7 +10,6 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.widget.EditText

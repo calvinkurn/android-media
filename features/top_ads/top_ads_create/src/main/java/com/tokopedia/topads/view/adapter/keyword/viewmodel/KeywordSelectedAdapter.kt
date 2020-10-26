@@ -10,7 +10,6 @@ import com.tokopedia.topads.data.response.KeywordDataItem
 import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordItemViewHolder
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
-import java.lang.Exception
 
 /**
  * Created by Pika on 20/8/20.
@@ -60,6 +59,7 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
             holder.view.keywordCompetition.visibility = View.INVISIBLE
 
         } else {
+            holder.view.keywordCompetition.visibility = View.VISIBLE
             when (items[holder.adapterPosition].competition) {
                 KeywordItemViewHolder.LOW -> {
                     holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
@@ -43,7 +45,10 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isNeedToOpenShowcasePicker: String = ""
     private var isNeedToOpenReorder: Boolean = false
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
-    private var listShowcase: ArrayList<ShowcaseItem>? = arrayListOf()
+    private var productId: String = ""
+    private var productName: String = ""
+    private var listShowcase: ArrayList<ShopEtalaseModel>? = arrayListOf()
+    private var preSelectedShowcaseListPicker: ArrayList<ShowcaseItemPicker>? = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val bundle = intent.getBundleExtra("bundle")
@@ -55,6 +60,9 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
             isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
             isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
             isNeedToOpenShowcasePicker = bundle.getString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
+            preSelectedShowcaseListPicker = bundle.getParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER)
+            productId = bundle.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
+            productName = bundle.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_NAME, "")
         }
 
         // If there is no shopId  then it's seller view
@@ -78,7 +86,15 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     override fun getNewFragment(): Fragment? {
         return when {
             isNeedToOpenShowcasePicker.isNotEmpty() -> {
-                ShopShowcasePickerFragment.createInstance(shopId, isMyShop(), isNeedToOpenShowcasePicker)
+                ShopShowcasePickerFragment.createInstance(
+                        shopId,
+                        isMyShop(),
+                        shopType,
+                        isNeedToOpenShowcasePicker,
+                        preSelectedShowcaseListPicker,
+                        productId,
+                        productName
+                )
             }
             isNeedToOpenReorder -> {
                 ShopShowcaseListReorderFragment.createInstance(
@@ -99,7 +115,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
-    override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {
+    override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShopEtalaseModel>?) {
         when (page) {
             PageNameConstant.SHOWCASE_LIST_PAGE -> {
                 isNeedToGoToAddShowcase = false

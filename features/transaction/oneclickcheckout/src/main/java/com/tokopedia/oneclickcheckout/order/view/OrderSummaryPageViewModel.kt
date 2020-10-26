@@ -13,6 +13,8 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticdata.domain.param.EditAddressParam
+import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -43,8 +45,6 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONException
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.ceil
 
@@ -127,6 +128,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return _orderShipment.getRealShipperId()
     }
 
+    fun getPaymentProfile(): String {
+        return orderCart.paymentProfile
+    }
+
     fun atcOcc(productId: String) {
         globalEvent.value = OccGlobalEvent.Loading
         compositeSubscription.add(
@@ -173,17 +178,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
-            orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
+            orderPromo.value = orderData.promo.copy(state = OccButtonState.NORMAL)
+            if (orderData.prompt.shouldShowPrompt()) {
+                globalEvent.value = OccGlobalEvent.Prompt(orderData.prompt)
+            }
             if (orderProduct.productId > 0 && orderData.preference.shipment.serviceId > 0) {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRates()
             } else {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewOspEe()
             }
             OccIdlingResource.decrement()
         }, { throwable: Throwable ->
-            throwable.printStackTrace()
+            Timber.d(throwable)
             _orderPreference = OrderPreference()
             orderCart = OrderCart()
             validateUsePromoRevampUiModel = null
@@ -202,7 +210,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (shouldReloadRates) {
             calculateTotal()
             if (!product.quantity.isStateError) {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 debounce()
             }
         }
@@ -211,12 +219,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun debounce() {
         debounceJob?.cancel()
         debounceJob = launch(executorDispatchers.main) {
-            OccIdlingResource.increment()
-            delay(1000)
+            delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                getRates()
-                OccIdlingResource.decrement()
+                if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0) {
+                    getRates()
+                }
             }
         }
     }
@@ -235,7 +243,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                         shippingRecommendationData = null
                                 )
                                 orderShipment.value = _orderShipment
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 sendViewOspEe()
                                 OccIdlingResource.decrement()
                             }
@@ -401,7 +409,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                     if (shipping.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
-                                        orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                         sendViewShippingErrorMessage(shippingErrorId)
                                     }
                                     sendPreselectedCourierOption(preselectedSpId)
@@ -529,7 +537,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
-        orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode))
         OccIdlingResource.increment()
@@ -539,11 +547,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
+                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                                 globalEvent.value = OccGlobalEvent.Error(e)
                                 _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
                                 orderShipment.value = _orderShipment
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 calculateTotal()
                                 OccIdlingResource.decrement()
                             }
@@ -671,7 +679,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 calculateTotal()
             }
         }
@@ -817,11 +825,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return false
     }
 
-    fun updateCart() {
+    fun updateCart(shouldValidatePrompt: Boolean = false) {
         val param = generateUpdateCartParam()
         if (param != null) {
             updateCartOccUseCase.execute(param, {
                 //do nothing
+            }, {
+                if (shouldValidatePrompt) {
+                    globalEvent.value = OccGlobalEvent.Prompt(it)
+                }
             }, {
                 //do nothing
             })
@@ -882,9 +894,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 metadata = preference.paymentModel.metadata
         ))
         globalEvent.value = OccGlobalEvent.Loading
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             clearBboIfExist()
             globalEvent.value = OccGlobalEvent.TriggerRefresh()
+            OccIdlingResource.decrement()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -892,11 +909,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             }
+            OccIdlingResource.decrement()
         })
     }
 
-    fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (orderTotal.value.buttonState == ButtonBayarState.NORMAL) {
+    fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
+        if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
             val product = orderProduct
             val shop = orderShop
@@ -908,6 +926,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         OccIdlingResource.increment()
                         updateCartOccUseCase.execute(param, {
                             finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                            OccIdlingResource.decrement()
+                        }, {
+                            globalEvent.value = OccGlobalEvent.Prompt(it)
                             OccIdlingResource.decrement()
                         }, { throwable: Throwable ->
                             if (throwable is MessageErrorException && throwable.message != null) {
@@ -926,7 +947,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean) {
+    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (!skipCheckIneligiblePromo) {
             val requestParams = RequestParams.create()
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
@@ -959,7 +980,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         val shopPromos = generateShopPromos()
         val checkoutPromos = generateCheckoutPromos()
         val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
@@ -988,27 +1009,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                 promos = shopPromos
                         )
                 )
-        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonChoosePayment) 1 else 0))
+        )), promos = checkoutPromos, mode = if (orderTotal.value.isButtonPay) 0 else 1))
         OccIdlingResource.increment()
-        checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
-                if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    onSuccessCheckout(checkoutOccGqlResponse.response.data)
+        checkoutOccUseCase.execute(param, { checkoutOccData: CheckoutOccData ->
+            if (checkoutOccData.status.equals(STATUS_OK, true)) {
+                if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
+                    onSuccessCheckout(checkoutOccData.result)
                     var paymentType = _orderPreference.preference.payment.gatewayName
                     if (paymentType.isBlank()) {
                         paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                     }
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value.isButtonChoosePayment,
                             userSessionInterface.userId,
-                            getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form),
+                            getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
                             paymentType,
                             generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
-                    val error = checkoutOccGqlResponse.response.data.error
+                    val error = checkoutOccData.result.error
                     val errorCode = error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value.isButtonChoosePayment, errorCode)
-                    if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                        globalEvent.value = OccGlobalEvent.CheckoutError(CheckoutErrorData(error.code, error.imageUrl, error.message))
+                    if (checkoutOccData.result.prompt.shouldShowPrompt()) {
+                        globalEvent.value = OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
+                    } else if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                        globalEvent.value = OccGlobalEvent.CheckoutError(error)
                     } else if (errorCode == ERROR_CODE_PRICE_CHANGE) {
                         globalEvent.value = OccGlobalEvent.PriceChangeError(PriceChangeMessage(PRICE_CHANGE_ERROR_MESSAGE, error.message, PRICE_CHANGE_ACTION_MESSAGE))
                     } else if (error.message.isNotBlank()) {
@@ -1018,7 +1041,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
                 }
             } else {
-                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages.firstOrNull()
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
                         ?: DEFAULT_ERROR_MESSAGE)
             }
             OccIdlingResource.decrement()
@@ -1114,7 +1137,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return notEligiblePromoHolderdataList
     }
 
-    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
+    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
         val promoCodeList = ArrayList(notEligiblePromoHolderdataList.map { it.promoCode })
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
@@ -1151,6 +1174,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         updateCartOccUseCase.execute(param, {
             globalEvent.value = OccGlobalEvent.Normal
             onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
+            OccIdlingResource.decrement()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
             OccIdlingResource.decrement()
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
@@ -1282,8 +1308,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun validateUsePromo() {
-        orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.LOADING)
-        orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.LOADING)
+        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+        orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
         val validateUsePromoRequest = generateValidateUsePromoRequest()
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
@@ -1294,8 +1320,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
-                                orderPromo.value = orderPromo.value.copy(state = ButtonBayarState.DISABLE)
-                                orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+                                orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
+                                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                                 OccIdlingResource.decrement()
                             }
 
@@ -1330,9 +1356,25 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError)
     }
 
+    private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String, minimumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MINIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
+    }
+
+    private fun generateMaximumAmountPaymentErrorMessage(gatewayName: String, maximumAmount: Long, isEnableChooseOtherPaymentMethod: Boolean): String {
+        var message = "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false).removeDecimalSuffix()})."
+        if (isEnableChooseOtherPaymentMethod) {
+            message += CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE
+        }
+        return message
+    }
+
     fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
-        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = OccButtonState.NORMAL)
+        orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
         calculateTotal()
     }
 
@@ -1340,7 +1382,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val quantity = orderProduct.quantity
         var payment = _orderPayment
         if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
-            orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
             return
         }
         val totalProductPrice = quantity.orderQuantity * orderProduct.getPrice().toDouble()
@@ -1357,46 +1399,85 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
 
         var currentState = orderTotal.value.buttonState
-        if (currentState == ButtonBayarState.NORMAL && (!shouldButtonStateEnable(shipping))) {
-            currentState = ButtonBayarState.DISABLE
+        if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping))) {
+            currentState = OccButtonState.DISABLE
         }
-        if (payment.errorTickerMessage.isNotEmpty()) {
+        if (payment.errorTickerMessage.isNotEmpty() && !payment.isEnableNextButton) {
+            // scrooge down
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, isButtonChoosePayment = true, buttonState = currentState)
+            if (payment.isDisablePayButton) {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.PAY, buttonState = OccButtonState.DISABLE)
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
         } else if (payment.errorMessage.message.isNotEmpty() && payment.errorMessage.button.text.isNotEmpty()) {
-            if (currentState == ButtonBayarState.NORMAL) {
-                currentState = ButtonBayarState.DISABLE
+            // CC expired/deleted
+            if (currentState == OccButtonState.NORMAL) {
+                currentState = OccButtonState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         } else if (payment.minimumAmount > subtotal) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.minimumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    isButtonChoosePayment = true, buttonState = currentState)
-            _orderPayment = payment.copy(isCalculationError = true)
-            orderPayment.value = _orderPayment
+            if (payment.isOvoOnlyCampaign) {
+                if (currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                }
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, false),
+                        buttonType = OccButtonType.PAY, buttonState = currentState)
+                _orderPayment = payment.copy(isCalculationError = true)
+                orderPayment.value = _orderPayment
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = generateMinimumAmountPaymentErrorMessage(payment.gatewayName, payment.minimumAmount, true),
+                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                _orderPayment = payment.copy(isCalculationError = true)
+                orderPayment.value = _orderPayment
+            }
         } else if (payment.maximumAmount > 0 && payment.maximumAmount < subtotal) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${payment.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(payment.maximumAmount, false).removeDecimalSuffix()}). Silahkan pilih pembayaran lain.",
-                    isButtonChoosePayment = true, buttonState = currentState)
-            _orderPayment = payment.copy(isCalculationError = true)
+            if (payment.isOvoOnlyCampaign) {
+                if (currentState == OccButtonState.NORMAL) {
+                    currentState = OccButtonState.DISABLE
+                }
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, false),
+                        buttonType = OccButtonType.PAY, buttonState = currentState)
+                _orderPayment = payment.copy(isCalculationError = true)
+                orderPayment.value = _orderPayment
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = generateMaximumAmountPaymentErrorMessage(payment.gatewayName, payment.maximumAmount, true),
+                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+                _orderPayment = payment.copy(isCalculationError = true)
+                orderPayment.value = _orderPayment
+            }
+        } else if (payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
+            // OVO only campaign & OVO is not active
+            _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
         } else if (payment.gatewayCode.contains(OVO_GATEWAY_CODE) && subtotal > payment.walletAmount) {
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
-                    paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
-                    isButtonChoosePayment = true, buttonState = currentState)
+            if (payment.isOvoOnlyCampaign) {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = OVO_INSUFFICIENT_CONTINUE_MESSAGE,
+                        buttonType = OccButtonType.CONTINUE, buttonState = currentState)
+            } else {
+                orderTotal.value = orderTotal.value.copy(orderCost = orderCost,
+                        paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
+                        buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             _orderPayment = payment.copy(isCalculationError = true)
             orderPayment.value = _orderPayment
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
         } else {
-            if (payment.creditCard.selectedTerm?.isError == true && currentState == ButtonBayarState.NORMAL) {
-                currentState = ButtonBayarState.DISABLE
+            if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
+                currentState = OccButtonState.DISABLE
             }
             _orderPayment = payment.copy(isCalculationError = false)
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+            orderTotal.value = orderTotal.value.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
     }
 
@@ -1471,6 +1552,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             return
         }
+        OccIdlingResource.increment()
         updateCartOccUseCase.execute(param, {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach {
@@ -1478,9 +1560,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 it.isError = false
             }
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-            orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(buttonState = if (shouldButtonStateEnable(_orderShipment)) OccButtonState.NORMAL else OccButtonState.DISABLE)
             calculateTotal()
             globalEvent.value = OccGlobalEvent.Normal
+            OccIdlingResource.decrement()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
+            OccIdlingResource.decrement()
         }, {
             if (it is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = it.message
@@ -1488,6 +1574,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 globalEvent.value = OccGlobalEvent.Error(it)
             }
+            OccIdlingResource.decrement()
         })
     }
 
@@ -1502,6 +1589,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         updateCartOccUseCase.execute(param, {
             clearBboIfExist()
             globalEvent.value = OccGlobalEvent.TriggerRefresh()
+        }, {
+            globalEvent.value = OccGlobalEvent.Prompt(it)
         }, { throwable: Throwable ->
             if (throwable is MessageErrorException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
@@ -1515,13 +1604,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun validateSelectedTerm(): Boolean {
         val creditCard = _orderPayment.creditCard
         val selectedTerm = creditCard.selectedTerm
-        if (selectedTerm != null && !selectedTerm.isEnable) {
+        val hasEnableTerm = creditCard.availableTerms.indexOfFirst { it.isEnable } > -1
+        if (selectedTerm != null && !selectedTerm.isEnable && hasEnableTerm) {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach { it.isError = true }
             selectedTerm.isError = true
             _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedTerm, availableTerms = availableTerms))
             orderPayment.value = _orderPayment
-            orderTotal.value = orderTotal.value.copy(buttonState = ButtonBayarState.DISABLE)
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             globalEvent.value = OccGlobalEvent.Error(errorMessage = INSTALLMENT_INVALID_MIN_AMOUNT)
             return false
         }
@@ -1572,6 +1662,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
             }
             setShippingDuration(_orderShipment.serviceDuration)
+            setCampaignId(orderProduct.campaignId.toString())
         }.build(step, option)
     }
 
@@ -1599,6 +1690,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     companion object {
+        const val DEBOUNCE_TIME = 1000L
+
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
@@ -1611,6 +1704,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+        const val OVO_INSUFFICIENT_CONTINUE_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan klik Lanjutkan untuk top up."
+
+        const val MINIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu kurang dari min. transaksi"
+        const val MAXIMUM_AMOUNT_ERROR_MESSAGE = "Belanjaanmu melebihi limit transaksi"
+
+        const val CHOOSE_OTHER_PAYMENT_METHOD_MESSAGE = " Silahkan pilih pembayaran lain."
 
         const val INSTALLMENT_INVALID_MIN_AMOUNT = "Oops, tidak bisa bayar dengan cicilan karena min. pembeliannya kurang."
 

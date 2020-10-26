@@ -21,8 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
@@ -64,8 +62,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
-        private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
-
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
@@ -95,33 +91,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
     var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
 
-    private var shouldMoveToReview: Boolean = false
-    private var shouldMoveToCentralizedPromo: Boolean = false
-    private var shouldMoveToShopPage: Boolean = false
-    private var shouldMoveToBalance: Boolean = false
-    private var shouldMoveToStatistics: Boolean = false
-    private var shouldMoveToFinancialService: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(startOldSellerHomeIfEnabled()) {
-            super.onCreate(savedInstanceState)
-            return
-        }
-        initPerformanceMonitoring()
+        initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
-
-        with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
-            shouldMoveToReview = this == ApplinkConst.REPUTATION
-            shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-            shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
-            shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
-            shouldMoveToFinancialService = this == ApplinkConst.LAYANAN_FINANSIAL
-            shouldMoveToStatistics = this == ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
-        }
-        val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
-                intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
 
         setupBackground()
         setupToolbar()
@@ -131,48 +105,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
         setupDefaultPage(initialPage)
 
+        // if redirected from any seller migration entry point, no need to show the update dialog
+        val isRedirectedFromSellerMigrationEntryPoint = !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank()
+
         setupBottomNav()
-        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-        if (appLinks.isNotEmpty()) {
-            val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance || shouldMoveToFinancialService || shouldMoveToStatistics) {
-                shouldMoveToReview = false
-                shouldMoveToCentralizedPromo = false
-                shouldMoveToShopPage = false
-                shouldMoveToBalance = false
-                shouldMoveToStatistics = false
-                shouldMoveToFinancialService = false
-                RouteManager.getIntent(this, appLinkToOpen).apply {
-                    replaceExtras(this@SellerHomeActivity.intent.extras)
-                    appLinks.find { it != ApplinkConst.REPUTATION &&
-                                    it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
-                                    !it.startsWith(SHOP_PAGE_PREFIX) &&
-                                    it != ApplinkConstInternalGlobal.SALDO_DEPOSIT &&
-                                    it != ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD &&
-                                    it != ApplinkConst.LAYANAN_FINANSIAL
-                    }?.let { nextDestinationApplink ->
-                        putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
-                    }
-                    appLinks.any { appLink ->
-                        appLink == ApplinkConst.REPUTATION
-                    }.let { isReputation ->
-                        if(isReputation) {
-                            val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
-                            putExtra(GO_TO_REPUTATION_HISTORY, true)
-                        }
-                    }
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    startActivity(this)
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -209,24 +148,17 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
 
     fun stopPerformanceMonitoringSellerHomeLayout() {
         performanceMonitoringSellerHomelayout?.stopTrace()
-    }
-
-    private fun startOldSellerHomeIfEnabled(): Boolean {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            val oldSellerHome = com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity.createIntent(this)
-            oldSellerHome.data = intent.data
-            startActivity(oldSellerHome)
-            finish()
-
-            return true
-        }
-        return false
     }
 
     private fun setupBackground() {
@@ -460,7 +392,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahToolbar?.hide()
     }
 
-    private fun initPerformanceMonitoring(){
+    private fun initSellerHomePlt() {
+        if (intent.data == null) {
+            initPerformanceMonitoringSellerHome()
+        } else {
+            DeepLinkHandler.handleAppLink(intent) {
+                if (it.type == FragmentType.HOME) {
+                    initPerformanceMonitoringSellerHome()
+                }
+            }
+        }
+    }
+
+    private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()

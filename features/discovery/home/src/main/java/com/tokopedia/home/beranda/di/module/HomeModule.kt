@@ -22,7 +22,7 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.util.HomeCommandProcessor
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors

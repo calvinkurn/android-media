@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical" android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/grey_default_background"
+              android:background="@color/Unify_N50"
               xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@id/title"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:padding="@dimen/dp_10"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         tools:text="Inspired by " />

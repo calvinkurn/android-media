@@ -48,7 +48,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -69,7 +69,9 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
+import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
@@ -88,12 +90,12 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMo
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -104,6 +106,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import java.io.File
 import javax.inject.Inject
 
@@ -129,6 +132,7 @@ class ShopPageFragment :
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
+        const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
@@ -203,9 +207,10 @@ class ShopPageFragment :
         )
     }
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel? = null
-    private var initialProductListSortId: String = ""
+    private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
+    private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -234,8 +239,14 @@ class ShopPageFragment :
         shopViewModel.shopPageP1Data.removeObservers(this)
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SAVED_INITIAL_FILTER,  initialProductFilterParameter)
     }
 
     private fun initViews(view: View) {
@@ -278,11 +289,15 @@ class ShopPageFragment :
                     )
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
-                    if (tab.position == tabFeedPosition) {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
-                    } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                    if(isMyShop && viewPagerAdapter.isFragmentObjectExists(FeedShopFragment::class.java)){
+                        val tabFeedPosition = viewPagerAdapter.getFragmentPosition(FeedShopFragment::class.java)
+                        if (tab.position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
                     }
                 }
             }
@@ -299,7 +314,7 @@ class ShopPageFragment :
     private fun setupBottomSheetSellerMigration(view: View) {
         val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+        hideBottomSheetSellerMigration()
 
         if (isSellerMigrationEnabled(context)) {
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
@@ -316,11 +331,10 @@ class ShopPageFragment :
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
-                                context = requireContext(),
-                                featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                                screenName = FeedShopFragment::class.simpleName.orEmpty(),
-                                appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed),
-                                isStackBuilder = false)
+                        context = requireContext(),
+                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                        screenName = FeedShopFragment::class.simpleName.orEmpty(),
+                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed))
                 startActivity(intent)
             }
         }
@@ -383,9 +397,10 @@ class ShopPageFragment :
         shopViewModel.shopImagePath.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
-                shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this).apply {
-                    show()
+                shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
+                    init(this@ShopPageFragment)
                 }
+                shopShareBottomSheet?.show(fragmentManager)
             }
         })
 
@@ -398,7 +413,7 @@ class ShopPageFragment :
                 shopDomain.orEmpty(),
                 START_PAGE,
                 ShopPageConstant.DEFAULT_PER_PAGE,
-                initialProductListSortId.toIntOrZero(),
+                initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
                 isRefresh
@@ -483,10 +498,29 @@ class ShopPageFragment :
                 }
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
-            initViews(view)
+            shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+            getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
+            observeShopProductFilterParameterSharedViewModel()
             startPltNetworkPerformanceMonitoring()
             getInitialData()
+            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            if (!swipeToRefresh.isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+            initViews(view)
+        }
+    }
+
+    private fun observeShopProductFilterParameterSharedViewModel() {
+        shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
+            initialProductFilterParameter = it
+        })
+    }
+
+    private fun getSavedInstanceStateData(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            initialProductFilterParameter = it.getParcelable(SAVED_INITIAL_FILTER)
         }
     }
 
@@ -527,8 +561,6 @@ class ShopPageFragment :
 
     private fun getInitialData() {
         isFirstLoading = true
-        if (!swipeToRefresh.isRefreshing)
-            setViewState(VIEW_LOADING)
         startMonitoringNetworkPltShopPage()
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
@@ -538,7 +570,7 @@ class ShopPageFragment :
                     shopDomain.orEmpty(),
                     START_PAGE,
                     ShopPageConstant.DEFAULT_PER_PAGE,
-                    initialProductListSortId.toIntOrZero(),
+                    initialProductFilterParameter ?: ShopProductFilterParameter(),
                     "",
                     "",
                     isRefresh
@@ -600,6 +632,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -781,6 +814,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -846,6 +880,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -858,6 +893,7 @@ class ShopPageFragment :
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        shopShareBottomSheet?.dismiss()
     }
 
     private fun setupTabs() {
@@ -1001,6 +1037,8 @@ class ShopPageFragment :
             errorButton.setOnClickListener {
                 isRefresh = true
                 getInitialData()
+                if (!swipeToRefresh.isRefreshing)
+                    setViewState(VIEW_LOADING)
             }
             swipeToRefresh.isRefreshing = false
         }
@@ -1083,6 +1121,8 @@ class ShopPageFragment :
         }
         isRefresh = true
         getInitialData()
+        if (!swipeToRefresh.isRefreshing)
+            setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
     }
 
@@ -1316,7 +1356,18 @@ class ShopPageFragment :
         }
     }
 
-    fun updateSortId(sortId: String) {
-        this.initialProductListSortId = sortId
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun setShopName() {
+        if(isMyShop) {
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
     }
 }

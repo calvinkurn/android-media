@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by Lukas 25/05/2019
  *
- * A main class of Recommendation Page is [WishlistTracking]
+ * A main class of Wishlist Page is [WishlistTracking]
  * this class handling a whole tracking data
  * don't delete this!
  */
@@ -65,6 +65,7 @@ object WishlistTracking {
     private const val PROMO_CLICK = "promoClick"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
+    private const val EVENT_OPEN_SCREEN = "openScreen"
     private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
     private const val SCREEN_NAME = "screenName"
     private const val BUSINESS_UNIT = "businessUnit"
@@ -99,6 +100,7 @@ object WishlistTracking {
     private const val VALUE_BUSINESS_UNIT = "home & browse"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -431,6 +433,18 @@ object WishlistTracking {
         getTracker().sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
+    fun openWishlistPage(userId: String){
+        getTracker().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_OPEN_SCREEN,
+                        SCREEN_NAME, VALUE_SCREEN_NAME,
+                        BUSINESS_UNIT, VALUE_BUSINESS_UNIT,
+                        USER_ID, userId,
+                        IS_LOGGED_IN_STATUS, if(userId.isNotEmpty()) "true" else "false",
+                        CURRENT_SITE, VALUE_CURRENT_SITE
+                )
+        )
+    }
 
     fun clickWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(
@@ -442,6 +456,7 @@ object WishlistTracking {
                 )
         )
     }
+
 
     fun clickEmptyWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(

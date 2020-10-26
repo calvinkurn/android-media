@@ -11,6 +11,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
@@ -18,7 +19,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
  *
  * A class for holder view Recommendation Carousel
  */
-class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
+class RecommendationCarouselViewHolder(val view: View, val listener: RecommendationListener) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
@@ -44,7 +45,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
-                        productRecommendation.listener.onProductClick(
+                        listener.onProductClick(
                                 productRecommendation.productItem,
                                 productRecommendation.productItem.type,
                                 productRecommendation.parentPosition,
@@ -76,7 +77,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                                     productRecommendation.productItem.imageUrl
                             )
                         }
-                        productRecommendation.listener.onProductImpression(productRecommendation.productItem)
+                        listener.onProductImpression(productRecommendation.productItem)
                     }
                 },
                 productCardModelList = products.map {

@@ -84,6 +84,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_W
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
+import com.tokopedia.purchase_platform.common.constant.CartConstant.REFRESH_CART_AFTER_BACK_FROM_PDP
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -216,6 +217,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
     private var accordionCollapseState = true
+    private var refreshCartAfterBackFromPdp = true
+    private var hasCalledOnSaveInstanceState = false
 
     companion object {
 
@@ -398,6 +401,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        hasCalledOnSaveInstanceState = false
+    }
+
     fun onBackPressed() {
         sendAnalyticsOnClickBackArrow()
         if (isAtcExternalFlow()) {
@@ -521,7 +529,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showBottomSheetSummaryTransaction() {
-        if (cartListData != null && fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && cartListData != null && fragmentManager != null && context != null) {
             showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
         }
     }
@@ -837,6 +845,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setHasOptionsMenu(true)
             it.title = it.getString(R.string.title_activity_cart)
 
+            setPdpRefreshResult()
+
             val productId = getAtcProductId()
             if (isAtcExternalFlow()) {
                 if (productId == INVALID_PRODUCT_ID) {
@@ -848,6 +858,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 loadCartData(savedInstanceState)
             }
+        }
+    }
+
+    private fun setPdpRefreshResult() {
+        if (arguments?.getBoolean(REFRESH_CART_AFTER_BACK_FROM_PDP, true) == false) {
+            refreshCartAfterBackFromPdp = false
         }
     }
 
@@ -876,6 +892,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        hasCalledOnSaveInstanceState = true
         saveInstanceCacheManager?.onSave(outState)
         saveInstanceCacheManager?.put(CartListData::class.java.simpleName, cartListData)
         wishLists.let {
@@ -2305,16 +2322,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
-        var errorMessage = throwable.message ?: ""
-        if (throwable !is CartResponseErrorException) {
-            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-
-        if (cartAdapter.itemCount > 0) {
-            showSnackbarRetry(errorMessage)
-        } else {
-            showErrorLayout(throwable)
-        }
+        showErrorLayout(throwable)
     }
 
     override fun renderToShipmentFormSuccess(eeCheckoutData: Map<String, Any>,
@@ -2358,7 +2366,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnButtonCheckoutClickedFailed()
         sendAnalyticsOnGoToShipmentFailed(message)
 
-        if (fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && fragmentManager != null && context != null) {
             showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
         }
     }
@@ -2681,9 +2689,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         when (requestCode) {
             NAVIGATION_SHIPMENT -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
-                refreshHandler?.isRefreshing = true
-                resetRecentViewList()
-                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+                if (refreshCartAfterBackFromPdp) {
+                    refreshHandler?.isRefreshing = true
+                    resetRecentViewList()
+                    dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+                }
             }
             NAVIGATION_PROMO -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -2710,6 +2720,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromRequestCodeCartShipment(resultCode: Int, data: Intent?) {
+        FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
