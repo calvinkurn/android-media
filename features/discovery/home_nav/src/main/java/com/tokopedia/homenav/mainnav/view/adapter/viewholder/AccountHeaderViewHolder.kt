@@ -30,6 +30,8 @@ class AccountHeaderViewHolder(itemView: View,
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
         const val TEXT_MY_SHOP = "Toko saya: %s"
+        const val TEXT_DOT = "\\u2022"
+        const val TEXT_POINTS = " Points"
     }
 
     override fun bind(element: AccountHeaderViewModel) {
@@ -64,7 +66,7 @@ class AccountHeaderViewHolder(itemView: View,
 
         userImage.loadImageCircle(element.userImage)
         tvName.text = element.userName
-        tvOvo.text = element.ovoSaldo
+        tvOvo.setText(renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo))
         usrBadge.loadImageCircle(element.badge)
         usrOvoBadge.loadImageCircle(element.badge)
 
@@ -72,6 +74,17 @@ class AccountHeaderViewHolder(itemView: View,
             tvShopInfo.visibility = View.VISIBLE
             tvShopInfo.text = String.format(TEXT_MY_SHOP, element.shopName)
         }
+    }
+
+    private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
+        var finalString = ""
+        finalString = if (ovoString.isNotEmpty()) {
+            finalString.plus(ovoString).plus(" ").plus(TEXT_DOT).plus(" ").plus(pointString).plus(TEXT_POINTS)
+        } else {
+            saldoString
+        }
+
+        return finalString
     }
 
     private fun renderNonLoginState() {

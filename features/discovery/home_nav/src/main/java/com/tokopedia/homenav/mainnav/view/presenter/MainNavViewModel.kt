@@ -9,23 +9,27 @@ import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.common.util.ResultCommandProcessor
 import com.tokopedia.homenav.common.util.UpdateNavigationData
+import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.domain.interactor.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
+        private val userSession: Lazy<UserSessionInterface>,
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
         private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+        private val getSaldoUseCase: Lazy<GetSaldoUseCase>,
         private val navProcessor: Lazy<NavCommandProcessor>,
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()), ResultCommandProcessor {
@@ -50,6 +54,10 @@ class MainNavViewModel @Inject constructor(
     val ovoResultListener: LiveData<Result<AccountHeaderViewModel>>
         get() = _ovoResultListener
     private val _ovoResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
+
+    val saldoResultListener: LiveData<Result<AccountHeaderViewModel>>
+        get() = _saldoResultListener
+    private val _saldoResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
     val shopResultListener: LiveData<Result<AccountHeaderViewModel>>
         get() = _shopResultListener
@@ -87,6 +95,12 @@ class MainNavViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
            val result = getMainNavDataUseCase.get().executeOnBackground()
             _mainNavLiveData.postValue(result)
+
+
+            getShopData(userSession.get().shopId.toInt())
+            getOvoData()
+            getSaldoData()
+            getUserBadgeImage()
         }){
             //apply global error for mainnav
         }
@@ -182,6 +196,27 @@ class MainNavViewModel @Inject constructor(
         }){
             //post error get ovo with new livedata
             _ovoResultListener.postValue(Fail(it))
+        }
+    }
+
+    fun getSaldoData() {
+        launchCatchError(coroutineContext, block = {
+            val result = withContext(baseDispatcher.get().io()) {
+                getSaldoUseCase.get().executeOnBackground()
+            }
+
+            val dataList =  _mainNavLiveData.value?.dataList ?: listOf()
+            val accountData = dataList.withIndex().find {
+                (_, visitable) -> visitable is AccountHeaderViewModel
+            }
+            (accountData?.value as AccountHeaderViewModel).let {
+                it.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
+            }
+            navProcessor.get().sendWithQueueMethod(UpdateNavigationData(
+                    _mainNavLiveData.value!!, this@MainNavViewModel
+            ))
+        }){
+            _saldoResultListener.postValue(Fail(it))
         }
     }
 

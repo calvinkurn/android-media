@@ -67,6 +67,9 @@ class MainNavUseCaseModule {
     @Provides
     fun provideShopInfoUseCase(graphqlRepository: GraphqlRepository) = GetShopInfoUseCase(graphqlRepository)
 
+    @MainNavScope
+    @Provides
+    fun provideGetSaldoUseCase(graphqlRepository: GraphqlRepository) = GetSaldoUseCase(graphqlRepository)
 
     @MainNavScope
     @Provides
