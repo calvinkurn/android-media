@@ -778,6 +778,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
             }
         }
+
+        override fun onOvoActivateClicked() {
+
+        }
+
+        override fun onOvoTopUpClicked() {
+
+        }
     }
 
     fun showPreferenceListBottomSheet() {

@@ -3,6 +3,8 @@ package com.tokopedia.oneclickcheckout.order.view.card
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -38,6 +40,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val lblMainPreference by lazy { view.findViewById<Label>(R.id.lbl_main_preference) }
     private val ivEditPreference by lazy { view.findViewById<ImageView>(R.id.iv_edit_preference) }
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_choose_preference) }
+    private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
+    private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
+    private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
     private val tvShippingName by lazy { view.findViewById<Typography>(R.id.tv_shipping_name) }
     private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_shipping_duration) }
     private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_shipping_promo) }
@@ -49,19 +54,22 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val tvShippingChangeDuration by lazy { view.findViewById<Typography>(R.id.tv_shipping_change_duration) }
     private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_shipping_promo_description) }
     private val tickerAction by lazy { view.findViewById<Typography>(R.id.ticker_action) }
+    private val paymentLayoutContainer by lazy { view.findViewById<ConstraintLayout>(R.id.layout_order_preference_payment) }
     private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_payment_detail) }
     private val tvPaymentInfo by lazy { view.findViewById<Typography>(R.id.tv_payment_info) }
     private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_payment_error_message) }
     private val tvPaymentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_payment_error_action) }
+    private val tvPaymentOvoErrorAction by lazy { view.findViewById<Typography>(R.id.tv_payment_ovo_error_action) }
     private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_installment_type) }
     private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_installment_detail) }
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_installment_error_action) }
-    private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_address_name) }
-    private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_address_receiver) }
-    private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_address_detail) }
+
+    private var paymentLayoutConstraintSet: ConstraintSet? = null
+
+    private var bottomPaymentIv = -1
 
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
@@ -171,8 +179,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvShippingMessage?.gone()
                     tvShippingChangeDuration?.gone()
                     tvShippingCourierLbl?.visible()
-                    tvShippingCourier?.text = "${shipping.shipperName} - ${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false).removeDecimalSuffix()}"
+                    tvShippingCourier?.text = "${shipping.shipperName} - ${
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                                ?: 0, false).removeDecimalSuffix()
+                    }"
                     tvShippingCourier?.setOnClickListener {
                         listener.chooseCourier()
                     }
@@ -246,6 +256,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
     private fun showPayment() {
         val paymentModel = preference.preference.payment
+        var newBottomPaymentIv = bottomPaymentIv
 
         ivPayment?.let {
             ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
@@ -255,8 +266,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (description.isNotBlank()) {
             tvPaymentDetail?.text = description.replace('*', '\u2022')
             tvPaymentDetail?.visible()
+            newBottomPaymentIv = R.id.tv_payment_detail
         } else {
             tvPaymentDetail?.gone()
+            newBottomPaymentIv = R.id.tv_payment_name
         }
         if (paymentModel.tickerMessage.isNotBlank()) {
             tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
@@ -270,6 +283,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             if (!payment.isError()) {
                 tvPaymentErrorMessage?.gone()
                 tvPaymentErrorAction?.gone()
+                tvPaymentOvoErrorAction?.gone()
                 setPaymentActiveAlpha()
 
                 setupPaymentSelector(payment)
@@ -293,20 +307,58 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     } else {
                         tvPaymentErrorAction?.gone()
                     }
+                    tvPaymentOvoErrorAction?.gone()
                     tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvPaymentDetail?.setOnClickListener {
                         //do nothing
                     }
+                    setPaymentErrorAlpha(payment.isCalculationError)
+                } else if (payment.ovoErrorData != null) {
+                    if (payment.ovoErrorData.message.isNotBlank()) {
+                        tvPaymentErrorMessage?.text = payment.ovoErrorData.message
+                        tvPaymentErrorMessage?.visible()
+                        newBottomPaymentIv = R.id.tv_payment_error_message
+                    } else {
+                        tvPaymentErrorMessage?.gone()
+                        newBottomPaymentIv = R.id.tv_payment_ovo_error_action
+                    }
+                    tvPaymentDetail?.gone()
+                    tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
+                    tvPaymentOvoErrorAction?.setOnClickListener {
+                        if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                            listener.onOvoTopUpClicked()
+                        } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                            listener.onOvoActivateClicked()
+                        }
+                    }
+                    tvPaymentOvoErrorAction?.visible()
+                    tvPaymentErrorAction?.gone()
+                    if (payment.ovoErrorData.isBlockingError) {
+                        setPaymentErrorAlpha(true)
+                    } else {
+                        setPaymentActiveAlpha()
+                    }
                 } else {
                     tvPaymentErrorMessage?.gone()
                     tvPaymentErrorAction?.gone()
+                    tvPaymentOvoErrorAction?.gone()
+                    setPaymentErrorAlpha(payment.isCalculationError)
                 }
-                setPaymentErrorAlpha(payment.isCalculationError)
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
                 tvInstallmentErrorMessage?.gone()
                 tvInstallmentErrorAction?.gone()
             }
+        }
+
+        if (newBottomPaymentIv != bottomPaymentIv) {
+            bottomPaymentIv = newBottomPaymentIv
+            if (paymentLayoutConstraintSet == null) {
+                paymentLayoutConstraintSet = ConstraintSet()
+                paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
+            }
+            paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
+            paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
         }
     }
 
@@ -498,5 +550,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
+
+        fun onOvoActivateClicked()
+
+        fun onOvoTopUpClicked()
     }
 }

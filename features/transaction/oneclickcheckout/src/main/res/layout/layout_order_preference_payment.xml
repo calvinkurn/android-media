@@ -91,7 +91,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:lines="1"
         android:textColor="@color/Green_G500"
-        android:text="aktivasi"
+        android:visibility="gone"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
         app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
