@@ -2,10 +2,13 @@ package com.tokopedia.home_account.view.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.home_account_item_common.view.*
 
 /**
@@ -22,15 +25,26 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
                     account_user_item_common_icon?.setImageDrawable(ContextCompat.getDrawable(this, common.icon))
                 }
             }
-            itemView.setOnClickListener { listener.onSettingItemClicked(common.applink) }
+            if(common.urlIcon.isNotEmpty()){
+                ImageHandler.loadImageFitCenter(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)
+            }
 
+            itemView.setOnClickListener {
+                listener.onSettingItemClicked(common)
+            }
+            if(common.endText.isNotEmpty() && common.type != TYPE_SWITCH){
+                account_user_item_common_end_text?.show()
+                account_user_item_common_end_text?.text = common.endText
+            }
             when(common.type) {
                 TYPE_WITHOUT_BODY -> {
-                    account_user_item_common_body?.visibility = View.GONE
+                    account_user_item_common_body?.hide()
                 }
                 TYPE_SWITCH -> {
-                    account_user_item_common_switch?.visibility = View.VISIBLE
+                    itemView.isClickable = false
+                    account_user_item_common_switch?.show()
                     account_user_item_common_body?.text = common.body
+                    account_user_item_common_switch?.isChecked = common.isChecked
                     account_user_item_common_switch?.setOnCheckedChangeListener { _, isChecked ->
                         listener.onSwitchChanged(common, isChecked)
                     }
@@ -44,6 +58,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
 
     companion object {
         val LAYOUT = R.layout.home_account_item_common
+        val LAYOUT_FINANCIAL = R.layout.home_account_item_financial
 
         val TYPE_DEFAULT = 1
         val TYPE_SWITCH = 2

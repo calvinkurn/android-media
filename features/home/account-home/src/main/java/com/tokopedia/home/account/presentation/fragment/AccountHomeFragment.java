@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,6 +29,7 @@ import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home_account.view.HomeAccountUserFragment;
+import com.tokopedia.home_account.view.activity.HomeAccountUserActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -105,7 +107,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private void showBuyerPage() {
         getChildFragmentManager()
             .beginTransaction()
-            .add(R.id.container, HomeAccountUserFragment.Companion.newInstance(new Bundle()))
+            .add(R.id.container, BuyerAccountFragment.Companion.newInstance())
             .commit();
     }
 
@@ -132,8 +134,9 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         });
 
         menuInbox.setOnClickListener(v -> {
-            accountAnalytics.eventTrackingInbox();
-            RouteManager.route(getActivity(), ApplinkConst.INBOX);
+//            accountAnalytics.eventTrackingInbox();
+//            RouteManager.route(getActivity(), ApplinkConst.INBOX);
+            startActivity(new Intent(getActivity(), HomeAccountUserActivity.class));
         });
 
         if (getActivity() instanceof AppCompatActivity) {
