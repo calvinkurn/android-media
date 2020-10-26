@@ -18,7 +18,7 @@ abstract class SellerSlice(protected val context: Context, protected val sliceUr
     abstract fun getSlice(): Slice
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    protected fun createActivityAction(): SliceAction {
+    open fun createActivityAction(): SliceAction {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
         return SliceAction.create(
                 PendingIntent.getActivity(context, 0, intent, 0),

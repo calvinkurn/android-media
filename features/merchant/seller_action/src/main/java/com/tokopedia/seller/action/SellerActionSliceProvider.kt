@@ -2,7 +2,6 @@ package com.tokopedia.seller.action
 
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
@@ -45,35 +44,32 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var sliceMainOrderListUseCase: SliceMainOrderListUseCase
 
-    private var hasAlreadyInitialized = false
     private var mainOrderStatus: SellerActionStatus? = null
     private var isLoading: Boolean = false
-    private var isLookingForCall: Boolean = false
+    private var isAlreadyInjected: Boolean = false
 
     private var sliceHashMap: HashMap<Uri, SellerSlice?> = HashMap()
 
     override fun onCreateSliceProvider(): Boolean {
-        Log.d("sliceMainOrder", "onCreateSliceProvider")
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         return context != null
     }
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Log.d("sliceMainOrder", "Bind Uri $sliceUri")
-            if (isLookingForCall) {
-                return null
-            }
-            isLookingForCall = true
+            // Returning slice if the uri has been called/bind before
+            // This will avoid infinite gql call loop in certain cases
             sliceHashMap[sliceUri]?.let {
-                isLookingForCall = false
                 return it.getSlice()
             }
-            if (!hasAlreadyInitialized) {
+
+            if (!isAlreadyInjected) {
+                // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
                 context?.let { GraphqlClient.init(it) }
                 injectDependencies()
-                hasAlreadyInitialized = true
+                isAlreadyInjected = true
             }
+
             if (userSession.isLoggedIn) {
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
@@ -82,18 +78,14 @@ class SellerActionSliceProvider: SliceProvider(){
                         if (canLoadData) {
                             isLoading = true
                             loadMainOrderList(sliceUri, date)
-                        } else {
-                            isLookingForCall = false
                         }
                     }
                 }
             } else {
-                isLookingForCall = false
                 mainOrderStatus = SellerActionStatus.NotLogin
             }
             return createNewSlice(sliceUri, isLoading)?.getSlice()
         } else {
-            isLookingForCall = false
             return null
         }
     }
@@ -143,7 +135,6 @@ class SellerActionSliceProvider: SliceProvider(){
                     getSliceMainOrderList(sliceUri, date)
                 } catch (ex: Exception) {
                     isLoading = false
-                    isLookingForCall = false
                     mainOrderStatus = SellerActionStatus.Fail
                     updateSlice(sliceUri)
                 }
@@ -159,7 +150,6 @@ class SellerActionSliceProvider: SliceProvider(){
             params = SliceMainOrderListUseCase.createRequestParam(filteredDate, filteredDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
             mainOrderStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
             isLoading = false
-            isLookingForCall = false
             updateSlice(sliceUri)
         }
     }

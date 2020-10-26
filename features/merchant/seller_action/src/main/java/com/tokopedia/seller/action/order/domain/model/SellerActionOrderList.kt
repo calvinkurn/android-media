@@ -25,6 +25,14 @@ data class Order (
         @Expose
         val status: String = "",
 
+        @SerializedName("order_status_id")
+        @Expose
+        val orderStatusId: Int = 0,
+
+        @SerializedName("deadline_text")
+        @Expose
+        val deadlineText: String = "",
+
         @SerializedName("order_date")
         @Expose
         val orderDate: String = "",

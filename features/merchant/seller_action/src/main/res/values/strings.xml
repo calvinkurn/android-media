@@ -14,6 +14,10 @@
     <string name="seller_action_order_loading_desc">Nggak pakai lama, Toped sedang mencari pesanan kamu.</string>
     <string name="seller_action_order_success_title_today">Pesanan hari ini</string>
     <string name="seller_action_order_success_title_specific_date">Pesanan %s</string>
-    <string name="seller_action_order_success_item_multiple_title">%s… +%1d Produk</string>
-    <string name="seller_action_order_success_item_desc">$s | Batas Response %s</string>
+    <string name="seller_action_order_success_item_multiple_title">%s +%1d Produk</string>
+    <string name="seller_action_order_success_item_desc">%s | Batas Respons %s</string>
+    <string name="seller_action_order_status_new_order">Pesanan Baru</string>
+    <string name="seller_action_order_status_ready_to_ship">Siap Dikirim</string>
+
+    <string name="seller_action_triple_dot">…</string>
 </resources>
