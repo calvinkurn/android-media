@@ -133,8 +133,8 @@ object GlideBuilder {
     fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = imageView.maxWidth,
-                height = imageView.maxHeight
+                width = 512,
+                height = 512
         )
     }
 
