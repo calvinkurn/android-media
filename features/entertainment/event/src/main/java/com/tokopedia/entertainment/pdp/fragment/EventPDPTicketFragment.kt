@@ -327,6 +327,10 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         return DateFormatUtils.getFormattedDate(if (state) selectedDate else getTodayDates(), DATE_TICKET)
     }
 
+    private fun getDateTicketFormatted(date: String): String {
+        return DateFormatUtils.getFormattedDate(date, DATE_TICKET)
+    }
+
     private fun getTodayDates(): String = (Date().time / 1000L).toString()
 
     override fun getSelectedDate(): String {
@@ -379,10 +383,10 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
         } else if (bitwiseIsHiburan > 0) {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_berlaku_hingga)
-            activity?.txtDate?.text = getTimestamptoText(pdpData.maxEndDate.isNotBlank())
+            activity?.txtDate?.text = getDateTicketFormatted(pdpData.maxEndDate)
         } else {
             activity?.txtPlaceHolderTglKunjungan?.text = resources.getString(R.string.ent_pdp_tanggal_kunjungan)
-            activity?.txtDate?.text = getTimestamptoText(pdpData.dates.first().isNotBlank())
+            activity?.txtDate?.text = getDateTicketFormatted(pdpData.dates.first())
         }
     }
 

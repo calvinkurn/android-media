@@ -19,7 +19,7 @@ object EventDateMapper{
     }
 
     fun getStartDate(productDetailData: ProductDetailData): String {
-        return productDetailData.minStartDate
+        return productDetailData.saleStartDate
     }
 
     fun isMaxDateNotMoreThanSelected(productDetailData: ProductDetailData, selectedDate: String):Boolean{
@@ -27,7 +27,7 @@ object EventDateMapper{
     }
 
     fun isMinDateNotLessThanSelected(productDetailData: ProductDetailData, selectedDate: String): Boolean{
-        return Date(productDetailData.minStartDate.toLong() * 1000).before(Date(selectedDate.toLong() * 1000))
+        return Date(productDetailData.saleStartDate.toLong() * 1000).before(Date(selectedDate.toLong() * 1000))
     }
 
     fun getActiveDate(dates: List<String>): List<Date>{
