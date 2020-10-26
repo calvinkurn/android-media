@@ -15,7 +15,8 @@ import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardSmallAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmallChannelViewHolder
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
-import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetSmallListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
@@ -36,8 +37,9 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
 
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
+    private var mWidgetListener: PlayWidgetSmallListener? = null
     private var mAnalyticListener: PlayWidgetSmallAnalyticListener? = null
-    private var mWidgetViewListener: PlayWidgetViewListener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     private val smallBannerListener = object : PlayWidgetCardSmallBannerViewHolder.Listener {
 
@@ -58,6 +60,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
+            mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             mAnalyticListener?.onClickChannelCard(
                     view = this@PlayWidgetSmallView,
                     item = item,
@@ -83,8 +86,12 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         setupView(view)
     }
 
-    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        mWidgetViewListener = listener
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        mWidgetInternalListener = listener
+    }
+
+    fun setWidgetListener(listener: PlayWidgetSmallListener?) {
+        mWidgetListener = listener
     }
 
     fun setAnalyticListener(listener: PlayWidgetSmallAnalyticListener?) {
@@ -112,7 +119,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         snapHelper.attachToRecyclerView(rvWidgetCardSmall)
 
         rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
-            mWidgetViewListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
         }
 
         rvWidgetCardSmall.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -121,7 +128,7 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    mWidgetViewListener?.onWidgetCardsScrollChanged(recyclerView)
+                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
                 }
             }
         })

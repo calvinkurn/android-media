@@ -2,9 +2,11 @@ package com.tokopedia.play.widget.ui.coordinator
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -43,6 +45,13 @@ class PlayWidgetCoordinator(
             this
     )
 
+    private val mWidgetInternalListener = object : PlayWidgetInternalListener {
+
+        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
+            autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        }
+    }
+
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
     }
@@ -74,8 +83,8 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
         widget.setAnalyticListener(mAnalyticListener)
+        widget.setWidgetInternalListener(mWidgetInternalListener)
         widget.setWidgetListener(mListener)
-        autoPlayCoordinator.controlWidget(widget)
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {

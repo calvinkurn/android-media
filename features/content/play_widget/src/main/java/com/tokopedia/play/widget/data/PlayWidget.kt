@@ -71,6 +71,6 @@ data class PlayWidgetMeta(
     @SerializedName("autoRefreshTimer") val autoRefreshTimer: Long = 0,
     @SerializedName("autoplayAmount") val autoplayAmount: Int = 0,
     @SerializedName("autoplay") val autoplay: Boolean = false,
-    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Long = 0,
+    @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0,
     @SerializedName("template") val template: String = ""
 )

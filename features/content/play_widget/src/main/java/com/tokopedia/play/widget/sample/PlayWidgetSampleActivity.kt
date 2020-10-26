@@ -61,8 +61,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
                         autoRefresh = false,
                         autoRefreshTimer = 0L,
                         autoPlay = true,
-                        autoPlayAmount = 2000L,
-                        maxAutoPlayCard = 2
+                        autoPlayAmount = 2,
+                        maxAutoPlayCellularDuration = 2
                 ),
                 items = getSampleSmallCardData(),
                 useHeader = true
@@ -86,8 +86,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
                         autoRefresh = false,
                         autoRefreshTimer = 0L,
                         autoPlay = true,
-                        autoPlayAmount = 2000L,
-                        maxAutoPlayCard = 2
+                        autoPlayAmount = 2,
+                        maxAutoPlayCellularDuration = 2
                 ),
                 items = getSampleMediumCardData()
         )
