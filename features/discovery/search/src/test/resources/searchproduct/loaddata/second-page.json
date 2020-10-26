@@ -45,6 +45,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 20,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -100,6 +101,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 20,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -155,6 +157,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 2,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -210,6 +213,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 5,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -265,6 +269,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 8,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -320,6 +325,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 9,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -375,6 +381,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 10,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -430,6 +437,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "minOrder": 2,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""
@@ -519,6 +527,7 @@
           "product_cashback_rate": "",
           "product_rating": 100,
           "product_rating_format": "5.0",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -688,6 +697,7 @@
           "product_cashback_rate": "",
           "product_rating": 96,
           "product_rating_format": "4.8",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -764,6 +774,7 @@
           "product_cashback_rate": "",
           "product_rating": 0,
           "product_rating_format": "",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": false,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -867,6 +878,7 @@
           "product_cashback_rate": "",
           "product_rating": 90,
           "product_rating_format": "4.5",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
@@ -954,6 +966,7 @@
           "product_cashback_rate": "",
           "product_rating": 0,
           "product_rating_format": "",
+          "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": false,
             "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"

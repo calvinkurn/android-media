@@ -1,36 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:fillViewport="true">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingTop="@dimen/dp_16"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/partial_credit_history_header"/>
+            <include
+                android:id="@+id/hari_ini"
+                layout="@layout/topads_dash_layout_hari_ini"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            <include
+                android:id="@+id/creditHistoryHeader"
+                layout="@layout/partial_credit_history_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/label_credit_history"
+                app:layout_constraintTop_toBottomOf="@id/creditHistoryHeader" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                tools:listitem="@layout/item_credit_history"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

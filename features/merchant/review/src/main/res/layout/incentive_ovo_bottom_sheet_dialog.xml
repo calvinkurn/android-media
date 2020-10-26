@@ -18,7 +18,7 @@
             android:layout_width="@dimen/size_incentive_ovo_image"
             android:layout_height="@dimen/size_incentive_ovo_image"
             android:layout_gravity="center"
-            tools:srcCompat="@drawable/ic_smiley_bad" />
+            tools:srcCompat="@drawable/review_ic_smiley_bad" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgIncentiveOvoTitle"

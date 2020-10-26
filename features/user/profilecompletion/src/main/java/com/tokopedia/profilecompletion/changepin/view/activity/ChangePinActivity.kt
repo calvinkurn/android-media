@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.otp.R
+import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -49,7 +49,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_toolbar_back)
+            setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f

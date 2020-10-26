@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment.base
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 
 
 /**
@@ -9,8 +9,8 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
  */
 abstract class PlayBaseBroadcastFragment: TkpdBaseV4Fragment() {
 
-    protected open val broadcastCoordinator: PlayBroadcastCoordinator
-        get() = activity as PlayBroadcastCoordinator
+    protected open val broadcastCoordinator: PlayBaseCoordinator
+        get() = activity as PlayBaseCoordinator
 
     /**
      * set true to override

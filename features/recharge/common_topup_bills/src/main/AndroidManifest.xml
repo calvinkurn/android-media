@@ -7,8 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity"
-            android:label=""
+            android:name=".view.activity.TopupBillsSearchNumberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible"
             android:theme="@style/Theme.White" />

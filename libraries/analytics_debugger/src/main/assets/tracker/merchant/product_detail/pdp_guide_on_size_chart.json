@@ -4,7 +4,7 @@
   "query": [
     {
       "eventCategory": "product detail page",
-      "eventAction": "impression - modular component",
+      "eventAction": "{{.*}}",
       "event": "view_item",
       "categoryId": "{{productId : \\d{1,}}}",
       "productId": "{{\\d{1,}}}",
@@ -28,7 +28,7 @@
     {
       "event": "clickPDP",
       "eventCategory": "product detail page",
-      "eventAction": "click - lihat panduan on size chart",
+      "eventAction": "{{.*}}",
       "eventLabel": "{{.*}};",
       "productId": "{{\\d{1,}}}",
       "layout": "{{layout:.*;catName:.*;catId:\\d{1,};}}",

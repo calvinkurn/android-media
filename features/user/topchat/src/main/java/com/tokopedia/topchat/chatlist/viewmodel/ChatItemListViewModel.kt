@@ -123,12 +123,19 @@ class ChatItemListViewModel @Inject constructor(
                 }.getSuccessData<ChatDeleteStatus>()
 
                 if (data.chatMoveToTrash.list.isNotEmpty()) {
-                    _deleteChat.value = Success(data.chatMoveToTrash.list.first())
+                    val deletedChat = data.chatMoveToTrash.list.first()
+                    _deleteChat.value = Success(deletedChat)
+                    clearFromPinUnpin(deletedChat.messageId.toString())
                 }
             }) {
                 _deleteChat.value = Fail(it)
             }
         }
+    }
+
+    private fun clearFromPinUnpin(messageId: String) {
+        pinnedMsgId.remove(messageId)
+        unpinnedMsgId.remove(messageId)
     }
 
     override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
