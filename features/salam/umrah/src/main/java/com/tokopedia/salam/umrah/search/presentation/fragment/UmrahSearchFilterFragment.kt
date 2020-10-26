@@ -19,6 +19,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
 import com.tokopedia.salam.umrah.search.di.UmrahSearchComponent
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.EXTRA_DEPARTURE_CITY_ID
@@ -66,7 +67,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     }
 
     private fun loadData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        val searchQuery = UmrahQuery.umrahHomePageSearchParam()
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 

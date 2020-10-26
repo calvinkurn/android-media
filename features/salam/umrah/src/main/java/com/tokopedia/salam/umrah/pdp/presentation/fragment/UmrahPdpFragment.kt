@@ -36,6 +36,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
@@ -165,7 +166,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun requestData() {
         slugName?.let {
             umrahPdpViewModel.requestPdpData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_pdp), it)
+                    UmrahQuery.umrahPDP(), it)
         }
     }
 

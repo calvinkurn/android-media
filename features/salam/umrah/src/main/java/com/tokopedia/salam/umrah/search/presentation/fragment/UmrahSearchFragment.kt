@@ -31,6 +31,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
@@ -266,7 +267,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     override fun loadData(page: Int) {
         umrahSearchViewModel.searchUmrahProducts(page,
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_search_product))
+                UmrahQuery.umrahSearchProduct())
     }
 
     private fun onSuccessGetResult(data: List<UmrahSearchProduct>) {
@@ -381,7 +382,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     }
 
     private fun loadSortData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        val searchQuery = UmrahQuery.umrahHomePageSearchParam()
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 
