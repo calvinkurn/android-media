@@ -6,8 +6,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -69,5 +68,31 @@ class PlayWidgetTools {
             if (mapper is PlayWidgetMediumUiMapper) mapper.mapWidgetToggleReminder(response)
             else throw IllegalStateException("Mapper is not medium type")
         }
+    }
+
+    fun updateTotalView(model: PlayWidgetUiModel, channelId: String, totalView: String): PlayWidgetUiModel {
+        return when (model) {
+            is PlayWidgetUiModel.Small -> updateSmallWidgetTotalView(model, channelId, totalView)
+            is PlayWidgetUiModel.Medium -> updateMediumWidgetTotalView(model, channelId, totalView)
+            else -> model
+        }
+    }
+
+    private fun updateSmallWidgetTotalView(model: PlayWidgetUiModel.Small, channelId: String, totalView: String): PlayWidgetUiModel.Small {
+        return model.copy(
+                items = model.items.map { smallWidget ->
+                    if (smallWidget is PlayWidgetSmallChannelUiModel && smallWidget.channelId == channelId) smallWidget.copy(totalView = totalView)
+                    else smallWidget
+                }
+        )
+    }
+
+    private fun updateMediumWidgetTotalView(model: PlayWidgetUiModel.Medium, channelId: String, totalView: String): PlayWidgetUiModel.Medium {
+        return model.copy(
+                items = model.items.map { mediumWidget ->
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(totalView = totalView)
+                    else mediumWidget
+                }
+        )
     }
 }

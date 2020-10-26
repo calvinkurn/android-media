@@ -38,7 +38,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,7 +48,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.tokopedia.play.widget.util.PlayWidgetTools
 
 /**
  * @author by yoasfs on 2019-09-18
@@ -604,6 +603,20 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     /**
      * Play Widget
      */
+    fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
+        if (channelId == null || totalView == null) return
+
+        val currentValue = _playWidgetModel.value
+        if (currentValue is Success) {
+            val model = currentValue.data.playWidgetUiModel
+            _playWidgetModel.value = Success(
+                    data = currentValue.data.copy(
+                            playWidgetUiModel = playWidgetTools.updateTotalView(model, channelId, totalView)
+                    )
+            )
+        }
+    }
+
     private fun shouldGetPlayWidget(model: DynamicFeedDomainModel): Boolean {
         return model.postList.any { it is CarouselPlayCardViewModel }
     }

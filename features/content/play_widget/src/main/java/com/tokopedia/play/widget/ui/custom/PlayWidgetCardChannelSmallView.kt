@@ -101,7 +101,6 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
         setOnClickListener {
             mListener?.onChannelClicked(this, model)
-            RouteManager.route(context, model.appLink)
         }
 
         if (model.video.isLive) {

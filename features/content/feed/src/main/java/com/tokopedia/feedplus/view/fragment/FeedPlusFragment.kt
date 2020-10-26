@@ -111,6 +111,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -210,6 +211,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_INTERESTPICK_DETAIL = 1234
         private const val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private const val DEFAULT_VALUE = -1
+        private const val OPEN_PLAY_CHANNEL = 1858
         const val REQUEST_LOGIN = 345
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -237,6 +239,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
+
+        private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
@@ -678,6 +683,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
                 adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
             }
+            OPEN_PLAY_CHANNEL -> {
+                val channelId = data.getStringExtra(EXTRA_PLAY_CHANNEL_ID)
+                val totalView = data.getStringExtra(EXTRA_PLAY_TOTAL_VIEW)
+                updatePlayWidgetTotalView(channelId, totalView)
+            }
             else -> {
             }
         }
@@ -923,8 +933,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onWidgetShouldRefresh(view: View) {
+    /**
+     * Play Widget
+     */
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         feedViewModel.doAutoRefreshPlayWidget()
+    }
+
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
     private fun playWidgetOnVisibilityChanged(
@@ -2065,5 +2083,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 userIdInt
         )
         feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)
+    }
+
+    private fun updatePlayWidgetTotalView(channelId: String?, totalView: String?) {
+        feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
     }
 }
