@@ -3,8 +3,8 @@ package com.tokopedia.tkpd.home.favorite.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -104,7 +104,7 @@ private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
     return false
 }
 
-private fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
+fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
     val sortValue = this[SearchApiConst.OB]
 
     return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT

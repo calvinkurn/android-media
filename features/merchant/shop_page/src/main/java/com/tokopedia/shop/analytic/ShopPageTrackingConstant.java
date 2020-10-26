@@ -92,6 +92,10 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
     public static final String CLICK_SHARE_DETAIL = "click share detail";
     public static final String CLICK_PRODUCT_LIST_TOGGLE = "click product list toggle";
+    public static final String CLICK_FILTER_CHIP = "click filter chip";
+    public static final String CLICK_FILTER_SHORT_BY = "click filter sort by - ";
+    public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
+    public static final String CLICK_FILTER_RATING = "click filter rating - ";
 
     //label
     public static final String CLICK_TAB = "click tab";

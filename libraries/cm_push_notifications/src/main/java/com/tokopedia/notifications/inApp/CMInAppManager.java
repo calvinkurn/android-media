@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -279,6 +280,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() != null) {
             Activity activity = currentActivity.get();
             activity.startActivity(RouteManager.getIntent(activity, appLink));
+            CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
             Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
         }
