@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.*
 
@@ -35,6 +34,8 @@ class PlayWidgetCoordinator(
         }
     }
 
+    private val autoPlayCoordinator = PlayWidgetAutoPlayCoordinator(scope, mainCoroutineDispatcher)
+
     private val autoRefreshCoordinator = PlayWidgetAutoRefreshCoordinator(
             scope,
             mainCoroutineDispatcher,
@@ -48,6 +49,7 @@ class PlayWidgetCoordinator(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        autoPlayCoordinator.onPause()
         autoRefreshCoordinator.onPause()
     }
 
@@ -57,6 +59,7 @@ class PlayWidgetCoordinator(
         if (currentModel is PlayWidgetConfigProvider) {
             autoRefreshCoordinator.configureAutoRefresh(currentModel.config)
         }
+        autoPlayCoordinator.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -71,7 +74,8 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetView) {
         mWidget = widget
         widget.setAnalyticListener(mAnalyticListener)
-        widget.setListener(mListener)
+        widget.setWidgetListener(mListener)
+        autoPlayCoordinator.controlWidget(widget)
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
@@ -81,7 +85,7 @@ class PlayWidgetCoordinator(
 
     fun setListener(listener: PlayWidgetListener?) {
         mListener = listener
-        mWidget?.setListener(mListener)
+        mWidget?.setWidgetListener(mListener)
     }
 
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
@@ -95,6 +99,7 @@ class PlayWidgetCoordinator(
 
         if (model is PlayWidgetConfigProvider) {
             autoRefreshCoordinator.configureAutoRefresh(model.config)
+            autoPlayCoordinator.configureAutoPlay(widget, model.config)
         }
     }
 

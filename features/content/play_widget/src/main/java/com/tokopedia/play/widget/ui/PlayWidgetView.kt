@@ -9,12 +9,13 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 08/10/20
  */
-class PlayWidgetView : LinearLayout, LifecycleObserver {
+class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -24,7 +25,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
-    private var mListener: PlayWidgetListener? = null
+    private var mWidgetListener: PlayWidgetListener? = null
+    private var mWidgetViewListener: PlayWidgetViewListener? = null
 
     override fun onViewRemoved(child: View?) {
         when (child) {
@@ -48,10 +50,17 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         }
     }
 
-    fun setListener(listener: PlayWidgetListener?) {
-        mListener = listener
+    fun setWidgetListener(listener: PlayWidgetListener?) {
+        mWidgetListener = listener
         when (val child = getFirstChild()) {
-            is PlayWidgetMediumView -> child.setListener(listener)
+            is PlayWidgetMediumView -> child.setWidgetListener(listener)
+        }
+    }
+
+    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetMediumView -> child.setWidgetViewListener(listener)
         }
     }
 
@@ -66,7 +75,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
         widgetView.setData(model)
-        widgetView.setListener(mListener)
+        widgetView.setWidgetListener(mWidgetListener)
+        widgetView.setWidgetViewListener(mWidgetViewListener)
     }
 
     private fun addPlaceholderView() {
