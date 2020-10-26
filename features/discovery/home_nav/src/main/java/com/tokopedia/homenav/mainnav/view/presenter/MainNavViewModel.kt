@@ -33,11 +33,10 @@ class MainNavViewModel @Inject constructor(
         private val getSaldoUseCase: Lazy<GetSaldoUseCase>,
         private val navProcessor: Lazy<NavCommandProcessor>,
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
-): BaseViewModel(baseDispatcher.get().io()), ResultCommandProcessor {
+): BaseViewModel(baseDispatcher.get().io()) {
 
-    init {
-        getMainNavData()
-    }
+    private var mainNavLiveDataController: MainNavLiveDataController
+
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
@@ -71,41 +70,10 @@ class MainNavViewModel @Inject constructor(
         get() = _shopResultListener
     private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
-    // ============================================================================================
-    // ================================ Live Data Controller ======================================
-    // ============================================================================================
-
-    override suspend fun updateWidget(visitable: HomeNavVisitable, position: Int) {
-        val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
-        if(newMainLiveData.getOrNull(position)?.id() == visitable.id()){
-            newMainLiveData[position] = visitable
-        } else {
-            newMainLiveData.indexOfFirst { it.id() == visitable.id() }.let { index ->
-                newMainLiveData[index] = visitable
-            }
-        }
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
+    init {
+        getMainNavData()
+        mainNavLiveDataController = MainNavLiveDataController(_mainNavLiveData, baseDispatcher)
     }
-
-    override suspend fun addWidget(visitable: HomeNavVisitable, position: Int) {
-    }
-
-    override suspend fun deleteWidget(visitable: HomeNavVisitable, position: Int) {
-    }
-
-    override suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
-        withContext(baseDispatcher.get().ui()) {
-            _mainNavLiveData.value = navigationDataModel
-        }
-    }
-
-    private fun logChannelUpdate(message: String){
-        if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
-    }
-
-    // ============================================================================================
-    // ================================ Live Data Controller ======================================
-    // ============================================================================================
 
     private fun getMainNavData() {
         launchCatchError(coroutineContext, block = {
@@ -163,7 +131,7 @@ class MainNavViewModel @Inject constructor(
                 getShopInfoUseCase.get().executeOnBackground()
             }
             accountData.shopName = result.shopCore.name
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
         }){
             _shopResultListener.postValue(Fail(it))
         }
@@ -175,7 +143,7 @@ class MainNavViewModel @Inject constructor(
                 getUserMembershipUseCase.get().executeOnBackground()
             }
             accountData.badge = result.tokopoints.status.tier.eggImageURL
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
         }){
             _membershipResultListener.postValue(Fail(it))
         }
@@ -188,7 +156,7 @@ class MainNavViewModel @Inject constructor(
             }
             accountData.ovoSaldo = result.cashBalance
             accountData.ovoPoint = result.pointBalance
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
         }){
             //post error get ovo with new livedata
             _ovoResultListener.postValue(Fail(it))
@@ -204,7 +172,7 @@ class MainNavViewModel @Inject constructor(
             val newAccountData = accountData.copy(
                     saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
             )
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, mainNavLiveDataController))
         }){
             _saldoResultListener.postValue(Fail(it))
         }

@@ -2,15 +2,21 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,9 +60,9 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun renderLoginState(element: AccountHeaderViewModel) {
         layoutLogin.visibility = View.VISIBLE
-        val userImage: ImageView = layoutLogin.findViewById(R.id.img_user_login)
-        val usrBadge: ImageView = layoutLogin.findViewById(R.id.usr_badge)
-        val usrOvoBadge: ImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
+        val userImage: AppCompatImageView = layoutLogin.findViewById(R.id.img_user_login)
+        val usrBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_badge)
+        val usrOvoBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
@@ -65,19 +71,23 @@ class AccountHeaderViewHolder(itemView: View,
 
         userImage.loadImageCircle(element.userImage)
         tvName.text = element.userName
-        tvOvo.setText(renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo))
-        usrBadge.loadImageCircle(element.badge)
-        usrOvoBadge.loadImageCircle(element.badge)
+        tvOvo.text = (MethodChecker.fromHtml(renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)))
+        usrBadge.loadImage(element.badge)
+        if (element.ovoSaldo.isNotEmpty()) {
+            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
+        } else if (element.saldo.isNotEmpty()) {
+            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
+        }
 
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
-            tvShopInfo.text = String.format(TEXT_MY_SHOP, element.shopName)
+            tvShopInfo.text = MethodChecker.fromHtml(itemView.context.getString(R.string.account_home_shop_name_card, element.shopName))
         }
     }
 
     private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
         return if (ovoString.isNotEmpty()) {
-            ovoString.plus(" ").plus(TEXT_DOT).plus(" ").plus(pointString).plus(TEXT_POINTS)
+            itemView.context.getString(R.string.text_ovo_saldo, ovoString, pointString)
         } else {
             saldoString
         }

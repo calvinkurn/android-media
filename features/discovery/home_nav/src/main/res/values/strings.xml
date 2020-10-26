@@ -10,5 +10,7 @@
 
     <string name="btn_login">Masuk</string>
     <string name="btn_register">Daftar</string>
-    <string name="text_ovo_saldo">%s \u2022 %s Points</string>
+    <string name="text_ovo_saldo">%s &#8226; %s Points</string>
+
+    <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<b><font color=#03AC0E>%1$s<font></b>]]></string>
 </resources>
