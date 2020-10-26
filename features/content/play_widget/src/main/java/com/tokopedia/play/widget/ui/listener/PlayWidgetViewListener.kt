@@ -8,5 +8,4 @@ import androidx.recyclerview.widget.RecyclerView
 interface PlayWidgetViewListener {
 
     fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView)
-
 }

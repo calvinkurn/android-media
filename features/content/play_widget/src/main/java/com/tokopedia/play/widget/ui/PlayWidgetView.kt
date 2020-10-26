@@ -35,6 +35,13 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         super.onViewRemoved(child)
     }
 
+    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
+        mWidgetViewListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetViewListener(listener)
+        }
+    }
+
     fun setModel(model: PlayWidgetUiModel) {
         when (model) {
             is PlayWidgetUiModel.Small -> addSmallView(model)
@@ -57,18 +64,12 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         }
     }
 
-    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        mWidgetViewListener = listener
-        when (val child = getFirstChild()) {
-            is PlayWidgetMediumView -> child.setWidgetViewListener(listener)
-        }
-    }
-
     private fun addSmallView(model: PlayWidgetUiModel.Small) {
         val widgetView = addWidgetView { PlayWidgetSmallView(context) }
 
         widgetView.setData(model)
         widgetView.setAnalyticListener(mAnalyticListener)
+        widgetView.setWidgetViewListener(mWidgetViewListener)
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {

@@ -46,7 +46,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
     private fun getSampleData(): List<PlayWidgetUiModel> {
         return listOf(
                 PlayWidgetUiModel.Placeholder,
-                PlayWidgetUiMock.getPlayWidgetSmall(this),
+                PlayWidgetUiMock.getPlayWidgetSmallVideo(this),
                 PlayWidgetUiMock.getPlayWidgetMedium(this)
         )
     }
