@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import dagger.Lazy
-import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,6 +29,10 @@ class MainNavViewModel @Inject constructor(
         private val navProcessor: Lazy<NavCommandProcessor>,
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()), ResultCommandProcessor {
+
+    init {
+        getMainNavData()
+    }
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
@@ -72,9 +75,7 @@ class MainNavViewModel @Inject constructor(
                 newMainLiveData[index] = visitable
             }
         }
-        withContext(baseDispatcher.get().ui()){
-            _mainNavLiveData.value = _mainNavLiveData.value?.copy(dataList = newMainLiveData)
-        }
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
     }
 
     override suspend fun addWidget(visitable: HomeNavVisitable, position: Int) {
@@ -97,7 +98,7 @@ class MainNavViewModel @Inject constructor(
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
-    fun getMainNavData() {
+    private fun getMainNavData() {
         launchCatchError(coroutineContext, block = {
            val result = getMainNavDataUseCase.get().executeOnBackground()
             _mainNavLiveData.postValue(result)
