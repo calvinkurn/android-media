@@ -121,7 +121,7 @@ class MainNavViewModel @Inject constructor(
             getUserBadgeImage(accountHeader)
             getOvoData(accountHeader)
             getSaldoData(accountHeader)
-            getShopData(accountHeader.shopId.toInt(), accountHeader)
+            getShopData(userSession.get().shopId.toInt(), accountHeader)
         }
     }
 

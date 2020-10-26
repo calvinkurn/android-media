@@ -76,14 +76,11 @@ class AccountHeaderViewHolder(itemView: View,
     }
 
     private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
-        var finalString = ""
-        finalString = if (ovoString.isNotEmpty()) {
-            finalString.plus(ovoString).plus(" ").plus(TEXT_DOT).plus(" ").plus(pointString).plus(TEXT_POINTS)
+        return if (ovoString.isNotEmpty()) {
+            ovoString.plus(" ").plus(TEXT_DOT).plus(" ").plus(pointString).plus(TEXT_POINTS)
         } else {
             saldoString
         }
-
-        return finalString
     }
 
     private fun renderNonLoginState() {
