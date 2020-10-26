@@ -45,6 +45,7 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
@@ -64,6 +65,7 @@ import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
+import com.tokopedia.sellerapp.utils.constants.ConstantsKt;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -82,10 +84,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -150,6 +151,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
+        List<String> excludeScreenList = new ArrayList<>();
+        excludeScreenList.add(ConstantsKt.SPLASH);
+        excludeScreenList.add(ConstantsKt.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(ConstantsKt.DEEPLINK_HANDLER_ACTIVITY);
+        CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
     }
 
