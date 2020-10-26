@@ -148,6 +148,171 @@ class PlayMediumAnalytic(
         )
     }
 
+//    fun impressionLeftPlayBanner(
+//            shopId: String,
+//            positionChannel: String,
+//            userId: String,
+//            bannerId: String,
+//            creativeName: String,
+//            position: String
+//    ){
+//        val eventMap = mapOf(
+//                EVENT to PROMO_VIEW,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to IMPRESSION_SGC_BANNER,
+//                EVENT_LABEL to "view on banner play - $shopId - $position",
+//                USER_ID to userId,
+//                ECOMMERCE to mapOf(
+//                        PROMO_VIEW to mapOf(
+//                                PROMOTIONS to listOf(
+//                                        mapOf(
+//                                                ID to bannerId,
+//                                                NAME to PLAY_LEFT_BANNER_NAME.format(positionChannel),
+//                                                CREATIVE to creativeName,
+//                                                POSITION to positionChannel
+//                                        )
+//                                )
+//                        )
+//                )
+//        ) as HashMap<String, Any>
+//        trackingQueue.putEETracking(eventMap)
+//    }
+
+//    fun clickLeftPlayBanner(
+//            shopId: String,
+//            positionChannel: String,
+//            userId: String,
+//            bannerId: String,
+//            creativeName: String,
+//            position: String
+//    ){
+//        val eventMap = mapOf(
+//                EVENT to PROMO_CLICK,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to CLICK,
+//                EVENT_LABEL to "click on banner play - $shopId - $position",
+//                USER_ID to userId,
+//                ECOMMERCE to mapOf(
+//                        PROMO_CLICK to mapOf(
+//                                PROMOTIONS to listOf(
+//                                        mapOf(
+//                                                ID to bannerId,
+//                                                NAME to PLAY_LEFT_BANNER_NAME.format(positionChannel),
+//                                                CREATIVE to creativeName,
+//                                                POSITION to positionChannel
+//                                        )
+//                                )
+//                        )
+//                )
+//        ) as HashMap<String, Any>
+//        trackingQueue.putEETracking(eventMap)
+//    }
+//
+//    fun impressionPlayBanner(
+//            shopId: String,
+//            channelId: String,
+//            positionWidget: Int,
+//            positionChannel: String,
+//            autoPlay: String,
+//            userId: String,
+//            bannerId: String,
+//            creativeName: String
+//
+//    ){
+//        val eventMap = mapOf(
+//                EVENT to PROMO_VIEW,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to IMPRESSION_SGC_CHANNEL,
+//                EVENT_LABEL to "view channel - $shopId - $channelId - $positionChannel - $positionWidget - $autoPlay",
+//                USER_ID to userId,
+//                ECOMMERCE to mapOf(
+//                        PROMO_VIEW to mapOf(
+//                                PROMOTIONS to listOf(
+//                                        mapOf(
+//                                                ID to bannerId,
+//                                                NAME to PLAY_SGC_NAME.format(positionChannel),
+//                                                CREATIVE to creativeName,
+//                                                POSITION to positionChannel
+//                                        )
+//                                )
+//                        )
+//                )
+//        ) as HashMap<String, Any>
+//        trackingQueue.putEETracking(eventMap)
+//    }
+//
+//    fun clickPlayBanner(
+//            shopId: String,
+//            channelId: String,
+//            positionWidget: Int,
+//            positionChannel: String,
+//            autoPlay: String,
+//            userId: String,
+//            bannerId: String,
+//            creativeName: String
+//
+//    ){
+//        val eventMap = mapOf(
+//                EVENT to PROMO_CLICK,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to CLICK,
+//                EVENT_LABEL to "click channel - $shopId - $channelId - $positionChannel - $positionWidget - $autoPlay",
+//                USER_ID to userId,
+//                ECOMMERCE to mapOf(
+//                        PROMO_CLICK to mapOf(
+//                                PROMOTIONS to listOf(
+//                                        mapOf(
+//                                                ID to bannerId,
+//                                                NAME to PLAY_SGC_NAME.format(positionChannel),
+//                                                CREATIVE to creativeName,
+//                                                POSITION to positionChannel
+//                                        )
+//                                )
+//                        )
+//                )
+//        ) as HashMap<String, Any>
+//        sendDataLayerEvent(eventMap)
+//    }
+//
+//    fun clickSeeMorePlayCarouselBanner(shopId: String, userId: String, widgetPosition: Int) {
+//        val eventMap = mapOf(
+//                EVENT to CLICK_SHOP_PAGE,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to CLICK_OTHER_CONTENT,
+//                EVENT_LABEL to "$shopId - $widgetPosition",
+//                USER_ID to userId,
+//                BUSINESS_UNIT to ADS_SOLUTION,
+//                CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+//        )
+//        sendDataLayerEvent(eventMap)
+//    }
+//
+//    fun clickSeeMorePlayCarousel(shopId: String, userId: String, widgetPosition: Int) {
+//        val eventMap = mapOf(
+//                EVENT to CLICK_SHOP_PAGE,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to CLICK_VIEW_ALL_PLAY,
+//                EVENT_LABEL to "$shopId - Tokopedia Play - $widgetPosition",
+//                USER_ID to userId,
+//                BUSINESS_UNIT to ADS_SOLUTION,
+//                CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+//        )
+//        sendDataLayerEvent(eventMap)
+//    }
+//
+//    fun clickRemindMePlayCarousel(channelId: String, userId: String, isRemoveRemindMe: Boolean, widgetPosition: Int, position: Int) {
+//        val eventMap = mapOf(
+//                EVENT to CLICK_SHOP_PAGE,
+//                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+//                EVENT_ACTION to if(isRemoveRemindMe) CLICK_REMOVE_REMIND_ME_PLAY else CLICK_REMIND_ME_PLAY,
+//                EVENT_LABEL to "$channelId - $position - $widgetPosition",
+//                USER_ID to userId,
+//                BUSINESS_UNIT to ADS_SOLUTION,
+//                CURRENT_SITE to TOKOPEDIA_MARKETPLACE
+//        )
+//        sendDataLayerEvent(eventMap)
+//    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_CATEGORY = "eventCategory"

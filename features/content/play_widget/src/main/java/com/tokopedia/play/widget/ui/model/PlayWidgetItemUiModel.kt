@@ -38,15 +38,16 @@ data class PlayWidgetSmallChannelUiModel(
 /**
  * Medium
  */
-sealed class PlayWidgetMediumItemUiModel(
-        val impress: ImpressHolder = ImpressHolder()
-) : PlayWidgetItemUiModel()
+sealed class PlayWidgetMediumItemUiModel: PlayWidgetItemUiModel()
 
 data class PlayWidgetMediumOverlayUiModel(
         val imageUrl: String,
         val appLink: String,
         val webLink: String
-) : PlayWidgetMediumItemUiModel()
+) : PlayWidgetMediumItemUiModel(), ImpressionableModel {
+
+    override val impressHolder = ImpressHolder()
+}
 
 data class PlayWidgetMediumBannerUiModel(
         val imageUrl: String,
@@ -68,4 +69,7 @@ data class PlayWidgetMediumChannelUiModel(
         val partner: PlayWidgetPartnerUiModel,
         val video: PlayWidgetVideoUiModel,
         val channelType: PlayWidgetChannelType
-) : PlayWidgetMediumItemUiModel()
+) : PlayWidgetMediumItemUiModel(), ImpressionableModel {
+
+    override val impressHolder = ImpressHolder()
+}

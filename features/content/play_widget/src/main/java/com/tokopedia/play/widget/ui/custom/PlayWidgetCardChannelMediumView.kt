@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -102,16 +101,12 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         setIconToggleReminder(model.activeReminder)
         reminderBadge.setOnClickListener {
             model.activeReminder = !model.activeReminder
-            mListener?.onToggleReminderClicked(model.channelId, model.activeReminder)
+            mListener?.onToggleReminderChannelClicked(model, model.activeReminder)
             setIconToggleReminder(model.activeReminder)
         }
 
         setOnClickListener {
-            if (model.channelType == PlayWidgetChannelType.Live || model.channelType ==  PlayWidgetChannelType.Vod) {
-                mListener?.onChannelClicked(model.appLink)
-            } else {
-                RouteManager.route(it.context, model.appLink)
-            }
+            mListener?.onChannelClicked(it, model)
         }
     }
 
@@ -147,9 +142,14 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     }
 
     interface Listener {
-        fun onChannelClicked(appLink: String)
-        fun onToggleReminderClicked(
-                channelId: String,
+
+        fun onChannelClicked(
+                view: View,
+                item: PlayWidgetMediumChannelUiModel
+        )
+
+        fun onToggleReminderChannelClicked(
+                item: PlayWidgetMediumChannelUiModel,
                 remind: Boolean
         )
     }

@@ -5,7 +5,7 @@ import android.view.View
 /**
  * Created by jegul on 13/10/20
  */
-interface PlayWidgetListener {
+interface PlayWidgetListener : PlayWidgetMediumListener {
 
     fun onWidgetShouldRefresh(view: View)
 }

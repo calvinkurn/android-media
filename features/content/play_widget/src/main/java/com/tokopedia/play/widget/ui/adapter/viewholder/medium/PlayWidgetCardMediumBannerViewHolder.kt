@@ -14,7 +14,8 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
  * Created by mzennis on 07/10/20.
  */
 class PlayWidgetCardMediumBannerViewHolder(
-        itemView: View
+        itemView: View,
+        private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var background: AppCompatImageView = itemView.findViewById(R.id.play_widget_banner)
@@ -26,11 +27,19 @@ class PlayWidgetCardMediumBannerViewHolder(
 
     private fun setupListener(item: PlayWidgetMediumBannerUiModel) {
         itemView.setOnClickListener {
+            listener.onBannerClicked(it)
             RouteManager.route(it.context, item.appLink)
         }
     }
 
     companion object {
         @LayoutRes val layoutRes = R.layout.item_play_widget_card_banner_medium
+    }
+
+    interface Listener {
+
+        fun onBannerClicked(
+                view: View
+        )
     }
 }

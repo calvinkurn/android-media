@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.adapter.viewholder.medium
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.custom.PlayWidgetCardChannelMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
@@ -18,12 +19,12 @@ class PlayWidgetCardMediumChannelViewHolder(
     private val playWidgetCardChannelMediumView: PlayWidgetCardChannelMediumView = itemView as PlayWidgetCardChannelMediumView
     private val widgetCardMediumListener = object : PlayWidgetCardChannelMediumView.Listener {
 
-        override fun onChannelClicked(appLink: String) {
-            listener.onChannelClicked(appLink)
+        override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
+            listener.onChannelClicked(view, item, adapterPosition)
         }
 
-        override fun onToggleReminderClicked(channelId: String, remind: Boolean) {
-            listener.onToggleReminderClicked(channelId, remind, adapterPosition)
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean) {
+            listener.onToggleReminderChannelClicked(item, remind, adapterPosition)
         }
     }
 
@@ -32,6 +33,9 @@ class PlayWidgetCardMediumChannelViewHolder(
     }
 
     fun bind(item: PlayWidgetMediumChannelUiModel) {
+        itemView.addOnImpressionListener(item.impressHolder) {
+            listener.onChannelImpressed(itemView, item, adapterPosition)
+        }
         playWidgetCardChannelMediumView.setModel(item)
     }
 
@@ -57,10 +61,20 @@ class PlayWidgetCardMediumChannelViewHolder(
 
     interface Listener {
 
-        fun onChannelClicked(appLink: String)
+        fun onChannelImpressed(
+                view: View,
+                item: PlayWidgetMediumChannelUiModel,
+                position: Int
+        )
 
-        fun onToggleReminderClicked(
-                channelId: String,
+        fun onChannelClicked(
+                view: View,
+                item: PlayWidgetMediumChannelUiModel,
+                position: Int
+        )
+
+        fun onToggleReminderChannelClicked(
+                item: PlayWidgetMediumChannelUiModel,
                 remind: Boolean,
                 position: Int
         )
