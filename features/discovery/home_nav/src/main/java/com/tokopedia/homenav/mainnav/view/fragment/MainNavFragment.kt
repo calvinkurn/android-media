@@ -33,7 +33,6 @@ import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
-
     @Inject
     lateinit var viewModel: MainNavViewModel
 
@@ -70,7 +69,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        viewModel.getMainNavData(getLoginState(), getUserSession().shopId.toInt())
+        viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
