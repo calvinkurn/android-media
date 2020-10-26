@@ -21,6 +21,7 @@ class PlayWidgetAutoPlayCoordinator(
 ) {
 
     private var autoPlayJob: Job? = null
+    private var maxAutoPlayAmount = MAX_AUTO_PLAY
 
     private val videoPlayerMap = mutableMapOf<PlayVideoPlayer, PlayVideoPlayerReceiver?>()
 
@@ -34,11 +35,11 @@ class PlayWidgetAutoPlayCoordinator(
 
             autoPlayJob?.cancel()
             autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-                delay(150)
+                delay(FAKE_MAX_DELAY)
                 val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
                         visibleCards = visibleCards,
                         itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                        maxAutoPlay = FAKE_MAX_AUTOPLAY
+                        maxAutoPlay = maxAutoPlayAmount
                 )
 
                 videoPlayerMap.entries.forEach {
@@ -78,14 +79,15 @@ class PlayWidgetAutoPlayCoordinator(
 
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
         if (config.autoPlay) {
+            maxAutoPlayAmount = config.autoPlayAmount
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
         }
 
-        if (videoPlayerMap.size < FAKE_MAX_AUTOPLAY) {
+        if (videoPlayerMap.size < maxAutoPlayAmount) {
             videoPlayerMap.putAll(
-                    List(FAKE_MAX_AUTOPLAY - videoPlayerMap.size) {
+                    List(maxAutoPlayAmount - videoPlayerMap.size) {
                         PlayVideoPlayer(widget.context) to null
                     }
             )
@@ -121,6 +123,8 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val FAKE_MAX_AUTOPLAY = 3
+        private const val MAX_AUTO_PLAY = 3
+
+        private const val FAKE_MAX_DELAY = 3000L // set delay before play to 3s
     }
 }
