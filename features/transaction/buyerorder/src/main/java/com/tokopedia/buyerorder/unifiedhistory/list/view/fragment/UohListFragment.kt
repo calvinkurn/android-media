@@ -309,9 +309,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @SuppressLint("SimpleDateFormat")
     private fun setDefaultDate() {
-        defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-        defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd")
+        val outputFormat = SimpleDateFormat("d MMM yyyy")
+        val defaultStartDateLimitDate = inputFormat.parse(orderList.dateLimit)
+        defaultStartDate = orderList.dateLimit
+        defaultStartDate = orderList.dateLimit
+        defaultStartDateStr = outputFormat.format(defaultStartDateLimitDate)
         defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
         defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
         paramUohOrder.createTimeStart = defaultStartDate
@@ -350,7 +356,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         resetFilter()
                     }
 
-                    view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
                     userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
@@ -601,11 +606,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty())) {
+        val typeDate = if (isReset || isFirstLoad) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -695,6 +701,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val outputFormat = SimpleDateFormat("d MMM yyyy")
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
+            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
             showToaster(resetMsg, Toaster.TYPE_NORMAL)
             resetFilter()
@@ -867,7 +874,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         when {
             searchBarIsNotEmpty -> {
                 emptyStatus = context?.let { context ->
-                    view?.let { UohUtils.hideKeyBoard(context, it) }
                     ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
                         UohEmptyState(drawable,
                                 resources.getString(R.string.uoh_search_empty),
@@ -951,7 +957,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         var labelTrackingDate = ""
                         if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
-                                paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                                paramUohOrder.createTimeStart = orderList.dateLimit
                             }
                             if (paramUohOrder.createTimeEnd.isEmpty()) {
                                 paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
@@ -1143,6 +1149,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetResendEmail?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @SuppressLint("SimpleDateFormat")
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         isFilterClicked = true
         tempFilterType = filterType
@@ -1175,14 +1183,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
-                            paramUohOrder.createTimeStart = startDate
+                            paramUohOrder.createTimeStart = orderList.dateLimit
                             paramUohOrder.createTimeEnd = endDate
 
                         }
                         option.toInt() == 3 -> {
-                            val startDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+                            val inputFormat = SimpleDateFormat("yyyy-MM-dd")
+                            val outputFormat = SimpleDateFormat("d MMM yyyy")
+                            val startDateStrInput = inputFormat.parse(orderList.dateLimit)
+                            val startDateStr = outputFormat.format(startDateStrInput)
                             val endDateStr = Date().toFormattedString("dd MMM yyyy")
                             bottomSheetOption?.apply {
                                 cl_choose_date?.visible()
@@ -1262,7 +1272,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (paramUohOrder.createTimeStart.isNotEmpty()) {
                     paramUohOrder.createTimeStart.split('-')
                 } else {
-                    val chooseStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                    val chooseStartDate = orderList.dateLimit
                     chooseStartDate.split('-')
                 }
             } else {
