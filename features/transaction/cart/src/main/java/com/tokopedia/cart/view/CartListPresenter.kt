@@ -634,7 +634,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
 
             compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
-                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
+                    ?.subscribe(AddCartToWishlistSubscriber(it, this, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
         }
     }
 

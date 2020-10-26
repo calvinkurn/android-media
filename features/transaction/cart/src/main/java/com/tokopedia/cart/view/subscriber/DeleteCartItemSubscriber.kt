@@ -48,7 +48,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                     view.showPromoCheckoutStickyButtonLoading()
                     presenter.doUpdateCartAndValidateUse(params)
                 }
-                view.updateCartCounter(deleteCartData.cartCounter)
+                presenter.processUpdateCartCounter()
             } else {
                 view.hideProgressLoading()
                 view.showToastMessageRed(deleteCartData.message ?: "")
