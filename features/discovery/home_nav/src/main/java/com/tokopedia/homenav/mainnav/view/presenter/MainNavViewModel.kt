@@ -120,6 +120,7 @@ class MainNavViewModel @Inject constructor(
             val accountHeader = it as AccountHeaderViewModel
             getUserBadgeImage(accountHeader)
             getOvoData(accountHeader)
+            getSaldoData(accountHeader)
             getShopData(accountHeader.shopId.toInt(), accountHeader)
         }
     }
@@ -198,22 +199,16 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    fun getSaldoData() {
+    fun getSaldoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getSaldoUseCase.get().executeOnBackground()
             }
 
-            val dataList =  _mainNavLiveData.value?.dataList ?: listOf()
-            val accountData = dataList.withIndex().find {
-                (_, visitable) -> visitable is AccountHeaderViewModel
-            }
-            (accountData?.value as AccountHeaderViewModel).let {
-                it.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
-            }
-            navProcessor.get().sendWithQueueMethod(UpdateNavigationData(
-                    _mainNavLiveData.value!!, this@MainNavViewModel
-            ))
+            val newAccountData = accountData.copy(
+                    saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
         }){
             _saldoResultListener.postValue(Fail(it))
         }
