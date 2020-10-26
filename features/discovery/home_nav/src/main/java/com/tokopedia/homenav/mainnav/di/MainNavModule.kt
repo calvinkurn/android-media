@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
@@ -26,7 +28,9 @@ class MainNavModule {
 
     @MainNavScope
     @Provides
-    fun provideMainNavDataFactory(userSession: UserSessionInterface): MainNavDataFactory = MainNavDataFactoryImpl(userSession)
+    fun provideMainNavDataFactory(@ApplicationContext context: Context,
+                                  userSession: UserSessionInterface): MainNavDataFactory
+            = MainNavDataFactoryImpl(context, userSession)
 
     @MainNavScope
     @Provides

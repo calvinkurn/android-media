@@ -1,7 +1,5 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +30,6 @@ import kotlinx.android.synthetic.main.fragment_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
-
 
     @Inject
     lateinit var viewModel: MainNavViewModel
