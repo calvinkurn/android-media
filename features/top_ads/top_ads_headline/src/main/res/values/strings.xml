@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">top_ads_headline</string>
+    <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
+    <string name="topads_headline_ad_name_header">Nama Iklan Headline</string>
+    <string name="topads_headline_ad_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
+    <string name="topads_headline_ad_name_hint">Masukkan nama iklan</string>
+    <string name="topads_headline_continue">Lanjutkan</string>
 </resources>

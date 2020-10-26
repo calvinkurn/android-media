@@ -47,7 +47,7 @@ class TopAdsTypeSelectionActivity : BaseSimpleActivity() {
             card_title.text = getString(R.string.topads_dashboard_ad_headline_type_selection_title)
             card_subtitle.text = getString(R.string.topads_dashboard_ad_headline_type_selection_subtitle)
             setOnClickListener{
-
+                RouteManager.route(this@TopAdsTypeSelectionActivity, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS)
             }
         }
     }

@@ -45,6 +45,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 project.ext {

@@ -1,16 +1,41 @@
 package com.tokopedia.top_ads_headline.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
+import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
+import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_ad_details.*
+import javax.inject.Inject
 
-class AdDetailsFragment : Fragment() {
+class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private lateinit var adDetailsViewModel: AdDetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initiateStepperModel()
+        adDetailsViewModel = ViewModelProvider(this, viewModelFactory).get(AdDetailsViewModel::class.java)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -19,9 +44,90 @@ class AdDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_ad_details, container, false)
     }
 
+    override fun getScreenName(): String {
+        return AdDetailsFragment::class.java.simpleName
+    }
+
+    override fun initInjector() {
+        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(): Fragment =
                 AdDetailsFragment()
     }
+
+    override fun initiateStepperModel() {
+        stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
+    }
+
+    override fun saveStepperModel(stepperModel: CreateHeadlineAdsStepperModel) {
+
+    }
+
+    override fun gotoNextPage() {
+        stepperModel?.groupName = headline_ad_name_input.textFieldInput.text.toString()
+        stepperListener?.goToNextPage(stepperModel)
+    }
+
+    override fun populateView() {
+        if (activity is HeadlineStepperActivity) {
+            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_ad_detail_fragment_label))
+        }
+        btn_submit.setOnClickListener {
+            if(headline_ad_name_input.textFieldInput.text.toString().isBlank()){
+                onError("Nama iklan harus diisi")
+            }else{
+                validateGroup(headline_ad_name_input.textFieldInput.text.toString())
+            }
+        }
+        headline_ad_name_input?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                error_text?.visibility = View.GONE
+                btn_submit?.isEnabled = s.toString().trim().isNotEmpty()
+            }
+            })
+        headline_ad_name_input?.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
+            }
+            Utils.dismissKeyboard(context, v)
+            true
+        }
+    }
+
+    private fun validateGroup(s: String?) {
+        s?.let {
+            adDetailsViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+        }
+    }
+
+    private fun onError(errorMsg:String) {
+        errorTextVisibility(true)
+        error_text?.text = errorMsg
+    }
+
+    private fun onSuccess() {
+        errorTextVisibility(false)
+        gotoNextPage()
+    }
+
+    private fun errorTextVisibility(visible: Boolean) {
+        if (visible) {
+            error_text?.visibility = View.VISIBLE
+            btn_submit?.isEnabled = false
+        } else {
+            error_text?.visibility = View.GONE
+            btn_submit?.isEnabled = true
+        }
+    }
+
 }
