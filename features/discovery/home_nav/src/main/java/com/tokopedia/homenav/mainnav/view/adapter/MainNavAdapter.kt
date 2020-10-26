@@ -6,8 +6,11 @@ import com.tokopedia.homenav.base.diffutil.HomeNavAdapter
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 
-class MainNavAdapter(typeFactory: MainNavTypeFactory) : HomeNavAdapter<MainNavTypeFactory>() {
+class MainNavAdapter(val typeFactory: MainNavTypeFactory) : HomeNavAdapter<MainNavTypeFactory>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
-        TODO("Not yet implemented")
+        return typeFactory.createViewHolder(onCreateViewItem(parent, viewType), viewType)
     }
+
+    override fun getItemViewType(position: Int): Int = currentList.getOrNull(position)?.type(typeFactory) ?: -1
 }

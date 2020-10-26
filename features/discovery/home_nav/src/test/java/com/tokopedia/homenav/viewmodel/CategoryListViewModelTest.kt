@@ -50,7 +50,7 @@ class CategoryListViewModelTest {
 
             viewModel = CategoryListViewModel(getCategoryListUseCase, rule.testDispatcher)
 
-            viewModel.getCategory()
+//            viewModel.getCategory()
 
             rule.testDispatcher.resumeDispatcher()
 
@@ -70,7 +70,7 @@ class CategoryListViewModelTest {
 
             viewModel = CategoryListViewModel(getCategoryListUseCase, rule.testDispatcher)
 
-            viewModel.getCategory()
+//            viewModel.getCategory()
 
             rule.testDispatcher.resumeDispatcher()
 
