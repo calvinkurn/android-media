@@ -113,4 +113,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             outOfStockOverlay?.gone()
         }
     }
+
+    override fun getThreeDotsButton(): View? = imageThreeDots
 }

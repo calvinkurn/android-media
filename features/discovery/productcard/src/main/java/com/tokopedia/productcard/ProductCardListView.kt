@@ -130,6 +130,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear(context)
     }
 
+    override fun getThreeDotsButton(): View? = imageThreeDots
+
 
 
 

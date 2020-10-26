@@ -89,7 +89,7 @@ abstract class TopAdsDashboardStatisticFragment : TkpdBaseV4Fragment() {
     }
 
     fun updateDataStatistic(dataStatistic: DataStatistic?) {
-        if (dataStatistic == null) {
+        if (dataStatistic == null || dataStatistic.cells.isEmpty()) {
             return
         }
         this.summary = dataStatistic.summary
