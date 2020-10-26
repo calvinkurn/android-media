@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.common.config
 
-import com.tokopedia.inbox.common.RoleType
+import com.tokopedia.inboxcommon.RoleType
 
 object InboxConfig {
 

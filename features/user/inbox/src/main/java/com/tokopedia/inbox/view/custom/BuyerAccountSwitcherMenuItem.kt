@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.RoleType
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 
 class BuyerAccountSwitcherMenuItem : AccountSwitcherMenuItem {

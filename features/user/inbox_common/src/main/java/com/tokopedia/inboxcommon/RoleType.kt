@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.common
+package com.tokopedia.inboxcommon
 
 import androidx.annotation.IntDef
 

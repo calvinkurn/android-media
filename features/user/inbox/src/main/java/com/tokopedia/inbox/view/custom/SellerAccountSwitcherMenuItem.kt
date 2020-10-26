@@ -2,7 +2,7 @@ package com.tokopedia.inbox.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
-import com.tokopedia.inbox.common.RoleType
+import com.tokopedia.inboxcommon.RoleType
 
 class SellerAccountSwitcherMenuItem : AccountSwitcherMenuItem {
 

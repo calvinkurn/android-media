@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.RoleType
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.view.custom.AccountSwitcherMenuItem
