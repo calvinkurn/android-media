@@ -28,7 +28,6 @@ buildscript {
         jcenter()
     }
     dependencies{
-        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }

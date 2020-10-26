@@ -271,15 +271,6 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        if(gcmHandler == null){
-            return gcmHandler = new GCMHandler(this);
-        }else {
-            return gcmHandler;
-        }
-    }
-
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
