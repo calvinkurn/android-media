@@ -228,6 +228,7 @@ ext {
             settingnotif                    : ":features:user:settingnotif",
             topchat                         : ":features:user:topchat",
             inbox                           : ":features:user:inbox",
+            inboxCommon                     : ":features:user:inbox_common",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
             seamlesslogin                   : ":features:user:seamless_login",
