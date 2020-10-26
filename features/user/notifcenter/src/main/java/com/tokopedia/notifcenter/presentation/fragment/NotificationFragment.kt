@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.inboxcommon.InboxCommonFragment
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -25,6 +26,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var rv: VerticalRecyclerView? = null
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
     }
@@ -38,9 +41,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_notification, container, false).also {
+        return inflater.inflate(R.layout.fragment_notification, container, false)?.also {
+            initView(it)
             setupObserver()
+            setupRecyclerView()
         }
+    }
+
+    private fun initView(view: View) {
+        rv = view.findViewById(R.id.recycler_view)
     }
 
     private fun setupObserver() {
@@ -49,6 +58,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 renderList(it.data, false)
             }
         })
+    }
+
+    private fun setupRecyclerView() {
+        rv?.clearItemDecoration()
     }
 
     override fun onRoleChanged(role: Int) {
