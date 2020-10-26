@@ -69,7 +69,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initClickListener()
-        viewModel.getMainNavData(getLoginState(), getUserSession().shopId.toInt())
+        viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -153,22 +153,5 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
-    }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 }
