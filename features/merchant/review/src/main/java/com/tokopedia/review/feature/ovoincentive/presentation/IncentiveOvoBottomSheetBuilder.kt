@@ -22,6 +22,9 @@ import kotlinx.android.synthetic.main.incentive_ovo_tnc_bottom_sheet.view.*
 object IncentiveOvoBottomSheetBuilder {
 
     private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
+    private const val ADD_RATING_URL = "https://ecs7.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png"
+    private const val ADD_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png"
+    private const val ADD_REVIEW_URL = "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png"
 
     fun getTermsAndConditionsBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, incentiveOvoListener: IncentiveOvoListener, category: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
@@ -118,6 +121,9 @@ object IncentiveOvoBottomSheetBuilder {
                     }
                     text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
                 }
+                incentive_ovo_add_rating.loadImage(ADD_RATING_URL)
+                incentive_ovo_add_image.loadImage(ADD_IMAGE_URL)
+                incentive_ovo_add_review.loadImage(ADD_REVIEW_URL)
             }
             view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
             val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList

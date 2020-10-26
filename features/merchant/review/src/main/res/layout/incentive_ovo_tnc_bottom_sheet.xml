@@ -49,8 +49,8 @@
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/layout_lvl7"
+            android:scaleType="center"
             app:layout_constraintEnd_toStartOf="@id/incentive_ovo_add_image"
-            app:srcCompat="@drawable/ic_add_rating"
             app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -69,9 +69,9 @@
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/layout_lvl3"
+            android:scaleType="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_take_photo"
             app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -92,8 +92,8 @@
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginTop="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/layout_lvl7"
+            android:scaleType="center"
             app:layout_constraintStart_toEndOf="@id/incentive_ovo_add_image"
-            app:srcCompat="@drawable/ic_write_review"
             app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
