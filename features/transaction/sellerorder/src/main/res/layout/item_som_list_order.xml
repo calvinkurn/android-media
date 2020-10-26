@@ -64,9 +64,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvSomListOrderStatus"
             app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus"
-            app:typographyType="small" /> <!--tanya, ini ga respon tah? malah respons-->
+            app:typographyType="small" />
 
-        <!--tanya kenapa ini labelnya di ui itu ga sesuai sama unify-->
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelSomListDeadline"
             android:layout_width="wrap_content"
@@ -154,6 +153,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:lines="1"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListCourierLabel"
             app:layout_constraintEnd_toStartOf="@id/btnQuickAction"

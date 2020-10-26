@@ -1,51 +1,34 @@
 package com.tokopedia.sellerorder.list.presentation.bottomsheets
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.SomComponentInstance
-import com.tokopedia.sellerorder.list.di.bulkaccept.DaggerSomBulkAcceptOrderComponent
-import com.tokopedia.sellerorder.list.di.bulkaccept.SomBulkAcceptOrderComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkAcceptOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderProductUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListBulkAcceptOrderViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_som_list_bulk_accept_order.*
-import javax.inject.Inject
 
-class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify(), HasComponent<SomBulkAcceptOrderComponent> {
-
-    @Inject
-    lateinit var viewModel: SomListBulkAcceptOrderViewModel
+class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
 
     private val typeFactory: SomListBulkAcceptOrderTypeFactory = SomListBulkAcceptOrderTypeFactory()
     private val adapter = BaseListAdapter<SomListBulkAcceptOrderProductUiModel, SomListBulkAcceptOrderTypeFactory>(typeFactory)
     private val orders: ArrayList<SomListOrderUiModel> = arrayListOf()
 
     private var listener: SomListBulkAcceptOrderBottomSheetListener? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        inject()
-    }
+    private var childViews: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         allowDismiss()
         setTitle(getString(R.string.som_list_bulk_accept_order_bottom_sheet_title))
-        val childViews = View.inflate(context, R.layout.bottomsheet_som_list_bulk_accept_order, null)
+        childViews = View.inflate(context, R.layout.bottomsheet_som_list_bulk_accept_order, null)
         setChild(childViews)
     }
 
@@ -53,19 +36,6 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify(), HasComponent<SomBu
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         setBulkAcceptOrderButtonClickListener()
-        observeBulkAcceptOrderStatusResult()
-    }
-
-    override fun getComponent(): SomBulkAcceptOrderComponent? {
-        return activity?.let {
-            DaggerSomBulkAcceptOrderComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(it.application))
-                    .build()
-        }
-    }
-
-    private fun inject() {
-        component?.inject(this)
     }
 
     private fun setRecyclerView() {
@@ -83,24 +53,8 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify(), HasComponent<SomBu
         btnBulkAccept.setOnClickListener {
             btnBulkAccept.isLoading = true
             preventDismiss()
-            viewModel.bulkAcceptOrder(orders.map { it.orderId })
+            listener?.onBulkAcceptOrderButtonClicked()
         }
-    }
-
-    private fun observeBulkAcceptOrderStatusResult() {
-        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val successCount = result.data.data.success
-                    val failedCount = result.data.data.totalOrder - successCount
-                    listener?.onBulkAcceptOrderCompleted(successCount, failedCount)
-                }
-                is Fail -> {
-                    listener?.onBulkAcceptOrderCompleted(0, orders.size)
-                }
-            }
-            dismiss()
-        })
     }
 
     private fun preventDismiss() {
@@ -139,8 +93,14 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify(), HasComponent<SomBu
         this.listener = listener
     }
 
+    fun onBulkAcceptOrderFailed() {
+        btnBulkAccept.isLoading = false
+    }
+
+    fun getChildViews() = childViews
+
     interface SomListBulkAcceptOrderBottomSheetListener {
-        fun onBulkAcceptOrderCompleted(totalSuccess: Int, totalFailed: Int)
+        fun onBulkAcceptOrderButtonClicked()
     }
 
     class SellerHomeTooltipItemDivider(private val mDivider: Drawable) : RecyclerView.ItemDecoration() {

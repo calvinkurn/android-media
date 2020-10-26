@@ -41,6 +41,7 @@ import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
 import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkAcceptOrderBottomSheet
+import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkActionDialog
 import com.tokopedia.sellerorder.list.presentation.filtertabs.SomListSortFilterTab
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
@@ -118,6 +119,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var filterStatusId: Int = 0
     private var tabActive: String = ""
     private var somListBulkAcceptOrderBottomSheet: SomListBulkAcceptOrderBottomSheet? = null
+    private var bulkAcceptOrderDialog: SomListBulkActionDialog? = null
     private var tickerPagerAdapter: TickerPagerAdapter? = null
     private var userNotAllowedDialog: DialogUnify? = null
     private var errorToaster: Snackbar? = null
@@ -168,6 +170,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeRejectCancelRequest()
         observeRejectOrder()
         observeEditAwb()
+        observeBulkAcceptOrder()
+        observeBulkAcceptOrderStatus()
     }
 
     private fun Throwable.showErrorToaster() {
@@ -179,11 +183,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showNoInternetConnectionToaster() {
-        showToasterError(getString(R.string.som_error_message_no_internet_connection))
+        showToasterError(view, getString(R.string.som_error_message_no_internet_connection))
     }
 
     private fun showServerErrorToaster() {
-        showToasterError(getString(R.string.som_error_message_server_fault))
+        showToasterError(view, getString(R.string.som_error_message_server_fault))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -296,6 +300,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadFilters(false)
         if (shouldReloadOrderListImmediately()) {
             refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
         }
     }
 
@@ -313,6 +319,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadFilters(false)
         if (shouldReloadOrderListImmediately()) {
             refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
         }
     }
 
@@ -322,6 +330,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadFilters(false)
         if (shouldReloadOrderListImmediately()) {
             refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
         }
     }
 
@@ -335,6 +345,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 loadFilters(false)
                 if (shouldReloadOrderListImmediately()) {
                     refreshOrderList()
+                } else {
+                    getSwipeRefreshLayout(view)?.isRefreshing = true
                 }
             }
         }, onError = {
@@ -357,7 +369,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onCheckBoxClickedWhenDisabled() {
-        showCommonToaster(getString(R.string.som_list_order_cannot_be_selected), Toaster.TYPE_ERROR)
+        showCommonToaster(view, getString(R.string.som_list_order_cannot_be_selected), Toaster.TYPE_ERROR)
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
@@ -428,15 +440,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    override fun onBulkAcceptOrderCompleted(totalSuccess: Int, totalFailed: Int) {
-        loadFilters()
-        if (shouldReloadOrderListImmediately()) {
-            loadOrderList()
+    override fun onBulkAcceptOrderButtonClicked() {
+        viewModel.bulkAcceptOrder(getSelectedOrderIds())
+    }
+
+    private fun showBulkAcceptOrderDialog(orderCount: Int) {
+        context?.let { context ->
+            if (bulkAcceptOrderDialog == null) {
+                bulkAcceptOrderDialog = SomListBulkActionDialog(context).apply {
+                    init()
+                }
+            }
+            showOnProgressAcceptAllOrderDialog(orderCount)
+            bulkAcceptOrderDialog?.show()
         }
-        val stringBuilder = StringBuilder()
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 } ?: "")
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 } ?: "")
-        showCommonToaster(stringBuilder.toString())
     }
 
     private fun inject() {
@@ -475,7 +492,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
                     }
                 }
-                is Fail -> showToasterError()
+                is Fail -> showToasterError(view)
             }
         })
     }
@@ -486,7 +503,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Success -> renderTickers(result.data)
                 is Fail -> {
                     tickerSomList.gone()
-                    showToasterError()
+                    showToasterError(view)
                 }
             }
         })
@@ -520,7 +537,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
                 is Fail -> {
                     showWaitingPaymentOrderListMenu()
-                    showToasterError()
+                    showToasterError(view)
                 }
             }
         })
@@ -539,7 +556,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         viewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> onAcceptOrderSuccess(result.data.acceptOrder)
-                is Fail -> showToasterError(getString(R.string.som_list_failed_accept_order))
+                is Fail -> showToasterError(view, getString(R.string.som_list_failed_accept_order))
             }
         })
     }
@@ -553,7 +570,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         handleRejectOrderResult(rejectOrderResponse)
                         onActionCompleted()
                     } else {
-                        showToasterError(rejectOrderResponse.message.first())
+                        showToasterError(view, rejectOrderResponse.message.first())
                     }
                 }
                 is Fail -> {
@@ -569,16 +586,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Success -> {
                     val successEditAwbResponse = it.data
                     if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
-                        showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                        showCommonToaster(view, successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
                         onActionCompleted()
                     } else {
-                        showToasterError(getString(R.string.global_error))
+                        showToasterError(view, getString(R.string.global_error))
                     }
                 }
                 is Fail -> {
                     val message = it.throwable.message.toString()
                     if (message.isNotEmpty()) {
-                        showToasterError(message)
+                        showToasterError(view, message)
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -592,7 +609,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             when (result) {
                 is Success -> {
                     onActionCompleted()
-                    showCommonToaster(result.data.rejectCancelRequest.message)
+                    showCommonToaster(view, result.data.rejectCancelRequest.message)
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
@@ -600,6 +617,149 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
             }
         })
+    }
+
+    private fun observeBulkAcceptOrder() {
+        viewModel.bulkAcceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    if (somListBulkAcceptOrderBottomSheet?.isVisible == true) {
+                        somListBulkAcceptOrderBottomSheet?.dismiss()
+                    }
+                    showBulkAcceptOrderDialog(getSelectedOrderIds().size)
+                }
+                is Fail -> {
+                    if (somListBulkAcceptOrderBottomSheet?.isVisible == true) {
+                        somListBulkAcceptOrderBottomSheet?.onBulkAcceptOrderFailed()
+                        showCommonToaster(somListBulkAcceptOrderBottomSheet?.getChildViews(), "Terjadi kesalahan.", Toaster.TYPE_ERROR)
+                    } else {
+                        result.throwable.showErrorToaster()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeBulkAcceptOrderStatus() {
+        /*
+            there is 4 possibility in this process
+            1. All order confirmed as accepted because we receive a response which saying that m order
+               is accepted from n total order where m == n
+            2. Some order is confirmed as accepted and the rest might already accepted or not because
+               after getting response which saying that m order from n total order is accepted where
+               m < n but after receiving that response, the next 19 times check status is always
+               failed (no internet or backend problem)
+            3. Some order is accepted and some order is not yet accepted because we receive a response
+               after check status for 20 times and the response is saying that m order is accepted from n
+               total order where m < n
+            4. No order is processed because 20th response is saying that 0 success and 0 failed
+            5. Unknown state because check status always failed
+         */
+        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                null -> {
+                    showFailedAcceptAllOrderDialog(getSelectedOrderIds().size, true) // fifth case
+                }
+                is Success -> {
+                    val orderCount = result.data.data.totalOrder
+                    val successCount = result.data.data.success
+                    val failedCount = orderCount - successCount
+                    bulkAcceptOrderDialog?.apply {
+                        if (successCount > 0) {
+                            if (failedCount == 0) {
+                                showSuccessAcceptAllOrderDialog(successCount)
+                            } else {
+                                showPartialSuccessAcceptAllOrderDialog(successCount, failedCount, result.data.data.shouldRecheck) // first and second case
+                            }
+                        } else if (failedCount > 0) {
+                            showFailedAcceptAllOrderDialog(orderCount, false) // third case
+                        } else {
+                            showFailedAcceptAllOrderDialog(orderCount, true) // fourth case
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            hidePrimaryButton()
+            hideSecondaryButton()
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_on_progress, orderCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_on_progress))
+        }
+    }
+
+    private fun showSuccessAcceptAllOrderDialog(successCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_success))
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_success)) {
+                dismiss()
+                toggleBulkAction()
+                toggleBulkActionButtonVisibility()
+                toggleBulkActionCheckboxVisibility()
+                loadFilters()
+                if (shouldReloadOrderListImmediately()) {
+                    loadOrderList()
+                } else {
+                    getSwipeRefreshLayout(view)?.isRefreshing = true
+                }
+            }
+            hideSecondaryButton()
+        }
+    }
+
+    private fun showPartialSuccessAcceptAllOrderDialog(successCount: Int, failedCount: Int, canRetry: Boolean) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_success, successCount, failedCount))
+            if (canRetry) {
+                setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success_can_retry, failedCount))
+                setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_can_retry)) {
+                    showOnProgressAcceptAllOrderDialog(successCount + failedCount)
+                    viewModel.retryGetBulkAcceptOrderStatus()
+                }
+                setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry)) { dismiss() }
+            } else {
+                setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success_cant_retry, failedCount))
+                setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry)) {
+                    dismiss()
+                    toggleBulkAction()
+                    toggleBulkActionButtonVisibility()
+                    toggleBulkActionCheckboxVisibility()
+                    loadFilters()
+                    if (shouldReloadOrderListImmediately()) {
+                        loadOrderList()
+                    } else {
+                        getSwipeRefreshLayout(view)?.isRefreshing = true
+                    }
+                }
+                setSecondaryButton("")
+            }
+        }
+    }
+
+    private fun showFailedAcceptAllOrderDialog(orderCount: Int, shouldRetryCheck: Boolean) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_failed, orderCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_failed))
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_failed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                if (shouldRetryCheck) {
+                    viewModel.retryGetBulkAcceptOrderStatus()
+                } else {
+                    viewModel.bulkAcceptOrder(getSelectedOrderIds())
+                }
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed)) { dismiss() }
+        }
+    }
+
+    private fun getSelectedOrderIds(): List<String> {
+        return adapter.data.filterIsInstance<SomListOrderUiModel>()
+                .filter { it.isChecked }
+                .map { it.orderId }
     }
 
     private fun onActionCompleted() {
@@ -663,9 +823,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun onAcceptOrderSuccess(acceptOrderResponse: SomAcceptOrderResponse.Data.AcceptOrder) {
         if (acceptOrderResponse.success == 1) {
             onActionCompleted()
-            showCommonToaster(acceptOrderResponse.listMessage.firstOrNull())
+            showCommonToaster(view, acceptOrderResponse.listMessage.firstOrNull())
         } else {
-            showToasterError(acceptOrderResponse.listMessage.firstOrNull().orEmpty())
+            showToasterError(view, acceptOrderResponse.listMessage.firstOrNull().orEmpty())
         }
     }
 
@@ -673,7 +833,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         tickerSomList.setDescriptionClickEvent(this)
         searchBarSomList.setListener(this)
         searchBarSomList.setResetListener(this)
-        globalErrorSomList.setActionClickListener { loadInitialData() }
+        globalErrorSomList.setActionClickListener {
+            globalErrorSomList.gone()
+            loadInitialData()
+        }
 
         tvSomListBulk.setOnClickListener {
             toggleBulkAction()
@@ -740,7 +903,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 data.hasExtra(SomConsts.RESULT_SET_DELIVERED) -> {
                     data.getStringExtra(SomConsts.RESULT_SET_DELIVERED)?.let { message ->
                         onActionCompleted()
-                        showCommonToaster(message)
+                        showCommonToaster(view, message)
                     }
                 }
             }
@@ -749,7 +912,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun handleRejectOrderResult(resultRejectOrder: SomRejectOrderResponse.Data.RejectOrder) {
         onActionCompleted()
-        showCommonToaster(resultRejectOrder.message.firstOrNull())
+        showCommonToaster(view, resultRejectOrder.message.firstOrNull())
     }
 
     private fun handleSomConfirmShippingActivityResult(resultCode: Int, data: Intent?) {
@@ -770,12 +933,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun handleRequestPickUpResult(message: String?) {
         onActionCompleted()
-        showCommonToaster(message)
+        showCommonToaster(view, message)
     }
 
     private fun handleConfirmShippingResult(message: String?) {
         onActionCompleted()
-        showCommonToaster(message)
+        showCommonToaster(view, message)
     }
 
     private fun toggleBulkAction() {
@@ -956,7 +1119,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadOrderList()
     }
 
-    private fun showToasterError(message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded)) {
+    private fun showToasterError(view: View?, message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded)) {
         if (errorToaster == null) {
             view?.let {
                 errorToaster = Toaster.build(
@@ -975,14 +1138,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    private fun showCommonToaster(message: String?, toasterType: Int = Toaster.TYPE_NORMAL) {
+    private fun showCommonToaster(view: View?, message: String?, toasterType: Int = Toaster.TYPE_NORMAL) {
         message?.run {
-            if (commonToaster == null) {
-                view?.let {
-                    commonToaster = Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType, "")
-                }
-            }
-            if (commonToaster?.isShown == false) {
+            view?.let {
+                commonToaster?.dismiss()
+                commonToaster = Toaster.build(it, message, Toaster.LENGTH_SHORT, toasterType, "")
                 commonToaster?.show()
             }
         }
@@ -1015,6 +1175,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showBulkAcceptOrderBottomSheet() {
+        context?.let { context ->
+            if (bulkAcceptOrderDialog == null) {
+                bulkAcceptOrderDialog = SomListBulkActionDialog(context).apply {
+                    init()
+                }
+            }
+        }
         if (somListBulkAcceptOrderBottomSheet == null) {
             somListBulkAcceptOrderBottomSheet = SomListBulkAcceptOrderBottomSheet()
         }

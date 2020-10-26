@@ -19,6 +19,10 @@ class SomListSortFilterTab(
         private val listener: SomListSortFilterTabClickListener
 ) {
 
+    companion object {
+        private const val SWIPE_TAB_ANIMATION_DELAY = 500L
+    }
+
     private val context by lazy { sortFilter.context }
 
     private var selectedTab: SomListFilterUiModel.Status? = null
@@ -114,9 +118,9 @@ class SomListSortFilterTab(
 
     fun selectTab(status: SomListFilterUiModel.Status) {
         selectedTab = status
-        sortFilter.post {
+        sortFilter.postDelayed({
             scrollToTab(filterItems.indexOfFirst { it.title.contains(status.status) })
-        }
+        }, SWIPE_TAB_ANIMATION_DELAY)
     }
 
     fun decrementOrderCount() {

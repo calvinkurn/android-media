@@ -56,6 +56,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.networkDependencies.glide
+
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation (rootProject.ext.serviceDependencies.crashlytics) {

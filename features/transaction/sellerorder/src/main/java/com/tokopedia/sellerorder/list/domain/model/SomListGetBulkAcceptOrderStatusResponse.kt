@@ -26,9 +26,9 @@ data class SomListGetBulkAcceptOrderStatusResponse(
                     @SerializedName("multi_origin_invalid_order")
                     @Expose
                     val multiOriginInvalidOrder: List<MultiOriginInvalidOrder> = listOf(),
-                    @SerializedName("processed")
+                    @SerializedName("fail")
                     @Expose
-                    val processed: String = "",
+                    val fail: String = "",
                     @SerializedName("success")
                     @Expose
                     val success: String = "",

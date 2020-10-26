@@ -37,7 +37,7 @@ class SomListGetBulkAcceptOrderStatusUseCase @Inject constructor(
                 data {
                   total_order
                   success
-                  processed
+                  fail
                   multi_origin_invalid_order {
                     order_id
                     invoice_ref_num
