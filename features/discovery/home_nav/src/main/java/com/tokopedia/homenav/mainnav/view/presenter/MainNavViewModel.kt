@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import dagger.Lazy
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -108,7 +109,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun getUserSection(mainNavigationDataModel: MainNavigationDataModel){
         mainNavigationDataModel.dataList.find { it is AccountHeaderViewModel }?.let {
-            val accountHeader = it as AccountHeaderViewModel
+            val accountHeader = (it as AccountHeaderViewModel).copy()
             getUserBadgeImage(accountHeader)
             getOvoData(accountHeader)
             getShopData(accountHeader.shopId.toInt(), accountHeader)
@@ -150,10 +151,8 @@ class MainNavViewModel @Inject constructor(
                 getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
                 getShopInfoUseCase.get().executeOnBackground()
             }
-            val newAccountData = accountData.copy(
-                    shopName = result.shopCore.name
-            )
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
+            accountData.shopName = result.shopCore.name
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
         }){
             _shopResultListener.postValue(Fail(it))
         }
@@ -164,10 +163,8 @@ class MainNavViewModel @Inject constructor(
             val result = withContext(baseDispatcher.get().io()) {
                 getUserMembershipUseCase.get().executeOnBackground()
             }
-            val newAccountData = accountData.copy(
-                    badge = result.tokopoints.status.tier.eggImageURL
-            )
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
+            accountData.badge = result.tokopoints.status.tier.eggImageURL
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
         }){
             _membershipResultListener.postValue(Fail(it))
         }
@@ -178,11 +175,9 @@ class MainNavViewModel @Inject constructor(
             val result = withContext(baseDispatcher.get().io()) {
                 getWalletUseCase.get().executeOnBackground()
             }
-            val newAccountData = accountData.copy(
-                    ovoSaldo = result.cashBalance,
-                    ovoPoint = result.pointBalance
-            )
-            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, this@MainNavViewModel))
+            accountData.ovoSaldo = result.cashBalance
+            accountData.ovoPoint = result.pointBalance
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, this@MainNavViewModel))
         }){
             //post error get ovo with new livedata
             _ovoResultListener.postValue(Fail(it))

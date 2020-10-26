@@ -80,9 +80,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
 
         viewModel.accountLiveData.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> populateAccountHeader(it.data)
-            }
+
         })
 
         viewModel.profileResultListener.observe(viewLifecycleOwner, Observer {
@@ -128,9 +126,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun observeCategoryListData(){
         onRefresh()
         viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
-            hideSwipeRefresh()
-            if(it is Success) {
-                adapter.submitList(it.data)
+            if(it is Fail){
+
             }
         })
     }
@@ -163,14 +160,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
         return userSession
-    }
-
-    private fun getLoginState(): Int {
-        return when {
-            getUserSession().isLoggedIn -> AccountHeaderViewModel.LOGIN_STATE_LOGIN
-            haveUserLogoutData() -> AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-            else -> AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-        }
     }
 
     private fun haveUserLogoutData(): Boolean {
