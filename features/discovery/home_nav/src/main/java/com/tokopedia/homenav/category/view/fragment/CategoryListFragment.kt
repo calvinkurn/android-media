@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -22,8 +21,6 @@ import kotlinx.android.synthetic.main.fragment_nav_category.view.*
 import javax.inject.Inject
 
 class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
@@ -69,7 +66,7 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         }
     }
 
-    private fun initRecyclerView(view: View){
+    private fun initRecyclerView(view: View) {
         view.recycler_view?.adapter = adapter
     }
 

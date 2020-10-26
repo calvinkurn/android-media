@@ -9,7 +9,7 @@ import dagger.Component
  */
 
 @CategoryListScope
-@Component(modules = [CategoryListModule::class, CategoryListViewModelModule::class], dependencies = [BaseNavComponent::class])
+@Component(modules = [], dependencies = [BaseNavComponent::class])
 interface CategoryListComponent {
     fun inject(fragment: CategoryListFragment)
 }
