@@ -390,6 +390,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     private fun observeAction() {
         viewModel.addToCartActionData.observe(viewLifecycleOwner, Observer { handleAddToCartActionData(it.getContentIfNotHandled()) })
+        viewModel.updateCartCounterActionData.observe(viewLifecycleOwner, Observer { handleUpdateCartCounterActionData(it.getContentIfNotHandled()) })
         viewModel.removeWishlistActionData.observe(viewLifecycleOwner, Observer { handleRemoveWishlistActionData(it.getContentIfNotHandled()) })
         viewModel.bulkRemoveWishlistActionData.observe(viewLifecycleOwner, Observer { handleBulkRemoveActionData(it.getContentIfNotHandled()) })
         viewModel.bulkSelectCountActionData.observe(viewLifecycleOwner, Observer { updateSelectedDeleteItem(it.peekContent()) })
@@ -562,6 +563,19 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 }
             } else {
                 showToaster(if (it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            }
+        }
+    }
+
+    private fun handleUpdateCartCounterActionData(count: Int?) {
+        activity?.let { activity ->
+            count?.let {
+                val cache = LocalCacheHandler(activity, "CART")
+                cache.putInt("IS_HAS_CART", if (count > 0) 1 else 0)
+                cache.putInt("CACHE_TOTAL_CART", count)
+                cache.applyEditor()
+
+                activity.invalidateOptionsMenu()
             }
         }
     }

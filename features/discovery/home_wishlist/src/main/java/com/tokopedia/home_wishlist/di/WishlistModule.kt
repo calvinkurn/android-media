@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -104,6 +105,11 @@ open class WishlistModule {
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
                     com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
+
+    @Provides
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String =
+        GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
 
     @Provides
     fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
