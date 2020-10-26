@@ -23,9 +23,9 @@ import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
-import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
@@ -63,7 +63,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val snapHelper: SnapHelper = PlayWidgetSnapHelper(context)
 
     private var mWidgetListener: PlayWidgetMediumListener? = null
-    private var mWidgetViewListener: PlayWidgetViewListener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
     private var mAnalyticListener: PlayWidgetMediumAnalyticListener? = null
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
@@ -109,7 +109,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
                             || item.channelType ==  PlayWidgetChannelType.Vod)) {
-                mWidgetListener?.onChannelClicked(item.appLink)
+                mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {
                 RouteManager.route(context, item.appLink)
             }
@@ -117,7 +117,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
             mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
-            mWidgetListener?.onToggleReminderClicked(item.channelId, remind, position)
+            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
         }
     }
 
@@ -153,6 +153,21 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         setupView(view)
     }
 
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        mWidgetInternalListener = listener
+    }
+
+    fun setWidgetListener(listener: PlayWidgetMediumListener?) {
+        mWidgetListener = listener
+    }
+
+    fun setAnalyticListener(listener: PlayWidgetMediumAnalyticListener?) {
+        mAnalyticListener = listener
+    }
+
+    /**
+     * Setup view
+     */
     private fun setupView(view: View) {
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
@@ -161,7 +176,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         snapHelper.attachToRecyclerView(recyclerViewItem)
 
         recyclerViewItem.addOneTimeGlobalLayoutListener {
-            mWidgetViewListener?.onWidgetCardsScrollChanged(recyclerViewItem)
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
         }
 
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -170,7 +185,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    mWidgetViewListener?.onWidgetCardsScrollChanged(recyclerView)
+                    mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerView)
                 }
             }
         })
@@ -186,18 +201,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
-    }
-
-    fun setWidgetListener(listener: PlayWidgetListener?) {
-        mWidgetListener = listener
-    }
-
-    fun setAnalyticListener(listener: PlayWidgetMediumAnalyticListener?) {
-        mAnalyticListener = listener
-    }
-
-    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        this.mWidgetViewListener = listener
     }
 
     /**

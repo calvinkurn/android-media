@@ -8,7 +8,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
-import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import kotlinx.coroutines.*
 
@@ -16,52 +16,48 @@ import kotlinx.coroutines.*
  * Created by jegul on 21/10/20
  */
 class PlayWidgetAutoPlayCoordinator(
-        scope: CoroutineScope,
-        mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-) {
+        private val scope: CoroutineScope,
+        private val mainCoroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+) : PlayWidgetInternalListener {
 
     private var autoPlayJob: Job? = null
-    private var maxAutoPlayAmount = MAX_AUTO_PLAY
 
     private val videoPlayerMap = mutableMapOf<PlayVideoPlayer, PlayVideoPlayerReceiver?>()
 
     private val autoPlayReceiverDecider: AutoPlayReceiverDecider = DefaultAutoPlayReceiverDecider()
 
-    private val widgetViewListener = object : PlayWidgetViewListener {
+    override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
+        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
+        if (visibleCards.isEmpty()) return
 
-        override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-            val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
-            if (visibleCards.isEmpty()) return
+        autoPlayJob?.cancel()
+        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
+            delay(FAKE_MAX_DELAY)
+            val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+                    visibleCards = visibleCards,
+                    itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
+                    maxAutoPlay = FAKE_MAX_AUTOPLAY
+            )
 
-            autoPlayJob?.cancel()
-            autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-                delay(FAKE_MAX_DELAY)
-                val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
-                        visibleCards = visibleCards,
-                        itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                        maxAutoPlay = maxAutoPlayAmount
-                )
-
-                videoPlayerMap.entries.forEach {
-                    if (it.value !in autoPlayEligibleReceivers) {
-                        it.key.stop()
-                        it.key.listener = null
-                        it.value?.setPlayer(null)
-                        it.setValue(null)
-                    }
+            videoPlayerMap.entries.forEach {
+                if (it.value !in autoPlayEligibleReceivers) {
+                    it.key.stop()
+                    it.key.listener = null
+                    it.value?.setPlayer(null)
+                    it.setValue(null)
                 }
-
-                autoPlayEligibleReceivers
-                        .filter { it.getPlayer() == null }
-                        .forEach {
-                            val nextIdlePlayer = getNextIdlePlayer()
-
-                            if (nextIdlePlayer != null) {
-                                it.setPlayer(nextIdlePlayer)
-                                videoPlayerMap[nextIdlePlayer] = it
-                            }
-                        }
             }
+
+            autoPlayEligibleReceivers
+                    .filter { it.getPlayer() == null }
+                    .forEach {
+                        val nextIdlePlayer = getNextIdlePlayer()
+
+                        if (nextIdlePlayer != null) {
+                            it.setPlayer(nextIdlePlayer)
+                            videoPlayerMap[nextIdlePlayer] = it
+                        }
+                    }
         }
     }
 
@@ -73,29 +69,24 @@ class PlayWidgetAutoPlayCoordinator(
         videoPlayerMap.keys.forEach { it.resume() }
     }
 
-    fun controlWidget(widget: PlayWidgetView) {
-        widget.setWidgetViewListener(widgetViewListener)
-    }
-
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
-        if (config.autoPlay) {
-            maxAutoPlayAmount = config.autoPlayAmount
+        if (false) { //TODO(!config.autoPlay)
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
         }
 
-        if (videoPlayerMap.size < maxAutoPlayAmount) {
+        if (videoPlayerMap.size < FAKE_MAX_AUTOPLAY) {
             videoPlayerMap.putAll(
-                    List(maxAutoPlayAmount - videoPlayerMap.size) {
+                    List(FAKE_MAX_AUTOPLAY - videoPlayerMap.size) {
                         PlayVideoPlayer(widget.context) to null
                     }
             )
         } /** else if (videoPlayerMap.size > FAKE_MAX_AUTOPLAY) {
-    videoPlayerMap.
-    val lastPlayer = videoPlayerList.removeAt(videoPlayerList.lastIndex)
-    lastPlayer.release()
-    } **/
+            videoPlayerMap.
+            val lastPlayer = videoPlayerList.removeAt(videoPlayerList.lastIndex)
+            lastPlayer.release()
+        } **/
     }
 
     private fun getNextIdlePlayer(): PlayVideoPlayer? {
@@ -123,8 +114,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val MAX_AUTO_PLAY = 3
-
+        private const val FAKE_MAX_AUTOPLAY = 3
         private const val FAKE_MAX_DELAY = 3000L // set delay before play to 3s
     }
 }

@@ -14,6 +14,7 @@ class PlayWidgetConfigMapper @Inject constructor() {
             autoPlayAmount = data.meta.autoplayAmount,
             autoRefresh = data.meta.autoRefresh,
             autoRefreshTimer = data.meta.autoRefreshTimer,
-            maxAutoPlayCard = data.meta.maxAutoplayCell
+            maxAutoPlayCellularDuration = data.meta.maxAutoplayCell,
+            maxAutoPlayWifiDuration = data.meta.maxAutoplayWifi
     )
 }

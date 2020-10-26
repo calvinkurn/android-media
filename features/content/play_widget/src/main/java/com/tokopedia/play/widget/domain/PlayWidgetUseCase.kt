@@ -94,6 +94,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               gradient
               serverTimeOffset
               maxAutoplayCell
+              maxAutoplayWifi
               template
             }
           }

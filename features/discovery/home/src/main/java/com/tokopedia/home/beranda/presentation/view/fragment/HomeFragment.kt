@@ -114,9 +114,11 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
@@ -175,7 +177,7 @@ open class HomeFragment : BaseDaggerFragment(),
         PopularKeywordListener,
         FramePerformanceIndexInterface,
         HomeAutoRefreshListener,
-        PlayWidgetMediumListener {
+        PlayWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -2155,11 +2157,11 @@ open class HomeFragment : BaseDaggerFragment(),
     /**
      * Play widget
      */
-    override fun onWidgetShouldRefresh(view: View) {
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         getHomeViewModel().getPlayWidget()
     }
 
-    override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
         if(getHomeViewModel().getUserId().isNotEmpty()) {
             getHomeViewModel().setToggleReminderPlayWidget(channelId, remind, position)
         } else {
@@ -2172,7 +2174,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onChannelClicked(appLink: String) {
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
         val intent = RouteManager.getIntent(requireContext(), appLink)
         startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
     }

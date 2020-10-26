@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.listener.PlayWidgetViewListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -26,7 +26,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
     private var mWidgetListener: PlayWidgetListener? = null
-    private var mWidgetViewListener: PlayWidgetViewListener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
 
     override fun onViewRemoved(child: View?) {
         when (child) {
@@ -34,6 +34,13 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetMediumView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
+    }
+
+    override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
+        mWidgetInternalListener = listener
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
+        }
     }
 
     fun setModel(model: PlayWidgetUiModel) {
@@ -55,14 +62,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     fun setWidgetListener(listener: PlayWidgetListener?) {
         mWidgetListener = listener
         when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setWidgetListener(listener)
             is PlayWidgetMediumView -> child.setWidgetListener(listener)
-        }
-    }
-
-    override fun setWidgetViewListener(listener: PlayWidgetViewListener?) {
-        mWidgetViewListener = listener
-        when (val child = getFirstChild()) {
-            is PlayWidgetMediumView -> child.setWidgetViewListener(listener)
         }
     }
 
@@ -71,6 +72,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
         widgetView.setData(model)
         widgetView.setAnalyticListener(mAnalyticListener)
+        widgetView.setWidgetListener(mWidgetListener)
+        widgetView.setWidgetInternalListener(mWidgetInternalListener)
     }
 
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
@@ -78,7 +81,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
         widgetView.setData(model)
         widgetView.setWidgetListener(mWidgetListener)
-        widgetView.setWidgetViewListener(mWidgetViewListener)
+        widgetView.setWidgetInternalListener(mWidgetInternalListener)
         widgetView.setAnalyticListener(mAnalyticListener)
     }
 

@@ -1,17 +1,17 @@
 package com.tokopedia.play.widget.ui.listener
 
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+
 
 /**
  * Created by mzennis on 21/10/20.
  */
-interface PlayWidgetMediumListener {
+interface PlayWidgetMediumListener : PlayWidgetRouterListener {
 
-    fun onChannelClicked(appLink: String) {
-    }
     fun onToggleReminderClicked(
+            view: PlayWidgetMediumView,
             channelId: String,
             remind: Boolean,
             position: Int
-    ) {
-    }
+    ) {}
 }
