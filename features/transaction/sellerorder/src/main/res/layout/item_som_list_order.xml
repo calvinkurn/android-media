@@ -48,7 +48,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toStartOf="@id/labelSomListDeadline"
+            app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
             app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
             app:layout_constraintTop_toBottomOf="@id/tvSomListOrderStatus"
             app:typographyType="small"
@@ -66,17 +66,36 @@
             app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus"
             app:typographyType="small" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelSomListDeadline"
+        <ImageView
+            android:id="@+id/icDeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl0"
+            android:background="@drawable/bg_due_response_icon"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/layout_lvl0"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            app:srcCompat="@drawable/ic_somlist_deadline"
+            app:layout_constraintBottom_toBottomOf="@id/tvSomListDeadline"
+            app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+            app:layout_constraintTop_toTopOf="@id/tvSomListDeadline" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSomListDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:labelTimerIcon="true"
-            app:labelTitle="Sep 15; 14.04"
-            app:labelType="general_dark_grey"
+            android:background="@drawable/bg_due_response_text"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_lvl2"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvSomListInvoice"
-            app:layout_constraintTop_toBottomOf="@id/tvSomListResponseLabel" />
+            app:layout_constraintTop_toBottomOf="@id/tvSomListResponseLabel"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Sep 15; 14.40" />
 
         <View
             android:id="@+id/divider"
