@@ -41,7 +41,7 @@
 -libraryjars libs/signpost-core-1.2.1.2.jar
 -libraryjars libs/simple.facebook-2.1.jar
 -libraryjars libs/universal-image-loader-1.8.6.jar
-
+-injars in.jar(!META-INF/versions/**)
 
 
 -dontpreverify
