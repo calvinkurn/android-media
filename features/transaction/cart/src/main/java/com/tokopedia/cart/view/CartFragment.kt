@@ -401,8 +401,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_SHIPMENT -> onResultFromShipmentPage(resultCode, data)
             NAVIGATION_PDP -> onResultFromPdp()
             NAVIGATION_PROMO -> onResultFromPromoPage(resultCode, data)
-            NAVIGATION_SHOP_PAGE -> refreshCartAfterBackFromOtherPage()
-            NAVIGATION_WISHLIST -> refreshCartAfterBackFromOtherPage()
+            NAVIGATION_SHOP_PAGE -> refreshCart()
+            NAVIGATION_WISHLIST -> refreshCart()
         }
     }
 
@@ -444,7 +444,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromPdp() {
         if (refreshCartAfterBackFromPdp) {
-            refreshCartAfterBackFromOtherPage()
+            refreshCart()
         }
     }
 
@@ -468,12 +468,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
             }
         }
-    }
-
-    private fun refreshCartAfterBackFromOtherPage() {
-        refreshHandler?.isRefreshing = true
-        resetRecentViewList()
-        dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
     }
 
 
@@ -942,6 +936,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun refreshCart() {
+        resetRecentViewList()
         refreshHandler?.startRefresh()
     }
 
@@ -2535,17 +2530,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         hideProgressLoading()
 
         if (removeAllItems) {
-            resetRecentViewList()
-            cartListData?.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
-                if (lastApplyData.additionalInfo.emptyCartInfo.message.isNotEmpty()) {
-                    val cartEmptyHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
-                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
-                } else {
-                    val cartEmptyHolderData = buildCartEmptyHolderData()
-                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
-                }
-            }
-            showEmptyCartContainer()
+            refreshCart()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
         }
@@ -2576,17 +2561,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
         if (isLastItem) {
-            resetRecentViewList()
-            cartListData?.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
-                if (lastApplyData.additionalInfo.emptyCartInfo.message.isNotEmpty()) {
-                    val cartEmptyHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
-                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
-                } else {
-                    val cartEmptyHolderData = buildCartEmptyHolderData()
-                    cartAdapter.renderEmptyCart(cartEmptyHolderData)
-                }
-            }
-            showEmptyCartContainer()
+            refreshCart()
         } else {
             cartAdapter.setLastItemAlwaysSelected()
         }
