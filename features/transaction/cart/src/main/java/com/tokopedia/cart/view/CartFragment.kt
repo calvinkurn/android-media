@@ -231,9 +231,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val CART_TRACE = "mp_cart"
         const val CART_ALL_TRACE = "mp_cart_all"
         const val CART_PAGE = "cart"
-        const val NAVIGATION_PDP = 64728
-        const val NAVIGATION_PROMO = 7451
-        const val NAVIGATION_SHIPMENT = 983
+        const val NAVIGATION_PDP = 123
+        const val NAVIGATION_SHOP_PAGE = 234
+        const val NAVIGATION_WISHLIST = 345
+        const val NAVIGATION_PROMO = 456
+        const val NAVIGATION_SHIPMENT = 567
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -396,36 +398,82 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            NAVIGATION_SHIPMENT -> onResultFromRequestCodeCartShipment(resultCode, data)
-            NAVIGATION_PDP -> {
-                if (refreshCartAfterBackFromPdp) {
-                    refreshHandler?.isRefreshing = true
-                    resetRecentViewList()
-                    dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
-                }
-            }
-            NAVIGATION_PROMO -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
-                    if (validateUseUiModel != null) {
-                        dPresenter.setValidateUseLastResponse(validateUseUiModel)
-                        dPresenter.setUpdateCartAndValidateUseLastResponse(null)
-                        dPresenter.setLastApplyNotValid()
-                        updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
-                    }
+            NAVIGATION_SHIPMENT -> onResultFromShipmentPage(resultCode, data)
+            NAVIGATION_PDP -> onResultFromPdp()
+            NAVIGATION_PROMO -> onResultFromPromoPage(resultCode, data)
+            NAVIGATION_SHOP_PAGE -> refreshCartAfterBackFromOtherPage()
+            NAVIGATION_WISHLIST -> refreshCartAfterBackFromOtherPage()
+        }
+    }
 
-                    val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
-                    if (clearPromoUiModel != null) {
-                        if (validateUseUiModel == null) {
-                            dPresenter.setLastApplyNotValid()
-                            dPresenter.setValidateUseLastResponse(null)
-                            dPresenter.setUpdateCartAndValidateUseLastResponse(null)
-                        }
-                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
-                    }
+    private fun onResultFromShipmentPage(resultCode: Int, data: Intent?) {
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
+
+        if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
+            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
+            showToastMessageGreen(getString(R.string.message_payment_success))
+            refreshHandler?.isRefreshing = true
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
+            showToastMessageRed(getString(R.string.default_request_error_unknown))
+            sendAnalyticsScreenName(screenName)
+            refreshHandler?.isRefreshing = true
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData)
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false)
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            sendAnalyticsScreenName(screenName)
+            refreshHandler?.isRefreshing = true
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData)
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false)
+            }
+        } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
+            refreshHandler?.isRefreshing = true
+            dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
+            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+            showToastMessageRed(message ?: "")
+        }
+    }
+
+    private fun onResultFromPdp() {
+        if (refreshCartAfterBackFromPdp) {
+            refreshCartAfterBackFromOtherPage()
+        }
+    }
+
+    private fun onResultFromPromoPage(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
+            if (validateUseUiModel != null) {
+                dPresenter.setValidateUseLastResponse(validateUseUiModel)
+                dPresenter.setUpdateCartAndValidateUseLastResponse(null)
+                dPresenter.setLastApplyNotValid()
+                updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
+            }
+
+            val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+            if (clearPromoUiModel != null) {
+                if (validateUseUiModel == null) {
+                    dPresenter.setLastApplyNotValid()
+                    dPresenter.setValidateUseLastResponse(null)
+                    dPresenter.setUpdateCartAndValidateUseLastResponse(null)
                 }
+                updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
             }
         }
+    }
+
+    private fun refreshCartAfterBackFromOtherPage() {
+        refreshHandler?.isRefreshing = true
+        resetRecentViewList()
+        dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
     }
 
 
@@ -509,7 +557,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun routeToWishlist() {
         activity?.let {
-            RouteManager.route(it, ApplinkConst.NEW_WISHLIST)
+            val intent = RouteManager.getIntent(it, ApplinkConst.NEW_WISHLIST)
+            startActivityForResult(intent, NAVIGATION_WISHLIST)
         }
     }
 
@@ -523,7 +572,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToShopPage(shopId: String?) {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
-            it.startActivity(intent)
+            startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
         }
     }
 
@@ -2620,42 +2669,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.processToUpdateAndReloadCartData(getCartId())
         } else {
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
-        }
-    }
-
-    private fun onResultFromRequestCodeCartShipment(resultCode: Int, data: Intent?) {
-        FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
-
-        if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
-            showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module))
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
-            showToastMessageGreen(getString(R.string.message_payment_success))
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
-            showToastMessageRed(getString(R.string.default_request_error_unknown))
-            sendAnalyticsScreenName(screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            sendAnalyticsScreenName(screenName)
-            refreshHandler?.isRefreshing = true
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData)
-            } else {
-                dPresenter.processInitialGetCartData(getCartId(), false, false)
-            }
-        } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
-            refreshHandler?.isRefreshing = true
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
-        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
-            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
-            showToastMessageRed(message ?: "")
         }
     }
 
