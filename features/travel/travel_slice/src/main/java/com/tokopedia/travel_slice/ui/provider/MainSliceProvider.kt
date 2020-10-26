@@ -2,6 +2,7 @@ package com.tokopedia.travel_slice.ui.provider
 
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -19,6 +20,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.travel_slice.R
+import com.tokopedia.travel_slice.data.HotelData
 import com.tokopedia.travel_slice.data.HotelList
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
 import com.tokopedia.travel_slice.usecase.GetPropertiesUseCase
@@ -56,7 +58,6 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         contextNonNull = context ?: return null
-        LocalCacheHandler(context, "APPLINK_DEBUGGER")
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
              createGetHotelSlice(sliceUri)
         } else null
@@ -77,7 +78,6 @@ class MainSliceProvider : SliceProvider() {
             )
         }
 
-
         if (status == Status.INIT) {
             status = Status.LOADING
             getHotelData(sliceUri)
@@ -93,7 +93,10 @@ class MainSliceProvider : SliceProvider() {
 
                 when (status) {
                     Status.LOADING, Status.INIT -> subtitle = "Loading ..."
-                    Status.FAILURE -> subtitle = "Gagal mendapatkan hotel"
+                    Status.FAILURE -> {
+                        subtitle = "Gagal mendapatkan hotel"
+                        status = Status.INIT
+                    }
                 }
                 primaryAction = SliceAction.create(
                         mainPendingIntent,
@@ -110,13 +113,24 @@ class MainSliceProvider : SliceProvider() {
                                 addImage(IconCompat.createWithBitmap(image.getBitmap()), ListBuilder.LARGE_IMAGE)
                                 addTitleText(it.name)
                                 addText(it.roomPrice.firstOrNull()?.totalPrice ?: "")
+                                contentIntent = buildIntentFromHotelDetail(it.id, checkIn)
                             }
                         }
-
                     }
+                    status = Status.INIT
                 }
             }
         }
+    }
+
+    private fun buildIntentFromHotelDetail(hotelId: Long, checkIn: String): PendingIntent {
+        return PendingIntent.getActivity(
+                contextNonNull,
+                0,
+                allowReads {  RouteManager.getIntent(contextNonNull,
+                        "tokopedia://hotel/detail/$hotelId?check_in=$checkIn") },
+                0
+        )
     }
 
     private fun String.getBitmap(): Bitmap? {
@@ -127,6 +141,8 @@ class MainSliceProvider : SliceProvider() {
         return futureTarget.get()
     }
 
+    private var checkIn: String = ""
+
     private fun getHotelData(sliceUri: Uri): HotelList {
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -135,10 +151,13 @@ class MainSliceProvider : SliceProvider() {
                 val cityIdResponse = getSuggestionCityUseCase.executeOnBackground().firstOrNull()
                 if (cityIdResponse != null) {
                     val checkInOutDate = validateCheckInDate(sliceUri.getQueryParameter(ARG_CHECKIN) ?: "")
+                    checkIn = checkInOutDate.first
                     getPropertiesUseCase.createParam(checkInOutDate.first, checkInOutDate.second, cityIdResponse)
                     hotelList = getPropertiesUseCase.executeOnBackground()
                     status = Status.SUCCESS
                     contextNonNull.contentResolver.notifyChange(sliceUri, null)
+                } else {
+                    status = Status.FAILURE
                 }
             } catch (e: Exception) {
                 Log.d("ERRORR", e.localizedMessage)

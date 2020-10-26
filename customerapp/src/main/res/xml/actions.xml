@@ -15,7 +15,6 @@
             <parameter-mapping
                 urlParameter="city"
                 intentParameter="lodgingReservation.reservationFor.address"
-                required="true"
                 />
             <parameter-mapping
                 urlParameter="checkIn"
