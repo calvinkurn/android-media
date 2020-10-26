@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -167,6 +168,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun onStop() {
         super.onStop()
         preSelectedTab = -1
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageLoadTimePerformanceInterface?.getPltPerformanceData()
     }
 
 }
