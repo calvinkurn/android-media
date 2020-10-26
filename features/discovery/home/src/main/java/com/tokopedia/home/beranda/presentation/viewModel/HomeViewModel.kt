@@ -48,6 +48,7 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -136,12 +137,13 @@ open class HomeViewModel @Inject constructor(
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
 
-//    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
-//    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
-
     val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
         get() = _injectCouponTimeBasedResult
     private val _injectCouponTimeBasedResult : MutableLiveData<Result<InjectCouponTimeBased>> = MutableLiveData()
+
+    val playWidgetToggleReminderObservable: LiveData<PlayWidgetReminderUiModel>
+        get() = _playWidgetToggleReminderObservable
+    private val _playWidgetToggleReminderObservable = MutableLiveData<PlayWidgetReminderUiModel>()
 
 // ============================================================================================
 // ==================================== Helper Live Data ======================================
@@ -1484,6 +1486,24 @@ open class HomeViewModel @Inject constructor(
 
         }) {
             homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(dataModel, index, this@HomeViewModel))
+        }
+    }
+
+    fun setToggleReminderPlayWidget(channelId: String, remind: Boolean, position: Int) {
+        launchCatchError(block = {
+            val response = playWidgetTools.get().setToggleReminder(
+                    channelId,
+                    remind,
+                    homeDispatcher.get().io()
+            )
+            val reminderUiModel = playWidgetTools.get().mapWidgetToggleReminder(response)
+            _playWidgetToggleReminderObservable.postValue(reminderUiModel.copy(remind = remind, position = position))
+        }) {
+            _playWidgetToggleReminderObservable.postValue(PlayWidgetReminderUiModel(
+                    remind = remind,
+                    success = false,
+                    position = position
+            ))
         }
     }
 

@@ -91,34 +91,6 @@ class ShopPageHomeModule {
                       isPO
                       cashback
                     }
-                    ... on PromoWidget {
-                      voucherID
-                      imageUrl
-                      name
-                      voucherType {
-                          voucherType
-                          identifier
-                      }
-                      voucherCode
-                      amount {
-                        amountType
-                        amount
-                        amountFormatted
-                      }
-                      minimumSpend
-                      minimumSpendFormatted
-                      owner {
-                        ownerID
-                        identifier
-                      }
-                      validThru
-                      tnc
-                      inUseExpiry
-                      status {
-                        status
-                        identifier
-                      }
-                    }
                     ... on CampaignWidget {
                       campaignID
                       name
@@ -379,6 +351,9 @@ class ShopPageHomeModule {
         return ShopProductSortMapper()
     }
 
+    /**
+     * Play widget
+     */
     @ShopPageHomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,

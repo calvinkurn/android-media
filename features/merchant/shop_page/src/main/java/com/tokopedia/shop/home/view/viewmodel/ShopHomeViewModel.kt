@@ -11,9 +11,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -65,6 +65,7 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
         private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
         private val shopProductSortMapper: ShopProductSortMapper,
+        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
         private val playWidgetTools: PlayWidgetTools
 ) : BaseViewModel(dispatcherProvider.main()) {
 
@@ -83,6 +84,10 @@ class ShopHomeViewModel @Inject constructor(
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
+
+    val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
+            get() = _shopHomeMerchantVoucherLayoutData
+    private val _shopHomeMerchantVoucherLayoutData = MutableLiveData<Result<ShopHomeVoucherUiModel>>()
 
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
@@ -174,8 +179,6 @@ class ShopHomeViewModel @Inject constructor(
 
                 getPlayWidget(shopId, Success(it))
             }
-
-
         }) {
             it.printStackTrace()
         }
@@ -243,6 +246,30 @@ class ShopHomeViewModel @Inject constructor(
 //        }
 //        return shopPageHomeLayoutUiModel
 //    }
+
+    private suspend fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
+        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
+        if (index != 1) {
+            val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
+                getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
+            }
+            return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
+        }
+        return data
+    }
+
+    fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
+        val result = shopHomeLayoutData.value
+        if (result is Success) {
+            launchCatchError(block = {
+                val addMerchantVoucherLayout = getMerchantVoucherList(shopId, numVoucher, result.data)
+                _shopHomeMerchantVoucherLayoutData.value = Success(addMerchantVoucherLayout)
+            }) {
+                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
+            }
+        }
+    }
 
     fun addProductToCart(
             product: ShopHomeProductViewModel,
@@ -513,10 +540,10 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun setToggleReminderPlayWidget(channel: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+    fun setToggleReminderPlayWidget(channelId: String, remind: Boolean, position: Int) {
         launchCatchError(block = {
             val response = playWidgetTools.setToggleReminder(
-                    channel.channelId,
+                    channelId,
                     remind,
                     dispatcherProvider.io()
             )

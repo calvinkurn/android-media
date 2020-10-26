@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.adapter.delegate.medium
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
@@ -23,5 +24,16 @@ class PlayWidgetCardMediumChannelAdapterDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumChannelViewHolder {
         return PlayWidgetCardMediumChannelViewHolder(basicView, listener)
+    }
+
+    override fun onBindViewHolderWithPayloads(item: PlayWidgetMediumChannelUiModel, holder: PlayWidgetCardMediumChannelViewHolder, payloads: Bundle) {
+        if (payloads.isEmpty) return
+        if (payloads.containsKey(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_REMINDER)) {
+            holder.revertToOriginalReminderState()
+        }
+        if (payloads.containsKey(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW)) {
+            val totalView = payloads.getString(PlayWidgetCardMediumChannelViewHolder.KEY_CHANNEL_TOTAL_VIEW, "")
+            if (!totalView.isBlank()) holder.setTotalView(totalView)
+        }
     }
 }

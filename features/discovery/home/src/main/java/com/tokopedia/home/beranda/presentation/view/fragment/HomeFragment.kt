@@ -114,8 +114,11 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -133,6 +136,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -171,7 +175,7 @@ open class HomeFragment : BaseDaggerFragment(),
         PopularKeywordListener,
         FramePerformanceIndexInterface,
         HomeAutoRefreshListener,
-        PlayWidgetListener {
+        PlayWidgetMediumListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -688,8 +692,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeHomeRequestNetwork()
         observeSalamWidget()
         observeRechargeRecommendation()
-//        observePlayReminder()
         observeIsNeedRefresh()
+        observePlayWidgetToggleReminder()
     }
           
     private fun observeIsNeedRefresh() {
@@ -1251,6 +1255,7 @@ open class HomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_PLAY_ROOM -> {
                 if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
             }
+            PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
         }
     }
 
@@ -2147,7 +2152,50 @@ open class HomeFragment : BaseDaggerFragment(),
         return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
+    /**
+     * Play widget
+     */
     override fun onWidgetShouldRefresh(view: View) {
         getHomeViewModel().getPlayWidget()
+    }
+
+    override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
+        if(getHomeViewModel().getUserId().isNotEmpty()) {
+            getHomeViewModel().setToggleReminderPlayWidget(channelId, remind, position)
+        } else {
+            adapter?.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
+                    remind = remind,
+                    success = false,
+                    position = position
+            ))
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    override fun onCardChannelClick(appLink: String) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
+    }
+
+    private fun observePlayWidgetToggleReminder() {
+        getHomeViewModel().playWidgetToggleReminderObservable.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                showToaster(
+                        if(it.remind) {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        } else {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        }, TYPE_NORMAL)
+            } else {
+                adapter?.updatePlayWidgetReminder(it)
+                showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+            }
+        })
+    }
+
+    private fun notifyPlayWidgetTotalView(data: Intent) {
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+        adapter?.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
     }
 }
