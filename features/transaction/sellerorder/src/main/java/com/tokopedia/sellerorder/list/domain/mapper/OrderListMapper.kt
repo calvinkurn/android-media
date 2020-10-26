@@ -21,7 +21,7 @@ class OrderListMapper @Inject constructor() {
                     status = it.status,
                     statusColor = it.statusColor,
                     destinationProvince = it.destinationProvince,
-                    courierName = it.courierName,
+                    courierName = it.courierName.replace("Kurir", "", false).replace(Regex("\\s{2,}"), " "),
                     tickerInfo = it.tickerInfo,
                     buttons = mapButtons(it.buttons),
                     searchParam = keyword
