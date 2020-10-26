@@ -518,6 +518,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 .appendQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
                 .build().toString())
         startActivity(intent)
+        activity?.finish()
     }
 
     private fun goToReplyActivity(questionID: String) {
