@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -16,6 +17,7 @@ import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(), InboxCommonFragment {
@@ -36,7 +38,17 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_notification, container, false)
+        return inflater.inflate(R.layout.fragment_notification, container, false).also {
+            setupObserver()
+        }
+    }
+
+    private fun setupObserver() {
+        viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                renderList(it.data, false)
+            }
+        })
     }
 
     override fun onRoleChanged(role: Int) {

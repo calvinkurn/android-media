@@ -1,9 +1,14 @@
-package com.tokopedia.notifcenter.data.entity.notification
+package com.tokopedia.notifcenter.data.uimodel
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.notifcenter.data.entity.notification.Bottomsheet
+import com.tokopedia.notifcenter.data.entity.notification.DataNotification
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 
-data class Notification(
+data class NotificationUiModel(
         @SerializedName("bottomsheet")
         val bottomsheet: Bottomsheet = Bottomsheet(),
         @SerializedName("button_text")
@@ -64,4 +69,10 @@ data class Notification(
         val updateTimeUnix: Int = 0,
         @SerializedName("user_id")
         val userId: Int = 0
-)
+) : Visitable<NotificationTypeFactory> {
+
+    override fun type(typeFactory: NotificationTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}

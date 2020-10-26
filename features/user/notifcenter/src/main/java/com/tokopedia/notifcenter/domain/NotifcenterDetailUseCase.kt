@@ -1,8 +1,11 @@
 package com.tokopedia.notifcenter.domain
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
+import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -13,6 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 class NotifcenterDetailUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<NotifcenterDetailResponse>,
+        private val mapper: NotifcenterDetailMapper,
         private var dispatchers: DispatcherProvider
 ) : CoroutineScope {
 
@@ -24,7 +28,7 @@ class NotifcenterDetailUseCase @Inject constructor(
 
     fun getNotifications(
             page: Int,
-            onSuccess: (NotifcenterDetailResponse) -> Unit,
+            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
@@ -36,8 +40,9 @@ class NotifcenterDetailUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
+                    val items = mapper.map(response)
                     withContext(dispatchers.ui()) {
-                        onSuccess(response)
+                        onSuccess(items)
                     }
                 },
                 {
