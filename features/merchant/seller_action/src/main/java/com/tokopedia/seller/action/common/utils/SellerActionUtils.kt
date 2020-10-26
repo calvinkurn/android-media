@@ -8,7 +8,7 @@ object SellerActionUtils {
 
     internal fun String.isOrderDateToday(): Boolean {
         return try {
-            DateUtils.isToday(this.convertToDate(SellerActionConst.DATE_FORMAT).time)
+            DateUtils.isToday(this.convertToDate(SellerActionConst.SLICE_DATE_FORMAT).time)
         } catch (ex: Exception) {
             false
         }

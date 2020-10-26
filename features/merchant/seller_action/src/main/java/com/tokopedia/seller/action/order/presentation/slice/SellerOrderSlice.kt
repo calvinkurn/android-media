@@ -12,12 +12,15 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
+import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
+import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.const.SellerActionFeatureName
 import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
 import com.tokopedia.seller.action.common.utils.SellerActionUtils.isOrderDateToday
 import com.tokopedia.seller.action.order.domain.model.Order
+import java.util.*
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
@@ -37,11 +40,12 @@ class SellerOrderSlice(context: Context,
                                 context.getString(R.string.seller_action_order_success_title_today)
                             }
                             else {
-                                context.getString(R.string.seller_action_order_success_title_specific_date, date)
+                                val formattedDate = date.convertToDate(SellerActionConst.SLICE_DATE_FORMAT, Locale.getDefault())
+                                context.getString(R.string.seller_action_order_success_title_specific_date, formattedDate)
                             }
                     primaryAction = createHeaderPrimaryAction()
                 }
-                orderList.take(MAX_ORDERS_PER_SLICE).forEach {
+                orderList.forEach {
                     row {
                         val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, it.orderId).let { intent ->
                             PendingIntent.getActivity(context, 0, intent, 0)
@@ -53,7 +57,7 @@ class SellerOrderSlice(context: Context,
                                     it.buyerName)
                         }
                         setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap()), SMALL_IMAGE)
-                        title = it.buyerName
+                        title = it.listOrderProduct.firstOrNull()?.productName.orEmpty()
                         subtitle = it.status
                     }
                 }
@@ -85,6 +89,7 @@ class SellerOrderSlice(context: Context,
     private fun String.getBitmap(): Bitmap? =
             Glide.with(context)
                     .asBitmap()
+                    .placeholder(R.drawable.ic_sellerapp_slice)
                     .load(this)
                     .submit()
                     .get()

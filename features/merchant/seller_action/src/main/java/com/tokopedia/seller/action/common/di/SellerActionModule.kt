@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.user.session.UserSession
@@ -18,8 +17,7 @@ class SellerActionModule {
 
     @SellerActionScope
     @Provides
-    fun provideGraphqlRepository(@ApplicationContext context: Context): GraphqlRepository {
-        GraphqlClient.init(context)
+    fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 

@@ -2,11 +2,14 @@ package com.tokopedia.seller.action
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
@@ -22,14 +25,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 class SellerActionSliceProvider: SliceProvider(){
 
     companion object {
         private const val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
+        private const val INITIAL_DATE_FORMAT = "yyyy-MM-dd"
         private const val DATE_FORMAT = "dd/MM/yyyy"
-        private const val DAYS_BEFORE = -90
     }
 
     @Inject
@@ -41,33 +45,56 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var sliceMainOrderListUseCase: SliceMainOrderListUseCase
 
+    private var hasAlreadyInitialized = false
     private var mainOrderStatus: SellerActionStatus? = null
+    private var isLoading: Boolean = false
+    private var isLookingForCall: Boolean = false
+
+    private var sliceHashMap: HashMap<Uri, SellerSlice?> = HashMap()
 
     override fun onCreateSliceProvider(): Boolean {
-        injectDependencies()
+        Log.d("sliceMainOrder", "onCreateSliceProvider")
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         return context != null
     }
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            var isLoading = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Log.d("sliceMainOrder", "Bind Uri $sliceUri")
+            if (isLookingForCall) {
+                return null
+            }
+            isLookingForCall = true
+            sliceHashMap[sliceUri]?.let {
+                isLookingForCall = false
+                return it.getSlice()
+            }
+            if (!hasAlreadyInitialized) {
+                context?.let { GraphqlClient.init(it) }
+                injectDependencies()
+                hasAlreadyInitialized = true
+            }
             if (userSession.isLoggedIn) {
                 when(sliceUri.path) {
                     SellerActionConst.Deeplink.ORDER -> {
-                        if (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) {
-                            val date = sliceUri.getDateFromOrderUri()
+                        val date = sliceUri.getDateFromOrderUri()
+                        val canLoadData = (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) && !isLoading
+                        if (canLoadData) {
                             isLoading = true
                             loadMainOrderList(sliceUri, date)
+                        } else {
+                            isLookingForCall = false
                         }
                     }
                 }
             } else {
+                isLookingForCall = false
                 mainOrderStatus = SellerActionStatus.NotLogin
             }
-            createNewSlice(sliceUri, isLoading)?.getSlice()
+            return createNewSlice(sliceUri, isLoading)?.getSlice()
         } else {
-            null
+            isLookingForCall = false
+            return null
         }
     }
 
@@ -88,10 +115,20 @@ class SellerActionSliceProvider: SliceProvider(){
                     if (isLoading) {
                         mainOrderStatus = SellerActionStatus.Loading
                     }
-                    getSlice(mainOrderStatus)
+                    getSlice(mainOrderStatus).also {
+                        if (mainOrderStatus is SellerActionStatus.Success || mainOrderStatus is SellerActionStatus.Fail) {
+                            mainOrderStatus = null
+                            sliceHashMap[sliceUri] = it
+                        }
+                    }
                 }
             }
-            else -> SellerFailureSlice(notNullContext, sliceUri)
+            else -> {
+                mainOrderStatus = null
+                SellerFailureSlice(notNullContext, sliceUri).also {
+                    sliceHashMap[sliceUri] = it
+                }
+            }
         }
     }
 
@@ -101,27 +138,37 @@ class SellerActionSliceProvider: SliceProvider(){
 
     private fun loadMainOrderList(sliceUri: Uri, date: String?) {
         GlobalScope.launch(dispatcher.io()) {
-            try {
-                getSliceMainOrderList(sliceUri, date)
-            } catch (ex: Exception) {
-                mainOrderStatus = SellerActionStatus.Fail
-                updateSlice(sliceUri)
+            if (sliceHashMap[sliceUri] == null) {
+                try {
+                    getSliceMainOrderList(sliceUri, date)
+                } catch (ex: Exception) {
+                    isLoading = false
+                    isLookingForCall = false
+                    mainOrderStatus = SellerActionStatus.Fail
+                    updateSlice(sliceUri)
+                }
             }
         }
     }
 
     private suspend fun getSliceMainOrderList(sliceUri: Uri, date: String?) {
-        val filteredDate = date ?: Date().toFormattedString(DATE_FORMAT)
+        val filteredDate = date?.let {
+            convertFormatDate(it, INITIAL_DATE_FORMAT, DATE_FORMAT)
+        } ?: Date().toFormattedString(DATE_FORMAT)
         with(sliceMainOrderListUseCase) {
             params = SliceMainOrderListUseCase.createRequestParam(filteredDate, filteredDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
             mainOrderStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
+            isLoading = false
+            isLookingForCall = false
             updateSlice(sliceUri)
         }
     }
 
     private fun Uri.getDateFromOrderUri(): String? {
         (getQueryParameter(SellerActionConst.Params.ORDER_DATE)).let { orderDate ->
-            return orderDate?.split(SellerActionConst.DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
+            orderDate?.split(SellerActionConst.DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }.let { delimitedDate ->
+                return delimitedDate?.split(SellerActionConst.DATE_RANGE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
+            }
         }
     }
 

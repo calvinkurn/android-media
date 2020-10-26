@@ -41,5 +41,8 @@ data class Order (
 data class OrderProduct (
         @SerializedName("picture")
         @Expose
-        val pictureUrl: String = ""
+        val pictureUrl: String = "",
+        @SerializedName("product_name")
+        @Expose
+        val productName: String = ""
 )
