@@ -146,6 +146,7 @@ internal class ShopItemViewHolder(
     private fun showShopProductItemPreview(shopViewItem: ShopViewModel.ShopItem) {
         if (shopViewItem.productList.isNotEmpty()) {
             showProductItemPreviewPerItem(
+                    "https://images-staging.tokopedia.net/img/emojuk/2020/10/26/c3be2231-71d1-40f1-951e-0994b3b5da0c.jpg?b=A28hKy?*tmn-",
                     shopViewItem.productList[0],
                     itemView.imageViewShopItemProductImage1,
                     itemView.textViewShopItemProductPrice1
@@ -154,6 +155,7 @@ internal class ShopItemViewHolder(
 
         if (shopViewItem.productList.size > 1) {
             showProductItemPreviewPerItem(
+                    "https://images-staging.tokopedia.net/img/martin/2020/9/7/e0ce27f1-4299-4afe-bb4c-f2fd72c57595.jpg?b=APL4W-D4.AtS",
                     shopViewItem.productList[1],
                     itemView.imageViewShopItemProductImage2,
                     itemView.textViewShopItemProductPrice2
@@ -162,6 +164,7 @@ internal class ShopItemViewHolder(
 
         if (shopViewItem.productList.size > 2) {
             showProductItemPreviewPerItem(
+                    shopViewItem.productList[2].imageUrl,
                     shopViewItem.productList[2],
                     itemView.imageViewShopItemProductImage3,
                     itemView.textViewShopItemProductPrice3
@@ -170,12 +173,13 @@ internal class ShopItemViewHolder(
     }
 
     private fun showProductItemPreviewPerItem(
+            imageUrl: String,
             productPreviewItem: ShopViewModel.ShopItem.ShopItemProduct,
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?
     ) {
         imageViewShopItemProductImage?.let {
-            it.loadImage("https://images-staging.tokopedia.net/img/martin/2020/9/7/e0ce27f1-4299-4afe-bb4c-f2fd72c57595.jpg?b=APL4W-D4.AtS") {
+            it.loadImage(imageUrl) {
                 cacheStrategy = MediaCacheStrategy.RESOURCE
             }
         }
