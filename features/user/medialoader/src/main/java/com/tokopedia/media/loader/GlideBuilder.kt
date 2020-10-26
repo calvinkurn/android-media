@@ -93,8 +93,8 @@ object GlideBuilder {
                 if (placeHolder != 0) {
                     placeholder(placeHolder)
                 } else {
-                    if (url is String) {
-                        val blurHash = url.toUri()?.getQueryParameter(BLUR_HASH_QUERY)
+                    if (url is GlideUrl) {
+                        val blurHash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
                         blurHash?.let { placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, blurHash))) }
                         blurHash?.let { thumbnail(thumbnailLoader(imageView.context, blurring(imageView, blurHash))) }
                     }
