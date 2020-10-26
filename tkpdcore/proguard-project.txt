@@ -165,5 +165,3 @@ public protected *;
 -keep class com.tokopedia.core.gcm.** { *; }
 
 -keep class com.tokopedia.core.product.model.** { *; }
-
--ignorewarnings module-info
