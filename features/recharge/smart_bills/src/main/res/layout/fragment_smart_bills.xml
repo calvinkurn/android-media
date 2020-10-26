@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,9 +10,9 @@
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/smart_bills_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/smart_bills_checkout_view_container"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/smart_bills_checkout_view_container"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -93,6 +93,22 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/smart_bills_checkout_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+            android:id="@+id/smart_bills_checkout_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4" />
+
+    </androidx.cardview.widget.CardView>
+
     <FrameLayout
         android:id="@+id/checkout_loading_view"
         android:layout_width="match_parent"
@@ -108,20 +124,4 @@
 
     </FrameLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/smart_bills_checkout_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:cardElevation="@dimen/spacing_lvl2">
-
-        <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-            android:id="@+id/smart_bills_checkout_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4" />
-
-    </androidx.cardview.widget.CardView>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
