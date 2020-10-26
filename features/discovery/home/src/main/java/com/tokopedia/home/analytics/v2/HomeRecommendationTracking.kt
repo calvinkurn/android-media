@@ -152,7 +152,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
 
     fun getImpressionBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionView(
             Event.PROMO_VIEW,
-            Category.HOMEPAGE_TOPADS,
+            Category.HOMEPAGE,
             Action.IMPRESSION_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
             Label.NONE,
             listOf(
@@ -168,7 +168,7 @@ object HomeRecommendationTracking : BaseTrackerConst(){
 
     fun getClickBannerTopAds(homeRecommendationBannerTopAdsDataModel: HomeRecommendationBannerTopAdsDataModel, tabPosition: Int, position: Int) = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.PROMO_CLICK,
-            eventCategory = Category.HOMEPAGE_TOPADS,
+            eventCategory = Category.HOMEPAGE,
             eventAction = Action.CLICK_ON.format(BANNER_ADS_INSIDE_RECOMMENDATION),
             eventLabel = Label.NONE,
             promotions = listOf(

@@ -23,7 +23,7 @@ object BannerAdsTracking: BaseTrackerConst() {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionView(
                 event = if (isToIris)  Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE_TOPADS,
+                eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.IMPRESSION_ON_BANNER_ADS,
                 eventLabel = Label.NONE,
                 promotions = listOf(
@@ -52,7 +52,7 @@ object BannerAdsTracking: BaseTrackerConst() {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
-                eventCategory = Category.HOMEPAGE_TOPADS,
+                eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.CLICK_ON_BANNER_ADS,
                 eventLabel = Label.NONE,
                 promotions = listOf(
