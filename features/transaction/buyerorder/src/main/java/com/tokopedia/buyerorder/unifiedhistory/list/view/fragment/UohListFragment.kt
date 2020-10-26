@@ -953,9 +953,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         } else {
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
-                        var dateOption = ""
-                        var labelTrackingDate = ""
-                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
+                        val dateOption: String
+                        val labelTrackingDate: String
+                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey == "3") {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
                                 paramUohOrder.createTimeStart = orderList.dateLimit
                             }
@@ -969,40 +969,47 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
-                            labelTrackingDate = dateOption
 
                             if (currFilterDateKey == "0") {
                                 filter1?.title = ALL_DATE
+                                labelTrackingDate = ALL_DATE
                             } else {
                                 filter1?.title = currFilterDateLabel
+                                labelTrackingDate = dateOption
                             }
                         }
 
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
+                        val labelTrackingStatus: String
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
                         if (tempFilterStatusKey != SEMUA_TRANSAKSI) {
                             filter2?.type = ChipsUnify.TYPE_SELECTED
                             filter2?.title = currFilterStatusLabel
+                            labelTrackingStatus = currFilterStatusLabel
                         } else {
                             filter2?.type = ChipsUnify.TYPE_NORMAL
                             filter2?.title = ALL_STATUS
+                            labelTrackingStatus = ALL_STATUS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(currFilterStatusLabel, it1) }
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
                         if (tempFilterCategoryKey != ALL_CATEGORIES) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
                             filter3?.title = currFilterCategoryLabel
+                            labelTrackingCategory = currFilterCategoryLabel
                         } else {
                             filter3?.type = ChipsUnify.TYPE_NORMAL
                             filter3?.title = ALL_CATEGORIES
+                            labelTrackingCategory = ALL_CATEGORIES
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(currFilterCategoryLabel, it1) }
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
                     }
                 }
                 bottomSheetOption?.dismiss()
