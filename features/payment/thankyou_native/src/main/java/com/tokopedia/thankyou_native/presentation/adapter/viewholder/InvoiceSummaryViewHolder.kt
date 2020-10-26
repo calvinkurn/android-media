@@ -11,18 +11,19 @@ import kotlinx.android.synthetic.main.thank_widget_invoice_summary.view.*
 
 class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSummery>(view) {
 
-    private val invoiceSummaryContainer : LinearLayout = view.llInvoiceSummaryContainer
+    private val invoiceSummaryContainer: LinearLayout = view.llInvoiceSummaryContainer
 
     private val inflater: LayoutInflater by lazy {
         LayoutInflater.from(view.context)
     }
 
     override fun bind(element: InvoiceSummery?) {
+        invoiceSummaryContainer.removeAllViews()
         element?.apply {
             addInvoiceSummaryRow(getString(R.string.thank_invoice_total_price, element.totalCount.toString()),
                     getString(R.string.thankyou_rp_without_space, element.totalPriceStr))
             invoiceSummaryMapList.forEach {
-                val valueStr = if(it.isDiscounted){
+                val valueStr = if (it.isDiscounted) {
                     getString(R.string.thankyou_discounted_rp, it.value)
                 } else {
                     getString(R.string.thankyou_rp_without_space, it.value)
@@ -32,7 +33,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
         }
     }
 
-    private fun addInvoiceSummaryRow(titleStr: String, valueStr : String){
+    private fun addInvoiceSummaryRow(titleStr: String, valueStr: String) {
         val rowView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
         val tvTitle = rowView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
         val tvValue = rowView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
