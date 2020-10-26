@@ -52,7 +52,6 @@ import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.data.model.SelectedFilter
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
@@ -1423,22 +1422,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        val selectedFilter = SelectedFilter()
-        selectedFilterMap.forEach { (key, value) ->
-            when(key) {
-                PMIN_PARAM_KEY -> selectedFilter.pmin = value
-                PMAX_PARAM_KEY -> selectedFilter.pmax = value
-                RATING_PARAM_KEY -> selectedFilter.rating = value
-            }
-        }
         if (selectedSortName.isNotBlank()) {
             shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
         }
-        if (!selectedFilter.pmax.isNullOrBlank() || !selectedFilter.pmin.isNullOrBlank()) {
-            shopPageTracking?.clickFilterPrice(productListName, selectedFilter.pmin ?: "0", selectedFilter.pmax ?: "0", customDimensionShopPage)
+        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
         }
-        if (!selectedFilter.rating.isNullOrBlank()) {
-            shopPageTracking?.clickFilterRating(productListName, selectedFilter.rating ?: "0", customDimensionShopPage)
+        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
         }
     }
 
