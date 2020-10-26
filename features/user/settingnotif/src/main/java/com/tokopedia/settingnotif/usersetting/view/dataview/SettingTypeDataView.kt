@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.EmailFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.fragment.PushNotifFieldFragment
@@ -10,6 +11,7 @@ import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFra
 
 data class SettingTypeDataView(
         val icon: Int = 0,
+        val iconUnify: Int = -1,
         val name: Int = 0,
         val fragment: Class<out SettingFieldFragment>
 ) {
@@ -24,7 +26,7 @@ data class SettingTypeDataView(
                 arrayListOf(
                         createPushNotificationType(true),
                         SettingTypeDataView(
-                                icon = R.drawable.ic_notifsetting_email,
+                                iconUnify = IconUnify.MESSAGE,
                                 name = R.string.settingnotif_email,
                                 fragment = EmailFieldFragment::class.java
                         )
@@ -49,7 +51,7 @@ data class SettingTypeDataView(
         fun createPushNotificationType(isSeller: Boolean = false): SettingTypeDataView {
             return if (isSeller) {
                 SettingTypeDataView(
-                        icon = R.drawable.ic_notifsetting_notification,
+                        iconUnify = IconUnify.BELL,
                         name = R.string.settingnotif_seller,
                         fragment = SellerFieldFragment::class.java
                 )
