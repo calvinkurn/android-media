@@ -116,7 +116,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onRefresh() {
-        viewModel.getCategory()
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {

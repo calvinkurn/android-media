@@ -27,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -34,7 +35,6 @@ import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
-        private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
@@ -86,6 +86,7 @@ class MainNavViewModel @Inject constructor(
 
     override suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${navigationDataModel.dataList.map { it.javaClass.simpleName }}")
+        async {  }
         withContext(baseDispatcher.get().ui()) {
             _mainNavLiveData.value = navigationDataModel
         }
@@ -196,16 +197,6 @@ class MainNavViewModel @Inject constructor(
         }){
             //post error get ovo with new livedata
             _ovoResultListener.postValue(Fail(it))
-        }
-    }
-
-    fun getCategory() {
-        viewModelScope.launch(baseDispatcher.get().io()){
-            getCategoryGroupUseCase.get().createParams(GLOBAL_MENU)
-            val result: Result<List<DynamicHomeIconEntity.Category>> = getCategoryGroupUseCase.get().executeOnBackground()
-            if (result is Success){
-                _businessListLiveData.postValue(Success(result.data.toVisitable()))
-            }
         }
     }
 }

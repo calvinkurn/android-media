@@ -2,11 +2,11 @@ package com.tokopedia.homenav.mainnav.data.factory
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
+import com.tokopedia.homenav.mainnav.data.mapper.toVisitable
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -45,7 +45,8 @@ class MainNavDataFactoryImpl(
         return this
     }
 
-    override fun addBUListSection(): MainNavDataFactory {
+    override fun addBUListSection(categoryData: List<DynamicHomeIconEntity.Category>?): MainNavDataFactory {
+        categoryData?.toVisitable()?.let { visitableList.addAll(it) }
         return this
     }
 
