@@ -518,7 +518,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 .appendQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
                 .build().toString())
         startActivity(intent)
-        activity?.finish()
     }
 
     private fun goToReplyActivity(questionID: String) {
@@ -589,13 +588,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategoryDisplayName(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
-        }
-        return remoteConfigInstance?.abTestPlatform
     }
 
 }
