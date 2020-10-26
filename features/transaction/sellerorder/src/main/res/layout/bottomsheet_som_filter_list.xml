@@ -4,20 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/layoutEmpty"
-        layout="@layout/empty_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_lvl4">
+        android:layout_marginBottom="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/headerSortDivider"
@@ -41,4 +31,16 @@
             app:layout_constraintTop_toBottomOf="@id/headerSortDivider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnShowOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_show_order"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

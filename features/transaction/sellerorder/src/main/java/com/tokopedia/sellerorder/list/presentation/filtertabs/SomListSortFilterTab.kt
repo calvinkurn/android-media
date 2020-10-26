@@ -108,7 +108,9 @@ class SomListSortFilterTab(
 
     fun selectParentFilter() {
         sortFilter.apply {
-
+            parentListener = {
+                listener.onParentSortFilterClicked()
+            }
         }
     }
 
@@ -118,5 +120,6 @@ class SomListSortFilterTab(
 
     interface SomListSortFilterTabClickListener {
         fun onTabClicked(status: SomListFilterUiModel.Status)
+        fun onParentSortFilterClicked()
     }
 }

@@ -2,26 +2,60 @@ package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.filter.presentation.adapter.FilterItemDecoration
+import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DEADLINE
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.filter.di.SomFilterComponent
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
+import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
-        SomFilterListener.Sort, SomFilterListener.StatusOrder, SomFilterListener.TypeOrder,
-        SomFilterListener.Courier, SomFilterListener.Label, SomFilterListener.Deadline {
+class SomFilterBottomSheet(private var somFilterFinishListener: SomFilterFinishListener,
+                           private var somListOrderParam: SomListGetOrderListParam? = null) : BottomSheetUnify(),
+        SomFilterListener, SomFilterDateBottomSheet.CalenderListener, HasComponent<SomFilterComponent> {
+
+    @Inject
+    lateinit var somFilterViewModel: SomFilterViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var rvSomFilter: RecyclerView? = null
-
+    private var btnShowOrder: UnifyButton? = null
+    private var somFilterAdapter: SomFilterAdapter? = null
+    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val view = View.inflate(mActivity, R.layout.bottomsheet_som_filter_list, null)
+        savedInstanceState?.let { bundle ->
+            val cacheManagerId = bundle.getString(SOM_FILTER_CACHE_MANAGER_ID).orEmpty()
+            cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            somListOrderParam = cacheManager?.get(KEY_SOM_FILTER_ORDER_LIST, SomListGetOrderListParam::class.java)
+        }
+        initInject()
+        val view = View.inflate(requireContext(), R.layout.bottomsheet_som_filter_list, null)
         rvSomFilter = view.findViewById(R.id.rvSomFilter)
+        btnShowOrder = view.findViewById(R.id.btnShowOrder)
         setChild(view)
         setTitle(TITLE_FILTER)
         showKnob = true
@@ -30,54 +64,106 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+        clickShowOrder()
+        somFilterViewModel.getSomFilterData()
+        observeSomFilter()
     }
 
-    private fun setChipsLayoutManager(list: List<RecyclerView?>) {
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(mActivity)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+    override fun onDateClicked(position: Int) {
+        clickDateFilter()
+    }
 
-        list.forEach { recyclerView ->
-            recyclerView?.apply {
-                addItemDecoration(FilterItemDecoration())
-                layoutManager = chipsLayoutManager
-                ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR)
+    override fun onFilterChipsClicked(somFilterData: SomFilterChipsUiModel, idFilter: String, position: Int, chipType: String) {
+        when (idFilter) {
+            FILTER_SORT, FILTER_LABEL, FILTER_DEADLINE -> {
+                somFilterViewModel.updateFilterSelected(idFilter, position)
+                somFilterViewModel.updateParamSom(idFilter)
+            }
+            FILTER_STATUS_ORDER, FILTER_TYPE_ORDER, FILTER_COURIER -> {
+                somFilterViewModel.updateFilterManySelected(idFilter, chipType)
+                somFilterViewModel.updateParamSom(idFilter)
             }
         }
     }
 
-    open fun showDialog() {
-        mActivity?.supportFragmentManager?.run {
-            show(this, TITLE_FILTER)
+    override fun onSeeAllFilter(somFilterData: SomFilterUiModel, position: Int) {
+
+    }
+
+    override fun onBtnSaveCalendarClicked(somListOrderParam: SomListGetOrderListParam) {
+        this.somListOrderParam = somListOrderParam
+    }
+
+    override fun getComponent(): SomFilterComponent? {
+        return activity?.run {
+            DaggerSomFilterBottomSheetComponent
+                    .builder()
+                    .somFilterComponent(SomComponentInstance.getSomComponent(application))
+                    .build()
         }
     }
 
-    override fun onChipsSortClicked(param: Int, position: Int, chipType: String) {
-        TODO("Not yet implemented")
+    private fun initRecyclerView() {
+        val somFilterLayoutManager = LinearLayoutManager(requireContext())
+        val somFilterAdapterTypeFactory = SomFilterAdapterTypeFactory(this)
+        somFilterAdapter = SomFilterAdapter(somFilterAdapterTypeFactory)
+        rvSomFilter?.apply {
+            layoutManager = somFilterLayoutManager
+            adapter = somFilterAdapter
+        }
     }
 
-    override fun onChipsStatusClicked(ids: List<Int>, position: Int, chipType: String) {
-        TODO("Not yet implemented")
+    private fun initInject() {
+        component?.inject(this)
     }
 
-    override fun onChipsTypeOrderClicked(id: Int, position: Int, chipType: String) {
-        TODO("Not yet implemented")
+    private fun clickShowOrder() {
+        btnShowOrder?.setOnClickListener {
+            somListOrderParam?.let { it1 -> somFilterFinishListener.onClickShowOrder(it1) }
+            dismiss()
+        }
     }
 
-    override fun onChipsCourierClicked(id: Int, position: Int, chipType: String) {
-        TODO("Not yet implemented")
+    private fun clickDateFilter() {
+        val somFilterDateBottomSheet = somListOrderParam?.let {
+            SomFilterDateBottomSheet.newInstance(it, this)
+        }
+        childFragmentManager.let {
+            somFilterDateBottomSheet?.show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+        }
     }
 
-    override fun onChipsLabelClicked(param: Int, position: Int, chipType: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onChipsDeadlineClicked(param: Int, position: Int, chipType: String) {
-        TODO("Not yet implemented")
+    private fun observeSomFilter() {
+        observe(somFilterViewModel.filterResult) {
+            somFilterAdapter?.hideLoading()
+            when (it) {
+                is Success -> {
+                    somFilterAdapter?.updateData(it.data)
+                }
+                is Fail -> { }
+            }
+        }
+        observe(somFilterViewModel.updateFilterSelected) {
+            somFilterAdapter?.updateData(it)
+        }
+        observe(somFilterViewModel.somFilterUiModelData) {
+            somListOrderParam = it
+        }
     }
 
     companion object {
         const val TITLE_FILTER = "Filter"
+        const val SOM_FILTER_CACHE_MANAGER_ID = "som_filter cache_manager_id"
+        const val KEY_SOM_FILTER_ORDER_LIST = "key_som_filter_order_list"
+        const val SOM_FILTER_BOTTOM_SHEET_TAG = "SomFilterBottomSheetTag"
+
+        fun createInstance(somFilterFinishListener: SomFilterFinishListener, somListOrderParam: SomListGetOrderListParam, somFilterCacheId: Int): SomFilterBottomSheet {
+            return SomFilterBottomSheet(somFilterFinishListener, somListOrderParam, somFilterCacheId)
+        }
+    }
+
+    interface SomFilterFinishListener {
+        fun onClickShowOrder(filterData: SomListGetOrderListParam)
     }
 }

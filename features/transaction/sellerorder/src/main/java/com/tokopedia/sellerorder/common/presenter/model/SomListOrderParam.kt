@@ -11,6 +11,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SomListOrderParam(
+
         @SerializedName("search")
         @Expose
         var search: String = "",
@@ -65,10 +66,10 @@ data class SomListOrderParam(
 
         @SerializedName("is_shipping_printed")
         @Expose
-        val isShippingPrinted: Int = 0,
+        var isShippingPrinted: Int = 0,
 
         @SerializedName("deadline")
         @Expose
-        val deadline: Int = 0
+        var deadline: Int = 0
 
 ) : Parcelable

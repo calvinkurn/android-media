@@ -15,6 +15,7 @@
     <string name="seller_info">Seller Info</string>
     <string name="seller_filter">Filter</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
+    <string name="btn_show_order">Tampilkan Pesanan</string>
 
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>
@@ -57,6 +58,8 @@
     <string name="simpan">Simpan</string>
     <string name="cetak">Cetak</string>
     <string name="select_date">Pilih tanggal</string>
+    <string name="start_date">Tanggal Mulai</string>
+    <string name="end_date">Tanggal Akhir</string>
 
     <!--DETAIL-->
     <string name="daftar_produk">Daftar Produk</string>

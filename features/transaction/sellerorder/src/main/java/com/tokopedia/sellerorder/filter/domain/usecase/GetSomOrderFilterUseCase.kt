@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import javax.inject.Inject
 
 class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository): GraphqlUseCase<SomFilterResponse>(repository) {
@@ -13,7 +14,7 @@ class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository
         setTypeClass(SomFilterResponse::class.java)
     }
 
-    suspend fun execute(): SomFilterUiModel {
+    suspend fun execute(): List<SomFilterUiModel> {
         return GetSomFilterMapper.mapToSomFilterUiModel(executeOnBackground())
     }
 

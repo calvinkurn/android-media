@@ -7,7 +7,6 @@ data class SomFilterChipsUiModel(
         var isSelected: Boolean = false,
         val childStatus: List<ChildStatusUiModel> = listOf()
 ) {
-
     data class ChildStatusUiModel(
             val childId: List<Int> = listOf(),
             val key: String = "",

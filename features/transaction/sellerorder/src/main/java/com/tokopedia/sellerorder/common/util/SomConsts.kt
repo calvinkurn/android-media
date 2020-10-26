@@ -169,6 +169,13 @@ object SomConsts {
     const val TOMORROW = 2
     const val TODAY_TOMORROW = 3
 
+    const val IS_PRE_ORDER = 1
+    const val IS_SAME_DAY = 2
+    const val IS_NEXT_DAY = 9
+    const val IS_PICKUP_DELIVERY = 3
+    const val IS_PPP = 4
+    const val IS_COD = 8
+
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
     const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
 

@@ -91,6 +91,12 @@ object Utils {
         return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }
 
+    fun getNPastYearTimeStamp(yearBefore: Int): Long {
+        val date = Calendar.getInstance(getLocale())
+        date.set(Calendar.YEAR, -yearBefore)
+        return date.timeInMillis
+    }
+
     fun getNNextDaysTimestamp(days: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(days))
     }

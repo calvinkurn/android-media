@@ -1,8 +1,11 @@
 package com.tokopedia.sellerorder.list.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class SomListGetOrderListParam(
         @SerializedName("search")
         @Expose
@@ -42,5 +45,13 @@ data class SomListGetOrderListParam(
         var page: Int = 1,
         @SerializedName("batch_page")
         @Expose
-        var batchPage: Int = 0
-)
+        var batchPage: Int = 0,
+
+        @SerializedName("is_shipping_printed")
+        @Expose
+        var isShippingPrinted: Int = 0,
+
+        @SerializedName("deadline")
+        @Expose
+        var deadline: Int = 0
+): Parcelable

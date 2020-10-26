@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.filter.presentation.adapter.FilterItemDecoration
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterItemChipsAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import kotlinx.android.synthetic.main.item_som_filter_list.view.*
@@ -17,14 +19,16 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
         val LAYOUT = R.layout.item_som_filter_list
     }
 
+    private var somFilterItemChipsAdapter: SomFilterItemChipsAdapter? = null
 
     override fun bind(element: SomFilterUiModel) {
+        somFilterItemChipsAdapter = SomFilterItemChipsAdapter(filterListener)
         with(itemView) {
             tvHeaderSeeAll.apply {
                 if (element.canSelectMany) {
                     show()
                     setOnClickListener {
-                        filterListener.onSeeAllFilter(element.nameFilter, adapterPosition)
+                        filterListener.onSeeAllFilter(element, adapterPosition)
                     }
                 } else {
                     hide()
@@ -38,33 +42,24 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
                 }
             }
         }
-        setupChipsAdapter()
+        setupChipsAdapter(element)
     }
 
-    private fun setupChipsAdapter() {
+    private fun setupChipsAdapter(data: SomFilterUiModel) {
         with(itemView) {
             val layoutManagerChips = ChipsLayoutManager.newBuilder(context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
             rvSomFilter?.also {
+                if(it.itemDecorationCount == 0) {
+                    it.addItemDecoration(FilterItemDecoration())
+                }
                 it.layoutManager = layoutManagerChips
                 ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
+                it.adapter = somFilterItemChipsAdapter
+                somFilterItemChipsAdapter?.setChipsFilter(data)
             }
         }
     }
 }
-
-//chipsItem.apply {
-//                centerText = true
-//                chipText = element.orderStatus
-//                chipSize = ChipsUnify.SIZE_MEDIUM
-//                chipType = if(element.isSelected) {
-//                    ChipsUnify.TYPE_SELECTED
-//                } else {
-//                    ChipsUnify.TYPE_NORMAL
-//                }
-//                setOnClickListener {
-//                    statusOrderListener.onChipsStatusClicked(element.id, adapterPosition, chipType.orEmpty())
-//                }
-//            }

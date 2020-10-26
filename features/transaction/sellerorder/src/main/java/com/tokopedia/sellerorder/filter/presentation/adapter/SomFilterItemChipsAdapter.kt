@@ -6,33 +6,33 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips.view.*
 
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
-    private var chipsFilterList: MutableList<SomFilterChipsUiModel>? = null
-    private var isSelectMany: Boolean = false
+    private var somFilterData: SomFilterUiModel? = null
 
-    fun setChipsFilter(sortFilterList: List<SomFilterChipsUiModel>, isSelectMany: Boolean) {
-        this.chipsFilterList = sortFilterList.toMutableList()
-        this.isSelectMany = isSelectMany
+    fun setChipsFilter(somFilterUiModel: SomFilterUiModel) {
+        this.somFilterData = somFilterUiModel
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips, parent, false)
-        return ChipsListViewHolder(view, somFilterListener)
+        return ChipsListViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return chipsFilterList?.size ?: 0
+        return somFilterData?.somFilterData?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ChipsListViewHolder, position: Int) {
-        chipsFilterList?.get(position)?.let { holder.bind(it) }
+        somFilterData?.somFilterData?.get(position)?.let { holder.bind(it) }
     }
 
-    class ChipsListViewHolder(itemView: View, private val somFilterListener: SomFilterListener) : RecyclerView.ViewHolder(itemView) {
+    inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: SomFilterChipsUiModel) {
             with(itemView) {
                 chipsItem.apply {
@@ -45,7 +45,7 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-
+                        somFilterListener.onFilterChipsClicked(data, somFilterData?.nameFilter.orEmpty(), adapterPosition, chipType.orEmpty())
                     }
                 }
             }

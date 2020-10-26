@@ -35,7 +35,7 @@ object GetSomFilterMapper {
             add(SomFilterUiModel(FILTER_COURIER, mapToFilterCourierUiModel(data.orderFilterSom.shippingList), true, isDividerVisible = true))
             add(SomFilterUiModel(FILTER_LABEL, mapToFilterLabelUiModel(), false, isDividerVisible = true))
             add(SomFilterUiModel(FILTER_DEADLINE, mapToFilterDeadlineUiModel(), isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_DATE, isDividerVisible = false))
+            add(SomFilterUiModel(FILTER_DATE, canSelectMany = false, isDividerVisible = false))
         }
     }
 

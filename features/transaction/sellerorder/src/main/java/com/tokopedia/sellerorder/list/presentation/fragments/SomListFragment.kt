@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -35,6 +36,7 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
@@ -70,6 +72,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val REQUEST_FILTER = 998
         private const val REQUEST_CONFIRM_SHIPPING = 997
         private const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
+
+        const val EXTRA_SOM_LIST_GET_ORDER_PARAM = "extra_som_list_get_order_param"
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -224,6 +228,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         getSwipeRefreshLayout(view)?.isEnabled = false
         refreshOrderList()
+    }
+
+    override fun onParentSortFilterClicked() {
+        val cacheManager = context?.let {
+            SaveInstanceCacheManager(it, true).apply {
+                put(EXTRA_SOM_LIST_GET_ORDER_PARAM, viewModel.getDataOrderListParams())
+            }
+        }
+        val bottomSheetFilter = SomFilterBottomSheet.createInstance().apply {
+
+        }
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
