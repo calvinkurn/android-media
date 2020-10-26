@@ -1,0 +1,53 @@
+package com.tokopedia.notifcenter.data.entity.notification
+
+
+import com.google.gson.annotations.SerializedName
+
+data class ProductData(
+    @SerializedName("campaign")
+    val campaign: Campaign = Campaign(),
+    @SerializedName("count_review")
+    val countReview: Int = 0,
+    @SerializedName("currency")
+    val currency: String = "",
+    @SerializedName("department_id")
+    val departmentId: Int = 0,
+    @SerializedName("image_url")
+    val imageUrl: String = "",
+    @SerializedName("is_buyable")
+    val isBuyable: Boolean = false,
+    @SerializedName("is_reminded")
+    val isReminded: Boolean = false,
+    @SerializedName("is_show")
+    val isShow: Boolean = false,
+    @SerializedName("is_topads")
+    val isTopads: Boolean = false,
+    @SerializedName("is_wishlist")
+    val isWishlist: Boolean = false,
+    @SerializedName("labels")
+    val labels: List<Any> = listOf(),
+    @SerializedName("min_order")
+    val minOrder: Int = 0,
+    @SerializedName("name")
+    val name: String = "",
+    @SerializedName("price")
+    val price: Int = 0,
+    @SerializedName("price_fmt")
+    val priceFmt: String = "",
+    @SerializedName("price_idr")
+    val priceIdr: Int = 0,
+    @SerializedName("product_id")
+    val productId: Int = 0,
+    @SerializedName("rating")
+    val rating: Int = 0,
+    @SerializedName("shop")
+    val shop: Shop = Shop(),
+    @SerializedName("stock")
+    val stock: Int = 0,
+    @SerializedName("type_button")
+    val typeButton: Int = 0,
+    @SerializedName("url")
+    val url: String = "",
+    @SerializedName("variant")
+    val variant: List<Variant> = listOf()
+)
