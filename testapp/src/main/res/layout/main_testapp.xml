@@ -16,11 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
-        android:id="@+id/chuckButton"
-        android:text="Chuck"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
         android:id="@+id/testGqlButton"
         android:text="Test GQL"
         android:layout_width="match_parent"
@@ -36,10 +31,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/useOldPageButton"
-        android:text="use old login page"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_64"/>
 </LinearLayout>
