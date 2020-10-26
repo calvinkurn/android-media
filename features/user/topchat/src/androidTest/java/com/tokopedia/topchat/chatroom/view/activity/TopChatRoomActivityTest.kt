@@ -138,19 +138,7 @@ class TopChatRoomActivityTest {
         val viewInteraction = onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
         var position = 1
         var idToClick = R.id.tv_occ
-////        viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(0, click()))
         viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, MyViewAction.clickChildViewWithId(idToClick)))
-        // working click
-
-        // recyclerview parent container recyclerview + id recyclerview
-//        onView(AllOf.allOf(withParent(withId(R.id.rv_container)), withId(R.id.recycler_view))).check(matches(isDisplayed()))
-
-//        Thread.sleep(30000)
-
-//        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(1, R.id.product_name)).check(matches(withText(containsString("3"))))
-
-
-//        onView(AllOf.allOf(withParent(withId(R.id.recycler_view)), withId(R.id.cl_msg_container))).check(matches(isDisplayed()))
 
         Thread.sleep(5000)
 
