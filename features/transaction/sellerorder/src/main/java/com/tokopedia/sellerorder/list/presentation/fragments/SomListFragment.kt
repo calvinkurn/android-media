@@ -1012,6 +1012,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         somListLoading.gone()
         rvSomList.gone()
         multiEditViews.gone()
+        getSwipeRefreshLayout(view)?.apply {
+            isRefreshing = false
+            isEnabled = false
+        }
         val errorType = when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
             else -> GlobalError.SERVER_ERROR
