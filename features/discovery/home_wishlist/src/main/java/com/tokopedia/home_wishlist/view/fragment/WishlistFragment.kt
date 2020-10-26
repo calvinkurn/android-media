@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.view.fragment
 import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,11 +21,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
@@ -56,6 +60,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
 import javax.inject.Inject
 
@@ -70,7 +75,6 @@ import javax.inject.Inject
  * @property viewModelProvider the viewModelProvider by Dagger
  * @property adapterFactory the factory for handling type factory Visitor Pattern
  * @property adapter the adapter for recyclerView
- * @property menu the menu of this activity.
  * @property SPAN_COUNT the span count for list.
  * @property SHARE_PRODUCT_TITLE the const value for sharing title.
  * @property SAVED_PRODUCT_ID the const value for handling save productId at SaveInstance.
@@ -89,6 +93,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     @Inject
     lateinit var appExecutors: SmartExecutors
 
+    private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private lateinit var trackingQueue: TrackingQueue
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     internal val viewModel by lazy { viewModelProvider.get(WishlistViewModel::class.java) }
@@ -156,11 +161,18 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        initCartLocalCacheHandler()
         hideSearchView()
         observeData()
         viewModel.getWishlistData(shouldShowInitialPage = true)
         WishlistTracking.openWishlistPage(viewModel.getUserId())
         showOnBoarding()
+    }
+
+    private fun initCartLocalCacheHandler() {
+        activity?.let {
+            cartLocalCacheHandler = LocalCacheHandler(it, "CART")
+        }
     }
 
     override fun onPause() {
@@ -177,16 +189,50 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         return componentType.cast((activity as HasComponent<C>?)?.getComponent())
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.manage -> manageDeleteWishlist()
-            R.id.cancel -> cancelDeleteWishlist()
-            android.R.id.home -> {
-                activity?.finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.wishlist_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        context?.let {
+            showCartBadge(menu)
         }
+    }
+
+    private fun showCartBadge(menu: Menu?) {
+        context?.let {
+            if (::cartLocalCacheHandler.isInitialized) {
+                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
+                if (drawable is LayerDrawable) {
+                    val cartCount = cartLocalCacheHandler.getInt("CACHE_TOTAL_CART", 0)
+                    val countDrawable = CountDrawable(it)
+                    countDrawable.setCount(cartCount.toString())
+                    drawable.mutate()
+                    drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
+                    menu?.findItem(R.id.action_cart)?.icon = drawable
+                }
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        activity?.let {
+            return when (item.itemId) {
+                R.id.action_cart -> {
+                    RouteManager.route(it, ApplinkConst.CART)
+                    it.finish()
+                    true
+                }
+                android.R.id.home -> {
+                    it.finish()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initView() {
