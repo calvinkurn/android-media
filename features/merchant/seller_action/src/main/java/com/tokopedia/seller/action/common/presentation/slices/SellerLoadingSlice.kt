@@ -4,10 +4,12 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
 import androidx.slice.builders.ListBuilder
 import androidx.slice.builders.header
 import androidx.slice.builders.list
+import androidx.slice.builders.row
 import com.tokopedia.seller.action.R
 
 class SellerLoadingSlice(context: Context,
@@ -17,8 +19,13 @@ class SellerLoadingSlice(context: Context,
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
+                    title = ""
+                }
+                row {
+                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_loading), ListBuilder.LARGE_IMAGE)
                     title = context.getString(R.string.seller_action_loading_title)
                     subtitle = context.getString(R.string.seller_action_order_loading_desc)
+                    primaryAction = createActivityAction()
                 }
             }
 

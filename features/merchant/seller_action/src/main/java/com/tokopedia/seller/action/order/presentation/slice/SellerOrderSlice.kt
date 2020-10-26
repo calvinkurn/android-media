@@ -2,7 +2,6 @@ package com.tokopedia.seller.action.order.presentation.slice
 
 import android.app.PendingIntent
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,13 +10,13 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
-import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.const.SellerActionFeatureName
 import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
 import com.tokopedia.seller.action.common.utils.SellerActionUtils.isOrderDateToday
 import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
@@ -57,7 +56,7 @@ class SellerOrderSlice(context: Context,
                                     it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),
                                     it.buyerName)
                         }
-                        setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap()), SMALL_IMAGE)
+                        setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap(context)), SMALL_IMAGE)
                         title = it.listOrderProduct.let { productList ->
                             val displayedName = productList.firstOrNull()?.productName.orEmpty()
                             if (productList.size <= 1) {
@@ -66,9 +65,7 @@ class SellerOrderSlice(context: Context,
                                 with(displayedName) {
                                     val truncatedName =
                                             if (length > MAX_PRODUCT_NAME_LENGTH) {
-                                                displayedName.take(TRUNCATED_PRODUCT_NAME_LENGTH).let {
-                                                    it + context.getString(R.string.seller_action_triple_dot)
-                                                }
+                                                displayedName.take(TRUNCATED_PRODUCT_NAME_LENGTH) + context.getString(R.string.seller_action_triple_dot)
                                             } else {
                                                 displayedName
                                             }
@@ -101,18 +98,10 @@ class SellerOrderSlice(context: Context,
     private fun createOrderDetailPrimaryAction(pendingIntent: PendingIntent, imageUri: String, title: String): SliceAction =
             SliceAction.create(
                     pendingIntent,
-                    IconCompat.createWithBitmap(imageUri.getBitmap()),
+                    IconCompat.createWithBitmap(imageUri.getBitmap(context)),
                     ICON_IMAGE,
                     title
             )
-
-    private fun String.getBitmap(): Bitmap? =
-            Glide.with(context)
-                    .asBitmap()
-                    .placeholder(R.drawable.ic_sellerapp_slice)
-                    .load(this)
-                    .submit()
-                    .get()
 
     /**
      * Map order code to its writing manually

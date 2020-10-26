@@ -7,10 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
-import androidx.slice.builders.ListBuilder
-import androidx.slice.builders.SliceAction
-import androidx.slice.builders.list
-import androidx.slice.builders.row
+import androidx.slice.builders.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.seller.action.R
@@ -21,7 +18,11 @@ class SellerNotLoginSlice(context: Context,
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
+                header {
+                    title = ""
+                }
                 row {
+                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_no_login), ListBuilder.LARGE_IMAGE)
                     title = context.getString(R.string.seller_action_not_login_title)
                     subtitle = context.getString(R.string.seller_action_order_not_login_desc)
                     primaryAction = createLoginAction()
