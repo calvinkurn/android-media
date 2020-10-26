@@ -181,6 +181,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     } else { // Else, show error message in affected items
                         smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
 
+                        checkout_loading_view.hide()
                         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
                         for (errorItem in it.data.attributes.errors) {
@@ -199,6 +200,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
                 is Fail -> {
                     smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
+
+                    checkout_loading_view.hide()
                     var throwable = it.throwable
                     if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
@@ -206,7 +209,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
                 }
             }
-            checkout_loading_view.hide()
         })
     }
 
@@ -448,6 +450,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (checkout_loading_view.isVisible) checkout_loading_view.hide()
     }
 
     override fun onDestroy() {
