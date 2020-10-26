@@ -22,7 +22,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                 if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
         useCase.clearRequest()
 
-        val params = mapOf(PARAM_INVOICE_ID to invoiceId)
+        val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
         val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
@@ -287,6 +287,7 @@ class FlightOrderDetailUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_INVOICE_ID = "invoiceID"
+        private const val PARAM_DATA = "data"
     }
 
 }
