@@ -31,6 +31,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -205,7 +206,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
                 }
             }
-            loading_view.hide()
+            checkout_loading_view.hide()
         })
     }
 
@@ -432,7 +433,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onClickNextBuyButton() {
         // Prevent multiple checkout calls when one is already underway
-        if (adapter.checkedDataList.isNotEmpty() && !smart_bills_checkout_view.getCheckoutButton().isLoading) {
+        if (adapter.checkedDataList.isNotEmpty() && !checkout_loading_view.isVisible) {
             // Reset error in bill items
             for ((index, bill) in adapter.data.withIndex()) {
                 if (bill.errorMessage.isNotEmpty()) {
@@ -442,7 +443,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
             }
 
-            loading_view.show()
+            checkout_loading_view.show()
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )
