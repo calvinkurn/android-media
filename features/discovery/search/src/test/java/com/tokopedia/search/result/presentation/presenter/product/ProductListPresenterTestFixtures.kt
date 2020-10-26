@@ -126,6 +126,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
         productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
+        productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
     }
 
@@ -149,5 +150,6 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productID shouldBe organicProduct.id
         productItem.productName shouldBe organicProduct.name
         productItem.price shouldBe organicProduct.price
+        productItem.minOrder shouldBe organicProduct.minOrder
     }
 }
