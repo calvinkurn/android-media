@@ -98,7 +98,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahTravelGalleryViewModel.galleryResult.observe(this, Observer {
+        umrahTravelGalleryViewModel.galleryResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetResult(it.data.umrahGalleries)
@@ -182,7 +182,7 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
     private fun requestData(page: Int) {
         slugName?.let {
             umrahTravelGalleryViewModel.getDataGallery(page, it,
-                    UmrahQuery.umrahTravelAgentGallery())
+                    UmrahQuery.UMRAH_TRAVEL_AGENT_GALLERY)
         }
     }
 

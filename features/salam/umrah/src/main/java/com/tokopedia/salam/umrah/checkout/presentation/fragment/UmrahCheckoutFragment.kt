@@ -129,7 +129,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutViewModel.checkoutMapped.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutMapped.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderView(it.data)
@@ -153,7 +153,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         })
 
-        umrahCheckoutViewModel.checkoutResult.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutGeneral.data.success == 0) {
@@ -212,10 +212,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun requestData(){
         umrahCheckoutViewModel.getDataCheckout(
-                UmrahQuery.umrahPDP(),
-                UmrahQuery.umrahCheckoutSummary(),
-                UmrahQuery.umrahCheckoutPaymentOption(),
-                UmrahQuery.umrahCheckoutTnc(),
+                UmrahQuery.UMRAH_PDP_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_SUMMARY_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_PAYMENT_OPTION_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_TNC_QUERY,
                 slugName,
                 variantId,
                 pilgrimCount,
@@ -301,7 +301,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     )
             )
 
-            umrahCheckoutViewModel.executeCheckout(UmrahQuery.umrahCheckoutGeneral(), checkoutResultParams)
+            umrahCheckoutViewModel.executeCheckout(UmrahQuery.UMRAH_CHECKOUT_GENERAL_QUERY, checkoutResultParams)
         } else {
             progressDialog.dismiss()
             view?.let {

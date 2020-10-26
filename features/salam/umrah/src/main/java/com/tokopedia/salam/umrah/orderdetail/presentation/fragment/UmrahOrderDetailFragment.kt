@@ -111,11 +111,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         showLoading()
 
         umrahOrderDetailViewModel.getOrderDetail(
-                UmrahQuery.umrahOrderDetail(),
+                UmrahQuery.UMRAH_ORDER_DETAIL_QUERY,
                 orderId
         )
         umrahOrderDetailViewModel.getMyUmrahWidget(
-                UmrahQuery.myUmrahByOrderId(),
+                UmrahQuery.UMRAH_MY_UMRAH_BY_ORDER_ID_QUERY,
                 orderId
         )
     }

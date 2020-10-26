@@ -267,7 +267,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     override fun loadData(page: Int) {
         umrahSearchViewModel.searchUmrahProducts(page,
-                UmrahQuery.umrahSearchProduct())
+                UmrahQuery.UMRAH_SEARCH_PRODUCT_QUERY)
     }
 
     private fun onSuccessGetResult(data: List<UmrahSearchProduct>) {
@@ -382,7 +382,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     }
 
     private fun loadSortData() {
-        val searchQuery = UmrahQuery.umrahHomePageSearchParam()
+        val searchQuery = UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 

@@ -69,7 +69,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahTravelListViewModel.travelAgents.observe(this, Observer {
+        umrahTravelListViewModel.travelAgents.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
                     onSuccessResult(it.data)
@@ -91,7 +91,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     private fun requestData(page: Int){
         umrahTravelListViewModel.requestTravelAgentsData(
-                UmrahQuery.umrahCommonTravelAgent(),
+                UmrahQuery.UMRAH_COMMON_TRAVEL_AGENT_QUERY,
                 page, true
         )
     }

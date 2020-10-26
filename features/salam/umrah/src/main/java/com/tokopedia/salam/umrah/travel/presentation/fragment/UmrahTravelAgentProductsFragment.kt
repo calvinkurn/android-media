@@ -126,7 +126,7 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
     private fun requestData(page:Int){
         slugName?.let {
             umrahTravelProductViewModel.getDataProductTravel(page,it,
-                    UmrahQuery.umrahSearchProduct())
+                    UmrahQuery.UMRAH_SEARCH_PRODUCT_QUERY)
         }
     }
 

@@ -67,7 +67,7 @@ class UmrahTravelAgentInfoFragment : BaseDaggerFragment(), TruncateDescriptionWi
     private fun requestData() {
         slugName?.let {
             umrahTravelInfoViewModel.requestTravelData(
-                    UmrahQuery.umrahTravelbySlugName(), it)
+                    UmrahQuery.UMRAH_TRAVEL_BY_SLUGNAME, it)
         }
     }
 

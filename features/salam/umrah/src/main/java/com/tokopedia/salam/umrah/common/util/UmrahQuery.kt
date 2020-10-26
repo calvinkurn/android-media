@@ -2,7 +2,8 @@ package com.tokopedia.salam.umrah.common.util
 
 object UmrahQuery {
 
-    fun umrahHomePageBanner()="""
+    val UMRAH_HOME_PAGE_BANNER_QUERY by lazy {
+        """
         {
          umrahBanners(params: {service: "UMRAHCATALOG", limit: 20, location: "homepage"}){
             id
@@ -15,8 +16,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahHomePageCategory()="""
+    val UMRAH_HOME_PAGE_CATEGORY_QUERY by lazy {
+        """
         {
           umrahCategories(params: {limit: 5}) {
             id
@@ -87,8 +90,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahHomePageFeatured()="""
+    val UMRAH_HOME_PAGE_FEATURED_QUERY by lazy {
+        """
         query UmrahCategoryProducts {
           umrahCategories(params: {flags: CATEGORY_FEATURED_ON_HOMEPAGE }) {
             id
@@ -123,8 +128,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahHomePageSearchParam()="""
+    val UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY by lazy {
+        """
         {
           umrahSearchParameter{
             departureCities{
@@ -167,8 +174,11 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahSearchProduct()="""
+
+    val UMRAH_SEARCH_PRODUCT_QUERY by lazy {
+        """
         query UmrahSearchProducts(${'$'}params: UmrahSearchProductInput!){
           umrahSearchProducts(params:${'$'}params) {
             ui{
@@ -238,8 +248,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahSayaList()="""
+    val UMRAH_SAYA_LIST_QUERY by lazy {
+        """
         query umrahWidgetUmrahSayaList {
           umrahWidgetUmrahSayaList{
             subHeader
@@ -252,8 +264,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahTravelAgentGallery()="""
+    val UMRAH_TRAVEL_AGENT_GALLERY by lazy {
+        """
         query umrahGalleries(${'$'}params: UmrahGalleriesInput!){
           umrahGalleries(params:${'$'}params){
             id
@@ -271,8 +285,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahTravelbySlugName()="""
+    val UMRAH_TRAVEL_BY_SLUGNAME by lazy {
+        """
         query umrahTravelAgentBySlug(${'$'}slugName:String! ){
           umrahTravelAgentBySlug(slugName : ${'$'}slugName ){
             id
@@ -326,8 +342,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahCommonTravelAgent()="""
+    val UMRAH_COMMON_TRAVEL_AGENT_QUERY by lazy {
+        """
         query umrahTravelAgents(${'$'}params : UmrahTravelAgentsInput!){
           umrahTravelAgents(params:${'$'}params){
             id
@@ -349,8 +367,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun myUmrahByOrderId()="""
+    val UMRAH_MY_UMRAH_BY_ORDER_ID_QUERY by lazy {
+        """
         query umrahWidgetUmrahSayaByOrderUUID(${'$'}orderId : ID!) {
           status
           umrahWidgetUmrahSayaByOrderUUID(params: {orderUUID:${'$'}orderId}){
@@ -364,8 +384,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahOrderDetail()="""
+    val UMRAH_ORDER_DETAIL_QUERY by lazy {
+        """
         query OrderDetailsQuery(${'$'}orderCategoryStr: String, ${'$'}orderId : String) {
           orderDetails(orderCategoryStr: ${'$'}orderCategoryStr, orderId: ${'$'}orderId )  {
               invoice {
@@ -457,8 +479,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahPDP()="""
+    val UMRAH_PDP_QUERY by lazy {
+        """
         query UmrahProduct(${'$'}slugName : String!){
           umrahProduct(slugName: ${'$'}slugName ){
             ui{
@@ -545,8 +569,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahCheckoutTnc()="""
+    val UMRAH_CHECKOUT_TNC_QUERY by lazy {
+        """
         query umrahTermsConditions(${'$'}params : UmrahTermsConditionsInput!){
           umrahTermsConditions(params: ${'$'}params ){
             header
@@ -554,8 +580,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahCheckoutGeneral()="""
+    val UMRAH_CHECKOUT_GENERAL_QUERY by lazy {
+        """
         mutation checkout_general(${'$'}params : CheckoutGeneralParams) {
           checkout_general(params: ${'$'}params ) {
             header {
@@ -606,8 +634,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahCheckoutPaymentOption()="""
+    val UMRAH_CHECKOUT_PAYMENT_OPTION_QUERY by lazy {
+        """
         query umrahPaymentOptions(${'$'}params : UmrahPaymentOptionsInput!){
           umrahPaymentOptions(params:${'$'}params ){
             paymentOptions{
@@ -630,8 +660,10 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 
-    fun umrahCheckoutSummary()="""
+    val UMRAH_CHECKOUT_SUMMARY_QUERY by lazy {
+        """
         query umrahCheckoutSummary(${'$'}params : UmrahCheckoutSummaryInput!){
           umrahCheckoutSummary(params: ${'$'}params ){
             checkoutDetails{
@@ -644,4 +676,6 @@ object UmrahQuery {
           }
         }
     """.trimIndent()
+    }
 }
+

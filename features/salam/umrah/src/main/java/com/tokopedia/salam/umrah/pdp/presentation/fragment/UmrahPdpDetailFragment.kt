@@ -69,7 +69,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahPdpDetailViewModel.pdpAvailability.observe(this, Observer {
+        umrahPdpDetailViewModel.pdpAvailability.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError()
@@ -94,7 +94,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
 
     private fun requestAvailabilityData() {
         umrahPdpDetailViewModel.getPdpAvailability(
-                UmrahQuery.umrahPDP(), paramPurchase.slugName)
+                UmrahQuery.UMRAH_PDP_QUERY, paramPurchase.slugName)
     }
 
     private fun setupAll() {

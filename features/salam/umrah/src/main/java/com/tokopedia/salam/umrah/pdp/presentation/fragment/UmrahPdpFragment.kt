@@ -166,7 +166,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
     private fun requestData() {
         slugName?.let {
             umrahPdpViewModel.requestPdpData(
-                    UmrahQuery.umrahPDP(), it)
+                    UmrahQuery.UMRAH_PDP_QUERY, it)
         }
     }
 

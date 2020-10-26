@@ -67,7 +67,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     }
 
     private fun loadData() {
-        val searchQuery = UmrahQuery.umrahHomePageSearchParam()
+        val searchQuery = UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 

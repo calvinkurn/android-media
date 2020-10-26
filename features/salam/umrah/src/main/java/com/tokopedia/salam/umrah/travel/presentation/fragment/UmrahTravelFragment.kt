@@ -81,7 +81,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     private fun requestData() {
         slugName?.let {
             umrahTravelViewModel.requestTravelData(
-                    UmrahQuery.umrahTravelbySlugName(), it)
+                    UmrahQuery.UMRAH_TRAVEL_BY_SLUGNAME, it)
         }
     }
 
@@ -101,7 +101,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        umrahTravelViewModel.travelAgentData.observe(this, Observer {
+        umrahTravelViewModel.travelAgentData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     travelAgent = it.data.umrahTravelAgentBySlug
