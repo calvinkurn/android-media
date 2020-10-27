@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class ProductRevIncentiveOvoDomain(
         @SerializedName("productrevIncentiveOvo")
         @Expose
-        var productrevIncentiveOvo: ProductRevIncentiveOvoResponse? = ProductRevIncentiveOvoResponse()
+        var productrevIncentiveOvo: ProductRevIncentiveOvoResponse? = null
 )

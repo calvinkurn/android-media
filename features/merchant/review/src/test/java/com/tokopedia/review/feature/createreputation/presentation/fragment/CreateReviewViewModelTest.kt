@@ -9,14 +9,14 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoResponse
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
-import com.tokopedia.review.utils.verifyValueEquals
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import org.junit.Assert
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
@@ -27,34 +27,32 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getSelectedImagesUrl should return expected list of Url`() {
-        val selectedImages = listOf(
-                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
-                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
-        )
-
         viewModel.clearImageData()
-        viewModel.getImageList(selectedImages)
+        viewModel.getImageList(images)
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
+
+        Assert.assertEquals(actualData, expectedData)
+        assertTrue(viewModel.isImageNotEmpty())
+    }
+
+    @Test
+    fun `when removeImage should return expected list ofUrl`() {
+        val images = viewModel.getImageList(images)
+
+        viewModel.removeImage(images.first())
+
+        val actualData = viewModel.getSelectedImagesUrl()
+        val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
         Assert.assertEquals(actualData, expectedData)
     }
 
     @Test
-    fun `when removeImage should return expected list ofUrl`() {
-        val selectedImages = listOf(
-                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
-                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
-        )
-        val images = viewModel.getImageList(selectedImages)
+    fun `when removeImage in editMode should return expected list ofUrl`() {
+        val images = viewModel.getImageList(images)
 
-        viewModel.removeImage(images.first())
+        viewModel.removeImage(images.first(), true)
 
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
@@ -100,7 +98,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     fun `should success when get product incentive ovo`() {
         coEvery {
             getProductIncentiveOvo.getIncentiveOvo()
-        } returns ProductRevIncentiveOvoDomain()
+        } returns ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
 
         viewModel.getProductIncentiveOvo()
 
@@ -108,6 +106,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             getProductIncentiveOvo.getIncentiveOvo()
         }
 
+        assertTrue(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -123,6 +122,7 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             getProductIncentiveOvo.getIncentiveOvo()
         }
 
+        assertFalse(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
 
@@ -155,16 +155,9 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getImageList of 5 images should return expected ImageReviewModels`() {
-        val selectedImages = listOf(
-                ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-                ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-                ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-                ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
-                ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
-        )
         val expectedData = mutableListOf(ImageReviewUiModel("ImageUrl1", "ImageUrl1"), ImageReviewUiModel("ImageUrl2", "ImageUrl2"), ImageReviewUiModel("ImageUrl3", "ImageUrl3"), ImageReviewUiModel("ImageUrl4", "ImageUrl4"), ImageReviewUiModel("ImageUrl5", "ImageUrl5"))
 
-        val actualData = viewModel.getImageList(selectedImages)
+        val actualData = viewModel.getImageList(images)
 
         Assert.assertEquals(expectedData, actualData)
     }
@@ -185,12 +178,136 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         Assert.assertEquals(expectedData, actualData)
     }
 
+    @Test
+    fun `when getUserName should return valid userName`() {
+        val actualUserId = viewModel.getUserName()
+        assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when submitReview with images results in back end error should return failure`() {
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedUploadResponse = UploadResult.Success("success")
+
+        onUploadImage_thenReturn(expectedUploadResponse)
+        onSubmitReview_thenReturn(expectedResponse)
+
+        viewModel.clearImageData()
+        viewModel.getImageList(images)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+
+        verifySubmitReviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifySubmitReviewError(com.tokopedia.review.common.data.Fail(Throwable()))
+        }
+    }
+
+    @Test
+    fun `when submitReview with images results in network error should return failure`() {
+        val expectedResponse = Throwable()
+        val expectedUploadResponse = UploadResult.Success("success")
+
+        onUploadImage_thenReturn(expectedUploadResponse)
+        onSubmitReviewError_thenReturn(expectedResponse)
+
+        viewModel.clearImageData()
+        viewModel.getImageList(images)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+
+        verifySubmitReviewUseCaseCalled()
+        verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when submitReview with no images should execute expected usecases`() {
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+
+        onSubmitReview_thenReturn(expectedResponse)
+
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+
+        verifySubmitReviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifySubmitReviewSuccess(com.tokopedia.review.common.data.Success(it.success))
+        }
+    }
+
+    @Test
+    fun `when submitReview with no images results in back end error should return failure`() {
+        val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+
+        onSubmitReview_thenReturn(expectedResponse)
+
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+
+        verifySubmitReviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifySubmitReviewError(com.tokopedia.review.common.data.Fail(Throwable()))
+        }
+    }
+
+    @Test
+    fun `when submitReview with no images results in network error should return failure`() {
+        val expectedResponse = Throwable()
+
+        onSubmitReviewError_thenReturn(expectedResponse)
+
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating)
+
+        verifySubmitReviewUseCaseCalled()
+        verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when editReview with no images should execute expected usecases`() {
+        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+
+        onEditReview_thenReturn(expectedResponse)
+
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifyEditReviewSuccess(com.tokopedia.review.common.data.Success(it.success))
+        }
+    }
+
+    @Test
+    fun `when editReview with no images results in back end error should return failure`() {
+        val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+
+        onEditReview_thenReturn(expectedResponse)
+
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        expectedResponse.productrevSuccessIndicator?.let {
+            verifyEditReviewError(com.tokopedia.review.common.data.Fail(Throwable()))
+        }
+    }
+
+    @Test
+    fun `when editReview with no images results in network error should return failure`() {
+        val expectedResponse = Throwable()
+
+        onEditReviewError_thenReturn(expectedResponse)
+
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+
+        verifyEditreviewUseCaseCalled()
+        verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
     private fun verifyGetReviewDetailUseCaseCalled() {
         coVerify { getReviewDetailUseCase.executeOnBackground() }
     }
 
     private fun verifySubmitReviewUseCaseCalled() {
         coVerify { submitReviewUseCase.executeOnBackground() }
+    }
+
+    private fun verifyEditreviewUseCaseCalled() {
+        coVerify { editReviewUseCase.executeOnBackground() }
     }
 
     private fun verifyImageUploaderUseCaseCalledBasedOnSizeOfList(size: Int) {
@@ -203,6 +320,42 @@ class  CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onGetReviewDetailsFails_thenReturn(throwable: Throwable) {
         coEvery { getReviewDetailUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onUploadImage_thenReturn(response: UploadResult) {
+        coEvery { uploaderUseCase.invoke(any()) } returns response
+    }
+
+    private fun verifySubmitReviewSuccess(viewState: com.tokopedia.review.common.data.Success<Boolean>) {
+        viewModel.submitReviewResult.verifySuccessEquals(viewState)
+    }
+
+    private fun verifySubmitReviewError(viewState: com.tokopedia.review.common.data.Fail<Boolean>) {
+        viewModel.submitReviewResult.verifyErrorEquals(viewState)
+    }
+
+    private fun verifyEditReviewSuccess(viewState: com.tokopedia.review.common.data.Success<Boolean>) {
+        viewModel.editReviewResult.verifySuccessEquals(viewState)
+    }
+
+    private fun verifyEditReviewError(viewState: com.tokopedia.review.common.data.Fail<Boolean>) {
+        viewModel.editReviewResult.verifyErrorEquals(viewState)
+    }
+
+    private fun onSubmitReview_thenReturn(response: ProductrevSubmitReviewResponseWrapper) {
+        coEvery { submitReviewUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onSubmitReviewError_thenReturn(throwable: Throwable) {
+        coEvery { submitReviewUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onEditReview_thenReturn(response: ProductRevEditReviewResponseWrapper) {
+        coEvery { editReviewUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onEditReviewError_thenReturn(throwable: Throwable) {
+        coEvery { editReviewUseCase.executeOnBackground() } throws throwable
     }
 
     private fun verifyReviewDetailsSuccess(viewState: com.tokopedia.review.common.data.Success<ProductrevGetReviewDetail>) {
