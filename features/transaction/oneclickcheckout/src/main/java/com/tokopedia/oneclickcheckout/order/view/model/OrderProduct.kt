@@ -23,6 +23,7 @@ data class OrderProduct(
         var category: String = "",
         var productFinsurance: Int = 0,
         var isSlashPrice: Boolean = false,
+        var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage()
 ) {

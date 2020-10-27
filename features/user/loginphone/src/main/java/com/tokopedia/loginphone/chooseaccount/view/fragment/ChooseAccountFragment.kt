@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -51,6 +51,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_choose_login_phone_account.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -76,10 +77,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private val REQUEST_SECURITY_QUESTION = 101
 
     private lateinit var listAccount: RecyclerView
-    private lateinit var mainView: View
-    private lateinit var progressBar: LoaderUnify
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
@@ -141,9 +141,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         val view = inflater.inflate(R.layout.fragment_choose_login_phone_account, parent, false)
         setHasOptionsMenu(true)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        listAccount = view.findViewById(R.id.list_account)
-        mainView = view.findViewById(R.id.main_view)
-        progressBar = view.findViewById(R.id.progress_bar)
+        listAccount = view.findViewById(R.id.chooseAccountList)
         prepareView()
         return view
     }
@@ -191,13 +189,19 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         chooseAccountViewModel.loginPhoneNumberResponse.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessLoginToken()
-                is Fail -> onErrorLoginToken(it.throwable)
+                is Fail -> {
+                    dismissLoadingProgress()
+                    onErrorLoginToken(it.throwable)
+                }
             }
         })
         chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
-                is Fail -> onErrorGetUserInfo(it.throwable)
+                is Fail -> {
+                    dismissLoadingProgress()
+                    onErrorGetUserInfo(it.throwable)
+                }
             }
         })
         chooseAccountViewModel.goToActivationPage.observe(this, androidx.lifecycle.Observer {
@@ -209,6 +213,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
+        showLoadingProgress()
         if (account.challenge2Fa) {
             open2FA(account, phone)
         } else {
@@ -219,6 +224,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private fun open2FA(account: UserDetail, phone: String) {
         selectedAccount = account
         selectedPhoneNo = phone
+        showLoadingProgress()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
@@ -291,8 +297,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm
                     .pushUserId(userId)
-            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-                Crashlytics.setUserIdentifier(userId)
+            if (!GlobalConfig.DEBUG && crashlytics != null)
+                crashlytics.setUserId(userId)
 
             if (userSessionInterface.isLoggedIn) {
                 val userData = UserData()
@@ -336,7 +342,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun logUnknownError(throwable: Throwable) {
         try {
-            Crashlytics.logException(throwable)
+            crashlytics.recordException(throwable)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -374,13 +380,15 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun showLoadingProgress() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        chooseAccountTitle?.visibility = View.GONE
+        chooseAccountList?.visibility = View.GONE
+        chooseAccountLoader?.visibility = View.VISIBLE
     }
 
     private fun dismissLoadingProgress() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        chooseAccountTitle?.visibility = View.VISIBLE
+        chooseAccountList?.visibility = View.VISIBLE
+        chooseAccountLoader?.visibility = View.GONE
     }
 
     private fun onSuccessGetAccountList(accountList: AccountList) {

@@ -8,7 +8,6 @@ import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.tokopedia.play.exoplayer.TestExoPlayer
 import com.tokopedia.play.exoplayer.TestExoPlayerCreator
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
@@ -16,23 +15,21 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.*
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.net.HttpURLConnection
-import kotlin.RuntimeException
 
 /**
  * Created by jegul on 15/09/20
  */
 class PlayViewerVideoStateProcessorTest {
 
-    @get:Rule
     private val appContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val testExoPlayerCreator = TestExoPlayerCreator(appContext)
@@ -45,6 +42,8 @@ class PlayViewerVideoStateProcessorTest {
         override val immediate: CoroutineDispatcher
             get() = testDispatcher
         override val io: CoroutineDispatcher
+            get() = testDispatcher
+        override val computation: CoroutineDispatcher
             get() = testDispatcher
     }
 

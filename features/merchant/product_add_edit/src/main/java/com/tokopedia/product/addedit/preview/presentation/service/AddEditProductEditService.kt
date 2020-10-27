@@ -11,15 +11,19 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -91,7 +95,9 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
-        ProductEditShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+        ProductEditUploadTracking.uploadImageFailed(
+                userSession.shopId,
+                AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -133,12 +139,23 @@ class AddEditProductEditService : AddEditProductBaseService() {
             // (4)
             clearProductDraft()
             setUploadProductDataSuccess()
-            ProductEditShippingTracking.clickFinish(shopId, true)
+            ProductEditUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
             setUploadProductDataError(getErrorMessage(throwable))
 
             logError(productEditUseCase.params, throwable)
-            ProductEditShippingTracking.clickFinish(shopId, false, throwable.message ?: "")
+            if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
+                ProductEditUploadTracking.uploadGqlTimeout(
+                        ProductEditUseCase.QUERY_NAME,
+                        shopId,
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            } else {
+                ProductEditUploadTracking.uploadProductFinish(
+                        shopId,
+                        false,
+                        AddEditProductUploadErrorHandler.isValidationError(throwable),
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            }
         })
     }
 

@@ -260,23 +260,13 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.get().isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
     }
 
-    /**
-     * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
-     */
     private void routeOnboarding() {
-        if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
-            if (Build.VERSION.RELEASE.contains("5.0.2")) {
-                return;
-            }
-        }
         RouteManager.route(this, ApplinkConstInternalMarketplace.ONBOARDING);
         finish();
     }

@@ -18,7 +18,8 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.iris.Iris
 import kotlinx.android.synthetic.main.fragment_initial_state.*
@@ -143,13 +144,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.onRecentSearchItemClicked(item, adapterPosition)
     }
 
-    override fun onRecentSearchSeeMoreClicked(item: RecentSearchSeeMoreViewModel) {
-        adapter.removeSeeMoreButton(item)
+    override fun onRecentSearchSeeMoreClicked() {
         presenter.recentSearchSeeMoreClicked()
     }
 
-    override fun renderRecentSearch() {
-        adapter.renderRecentSearch()
+    override fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel) {
+        adapter.removeSeeMoreButton(presenter.seeMoreButtonPosition)
+        adapter.renderRecentSearch(recentSearchViewModel, presenter.recentSearchPosition)
     }
 
     override fun route(applink: String, searchParameter: Map<String, String>) {
@@ -209,8 +210,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedRecentSearch(iris, list, keyword)
     }
 
-    override fun onPopularSearchImpressed(list: List<Any>) {
-        AutocompleteTracking.impressedPopularSearch(iris, list)
+    override fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel) {
+        AutocompleteTracking.impressedDynamicSection(iris, model)
     }
 
     override fun onSeeMoreRecentSearchImpressed(userId: String) {
@@ -227,6 +228,18 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun trackEventClickSeeMoreRecentSearch(userId: String) {
         AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
+    }
+
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        presenter.onDynamicSectionItemClicked(item, adapterPosition)
+    }
+
+    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type)
+    }
+
+    override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {
+        AutocompleteTracking.impressedDynamicSection(iris, model)
     }
 
     override fun dropKeyBoard() {

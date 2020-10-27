@@ -1,28 +1,39 @@
 package com.tokopedia.home_recom.util
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.unifycomponents.Toaster
 
 
-fun View.fadeHide(duration: Int = 50){
-    animate().alpha(0f).setDuration(duration.toLong()).setListener(object: AnimatorListenerAdapter(){
-        override fun onAnimationEnd(animation: Animator?) {
-            // reset alpha to 1
-            visibility = View.GONE
-        }
-    })
-}
-fun View.fadeShow(duration: Int = 200){
-    alpha = 0f
-    visibility = View.VISIBLE
-    animate().alpha(1f).setDuration(duration.toLong()).setListener(null)
+fun Fragment.showToastSuccess(message: String){
+    activity?.findViewById<View>(android.R.id.content)?.let { view ->
+        Toaster.build(view, message, Snackbar.LENGTH_LONG).show()
+    }
 }
 
-fun View.startFade(isShow: Boolean){
-    if(isShow) this.fadeShow()
-    else this.fadeHide()
+fun Fragment.showToastError(throwable: Throwable? = null){
+    activity?.findViewById<View>(android.R.id.content)?.let { view ->
+        Toaster.build(
+                view,
+                RecommendationPageErrorHandler.getErrorMessage(view.context, throwable),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+        ).show()
+    }
+}
+
+fun Fragment.showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
+    activity?.findViewById<View>(android.R.id.content)?.let { view ->
+        Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionString,
+                View.OnClickListener {
+                    action.invoke()
+                }
+        ).show()
+    }
 }

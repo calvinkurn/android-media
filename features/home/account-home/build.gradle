@@ -65,7 +65,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -120,9 +120,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

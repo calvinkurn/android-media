@@ -20,17 +20,19 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
 
     private var urlPDP: String = ""
 
-    override fun getNewFragment(): Fragment?  = EventPDPFragment.newInstance(urlPDP)
+    override fun getNewFragment(): Fragment? = EventPDPFragment.newInstance(urlPDP)
 
     override fun getComponent(): EventPDPComponent = DaggerEventPDPComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if(uri != null){
+        if (uri != null) {
             urlPDP = uri.lastPathSegment ?: ""
-        }else if(savedInstanceState != null){
-            urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
+        } else if (savedInstanceState != null) {
+            urlPDP = savedInstanceState.getString(EXTRA_URL_PDP, "")
+        } else if (intent.extras != null) {
+            urlPDP = intent.getStringExtra(EXTRA_URL_PDP)
         }
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
@@ -56,8 +58,8 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
         return super.onOptionsItemSelected(item)
     }
 
-    companion object{
-        const val EXTRA_URL_PDP= "EXTRA_URL_PDP"
+    companion object {
+        const val EXTRA_URL_PDP = "EXTRA_URL_PDP"
     }
 
     interface PDPListener {

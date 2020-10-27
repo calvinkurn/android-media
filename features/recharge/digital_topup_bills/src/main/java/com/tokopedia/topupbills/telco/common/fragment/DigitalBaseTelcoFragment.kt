@@ -22,7 +22,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking

@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -99,10 +100,11 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<CreateAdsComponent> {
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager, KeywordAdsListFragment::class.java.name)
         }
-        emptyLayout.ic_tip.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
-        emptyLayout.imageView2.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView3.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-        emptyLayout.imageView4.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+
+        emptyLayout.ic_tip.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.ic_bulp_fill))
+        emptyLayout.imageView2.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView3.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
+        emptyLayout.imageView4.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
         btn_next.setOnClickListener {
             val eventLabel = "$shopID - $EVENT_CLICK_SUBMIT_BUTT"
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SUBMIT_BUTT, eventLabel, userID)

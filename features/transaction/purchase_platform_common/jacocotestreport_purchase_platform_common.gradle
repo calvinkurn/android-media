@@ -1,4 +1,0 @@
-include ':features:common:resources_common'
-include ':features:transaction:purchase_platform_common'
-include ':libraries:track'
-include ':tkpddesign'

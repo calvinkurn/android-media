@@ -1059,6 +1059,18 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    public void eventClickMoveToWishlistOnAvailableSection(String userId, String productId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.ADD_WISHLIST_CART_LOGIN,
+                productId + " - available section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
     public void eventClickMoveToWishlistOnUnavailableSection(String userId, String productId, String errorType) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.CLICK_ATC,

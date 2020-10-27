@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -19,7 +20,7 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -94,7 +95,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     }
 
     override fun onUploadProductImagesFailed(errorMessage: String) {
-        ProductAddShippingTracking.uploadImageFailed(userSession.shopId, errorMessage)
+        ProductAddUploadTracking.uploadImageFailed(
+                userSession.shopId,
+                AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -132,13 +135,24 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             // (4)
             clearProductDraft()
             setUploadProductDataSuccess()
-            ProductAddShippingTracking.clickFinish(shopId, true)
+            ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
             val errorMessage = getErrorMessage(throwable)
             setUploadProductDataError(errorMessage)
 
             logError(productAddUseCase.params, throwable)
-            ProductAddShippingTracking.clickFinish(shopId, false, throwable.message ?: "", errorMessage)
+            if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
+                ProductAddUploadTracking.uploadGqlTimeout(
+                        ProductAddUseCase.QUERY_NAME,
+                        shopId,
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            } else {
+                ProductAddUploadTracking.uploadProductFinish(
+                        shopId,
+                        false,
+                        AddEditProductUploadErrorHandler.isValidationError(throwable),
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            }
         })
     }
 

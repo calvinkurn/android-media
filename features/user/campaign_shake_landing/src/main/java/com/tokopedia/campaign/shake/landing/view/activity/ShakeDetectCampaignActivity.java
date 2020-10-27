@@ -25,7 +25,7 @@ import com.tokopedia.campaign.shake.landing.di.CampaignComponent;
 import com.tokopedia.campaign.shake.landing.di.DaggerCampaignComponent;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.List;

@@ -361,6 +361,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.slashPriceLabel = cartDetail.product.slashPriceLabel
             it.initialPriceBeforeDrop = cartDetail.product.initialPrice
             it.productAlertMessage = cartDetail.product.productAlertMessage
+            it.campaignId = cartDetail.product.campaignId
 
             when (shopData) {
                 is AvailableGroup -> mapShopInfoCartItemData(it, shopData)

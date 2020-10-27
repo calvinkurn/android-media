@@ -27,7 +27,7 @@ import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shakedetect.ShakeDetectManager;

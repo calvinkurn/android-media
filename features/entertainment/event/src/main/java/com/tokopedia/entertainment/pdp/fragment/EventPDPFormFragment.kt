@@ -105,13 +105,15 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     private fun setupSimpanButton() {
         simpanBtn.setOnClickListener {
-            if (formAdapter.getError().first.isNotBlank()) {
+            if (formAdapter.getError(resources).isNotEmpty()) {
                 view?.let {
-                    if (formAdapter.getError().second == EMPTY_TYPE) {
-                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_empty_value_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
-                    } else if (formAdapter.getError().second == REGEX_TYPE) {
-                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_regex_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                    val typeTitle = when (eventCheckoutAdditionalData.additionalType) {
+                        AdditionalType.ITEM_UNFILL, AdditionalType.ITEM_FILLED -> resources.getString(R.string.ent_checkout_data_pengunjung_title)
+                        AdditionalType.PACKAGE_UNFILL, AdditionalType.PACKAGE_FILLED -> resources.getString(R.string.ent_checkout_data_tambahan_title)
+                        else -> resources.getString(R.string.ent_pdp_title_form)
                     }
+                    val errorForm = String.format(resources.getString(R.string.ent_pdp_form_error_all_msg), typeTitle.toLowerCase().capitalize())
+                    Toaster.make(it, errorForm, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
                 }
             } else {
                 activity?.run {
@@ -207,6 +209,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             val searchTextField = view.event_search_list_form?.searchBarTextField
             val searchClearButton = view.event_search_list_form?.searchBarIcon
 
+            view.event_search_list_form.searchBarPlaceholder = resources.getString(R.string.ent_bottomsheet_placeholder, title)
             searchTextField?.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
 
@@ -260,6 +263,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     override fun getKeyActive(): String {
         return keyActiveBottomSheet
+    }
+
+    override fun resetActiveKey() {
+        keyActiveBottomSheet = ""
     }
 
     override fun getAdditionalType(): AdditionalType {

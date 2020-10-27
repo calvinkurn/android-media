@@ -5,10 +5,13 @@ apply plugin: 'kotlin-kapt'
 dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.playServicesDependencies.location
+
+    testImplementation rootProject.ext.supportLibDependencies.constraintLayout
+    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }
 

@@ -4,7 +4,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="8dp" />
-            <solid android:color="#fff" />
+            <solid android:color="@color/Unify_N0" />
         </shape>
     </item>
 
@@ -12,7 +12,7 @@
         <clip>
             <shape>
                 <corners android:radius="8dp" />
-                <solid android:color="@color/grey_hint" />
+                <solid android:color="@color/Unify_N100" />
             </shape>
         </clip>
     </item>
@@ -22,8 +22,8 @@
             <shape>
                 <corners android:radius="8dp" />
                 <gradient
-                    android:endColor="#ea212d"
-                    android:startColor="#f9bcc0" />
+                    android:endColor="@color/Unify_R500"
+                    android:startColor="@color/Unify_R200" />
             </shape>
         </clip>
     </item>

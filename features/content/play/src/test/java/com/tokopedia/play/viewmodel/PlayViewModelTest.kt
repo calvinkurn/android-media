@@ -11,7 +11,8 @@ import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -20,6 +21,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.assertj.core.api.Assertions
@@ -38,7 +40,9 @@ class PlayViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockPlayVideoManager: PlayVideoManager = mockk(relaxed = true)
-    private val mockPlayStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true)
+    private val mockPlayVideoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true)
+    private val mockPlayChannelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory = mockk(relaxed = true)
+    private val mockPlayVideoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true)
     private val mockGetChannelInfoUseCase: GetChannelDetailUseCase = mockk(relaxed = true)
     private val mockGetSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true)
     private val mockGetPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
@@ -72,7 +76,9 @@ class PlayViewModelTest {
     fun setUp() {
         playViewModel = PlayViewModel(
                 mockPlayVideoManager,
-                mockPlayStateProcessorFactory,
+                mockPlayVideoStateProcessorFactory,
+                mockPlayChannelStateProcessorFactory,
+                mockPlayVideoBufferGovernorFactory,
                 mockGetChannelInfoUseCase,
                 mockGetSocketCredentialUseCase,
                 mockGetPartnerInfoUseCase,
@@ -82,7 +88,8 @@ class PlayViewModelTest {
                 mockGetProductTagItemsUseCase,
                 mockPlaySocket,
                 userSession,
-                dispatchers
+                dispatchers,
+                mockk(relaxed = true)
         )
 
         coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel

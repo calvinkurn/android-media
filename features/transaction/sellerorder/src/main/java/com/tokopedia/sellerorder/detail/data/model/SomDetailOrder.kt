@@ -404,6 +404,38 @@ data class SomDetailOrder(
                     @Expose
                     val additionalPriceText: String = "",
 
+                    @SerializedName("total_purchase_protection_fee")
+                    @Expose
+                    val totalPurchaseProtectionFee: Int = 0,
+
+                    @SerializedName("total_purchase_protection_fee_text")
+                    @Expose
+                    val totalPurchaseProtectionFeeText: String = "",
+
+                    @SerializedName("total_purchase_protection_quantity")
+                    @Expose
+                    val totalPurchaseProtectionQuantity: Int = 0,
+
+                    @SerializedName("total_readiness_insurance_fee")
+                    @Expose
+                    val totalReadinessInsuranceFee: Int = 0,
+
+                    @SerializedName("total_readiness_insurance_fee_text")
+                    @Expose
+                    val totalReadinessInsuranceFeeText: String = "",
+
+                    @SerializedName("total_readiness_insurance_quantity")
+                    @Expose
+                    val totalReadinessInsuranceQuantity: Int = 0,
+
+                    @SerializedName("cod_fee")
+                    @Expose
+                    val codFee: Int = 0,
+
+                    @SerializedName("cod_fee_text")
+                    @Expose
+                    val codFeeText: String = "",
+
                     @SerializedName("total_item")
                     @Expose
                     val totalItem: Int = 0,

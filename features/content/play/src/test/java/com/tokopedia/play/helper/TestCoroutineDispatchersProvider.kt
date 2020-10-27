@@ -1,6 +1,6 @@
 package com.tokopedia.play.helper
 
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 
@@ -12,4 +12,5 @@ object TestCoroutineDispatchersProvider : CoroutineDispatcherProvider {
     override val main: CoroutineDispatcher = TestCoroutineDispatcher()
     override val immediate: CoroutineDispatcher = TestCoroutineDispatcher()
     override val io: CoroutineDispatcher = TestCoroutineDispatcher()
+    override val computation: CoroutineDispatcher = TestCoroutineDispatcher()
 }

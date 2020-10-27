@@ -115,14 +115,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
     private fun startShowCase() {
@@ -459,7 +458,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.competition ?: "", item.source ?: "", true, true))
+                        ?: "", item.competition ?: "", item.source ?: "", true, fromSearch = true))
             }
         }
         return list

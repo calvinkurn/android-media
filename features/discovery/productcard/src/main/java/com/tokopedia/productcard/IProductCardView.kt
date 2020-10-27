@@ -1,5 +1,7 @@
 package com.tokopedia.productcard
 
+import android.view.View
+
 interface IProductCardView {
 
     fun setProductModel(productCardModel: ProductCardModel)
@@ -9,4 +11,6 @@ interface IProductCardView {
     fun getCardRadius(): Float
 
     fun recycle()
+
+    fun getThreeDotsButton(): View?
 }

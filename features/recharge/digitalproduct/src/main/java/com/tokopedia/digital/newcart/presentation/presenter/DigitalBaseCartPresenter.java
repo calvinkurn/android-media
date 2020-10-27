@@ -557,8 +557,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onError(Throwable e) {
-                getView().hideFullPageLoading();
-                getView().failedCancelVoucherCart(e);
+                if (isViewAttached()) {
+                    getView().hideFullPageLoading();
+                    getView().failedCancelVoucherCart(e);
+                }
             }
 
             @Override
