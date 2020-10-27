@@ -1,9 +1,7 @@
-package com.tokopedia.attachproduct.resultmodel;
+package com.tokopedia.attachcommon.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 /**
  * Created by Hendri on 19/02/18.
@@ -15,20 +13,13 @@ public class ResultProduct implements Parcelable {
     private String productImageThumbnail;
     private String price;
     private String name;
+
     public ResultProduct(Integer productId, String productUrl, String productImageThumbnail, String price, String name) {
         this.productId = productId;
         this.productUrl = productUrl;
         this.productImageThumbnail = productImageThumbnail;
         this.price = price;
         this.name = name;
-    }
-
-    public ResultProduct(AttachProductItemViewModel viewModel){
-        this.productId = viewModel.getProductId();
-        this.productUrl = viewModel.getProductUrl();
-        this.productImageThumbnail = viewModel.getProductImage();
-        this.price = viewModel.getProductPrice();
-        this.name = viewModel.getProductName();
     }
 
     public Integer getProductId() {

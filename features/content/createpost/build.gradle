@@ -32,7 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.videoUploader)
     implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)

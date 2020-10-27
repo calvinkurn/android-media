@@ -254,6 +254,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    // AttachProductActivity
+    @JvmField
+    val ATTACH_PRODUCT = "$INTERNAL_MARKETPLACE/user-attach-product"
+
     @JvmField
     val SHOP_PAGE_SETTING = "$SHOP_PAGE_BASE-setting"
 

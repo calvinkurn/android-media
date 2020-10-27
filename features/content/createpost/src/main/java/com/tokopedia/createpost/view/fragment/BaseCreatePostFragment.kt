@@ -443,7 +443,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.make(this, getString(com.tokopedia.attachproduct.R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
             }
         }

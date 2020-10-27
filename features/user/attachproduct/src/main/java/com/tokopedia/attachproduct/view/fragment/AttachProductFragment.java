@@ -107,6 +107,11 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
     }
 
     @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSearchBar();
         super.onViewCreated(view, savedInstanceState);

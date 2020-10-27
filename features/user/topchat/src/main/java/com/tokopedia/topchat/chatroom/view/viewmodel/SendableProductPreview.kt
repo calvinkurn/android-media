@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.SendWebsocketParam
