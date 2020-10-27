@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dp_88">88dp</dimen>
+    <dimen name="attachproduct_6dp">6dp</dimen>
+    <dimen name="attachproduct_10dp">10dp</dimen>
+    <dimen name="attachproduct_11dp">11dp</dimen>
+    <dimen name="attachproduct_12dp">12dp</dimen>
     <dimen name="attachproduct_14dp">14dp</dimen>
+    <dimen name="attachproduct_19dp">19dp</dimen>
+    <dimen name="attachproduct_20dp">20dp</dimen>
+    <dimen name="attachproduct_30dp">30dp</dimen>
+    <dimen name="attachproduct_40dp">40dp</dimen>
+    <dimen name="attachproduct_54dp">54dp</dimen>
+    <dimen name="attachproduct_80dp">80dp</dimen>
+    <dimen name="attachproduct_172dp">172dp</dimen>
+    <dimen name="attachproduct_270dp">270dp</dimen>
+    <dimen name="attachproduct_300dp">300dp</dimen>
 </resources>

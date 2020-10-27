@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
         android:layout_width="match_parent"

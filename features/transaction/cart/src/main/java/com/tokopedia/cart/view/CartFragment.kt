@@ -219,6 +219,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var recommendationPage = 1
     private var accordionCollapseState = true
     private var refreshCartAfterBackFromPdp = true
+    private var hasCalledOnSaveInstanceState = false
 
     companion object {
 
@@ -336,8 +337,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        hasCalledOnSaveInstanceState = false
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        hasCalledOnSaveInstanceState = true
         saveInstanceCacheManager?.onSave(outState)
         saveInstanceCacheManager?.put(CartListData::class.java.simpleName, cartListData)
         wishLists.let {
@@ -407,6 +414,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromShipmentPage(resultCode: Int, data: Intent?) {
+        FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
@@ -662,7 +670,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showBottomSheetSummaryTransaction() {
-        if (cartListData != null && fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && cartListData != null && fragmentManager != null && context != null) {
             showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
         }
     }
@@ -1454,6 +1462,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistCheckChanged(productId: String, cartId: Int, imageView: ImageView) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
         setProductImageAnimationData(imageView, false)
 
         val isLastItem = cartAdapter.allCartItemData.size == 1
@@ -2345,7 +2354,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnButtonCheckoutClickedFailed()
         sendAnalyticsOnGoToShipmentFailed(message)
 
-        if (fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && fragmentManager != null && context != null) {
             showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
         }
     }

@@ -435,7 +435,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             dataModel.recommendationItem.clickUrl,
@@ -452,7 +452,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             dataModel.recommendationItem.clickUrl,
@@ -505,7 +505,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
             is RecommendationItemDataModel -> {
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
                             dataModel.recommendationItem.trackerImageUrl,
@@ -517,7 +517,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
             is RecommendationCarouselItemDataModel -> {
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
                             dataModel.recommendationItem.trackerImageUrl,

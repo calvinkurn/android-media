@@ -42,6 +42,10 @@ class ProductDetailActivityTest {
 
     @get:Rule
     var activityRule: IntentsTestRule<ProductDetailActivity> = object: IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            clearLogin()
+        }
         override fun getActivityIntent(): Intent {
             return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         }
@@ -60,11 +64,11 @@ class ProductDetailActivityTest {
             intendingIntent()
             waitForData()
             clickVariantTest()
+            intendingIntent()
             clickBuyNow()
         } assertTest {
-            intendingIntent()
-            performClose(activityRule)
             waitForTrackerSent()
+            performClose(activityRule)
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
             finishTest()
         }
@@ -93,12 +97,12 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
-            clearLogin()
             intendingIntent()
             waitForData()
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            intendingIntent()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
@@ -109,7 +113,6 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
-            clearLogin()
             intendingIntent()
             waitForData()
             clickVariantTest()
@@ -189,7 +192,7 @@ class ProductDetailActivityTest {
     }
 
     companion object {
-        const val PRODUCT_ID = "890495024"
+        const val PRODUCT_ID = "1267836204"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"

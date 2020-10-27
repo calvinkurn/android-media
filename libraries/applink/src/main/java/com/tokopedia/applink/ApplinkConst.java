@@ -45,7 +45,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
-    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
+    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
@@ -95,6 +95,7 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String LOGIN = "tokopedia://login";
     String OTP = "tokopedia://otp";
+    String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
     String OFFICIAL_STORE_CATEGORY = "tokopedia://official-store/{key_category}";
