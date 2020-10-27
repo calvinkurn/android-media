@@ -57,8 +57,10 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     }
 
     fun updateImageData(imageUrlOrPath: String, position: Int) {
-        this.items[position].imageUrlOrPath = imageUrlOrPath
-        notifyItemChanged(position)
+        if (position >= 0 && position < this.items.size) {
+            this.items[position].imageUrlOrPath = imageUrlOrPath
+            notifyItemChanged(position)
+        }
     }
 
     override fun onItemClicked(position: Int) {
