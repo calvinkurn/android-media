@@ -2,8 +2,10 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.inboxcommon.time.TimeHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -13,18 +15,32 @@ class NormalNotificationViewHolder(
         itemView: View?
 ) : AbstractViewHolder<NotificationUiModel>(itemView) {
 
+    private val container: ConstraintLayout? = itemView?.findViewById(R.id.notification_container)
     private val icon: ImageView? = itemView?.findViewById(R.id.iv_icon)
     private val type: Typography? = itemView?.findViewById(R.id.txt_notification_type)
     private val time: Typography? = itemView?.findViewById(R.id.txt_notification_time)
     private val title: Typography? = itemView?.findViewById(R.id.txt_notification_title)
     private val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
 
+    private val clickedColor = MethodChecker.getColor(
+            itemView?.context, com.tokopedia.unifycomponents.R.color.Green_G100
+    )
+
     override fun bind(element: NotificationUiModel) {
+        bindContainer(element)
         bindTitle(element)
         bindDesc(element)
         bindNotificationType(element)
         bindIcon(element)
         bindTime(element)
+    }
+
+    private fun bindContainer(element: NotificationUiModel) {
+        if (element.isRead()) {
+            container?.setBackgroundColor(clickedColor)
+        } else {
+            container?.background = null
+        }
     }
 
     private fun bindTitle(element: NotificationUiModel) {

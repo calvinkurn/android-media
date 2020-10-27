@@ -75,4 +75,12 @@ data class NotificationUiModel(
         return typeFactory.type(this)
     }
 
+    /**
+     * 1 == new notif
+     * 2 == clicked
+     */
+    fun isRead(): Boolean {
+        return readStatus == 2
+    }
+
 }
