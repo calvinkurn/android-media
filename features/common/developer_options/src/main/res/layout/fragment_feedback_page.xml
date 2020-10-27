@@ -87,6 +87,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/email_layout"
                 app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/Neutral_N700_68"
                 android:text="Type of report"
                 app:typographyType="body_3"/>
 
@@ -135,6 +136,7 @@
                     app:layout_constraintTop_toBottomOf="@id/filterReport"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/category"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
 
@@ -162,6 +164,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/page"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -193,6 +196,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/bugs_detail"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -224,6 +228,7 @@
                     app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/tv_journey"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -232,6 +237,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/expected_behavior"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -274,6 +280,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/feedback"
+                    android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
 
                 <com.google.android.material.textfield.TextInputLayout
