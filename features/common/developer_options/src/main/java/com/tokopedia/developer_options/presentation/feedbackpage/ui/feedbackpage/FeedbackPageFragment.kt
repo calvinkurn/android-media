@@ -376,15 +376,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             openBottomSheetPage()
         }
 
-        expectedResult.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                et_expected_result_wrapper.setHintTextAppearance(R.color.black)
-            } else {
-                et_expected_result_wrapper.setHintTextAppearance(R.color.transparent)
-            }
-        }
-
-
         submitButton.setOnClickListener {
             val emailText= email.text.toString()
             val affectedPageText = page.text.toString()

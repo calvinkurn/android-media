@@ -58,7 +58,6 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
@@ -67,6 +66,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_general_setting.*
 import java.util.*
 import javax.inject.Inject
@@ -284,7 +284,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
-            SettingConstant.SETTING_FEEDBACK_FORM -> {
+            SettingConstant.SETTING_FEEDBACK_FORM -> { if (GlobalConfig.APPLICATION_TYPE == 3)
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
