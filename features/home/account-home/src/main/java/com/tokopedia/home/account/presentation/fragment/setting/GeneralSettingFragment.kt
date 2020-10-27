@@ -286,7 +286,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
             SettingConstant.SETTING_FEEDBACK_FORM -> {
-                Toast.makeText(context, "feedback form here", Toast.LENGTH_LONG).show()
                 RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
