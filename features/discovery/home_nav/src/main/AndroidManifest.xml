@@ -5,6 +5,15 @@
         <activity android:name=".view.activity.HomeNavActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White">
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            <data
+                android:host="@string/host_navigation"
+                android:pathPattern="/main"
+                android:scheme="@string/internal_scheme" />
+
+        </activity>
     </application>
 </manifest>
