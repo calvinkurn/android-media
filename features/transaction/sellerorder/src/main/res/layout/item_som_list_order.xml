@@ -75,10 +75,10 @@
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingEnd="@dimen/layout_lvl0"
             android:paddingBottom="@dimen/spacing_lvl2"
-            app:srcCompat="@drawable/ic_somlist_deadline"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListDeadline"
             app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
-            app:layout_constraintTop_toTopOf="@id/tvSomListDeadline" />
+            app:layout_constraintTop_toTopOf="@id/tvSomListDeadline"
+            app:srcCompat="@drawable/ic_somlist_deadline" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSomListDeadline"
@@ -172,6 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="1.5dp"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Unify_N700_96"
@@ -199,6 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="1.5dp"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListDestinationLabel"
             app:layout_constraintEnd_toStartOf="@id/btnQuickAction"
