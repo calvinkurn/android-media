@@ -19,6 +19,7 @@ class MainNavDataFactoryImpl(
     private lateinit var userPojo: UserPojo
 
     override fun buildVisitableList(userPojo: UserPojo): MainNavDataFactory {
+        visitableList.clear()
         this.userPojo = userPojo
         return this
     }

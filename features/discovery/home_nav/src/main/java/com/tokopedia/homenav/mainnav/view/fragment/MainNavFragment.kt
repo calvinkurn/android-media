@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
@@ -20,13 +19,13 @@ import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
 import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
+import com.tokopedia.homenav.mainnav.view.analytics.MainNavAnalytics
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -37,7 +36,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var viewModel: MainNavViewModel
 
     lateinit var recyclerView: RecyclerView
-    lateinit var swipeRefresh: SwipeToRefresh
     lateinit var layoutManager: LinearLayoutManager
     lateinit var adapter: MainNavAdapter
 
@@ -60,16 +58,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_main_nav, container, false)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        swipeRefresh = view.findViewById(R.id.swipe_refresh_layout)
-        return view
+        return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.recycler_view)
         initAdapter()
-        viewModel.getMainNavData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -118,6 +113,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
         view?.let {
+            MainNavAnalytics.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
             NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
                     bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
         }
@@ -130,10 +126,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
             }
         })
-    }
-
-    private fun hideSwipeRefresh(){
-        swipeRefresh.isRefreshing = false
     }
 
     private fun initAdapter() {
