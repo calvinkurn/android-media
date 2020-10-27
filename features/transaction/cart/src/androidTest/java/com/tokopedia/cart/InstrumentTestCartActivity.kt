@@ -14,7 +14,7 @@ class InstrumentTestCartActivity : AppCompatActivity() {
 
         val bundle = Bundle()
         bundle.putBoolean(REFRESH_CART_AFTER_BACK_FROM_PDP, false)
-        val cartFragment = CartFragment.newInstance(Bundle(), "")
+        val cartFragment = CartFragment.newInstance(bundle, "")
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view_cart, cartFragment, "")
                 .commit()
