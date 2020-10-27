@@ -31,6 +31,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     override fun onViewRemoved(child: View?) {
         when (child) {
             is PlayWidgetSmallView -> child.setAnalyticListener(null)
+            is PlayWidgetMediumView -> child.setAnalyticListener(null)
         }
         super.onViewRemoved(child)
     }
@@ -54,6 +55,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mAnalyticListener = listener
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setAnalyticListener(listener)
+            is PlayWidgetMediumView -> child.setAnalyticListener(listener)
         }
     }
 
@@ -80,6 +82,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         widgetView.setData(model)
         widgetView.setWidgetListener(mWidgetListener)
         widgetView.setWidgetInternalListener(mWidgetInternalListener)
+        widgetView.setAnalyticListener(mAnalyticListener)
     }
 
     private fun addPlaceholderView() {

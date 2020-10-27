@@ -18,13 +18,19 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.R
+import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -57,17 +63,77 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private var mWidgetListener: PlayWidgetMediumListener? = null
     private var mWidgetInternalListener: PlayWidgetInternalListener? = null
+    private var mAnalyticListener: PlayWidgetMediumAnalyticListener? = null
 
     private val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-    private val adapter = PlayWidgetCardMediumAdapter(channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener{
-        override fun onChannelClicked(appLink: String) {
-            mWidgetListener?.onWidgetOpenAppLink(this@PlayWidgetMediumView, appLink)
+
+    private val overlayCardListener = object : PlayWidgetCardMediumOverlayViewHolder.Listener {
+
+        override fun onOverlayImpressed(view: View, item: PlayWidgetMediumOverlayUiModel, position: Int) {
+            mAnalyticListener?.onImpressOverlayCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position
+            )
         }
 
-        override fun onToggleReminderClicked(channelId: String, remind: Boolean, position: Int) {
-            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, channelId, remind, position)
+        override fun onOverlayClicked(view: View, item: PlayWidgetMediumOverlayUiModel, position: Int) {
+            mAnalyticListener?.onClickOverlayCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position
+            )
         }
-    })
+
+    }
+
+    private val channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener {
+
+        override fun onChannelImpressed(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onImpressChannelCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+            )
+        }
+
+        override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickChannelCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+            )
+            if (mWidgetListener != null
+                    && (item.channelType == PlayWidgetChannelType.Live
+                            || item.channelType ==  PlayWidgetChannelType.Vod)) {
+                mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
+            } else {
+                RouteManager.route(context, item.appLink)
+            }
+        }
+
+        override fun onToggleReminderChannelClicked(item: PlayWidgetMediumChannelUiModel, remind: Boolean, position: Int) {
+            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
+            mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
+        }
+    }
+
+    private val bannerCardListener = object : PlayWidgetCardMediumBannerViewHolder.Listener {
+
+        override fun onBannerClicked(view: View) {
+            mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView)
+        }
+    }
+
+    private val adapter = PlayWidgetCardMediumAdapter(
+            overlayCardListener = overlayCardListener,
+            channelCardListener = channelCardListener,
+            bannerCardListener = bannerCardListener
+    )
+
+    private var mIsAutoPlay: Boolean = false
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
@@ -90,18 +156,12 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         mWidgetInternalListener = listener
     }
 
-    fun setData(data: PlayWidgetUiModel.Medium) {
-        title.text = data.title
-        actionTitle.text = data.actionTitle
-        actionTitle.setOnClickListener { RouteManager.route(context, data.actionAppLink) }
-
-        configureBackgroundOverlay(data.background)
-
-        adapter.setItemsAndAnimateChanges(data.items)
-    }
-
     fun setWidgetListener(listener: PlayWidgetMediumListener?) {
         mWidgetListener = listener
+    }
+
+    fun setAnalyticListener(listener: PlayWidgetMediumAnalyticListener?) {
+        mAnalyticListener = listener
     }
 
     /**
@@ -110,7 +170,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private fun setupView(view: View) {
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
-        recyclerViewItem.addOnScrollListener(configureParallax())
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
 
@@ -119,6 +178,24 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
 
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (layoutManager.findFirstVisibleItemPosition() != 0) return
+
+                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+                firstView?.let {
+                    val distanceFromLeft = it.left
+                    val translateX = distanceFromLeft * 0.2f
+                    overlay.translationX = translateX
+
+                    if (distanceFromLeft <= 0) {
+                        val itemSize = it.width.toFloat()
+                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                        overlayImage.alpha = 1 - alpha
+                    }
+                }
+            }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -130,6 +207,24 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         })
     }
 
+    fun setData(data: PlayWidgetUiModel.Medium) {
+        title.text = data.title
+        actionTitle.text = data.actionTitle
+        actionTitle.setOnClickListener {
+            mAnalyticListener?.onClickViewAll(this)
+            RouteManager.route(context, data.actionAppLink)
+        }
+
+        configureBackgroundOverlay(data.background)
+
+        adapter.setItemsAndAnimateChanges(data.items)
+
+        mIsAutoPlay = data.config.autoPlay
+    }
+
+    /**
+     * Setup view
+     */
     private fun configureBackgroundOverlay(data: PlayWidgetBackgroundUiModel) {
         if (data.overlayImageUrl.isEmpty() || data.overlayImageUrl.isBlank()) background.hide()
         else {
@@ -153,29 +248,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.setGradientBackground(data.gradientColors)
         } else if (data.backgroundUrl.isNotBlank() && data.backgroundUrl.isNotEmpty()) {
             overlayBackground.loadImage(data.backgroundUrl)
-        }
-    }
-
-    private fun configureParallax(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager.findFirstVisibleItemPosition() != 0) return
-
-                val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
-                firstView?.let {
-                    val distanceFromLeft = it.left
-                    val translateX = distanceFromLeft * 0.2f
-                    overlay.translationX = translateX
-
-                    if (distanceFromLeft <= 0) {
-                        val itemSize = it.width.toFloat()
-                        val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                        overlayImage.alpha = 1 - alpha
-                    }
-                }
-            }
         }
     }
 }

@@ -1,9 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
@@ -11,23 +9,15 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 
-
 /**
  * Created by mzennis on 13/10/20.
  */
 class CarouselPlayWidgetViewHolder(
-        itemView: View,
-        private val playWidgetCoordinator: PlayWidgetCoordinator
-) : AbstractViewHolder<CarouselPlayWidgetUiModel>(itemView) {
-
-    private val playWidgetView = itemView as PlayWidgetView
-
-    init {
-        playWidgetCoordinator.controlWidget(playWidgetView)
-    }
+        private val playWidgetViewHolder: PlayWidgetViewHolder
+) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
-        playWidgetCoordinator.connect(playWidgetView, element.widgetUiModel)
+        playWidgetViewHolder.bind(element.widgetUiModel, this)
     }
 
     override fun bind(element: CarouselPlayWidgetUiModel?, payloads: MutableList<Any>) {
@@ -37,9 +27,9 @@ class CarouselPlayWidgetViewHolder(
         if (widgetUiModel !is PlayWidgetUiModel.Medium) return
 
         if (payload is PlayWidgetReminderUiModel) {
-            playWidgetView.setModel(updateToggleReminder(payload, widgetUiModel))
+            playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel), payloads)
         } else if (payload is PlayWidgetTotalViewUiModel) {
-            playWidgetView.setModel(updateTotalView(payload, widgetUiModel))
+            playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel), payloads)
         }
     }
 

@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
  * Created by mzennis on 07/10/20.
  */
 class PlayWidgetCardMediumChannelAdapterDelegate(
-        private val listener: PlayWidgetCardMediumChannelViewHolder.Listener
+        private val mediumCardChannelListener: PlayWidgetCardMediumChannelViewHolder.Listener
 ) : TypedAdapterDelegate<PlayWidgetMediumChannelUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumChannelViewHolder>(
         PlayWidgetCardMediumChannelViewHolder.layoutRes
 ) {
@@ -23,7 +23,7 @@ class PlayWidgetCardMediumChannelAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumChannelViewHolder {
-        return PlayWidgetCardMediumChannelViewHolder(basicView, listener)
+        return PlayWidgetCardMediumChannelViewHolder(basicView, mediumCardChannelListener)
     }
 
     override fun onBindViewHolderWithPayloads(item: PlayWidgetMediumChannelUiModel, holder: PlayWidgetCardMediumChannelViewHolder, payloads: Bundle) {

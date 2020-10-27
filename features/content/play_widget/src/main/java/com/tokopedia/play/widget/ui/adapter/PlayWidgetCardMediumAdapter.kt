@@ -5,7 +5,9 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMediumBannerAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMediumChannelAdapterDelegate
 import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMediumOverlayAdapterDelegate
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 
@@ -14,14 +16,16 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
  * Created by mzennis on 07/10/20.
  */
 class PlayWidgetCardMediumAdapter(
-        channelCardListener: PlayWidgetCardMediumChannelViewHolder.Listener
+        overlayCardListener: PlayWidgetCardMediumOverlayViewHolder.Listener,
+        channelCardListener: PlayWidgetCardMediumChannelViewHolder.Listener,
+        bannerCardListener: PlayWidgetCardMediumBannerViewHolder.Listener
 ) : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate())
+                .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(overlayCardListener))
                 .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(channelCardListener))
-                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate())
+                .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate(bannerCardListener))
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {

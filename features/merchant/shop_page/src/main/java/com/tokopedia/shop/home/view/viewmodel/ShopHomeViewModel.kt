@@ -15,7 +15,6 @@ import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVouche
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -115,9 +114,9 @@ class ShopHomeViewModel @Inject constructor(
 
     private var sortListData: List<ShopProductSortModel> = listOf()
 
-    val playWidgetObservable: LiveData<PlayWidgetUiModel?>
+    val playWidgetObservable: LiveData<CarouselPlayWidgetUiModel?>
         get() = _playWidgetObservable
-    private val _playWidgetObservable = MutableLiveData<PlayWidgetUiModel?>()
+    private val _playWidgetObservable = MutableLiveData<CarouselPlayWidgetUiModel?>()
 
     val playWidgetToggleReminderObservable: LiveData<PlayWidgetReminderUiModel>
         get() = _playWidgetToggleReminderObservable
@@ -522,11 +521,12 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    fun getPlayWidget(shopId: String, resultLayoutUiModel: Result<ShopPageHomeLayoutUiModel>? = _shopHomeLayoutData.value) {
-        if (resultLayoutUiModel !is Success) return
-        val layoutUiModel = resultLayoutUiModel.data
+    fun getPlayWidget(shopId: String, shopResultLayoutUiModel: Result<ShopPageHomeLayoutUiModel>? = _shopHomeLayoutData.value) {
+        if (shopResultLayoutUiModel !is Success) return
+        val shopLayoutUiModel = shopResultLayoutUiModel.data
+        val carouselPlayWidgetUiModel = shopLayoutUiModel.listWidget.find { it is CarouselPlayWidgetUiModel }
 
-        if (!shouldGetPlayWidget(layoutUiModel)) return
+        if (carouselPlayWidgetUiModel == null || carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
 
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
@@ -534,7 +534,7 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io()
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
-            _playWidgetObservable.value = widgetUiModel
+            _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(widgetUiModel = widgetUiModel)
         }) {
             _playWidgetObservable.value = null
         }
@@ -556,9 +556,5 @@ class ShopHomeViewModel @Inject constructor(
                     position = position
             )
         }
-    }
-
-    private fun shouldGetPlayWidget(model: ShopPageHomeLayoutUiModel): Boolean {
-        return model.listWidget.any { it is CarouselPlayWidgetUiModel }
     }
 }

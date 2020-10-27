@@ -72,5 +72,6 @@ data class PlayWidgetMeta(
     @SerializedName("autoplayAmount") val autoplayAmount: Int = 0,
     @SerializedName("autoplay") val autoplay: Boolean = false,
     @SerializedName("maxAutoplayCell") val maxAutoplayCell: Int = 0,
+    @SerializedName("maxAutoplayWifi") val maxAutoplayWifi: Int = 0,
     @SerializedName("template") val template: String = ""
 )

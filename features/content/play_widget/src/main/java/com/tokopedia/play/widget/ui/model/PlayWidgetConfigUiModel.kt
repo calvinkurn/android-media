@@ -9,5 +9,6 @@ data class PlayWidgetConfigUiModel(
         val autoRefreshTimer: Long,
         val autoPlay: Boolean,
         val autoPlayAmount: Int, // maximum card with auto play
-        val maxAutoPlayCellularDuration: Int // maximum duration of the video
+        val maxAutoPlayCellularDuration: Int, // maximum video duration, only used for non-wifi user
+        val maxAutoPlayWifiDuration: Int // maximum video duration
 )

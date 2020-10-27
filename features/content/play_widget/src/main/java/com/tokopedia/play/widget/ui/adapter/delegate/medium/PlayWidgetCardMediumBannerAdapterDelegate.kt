@@ -11,7 +11,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 /**
  * Created by mzennis on 07/10/20.
  */
-class PlayWidgetCardMediumBannerAdapterDelegate : TypedAdapterDelegate<PlayWidgetMediumBannerUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumBannerViewHolder>(
+class PlayWidgetCardMediumBannerAdapterDelegate(
+        private val mediumCardBannerListener: PlayWidgetCardMediumBannerViewHolder.Listener
+) : TypedAdapterDelegate<PlayWidgetMediumBannerUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumBannerViewHolder>(
         PlayWidgetCardMediumBannerViewHolder.layoutRes
 ) {
 
@@ -20,6 +22,6 @@ class PlayWidgetCardMediumBannerAdapterDelegate : TypedAdapterDelegate<PlayWidge
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumBannerViewHolder {
-        return PlayWidgetCardMediumBannerViewHolder(basicView)
+        return PlayWidgetCardMediumBannerViewHolder(basicView, mediumCardBannerListener)
     }
 }
