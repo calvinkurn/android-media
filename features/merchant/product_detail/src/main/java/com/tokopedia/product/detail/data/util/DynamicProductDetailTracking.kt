@@ -450,15 +450,30 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER)
         }
 
-        fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, swipeDirection: String, imagePosition: Int, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
-                    "$swipeDirection - " + ProductTrackingConstant.Label.PDP + " - $imagePosition"
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE)
-
+        fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
+            val productId = productInfo?.basic?.productID ?: ""
+            val mapEvent = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    "categoryId", "productId : $productId",
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                    DataLayer.mapOf(
+                            "id", imageUrl,
+                            "name", "product detail page - $productId - pdp",
+                            "creative", "media type:$type;",
+                            "creative_url", imageUrl,
+                            "position", position
+                    )
+            ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE};cpos:${componentTrackDataModel.adapterPosition};"
+            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
         fun eventProductImageClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {

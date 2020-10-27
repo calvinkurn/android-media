@@ -217,6 +217,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
+    private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
 
     //View
     private lateinit var varToolbar: Toolbar
@@ -312,6 +313,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onPause()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
+            if(alreadyHitSwipeTracker != null) {
+                alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
+            }
         }
     }
 
@@ -850,9 +854,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductSnapshotViewHolder
      */
-    override fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1, swipeDirection, position, componentTrackDataModel
-                ?: ComponentTrackDataModel())
+    override fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+        if(alreadyHitSwipeTracker != DynamicProductDetailAlreadyHit) {
+            DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1,componentTrackDataModel
+                    ?: ComponentTrackDataModel(), trackingQueue, type, url, position)
+            alreadyHitSwipeTracker = DynamicProductDetailAlreadySwipe
+        }
     }
 
     override fun shouldShowWishlist(): Boolean {
