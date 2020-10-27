@@ -222,6 +222,9 @@ public class ProductViewModelMapper {
         productItem.setShopID(productModel.getShop().getId());
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
+        productItem.setShopUrl(productModel.getShop().getUrl());
+        productItem.setShopOfficialStore(productModel.getShop().isOfficial());
+        productItem.setShopPowerMerchant(productModel.getShop().isPowerBadge());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgeList()));
         productItem.setPosition(position);
@@ -236,6 +239,8 @@ public class ProductViewModelMapper {
         productItem.setTopadsImpressionUrl(productModel.getAds().getProductViewUrl());
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());
+        productItem.setMinOrder(productModel.getMinOrder());
+        productItem.setProductUrl(productModel.getUrl());
 
         if (shopRatingABTestStrategy != null) {
             shopRatingABTestStrategy.processShopRatingVariant(productModel, productItem);
