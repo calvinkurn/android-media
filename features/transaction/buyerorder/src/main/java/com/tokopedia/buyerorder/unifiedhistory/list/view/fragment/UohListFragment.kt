@@ -302,26 +302,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) {
-            setDefaultDate()
-        }
         paramUohOrder.page = 1
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
-    }
-
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    @SuppressLint("SimpleDateFormat")
-    private fun setDefaultDate() {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd")
-        val outputFormat = SimpleDateFormat("d MMM yyyy")
-        val defaultStartDateLimitDate = inputFormat.parse(orderList.dateLimit)
-        defaultStartDate = orderList.dateLimit
-        defaultStartDate = orderList.dateLimit
-        defaultStartDateStr = outputFormat.format(defaultStartDateLimitDate)
-        defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
-        defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
-        paramUohOrder.createTimeStart = defaultStartDate
-        paramUohOrder.createTimeEnd = defaultEndDate
     }
 
     private fun observingData() {
