@@ -160,8 +160,9 @@ class PartialButtonActionView private constructor(val view: View,
                         }
                     })
             btn_add_to_cart.text = context.getString(R.string.plus_product_to_cart)
-            btn_buy_now.visibility = View.VISIBLE
+            btn_buy_now.visible()
             btn_add_to_cart.visible()
+
             if (isLeasing) {
                 btn_apply_leasing.visibility = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
@@ -230,6 +231,9 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             btn_empty_stock.hide()
             btn_topchat.hide()
+            btn_buy_now.hide()
+            btn_add_to_cart.hide()
+
             seller_button_container.show()
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { buttonListener.rincianTopAdsClicked() }

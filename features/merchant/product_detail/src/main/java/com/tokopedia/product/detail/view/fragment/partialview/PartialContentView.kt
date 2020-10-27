@@ -207,7 +207,7 @@ class PartialContentView(private val view: View,
                 count_down.show()
                 count_down.setup(delta, startDate) {
                     hideProductCampaign(campaign)
-                    listener.showAlertCampaignEnded()
+                    listener.refreshPage()
                 }
                 discount_timer_holder.show()
             } else {
