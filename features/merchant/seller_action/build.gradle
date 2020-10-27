@@ -30,6 +30,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {
