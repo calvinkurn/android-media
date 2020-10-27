@@ -8,7 +8,7 @@ object ReviewTracking {
     val tracker = TrackApp.getInstance().gtm
 
     fun onSuccessGetIncentiveOvoTracker(message: String?, category: String) {
-        if (category.isEmpty()) {
+        if (category.isBlank()) {
             tracker.sendGeneralEvent(createEventMap(
                     ReviewTrackingConstant.VIEW_REVIEW,
                     ReviewTrackingConstant.REVIEW_DETAIL_PAGE,
@@ -26,7 +26,7 @@ object ReviewTracking {
     }
 
     fun onClickReadSkIncentiveOvoTracker(message: String?, category: String) {
-        if (category.isEmpty()) {
+        if (category.isBlank()) {
             tracker.sendGeneralEvent(createEventMap(
                     ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                     ReviewTrackingConstant.REVIEW_DETAIL_PAGE,
@@ -44,7 +44,7 @@ object ReviewTracking {
     }
 
     fun onClickDismissIncentiveOvoTracker(message: String?, category: String) {
-        if (category.isEmpty()) {
+        if (category.isBlank()) {
             tracker.sendGeneralEvent(createEventMap(
                     ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                     ReviewTrackingConstant.REVIEW_DETAIL_PAGE,
@@ -62,7 +62,7 @@ object ReviewTracking {
     }
 
     fun onClickDismissIncentiveOvoBottomSheetTracker(category: String) {
-        if (category.isEmpty()) {
+        if (category.isBlank()) {
             tracker.sendGeneralEvent(createEventMap(
                     ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                     ReviewTrackingConstant.REVIEW_DETAIL_PAGE,
@@ -80,7 +80,7 @@ object ReviewTracking {
     }
 
     fun onClickContinueIncentiveOvoBottomSheetTracker(category: String) {
-        if (category.isEmpty()) {
+        if (category.isBlank()) {
             tracker.sendGeneralEvent(createEventMap(
                     ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                     ReviewTrackingConstant.REVIEW_DETAIL_PAGE,

@@ -51,6 +51,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.productCard)
+
 
 }
 

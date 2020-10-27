@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by Lukas 25/05/2019
  *
- * A main class of Recommendation Page is [WishlistTracking]
+ * A main class of Wishlist Page is [WishlistTracking]
  * this class handling a whole tracking data
  * don't delete this!
  */

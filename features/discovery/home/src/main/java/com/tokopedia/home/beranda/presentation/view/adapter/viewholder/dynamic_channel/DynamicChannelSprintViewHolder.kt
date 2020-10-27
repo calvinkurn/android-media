@@ -94,7 +94,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private fun mappingHeader(channel: DynamicHomeChannel.Channels) {
         if (channel.header.backImage.isNotBlank()) {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
-            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
+            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.Unify_N0))
             backgroundThematic.show()
             seeAllButtonUnify?.setOnClickListener {
                 homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))

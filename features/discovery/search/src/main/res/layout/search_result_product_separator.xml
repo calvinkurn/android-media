@@ -6,4 +6,4 @@
     android:layout_marginBottom="@dimen/dp_10"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_28"
-    android:background="@color/Neutral_N50"/>
+    android:background="@color/Unify_N50"/>
