@@ -214,7 +214,6 @@ class TalkWriteFragment : BaseDaggerFragment(),
                         .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.WRITING_SOURCE)
                         .build().toString()
         )
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         activity?.finish()
     }

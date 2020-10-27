@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -54,6 +53,7 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.GroupNonGroupPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
@@ -91,6 +91,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private lateinit var autoAdsAdapter: AutoAdsItemsListAdapter
     private var currentPageNum = 1
     private var collapseStateCallBack: AppBarAction? = null
+    private var adTypeCallBack: AdInfo? = null
     private val SEVEN_DAYS_RANGE_INDEX = 2
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -98,7 +99,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private lateinit var imgBg: ConstraintLayout
     private var totalCount = 0
     private var totalPage = 0
-
 
     val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoads_edit_widget
@@ -196,8 +196,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()
         endDate = Utils.getEndDate()
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
-        topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -242,7 +240,16 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun renderManualViewPager() {
         tab_layout.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {}
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                loadStatisticsData()
+            }
+
+        })
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
@@ -317,6 +324,13 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     override fun onDestroy() {
         super.onDestroy()
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            remove(END_DATE_PRODUCT)
+            remove(START_DATE_PRODUCT)
+            remove(DATE_RANGE_PRODUK)
+            commit()
+        }
         if (datePickerSheet != null) {
             datePickerSheet?.dismissDialog()
             datePickerSheet = null
@@ -325,6 +339,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun noAds() {
         /*ad switching in progress*/
+        adTypeCallBack?.adInfo(MANUAL_AD)
         if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState || STATUS_IN_PROGRESS_AUTOMANAGE == adCurrentState || STATUS_IN_PROGRESS_INACTIVE == adCurrentState) {
             app_bar_layout_2.visibility = View.VISIBLE
             autoads_layout.visibility = View.VISIBLE
@@ -348,6 +363,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun noProduct() {
+        adTypeCallBack?.adInfo(MANUAL_AD)
         if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {
             autoAds()
         } else {
@@ -356,6 +372,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun manualAds() {
+        adTypeCallBack?.adInfo(MANUAL_AD)
         empty_view.visibility = View.GONE
         view_pager_frag.visibility = View.VISIBLE
         autoads_layout.visibility = View.GONE
@@ -381,6 +398,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun autoAds() {
+        adTypeCallBack?.adInfo(SINGLE_AD)
         setAutoAdsAdapter()
         autoAdsWidget?.loadData(0)
         autoAdsWidget?.visibility = View.VISIBLE
@@ -486,14 +504,19 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         autoAdsAdapter.notifyDataSetChanged()
     }
 
-    fun loadData() {
+    private fun loadData() {
         topAdsDashboardPresenter.getAutoAdsStatus(resources)
-        loadStatisticsData()
     }
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo)
+        var adType = (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD
+
+        if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.selectedTabPosition == 1)
+            adType = SINGLE_AD
+
+        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
@@ -538,11 +561,11 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         snackbarRetry?.showRetrySnackbar()
     }
 
-    fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         swipe_refresh_layout.isRefreshing = false
         snackbarRetry?.hideRetrySnackbar()
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
@@ -565,6 +588,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
             4 -> autoAds()
             else -> manualAds()
         }
+        loadStatisticsData()
     }
 
     override fun onDestroyView() {
@@ -626,14 +650,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         }
     }
 
-    companion object {
-        val MILLISECONDS_PER_INCH = 200f
-
-        fun createInstance(): TopAdsProductIklanFragment {
-            return TopAdsProductIklanFragment()
-        }
-    }
-
     fun setGroupCount(size: Int) {
         groupPagerAdapter?.setTitleGroup(String.format(getString(R.string.topads_dash_group), size))
     }
@@ -676,14 +692,17 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is AppBarAction) {
+        if (context is AppBarAction)
             collapseStateCallBack = context
-        }
+
+        if (context is AdInfo)
+            adTypeCallBack = context
     }
 
     override fun onDetach() {
         super.onDetach()
         collapseStateCallBack = null
+        adTypeCallBack = null
     }
 
     private fun onStateChanged(state: State?) {
@@ -691,7 +710,20 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         swipe_refresh_layout.isEnabled = state == State.EXPANDED
     }
 
+    interface AdInfo {
+        fun adInfo(adInfo: String)
+    }
+
     interface AppBarAction {
         fun setAppBarState(state: State?)
+    }
+
+    companion object {
+        const val MILLISECONDS_PER_INCH = 200f
+        const val MANUAL_AD = "-1"
+        const val SINGLE_AD = "-2"
+        fun createInstance(): TopAdsProductIklanFragment {
+            return TopAdsProductIklanFragment()
+        }
     }
 }
