@@ -17,7 +17,6 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.processor.beta.AddToCartBundler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -25,6 +24,8 @@ import com.tokopedia.core.analytics.container.GTMAnalytics
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -46,8 +47,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -61,7 +60,6 @@ class TopChatRoomActivityTest {
 
     private lateinit var getChatUseCase: GetChatUseCaseStub
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
-    private lateinit var addToCartOccUseCase : AddToCartOccUseCase
 
     private lateinit var activity: TopChatRoomActivityStub
 
@@ -116,33 +114,33 @@ class TopChatRoomActivityTest {
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, TestAnalytic::class.java)
     }
 
-    class TestAnalytic(context: Context) : GTMAnalytics(context){
+    class TestAnalytic(context: Context) : GTMAnalytics(context) {
         val map = mutableMapOf<String?, Bundle?>()
         val seen = mutableSetOf<String>()
 
         override fun sendGeneralEvent(value: MutableMap<String, Any>?) {
             super.sendGeneralEvent(value)
-            seen.add(value?.get("event")?.toString() ?:"")
+            seen.add(value?.get("event")?.toString() ?: "")
         }
 
         override fun sendGeneralEvent(event: String?, category: String?, action: String?, label: String?) {
             super.sendGeneralEvent(event, category, action, label)
-            seen.add(event?:"")
+            seen.add(event ?: "")
         }
 
         override fun sendEvent(eventName: String?, eventValue: MutableMap<String, Any>?) {
             super.sendEvent(eventName, eventValue)
-            seen.add(eventName?:"")
+            seen.add(eventName ?: "")
         }
 
         override fun sendEnhanceEcommerceEvent(value: MutableMap<String, Any>?) {
             super.sendEnhanceEcommerceEvent(value)
-            seen.add(value?.get("event")?.toString() ?:"")
+            seen.add(value?.get("event")?.toString() ?: "")
         }
 
         override fun sendScreenAuthenticated(screenName: String?) {
             super.sendScreenAuthenticated(screenName)
-            seen.add(screenName?:"")
+            seen.add(screenName ?: "")
         }
 
         override fun sendEnhanceEcommerceEvent(eventName: String?, value: Bundle?) {
@@ -172,14 +170,13 @@ class TopChatRoomActivityTest {
 
         Thread.sleep(3000)
 
-        val testAnalytic  = TrackApp.getInstance().gtm as TestAnalytic
-        assertEquals("this ${AddToCartBundler.KEY} should not be null",true, testAnalytic.map.containsKey(AddToCartBundler.KEY))
-        assertEquals("this ${AddToCartBundler.KEY} should not be null",true, testAnalytic.isCalled(AddToCartBundler.KEY))
-
+        val testAnalytic = TrackApp.getInstance().gtm as TestAnalytic
+        assertEquals("this ${AddToCartBundler.KEY} should not be null", true, testAnalytic.map.containsKey(AddToCartBundler.KEY))
+        assertEquals("this ${AddToCartBundler.KEY} should not be null", true, testAnalytic.isCalled(AddToCartBundler.KEY))
 
         Thread.sleep(3000)
         val discomQuery = "tracker/user/topchat/topchat_room_occ_p0.json"
-        assertThat(getAnalyticsWithQuery(gtmLogDbSource, InstrumentationRegistry.getInstrumentation().targetContext, discomQuery), hasAllSuccess()) // use assertThat from Hamcrest is recommended
+        assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, discomQuery), hasAllSuccess()) // use assertThat from Hamcrest is recommended
 
         // Then
         assertTrue(true)

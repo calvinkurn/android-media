@@ -11,7 +11,7 @@
           "dimension79": "{{\\d*}}",
           "dimension81": "{{.*}}",
           "dimension80": "{{.*}}",
-          "dimension41": "{{.*}}"
+          "dimension40": "{{.*}}"
         }
       ]
     }
