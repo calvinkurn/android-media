@@ -78,6 +78,7 @@ class UohTopAdsVerificationTest {
             is UohRecommendationItemViewHolder -> {
                 val recommItem = uohRecyclerView.getUohItemAdapter().getRecommendationItemAtIndex(i)
                 if (recommItem.isTopAds) {
+                    topAdsCount++
                     clickProductRecommItem(uohRecyclerView, i)
                 }
             }
@@ -88,7 +89,6 @@ class UohTopAdsVerificationTest {
         try {
             Espresso.onView(ViewMatchers.withId(uohRecyclerView.id))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
-            topAdsCount++
         } catch (e: PerformException) {
             e.printStackTrace()
         }
