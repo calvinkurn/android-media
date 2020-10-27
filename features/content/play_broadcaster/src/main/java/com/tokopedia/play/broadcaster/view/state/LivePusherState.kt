@@ -8,6 +8,7 @@ sealed class LivePusherState {
     object Connecting : LivePusherState()
     object Started : LivePusherState()
     object Recovered : LivePusherState()
+    object Paused : LivePusherState()
     data class Stopped(val shouldNavigate: Boolean) : LivePusherState()
     data class Error(val errorStatus: LivePusherErrorStatus) : LivePusherState()
 }

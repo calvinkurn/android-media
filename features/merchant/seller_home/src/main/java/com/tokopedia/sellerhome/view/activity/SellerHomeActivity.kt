@@ -236,7 +236,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter)
+        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
     }
 
     private fun setupBottomNav() {
