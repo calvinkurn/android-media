@@ -321,6 +321,7 @@ dependencies {
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
+        implementation project(rootProject.ext.features.developerOptions)
         implementation project(rootProject.ext.features.developerOptionsNoop)
     }
     implementation project(rootProject.ext.features.qrscanner)

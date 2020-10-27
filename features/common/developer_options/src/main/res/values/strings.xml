@@ -16,10 +16,10 @@
     <!--Feedback Page-->
     <string name="category">Category*</string>
     <string name="email">Email Address*</string>
-    <string name="bugs_detail">Bugs Detail</string>
+    <string name="bugs_detail">Bugs Detail*</string>
     <string name="actual_result">Actual Result</string>
-    <string name="expected_result">Expected Result</string>
-    <string name="page">Page Name</string>
+    <string name="expected_behavior">Expected Behavior</string>
+    <string name="page">Page Name*</string>
     <string name="btn_submit_feedback_page">Submit</string>
     <string name="tokopedia_email">\@tokopedia.com</string>
     <string name="ticket_text_1">Terima kasih atas laporanmu. Kamu bisa cek status tiketmu di link ini :</string>

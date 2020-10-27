@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -284,8 +285,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
-            SettingConstant.SETTING_FEEDBACK_FORM -> { if (GlobalConfig.APPLICATION_TYPE == 3)
-                RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
+            SettingConstant.SETTING_FEEDBACK_FORM -> {
+                Toast.makeText(context, "feedback form here", Toast.LENGTH_LONG).show()
+                RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
             }
             SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
