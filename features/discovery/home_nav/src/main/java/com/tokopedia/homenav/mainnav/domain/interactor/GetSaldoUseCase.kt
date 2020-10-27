@@ -47,7 +47,6 @@ class GetSaldoUseCase @Inject constructor(
                         seller_usable_fmt
                         have_error
                     }
-                }
             } """.trimIndent()
         }
     }

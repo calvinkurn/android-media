@@ -3,9 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
+import android.text.Spanned
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -69,20 +67,48 @@ class AccountHeaderViewHolder(itemView: View,
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
 
+//        element.userName = AccountHeaderViewModel.ERROR_TEXT
+//        element.ovoSaldo = ""
+//        element.ovoPoint = ""
+//        element.shopName = AccountHeaderViewModel.ERROR_TEXT
         userImage.loadImageCircle(element.userImage)
-        tvName.text = element.userName
-        tvOvo.text = (MethodChecker.fromHtml(renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)))
+        renderProfileLoginSection(
+                MethodChecker.fromHtml(element.userName),
+                tvName,
+                if (element.userName.equals(AccountHeaderViewModel.ERROR_TEXT))
+                    View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
+                else null)
+        renderProfileLoginSection(
+                MethodChecker.fromHtml(
+                        if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT)) element.ovoSaldo
+                        else renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)),
+                tvOvo,
+                if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT))
+                    View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
+                else null)
+        if (element.shopName.isNotEmpty()) {
+            tvShopInfo.visibility = View.VISIBLE
+            renderProfileLoginSection(
+                    MethodChecker.fromHtml(
+                            if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT)) element.shopName
+                            else itemView.context.getString(R.string.account_home_shop_name_card, element.shopName)),
+                    tvShopInfo,
+                    if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT))
+                        View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
+                    else null)
+        }
+
         usrBadge.loadImage(element.badge)
         if (element.ovoSaldo.isNotEmpty()) {
             usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
         } else if (element.saldo.isNotEmpty()) {
             usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
         }
+    }
 
-        if (element.shopName.isNotEmpty()) {
-            tvShopInfo.visibility = View.VISIBLE
-            tvShopInfo.text = MethodChecker.fromHtml(itemView.context.getString(R.string.account_home_shop_name_card, element.shopName))
-        }
+    private fun renderProfileLoginSection(text: Spanned, typography: Typography, clickListener : View.OnClickListener?) {
+        typography.setOnClickListener(clickListener)
+        typography.text = text
     }
 
     private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
@@ -99,11 +125,11 @@ class AccountHeaderViewHolder(itemView: View,
         val btnRegister: UnifyButton = layoutNonLogin.findViewById(R.id.btn_register)
 
         btnLogin.setOnClickListener {
-            //applink login, handle callback
+            mainNavListener.onProfileLoginClicked()
         }
 
         btnRegister.setOnClickListener {
-            //applink register, handle callback
+            mainNavListener.onProfileRegisterClicked()
         }
     }
 
@@ -117,7 +143,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnLoginAs.text = String.format(TEXT_LOGIN_AS, name)
 
         btnLoginAs.setOnClickListener {
-            //applink login with, handle callback
+            mainNavListener.onProfileLoginClicked()
         }
     }
 

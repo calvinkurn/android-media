@@ -3,12 +3,9 @@ package com.tokopedia.homenav.mainnav.view.presenter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.NavCommandProcessor
-import com.tokopedia.homenav.common.util.ResultCommandProcessor
-import com.tokopedia.homenav.common.util.UpdateNavigationData
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.common.util.UpdateWidgetCommand
 import com.tokopedia.homenav.mainnav.domain.interactor.*
@@ -20,13 +17,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
-        private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
@@ -85,6 +80,8 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+
+
     private fun getUserSection(mainNavigationDataModel: MainNavigationDataModel){
         mainNavigationDataModel.dataList.find { it is AccountHeaderViewModel }?.let {
             val accountHeader = (it as AccountHeaderViewModel).copy()
@@ -92,35 +89,6 @@ class MainNavViewModel @Inject constructor(
             getOvoData(accountHeader)
             getSaldoData(accountHeader)
             getShopData(userSession.get().shopId.toInt(), accountHeader)
-        }
-    }
-
-    fun getProfileSection(loginState: Int, shopId: Int) {
-        when (loginState) {
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
-                getUserNameAndPictureData(loginState, shopId)
-            }
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
-            AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {
-                val accountData = AccountHeaderViewModel(loginState = loginState)
-                _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
-            }
-        }
-    }
-
-    fun getUserNameAndPictureData(loginState: Int, shopId: Int) {
-        launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getUserInfoUseCase.get().executeOnBackground()
-            }
-            val accountData = AccountHeaderViewModel(
-                    userName = result.profile.name,
-                    userImage = result.profile.profilePicture,
-                    loginState = loginState)
-            _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
-
-        }){
-            _profileResultListener.postValue(Fail(it))
         }
     }
 
@@ -133,7 +101,11 @@ class MainNavViewModel @Inject constructor(
             accountData.shopName = result.shopCore.name
             navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
         }){
-            _shopResultListener.postValue(Fail(it))
+
+            val newAccountData = accountData.copy(
+                    shopName = AccountHeaderViewModel.ERROR_TEXT
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, mainNavLiveDataController))
         }
     }
 
@@ -159,7 +131,12 @@ class MainNavViewModel @Inject constructor(
             navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
         }){
             //post error get ovo with new livedata
-            _ovoResultListener.postValue(Fail(it))
+
+            val newAccountData = accountData.copy(
+                    ovoSaldo = AccountHeaderViewModel.ERROR_TEXT,
+                    ovoPoint = AccountHeaderViewModel.ERROR_TEXT
+            )
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, mainNavLiveDataController))
         }
     }
 
@@ -168,14 +145,18 @@ class MainNavViewModel @Inject constructor(
             val result = withContext(baseDispatcher.get().io()) {
                 getSaldoUseCase.get().executeOnBackground()
             }
-
+            accountData.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
+            navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(accountData.copy(), 0, mainNavLiveDataController))
+        }){
             val newAccountData = accountData.copy(
-                    saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
+                    saldo = AccountHeaderViewModel.ERROR_TEXT
             )
             navProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(newAccountData, 0, mainNavLiveDataController))
-        }){
-            _saldoResultListener.postValue(Fail(it))
         }
+    }
+
+    fun reloadMainNavAfterLogin() {
+        getMainNavData()
     }
 
 }

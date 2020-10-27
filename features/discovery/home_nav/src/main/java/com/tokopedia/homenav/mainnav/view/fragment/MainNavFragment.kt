@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.mainnav.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
@@ -31,6 +35,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
+
+    companion object {
+        private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
+        private const val REQUEST_LOGIN = 1234
+        private const val REQUEST_REGISTER = 2345
+    }
 
     @Inject
     lateinit var viewModel: MainNavViewModel
@@ -65,6 +75,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         initAdapter()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -106,9 +125,30 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 }
             }
         })
+
     }
 
     override fun onRefresh() {
+    }
+
+    override fun onProfileLoginClicked() {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN)
+    }
+
+    override fun onProfileRegisterClicked() {
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.REGISTER), REQUEST_REGISTER)
+    }
+
+    override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
+    }
+
+    override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {
+        viewModel.getOvoData(element)
+        viewModel.getSaldoData(element)
+    }
+
+    override fun onErrorProfileShopClicked(element: AccountHeaderViewModel) {
+        viewModel.getShopData(getUserSession().shopId.toInt(), element)
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
@@ -118,6 +158,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                     bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
         }
     }
+
 
     private fun observeCategoryListData(){
         onRefresh()
@@ -161,10 +202,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun getSharedPreference(): SharedPreferences {
         return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
-    }
-
-    companion object{
-        private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
     }
 
 }
