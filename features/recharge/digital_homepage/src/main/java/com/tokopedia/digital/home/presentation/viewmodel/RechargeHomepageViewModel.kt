@@ -47,7 +47,11 @@ class RechargeHomepageViewModel @Inject constructor(
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections.toMutableList()
+
+
+            //NEED TO BE DELETEEEEE
+            data.add(RechargeHomepageSectionSkeleton.Item(id = 64, template = "PRODUCT_CARD_CUSTOM_BANNER"))
 
             // Add initial section data
             localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
@@ -151,5 +155,6 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
+        const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
     }
 }
