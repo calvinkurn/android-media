@@ -16,36 +16,34 @@ interface SubmitCommand {
     suspend fun send()
 }
 
-interface ResultCommandProcessor{
-    suspend fun updateWidget(visitable: HomeNavVisitable, position: Int)
-    suspend fun addWidget(visitable: HomeNavVisitable, position: Int)
-    suspend fun deleteWidget(visitable: HomeNavVisitable, position: Int)
-    suspend fun updateNavData(navigationDataModel: MainNavigationDataModel)
-}
-
-
-class AddWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class AddWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val onAddWidget: suspend (HomeNavVisitable, Int)-> Unit) : SubmitCommand {
     override suspend fun send() {
-        callback.addWidget(visitable, position)
+        onAddWidget.invoke(visitable, position)
     }
 }
 
-class UpdateNavigationData(private val navigationDataModel: MainNavigationDataModel, private val callback: ResultCommandProcessor) : SubmitCommand {
+class AddWidgetListCommand(private val visitables: List<HomeNavVisitable>, private val position: Int, private val onAddWidgetList: suspend (List<HomeNavVisitable>, Int)-> Unit) : SubmitCommand {
     override suspend fun send() {
-        callback.updateNavData(navigationDataModel)
+        onAddWidgetList.invoke(visitables, position)
     }
 }
 
-class UpdateWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class UpdateNavigationData(private val navigationDataModel: MainNavigationDataModel, private val onUpdateNavigationData: suspend (MainNavigationDataModel)-> Unit) : SubmitCommand {
     override suspend fun send() {
-        callback.updateWidget(visitable, position)
+        onUpdateNavigationData.invoke(navigationDataModel)
     }
 }
 
-class DeleteWidgetCommand(private val visitable: HomeNavVisitable?, private val position: Int, private val callback: ResultCommandProcessor) : SubmitCommand {
+class UpdateWidgetCommand(private val visitable: HomeNavVisitable, private val position: Int, private val onUpdateWidget: suspend (HomeNavVisitable, Int)-> Unit) : SubmitCommand {
+    override suspend fun send() {
+        onUpdateWidget.invoke(visitable, position)
+    }
+}
+
+class DeleteWidgetCommand(private val visitable: HomeNavVisitable?, private val position: Int, private val onDeleteWidget: suspend (HomeNavVisitable, Int)-> Unit) : SubmitCommand {
     override suspend fun send() {
         visitable?.let {
-            callback.deleteWidget(visitable, position)
+            onDeleteWidget.invoke(visitable, position)
         }
     }
 }

@@ -9,9 +9,9 @@ import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
  */
 
 fun List<DynamicHomeIconEntity.Category>.toVisitable(): List<HomeNavVisitable> = map {
-    HomeNavMenuViewModel(it.id, it.imageUrl, it.name, it.applink, submenu = it.categoryRows.toVisitables())
+    HomeNavMenuViewModel(id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink = it.applink, submenu = it.categoryRows.toVisitables())
 }
 
 fun List<DynamicHomeIconEntity.CategoryRow>.toVisitables(): List<HomeNavMenuViewModel> = map {
-    HomeNavMenuViewModel(it.id, it.imageUrl, it.name, it.applink)
+    HomeNavMenuViewModel(id = it.id, srcImage = it.imageUrl, itemTitle = it.name, applink =  it.applink)
 }
