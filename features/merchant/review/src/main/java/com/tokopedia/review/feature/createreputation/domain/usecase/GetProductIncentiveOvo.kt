@@ -12,6 +12,8 @@ import javax.inject.Inject
 class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     companion object {
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_REPUTATION_ID = "reputationID"
         const val OVO_INCENTIVE_QUERY_CLASS_NAME = "OvoIncentive"
         const val OVO_INCENTIVE_QUERY = """
                 query getProductRevIncentiveOvo{
@@ -39,9 +41,9 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                 putString(PARAM_PRODUCT_ID, productId.toString())
                 putString(PARAM_REPUTATION_ID, reputationId.toString())
             }.parameters
-            GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java, requestParams)
+            GraphqlRequest(OvoIncentive.GQL_QUERY, ProductRevIncentiveOvoDomain::class.java, requestParams)
         } else {
-            GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
+            GraphqlRequest(OvoIncentive.GQL_QUERY, ProductRevIncentiveOvoDomain::class.java)
         }
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
         return response.getData(ProductRevIncentiveOvoDomain::class.java)
