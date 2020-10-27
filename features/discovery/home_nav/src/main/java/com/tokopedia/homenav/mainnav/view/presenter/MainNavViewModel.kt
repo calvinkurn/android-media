@@ -187,23 +187,6 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    fun getProfileSection(loginState: Int, shopId: Int) {
-        when (loginState) {
-            AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
-                getUserNameAndPictureData(loginState, shopId)
-            }
-        }
-    }
-
-    private suspend fun getUserNameAndPictureData(loginState: Int, shopId: Int) {
-        val result = getUserInfoUseCase.get().executeOnBackground()
-        val accountData = AccountHeaderViewModel(
-                userName = result.profile.name,
-                userImage = result.profile.profilePicture,
-                loginState = loginState)
-        _mainNavLiveData.postValue(MainNavigationDataModel(listOf(accountData)))
-    }
-
     private suspend fun getShopData(shopId: Int, accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
