@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Wishlist.Theme.White" parent="Theme.AppCompat">
         <item name="toolbarTheme">@style/Toolbar.Wishlist</item>
     </style>
 
-    <style name="Toolbar.Wishlist" parent="Toolbar.White">
+    <style name="Toolbar.Wishlist" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G600</item>
         <item name="android:background">@color/Unify_N0</item>
         <item name="textAllCaps">false</item>
         <item name="android:actionMenuTextColor">@color/Unify_G500</item>
