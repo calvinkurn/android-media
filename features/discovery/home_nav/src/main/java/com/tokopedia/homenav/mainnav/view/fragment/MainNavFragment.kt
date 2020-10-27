@@ -143,12 +143,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {
-        viewModel.getOvoData(element)
-        viewModel.getSaldoData(element)
+        viewModel.reloadOvoData(element)
+        viewModel.reloadSaldoData(element)
     }
 
     override fun onErrorProfileShopClicked(element: AccountHeaderViewModel) {
-        viewModel.getShopData(getUserSession().shopId.toInt(), element)
+        viewModel.reloadShopData(getUserSession().shopId.toInt(), element)
     }
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {

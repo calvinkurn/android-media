@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -231,7 +232,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    fun getSaldoData(accountData: AccountHeaderViewModel) {
+    private suspend fun getSaldoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val result = withContext(baseDispatcher.get().io()) {
                 getSaldoUseCase.get().executeOnBackground()
@@ -248,6 +249,24 @@ class MainNavViewModel @Inject constructor(
 
     fun reloadMainNavAfterLogin() {
         getMainNavData()
+    }
+
+    fun reloadOvoData(accountData: AccountHeaderViewModel) {
+        launch(coroutineContext, block = {
+            getOvoData(accountData)
+        })
+    }
+
+    fun reloadSaldoData(accountData: AccountHeaderViewModel) {
+        launch(coroutineContext, block = {
+            getSaldoData(accountData)
+        })
+    }
+
+    fun reloadShopData(shopId: Int,accountData: AccountHeaderViewModel) {
+        launch(coroutineContext, block = {
+            getShopData(shopId, accountData)
+        })
     }
 
 }
