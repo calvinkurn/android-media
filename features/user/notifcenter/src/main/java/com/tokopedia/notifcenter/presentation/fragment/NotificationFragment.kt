@@ -9,12 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.inboxcommon.InboxCommonFragment
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
+import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -27,6 +30,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var rv: VerticalRecyclerView? = null
+    private var rvAdapter: NotificationAdapter? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -48,6 +52,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
+        rvAdapter = NotificationAdapter(adapterTypeFactory)
+        return rvAdapter as NotificationAdapter
+    }
+
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
     }
@@ -61,7 +70,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     private fun setupRecyclerView() {
+        val itemDecoration = NotificationItemDecoration(context)
         rv?.clearItemDecoration()
+        rv?.addItemDecoration(itemDecoration)
     }
 
     override fun onRoleChanged(role: Int) {
