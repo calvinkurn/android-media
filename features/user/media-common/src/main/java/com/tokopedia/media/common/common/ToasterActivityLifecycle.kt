@@ -46,7 +46,10 @@ class ToasterActivityLifecycle(
         Handler().postDelayed({
             with(activity) {
                 window.decorView.findViewById<ViewGroup>(android.R.id.content)?.let {
+                    // set flag
                     preferences.setToasterVisibilityFlag(true)
+
+                    // show toaster
                     Toaster.make(
                             view = it,
                             text = getString(R.string.media_toaster_title),
