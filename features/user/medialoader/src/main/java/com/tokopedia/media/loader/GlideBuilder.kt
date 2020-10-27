@@ -124,8 +124,10 @@ object GlideBuilder {
                 if (thumbnailUrl.isNotEmpty()) {
                     thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
                 } else {
-                    blurHashFromUrl(url) { hash ->
-                        thumbnail(thumbnailLoader(imageView.context, blurring(imageView, hash)))
+                    if (!isCircular) {
+                        blurHashFromUrl(url) { hash ->
+                            thumbnail(thumbnailLoader(imageView.context, blurring(imageView, hash)))
+                        }
                     }
                 }
 
