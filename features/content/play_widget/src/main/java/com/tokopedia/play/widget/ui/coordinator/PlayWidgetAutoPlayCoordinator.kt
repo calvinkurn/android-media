@@ -64,7 +64,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun onPause() {
-        videoPlayerMap.keys.forEach { it.pause() }
+        videoPlayerMap.keys.forEach { it.stop() }
     }
 
     fun onDestroy() {
@@ -72,7 +72,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun onResume() {
-        videoPlayerMap.keys.forEach { it.resume() }
+        videoPlayerMap.keys.forEach { it.restart() }
     }
 
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {

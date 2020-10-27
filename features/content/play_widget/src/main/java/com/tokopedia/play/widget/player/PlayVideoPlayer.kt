@@ -63,6 +63,10 @@ open class PlayVideoPlayer(val context: Context) {
         exoPlayer.stop()
     }
 
+    fun restart() {
+        start()
+    }
+
     fun release() {
         try {
             exoPlayer.release()
