@@ -4,15 +4,11 @@ import android.content.res.Resources
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
@@ -22,19 +18,15 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUs
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.domain.interactor.*
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.topads.dashboard.view.presenter.StatsList
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import rx.Subscriber
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,7 +44,7 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,
         private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
         private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
-        private val topAdsGetStatisticsUseCase: GraphqlUseCase<StatsData>,
+        private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
         private val topAdsKeywordsActionUseCase: TopAdsKeywordsActionUseCase,
         private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
         private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
@@ -144,18 +136,27 @@ class GroupDetailViewModel @Inject constructor(
 
     @GqlQuery("StatsList", TopAdsDashboardPresenter.STATS_URL)
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero(),
-                TopAdsDashboardPresenter.START_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate), TopAdsDashboardPresenter.END_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate), ParamObject.TYPE to selectedStatisticType, ParamObject.GROUP to groupId)
-        topAdsGetStatisticsUseCase.setTypeClass(StatsData::class.java)
-        topAdsGetStatisticsUseCase.setRequestParams(params)
-        topAdsGetStatisticsUseCase.setGraphqlQuery(StatsList.GQL_QUERY)
-        topAdsGetStatisticsUseCase.execute({
-            onSuccesGetStatisticsInfo(it.topadsDashboardStatistics.data)
+       val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
+               selectedStatisticType, userSession.shopId, groupId)
+        topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
+        topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
 
-        }, {
-            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
-        }
-        )
+            }
+
+            override fun onError(e: Throwable?) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e?.localizedMessage)
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<StatsData>
+                val dataStatistic = response.data.topadsDashboardStatistics.data
+                onSuccesGetStatisticsInfo(dataStatistic)
+
+            }
+        })
     }
 
 
