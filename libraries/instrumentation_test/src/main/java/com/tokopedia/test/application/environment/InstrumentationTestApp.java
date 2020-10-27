@@ -153,11 +153,7 @@ public class InstrumentationTestApp extends BaseMainApplication
      * common_network with use case RestRequestSupportInterceptorUseCase
      */
     public void addRestSupportInterceptor(Interceptor interceptor) {
-        if (!testInterceptors.containsKey(interceptor.getClass().getCanonicalName())) {
-            testInterceptors.put(interceptor.getClass().getCanonicalName(), interceptor);
-            ArrayList<Interceptor> interceptorList = new ArrayList<Interceptor>(testInterceptors.values());
-            NetworkClient.reInitRetrofitWithInterceptors(interceptorList, this);
-        }
+        NetworkClient.reInitRetrofitWithInterceptors(Collections.singletonList(interceptor), this);
     }
 
     @Override

@@ -68,6 +68,12 @@ fun setupRestMockResponse(mockModelConfig: MockModelConfig) {
     application.addRestSupportInterceptor(MockInterceptor(mockModelConfig))
 }
 
+fun setupRestMockResponse(createMockModel: MockModelConfig.() -> Unit) {
+    val mockModelConfig = createMockModelConfig(createMockModel)
+
+    setupRestMockResponse(mockModelConfig)
+}
+
 fun setupGraphqlMockResponse(createMockModel: MockModelConfig.() -> Unit) {
     val mockModelConfig = createMockModelConfig(createMockModel)
 
