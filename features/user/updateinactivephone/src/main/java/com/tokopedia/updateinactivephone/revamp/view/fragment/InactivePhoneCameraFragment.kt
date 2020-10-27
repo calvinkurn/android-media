@@ -193,9 +193,9 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onError(messgae: String) {
+    private fun onError(message: String) {
         view?.let {
-            Toaster.make(it, messgae, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

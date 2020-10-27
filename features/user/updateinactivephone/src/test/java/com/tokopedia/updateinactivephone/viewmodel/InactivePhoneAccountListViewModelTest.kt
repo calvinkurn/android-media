@@ -6,7 +6,7 @@ import com.tokopedia.updateinactivephone.revamp.domain.data.AccountList
 import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.UserDetailDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.GetAccountListUseCase
-import com.tokopedia.updateinactivephone.revamp.view.viewmodel.AccountListViewModel
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneAccountListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AccountListViewModelTest {
+class InactivePhoneAccountListViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -29,11 +29,11 @@ class AccountListViewModelTest {
     val dispatcher = TestCoroutineDispatcher()
     val getAccountListUseCase = mockk<GetAccountListUseCase>(relaxed = true)
     private var observer = mockk<Observer<Result<AccountListDataModel>>>()
-    lateinit var viewmodel : AccountListViewModel
+    lateinit var viewmodel : InactivePhoneAccountListViewModel
 
     @Before
     fun setup() {
-        viewmodel = AccountListViewModel(getAccountListUseCase, dispatcher)
+        viewmodel = InactivePhoneAccountListViewModel(getAccountListUseCase, dispatcher)
         viewmodel.accountList.observeForever(observer)
     }
 
@@ -58,7 +58,7 @@ class AccountListViewModelTest {
     @Test
     fun `get account list - empty list`() {
         val phonenumber = "62800000000000"
-        val mockThrowable = Throwable(AccountListViewModel.ERROR_ACCOUNT_LIST_EMPTY)
+        val mockThrowable = Throwable(InactivePhoneAccountListViewModel.ERROR_ACCOUNT_LIST_EMPTY)
 
         every {
             getAccountListUseCase.execute(any(), any())

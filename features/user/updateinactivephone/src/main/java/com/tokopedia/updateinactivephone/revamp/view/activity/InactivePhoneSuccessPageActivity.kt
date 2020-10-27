@@ -52,7 +52,7 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        fun getIntent(context: Context): Intent {
+        fun createIntent(context: Context): Intent {
             return Intent(context, InactivePhoneSuccessPageActivity::class.java)
         }
     }

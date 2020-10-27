@@ -1,10 +1,13 @@
 package com.tokopedia.updateinactivephone.revamp.di.module
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.updateinactivephone.revamp.di.InactivePhoneScope
+import com.tokopedia.updateinactivephone.revamp.domain.api.InactivePhoneApi
+import com.tokopedia.updateinactivephone.revamp.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.GetAccountListUseCase
+import com.tokopedia.updateinactivephone.revamp.domain.data.InactivePhoneSubmitDataModel
+import com.tokopedia.updateinactivephone.revamp.domain.data.PhoneValidationDataModel
+import com.tokopedia.updateinactivephone.revamp.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 
@@ -13,13 +16,31 @@ class InactivePhoneUseCaseModule {
 
     @InactivePhoneScope
     @Provides
-    fun provideGraphqlUseCase(repository: GraphqlRepository): GraphqlUseCase<AccountListDataModel> {
-        return GraphqlUseCase(repository)
+    fun provideGetAccountListUseCase(useCase: GraphqlUseCase<AccountListDataModel>): GetAccountListUseCase {
+        return GetAccountListUseCase(useCase)
     }
 
     @InactivePhoneScope
     @Provides
-    fun provideGetAccountListUseCase(useCase: GraphqlUseCase<AccountListDataModel>): GetAccountListUseCase {
-        return GetAccountListUseCase(useCase)
+    fun providePhoneValidationUseCase(useCase: GraphqlUseCase<PhoneValidationDataModel>): PhoneValidationUseCase {
+        return PhoneValidationUseCase(useCase)
+    }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideSubmitDataUseCase(useCase: GraphqlUseCase<InactivePhoneSubmitDataModel>): SubmitDataUseCase {
+        return SubmitDataUseCase(useCase)
+    }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideImageUploadUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): ImageUploadUseCase {
+        return ImageUploadUseCase(apiClient)
+    }
+
+    @InactivePhoneScope
+    @Provides
+    fun provideGetUploadHostUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): GetUploadHostUseCase {
+        return GetUploadHostUseCase(apiClient)
     }
 }

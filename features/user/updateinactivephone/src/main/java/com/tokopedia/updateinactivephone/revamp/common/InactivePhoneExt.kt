@@ -20,7 +20,7 @@ fun AppCompatActivity.addFragment(frameId: Int, fragment: Fragment) {
 fun AppCompatActivity.replaceFragment(frameId: Int, fragment: Fragment) {
     supportFragmentManager.doTransaction {
         addToBackStack(null)
-        replace(frameId, fragment)
+        replace(frameId, fragment, fragment.tag)
     }
 }
 

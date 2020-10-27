@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
 
-    private val userSession: UserSession = UserSession(activity)
-
     private lateinit var fragmentTransactionInterface: FragmentTransactionInterface
 
     override fun getScreenName(): String = ""
@@ -54,6 +52,7 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
     private fun gotoPageUploadData() {
         activity?.let {
             startActivity(InactivePhoneUploadDataActivity.getIntent(it, SELFIE))
+            it.finish()
         }
     }
 }

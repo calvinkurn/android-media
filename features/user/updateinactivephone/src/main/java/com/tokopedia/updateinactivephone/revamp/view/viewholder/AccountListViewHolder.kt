@@ -5,7 +5,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.revamp.domain.data.UserDetailDataModel
+import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
 import com.tokopedia.utils.image.ImageUtils
 
 class AccountListViewHolder(
@@ -17,7 +17,7 @@ class AccountListViewHolder(
     private val txtName = itemView.findViewById<Typography>(R.id.txtName)
     private val txtEmail = itemView.findViewById<Typography>(R.id.txtEmail)
 
-    fun onBind(userDetailDataModel: UserDetailDataModel) {
+    fun onBind(userDetailDataModel: AccountListDataModel.UserDetailDataModel) {
         itemView.context?.let {
             ImageUtils.loadImageCircle2(it, imgAvatar, userDetailDataModel.image)
         }
@@ -31,6 +31,6 @@ class AccountListViewHolder(
     }
 
     interface Listener {
-        fun onItemClick(userDetailDataModel: UserDetailDataModel)
+        fun onItemClick(userDetailDataModel: AccountListDataModel.UserDetailDataModel)
     }
 }

@@ -9,13 +9,19 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
+import com.tokopedia.updateinactivephone.revamp.common.addFragment
 import com.tokopedia.updateinactivephone.revamp.common.replaceFragment
 import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneOnboardingFragment
 
 class InactivePhoneOnboardingActivity : BaseSimpleActivity(), FragmentTransactionInterface {
 
     override fun getNewFragment(): Fragment? {
-        return InactivePhoneOnboardingFragment()
+        val bundle = Bundle()
+        if (intent?.extras != null) {
+            bundle.putAll(intent?.extras)
+        }
+
+        return InactivePhoneOnboardingFragment.createInstance(bundle)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -35,7 +41,6 @@ class InactivePhoneOnboardingActivity : BaseSimpleActivity(), FragmentTransactio
         } else {
             supportFragmentManager.popBackStack()
         }
-
     }
 
     override fun replace(fragment: Fragment) {

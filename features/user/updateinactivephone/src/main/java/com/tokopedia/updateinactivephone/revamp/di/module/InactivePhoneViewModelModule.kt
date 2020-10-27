@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.updateinactivephone.revamp.di.InactivePhoneScope
-import com.tokopedia.updateinactivephone.revamp.view.viewmodel.AccountListViewModel
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneAccountListViewModel
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneDataUploadViewModel
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneOnboardingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,11 +17,23 @@ abstract class InactivePhoneViewModelModule {
 
     @InactivePhoneScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @InactivePhoneScope
     @Binds
     @IntoMap
-    @ViewModelKey(AccountListViewModel::class)
-    internal abstract fun accountListViewModel(viewModel: AccountListViewModel): ViewModel
+    @ViewModelKey(InactivePhoneAccountListViewModel::class)
+    abstract fun accountListViewModel(viewModelInactivePhone: InactivePhoneAccountListViewModel): ViewModel
+
+    @InactivePhoneScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(InactivePhoneOnboardingViewModel::class)
+    abstract fun onboardingViewModel(viewModelInactivePhone: InactivePhoneOnboardingViewModel): ViewModel
+
+    @InactivePhoneScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(InactivePhoneDataUploadViewModel::class)
+    abstract fun dataUploadViewModel(viewModelInactivePhone: InactivePhoneDataUploadViewModel): ViewModel
 }

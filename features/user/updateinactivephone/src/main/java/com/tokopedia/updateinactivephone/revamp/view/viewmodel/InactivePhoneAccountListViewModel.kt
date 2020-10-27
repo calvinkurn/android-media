@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class AccountListViewModel @Inject constructor(
+class InactivePhoneAccountListViewModel @Inject constructor(
         private val useCase: GetAccountListUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -23,7 +23,7 @@ class AccountListViewModel @Inject constructor(
 
     fun getAccountList(phoneNumber: String) {
         launchCatchError(coroutineContext, {
-            useCase.params = generateParam(phoneNumber)
+            useCase.generateParam(phoneNumber)
             useCase.execute(onSuccess = {
                 if (it.accountList.userDetailDataModels.isNotEmpty()) {
                     _accountList.postValue(Success(it))
@@ -44,16 +44,6 @@ class AccountListViewModel @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_PHONE_NUMBER = "phone"
-        private const val PARAM_VALIDATE_TOKEN = "validate_token"
-
         const val ERROR_ACCOUNT_LIST_EMPTY = "Account List is empty"
-
-        fun generateParam(phoneNumber: String): Map<String, Any> {
-            return mapOf(
-                    PARAM_PHONE_NUMBER to phoneNumber,
-                    PARAM_VALIDATE_TOKEN to ""
-            )
-        }
     }
 }

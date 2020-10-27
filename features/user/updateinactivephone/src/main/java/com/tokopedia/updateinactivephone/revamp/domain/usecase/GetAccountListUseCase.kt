@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.revamp.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
+import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneAccountListViewModel
 import javax.inject.Inject
 
 class GetAccountListUseCase @Inject constructor(
@@ -23,32 +24,43 @@ class GetAccountListUseCase @Inject constructor(
         }
     }
 
+    fun generateParam(phoneNumber: String) {
+        params = mapOf(
+                PARAM_PHONE_NUMBER to phoneNumber,
+                PARAM_IS_INACTIVE_PHONE to true,
+                PARAM_VALIDATE_TOKEN to ""
+        )
+    }
+
     fun cancelJobs() {
         graphqlUseCase.cancelJobs()
+        graphqlUseCase.clearCache()
     }
 
     companion object {
+
+        private const val PARAM_PHONE_NUMBER = "phone"
+        private const val PARAM_VALIDATE_TOKEN = "validate_token"
+        private const val PARAM_IS_INACTIVE_PHONE = "is_inactive_phone"
+
         private val query = """
-        query get_accounts_list(${'$'}validate_token : String!, ${'$'}phone : String!) {
-          accountsGetAccountsList(validate_token: ${'$'}validate_token, phone : ${'$'}phone) {
-            key
-            msisdn_view
-            msisdn
-            users_details {
-              user_id
-              fullname
-              email
-              msisdn_verified
-              image
-              challenge_2fa
-              user_id_enc
+            query accountsGetAccountsList(${'$'}validate_token : String!, ${'$'}phone : String, ${'$'}is_inactive_phone : Boolean) {
+              accountsGetAccountsList(validate_token: ${'$'}validate_token, phone : ${'$'}phone, is_inactive_phone : ${'$'}is_inactive_phone) {
+                key
+                msisdn_view
+                msisdn
+                users_details {
+                  fullname
+                  email
+                  image
+                  user_id_index
+                }
+                errors {
+                  name
+                  message
+                }
+              }
             }
-            errors {
-              name
-              message
-            }
-          }
-        }
-    """.trimIndent()
+        """.trimIndent()
     }
 }

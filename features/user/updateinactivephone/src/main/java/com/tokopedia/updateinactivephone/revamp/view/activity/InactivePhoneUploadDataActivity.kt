@@ -7,17 +7,14 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneUploadDataFragment
+import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneDataUploadFragment
 
 class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
-        val source = intent?.extras?.getString(KEY_SOURCE) ?: ""
-        return InactivePhoneUploadDataFragment.instance(source)
+        return InactivePhoneDataUploadFragment()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -41,6 +38,7 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
             setPrimaryCTAClickListener {
                 this.dismiss()
                 gotoOnboardingPage()
+                finish()
             }
             setSecondaryCTAClickListener {
                 this.dismiss()
