@@ -1,35 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/containerContentOrderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/flight_search_reverse_background"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
+                app:tickerShapeType="full"
+                app:tickerType="warning" />
+
+            <include
+                layout="@layout/include_flight_order_detail_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <include
+                layout="@layout/include_flight_order_detail_journey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerLoaderOrderDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/flight_search_reverse_background"
         android:orientation="vertical">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:closeButtonVisibility="gone"
-            app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
-            app:tickerShapeType="full"
-            app:tickerType="warning" />
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_centerInParent="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular" />
 
-        <include
-            layout="@layout/include_flight_order_detail_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include
-            layout="@layout/include_flight_order_detail_journey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl3" />
+</LinearLayout>
 
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>

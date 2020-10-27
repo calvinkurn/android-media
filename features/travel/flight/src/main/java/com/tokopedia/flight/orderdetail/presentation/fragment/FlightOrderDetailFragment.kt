@@ -1,5 +1,8 @@
 package com.tokopedia.flight.orderdetail.presentation.fragment
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +20,7 @@ import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
 import kotlinx.android.synthetic.main.include_flight_order_detail_header.*
 import javax.inject.Inject
 
@@ -56,6 +60,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading()
         flightOrderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -68,8 +73,20 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun showLoading() {
+        containerContentOrderDetail.visibility = View.GONE
+        containerLoaderOrderDetail.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        containerContentOrderDetail.visibility = View.VISIBLE
+        containerLoaderOrderDetail.visibility = View.GONE
+    }
+
     private fun renderView(data: OrderDetailDataModel) {
+        hideLoading()
         renderOrderStatus(data.status, data.statusString)
+        renderInvoiceId(flightOrderDetailViewModel.invoiceId)
     }
 
     private fun renderOrderStatus(statusInt: Int, statusString: String) {
@@ -92,10 +109,27 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun renderInvoiceId(invoiceId: String) {
+        tgFlightOrderInvoice.text = invoiceId
+        ivFlightOrderInvoiceCopy.setOnClickListener {
+            copyToClipboard(CLIP_LABEL_INVOICE_ID, invoiceId)
+        }
+    }
+
+    private fun copyToClipboard(label: String, textToCopy: String) {
+        context?.let {
+            val clipboardManager: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText(label, textToCopy)
+            clipboardManager.setPrimaryClip(clipData)
+        }
+    }
+
     companion object {
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
         private const val EXTRA_REQUEST_CANCEL = "EXTRA_REQUEST_CANCEL"
+
+        private const val CLIP_LABEL_INVOICE_ID = "Flight Invoice Id"
 
         fun createInstance(invoiceId: String,
                            isCancellation: Boolean,
