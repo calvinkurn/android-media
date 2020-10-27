@@ -62,7 +62,8 @@ data class RatesParam(
             vehicle_leasing = builder.vehicle_leasing,
             psl_code = builder.psl_code,
             products = builder.products,
-            unique_id = builder.unique_id)
+            unique_id = builder.unique_id,
+            mvc = builder.mvc)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
