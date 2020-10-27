@@ -1,18 +1,20 @@
 package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.text.TkpdHintTextInputLayout
+import android.view.ViewGroup
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4.Data.Service.Product.Features.MoneyIn
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class GetImeiBS : BottomSheets() {
+class GetImeiBS : BottomSheetUnify() {
     private var moneyIn: MoneyIn? = null
     private var description: String? = null
     private var actionListener: ActionListener? = null
+    private var contentView: View? = null
 
     companion object {
         private const val KEY_MONEY_IN = "KEY_MONEY_IN"
@@ -24,34 +26,33 @@ class GetImeiBS : BottomSheets() {
         }
     }
 
-    override fun title(): String = getString(R.string.select_shipping)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
+    private fun initLayout() {
+        setTitle(getString(R.string.select_shipping))
+        showCloseIcon = false
+        showKnob = true
+        contentView = View.inflate(context,
+                R.layout.tradein_bs_get_imei, null)
 
-    override fun getLayoutResourceId(): Int = R.layout.tradein_bs_get_imei
+        val btnContinue = contentView?.findViewById<UnifyButton>(R.id.btn_continue)
+        val etWrapper = contentView?.findViewById<TextAreaUnify>(R.id.wrapper_imei)
+//        etWrapper?.setHelper("Tekan *#06# untuk cek IMEI atau dengan cara berikut")
 
-    override fun initView(view: View?) {
-//        val shipperButton = view?.findViewById<TextView>(R.id.shipper_name)
-//        val exchangeText = view?.findViewById<TextView>(R.id.exchange_text)
-//        val price = view?.findViewById<TextView>(R.id.price)
-        val btnContinue = view?.findViewById<UnifyButton>(R.id.btn_continue)
-        val etWrapper = view?.findViewById<TkpdHintTextInputLayout>(R.id.wrapper_imei)
-        val etImei = view?.findViewById<EditText>(R.id.et_imei)
-        etWrapper?.setHelper("Tekan *#06# untuk cek IMEI atau dengan cara berikut")
-
-//
-//        shipperButton?.text = moneyIn?.shipperName
-//        price?.text = moneyIn?.textPrice
-//        exchangeText?.text = description
         btnContinue?.setOnClickListener {
             //actionListener?.onCourierButtonClick(moneyIn?.shipperName, moneyIn?.textPrice)
 
-            when(etImei?.text.toString() ) {
-                "" -> etWrapper?.error = "Kamu belum memasukkan no. IMEI"
+            if (etWrapper?.textAreaInput?.text.toString().isEmpty()) {
+                etWrapper?.isError = true
+                etWrapper?.textAreaMessage = "Kamu belum memasukkan no. IMEI"
+            } else {
+                dismiss()
             }
-
-            dismiss()
         }
+        setChild(contentView)
     }
 
     fun setActionListener(actionListener: ActionListener?) {
