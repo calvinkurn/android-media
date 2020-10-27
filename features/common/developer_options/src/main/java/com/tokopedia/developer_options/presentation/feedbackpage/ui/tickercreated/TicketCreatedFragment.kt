@@ -18,6 +18,7 @@ import com.tokopedia.developer_options.presentation.feedbackpage.analytics.Feedb
 import com.tokopedia.developer_options.presentation.feedbackpage.utils.EXTRA_IS_TICKET_LINK
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class TicketCreatedFragment: Fragment() {
@@ -27,6 +28,7 @@ class TicketCreatedFragment: Fragment() {
     private lateinit var ticketText2: Typography
     private lateinit var tickerLink: Typography
     private lateinit var imageCopy: ImageView
+    private lateinit var buttonLink: UnifyButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mainView = inflater.inflate(R.layout.fragment_ticket_result, container, false)
@@ -40,18 +42,21 @@ class TicketCreatedFragment: Fragment() {
         ticketText2 = mainView.findViewById(R.id.ticket_text_2)
         tickerLink = mainView.findViewById(R.id.ticket_url)
         imageCopy = mainView.findViewById(R.id.copy_ticket)
+        buttonLink = mainView.findViewById(R.id.openLink)
 
         val issueUrl = arguments?.getString(EXTRA_IS_TICKET_LINK)
 
         imageCreated.loadRemoteImageDrawable(ADDRESS_INVALID)
-        ticketText1.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_1)).spannedString }
+        ticketText1.text = getString(R.string.ticket_text_1)
         ticketText2.text = context?.let { HtmlLinkHelper(it, getString(R.string.ticket_text_2)).spannedString }
         tickerLink.text = issueUrl
-        tickerLink.setOnClickListener {
+
+        buttonLink.setOnClickListener {
             FeedbackPageAnalytics.eventClickJiraLink()
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(issueUrl))
             startActivity(intent)
         }
+
         imageCopy.setOnClickListener {
             FeedbackPageAnalytics.eventCopyJiraLink()
             onTextCopied(mainView, "label", tickerLink.text.toString())
@@ -76,7 +81,7 @@ class TicketCreatedFragment: Fragment() {
             }
         }
 
-        private const val ADDRESS_INVALID = "ic_invalid_location.png"
+        private const val ADDRESS_INVALID = "ic_thankyou_feedback.png"
     }
 
 }

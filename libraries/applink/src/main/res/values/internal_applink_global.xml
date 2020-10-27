@@ -77,4 +77,6 @@
     <string name="two_factor_register">/two-factor-register</string>
 
     <string name="path_screen_recorder">/screen-recorder</string>
+
+    <string name="path_internal_feedback">/internal-feedback</string>
 </resources>

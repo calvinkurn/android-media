@@ -401,7 +401,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
-            DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
+            DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
+            DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM)
     ).toMutableList()
 
     /**
