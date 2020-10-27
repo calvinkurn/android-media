@@ -12,6 +12,10 @@ object TimeHelper {
     private val HOUR_1_IN_SECOND = TimeUnit.HOURS.toSeconds(1)
     private val MINUTE_1_IN_SECOND = TimeUnit.MINUTES.toSeconds(1)
 
+    /**
+     * @param timestamp timestamp in seconds
+     * @return relative date to current time
+     */
     fun getRelativeTimeFromNow(timestamp: Long): String {
         val diff: Long = Calendar.getInstance().timeInMillis / 1000 - timestamp
         return when {
