@@ -21,9 +21,9 @@
         <item name="android:background">@color/Unify_N0</item>
         <item name="actionModeBackground">@color/Unify_N0</item>
         <item name="android:actionModeBackground">@color/Unify_N0</item>
-        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
-        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
-        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
+        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
     </style>
 
     <style name="TabBar.White" parent="BaseTabBar">
