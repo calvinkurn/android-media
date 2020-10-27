@@ -62,7 +62,7 @@ class RejectOrderReasonAdapter(var reasons: List<String>?) : RecyclerView.Adapte
             reasonRadioButton.isChecked = isSelected
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                reasonRadioButton.setButtonDrawable(R.drawable.selector_radiobutton_big)
+                reasonRadioButton.setButtonDrawable(com.tokopedia.design.R.drawable.selector_radiobutton_big)
             }
 
             reasonRadioButton.setOnCheckedChangeListener { buttonView, isChecked ->

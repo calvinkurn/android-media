@@ -65,7 +65,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun onBackPressed() {
         createReviewFragment?.let {
-            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId)
+            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
             it.showCancelDialog()
         }
     }

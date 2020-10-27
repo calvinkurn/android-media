@@ -48,7 +48,7 @@ class OrderListUseCaseModule {
     @OrderListModuleScope
     @Named("recommendationQuery")
     fun provideRecommendationRawQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
     }
 
     @Provides
@@ -63,7 +63,7 @@ class OrderListUseCaseModule {
     @OrderListModuleScope
     @Named("atcMutation")
     fun provideAddToCartMutation(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @Provides

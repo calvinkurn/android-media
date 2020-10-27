@@ -19,7 +19,7 @@ object DeeplinkMapperMarketplace {
             deeplink.startsWith(ApplinkConst.CHECKOUT) ->
                 deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
             deeplink.startsWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ->
-                deeplink.replace(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+                deeplink.replace(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD, ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD)
             deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL) ->
                 deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
             deeplink.startsWith(ApplinkConst.PRODUCT_ADD) -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW

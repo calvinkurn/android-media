@@ -1314,11 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-                    goToOneClickCheckout()
-                } else {
-                    goToCartCheckout(cartId)
-                }
+                goToOneClickCheckout()
             }
             ProductDetailConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
@@ -2423,34 +2419,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun addToCartOcc(data: DynamicProductInfoP1, selectedWarehouseId: Int) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-            val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-                warehouseId = selectedWarehouseId.toString()
-                attribution = trackerAttributionPdp ?: ""
-                listTracker = trackerListNamePdp ?: ""
-                productName = data.getProductName
-                category = data.basic.category.name
-                price = data.finalPrice.toString()
-                userId = viewModel.userId
-            }
-            viewModel.addToCart(addToCartOccRequestParams)
-        } else {
-            val addToCartRequestParams = AddToCartRequestParams().apply {
-                productId = data.basic.productID.toLongOrNull() ?: 0
-                shopId = data.basic.shopID.toIntOrZero()
-                quantity = data.basic.minOrder
-                notes = ""
-                attribution = trackerAttributionPdp ?: ""
-                listTracker = trackerListNamePdp ?: ""
-                warehouseId = selectedWarehouseId
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
-                productName = data.getProductName
-                category = data.basic.category.name
-                price = data.finalPrice.toString()
-                userId = viewModel.userId
-            }
-            viewModel.addToCart(addToCartRequestParams)
+        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
+            warehouseId = selectedWarehouseId.toString()
+            attribution = trackerAttributionPdp ?: ""
+            listTracker = trackerListNamePdp ?: ""
+            productName = data.getProductName
+            category = data.basic.category.name
+            price = data.finalPrice.toString()
+            userId = viewModel.userId
         }
+        viewModel.addToCart(addToCartOccRequestParams)
     }
 
     private fun goToLeasing() {

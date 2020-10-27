@@ -53,7 +53,6 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSo
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -511,11 +510,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToWriteActivity(eventAction: String) {
         TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected, availableVariants)
-        if(useOldPage()) {
-            val intent = context?.let { AddTalkActivity.createIntent(it, productId, TalkConstants.READING_SOURCE) }
-            startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
-            return
-        }
         val intent = RouteManager.getIntent(context, Uri.parse(
                 ApplinkConstInternalGlobal.ADD_TALK)
                 .buildUpon()
@@ -594,17 +588,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getSelectedCategoryDisplayName(): String {
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
-        }
-        return remoteConfigInstance?.abTestPlatform
-    }
-
-    private fun useOldPage(): Boolean {
-        return getAbTestPlatform()?.getString(TalkConstants.AB_TEST_WRITE_KEY).equals(TalkConstants.WRITE_OLD_FLOW)
     }
 
 }
