@@ -10,7 +10,7 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductNameExistUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -36,7 +36,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductNameExistUseCase: ValidateProductNameExistUseCase
+        private val validateProductUseCase: ValidateProductUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -206,15 +206,15 @@ class AddEditProductDetailViewModel @Inject constructor(
                 // remote product name validation
                 launchCatchError(block = {
                     val response = withContext(Dispatchers.IO) {
-                        validateProductNameExistUseCase.setParams(productNameInput)
-                        validateProductNameExistUseCase.executeOnBackground()
+                        validateProductUseCase.setParamsProductName(productNameInput)
+                        validateProductUseCase.executeOnBackground()
                     }
                     val validationMessage = response.productValidateV3.data.productName
-                            ?.joinToString("/n").orEmpty()
+                            .joinToString("\n")
                     if (validationMessage.isNotEmpty()) {
                         productNameMessage = validationMessage
                     }
-                    mIsProductNameInputError.value = !response.productValidateV3.isSuccess
+                    mIsProductNameInputError.value = validationMessage.isNotEmpty()
                 }, onError = {
                     // log error
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it)
@@ -339,15 +339,20 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductSkuInput(productSkuInput: String) {
-        // check is sku contains a space character
-        if (productSkuInput.contains(" ")) {
-            val errorMessage = provider.getEmptyProductSkuErrorMessage()
-            errorMessage?.let { productSkuMessage = it }
-            mIsProductSkuInputError.value = true
-            return
-        }
-        productSkuMessage = ""
-        mIsProductSkuInputError.value = false
+        // remote product sku validation
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                validateProductUseCase.setParamsProductSku(productSkuInput)
+                validateProductUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.productSku
+                    .joinToString("\n")
+            productSkuMessage = validationMessage
+            mIsProductSkuInputError.value = validationMessage.isNotEmpty()
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {
