@@ -10,20 +10,22 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailViewModel(private val orderDetailUseCase: FlightOrderDetailUseCase,
-                                 private val dispatcherProvider: TravelDispatcherProvider)
+class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseCase: FlightOrderDetailUseCase,
+                                                     private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
+    var invoiceId: String = ""
 
     private val mutableOrderDetailData = MutableLiveData<Result<OrderDetailDataModel>>()
     val orderDetailData: LiveData<Result<OrderDetailDataModel>>
         get() = mutableOrderDetailData
 
-    fun fetchOrderDetailData(invoiceId: String) {
+    fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             val orderDetailData = orderDetailUseCase.execute(invoiceId)
             mutableOrderDetailData.postValue(Success(orderDetailData))

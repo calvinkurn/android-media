@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author by furqan on 14/10/2020
  */
 class FlightOrderDetailEntity(
-        @SerializedName("errors")
+        @SerializedName("error")
         @Expose
         val errors: List<OrderDetailError> = arrayListOf(),
         @SerializedName("data")
@@ -593,7 +593,7 @@ class OrderDetailCancellation(
         val cancelId: Int = 0,
         @SerializedName("cancelDetail")
         @Expose
-        val cancelDetail: OrderDetailCancelDetail = OrderDetailCancelDetail(),
+        val cancelDetail: List<OrderDetailCancelDetail> = arrayListOf(),
         @SerializedName("createTime")
         @Expose
         val createTime: String = "",

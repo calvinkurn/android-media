@@ -9,10 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class OrderDetailCancellationModel(
         val cancelId: Int,
-        val journeyId: Int,
-        val passengerId: Int,
-        val refundedGateway: String,
-        val refundedTime: String,
+        val cancelDetails: List<OrderDetailCancellationDetail>,
         val createTime: String,
         val updateTime: String,
         val estimatedRefund: String,
@@ -44,6 +41,14 @@ data class OrderDetailCancellationModel(
     data class OrderDetailRefundTitleContentModel(
             val title: String,
             val content: List<OrderDetailRefundKeyValueModel>
+    ) : Parcelable
+
+    @Parcelize
+    data class OrderDetailCancellationDetail(
+            val journeyId: Int,
+            val passengerId: Int,
+            val refundedGateway: String,
+            val refundedTime: String
     ) : Parcelable
 
 }

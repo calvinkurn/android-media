@@ -27,7 +27,9 @@ class FlightOrderDetailUseCase @Inject constructor(
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
-        val orderDetailEntity = useCase.executeOnBackground().getSuccessData<FlightOrderDetailEntity.Response>().flightGetOrderDetail
+        val graphqlResponse = useCase.executeOnBackground()
+        val orderDetailResponse = graphqlResponse.getSuccessData<FlightOrderDetailEntity.Response>()
+        val orderDetailEntity = orderDetailResponse.flightGetOrderDetail
 
         if (orderDetailEntity.errors.isEmpty()) {
             return transformEntityToModel(orderDetailEntity.data)
@@ -239,10 +241,14 @@ class FlightOrderDetailUseCase @Inject constructor(
                         cancellations = it.flight.cancellations.map { cancellation ->
                             OrderDetailCancellationModel(
                                     cancelId = cancellation.cancelId,
-                                    journeyId = cancellation.cancelDetail.journeyId,
-                                    passengerId = cancellation.cancelDetail.passengerId,
-                                    refundedGateway = cancellation.cancelDetail.refundedGateway,
-                                    refundedTime = cancellation.cancelDetail.refundedTime,
+                                    cancelDetails = cancellation.cancelDetail.map { cancelDetail ->
+                                        OrderDetailCancellationModel.OrderDetailCancellationDetail(
+                                                journeyId = cancelDetail.journeyId,
+                                                passengerId = cancelDetail.passengerId,
+                                                refundedGateway = cancelDetail.refundedGateway,
+                                                refundedTime = cancelDetail.refundedTime
+                                        )
+                                    }.toList(),
                                     createTime = cancellation.createTime,
                                     updateTime = cancellation.updateTime,
                                     estimatedRefund = cancellation.estimatedRefund,

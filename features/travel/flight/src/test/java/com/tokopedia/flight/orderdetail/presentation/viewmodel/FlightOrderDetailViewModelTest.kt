@@ -36,9 +36,10 @@ class FlightOrderDetailViewModelTest {
     fun fetchOrderDetailData_errorFetching_shouldReturnFail() {
         // given
         coEvery { useCase.execute(any(), any()) } coAnswers { throw MessageErrorException("Error Fetch Data") }
+        viewModel.invoiceId = "1234567890"
 
         // when
-        viewModel.fetchOrderDetailData("1234567890")
+        viewModel.fetchOrderDetailData()
 
         // then
         assert(viewModel.orderDetailData.value is Fail)
@@ -49,9 +50,10 @@ class FlightOrderDetailViewModelTest {
     fun fetchOrderDetailData_successFetching_shouldReturnSuccessWithData() {
         // given
         coEvery { useCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA
+        viewModel.invoiceId = "1234567890"
 
         // when
-        viewModel.fetchOrderDetailData("1234567890")
+        viewModel.fetchOrderDetailData()
 
         // then
         assert(viewModel.orderDetailData.value is Success)
@@ -239,10 +241,12 @@ class FlightOrderDetailViewModelTest {
         data.data.cancellations.size shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations.size
         for ((cancelIndex, cancel) in data.data.cancellations.withIndex()) {
             cancel.cancelId shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].cancelId
-            cancel.journeyId shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].journeyId
-            cancel.passengerId shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].passengerId
-            cancel.refundedGateway shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].refundedGateway
-            cancel.refundedTime shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].refundedTime
+            for ((cancelDetailIndex, cancelDetail) in cancel.cancelDetails.withIndex()) {
+                cancelDetail.journeyId shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].cancelDetails[cancelDetailIndex].journeyId
+                cancelDetail.passengerId shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].cancelDetails[cancelDetailIndex].passengerId
+                cancelDetail.refundedGateway shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].cancelDetails[cancelDetailIndex].refundedGateway
+                cancelDetail.refundedTime shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].cancelDetails[cancelDetailIndex].refundedTime
+            }
             cancel.createTime shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].createTime
             cancel.updateTime shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].updateTime
             cancel.estimatedRefund shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].estimatedRefund
