@@ -14,7 +14,6 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
-
 /**
  * Created by mzennis on 26/10/20.
  */
