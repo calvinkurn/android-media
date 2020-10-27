@@ -23,7 +23,7 @@ class PlayWidgetCardMediumBannerViewHolder(
     fun bind(item: PlayWidgetMediumBannerUiModel) {
         background.loadImage(item.imageUrl)
         itemView.setOnClickListener {
-            listener.onBannerClicked(it)
+            listener.onBannerClicked(it, item, adapterPosition)
             RouteManager.route(it.context, item.appLink)
         }
     }
@@ -35,7 +35,9 @@ class PlayWidgetCardMediumBannerViewHolder(
     interface Listener {
 
         fun onBannerClicked(
-                view: View
+                view: View,
+                item: PlayWidgetMediumBannerUiModel,
+                position: Int
         )
     }
 }

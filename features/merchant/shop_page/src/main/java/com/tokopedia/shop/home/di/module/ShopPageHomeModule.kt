@@ -342,8 +342,13 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideShopPageHomeTracking(@ShopPageContext context: Context): ShopPageHomeTracking {
-        return ShopPageHomeTracking(TrackingQueue(context))
+    fun provideTrackingQueue(@ShopPageContext context: Context) = TrackingQueue(context)
+
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideShopPageHomeTracking(trackingQueue: TrackingQueue): ShopPageHomeTracking {
+        return ShopPageHomeTracking(trackingQueue)
     }
 
     @ShopPageHomeScope
@@ -353,7 +358,7 @@ class ShopPageHomeModule {
     }
 
     /**
-     * Play widget
+     * Play Widget
      */
     @ShopPageHomeScope
     @Provides
@@ -366,8 +371,8 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun providePlayWidgetTracking(@ShopPageContext context: Context,
+    fun providePlayWidgetTracking(trackingQueue: TrackingQueue,
                                   userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
-        return ShopPlayWidgetAnalyticListener(TrackingQueue(context), userSession)
+        return ShopPlayWidgetAnalyticListener(trackingQueue, userSession)
     }
 }

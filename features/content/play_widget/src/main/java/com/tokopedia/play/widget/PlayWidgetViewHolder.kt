@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
  */
 class PlayWidgetViewHolder(
         itemView: View,
-        private val coordinator: PlayWidgetCoordinator
+        val coordinator: PlayWidgetCoordinator
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val playWidgetView = itemView as PlayWidgetView
