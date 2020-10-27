@@ -34,7 +34,7 @@ class ShopOpenRevampSendSurveyUseCase @Inject constructor(
 
     companion object {
         const val INPUT = "input"
-        const val QUERY = "mutation sendSurveyData(\$input: ParamSendSurveyData!) {\n" +
+        private const val QUERY = "mutation sendSurveyData(\$input: ParamSendSurveyData!) {\n" +
                 "  sendSurveyData(input: \$input){\n" +
                 "    success\n" +
                 "  \tmessage\n" +

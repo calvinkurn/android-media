@@ -51,13 +51,6 @@ class ShopOpenRevampModule {
 
     @ShopOpenRevampScope
     @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP)
-    fun provideQueryCreateShop(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_create_shop)
-    }
-    
-    @ShopOpenRevampScope
-    @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_SAVE_SHIPMENT_LOCATION)
     fun provideQuerySaveShipmentLocation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_saves_hipment_location)
