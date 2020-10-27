@@ -18,5 +18,6 @@ object SellerActionConst {
     internal const val DATE_RANGE_DELIMITER = "/"
     internal const val SLICE_DATE_FORMAT = "yyyy-MM-dd"
     internal const val SLICE_FULL_DATE_FORMAT = "dd MMM yyyy"
+    internal const val REQUEST_DATE_FORMAT = "dd/MM/yyyy"
 
 }

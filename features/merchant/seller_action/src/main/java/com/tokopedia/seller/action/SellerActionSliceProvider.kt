@@ -8,46 +8,34 @@ import androidx.slice.SliceProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kotlin.extensions.convertFormatDate
-import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
-import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
+import com.tokopedia.seller.action.common.interfaces.SellerActionContract
 import com.tokopedia.seller.action.common.presentation.model.SellerActionStatus
+import com.tokopedia.seller.action.common.presentation.presenter.SellerActionPresenter
 import com.tokopedia.seller.action.common.presentation.slices.SellerFailureSlice
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
-import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
-import com.tokopedia.seller.action.order.domain.usecase.SliceMainOrderListUseCase
+import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.order.presentation.mapper.SellerOrderMapper
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
-class SellerActionSliceProvider: SliceProvider(){
+class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
 
     companion object {
         private const val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
-
-        private const val INITIAL_DATE_FORMAT = "yyyy-MM-dd"
-        private const val DATE_FORMAT = "dd/MM/yyyy"
     }
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var dispatcher: SellerActionDispatcherProvider
-
-    @Inject
-    lateinit var sliceMainOrderListUseCase: SliceMainOrderListUseCase
-
-    @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
+    @Inject
+    lateinit var presenter: SellerActionPresenter
 
     private var mainOrderStatus: SellerActionStatus? = null
     private var isLoading: Boolean = false
@@ -66,6 +54,7 @@ class SellerActionSliceProvider: SliceProvider(){
                 // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
                 context?.let { GraphqlClient.init(it) }
                 injectDependencies()
+                presenter.attachView(this)
                 isAlreadyInjected = true
             }
 
@@ -88,7 +77,7 @@ class SellerActionSliceProvider: SliceProvider(){
                         val canLoadData = (mainOrderStatus == null || mainOrderStatus == SellerActionStatus.NotLogin) && !isLoading
                         if (canLoadData) {
                             isLoading = true
-                            loadMainOrderList(sliceUri, date)
+                            presenter.getOrderList(sliceUri, date, sliceHashMap)
                         }
                     }
                 }
@@ -99,6 +88,18 @@ class SellerActionSliceProvider: SliceProvider(){
         } else {
             return null
         }
+    }
+
+    override fun onSuccessGetOrderList(sliceUri: Uri, orderList: List<Order>) {
+        mainOrderStatus = SellerActionStatus.Success(orderList)
+        isLoading = false
+        updateSlice(sliceUri)
+    }
+
+    override fun onErrorGetOrderList(sliceUri: Uri) {
+        mainOrderStatus = SellerActionStatus.Fail
+        isLoading = false
+        updateSlice(sliceUri)
     }
 
     private fun injectDependencies() {
@@ -137,32 +138,6 @@ class SellerActionSliceProvider: SliceProvider(){
 
     private fun updateSlice(sliceUri: Uri) {
         context?.contentResolver?.notifyChange(sliceUri, null)
-    }
-
-    private fun loadMainOrderList(sliceUri: Uri, date: String?) {
-        GlobalScope.launch(dispatcher.io()) {
-            if (sliceHashMap[sliceUri] == null) {
-                try {
-                    getSliceMainOrderList(sliceUri, date)
-                } catch (ex: Exception) {
-                    isLoading = false
-                    mainOrderStatus = SellerActionStatus.Fail
-                    updateSlice(sliceUri)
-                }
-            }
-        }
-    }
-
-    private suspend fun getSliceMainOrderList(sliceUri: Uri, date: String?) {
-        val filteredDate = date?.let {
-            convertFormatDate(it, INITIAL_DATE_FORMAT, DATE_FORMAT)
-        } ?: Date().toFormattedString(DATE_FORMAT)
-        with(sliceMainOrderListUseCase) {
-            params = SliceMainOrderListUseCase.createRequestParam(filteredDate, filteredDate, SellerActionOrderCode.STATUS_CODE_DEFAULT)
-            mainOrderStatus = SellerActionStatus.Success(sliceMainOrderListUseCase.executeOnBackground())
-            isLoading = false
-            updateSlice(sliceUri)
-        }
     }
 
     private fun Uri.getDateFromOrderUri(): String? {
