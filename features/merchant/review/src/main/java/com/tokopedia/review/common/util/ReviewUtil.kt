@@ -6,12 +6,15 @@ import android.text.Spanned
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -42,6 +45,12 @@ object ReviewUtil {
 
     fun DptoPx(context: Context, dp: Int): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+    }
+
+    fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {
+        val webviewUrl = String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        bottomSheet?.dismiss()
+        return RouteManager.route(context, webviewUrl)
     }
 }
 
