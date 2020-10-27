@@ -162,7 +162,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
             ivFlightOrderReturnAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
         }
 
-
+        tgFlightOrderReturnAirlineName.text = flightOrderDetailViewModel.getAirlineName(returnJourney)
     }
 
     private fun hideReturnTicketView() {

@@ -37,8 +37,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
     }
 
     fun getAirlineLogo(journey: OrderDetailJourneyModel): String? {
-        var logoUrl: String = ""
-        var isMultiAirline: Boolean = false
+        var logoUrl = ""
+        var isMultiAirline = false
 
         for (item in journey.routes) {
             if (logoUrl.isEmpty() || item.airlineLogo == logoUrl) {
@@ -49,6 +49,31 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         }
 
         return if (!isMultiAirline && logoUrl.isNotEmpty()) logoUrl else null
+    }
+
+    fun getAirlineName(journey: OrderDetailJourneyModel): String {
+        val airlineName = arrayListOf<String>()
+
+        for (item in journey.routes) {
+            if (!airlineName.contains(item.airlineName)) {
+                airlineName.add(item.airlineName)
+            }
+        }
+
+        return airlineName.joinToString(" + ")
+    }
+
+    fun getRefundableInfo(journey: OrderDetailJourneyModel): Boolean {
+        var isRefundable = false
+
+        for (item in journey.routes) {
+            if (item.refundable) {
+                isRefundable = true
+                break
+            }
+        }
+
+        return isRefundable
     }
 
 }

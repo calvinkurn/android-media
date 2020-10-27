@@ -306,4 +306,60 @@ class FlightOrderDetailViewModelTest {
         // then
         airlineLogo shouldBe "logo seulawah air"
     }
+
+    @Test
+    fun getAirlineName_multiAirline() {
+        // given
+
+        // when
+        val airlineName = viewModel.getAirlineName(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
+
+        // then
+        airlineName shouldBe "Seulawah Air + Garuda Indonesia"
+    }
+
+    @Test
+    fun getAirlineName_oneAirline() {
+        // given
+
+        // when
+        val airlineName = viewModel.getAirlineName(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
+
+        // then
+        airlineName shouldBe "Seulawah Air"
+    }
+
+    @Test
+    fun getRefundableInfo_fullRefundable() {
+        // given
+
+        // when
+        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
+
+        // then
+        isRefundable shouldBe true
+    }
+
+    @Test
+    fun getRefundableInfo_partialRefundable() {
+        // given
+
+        // when
+        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
+
+        // then
+        isRefundable shouldBe true
+    }
+
+    @Test
+    fun getRefundableInfo_nonRefundable() {
+        // given
+
+        // when
+        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_DATA.journeys[0])
+
+        // then
+        isRefundable shouldBe false
+    }
+
 }
