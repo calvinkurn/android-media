@@ -274,7 +274,7 @@
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintTop_toBottomOf="@id/tgFlightOrderReturnAirport"
                         app:typographyType="body_3"
-                        tools:text="Sab, 29 Feb 19 · 13:40 - 12:20 · 2 Transit" />
+                        tools:text="Sab, 29 Feb 19 \u2022 13:40 - 12:20 \u2022 2 Transit" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tgFlightOrderReturnBookingCodeLabel"
