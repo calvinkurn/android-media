@@ -52,15 +52,15 @@
         "message_success": ""
       },
       "default_promo_dialog_tab": "voucher",
-      "cross_selling_type": 2,
+      "cross_selling_type": 3,
       "cross_selling_config": {
         "is_skipable": true,
         "is_checked": false,
         "wording": {
-          "header_title": "Checkout",
-          "body_title": "Aktifkan auto debit untuk tagihan ini",
-          "body_content_before": "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
-          "body_content_after": "Kamu harus memasukkan OVO PIN untuk mulai auto debit tagihan ini pada 2 November 2020",
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
           "cta_button_text": "Bayar"
         },
         "wording_is_subscribed": {
