@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.analytic.medium
 
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 
@@ -48,6 +49,8 @@ interface PlayWidgetMediumAnalyticListener {
     ) {}
 
     fun onClickBannerCard(
-            view: PlayWidgetMediumView
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumBannerUiModel,
+            channelPositionInList: Int
     ) {}
 }

@@ -326,7 +326,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     featuredShopListener,
                     homeComponentListener
             )
-            CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator))
+            CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
