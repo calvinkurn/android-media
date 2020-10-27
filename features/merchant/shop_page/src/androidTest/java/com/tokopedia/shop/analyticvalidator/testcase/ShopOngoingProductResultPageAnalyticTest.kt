@@ -17,6 +17,7 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.mock.ShopProductResultPageMockResponseConfig
@@ -27,6 +28,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -49,6 +51,8 @@ class ShopOngoingProductResultPageAnalyticTest {
 
     @Before
     fun beforeTest() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopProductResultPageMockResponseConfig(TYPE_ONGOING_PRODUCT))

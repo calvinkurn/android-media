@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.mock.ShopPageSearchProductPageMockResponseConfig
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -21,6 +22,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -47,6 +49,8 @@ class ShopProductSearchPageAnalyticTest {
 
     @Before
     fun beforeTest() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(ShopPageSearchProductPageMockResponseConfig())
@@ -59,7 +63,7 @@ class ShopProductSearchPageAnalyticTest {
     fun testClickOnDiEtalaseTokoIni() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
         Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
-        waitForData()
+        waitForData(5000)
         Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(
                 RecyclerViewActions.actionOnItemAtPosition<ShopSearchProductFixResultViewHolder>(0, ViewActions.click())
         )
@@ -70,7 +74,7 @@ class ShopProductSearchPageAnalyticTest {
     fun testClickDiTokopedia() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
         Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
-        waitForData()
+        waitForData(5000)
         Espresso.onView(CommonMatcher.firstView(withId(R.id.recycler_view))).perform(
                 RecyclerViewActions.actionOnItemAtPosition<ShopSearchProductFixResultViewHolder>(1, ViewActions.click())
         )
@@ -81,7 +85,7 @@ class ShopProductSearchPageAnalyticTest {
     fun testSubmitSearch() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
         Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.typeText(SAMPLE_KEYWORD))
-        waitForData()
+        waitForData(5000)
         Espresso.onView(CommonMatcher.firstView(withId(R.id.editTextSearchProduct))).perform(ViewActions.pressImeActionButton())
         doAnalyticDebuggerTest(SHOP_PAGE_SEARCH_PRODUCT_SUBMIT_SEARCH_TRACKER_MATCHER_PATH)
     }
