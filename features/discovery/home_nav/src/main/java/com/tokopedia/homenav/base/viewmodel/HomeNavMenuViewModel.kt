@@ -7,6 +7,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 data class HomeNavMenuViewModel(
         val id: Int = 0,
         val srcImage: String = "",
+        val srcIconId: Int? = null,
         val itemTitle: String = "",
         val applink: String = "",
         val notifCount: String = "",
