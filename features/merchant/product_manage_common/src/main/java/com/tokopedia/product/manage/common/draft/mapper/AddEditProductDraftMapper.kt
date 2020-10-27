@@ -8,7 +8,6 @@ import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 class AddEditProductDraftMapper {
 
     companion object {
-        private const val MAX_COMPLETION_COUNT = 5
         private const val MIN_COMPLETION_PERCENT = 5
         private const val MAX_COMPLETION_PERCENT = 95
 
@@ -65,7 +64,7 @@ class AddEditProductDraftMapper {
             if (completionPercent == 0) {
                 completionPercent = MIN_COMPLETION_PERCENT
             } else if(completionPercent > MAX_COMPLETION_PERCENT)
-                completionPercent = MAX_COMPLETION_COUNT
+                completionPercent = MAX_COMPLETION_PERCENT
 
             return completionPercent
         }
