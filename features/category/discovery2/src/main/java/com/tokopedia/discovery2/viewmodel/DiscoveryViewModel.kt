@@ -91,6 +91,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
+
     fun getDiscoveryUIConfig() {
         launchCatchError(
                 block = {

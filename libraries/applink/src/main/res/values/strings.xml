@@ -15,6 +15,9 @@
     <string name="host_setting" translatable="false">setting</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
+    <!--Feedback Form-->
+    <string name="internal_feedback" translatable="false">internal-feedback</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
@@ -63,6 +66,7 @@
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+    <string name="title_buyerorder">Daftar Transaksi</string>
 
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
@@ -104,4 +108,7 @@
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
+
+    <!-- Product Review -->
+    <string name="title_product_review">Product Review</string>
 </resources>

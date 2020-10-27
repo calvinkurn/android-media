@@ -2,26 +2,18 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.network.mapper.DataResponseMapper;
-import com.tokopedia.topads.common.model.shopmodel.ShopModel;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
-import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
-import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepository;
-import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
-import com.tokopedia.topads.dashboard.data.source.ShopInfoDataSource;
-import com.tokopedia.topads.dashboard.data.source.cloud.ShopInfoCloud;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
-import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
@@ -46,8 +38,15 @@ public class TopAdsModule {
     @TopAdsScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthTempInterceptor(@ApplicationContext Context context,
-                                                                  AbstractionRouter abstractionRouter){
-        return new TopAdsAuthInterceptor(context, abstractionRouter);
+                                                                  UserSession userSession,
+                                                                  NetworkRouter abstractionRouter){
+        return new TopAdsAuthInterceptor(context, userSession, abstractionRouter);
+    }
+
+    @TopAdsScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 
     @TopAdsScope
@@ -104,29 +103,6 @@ public class TopAdsModule {
         return retrofit.create(TopAdsOldManagementApi.class);
     }
 
-    @Provides
-    @TopAdsScope
-    public TopAdsManagementApi provideTopAdsManagementApi(@TopAdsManagementQualifier Retrofit retrofit){
-        return retrofit.create(TopAdsManagementApi.class);
-    }
-
-    @TopAdsScope
-    @Provides
-    public ShopInfoCloud provideShopInfoCloud(@ApplicationContext Context context, TopAdsShopApi shopApi){
-        return new ShopInfoCloud(context, shopApi);
-    }
-
-    @TopAdsScope
-    @Provides
-    public ShopInfoDataSource provideShopInfoDataSource(ShopInfoCloud shopInfoCloud, DataResponseMapper<ShopModel> mapper){
-        return new ShopInfoDataSource(shopInfoCloud, mapper);
-    }
-
-    @TopAdsScope
-    @Provides
-    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
 
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
@@ -137,4 +113,6 @@ public class TopAdsModule {
     public GraphqlUseCase provideGraphqlUseCase() {
         return new GraphqlUseCase();
     }
+
+
 }

@@ -1,0 +1,13 @@
+{
+  "readme": "Seller Home Dashboard - progress bar widget CTA click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickSellerWidget",
+      "eventCategory": "seller app - home",
+      "eventAction": "{{click widget progress bar - .{1,} - see more}}",
+      "eventLabel": "{{.{1,}}}",
+      "sessionIris": "{{.{1,}}}"
+    }
+  ]
+}

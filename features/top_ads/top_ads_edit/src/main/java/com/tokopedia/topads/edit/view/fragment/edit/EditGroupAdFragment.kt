@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
@@ -39,6 +40,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+private const val CLICK_RADIO_BUTTON_1 = "click - anggaran harian tidak dibatasi"
+private const val CLICK_RADIO_BUTTON_2 = "click - anggaran harian dibatasi"
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
@@ -189,10 +192,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == btnUnlimitedBudget.id) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_1, "")
                 daily_budget?.visibility = View.GONE
                 validation3 = true
                 actionEnable()
             } else {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_2, "")
                 daily_budget?.visibility = View.VISIBLE
             }
         }

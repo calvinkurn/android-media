@@ -21,7 +21,6 @@ import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.buyerorder.detail.data.Color
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.common.OrderListContants
@@ -34,6 +33,7 @@ import com.tokopedia.buyerorder.list.view.viewstate.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.view.DoubleTextView
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 

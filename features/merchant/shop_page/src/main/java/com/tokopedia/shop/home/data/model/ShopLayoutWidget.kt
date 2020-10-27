@@ -97,26 +97,6 @@ data class ShopLayoutWidget(
                 val originalPrice: String = "",
                 @SerializedName("discountPercentage")
                 val discountPercentage: String = "",
-                @SerializedName("voucherID")
-                val voucherID: Int = -1,
-                @SerializedName("voucherType")
-                val voucherType: VoucherType,
-                @SerializedName("voucherCode")
-                val voucherCode: String = "",
-                @SerializedName("amount")
-                val amount: Amount = Amount(),
-                @SerializedName("minimumSpend")
-                val minimumSpend: Int = -1,
-                @SerializedName("minimumSpendFormatted")
-                val minimumSpendFormatted: String = "",
-                @SerializedName("owner")
-                val owner: Owner = Owner(),
-                @SerializedName("validThru")
-                val validThru: String = "",
-                @SerializedName("tnc")
-                val tnc: String = "",
-                @SerializedName("inUseExpiry")
-                val inUseExpiry: String = "",
                 @SerializedName("productUrl")
                 val productUrl: String = "",
                 @SerializedName("isShowFreeOngkir")
@@ -133,41 +113,9 @@ data class ShopLayoutWidget(
                 val isPO: Boolean = false,
                 @SerializedName("cashback")
                 val cashback: Int = -1,
-                @SerializedName("status")
-                val status: Status = Status(),
                 @SerializedName("statusCampaign")
                 val statusCampaign: String = ""
         ) {
-            data class VoucherType(
-                    @SerializedName("voucherType")
-                    val voucherType: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
-            data class Amount(
-                    @SerializedName("amountType")
-                    val amountType: Int = -1,
-                    @SerializedName("amount")
-                    val amount: Int = -1,
-                    @SerializedName("amountFormatted")
-                    val amountFormatted: String = ""
-            )
-
-            data class Owner(
-                    @SerializedName("ownerId")
-                    val ownerId: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
-            data class Status(
-                    @SerializedName("status")
-                    val status: Int = -1,
-                    @SerializedName("identifier")
-                    val identifier: String = ""
-            )
-
             data class Banner(
                     @SerializedName("imageID")
                     val imageId: Int = -1,

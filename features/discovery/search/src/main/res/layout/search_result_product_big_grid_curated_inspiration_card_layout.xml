@@ -29,7 +29,7 @@
             android:id="@+id/inspirationCardCuratedTitle"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             tools:text="@string/search_inspiration_card_curated_title"
             android:maxLines="2"
             android:ellipsize="end"

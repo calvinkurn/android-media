@@ -1,7 +1,6 @@
 package com.tokopedia.talk_old.common.data
 
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.talk_old.addtalk.domain.CreateTalkPojo
 import com.tokopedia.talk_old.common.domain.pojo.BaseActionTalkPojo
 import com.tokopedia.talk_old.common.domain.pojo.InboxTalkPojo
 import com.tokopedia.talk_old.producttalk.domain.pojo.ProductTalkPojo
@@ -46,10 +45,6 @@ interface TalkApi {
     @POST(TalkUrl.PATH_REPORT_TALK)
     fun reportTalk(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<BaseActionTalkPojo>>>
-
-    @FormUrlEncoded
-    @POST(TalkUrl.PATH_CREATE_TALK)
-    fun createTalk(@FieldMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<CreateTalkPojo>>>
 
     @GET(TalkUrl.PATH_GET_SHOP_TALK)
     fun getShopTalk(@QueryMap params: HashMap<String, Any>):

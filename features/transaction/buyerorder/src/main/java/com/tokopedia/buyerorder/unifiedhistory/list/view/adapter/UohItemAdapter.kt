@@ -34,7 +34,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order)
+        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
         fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onTickerDetailInfoClicked(url: String)
@@ -100,19 +100,19 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         val element = listTypeData[position]
         when (holder) {
             is UohOrderListViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohTickerItemViewHolder -> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohEmptyStateViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationTitleViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationItemViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
         }
     }
@@ -130,15 +130,13 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData.removeAt(index)
-        listTypeData.add(index, UohTypeData("", TYPE_LOADER))
-        notifyDataSetChanged()
+        listTypeData[index] = UohTypeData("", TYPE_LOADER)
+        notifyItemChanged(index)
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData.removeAt(index)
-        listTypeData.add(index, UohTypeData(order, TYPE_ORDER_LIST))
-        notifyDataSetChanged()
+        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+        notifyItemChanged(index)
     }
 
     fun addList(list: List<UohTypeData>) {

@@ -5,4 +5,14 @@
     <dimen name="prefix_miscall_margin_left">48dp</dimen>
     <dimen name="prefix_miscall_margin_top">115dp</dimen>
     <dimen name="img_miscall_onboarding_height">288dp</dimen>
+
+    <dimen name="otp_dp_5">5dp</dimen>
+    <dimen name="otp_dp_6">6dp</dimen>
+    <dimen name="otp_dp_12">12dp</dimen>
+    <dimen name="otp_dp_14">14dp</dimen>
+    <dimen name="otp_dp_17">17dp</dimen>
+    <dimen name="otp_dp_18">18dp</dimen>
+    <dimen name="otp_dp_210">210dp</dimen>
+
+    <dimen name="otp_sp_6">6sp</dimen>
 </resources>
