@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.topads
 
+import android.Manifest
 import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActivity
@@ -29,7 +31,11 @@ import org.junit.Test
 
 class ProductDetailAtcTopAdsVerificationTest {
 
-    private var topAdsAssertion: TopAdsAssertion? = null
+    @get:Rule
+    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { activityRule.activity.getTopAdsCount() })
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentTestProductDetailActivity>(InstrumentTestProductDetailActivity::class.java) {
@@ -43,17 +49,9 @@ class ProductDetailAtcTopAdsVerificationTest {
         }
     }
 
-    @Before
-    fun doBeforeRun() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
-    }
-
     @After
     fun deleteDatabase() {
-        topAdsAssertion?.after()
+        topAdsAssertion.after()
     }
 
     @Test
@@ -67,7 +65,7 @@ class ProductDetailAtcTopAdsVerificationTest {
                 scrollRecyclerViewToPosition(it, i)
                 checkTopAdsOnProductRecommendationViewHolder(it, i)
             }
-            topAdsAssertion?.assert()
+            topAdsAssertion.assert()
         }
     }
 
