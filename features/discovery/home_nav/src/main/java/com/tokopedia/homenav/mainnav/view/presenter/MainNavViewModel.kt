@@ -32,6 +32,10 @@ class MainNavViewModel @Inject constructor(
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
 
+    init {
+        getMainNavData()
+    }
+
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
