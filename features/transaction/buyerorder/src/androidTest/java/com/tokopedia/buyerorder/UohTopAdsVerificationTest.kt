@@ -4,10 +4,14 @@ import android.Manifest
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
@@ -20,7 +24,9 @@ import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.*
 
 class UohTopAdsVerificationTest {
-    private var topAdsAssertion: TopAdsAssertion? = null
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var topAdsCount = 0
+    private var topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
     @get:Rule
     var grantPermission: GrantPermissionRule = GrantPermissionRule.grant(
@@ -40,22 +46,20 @@ class UohTopAdsVerificationTest {
 
     @Before
     fun setTopAdsAssertion() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
-
         login()
         waitForData()
     }
 
     @After
     fun deleteDatabase() {
-        topAdsAssertion?.after()
+        topAdsAssertion.after()
     }
 
     @Test
     fun testTopAdsUoh() {
+        // search for abnormal order ("zzzzz") to create empty order list
+        // so recommendation items will show
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("zzzzz"))
         waitForData()
 
         val uohRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_order_list)
@@ -66,21 +70,25 @@ class UohTopAdsVerificationTest {
             checkProduct(uohRecyclerView, i)
         }
         waitForData()
-        topAdsAssertion?.assert()
+        topAdsAssertion.assert()
     }
 
     private fun checkProduct(uohRecyclerView: RecyclerView, i: Int) {
         when (uohRecyclerView.findViewHolderForAdapterPosition(i)) {
             is UohRecommendationItemViewHolder -> {
-                clickProductRecommItem(uohRecyclerView, i)
+                val recommItem = uohRecyclerView.getUohItemAdapter().getRecommendationItemAtIndex(i)
+                if (recommItem.isTopAds) {
+                    clickProductRecommItem(uohRecyclerView, i)
+                }
             }
         }
     }
 
-    private fun clickProductRecommItem(cartRecyclerView: RecyclerView, i: Int) {
+    private fun clickProductRecommItem(uohRecyclerView: RecyclerView, i: Int) {
         try {
-            Espresso.onView(ViewMatchers.withId(cartRecyclerView.id))
+            Espresso.onView(ViewMatchers.withId(uohRecyclerView.id))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+            topAdsCount++
         } catch (e: PerformException) {
             e.printStackTrace()
         }

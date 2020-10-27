@@ -153,4 +153,8 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     fun setActionListener(fragment: UohListFragment) {
         this.actionListener = fragment
     }
+
+    fun getRecommendationItemAtIndex(index: Int): RecommendationItem {
+        return listTypeData[index].dataObject as RecommendationItem
+    }
 }
