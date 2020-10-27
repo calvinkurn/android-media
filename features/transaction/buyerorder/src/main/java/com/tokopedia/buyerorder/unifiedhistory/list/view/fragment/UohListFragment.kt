@@ -351,6 +351,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
         })
+
+        search_bar?.searchBarIcon?.setOnClickListener {
+            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+        }
+
         addEndlessScrollListener()
     }
 
