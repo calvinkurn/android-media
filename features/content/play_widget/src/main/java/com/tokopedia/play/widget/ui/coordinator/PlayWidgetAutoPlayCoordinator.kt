@@ -34,7 +34,7 @@ class PlayWidgetAutoPlayCoordinator(
 
         autoPlayJob?.cancel()
         autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-            delay(FAKE_MAX_DELAY)
+            delay(MAX_DELAY)
             val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
                     visibleCards = visibleCards,
                     itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
@@ -127,6 +127,6 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val FAKE_MAX_DELAY = 3000L // set delay before play to 3s
+        private const val MAX_DELAY = 3000L // set delay before play to 3s
     }
 }
