@@ -430,6 +430,14 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         overridePendingTransition(R.anim.autocomplete_slide_in_up, R.anim.stay_still)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
     private val adapterListener: NearbyStoreAdapter.ActionListener =
             object : NearbyStoreAdapter.ActionListener {
                 override fun onItemClicked(view: View, position: Int) {

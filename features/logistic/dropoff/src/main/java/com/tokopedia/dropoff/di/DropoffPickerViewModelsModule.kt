@@ -18,11 +18,6 @@ abstract class DropoffPickerViewModelsModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerViewModel::class)
-    internal abstract fun bindDropoffViewModel(viewModel: com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel::class)
     internal abstract fun bindAutoCompleteViewModel(viewModel: com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel): ViewModel
 
