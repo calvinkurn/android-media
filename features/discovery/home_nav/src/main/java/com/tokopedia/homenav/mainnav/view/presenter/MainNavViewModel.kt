@@ -85,10 +85,12 @@ class MainNavViewModel @Inject constructor(
     private fun getUserSection(mainNavigationDataModel: MainNavigationDataModel){
         mainNavigationDataModel.dataList.find { it is AccountHeaderViewModel }?.let {
             val accountHeader = (it as AccountHeaderViewModel).copy()
-            getUserBadgeImage(accountHeader)
-            getOvoData(accountHeader)
-            getSaldoData(accountHeader)
-            getShopData(userSession.get().shopId.toInt(), accountHeader)
+            if (accountHeader.loginState.equals(AccountHeaderViewModel.LOGIN_STATE_LOGIN)) {
+                getUserBadgeImage(accountHeader)
+                getOvoData(accountHeader)
+                getSaldoData(accountHeader)
+                getShopData(userSession.get().shopId.toInt(), accountHeader)
+            }
         }
     }
 
