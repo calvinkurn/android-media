@@ -624,6 +624,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        if (::playWidgetCoordinator.isInitialized) {
+            playWidgetCoordinator.onDestroy()
+        }
         if (layoutManager != null) {
             layoutManager = null
         }
