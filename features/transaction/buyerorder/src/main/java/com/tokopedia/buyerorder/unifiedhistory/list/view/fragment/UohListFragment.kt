@@ -39,6 +39,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
@@ -104,6 +105,7 @@ import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -948,6 +950,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
                         var dateOption = ""
+                        var labelTrackingDate = ""
                         if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
                                 paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
@@ -959,8 +962,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             val splitEndDate = paramUohOrder.createTimeEnd.split('-')
                             dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                             filter1?.title = dateOption
+                            labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
+                            labelTrackingDate = dateOption
 
                             if (currFilterDateKey == "0") {
                                 filter1?.title = ALL_DATE
@@ -968,7 +973,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                                 filter1?.title = currFilterDateLabel
                             }
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(dateOption, it1) }
+
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
                         currFilterStatusKey = tempFilterStatusKey
@@ -1010,8 +1016,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetKebabMenu() {
+    private fun showBottomSheetKebabMenu(orderIndex: Int) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_kebab_menu_uoh, null)
+        uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
         viewBottomSheet.rv_kebab.adapter = uohBottomSheetKebabMenuAdapter
         viewBottomSheet.rv_kebab.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
 
@@ -1024,7 +1031,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetKebabMenu?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean) {
+    private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean, status: String) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_finish_order_uoh, null).apply {
 
             btn_finish_order?.setOnClickListener {
@@ -1034,7 +1041,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 uohItemAdapter.showLoaderAtIndex(index)
                 currIndexNeedUpdate = index
 
-                val paramFinishOrder = userSession?.userId?.let { it1 -> UohFinishOrderParam(orderId = orderId, userId = it1) }
+                var actionStatus = ""
+                if (status.isNotEmpty() && status.toIntOrZero() < 600) actionStatus = ACTION_FINISH_ORDER
+
+                val paramFinishOrder = userSession?.userId?.let { it1 ->
+                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
+                }
                 if (paramFinishOrder != null) {
                     uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
@@ -1323,13 +1335,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
-    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order) {
-        showBottomSheetKebabMenu()
+    override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
+        showBottomSheetKebabMenu(orderIndex)
         uohBottomSheetKebabMenuAdapter.addList(order)
         userSession?.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
-    override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order) {
+    override fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
         val dotMenu = orderData.metadata.dotMenus[index]
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
@@ -1380,7 +1392,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
-                    showBottomSheetFinishOrder(index, orderData.verticalID, true)
+                    showBottomSheetFinishOrder(orderIndex, orderData.verticalID, true, orderData.verticalStatus)
                 }
                 dotMenu.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
@@ -1439,7 +1451,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                     orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetFinishOrder(index, order.verticalID, false)
+                    showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
                 }
                 button.actionType.equals(GQL_ATC, true) -> {
                     if (order.metadata.listProducts.isNotEmpty()) {

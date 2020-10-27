@@ -11,12 +11,17 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.seller.common.usecase.JobExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.UIThread;
 import com.tokopedia.seller.manageitem.data.cloud.api.ShopApi;
 import com.tokopedia.seller.manageitem.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.manageitem.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.manageitem.di.scope.ProductScope;
 import com.tokopedia.seller.manageitem.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.manageitem.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -34,6 +39,17 @@ import retrofit2.Retrofit;
 @Module
 public class ProductModule {
 
+    @ProductScope
+    @Provides
+    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
+    }
+
+    @ProductScope
+    @Provides
+    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
+        return uiThread;
+    }
 
     @ProductScope
     @Provides

@@ -19,7 +19,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_300">
+        android:background="@color/Unify_N200">
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"

@@ -54,9 +54,7 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
-        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
-        it.text = productNameFromHtml
+        it.text = MethodChecker.fromHtml(productCardModel.productName)
     }
 }
 
@@ -66,7 +64,6 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
@@ -83,7 +80,6 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
         it.text = priceToRender
     }
 }
@@ -101,7 +97,6 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
         it.text = productCardModel.shopLocation
     }
 }
@@ -229,8 +224,8 @@ private fun Typography.changeFontInsideBoldTag(shopRating: String, startBold: In
         val inBoldTagEnd = beforeBoldTagEnd + inBoldTag.length
         val afterBoldTagEnd = inBoldTagEnd + afterBoldTag.length
 
-        val charcoalGrey44 = ContextCompat.getColor(this.context, R.color.charcoal_grey_44)
-        val charcoalGrey68 = ContextCompat.getColor(this.context, R.color.charcoal_grey_68)
+        val charcoalGrey44 = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+        val charcoalGrey68 = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
 
         spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), beforeBoldTagStart, beforeBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableShopRating.setSpan(CustomTypefaceSpan("", boldTypeface, charcoalGrey68), beforeBoldTagEnd, inBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

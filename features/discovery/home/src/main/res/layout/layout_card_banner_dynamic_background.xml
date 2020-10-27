@@ -7,7 +7,7 @@
     tools:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <FrameLayout
         android:id="@+id/container_background"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_background_height"
             android:scaleType="centerCrop"
-            android:background="#31353B"
+            android:background="@color/Unify_N700"
             android:alpha="0.32" />
 
         <View
@@ -45,7 +45,7 @@
         android:id="@+id/white_space"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_20"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_background" />

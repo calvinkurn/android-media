@@ -8,13 +8,16 @@ import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.JobExecutor;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
+import com.tokopedia.seller.common.usecase.UIThread;
 import com.tokopedia.seller.manageitem.common.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.manageitem.data.cloud.api.ShopApi;
 import com.tokopedia.seller.manageitem.data.source.ShopInfoDataSource;
@@ -39,6 +42,18 @@ import retrofit2.Retrofit;
 @ShopScope
 @Module
 public class ShopModule {
+
+    @ShopScope
+    @Provides
+    public ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
+    }
+
+    @ShopScope
+    @Provides
+    public PostExecutionThread providePostExecutionThread(UIThread uiThread) {
+        return uiThread;
+    }
 
     @ShopScope
     @Provides

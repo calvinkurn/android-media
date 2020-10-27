@@ -110,6 +110,8 @@
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="topads_dash_desc_credit_label">Kredit TopAds</string>
+    <string name="topads_dash_auto_topup_title">Pengaturan Kredit Otomatis</string>
 
     <!--TopAds Create Ads-->
     <string name="create_group">Buat Group Iklan</string>
@@ -270,6 +272,7 @@
     <string name="ent_search_event_location"><![CDATA[Lokasi]]></string>
     <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
     <string name="ent_pdp_title_form">Data Pemesan</string>
+    <string name="ent_redeem_title">Redeem Your Ticket</string>
 
 
 
@@ -293,6 +296,14 @@
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!-- Dynamic feature for buyerorder-->
+    <string name="df_title_buyer_order">Daftar Transaksi</string>
+    <string name="title_activity_people_reason">Ajukan Pembatalan</string>
+    <string name="title_order_detail">Detail Pesanan</string>
+    <string name="title_buyer_order_list">Daftar Transaksi</string>
+    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+    <string name="title_uoh_list">Daftar Transaksi</string>
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>

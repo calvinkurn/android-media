@@ -9,7 +9,7 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 
 data class PlayCarouselCardDataModel(
         val channel: DynamicHomeChannel.Channels? = null,
-        val playBannerCarouselDataModel: PlayBannerCarouselDataModel = PlayBannerCarouselDataModel(),
+        val playBannerCarouselDataModel: PlayBannerCarouselDataModel? = null,
         val position: Int = -1
 ): HomeVisitable, ImpressHolder() {
     companion object{
@@ -68,7 +68,7 @@ data class PlayCarouselCardDataModel(
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         if(b is PlayCarouselCardDataModel){
-            if(b.playBannerCarouselDataModel.channelList != playBannerCarouselDataModel.channelList){
+            if(b.playBannerCarouselDataModel?.channelList != playBannerCarouselDataModel?.channelList){
                 return Bundle().apply { putBoolean(UPDATE_REMIND, true) }
             }
         }

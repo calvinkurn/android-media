@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="changephonenumber_dp_minus_3">-3dp</dimen>
+    <dimen name="changephonenumber_dp_1">1dp</dimen>
+    <dimen name="changephonenumber_dp_3">3dp</dimen>
+    <dimen name="changephonenumber_dp_5">5dp</dimen>
+    <dimen name="changephonenumber_dp_9">9dp</dimen>
+    <dimen name="changephonenumber_dp_10">10dp</dimen>
+    <dimen name="changephonenumber_dp_12">12dp</dimen>
+    <dimen name="changephonenumber_dp_15">15dp</dimen>
+    <dimen name="changephonenumber_dp_20">20dp</dimen>
+    <dimen name="changephonenumber_dp_24_5">24.5dp</dimen>
+
+    <dimen name="changephonenumber_sp_4">4sp</dimen>
+    <dimen name="changephonenumber_sp_7">7sp</dimen>
+    <dimen name="changephonenumber_sp_9">9sp</dimen>
+    <dimen name="changephonenumber_sp_13">13sp</dimen>
+</resources>

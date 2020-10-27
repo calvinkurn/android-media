@@ -1,7 +1,9 @@
 package com.tokopedia.review.common.util
 
+import android.content.Context
 import android.os.Build
 import android.text.Spanned
+import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeDate
@@ -28,6 +30,18 @@ object ReviewUtil {
 
     fun getDateChipFilterPosition(data: Array<String>, dateKeyword: String): Int {
         return data.indexOf(dateKeyword)
+    }
+
+    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
+        val newMap = HashMap<String, String>()
+        for ((key, value) in map) {
+            newMap[key] = value.toString()
+        }
+        return newMap
+    }
+
+    fun DptoPx(context: Context, dp: Int): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
     }
 }
 

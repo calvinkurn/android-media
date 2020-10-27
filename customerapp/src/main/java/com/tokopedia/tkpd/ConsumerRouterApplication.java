@@ -30,8 +30,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
-import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -62,7 +60,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -88,8 +85,8 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -104,6 +101,7 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
@@ -152,7 +150,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
-        UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
         CMRouter,
@@ -408,11 +405,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return OrderHistoryActivity.createInstance(context, orderId, 1);
-    }
-
-    @Override
     public void onLogout(AppComponent appComponent) {
 
         forceLogout();
@@ -429,7 +421,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getHomeIntent(Context context) {
-        return MainParentActivity.start(context);
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override
@@ -659,11 +651,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
     }
 
     @Override

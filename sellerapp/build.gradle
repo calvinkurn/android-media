@@ -216,7 +216,6 @@ dependencies {
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
@@ -225,8 +224,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.topAdsEdit)
     implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.reputation)
-    implementation project(rootProject.ext.features.inboxReputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
@@ -283,6 +280,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.filter)
+
+    implementation project(rootProject.ext.features.additional_check)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
