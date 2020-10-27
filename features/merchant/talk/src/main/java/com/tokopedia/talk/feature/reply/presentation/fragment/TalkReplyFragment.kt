@@ -820,6 +820,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
 }

@@ -14,6 +14,4 @@ import rx.Observable
 
 interface TopAdsDashboardApi {
 
-    @GET(TopAdsDashboardConstant.PATH_DASHBOARD_STATISTIC)
-    fun getStatistics(@QueryMap params: Map<String, String>): Observable<Response<DataResponse<DataStatistic>>>
 }

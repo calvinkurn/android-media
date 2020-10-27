@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.buyerorder.list.common.OrderListContants;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.buyerorder.list.data.OrderMarketplaceFilterId;
-import com.tokopedia.buyerorder.list.view.activity.OrderListActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core2.R;
@@ -25,17 +25,16 @@ public class PurchaseAcceptedNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, OrderListActivity.class)
-        );
-        mNotificationPass.classParentStack = OrderListActivity.class;
+        Intent orderListIntent = RouteManager.getIntent(mContext, ApplinkConst.PURCHASE_ORDER);
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(orderListIntent);
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass();
         mNotificationPass.title = mContext.getString(R.string.title_notif_purchase_accepted);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
 
         Bundle bundle = new Bundle();
-        bundle.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
-        bundle.putString(OrderListContants.ORDER_FILTER_ID, OrderMarketplaceFilterId.PESANAN_DIPROSES);
+        bundle.putString(ApplinkConstInternalOrder.KEY_LABEL, ApplinkConstInternalOrder.MARKETPLACE);
+        bundle.putString(ApplinkConstInternalOrder.ORDER_FILTER_ID, ApplinkConstInternalOrder.PESANAN_DIPROSES);
 
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
