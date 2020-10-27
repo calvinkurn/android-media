@@ -20,7 +20,7 @@ interface InboxListContract {
         fun scrollRv()
     }
 
-    interface InboxListPresenter : InboxBasePresenter {
+    interface Presenter : InboxBasePresenter {
         fun onClickFilter()
         fun setFilter(position: Int)
         fun onClickTicket(index: Int, isOfficialStore: Boolean)

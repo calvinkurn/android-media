@@ -335,7 +335,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
             finishFilter.setName(entry.getFilterName());
             finishFilter.setType(entry.getFilterLabel());
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            finishFilter.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green);
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);
@@ -584,7 +584,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         getView().displayLoadMore(false);
                         if (wishlistModel.getData() != null) {
                             wishListResponseListener.onWhishListSuccessResponse(true);
-                            getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                            getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist));
                         }
                     }
                 }
@@ -604,7 +604,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (getView() != null) {
                         getView().displayLoadMore(false);
                         wishListResponseListener.onWhishListSuccessResponse(true);
-                        getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                        getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist));
                     }
                 }
 
@@ -648,7 +648,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             public void onSuccessRemoveWishlist(String productId) {
                 if (getView() != null) {
                     getView().displayLoadMore(false);
-                    getView().showSuccessMessage(getView().getString(R.string.msg_success_remove_wishlist));
+                    getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist));
                     wishListResponseListener.onWhishListSuccessResponse(false);
                 }
             }

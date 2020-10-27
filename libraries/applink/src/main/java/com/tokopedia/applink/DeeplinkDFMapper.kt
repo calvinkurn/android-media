@@ -108,7 +108,22 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_STATI
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.BELANJA_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DEALS_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DIGITAL_ORDER_LIST_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.EVENTS_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.GIFTCARDS_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
@@ -406,6 +421,26 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(NORMAL_CHECKOUT)}, DF_BASE, R.string.title_normal_checkout))
+
+            // buyerorder
+            add(DFP({
+                it.startsWith(INTERNAL_ORDER) ||
+                        it.startsWith(INTERNAL_BUYER) ||
+                        it.startsWith(ORDER_LIST_INTERNAL) ||
+                        it.startsWith(INTERNAL_TRANSACTION_ORDERLIST) ||
+                        it.startsWith(ApplinkConstInternalOrder.DIGITAL_ORDER) ||
+                        it.startsWith(DIGITAL_ORDER_LIST_INTERNAL) ||
+                        it.startsWith(ORDERLIST_DIGITAL_INTERNAL) ||
+                        it.startsWith(DEALS_INTERNAL_ORDER) ||
+                        it.startsWith(EVENTS_INTERNAL_ORDER) ||
+                        it.startsWith(GIFTCARDS_INTERNAL_ORDER) ||
+                        it.startsWith(INSURANCE_INTERNAL_ORDER) ||
+                        it.startsWith(MODALTOKO_INTERNAL_ORDER) ||
+                        it.startsWith(HOTEL_INTERNAL_ORDER) ||
+                        it.startsWith(PESAWAT_INTERNAL_ORDER) ||
+                        it.startsWith(BELANJA_INTERNAL_ORDER) ||
+                        it.startsWith(MARKETPLACE_INTERNAL_ORDER)
+            }, DF_BASE, R.string.title_buyerorder))
         }
     }
 

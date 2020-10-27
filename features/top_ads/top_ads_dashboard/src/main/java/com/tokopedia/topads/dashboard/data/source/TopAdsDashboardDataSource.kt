@@ -11,8 +11,4 @@ import rx.Observable
 
 class TopAdsDashboardDataSource(private val topAdsDashboardDataSourceCloud: TopAdsDashboardDataSourceCloud) {
 
-
-    fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
-        return topAdsDashboardDataSourceCloud.getStatistics(requestParams)
-    }
 }

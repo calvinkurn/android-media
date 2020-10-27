@@ -33,7 +33,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.Utils;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -59,6 +58,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.util.List;
 
@@ -173,15 +173,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         conditionalInfoText.setVisibility(View.VISIBLE);
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
         if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
             shape.setColor(Color.parseColor(conditionalInfo.color().background()));
         }
         if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.color().border()));
         }
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
         if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
             conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
@@ -241,7 +241,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             additionalText.setOnClickListener(null);
             additionalText.setText(getResources().getString(R.string.additional_text));
             additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-            additionalText.setTextColor(getResources().getColor(R.color.black_70));
+            additionalText.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
             additionalInfoLayout.setVisibility(View.VISIBLE);
         });
     }
@@ -275,7 +275,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
 
     }
@@ -381,7 +381,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
     }
 
@@ -400,7 +400,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
             }
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
@@ -411,16 +411,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         primaryActionBtn.setBackground(shape);
         if (isSingleButton) {
@@ -439,12 +439,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4));
         if (!actionButton.getActionColor().getBackground().equals("")) {
             shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
         if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         secondaryActionBtn.setBackground(shape);
         if (!actionButton.getActionColor().getTextColor().equals("")) {

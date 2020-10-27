@@ -9,7 +9,7 @@
         android:id="@+id/viewDivider"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/search_result_empty_divider_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/empty_search_shop_recommendation_title"
-        android:textColor="@color/shop_empty_search_recommendation_title_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/viewDivider"
         app:layout_constraintRight_toRightOf="parent"
