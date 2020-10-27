@@ -49,6 +49,7 @@ class PlayWidgetPlayerView : PlayerView {
         val viewHeight = textureView.height
 
         val scaleFactors = if (viewHeight <= viewWidth) {
+            //TODO("This might be wrong, need to recheck again")
             val previewRatio = videoWidth / videoHeight.toFloat()
             val viewFinderRatio = viewWidth / viewHeight.toFloat()
             val scaling = viewFinderRatio * previewRatio
@@ -74,6 +75,7 @@ class PlayWidgetPlayerView : PlayerView {
         val viewHeight = textureView.height
 
         val scaleFactors = if (viewHeight <= viewWidth) {
+            //TODO("This might be wrong, need to recheck again")
             val previewRatio = videoWidth / videoHeight.toFloat()
             val viewFinderRatio = viewWidth / viewHeight.toFloat()
             val scaling = viewFinderRatio * previewRatio
