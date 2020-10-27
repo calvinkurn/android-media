@@ -180,14 +180,16 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getUserSection(){
-        val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-        mainNavigationDataModel?.dataList?.find { it is AccountHeaderViewModel }?.let {
-            val accountHeader = (it as AccountHeaderViewModel).copy()
-            if (accountHeader.loginState.equals(AccountHeaderViewModel.LOGIN_STATE_LOGIN)) {
-                getUserBadgeImage(accountHeader)
-                getOvoData(accountHeader)
-                getSaldoData(accountHeader)
-                getShopData(accountHeader.shopId.toInt(), accountHeader)
+        launch {
+            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
+            mainNavigationDataModel?.dataList?.find { it is AccountHeaderViewModel }?.let {
+                val accountHeader = (it as AccountHeaderViewModel).copy()
+                if (accountHeader.loginState.equals(AccountHeaderViewModel.LOGIN_STATE_LOGIN)) {
+                    getUserBadgeImage(accountHeader)
+                    getOvoData(accountHeader)
+                    getSaldoData(accountHeader)
+                    getShopData(accountHeader.shopId.toInt(), accountHeader)
+                }
             }
         }
     }
