@@ -17,9 +17,9 @@
             android:id="@+id/dream_fund_umrah_home_page"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16" />
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4" />
     </LinearLayout>
 
     <include
@@ -27,9 +27,9 @@
         layout="@layout/partial_umrah_home_page_dream_fund_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:visibility="gone" />
 
     <include
@@ -37,7 +37,7 @@
         layout="@layout/partial_umrah_home_page_my_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:visibility="gone" />
 
 </FrameLayout>
