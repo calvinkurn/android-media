@@ -34,6 +34,14 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
+    private val blurHashRandom = listOf(
+            "A4ADcRuO_2y?",
+            "A9K{0B#R3WyY",
+            "AHHUnD~V^ia~",
+            "A2N+X[~qv]IU",
+            "ABP?2U~X5J^~"
+    )
+
     private fun glideListener(
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
@@ -138,7 +146,11 @@ object GlideBuilder {
     private fun blurHashFromUrl(url: Any?, blurHash: (String?) -> Unit) {
         if (url is GlideUrl) {
             val hash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
-            blurHash(hash)
+            if (hash != null && hash.isNotEmpty()) {
+                blurHash(hash)
+            } else {
+                blurHash(blurHashRandom.random())
+            }
         }
     }
 
