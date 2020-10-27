@@ -18,13 +18,13 @@ data class NotificationUiModel(
         @SerializedName("create_time")
         val createTime: String = "",
         @SerializedName("create_time_unix")
-        val createTimeUnix: Int = 0,
+        val createTimeUnix: Long = 0,
         @SerializedName("data_notification")
         val dataNotification: DataNotification = DataNotification(),
         @SerializedName("expire_time")
         val expireTime: String = "",
         @SerializedName("expire_time_unix")
-        val expireTimeUnix: Int = 0,
+        val expireTimeUnix: Long = 0,
         @SerializedName("is_longer_content")
         val isLongerContent: Boolean = false,
         @SerializedName("notif_id")
@@ -66,9 +66,9 @@ data class NotificationUiModel(
         @SerializedName("update_time")
         val updateTime: String = "",
         @SerializedName("update_time_unix")
-        val updateTimeUnix: Int = 0,
+        val updateTimeUnix: Long = 0,
         @SerializedName("user_id")
-        val userId: Int = 0
+        val userId: Long = 0
 ) : Visitable<NotificationTypeFactory> {
 
     override fun type(typeFactory: NotificationTypeFactory): Int {

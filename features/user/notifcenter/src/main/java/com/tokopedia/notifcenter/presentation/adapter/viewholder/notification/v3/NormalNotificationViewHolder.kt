@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.inboxcommon.time.TimeHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -23,6 +24,7 @@ class NormalNotificationViewHolder(
         bindDesc(element)
         bindNotificationType(element)
         bindIcon(element)
+        bindTime(element)
     }
 
     private fun bindTitle(element: NotificationUiModel) {
@@ -39,6 +41,10 @@ class NormalNotificationViewHolder(
 
     private fun bindIcon(element: NotificationUiModel) {
         ImageHandler.LoadImage(icon, element.sectionIcon)
+    }
+
+    private fun bindTime(element: NotificationUiModel) {
+        time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
     }
 
     companion object {
