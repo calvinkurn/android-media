@@ -20,7 +20,11 @@ class HomeNavMenuViewHolder(
 
     override fun bind(element: HomeNavMenuViewModel) {
         itemView.menu_title?.text = element.itemTitle
-        itemView.menu_image.loadImage(element.srcImage, R.drawable.grey_button_rounded)
+        if (element.srcIconId != null) {
+            itemView.menu_image.setImage(newIconId = element.srcIconId)
+        } else {
+            itemView.menu_image.loadImage(element.srcImage, R.drawable.grey_button_rounded)
+        }
         itemView.setOnClickListener {
             listener.onMenuClick(element)
         }
