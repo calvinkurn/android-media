@@ -105,8 +105,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     is Success -> {
                         productDomain = it.data
                         val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
+
+                        // duplicate product handling
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
+                        } else {
+                            productInputModel.detailInputModel.currentProductName = ""
                         }
 
                         // decrement wholesale min order by one because of > symbol

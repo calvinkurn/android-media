@@ -33,7 +33,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "ConsumerSplashScreen", "AddPinActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
-            "RegisterEmailActivity"
+            "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity"
     )
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {

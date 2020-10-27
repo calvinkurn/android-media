@@ -70,7 +70,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle bundle) {
-        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground;allowed_notif='%s'", isAllowedNotification(bundle));
+        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground;allowed_notif='%s';bundle='%s'"
+                , isAllowedNotification(bundle)
+                , bundle.toString());
         if (isAllowedNotification(bundle)) {
             mFCMCacheManager.setCache();
             if (isApplinkNotification(bundle)) {

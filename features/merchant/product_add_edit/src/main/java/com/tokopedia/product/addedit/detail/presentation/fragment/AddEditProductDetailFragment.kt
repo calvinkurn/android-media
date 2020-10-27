@@ -584,6 +584,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        enableProductNameField()
         onFragmentResult()
         setupBackPressed()
 
@@ -602,6 +603,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
+
+    private fun enableProductNameField() {
+        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun onDestroyView() {

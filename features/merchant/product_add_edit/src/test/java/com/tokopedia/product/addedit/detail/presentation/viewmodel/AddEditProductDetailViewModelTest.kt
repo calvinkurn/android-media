@@ -6,8 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
+import com.tokopedia.product.addedit.detail.domain.model.ValidateProductNameExistResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductNameExistUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
@@ -40,6 +44,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getNameRecommendationUseCase: GetNameRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var validateProductNameExistUseCase: ValidateProductNameExistUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -92,7 +99,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductNameExistUseCase)
     }
 
     @Test
@@ -284,6 +291,56 @@ class AddEditProductDetailViewModelTest {
 
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
         Assert.assertTrue(isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
+    }
+
+    @Test
+    fun `validateProductNameInput should invalid when product name is exist`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductNameExistUseCase.executeOnBackground()
+        } returns ValidateProductNameExistResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductNameExistUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertTrue(resultViewmodel)
+    }
+
+    @Test
+    fun `validateProductNameInput should valid when product name is not exist`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductNameExistUseCase.executeOnBackground()
+        } returns ValidateProductNameExistResponse(
+                ProductValidateV3(
+                        isSuccess = true,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductNameExistUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertFalse(resultViewmodel)
     }
 
     @Test
@@ -780,6 +837,17 @@ class AddEditProductDetailViewModelTest {
                 viewModel.productPhotoPaths.size == 2 &&
                 viewModel.productPhotoPaths[0] == imagePickerResult[0] &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
+    }
+
+    @Test
+    fun `disable productNameField when product has transaction`() {
+        // positive case
+        viewModel.productInputModel.itemSold = 199
+        Assert.assertTrue(viewModel.hasTransaction)
+
+        // negative case
+        viewModel.productInputModel.itemSold = 0
+        Assert.assertFalse(viewModel.hasTransaction)
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {
