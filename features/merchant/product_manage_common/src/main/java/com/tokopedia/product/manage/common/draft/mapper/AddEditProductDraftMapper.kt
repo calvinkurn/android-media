@@ -10,6 +10,7 @@ class AddEditProductDraftMapper {
     companion object {
         private const val MIN_COMPLETION_PERCENT = 5
         private const val MAX_COMPLETION_PERCENT = 95
+        private const val PLACE_HOLDER = "PLACE_HOLDER"
 
         fun mapProductInputToJsonString(product: ProductDraft): String {
             return CacheUtil.convertModelToString(product, object : TypeToken<ProductDraft>() {}.type)
@@ -26,7 +27,7 @@ class AddEditProductDraftMapper {
             var completionPercent: Int
 
             val productPicture = product.detailInputModel.imageUrlOrPathList
-            if (!productPicture.isNullOrEmpty()) {
+            if (!productPicture.isNullOrEmpty() && productPicture.firstOrNull() != PLACE_HOLDER) {
                 completionCount++
             }
 
