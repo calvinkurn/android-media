@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
@@ -44,6 +46,9 @@ class SellerActionSliceProvider: SliceProvider(){
     @Inject
     lateinit var sliceMainOrderListUseCase: SliceMainOrderListUseCase
 
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     private var mainOrderStatus: SellerActionStatus? = null
     private var isLoading: Boolean = false
     private var isAlreadyInjected: Boolean = false
@@ -57,17 +62,23 @@ class SellerActionSliceProvider: SliceProvider(){
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Returning slice if the uri has been called/bind before
-            // This will avoid infinite gql call loop in certain cases
-            sliceHashMap[sliceUri]?.let {
-                return it.getSlice()
-            }
-
             if (!isAlreadyInjected) {
                 // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
                 context?.let { GraphqlClient.init(it) }
                 injectDependencies()
                 isAlreadyInjected = true
+            }
+
+            if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER)) {
+                context?.let {
+                    return SellerFailureSlice(it, sliceUri).getSlice()
+                }
+            }
+
+            // Returning slice if the uri has been called/bind before
+            // This will avoid infinite gql call loop in certain cases
+            sliceHashMap[sliceUri]?.let {
+                return it.getSlice()
             }
 
             if (userSession.isLoggedIn) {
