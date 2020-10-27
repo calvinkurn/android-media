@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
@@ -74,6 +75,18 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         }
 
         return isRefundable
+    }
+
+    fun getDepartureDateAndTime(journey: OrderDetailJourneyModel): Pair<String, String> {
+
+        val time = "${TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                TravelDateUtil.HH_MM, journey.departureTime)} - ${TravelDateUtil.formatDate(
+                TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.HH_MM, journey.arrivalTime)}"
+
+        return Pair(
+                TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.EEE_DD_MMM_YY, journey.departureTime),
+                time
+        )
     }
 
 }

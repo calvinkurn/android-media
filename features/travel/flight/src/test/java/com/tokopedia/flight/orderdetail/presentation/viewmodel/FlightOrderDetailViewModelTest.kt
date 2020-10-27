@@ -362,4 +362,16 @@ class FlightOrderDetailViewModelTest {
         isRefundable shouldBe false
     }
 
+    @Test
+    fun getDepartureDateAndTime() {
+        // given
+
+        // when
+        val departureDateAndTime = viewModel.getDepartureDateAndTime(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
+
+        // then
+        departureDateAndTime.first shouldBe "Rab, 11 Nov 20"
+        departureDateAndTime.second shouldBe "08:00 - 10:00"
+    }
+
 }

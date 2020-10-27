@@ -163,6 +163,32 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         }
 
         tgFlightOrderReturnAirlineName.text = flightOrderDetailViewModel.getAirlineName(returnJourney)
+
+        if (flightOrderDetailViewModel.getRefundableInfo(returnJourney)) {
+            tgFlightOrderReturnTicketRefundableStatus.visibility = View.VISIBLE
+        } else {
+            tgFlightOrderReturnTicketRefundableStatus.visibility = View.GONE
+        }
+
+        tgFlightOrderReturnJourneyTrip.text = getString(R.string.flight_order_detail_trip_city,
+                returnJourney.departureCityName, returnJourney.departureId,
+                returnJourney.arrivalCityName, returnJourney.arrivalId)
+
+        if (returnJourney.routes.isNotEmpty() && returnJourney.routes[0].departureTerminal.isNotEmpty()) {
+            tgFlightOrderReturnAirport.text = getString(R.string.flight_order_detail_airport_with_terminal,
+                    returnJourney.departureAirportName, returnJourney.routes[0].departureTerminal)
+        } else {
+            tgFlightOrderReturnAirport.text = returnJourney.departureAirportName
+        }
+
+        val departureDateAndTimePair = flightOrderDetailViewModel.getDepartureDateAndTime(returnJourney)
+        if (returnJourney.totalTransit > 0) {
+            tgFlightOrderReturnDetail.text = getString(R.string.flight_order_detail_airport_journey_with_transit,
+                    departureDateAndTimePair.first, departureDateAndTimePair.second, returnJourney.totalTransit)
+        } else {
+            tgFlightOrderReturnDetail.text = getString(R.string.flight_order_detail_airport_journey_without_transit,
+                    departureDateAndTimePair.first, departureDateAndTimePair.second)
+        }
     }
 
     private fun hideReturnTicketView() {

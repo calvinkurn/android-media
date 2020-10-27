@@ -369,4 +369,9 @@ di tempatmu.</string>
     <string name="flight_order_detail_send_e_ticket_label">Kirim E-tiket</string>
     <string name="flight_order_detail_see_e_ticket_label">Lihat E-tiket</string>
 
+    <string name="flight_order_detail_trip_city">%1$s (%2$s) ➝ %3$s (%4$s)</string>
+    <string name="flight_order_detail_airport_with_terminal">%1$s (Terminal %2$s)</string>
+    <string name="flight_order_detail_airport_journey_with_transit">%1$s · %2$s · %3$d</string>
+    <string name="flight_order_detail_airport_journey_without_transit">%1$s · %2$s</string>
+
 </resources>
