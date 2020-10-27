@@ -37,6 +37,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getTableDataUseCase: Lazy<GetTableDataUseCase>,
         private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
+        private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val dispatcher: SellerHomeCoroutineDispatcher
 ) : CustomBaseViewModel(dispatcher.main()) {
 
@@ -69,6 +70,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
+    private val _multiLineGraphWidgetData = MutableLiveData<Result<List<MultiLineGraphDataUiModel>>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -92,6 +94,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _pieChartWidgetData
     val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
         get() = _barChartWidgetData
+    val multiLineGraphWidgetData: LiveData<Result<List<MultiLineGraphDataUiModel>>>
+        get() = _multiLineGraphWidgetData
 
     fun getTicker() {
         launchCatchError(block = {
@@ -223,6 +227,18 @@ class SellerHomeViewModel @Inject constructor(
             _barChartWidgetData.postValue(result)
         }, onError = {
             _barChartWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getMultiLineGraphData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io()) {
+                getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
+            })
+            _multiLineGraphWidgetData.postValue(result)
+        }, onError = {
+            _multiLineGraphWidgetData.postValue(Fail(it))
         })
     }
 }

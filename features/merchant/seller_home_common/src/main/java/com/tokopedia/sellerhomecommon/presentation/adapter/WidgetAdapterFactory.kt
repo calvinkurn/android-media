@@ -31,4 +31,6 @@ interface WidgetAdapterFactory {
     fun type(footerLayout: WhiteSpaceUiModel): Int
 
     fun type(tickerWidget: TickerWidgetUiModel): Int
+
+    fun type(multiLineGraphWidget: MultiLineGraphWidgetUiModel): Int
 }
