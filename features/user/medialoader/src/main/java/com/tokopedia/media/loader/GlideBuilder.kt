@@ -97,7 +97,6 @@ object GlideBuilder {
                     else -> {}
                 }
 
-                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
@@ -114,19 +113,19 @@ object GlideBuilder {
                     transform(MultiTransformation(localTransform))
                 }
 
+                if (thumbnailUrl.isNotEmpty()) {
+                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+                } else {
+                    blurHashFromUrl(url) { hash ->
+                        thumbnail(thumbnailLoader(imageView.context, blurring(imageView, hash)))
+                    }
+                }
+
                 if (placeHolder != 0) {
                     placeholder(placeHolder)
                 } else {
-                    if (url is GlideUrl) {
-                        val blurHash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
-                        blurHash?.let {
-                            placeholder(
-                                    BitmapDrawable(
-                                            imageView.context.resources,
-                                            blurring(imageView, blurHash)
-                                    )
-                            )
-                        }
+                    blurHashFromUrl(url) { hash ->
+                        placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
                     }
                 }
 
@@ -136,7 +135,14 @@ object GlideBuilder {
         }
     }
 
-    fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
+    private fun blurHashFromUrl(url: Any?, blurHash: (String?) -> Unit) {
+        if (url is GlideUrl) {
+            val hash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
+            blurHash(hash)
+        }
+    }
+
+    private fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
                 width = 512,
