@@ -52,18 +52,13 @@ class ShopHomeAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if(holder is ShopHomePlayCarouselViewHolder) {
-            holder.onResume()
-        }
-        else if(holder is ShopHomeSliderBannerViewHolder) {
+        if (holder is ShopHomeSliderBannerViewHolder) {
             holder.resumeTimer()
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        if(holder is ShopHomePlayCarouselViewHolder) {
-            holder.onPause()
-        }else if(holder is ShopHomeSliderBannerViewHolder) {
+        if (holder is ShopHomeSliderBannerViewHolder) {
             holder.pauseTimer()
         }
         super.onViewDetachedFromWindow(holder)
@@ -360,34 +355,6 @@ class ShopHomeAdapter(
         }
     }
 
-//    fun pausePlayCarousel(){
-//        val indexPlay = getPositionPlayCarousel()
-//        if(indexPlay == -1) return
-//        notifyItemChanged(indexPlay, Bundle().apply {
-//            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
-//        })
-//    }
-
-//    fun resumePlayCarousel(){
-//        val indexPlay = getPositionPlayCarousel()
-//        if(indexPlay == -1) return
-//        notifyItemChanged(indexPlay, Bundle().apply {
-//            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
-//        })
-//    }
-
-//    fun onDestroy(){
-//        val indexPlay = getPositionPlayCarousel()
-//        if(indexPlay == -1) return
-//        notifyItemChanged(indexPlay, Bundle().apply {
-//            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
-//        })
-//    }
-
-//    private fun getPositionPlayCarousel(): Int{
-//        return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
-//    }
-
     fun updateRemindMeStatusCampaignNplWidgetData(
             campaignId: String,
             isRemindMe: Boolean? = null,
@@ -468,7 +435,7 @@ class ShopHomeAdapter(
     }
 
     /**
-     * Play widget
+     * Play Widget
      */
     fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
         visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->

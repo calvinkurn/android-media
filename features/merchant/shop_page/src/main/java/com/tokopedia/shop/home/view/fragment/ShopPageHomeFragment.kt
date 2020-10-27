@@ -104,7 +104,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         ShopHomeEndlessProductListener,
-//        ShopPageHomePlayCarouselListener,
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
@@ -119,11 +118,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_NAME = "SHOP_NAME"
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val SPAN_COUNT = 2
-        const val UPDATE_REMIND_ME_PLAY = "update_remind_me"
-        const val UPDATE_REMIND_ME_PLAY_ID = "update_remind_me_id"
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
         const val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
@@ -304,14 +299,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onResume() {
         super.onResume()
-//        shopHomeAdapter.resumePlayCarousel()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
     }
 
     override fun onPause() {
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
-//        shopHomeAdapter.pausePlayCarousel()
         shopHomeAdapter.pauseSliderBannerAutoScroll()
     }
 
@@ -320,11 +313,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.newProductListData?.removeObservers(this)
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
-//        viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.bottomSheetFilterLiveData?.removeObservers(this)
         viewModel?.shopProductFilterCountLiveData?.removeObservers(this)
         viewModel?.flush()
-//        shopHomeAdapter.onDestroy()
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopChangeProductGridSharedViewModel?.sharedProductGridType?.removeObservers(this)
         super.onDestroy()
@@ -1065,84 +1056,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 )
         )
     }
-
-//    override fun onPlayBannerCarouselRefresh(shopHomePlayCarouselUiModel: ShopHomePlayCarouselUiModel, position: Int) {
-//        viewModel?.onRefreshPlayBanner(shopId)
-//    }
-//
-//    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.clickRemindMePlayCarousel(playBannerCarouselItemDataModel.channelId, viewModel?.userId ?: "", playBannerCarouselItemDataModel.remindMe, widgetPosition, position)
-//        if(isLogin) {
-//            viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe, position)
-//        } else {
-//            // reset remind icon
-//            adapter.notifyItemChanged(position, Bundle().apply {
-//                putBoolean(UPDATE_REMIND_ME_PLAY, true)
-//                putString(UPDATE_REMIND_ME_PLAY_ID, playBannerCarouselItemDataModel.channelId)
-//            })
-//            redirectToLoginPage()
-//        }
-//    }
-//
-//    override fun onPlayBannerSeeMoreClick(appLink: String, widgetPosition: Int) {
-//        shopPageHomeTracking.clickSeeMorePlayCarousel(shopId, viewModel?.userId ?: "", widgetPosition)
-//        RouteManager.route(context, appLink)
-//    }
-//
-//    override fun onPlayBannerSeeMoreBanner(appLink: String, widgetPosition: Int) {
-//        shopPageHomeTracking.clickSeeMorePlayCarouselBanner(shopId, viewModel?.userId ?: "", widgetPosition)
-//        RouteManager.route(context, appLink)
-//    }
-//
-//    override fun onPlayBannerImpressed(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.impressionPlayBanner(
-//                shopId = dataModel.partnerId,
-//                userId = viewModel?.userId ?: "",
-//                channelId = dataModel.channelId,
-//                bannerId = widgetId,
-//                creativeName = dataModel.coverUrl,
-//                autoPlay = autoPlay,
-//                positionWidget = widgetPosition,
-//                positionChannel = position.toString()
-//        )
-//    }
-//
-//    override fun onPlayBannerClicked(dataModel: PlayBannerCarouselItemDataModel, autoPlay: String, widgetId: String, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.clickPlayBanner(
-//                shopId = dataModel.partnerId,
-//                userId = viewModel?.userId ?: "",
-//                channelId = dataModel.channelId,
-//                bannerId = widgetId,
-//                creativeName = dataModel.coverUrl,
-//                autoPlay = autoPlay,
-//                positionWidget = widgetPosition,
-//                positionChannel = position.toString()
-//        )
-//        RouteManager.route(context, dataModel.applink)
-//    }
-//
-//    override fun onPlayLeftBannerImpressed(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.impressionLeftPlayBanner(
-//                shopId = shopId,
-//                userId = viewModel?.userId ?: "",
-//                bannerId = widgetId,
-//                creativeName = dataModel.imageUrl,
-//                positionChannel = widgetPosition.toString(),
-//                position = (position + 1).toString()
-//        )
-//    }
-//
-//    override fun onPlayLeftBannerClicked(dataModel: PlayBannerCarouselOverlayImageDataModel, widgetId: String, widgetPosition: Int, position: Int) {
-//        shopPageHomeTracking.clickLeftPlayBanner(
-//                shopId = shopId,
-//                userId = viewModel?.userId ?: "",
-//                bannerId = widgetId,
-//                creativeName = dataModel.imageUrl,
-//                positionChannel = widgetPosition.toString(),
-//                position = (position + 1).toString()
-//        )
-//        RouteManager.route(context, dataModel.applink)
-//    }
 
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
