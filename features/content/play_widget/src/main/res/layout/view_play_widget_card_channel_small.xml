@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="@id/fl_border"
         >
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_cover"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
@@ -43,7 +43,7 @@
             android:scaleType="centerCrop"
             />
 
-        <com.google.android.exoplayer2.ui.PlayerView
+        <com.tokopedia.play.widget.ui.custom.PlayWidgetPlayerView
             android:id="@+id/pv_video"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
@@ -52,7 +52,6 @@
             app:layout_constraintEnd_toEndOf="@id/iv_cover"
             app:layout_constraintStart_toStartOf="@id/iv_cover"
             app:layout_constraintTop_toTopOf="@id/iv_cover"
-            app:resize_mode="zoom"
             app:shutter_background_color="@color/transparent"
             app:surface_type="texture_view"
             app:use_artwork="false"

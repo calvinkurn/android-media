@@ -26,6 +26,8 @@ class PlayWidgetAutoPlayCoordinator(
 
     private val autoPlayReceiverDecider: AutoPlayReceiverDecider = DefaultAutoPlayReceiverDecider()
 
+    private lateinit var mConfig: PlayWidgetConfigUiModel
+
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
         if (visibleCards.isEmpty()) return
@@ -36,7 +38,7 @@ class PlayWidgetAutoPlayCoordinator(
             val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
                     visibleCards = visibleCards,
                     itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                    maxAutoPlay = FAKE_MAX_AUTOPLAY
+                    maxAutoPlay = getMaxAutoPlayCard()
             )
 
             videoPlayerMap.entries.forEach {
@@ -65,28 +67,35 @@ class PlayWidgetAutoPlayCoordinator(
         videoPlayerMap.keys.forEach { it.pause() }
     }
 
+    fun onDestroy() {
+        videoPlayerMap.keys.forEach { it.release() }
+    }
+
     fun onResume() {
         videoPlayerMap.keys.forEach { it.resume() }
     }
 
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
+        mConfig = config
+
         if (false) { //TODO(!config.autoPlay)
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
         }
 
-        if (videoPlayerMap.size < FAKE_MAX_AUTOPLAY) {
+        val maxAutoPlay = config.autoPlayAmount
+
+        if (videoPlayerMap.size < maxAutoPlay) {
             videoPlayerMap.putAll(
-                    List(FAKE_MAX_AUTOPLAY - videoPlayerMap.size) {
+                    List(maxAutoPlay - videoPlayerMap.size) {
                         PlayVideoPlayer(widget.context) to null
                     }
             )
-        } /** else if (videoPlayerMap.size > FAKE_MAX_AUTOPLAY) {
-            videoPlayerMap.
-            val lastPlayer = videoPlayerList.removeAt(videoPlayerList.lastIndex)
-            lastPlayer.release()
-        } **/
+        } else if (videoPlayerMap.size > maxAutoPlay) {
+            val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
+            lastVideoPlayer?.release()
+        }
     }
 
     private fun getNextIdlePlayer(): PlayVideoPlayer? {
@@ -113,8 +122,11 @@ class PlayWidgetAutoPlayCoordinator(
         }
     }
 
+    private fun getMaxAutoPlayCard(): Int {
+        return if (::mConfig.isInitialized) mConfig.autoPlayAmount else 0
+    }
+
     companion object {
-        private const val FAKE_MAX_AUTOPLAY = 3
-        private const val FAKE_MAX_DELAY = 3000L // set delay before play to 3s
+        private const val FAKE_MAX_DELAY = 1000L // set delay before play to 1s
     }
 }
