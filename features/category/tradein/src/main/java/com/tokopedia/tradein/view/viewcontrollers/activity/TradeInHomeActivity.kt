@@ -153,7 +153,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
             }
         })
         viewModel.imeiResponseLiveData.observe(this, Observer {
-            (currentFragment as TradeInInitialPriceFragment).setWrongImei(it)
+          //  (currentFragment as TradeInInitialPriceFragment).setWrongImei(it)
         })
 
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
@@ -226,7 +226,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                     }
                     else -> {
                         if(currentFragment is TradeInInitialPriceFragment){
-                            (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
+                      //      (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
                         } else {
                             currentFragment = TradeInInitialPriceFragment
                                     .getFragmentInstance(maxPrice, isEligibleForTradein, notEligibleMessage)

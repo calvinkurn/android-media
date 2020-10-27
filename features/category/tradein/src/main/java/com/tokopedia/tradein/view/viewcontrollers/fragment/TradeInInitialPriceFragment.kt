@@ -24,6 +24,8 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.MoneyInCourierBottomSheet
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInImeiHelpBottomSheet.Companion.newInstance
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
@@ -58,27 +60,28 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             val viewModelProvider = ViewModelProviders.of(observer, viewModelProvider)
             tradeinHomeViewModel = viewModelProvider.get(TradeInHomeViewModel::class.java)
         }
-        setUpObservers()
-        init()
+       //setUpObservers()
+       init()
     }
 
     private fun init() {
         arguments?.apply {
             handleEligibility(getString(EXTRA_MAX_PRICE, "-"), getBoolean(EXTRA_IS_ELIGIBLE, false), getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
         }
-        tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
+
+       // tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
         tradeinHomeViewModel.tradeInParams.apply {
             product_name.text = productName
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
             ImageHandler.loadImageWithoutPlaceholder(product_image, productImage)
         }
-        no_imei_value.text = getTradeInDeviceId()
+        //no_imei_value.text = getTradeInDeviceId()
         model_value.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
-        typography_imei_help.setOnClickListener {
-            val tradeInImeiHelpBottomSheet = newInstance()
-            tradeInImeiHelpBottomSheet.show(childFragmentManager, "")
-            tradeInAnalytics.clickInitialPriceImeiBottomSheet()
-        }
+//        typography_imei_help.setOnClickListener {
+//            val tradeInImeiHelpBottomSheet = newInstance()
+//            tradeInImeiHelpBottomSheet.show(childFragmentManager, "")
+//            tradeInAnalytics.clickInitialPriceImeiBottomSheet()
+//        }
         iv_back.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -93,7 +96,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         }
     }
 
-    private fun setUpObservers() {
+   /* private fun setUpObservers() {
         tradeInInitialPriceViewModel.imeiStateLiveData.observe(viewLifecycleOwner, Observer { showImei: Boolean ->
             if (showImei) {
                 handleImei()
@@ -104,13 +107,13 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
                 }
             }
         })
-    }
+    }*/
 
     private fun getTradeInDeviceId(): String? {
         return TradeInUtils.getDeviceId(context)
     }
 
-    private fun handleImei() {
+   /* private fun handleImei() {
         imei_view.show()
         no_imei.hide()
         no_imei_value.hide()
@@ -135,7 +138,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
                 }
             }
         }
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.tradein_initial_price_fragment, container, false)
@@ -155,18 +158,23 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     fun notElligible(notEligibleText: String) {
         progress_bar_layout.hide()
-        btn_continue.isEnabled = false
-        save_upto.hide()
+        //btn_continue.isEnabled = false
+       //LK save_upto.hide()
         phone_valid_ticker.show()
         phone_valid_ticker.setTextDescription(notEligibleText)
+        btn_continue.setOnClickListener {
+            val getImeiBS = GetImeiBS.newInstance()
+            getImeiBS.show(childFragmentManager, "")
+
+        }
     }
 
     private fun setMaxPrice(maxPrice: String) {
-        max_price_value.text = maxPrice
-        val spannableString = SpannableString(getString(R.string.tradein_save_upto, maxPrice))
-        val start = 18
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), start, start + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        save_upto.text = spannableString
+        tv_old_product_price.text = maxPrice
+//        val spannableString = SpannableString(getString(R.string.tradein_save_upto, maxPrice))
+//        val start = 18
+//        spannableString.setSpan(StyleSpan(Typeface.BOLD), start, start + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        save_upto.text = spannableString
     }
 
     private fun isElligible() {
@@ -174,14 +182,14 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.isEnabled = true
     }
 
-    fun setWrongImei(error: String?) {
+   /* fun setWrongImei(error: String?) {
         when (error) {
             getString(R.string.tradein_laku6_imei_error) -> typography_imei_description.text = getString(R.string.wrong_imei_string)
             getString(R.string.tradein_laku6_imei_cheat) -> typography_imei_description.text = getString(R.string.tradein_wrong_imei_string)
             else -> typography_imei_description.text = error ?: getString(R.string.wrong_imei_string)
         }
         typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
-    }
+    }*/
 
     companion object {
         private const val EXTRA_MAX_PRICE = "EXTRA_MAX_PRICE"
