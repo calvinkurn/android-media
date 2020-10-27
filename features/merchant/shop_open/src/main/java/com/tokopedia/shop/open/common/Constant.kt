@@ -6,12 +6,6 @@ object PageNameConstant {
     const val FINISH_SPLASH_SCREEN_PAGE = "FINISH_SPLASH_SCREEN_PAGE"
 }
 
-object GQLQueryConstant {
-    const val QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA = "shop_open_revamp_get_survey_data"
-    const val QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP = "shop_open_revamp_create_shop"
-    const val QUERY_SHOP_OPEN_REVAMP_SAVE_SHIPMENT_LOCATION = "shop_open_revamp_saves_hipment_location"
-}
-
 object ExitDialog {
     const val TITLE = "Apa kamu yakin ingin \nkeluar?"
     const val DESCRIPTION = "Data telah tersimpan"
