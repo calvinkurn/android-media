@@ -12,7 +12,9 @@ data class GetAdProductResponse(
     data class TopadsGetListProductsOfGroup(
 
             @field:SerializedName("data")
-            val data: List<DataItem> = listOf()
+            val data: List<DataItem> = listOf(),
+            @field:SerializedName("page")
+            val page:Page = Page()
 
     ) {
         @Parcelize
@@ -52,5 +54,12 @@ data class GetAdProductResponse(
 
         }
     }
+
+    data class Page(
+            @field:SerializedName("perPage")
+            val perPage:Int = 1,
+            @field:SerializedName("total")
+            val total:Int = 1
+    )
 }
 
