@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/layout_lvl1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcMultiLineGraphTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl3"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Total Pendapatan" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShcGraphMetrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/shc_dimen_12dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/shc_dimen_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcMultiLineGraphTitle"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/shc_item_multi_line_metric"
+            tools:orientation="horizontal" />
+
+        <com.tokopedia.charts.view.LineChartView
+            android:id="@+id/chatViewShcMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shc_dimen_180dp"
+            android:layout_margin="@dimen/layout_lvl1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btnShcMultiLineCta"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:gravity="end"
+            android:textColor="@color/Green_G500"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chatViewShcMultiLine"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Selanjutnya" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
