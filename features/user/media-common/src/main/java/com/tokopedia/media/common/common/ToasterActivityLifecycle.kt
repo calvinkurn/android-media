@@ -2,6 +2,7 @@ package com.tokopedia.media.common.common
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -9,15 +10,20 @@ import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING
 import com.tokopedia.media.common.R
+import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.Exception
 
-class ToasterActivityLifecycle : ActivityLifecycleCallbacks {
+class ToasterActivityLifecycle(
+        private val context: Context
+) : ActivityLifecycleCallbacks {
+
+    private val preferences by lazy { MediaSettingPreferences(context) }
 
     override fun onActivityStarted(activity: Activity) {
         if (!WHITELIST.singleOrNull {
             it == activity.javaClass.canonicalName
-        }.isNullOrEmpty()) {
+        }.isNullOrEmpty() && !preferences.toasterVisibility()) {
             try {
                 showToaster(activity)
             } catch (ignored: Exception) {}
@@ -40,6 +46,7 @@ class ToasterActivityLifecycle : ActivityLifecycleCallbacks {
         Handler().postDelayed({
             with(activity) {
                 window.decorView.findViewById<ViewGroup>(android.R.id.content)?.let {
+                    preferences.setToasterVisibilityFlag(true)
                     Toaster.make(
                             view = it,
                             text = getString(R.string.media_toaster_title),

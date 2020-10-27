@@ -222,7 +222,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initMedialoader() {
-        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle());
+        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
         Loader.initialize(getApplicationContext());
     }
 
