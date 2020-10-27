@@ -6,6 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.test.application.environment.InstrumentationTestApp
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+
 
 private const val MOCK_TEST = "mockTest"
 
@@ -60,4 +62,19 @@ fun setupGraphqlMockResponse(createMockModel: MockModelConfig.() -> Unit) {
     val mockModelConfig = createMockModelConfig(createMockModel)
 
     setupGraphqlMockResponse(mockModelConfig)
+}
+
+fun setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
+        mockModelConfig: MockModelConfig,
+        listToAnalyze: List<String>
+) {
+    val context = getInstrumentation().targetContext
+    val application = context.applicationContext as InstrumentationTestApp
+    if (isMockTest()) {
+        mockModelConfig.createMockModel(context)
+        application.addInterceptor(MockInterceptor(mockModelConfig))
+    }
+    GqlNetworkAnalyzerInterceptor.reset()
+    GqlNetworkAnalyzerInterceptor.addGqlQueryListToAnalyze(listToAnalyze)
+    application.addInterceptor(GqlNetworkAnalyzerInterceptor())
 }
