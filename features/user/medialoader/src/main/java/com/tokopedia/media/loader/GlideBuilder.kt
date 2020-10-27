@@ -129,13 +129,12 @@ object GlideBuilder {
                     }
                 }
 
-                if (placeHolder != 0) {
-                    placeholder(placeHolder)
-                } else {
-                    blurHashFromUrl(url) { hash ->
-                        placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
-                    }
-                }
+                if (placeHolder != 0) placeholder(placeHolder)
+//                } else {
+//                    blurHashFromUrl(url) { hash ->
+//                        placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
+//                    }
+//                }
 
                 listener(glideListener(stateListener))
 
@@ -166,7 +165,7 @@ object GlideBuilder {
         return GlideApp.with(context)
                 .asBitmap()
                 .load(resource)
-                .centerCrop()
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
