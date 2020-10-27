@@ -196,8 +196,6 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
         startDate = Utils.getStartDate()
         endDate = Utils.getEndDate()
-        topAdsDashboardPresenter.saveDate(startDate!!, endDate!!)
-        topAdsDashboardPresenter.saveSelectionDatePicker()
         loadData()
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
@@ -563,11 +561,11 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         snackbarRetry?.showRetrySnackbar()
     }
 
-    fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         swipe_refresh_layout.isRefreshing = false
         snackbarRetry?.hideRetrySnackbar()
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment

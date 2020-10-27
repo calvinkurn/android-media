@@ -99,41 +99,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun showShopPageHeaderContent() {
-        hideLoaderLoading()
-        view.shop_page_header_content.show()
-    }
-
-    fun showShopPageHeaderContentError() {
-        hideLoaderLoading()
-        view.shop_page_header_content.invisible()
-    }
-
-    fun showShopPageHeaderContentLoading() {
-        showLoaderLoading()
-        view.shop_page_header_content.hide()
-    }
-
     fun setShopName(shopName: String) {
         val name = MethodChecker.fromHtml(shopName)
         val shopNameTv = view.shop_page_main_profile_name
         if (shopNameTv.text != name) {
             shopNameTv.text = name
         }
-    }
-
-    private fun showLoaderLoading(){
-        view.loader_profile_image.show()
-        view.first_rect_loader_view.show()
-        view.second_rect_loader_view.show()
-        view.third_rect_loader_view.show()
-    }
-
-    private fun hideLoaderLoading(){
-        view.loader_profile_image.hide()
-        view.first_rect_loader_view.hide()
-        view.second_rect_loader_view.hide()
-        view.third_rect_loader_view.hide()
     }
 
     private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {

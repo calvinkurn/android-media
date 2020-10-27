@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * Created by stevenfredian on 6/2/16.
@@ -127,7 +128,7 @@ public class LoginTextView extends LinearLayout {
 
     public void setText(String name) {
         TextView textView = findViewById(R.id.provider_name);
-        textView.setText(name);
+        TextAndContentDescriptionUtil.setTextAndContentDescription(textView, name, textView.getContext().getString(R.string.content_desc_provider_name));
     }
 
     public void setImage(String image) {
