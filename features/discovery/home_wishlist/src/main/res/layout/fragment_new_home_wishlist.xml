@@ -14,6 +14,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
+            style="@style/Toolbar.Wishlist"
             android:layout_marginTop="?attr/actionBarSize"
             android:background="@color/Unify_N0"
             app:layout_behavior="com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior"
