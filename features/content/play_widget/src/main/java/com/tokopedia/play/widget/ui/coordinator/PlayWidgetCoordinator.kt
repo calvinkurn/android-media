@@ -73,6 +73,7 @@ class PlayWidgetCoordinator(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
+        autoPlayCoordinator.onDestroy()
         scope.coroutineContext.cancelChildren()
     }
 
