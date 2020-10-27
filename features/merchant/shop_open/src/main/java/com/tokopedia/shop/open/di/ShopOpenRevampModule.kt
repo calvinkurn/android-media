@@ -55,14 +55,7 @@ class ShopOpenRevampModule {
     fun provideQueryCreateShop(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_create_shop)
     }
-
-    @ShopOpenRevampScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_SEND_SURVEY_DATA)
-    fun provideQuerySendSurvey(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.shop_open_revamp_send_survey_data)
-    }
-
+    
     @ShopOpenRevampScope
     @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_SAVE_SHIPMENT_LOCATION)

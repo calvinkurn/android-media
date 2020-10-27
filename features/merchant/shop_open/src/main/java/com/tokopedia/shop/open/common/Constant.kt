@@ -8,7 +8,6 @@ object PageNameConstant {
 
 object GQLQueryConstant {
     const val QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA = "shop_open_revamp_get_survey_data"
-    const val QUERY_SHOP_OPEN_REVAMP_SEND_SURVEY_DATA = "shop_open_revamp_send_survey_data"
     const val QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP = "shop_open_revamp_create_shop"
     const val QUERY_SHOP_OPEN_REVAMP_SAVE_SHIPMENT_LOCATION = "shop_open_revamp_saves_hipment_location"
 }
