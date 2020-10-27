@@ -129,6 +129,8 @@ object GlideBuilder {
                         blurHashFromUrl(url) { hash ->
                             placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
                         }
+                    } else {
+                        placeholder(R.drawable.ic_media_default_placeholder)
                     }
                 }
 
@@ -152,8 +154,8 @@ object GlideBuilder {
     private fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = 128,
-                height = 128,
+                width = 80,
+                height = 80,
                 useCache = true
         )
     }
