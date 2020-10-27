@@ -72,23 +72,8 @@ data class MultiTrendlineSummaryModel(
         @SerializedName("title")
         val title: String? = "",
         @Expose
-        @SerializedName("tooltip")
-        val tooltip: TooltipSummaryModel? = TooltipSummaryModel(),
-        @Expose
         @SerializedName("value")
         val value: String? = ""
-)
-
-data class TooltipSummaryModel(
-        @Expose
-        @SerializedName("description")
-        val description: String? = "",
-        @Expose
-        @SerializedName("show")
-        val show: Boolean? = false,
-        @Expose
-        @SerializedName("title")
-        val title: String? = ""
 )
 
 data class YAxisModel(
@@ -97,7 +82,7 @@ data class YAxisModel(
         val yLabel: String? = "",
         @Expose
         @SerializedName("YVal")
-        val yVal: Int? = 0
+        val yVal: Float? = 0f
 )
 
 data class LineModel(
@@ -118,5 +103,5 @@ data class CurrentPeriodeModel(
         val yLabel: String? = "",
         @Expose
         @SerializedName("YVal")
-        val yVal: Int? = 0
+        val yVal: Float? = 0f
 )

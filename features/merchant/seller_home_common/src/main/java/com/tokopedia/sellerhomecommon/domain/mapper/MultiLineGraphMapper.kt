@@ -12,8 +12,9 @@ import javax.inject.Inject
 
 class MultiLineGraphMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(items: List<MultiTrendlineWidgetDataModel>): List<MultiLineGraphDataUiModel> {
-        return items.filter { !it.dataKey.isNullOrBlank() }
+    fun mapRemoteModelToUiModel(items: List<MultiTrendlineWidgetDataModel>?): List<MultiLineGraphDataUiModel> {
+        return items.orEmpty()
+                .filter { !it.dataKey.isNullOrBlank() }
                 .map {
                     MultiLineGraphDataUiModel(
                             dataKey = it.dataKey.orEmpty(),
