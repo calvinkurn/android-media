@@ -9,16 +9,21 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.processor.beta.AddToCartBundler
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.core.analytics.container.GTMAnalytics
-import com.tokopedia.network.interceptor.akamai.map
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -29,7 +34,6 @@ import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.interfaces.ContextAnalytics
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +46,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -55,6 +61,7 @@ class TopChatRoomActivityTest {
 
     private lateinit var getChatUseCase: GetChatUseCaseStub
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
+    private lateinit var addToCartOccUseCase : AddToCartOccUseCase
 
     private lateinit var activity: TopChatRoomActivityStub
 
@@ -67,8 +74,30 @@ class TopChatRoomActivityTest {
             ChatAttachmentResponse::class.java
     )
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private val gtmLogDbSource = GtmLogDBSource(context)
+
     object Dummy {
         val exMessageId = "66961"
+    }
+
+    private fun setupGraphqlMockResponse() {
+        val mockModelConfig = createMockModelConfig()
+        mockModelConfig.createMockModel(context)
+
+        val testInterceptors = listOf(MockInterceptor(mockModelConfig))
+
+        GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, context)
+    }
+
+    private fun createMockModelConfig(): MockModelConfig {
+        return object : MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                addMockResponse("add_to_cart_occ", getJsonFromResource("occ/occ_success.json"), FIND_BY_CONTAINS)
+                return this
+            }
+        }
     }
 
     @ExperimentalCoroutinesApi
@@ -79,48 +108,49 @@ class TopChatRoomActivityTest {
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
 
+        gtmLogDbSource.deleteAll().subscribe()
+        setupGraphqlMockResponse()
+
         RemoteConfigInstance.getInstance().abTestPlatform.setString(TopchatProductAttachmentViewHolder.AB_TEST_KEY, TopchatProductAttachmentViewHolder.VARIANT_A)
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, TestAnalytic::class.java)
     }
 
-    class TestAnalytic(context: Context) : ContextAnalytics(context){
+    class TestAnalytic(context: Context) : GTMAnalytics(context){
         val map = mutableMapOf<String?, Bundle?>()
         val seen = mutableSetOf<String>()
 
         override fun sendGeneralEvent(value: MutableMap<String, Any>?) {
+            super.sendGeneralEvent(value)
             seen.add(value?.get("event")?.toString() ?:"")
         }
 
         override fun sendGeneralEvent(event: String?, category: String?, action: String?, label: String?) {
+            super.sendGeneralEvent(event, category, action, label)
             seen.add(event?:"")
         }
 
         override fun sendEvent(eventName: String?, eventValue: MutableMap<String, Any>?) {
+            super.sendEvent(eventName, eventValue)
             seen.add(eventName?:"")
         }
 
         override fun sendEnhanceEcommerceEvent(value: MutableMap<String, Any>?) {
+            super.sendEnhanceEcommerceEvent(value)
             seen.add(value?.get("event")?.toString() ?:"")
         }
 
         override fun sendScreenAuthenticated(screenName: String?) {
+            super.sendScreenAuthenticated(screenName)
             seen.add(screenName?:"")
         }
 
-        override fun sendScreenAuthenticated(screenName: String?, customDimension: MutableMap<String, String>?) {
-
-        }
-
-        override fun sendScreenAuthenticated(screenName: String?, shopID: String?, shopType: String?, pageType: String?, productId: String?) {
-
-        }
-
         override fun sendEnhanceEcommerceEvent(eventName: String?, value: Bundle?) {
+            super.sendEnhanceEcommerceEvent(eventName, value)
             map[eventName] = value
         }
 
-        fun isCalled(screenName: String?) = seen.contains(screenName)
+        fun isCalled(eventName: String?) = seen.contains(eventName) || map.containsKey(eventName)
     }
 
     @Test
@@ -140,14 +170,16 @@ class TopChatRoomActivityTest {
         var idToClick = R.id.tv_occ
         viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, MyViewAction.clickChildViewWithId(idToClick)))
 
-        Thread.sleep(5000)
+        Thread.sleep(3000)
 
         val testAnalytic  = TrackApp.getInstance().gtm as TestAnalytic
         assertEquals("this ${AddToCartBundler.KEY} should not be null",true, testAnalytic.map.containsKey(AddToCartBundler.KEY))
+        assertEquals("this ${AddToCartBundler.KEY} should not be null",true, testAnalytic.isCalled(AddToCartBundler.KEY))
 
 
-
-
+        Thread.sleep(3000)
+        val discomQuery = "tracker/user/topchat/topchat_room_occ_p0.json"
+        assertThat(getAnalyticsWithQuery(gtmLogDbSource, InstrumentationRegistry.getInstrumentation().targetContext, discomQuery), hasAllSuccess()) // use assertThat from Hamcrest is recommended
 
         // Then
         assertTrue(true)
