@@ -238,7 +238,8 @@ internal class ProductCardOptionsViewModel(
                             quantity = productCardOptionsModel.addToCartParams?.quantity ?: 0,
                             productName = productCardOptionsModel.productName,
                             category = productCardOptionsModel.categoryName,
-                            price = productCardOptionsModel.formattedPrice
+                            price = productCardOptionsModel.formattedPrice,
+                            userId = userSession.userId
                     )
             )
         }
