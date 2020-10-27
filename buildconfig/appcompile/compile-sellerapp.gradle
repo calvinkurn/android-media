@@ -149,6 +149,7 @@ include "features:user:profilecommon"
 include "features:user:liveness"
 include "features:user:loginfingerprint"
 include 'features:user:notif-troubleshooter'
+include "features:user:additional_check"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"
