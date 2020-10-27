@@ -83,8 +83,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private var userID: String = ""
-
-
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -301,18 +299,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (data.isEmpty()) {
             setEmptyView()
         } else {
-            val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
             data.forEach { result ->
                 if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
                     adapter.items.add(EditKeywordItemViewModel(result))
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)
                     originalKeyList.add(result.tag)
-                } else if (result.status != -1) {
-                    negKeyword.add(result)
                 }
             }
-            sharedViewModel.setNegKeywords(negKeyword)
             if (adapter.items.isEmpty()) {
                 setEmptyView()
             } else {

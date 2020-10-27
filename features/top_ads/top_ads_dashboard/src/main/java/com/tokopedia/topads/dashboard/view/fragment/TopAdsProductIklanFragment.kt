@@ -475,7 +475,10 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        totalPage = if (totalCount % response.meta.page.perPage == 0) {
+            totalCount / response.meta.page.perPage
+        } else
+            (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         recyclerviewScrollListener.updateStateAfterGetData()

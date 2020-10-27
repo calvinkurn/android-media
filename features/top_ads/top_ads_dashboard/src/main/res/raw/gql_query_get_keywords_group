@@ -2,7 +2,6 @@ query GetTopadsDashboardKeywords($queryInput :  GetTopadsDashboardKeywordsInputT
   GetTopadsDashboardKeywords(queryInput: $queryInput) {
         meta {
           page {
-            min
             per_page
             max
             current

@@ -39,9 +39,11 @@ import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
 import javax.inject.Inject
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
+
 class EditProductFragment : BaseDaggerFragment() {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditProductListAdapter
@@ -129,7 +131,10 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) {
         totalCount = total
-        totalPage = (totalCount / perPage) + 1
+        totalPage = if (totalCount % perPage == 0) {
+            totalCount / perPage
+        } else
+            (totalCount / perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         if (data.isEmpty()) {
             onEmptyAds()
