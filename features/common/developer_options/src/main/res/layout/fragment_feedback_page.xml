@@ -156,16 +156,20 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_pages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/page"
+                    app:typographyType="body_3"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_affected_page_wrapper"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@id/et_bug_wrapper"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:textColorHint="@color/transparent"
-                    android:hint="@string/page">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/page"
@@ -183,16 +187,20 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_journey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/bugs_detail"
+                    app:typographyType="body_3"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_str_wrapper"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@id/et_affected_page_wrapper"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:textColorHint="@color/transparent"
-                    android:hint="@string/bugs_detail">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/journey"
@@ -218,16 +226,20 @@
                     android:text="@string/tv_journey"
                     app:typographyType="body_3"/>
 
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_expected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/expected_behavior"
+                    app:typographyType="body_3"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_expected_result_wrapper"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/tv_journey_desc"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:textColorHint="@color/transparent"
-                    android:hint="@string/expected_result">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/expectedResult"
@@ -256,16 +268,20 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/feedback"
+                    app:typographyType="body_3"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/et_feedback_wrapper"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/tv_journey_desc"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:textColorHint="@color/transparent"
-                    android:hint="@string/feedback">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/feedback"
@@ -274,7 +290,7 @@
                         android:imeOptions="actionDone"
                         android:inputType="textMultiLine"
                         android:maxLines="10"
-                        android:hint="Tell us the what to improve"
+                        android:hint="Tell us what to improve"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
