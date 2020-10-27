@@ -318,12 +318,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.features.developerOptions)
-    } else {
-        implementation project(rootProject.ext.features.developerOptions)
-        implementation project(rootProject.ext.features.developerOptionsNoop)
-    }
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.qrscanner)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
