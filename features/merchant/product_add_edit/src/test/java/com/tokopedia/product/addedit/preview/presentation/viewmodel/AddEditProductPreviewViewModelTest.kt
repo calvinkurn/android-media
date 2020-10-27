@@ -28,7 +28,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         val productDraft = ProductDraft().apply {
             draftId = 1112
             productId = 220
-            completionPercent = 100
         }
 
         onSaveProductDraft_thenReturn(productDraft.draftId)

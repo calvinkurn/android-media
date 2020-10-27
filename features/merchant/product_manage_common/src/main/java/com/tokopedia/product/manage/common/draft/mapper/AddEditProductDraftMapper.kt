@@ -19,47 +19,49 @@ class AddEditProductDraftMapper {
         fun mapDraftToProductInput(draft: AddEditProductDraftEntity): ProductDraft {
             val productDraft: ProductDraft = CacheUtil.convertStringToModel(draft.data, ProductDraft::class.java)
             productDraft.draftId = draft.id
-            productDraft.completionPercent = getCompletionPercent(productDraft)
             return productDraft
         }
 
-        private fun getCompletionPercent(product: ProductDraft): Int {
-
-            val productName = product.detailInputModel.productName
-            val categoryId = product.detailInputModel.categoryId
-            val price = product.detailInputModel.price
-            val stock = product.detailInputModel.stock
-            val minOrder = product.detailInputModel.minOrder
-            val condition = product.detailInputModel.condition
-            val weight = product.shipmentInputModel.weight
-
+        fun getCompletionPercent(product: ProductDraft): Int {
             var completionCount = 0
             var completionPercent: Int
 
-            if (productName.isNotEmpty()) {
+            val productPicture = product.detailInputModel.imageUrlOrPathList
+            if (!productPicture.isNullOrEmpty()) {
                 completionCount++
             }
-            if (categoryId.isNotEmpty()) {
+
+            val productName = product.detailInputModel.productName
+            if (productName.isNotBlank()) {
                 completionCount++
             }
+
+            val categoryId = product.detailInputModel.categoryId
+            if (categoryId.isNotBlank()) {
+                completionCount++
+            }
+
+            val price = product.detailInputModel.price
             if (price > 0.toBigInteger()) {
                 completionCount++
             }
+
+            val stock = product.detailInputModel.stock
             if (stock > 0) {
                 completionCount++
             }
-            if (minOrder > 0) {
-                completionCount++
-            }
+
+            val condition = product.detailInputModel.condition
             if (condition.isNotEmpty()) {
                 completionCount++
             }
+
+            val weight = product.shipmentInputModel.weight
             if (weight > 0) {
                 completionCount++
             }
 
             completionPercent = (100 / 7) * completionCount
-
             if (completionPercent == 0) {
                 completionPercent = MIN_COMPLETION_PERCENT
             } else if(completionPercent > MAX_COMPLETION_PERCENT)
