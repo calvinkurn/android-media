@@ -25,6 +25,8 @@ class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<
         }
     }
 
+    override fun getLayoutRes(): Int = R.layout.recommendation_activity
+
     override fun getNewFragment(): Fragment? {
         return when {
             intent.hasExtra(EXTRA_REF) -> SimilarProductRecommendationFragment.newInstance(

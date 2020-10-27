@@ -31,16 +31,17 @@ import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.util.showToastError
+import com.tokopedia.home_recom.util.showToastSuccess
+import com.tokopedia.home_recom.util.showToastSuccessWithAction
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.adapter.SimilarRecommendationFilterAdapter
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
@@ -203,17 +204,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessAddWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_add_wishlist)
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.home_recom_go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
+            View.OnClickListener { goToWishlist() }
         }
     }
 
@@ -223,16 +215,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessRemoveWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
     }
 
     private fun showMessageFailedWishlistAction() {
-        if (activity == null) return
-        val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
+        showToastError()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

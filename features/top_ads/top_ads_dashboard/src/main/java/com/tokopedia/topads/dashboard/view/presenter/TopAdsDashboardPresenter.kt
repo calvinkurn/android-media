@@ -37,7 +37,6 @@ import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
@@ -53,8 +52,6 @@ class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
-            private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
-            private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
             private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
             private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
@@ -452,7 +449,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetStatisticsUseCase.cancelJobs()
-        deleteTopAdsStatisticsUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.cancelJobs()
         topAdsGetGroupProductDataUseCase.cancelJobs()
         topAdsGetGroupStatisticsUseCase.cancelJobs()

@@ -153,9 +153,9 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         this.PRODUCT_ID = product_id
         this.PRODUCT_PRICE = getTotalPrice(hashItemMap).toString()
 
-        if (getTotalPrice(hashItemMap) != EMPTY_QTY) {
+        if (getTotalQuantity(hashItemMap) > EMPTY_QTY) {
             setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
-            showViewBottom(!isError)
+            showViewBottom(AMOUNT_TICKET > EMPTY_QTY)
         } else {
             showViewBottom(false)
         }

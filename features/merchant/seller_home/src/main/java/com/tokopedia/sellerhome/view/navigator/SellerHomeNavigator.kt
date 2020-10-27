@@ -14,11 +14,13 @@ import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.user.session.UserSessionInterface
 
 class SellerHomeNavigator(
     private val context: Context,
     private val fm: FragmentManager,
-    private val sellerHomeRouter: SellerHomeRouter?
+    private val sellerHomeRouter: SellerHomeRouter?,
+    private val userSession: UserSessionInterface
 ) {
 
     private var homeFragment: Fragment? = null
@@ -99,7 +101,7 @@ class SellerHomeNavigator(
 
     fun getPageTitle(@FragmentType pageType: Int): String? {
         return when(pageType) {
-            FragmentType.HOME -> pages[homeFragment]
+            FragmentType.HOME -> getHomeTitle()
             FragmentType.PRODUCT -> pages[productManageFragment]
             FragmentType.CHAT -> pages[chatFragment]
             FragmentType.ORDER -> pages[somListFragment]
@@ -265,5 +267,14 @@ class SellerHomeNavigator(
     private fun isActivityResumed(): Boolean {
         val state = (context as? AppCompatActivity)?.lifecycle?.currentState
         return state == Lifecycle.State.RESUMED || state == Lifecycle.State.STARTED
+    }
+
+    private fun getHomeTitle(): String? {
+        val shopName = userSession.shopName
+        return if(shopName.isNullOrEmpty()) {
+            pages[homeFragment]
+        } else {
+            shopName
+        }
     }
 }

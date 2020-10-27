@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationDataViewModel;
 
@@ -17,10 +16,6 @@ public interface InboxReputation {
         void onErrorGetFirstTimeInboxReputation(Throwable throwable);
 
         void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel);
-
-        void onErrorGetProductRevIncentiveOvo(Throwable throwable);
-
-        void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
 
         void finishLoadingFull();
 
@@ -52,10 +47,6 @@ public interface InboxReputation {
         void onShowEmpty();
 
         void onShowEmptyFilteredInboxReputation();
-
-        void onClickOvoIncentiveTickerDescription(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
-
-        void onDismissOvoIncentiveTicker(String title);
 
     }
 
