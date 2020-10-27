@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -33,6 +34,21 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
             it.printStackTrace()
             mutableOrderDetailData.postValue(Fail(it))
         }
+    }
+
+    fun getAirlineLogo(journey: OrderDetailJourneyModel): String? {
+        var logoUrl: String = ""
+        var isMultiAirline: Boolean = false
+
+        for (item in journey.routes) {
+            if (logoUrl.isEmpty() || item.airlineLogo == logoUrl) {
+                logoUrl = item.airlineLogo
+            } else {
+                isMultiAirline = true
+            }
+        }
+
+        return if (!isMultiAirline && logoUrl.isNotEmpty()) logoUrl else null
     }
 
 }

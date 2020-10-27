@@ -3,6 +3,8 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA
+import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE
+import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.network.exception.MessageErrorException
@@ -281,5 +283,27 @@ class FlightOrderDetailViewModelTest {
                 note shouldBe DUMMY_ORDER_DETAIL_DATA.cancellations[cancelIndex].refundDetail.notes[noteIndex]
             }
         }
+    }
+
+    @Test
+    fun getAirlineLogo_multiAirline_shouldReturnNull() {
+        // given
+
+        // when
+        val airlineLogo = viewModel.getAirlineLogo(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
+
+        // then
+        airlineLogo shouldBe null
+    }
+
+    @Test
+    fun getAirlineLogo_oneAirline_shouldReturnLogoUrl() {
+        // given
+
+        // when
+        val airlineLogo = viewModel.getAirlineLogo(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
+
+        // then
+        airlineLogo shouldBe "logo seulawah air"
     }
 }

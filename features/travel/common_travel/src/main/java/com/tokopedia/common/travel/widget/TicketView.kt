@@ -100,10 +100,20 @@ class TicketView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             val anchorView2 = if (anchorViewId2 != NO_VALUE) findViewById<View>(anchorViewId2) else null
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
                     setAnchor(anchorView1, anchorView2)
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
+        }
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+
+        if (anchorViewId1 != NO_VALUE) {
+            val anchorView1 = findViewById<View>(anchorViewId1)
+            val anchorView2 = if (anchorViewId2 != NO_VALUE) findViewById<View>(anchorViewId2) else null
+            setAnchor(anchorView1, anchorView2)
         }
     }
 

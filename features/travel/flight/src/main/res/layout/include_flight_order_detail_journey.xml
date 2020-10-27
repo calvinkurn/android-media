@@ -33,13 +33,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@android:color/transparent"
         android:elevation="@dimen/spacing_lvl2"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardUseCompatPadding="true"
         app:layout_constraintTop_toBottomOf="@id/tickerFlightOrderJourneyETicket">
 
         <com.tokopedia.common.travel.widget.TicketView
+            android:id="@+id/ticketViewOrderDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/spacing_lvl2"
@@ -51,6 +51,7 @@
                 android:id="@+id/ticketTopView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/Unify_N50"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -77,6 +78,7 @@
                     android:id="@+id/containerFlightOrderDepartureTicket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
                     android:padding="@dimen/spacing_lvl4">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -89,6 +91,7 @@
                         tools:src="@drawable/ic_flight_multi_airlines" />
 
                     <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureAirlineName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -202,11 +205,11 @@
 
                 </LinearLayout>
 
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/containerFlightOrderReturnTicket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
                     android:padding="@dimen/spacing_lvl4">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -219,6 +222,7 @@
                         tools:src="@drawable/ic_flight_multi_airlines" />
 
                     <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnAirlineName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -319,6 +323,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ticketTopView"
+                android:background="@color/Unify_N0"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_lvl4">
 

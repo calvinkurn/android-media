@@ -355,6 +355,7 @@ di tempatmu.</string>
     <string name="flight_order_detail_status_label">Status</string>
     <string name="flight_order_detail_invoice_label">Invoice</string>
     <string name="flight_order_detail_category_label">Kategori</string>
+    <string name="flight_order_detail_category_value">Pesawat</string>
     <string name="flight_order_detail_create_time_label">Tanggal Transaksi</string>
     <string name="flight_order_detail_payment_method_label">Metode Pembayaran</string>
     <string name="flight_order_detail_total_payment_label">Total Pembayaran</string>

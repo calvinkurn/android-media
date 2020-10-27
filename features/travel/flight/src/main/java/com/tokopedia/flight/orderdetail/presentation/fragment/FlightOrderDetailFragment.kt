@@ -7,21 +7,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.OrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
 import kotlinx.android.synthetic.main.include_flight_order_detail_header.*
+import kotlinx.android.synthetic.main.include_flight_order_detail_journey.*
 import javax.inject.Inject
 
 /**
@@ -87,6 +92,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         hideLoading()
         renderOrderStatus(data.status, data.statusString)
         renderInvoiceId(flightOrderDetailViewModel.invoiceId)
+        renderTransactionDate(data.createTime)
+        renderPaymentView(data.payment.gatewayName, data.payment.totalAmountStr)
+        renderTicketView(data.journeys)
     }
 
     private fun renderOrderStatus(statusInt: Int, statusString: String) {
@@ -116,12 +124,62 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun renderTransactionDate(transactionDate: String) {
+        tgFlightOrderCreateTime.text = TravelDateUtil.formatDate(
+                TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                TravelDateUtil.DEFAULT_VIEW_TIME_FORMAT,
+                transactionDate)
+    }
+
+    private fun renderPaymentView(paymentMethod: String, totalPayment: String) {
+        tgFlightOrderPaymentMethod.text = paymentMethod
+        tgFlightOrderTotalPayment.text = totalPayment
+
+        tgFlightOrderLabelDetailPayment.setOnClickListener {
+            openDetailPaymentBottomSheet()
+        }
+        ivFlightOrderLabelDetailPayment.setOnClickListener {
+            openDetailPaymentBottomSheet()
+        }
+    }
+
+    private fun renderTicketView(journeys: List<OrderDetailJourneyModel>) {
+        if (journeys.size > 1) {
+            renderReturnTicketView(journeys[1])
+        } else {
+            hideReturnTicketView()
+        }
+    }
+
+    private fun renderReturnTicketView(returnJourney: OrderDetailJourneyModel) {
+        titleFlightOrderReturnTicket.visibility = View.GONE
+        containerFlightOrderReturnTicket.visibility = View.GONE
+
+        val airlineLogo = flightOrderDetailViewModel.getAirlineLogo(returnJourney)
+        if (airlineLogo != null) {
+            ivFlightOrderReturnAirlineLogo.loadImage(airlineLogo)
+        } else {
+            ivFlightOrderReturnAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
+        }
+
+
+    }
+
+    private fun hideReturnTicketView() {
+        titleFlightOrderReturnTicket.visibility = View.GONE
+        containerFlightOrderReturnTicket.visibility = View.GONE
+    }
+
     private fun copyToClipboard(label: String, textToCopy: String) {
         context?.let {
             val clipboardManager: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(label, textToCopy)
             clipboardManager.setPrimaryClip(clipData)
         }
+    }
+
+    private fun openDetailPaymentBottomSheet() {
+
     }
 
     companion object {
