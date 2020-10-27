@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.data.source.cloud
 
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.dashboard.data.model.CreditResponse
 import com.tokopedia.topads.dashboard.data.model.DataCredit
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
@@ -17,13 +16,6 @@ import rx.functions.Func1
  */
 
 class TopAdsDashboardDataSourceCloud(private val topAdsDashboardApi: TopAdsDashboardApi) {
-
-
-    fun getStatistics(requestParams: RequestParams): Observable<DataStatistic> {
-        return topAdsDashboardApi.getStatistics(requestParams.paramsAllValueInString)
-                .map(TopAdsResponseMapper())
-    }
-
 
     internal inner class TopAdsResponseMapper<E> : Func1<Response<DataResponse<E>>, E> {
 

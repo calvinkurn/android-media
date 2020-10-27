@@ -29,6 +29,10 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_ETA
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_BOTTOMSHEET_DISMISS_BUTTON;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CHAT_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
@@ -797,6 +801,46 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 CLICK_SHOP_PAGE,
                 getShopPageCategory(isMyShop),
                 CLICK_PRODUCT_LIST_TOGGLE,
+                productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickFilterChips(String productListName, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_CHIP,
+                productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickFilterSortBy(String productListName, String sortBy, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_SHORT_BY + sortBy,
+                productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickFilterPrice(String productListName, String min, String max, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                String.format(CLICK_FILTER_PRICE,min, max),
+                productListName,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickFilterRating(String productListName, String rating, CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_RATING + rating,
                 productListName,
                 customDimensionShopPage
         );

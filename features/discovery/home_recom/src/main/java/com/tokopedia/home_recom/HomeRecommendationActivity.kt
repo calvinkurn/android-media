@@ -1,9 +1,11 @@
 package com.tokopedia.home_recom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -22,9 +24,10 @@ import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragme
  *
  * A activity class for default activity when opening recommendation page from deeplink
  */
+@SuppressLint("GoogleAppIndexingApiWarning")
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
-        const val PRODUCT_ID = "PRODUCT_ID"
+        private const val PRODUCT_ID = "PRODUCT_ID"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -39,6 +42,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             putExtra(PRODUCT_ID, productId)
         }
     }
+
+    override fun getLayoutRes(): Int = R.layout.recommendation_activity
 
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
@@ -130,7 +135,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
-            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber( intent.data?.pathSegments?.get(0) ?: "")){
+            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber(intent.data?.pathSegments?.get(0)
+                            ?: "")){
                 RecommendationPageTracking.eventUserClickBackWithProductId()
             }else{
                 RecommendationPageTracking.eventUserClickBack()

@@ -56,7 +56,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
-            app:srcCompat="@drawable/ic_kebab"
+            app:srcCompat="@drawable/ic_kebab_buyer"
             android:contentDescription="@string/icon_placeholder"
             android:paddingStart="@dimen/dp_4"/>
 

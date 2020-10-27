@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
 
 import java.util.ArrayList;
@@ -59,33 +58,20 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         return list.size();
     }
 
-    public void setList(List<InboxReputationItemViewModel> list, InboxReputationOvoIncentiveViewModel ovoIncentiveViewModel) {
+    public void setList(List<InboxReputationItemViewModel> list) {
         this.list.clear();
-        if(ovoIncentiveViewModel != null) {
-            this.list.add(ovoIncentiveViewModel);
-        }
         this.list.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void setList(List<InboxReputationItemViewModel> list, InboxReputationOvoIncentiveViewModel ovoIncentiveViewModel,
+    public void setList(List<InboxReputationItemViewModel> list,
                         SellerMigrationReviewModel sellerMigrationReviewModel) {
         this.list.clear();
         if (sellerMigrationReviewModel != null) {
             this.list.add(sellerMigrationReviewModel);
         }
-        if (ovoIncentiveViewModel != null) {
-            this.list.add(ovoIncentiveViewModel);
-        }
         this.list.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void insertOvoIncentiveDataModel(InboxReputationOvoIncentiveViewModel ovoIncentiveViewModel) {
-        Visitable first = this.list.get(0);
-        if(!(first instanceof LoadingModel || first instanceof InboxReputationOvoIncentiveViewModel)) {
-            this.list.add(0, ovoIncentiveViewModel);
-        }
     }
 
     public void addList(List<InboxReputationItemViewModel> list) {

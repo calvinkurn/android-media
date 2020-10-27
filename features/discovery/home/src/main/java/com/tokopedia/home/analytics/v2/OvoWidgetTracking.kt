@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -18,9 +17,9 @@ object OvoWidgetTracking: BaseTracking() {
     private const val CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget"
 
     private const val ACTION_CLICK_TOKO_POINTS = "click tokopoints"
-    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = Action.CLICK_ON + "tokopoints new coupon"
-    private const val ACTION_CLICK_ON_OVO = Action.CLICK_ON + "ovo"
-    private const val ACTION_CLICK_ON_TOPUP_OVO = Action.CLICK_ON + "top up ovo"
+    private const val EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon"
+    private const val ACTION_CLICK_ON_OVO = "click on ovo"
+    private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val ACTION_CLICK_ACTIVATE = "click activate"
     private const val ACTION_CLICK_POINT = "click point & tier status"
     private const val ACTION_CLICK_SALDO = "click saldo"
@@ -29,7 +28,7 @@ object OvoWidgetTracking: BaseTracking() {
 
     private const val BEBAS_ONGKIR_KUOTA = "bebas ongkir kuota"
     private const val NON_LOGIN = "non login"
-    private const val QR_CODE = "qr code"
+    private const val CLICK_ON_QR_CODE = "click on qr code"
 
     fun eventTopUpOvo(userId: String?) {
         getTracker().sendGeneralEvent( DataLayer.mapOf(
@@ -63,8 +62,8 @@ object OvoWidgetTracking: BaseTracking() {
     }
 
     fun eventTokopointNonLogin() {
-        val tracker = HomePageTracking.getTracker()
-        tracker?.sendGeneralEvent(
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.HOMEPAGE,
                 String.format(Action.CLICK_ON + " - %s", LABEL_TOKOPOINTS, NON_LOGIN),
@@ -73,18 +72,18 @@ object OvoWidgetTracking: BaseTracking() {
     }
 
     fun eventQrCode() {
-        val tracker = HomePageTracking.getTracker()
-        tracker?.sendGeneralEvent(
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
                 Category.HOMEPAGE,
-                String.format(Action.CLICK_ON + " %s", QR_CODE),
+                CLICK_ON_QR_CODE,
                 Label.NONE
         )
     }
 
     fun eventTokoCashActivateClick() {
-        val tracker = HomePageTracking.getTracker()
-        tracker?.sendGeneralEvent(TrackAppUtils.gtmData(
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_USER_INTERACTION_HOMEPAGE,
                 CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                 ACTION_CLICK_ACTIVATE,
@@ -93,8 +92,8 @@ object OvoWidgetTracking: BaseTracking() {
     }
 
     fun eventTokoCashCheckSaldoClick() {
-        val tracker = HomePageTracking.getTracker()
-        tracker?.sendGeneralEvent(TrackAppUtils.gtmData(
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_USER_INTERACTION_HOMEPAGE,
                 CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                 ACTION_CLICK_SALDO,
@@ -118,8 +117,8 @@ object OvoWidgetTracking: BaseTracking() {
     }
 
     fun eventUserProfileTokopoints() {
-        val tracker = HomePageTracking.getTracker()
-        tracker?.sendGeneralEvent(TrackAppUtils.gtmData(
+        val tracker = TrackApp.getInstance().gtm
+        tracker.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_TOKO_POINT,
                 CATEGORY_TOKOPOINTS_USER_PAGE,
                 ACTION_CLICK_TOKO_POINTS,
@@ -128,7 +127,7 @@ object OvoWidgetTracking: BaseTracking() {
     }
 
     fun sendClickOnTokopointsNewCouponTracker() {
-        HomePageTracking.getTracker().sendGeneralEvent(DataLayer.mapOf(
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, EVENT_TOKO_POINT,
                 Category.KEY, CATEGORY_HOMEPAGE_TOKOPOINTS,
                 Action.KEY, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,

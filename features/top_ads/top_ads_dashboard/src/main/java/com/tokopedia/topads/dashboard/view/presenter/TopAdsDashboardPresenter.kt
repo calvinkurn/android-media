@@ -38,7 +38,6 @@ import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
@@ -55,8 +54,6 @@ class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
-            private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
-            private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
             private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
             private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
@@ -350,22 +347,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         })
     }
 
-//    @GqlQuery("StatsList", STATS_URL)
-//    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
-//        val params = mapOf(SHOP_ID to userSession.shopId.toIntOrZero(), START_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate), END_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate), TYPE to selectedStatisticType, GROUP to adType)
-//        topAdsGetStatisticsUseCase.setTypeClass(StatsData::class.java)
-//        topAdsGetStatisticsUseCase.setRequestParams(params)
-//        topAdsGetStatisticsUseCase.setGraphqlQuery(StatsList.GQL_QUERY)
-//        topAdsGetStatisticsUseCase.execute({
-//            onSuccesGetStatisticsInfo(it.topadsDashboardStatistics.data)
-//
-//        }, {
-//            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
-//            view?.onErrorGetStatisticsInfo(it)
-//        }
-//        )
-//    }
-
 
     fun getAutoAdsStatus(resources: Resources) {
         val graphqlUseCase = GraphqlUseCase()
@@ -509,7 +490,8 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetStatisticsUseCase.cancelJobs()
-        deleteTopAdsStatisticsUseCase.unsubscribe()
+        topAdsGetGroupDataUseCase.unsubscribe()
+        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.unsubscribe()
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupStatisticsUseCase.cancelJobs()

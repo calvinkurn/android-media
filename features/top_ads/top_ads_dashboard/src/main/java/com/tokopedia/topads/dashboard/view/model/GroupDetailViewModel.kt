@@ -10,6 +10,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -19,17 +24,17 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
-import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
+import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.topads.dashboard.view.presenter.StatsList
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,7 +52,7 @@ class GroupDetailViewModel @Inject constructor(
         private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,
         private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
         private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
-        private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
+        private val topAdsGetStatisticsUseCase: GraphqlUseCase<StatsData>,
         private val topAdsKeywordsActionUseCase: TopAdsKeywordsActionUseCase,
         private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
         private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
@@ -137,19 +142,20 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
+    @GqlQuery("StatsList", TopAdsDashboardPresenter.STATS_URL)
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String) {
-        topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, groupId), object : Subscriber<DataStatistic>() {
-            override fun onCompleted() {}
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero(),
+                TopAdsDashboardPresenter.START_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate), TopAdsDashboardPresenter.END_DATE to SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate), ParamObject.TYPE to selectedStatisticType, ParamObject.GROUP to groupId)
+        topAdsGetStatisticsUseCase.setTypeClass(StatsData::class.java)
+        topAdsGetStatisticsUseCase.setRequestParams(params)
+        topAdsGetStatisticsUseCase.setGraphqlQuery(StatsList.GQL_QUERY)
+        topAdsGetStatisticsUseCase.execute({
+            onSuccesGetStatisticsInfo(it.topadsDashboardStatistics.data)
 
-            override fun onError(e: Throwable) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e.localizedMessage)
-            }
-
-            override fun onNext(dataStatistic: DataStatistic) {
-                onSuccesGetStatisticsInfo(dataStatistic)
-            }
-        })
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
+        }
+        )
     }
 
 

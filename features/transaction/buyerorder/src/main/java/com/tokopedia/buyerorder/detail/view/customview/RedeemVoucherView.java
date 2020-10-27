@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.HexValidator;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Body;
@@ -108,12 +109,12 @@ public class RedeemVoucherView extends LinearLayout {
         if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
             shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
         } else {
-            shape.setColor(context.getResources().getColor(R.color.green_nob));
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
         }
         if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
             shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
         } else {
-            shape.setStroke(0, context.getResources().getColor(R.color.green_nob));
+            shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
         }
         if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
             redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
@@ -121,7 +122,7 @@ public class RedeemVoucherView extends LinearLayout {
             redeemVoucher.setTextColor(Color.WHITE);
         }
 
-        shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+        shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
     }
 
     private void renderRetryButton(ActionButton actionButton) {
@@ -137,25 +138,25 @@ public class RedeemVoucherView extends LinearLayout {
             if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
             } else {
-                shape.setStroke(0, context.getResources().getColor(R.color.green_nob));
+                shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
             if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
                 redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                redeemVoucher.setTextColor(context.getResources().getColor(R.color.green_nob));
+                redeemVoucher.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.green_nob));
             }
-            shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
             redeemVoucher.setBackground(shape);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
                 voucherNumber.setText(context.getResources().getString(R.string.tkpdtransaction_oms_retry_text));
-                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label));
-                redeemVoucher.setTextColor(context.getResources().getColor(R.color.tkpd_transaction_retry_failed_button));
+                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label_buyer));
+                redeemVoucher.setTextColor(MethodChecker.getColor(context, R.color.tkpd_transaction_retry_failed_button));
                 redeemVoucher.setEnabled(false);
                 redeemVoucher.postDelayed(new Runnable() {
                     @Override
