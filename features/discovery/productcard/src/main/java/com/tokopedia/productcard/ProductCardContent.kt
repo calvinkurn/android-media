@@ -62,7 +62,7 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
-        it.text = productCardModel.discountPercentage
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
@@ -82,7 +82,7 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.text = priceToRender
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
     }
 }
 
