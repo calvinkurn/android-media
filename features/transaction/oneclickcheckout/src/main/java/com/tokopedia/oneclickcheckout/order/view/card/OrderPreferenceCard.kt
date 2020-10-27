@@ -326,9 +326,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
                     tvPaymentOvoErrorAction?.setOnClickListener {
                         if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                            listener.onOvoTopUpClicked()
+                            listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl)
                         } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                            listener.onOvoActivateClicked()
+                            listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
                         }
                     }
                     tvPaymentOvoErrorAction?.visible()
@@ -551,8 +551,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
-        fun onOvoActivateClicked()
+        fun onOvoActivateClicked(callbackUrl: String)
 
-        fun onOvoTopUpClicked()
+        fun onOvoTopUpClicked(callbackUrl: String)
     }
 }

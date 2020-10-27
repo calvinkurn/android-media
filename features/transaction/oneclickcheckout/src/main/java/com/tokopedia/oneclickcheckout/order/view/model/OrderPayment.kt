@@ -93,7 +93,8 @@ data class OrderPaymentInstallmentTerm(
 
 data class OrderPaymentOvoAdditionalData(
         val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
-        val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData()
+        val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val callbackUrl: String = ""
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
@@ -110,10 +111,11 @@ data class OrderPaymentOvoErrorData(
         val isBlockingError: Boolean = false,
         val message: String = "",
         val buttonTitle: String = "",
-        val type: Int = 0
+        val type: Int = 0,
+        val callbackUrl: String = ""
 ) {
     companion object {
-        val TYPE_ACTIVATION = 1
-        val TYPE_TOP_UP = 2
+        const val TYPE_ACTIVATION = 1
+        const val TYPE_TOP_UP = 2
     }
 }

@@ -4,9 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl9"
+        android:layout_marginTop="@dimen/layout_lvl9"
+        android:layout_marginBottom="@dimen/layout_lvl9" />
+
     <com.tokopedia.webview.TkpdWebView
         android:id="@+id/web_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="WebViewLayout" />
 

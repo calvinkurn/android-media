@@ -180,10 +180,10 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapOrderPayment(data: GetOccCartData): OrderPayment {
         val payment = data.profileResponse.payment
-        return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
-                payment.minimumAmount, payment.maximumAmount, payment.fee, 0,
+        return OrderPayment(payment.enable != 0, false, "OVOCASH", payment.gatewayName,
+                payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData))
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -226,15 +226,16 @@ class GetOccCartMapper @Inject constructor() {
         return installmentTerms
     }
 
-    private fun mapPaymentOvoData(ovoAdditionalData: OvoAdditionalData): OrderPaymentOvoAdditionalData {
+    private fun mapPaymentOvoData(ovoAdditionalData: OvoAdditionalData, data: GetOccCartData): OrderPaymentOvoAdditionalData {
         return OrderPaymentOvoAdditionalData(
                 activation = mapPaymentOvoActionData(ovoAdditionalData.ovoActivationData),
-                topUp = mapPaymentOvoActionData(ovoAdditionalData.ovoTopUpData)
+                topUp = mapPaymentOvoActionData(ovoAdditionalData.ovoTopUpData),
+                callbackUrl = data.paymentAdditionalData.callbackUrl
         )
     }
 
     private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
-        return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker)
+        return OrderPaymentOvoActionData(true, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker)
     }
 
     private fun mapAddress(address: Address): OrderProfileAddress {

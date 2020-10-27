@@ -776,11 +776,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun onOvoActivateClicked() {
-            OvoActivationWebViewBottomSheet().show(this@OrderSummaryPageFragment, userSession.get())
+        override fun onOvoActivateClicked(callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                override fun onActivationResult(isSuccess: Boolean) {
+                    view?.let {
+                        if (isSuccess) {
+                            Toaster.build(it, "Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.", actionText = "Oke").show()
+                        } else {
+                            Toaster.build(it, "Yaah, aktivasi OVO gagal. Coba lagi dalam beberapa saat.", type = Toaster.TYPE_ERROR, actionText = "Oke").show()
+                        }
+                    }
+                    refresh()
+                }
+            }).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
-        override fun onOvoTopUpClicked() {
+        override fun onOvoTopUpClicked(callbackUrl: String) {
 
         }
     }
