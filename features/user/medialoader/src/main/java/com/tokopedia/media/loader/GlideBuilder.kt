@@ -105,6 +105,7 @@ object GlideBuilder {
                     else -> {}
                 }
 
+                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
@@ -121,22 +122,15 @@ object GlideBuilder {
                     transform(MultiTransformation(localTransform))
                 }
 
-                if (thumbnailUrl.isNotEmpty()) {
-                    thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+                if (placeHolder != 0) {
+                    placeholder(placeHolder)
                 } else {
                     if (!isCircular) {
                         blurHashFromUrl(url) { hash ->
-                            thumbnail(thumbnailLoader(imageView.context, blurring(imageView, hash)))
+                            placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
                         }
                     }
                 }
-
-                if (placeHolder != 0) placeholder(placeHolder)
-//                } else {
-//                    blurHashFromUrl(url) { hash ->
-//                        placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
-//                    }
-//                }
 
                 listener(glideListener(stateListener))
 
@@ -158,8 +152,9 @@ object GlideBuilder {
     private fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = 512,
-                height = 512
+                width = 128,
+                height = 128,
+                useCache = true
         )
     }
 
