@@ -30,9 +30,9 @@
                 android:layout_gravity="bottom|right"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:backgroundTint="@color/Green_G300"
+                android:backgroundTint="@color/Green_G500"
                 app:srcCompat="@drawable/ic_umrah_message"
-                app:backgroundTint="@color/Green_G300"
+                app:backgroundTint="@color/Green_G500"
                 app:fabCustomSize="@dimen/spacing_lvl8"
                 android:clickable="true"
                 />
