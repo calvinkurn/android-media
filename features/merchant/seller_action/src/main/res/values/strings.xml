@@ -5,13 +5,16 @@
     <string name="seller_action_loading_title">Tunggu sebentar, ya…</string>
     <string name="seller_action_not_login_title">Kamu belum login, nih</string>
     <string name="seller_action_error_title">Oops, data kamu nggak ketemu</string>
-    <string name="seller_action_error_desc">Pastikan internet di tempatmu lancar atau coba kembali lagi nanti, ya.</string>
+    <string name="seller_action_error_desc_short">Cek internet atau coba kembali lagi, ya.</string>
 
     //Order Slice
     <string name="seller_action_order_empty_title">Belum ada pesanan, nih</string>
     <string name="seller_action_order_empty_desc">Tetap semangat, rejeki nggak akan pergi asal kamu pantang menyerah.</string>
+    <string name="seller_action_order_empty_desc_short">Tetap semangat, ya.</string>
     <string name="seller_action_order_not_login_desc">Login terlebih dulu untuk lihat pesanan kamu.</string>
+    <string name="seller_action_order_not_login_desc_short">Login dulu untuk lihat pesananmu.</string>
     <string name="seller_action_order_loading_desc">Nggak pakai lama, Toped sedang mencari pesanan kamu.</string>
+    <string name="seller_action_order_loading_desc_short">Toped sedang mencari pesananmu.</string>
     <string name="seller_action_order_success_title_today">Pesanan hari ini</string>
     <string name="seller_action_order_success_title_specific_date">Pesanan %s</string>
     <string name="seller_action_order_success_item_multiple_title">%s +%1d Produk</string>

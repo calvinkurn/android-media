@@ -3,13 +3,12 @@ package com.tokopedia.seller.action.order.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.action.order.domain.model.Order
-import com.tokopedia.seller.action.order.domain.model.SellerActionOrder
 import com.tokopedia.seller.action.order.domain.param.SellerActionOrderListParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: GraphqlRepository)
@@ -55,16 +54,18 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
     }
 
     override suspend fun executeOnBackground(): List<Order> {
-        val request = GraphqlRequest(QUERY, SellerActionOrder::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request), cacheStrategy)
-
-        val errors = response.getError(SellerActionOrder::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
-            return data.orderList.orders
-        } else {
-            throw MessageErrorException(errors.joinToString { it.message })
-        }
+        delay(1500)
+        throw MessageErrorException("aw")
+//        val request = GraphqlRequest(QUERY, SellerActionOrder::class.java, params.parameters)
+//        val response = gqlRepository.getReseponse(listOf(request), cacheStrategy)
+//
+//        val errors = response.getError(SellerActionOrder::class.java)
+//        if (errors.isNullOrEmpty()) {
+//            val data = response.getData<SellerActionOrder>(SellerActionOrder::class.java)
+//            return data.orderList.orders
+//        } else {
+//            throw MessageErrorException(errors.joinToString { it.message })
+//        }
     }
 
 }

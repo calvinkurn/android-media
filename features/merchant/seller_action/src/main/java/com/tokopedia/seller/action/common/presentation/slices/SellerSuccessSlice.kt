@@ -15,7 +15,8 @@ import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
 
 abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: List<T>,
                                                          context: Context,
-                                                         sliceUri: Uri): SellerSlice(context, sliceUri) {
+                                                         sliceUri: Uri,
+                                                         private val titleText: String? = null): SellerSlice(context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     abstract fun getSuccessSlice(): Slice
@@ -33,12 +34,12 @@ abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: L
     private fun getEmptySuccessSlice(): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
-                title = ""
+                title = titleText.orEmpty()
             }
             row {
                 setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_empty), ListBuilder.LARGE_IMAGE)
                 title = context.getString(R.string.seller_action_order_empty_title)
-                subtitle = context.getString(R.string.seller_action_order_empty_desc)
+                subtitle = context.getString(R.string.seller_action_order_empty_desc_short)
                 primaryAction = createActivityAction()
             }
         }

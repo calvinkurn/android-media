@@ -10,22 +10,20 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
-import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
-import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.const.SellerActionFeatureName
 import com.tokopedia.seller.action.common.presentation.slices.SellerSuccessSlice
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.convertToOrderDateTitle
 import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
-import com.tokopedia.seller.action.common.utils.SellerActionUtils.isOrderDateToday
 import com.tokopedia.seller.action.order.domain.model.Order
 import com.tokopedia.seller.action.order.domain.model.SellerActionOrderCode
-import java.util.*
 
 class SellerOrderSlice(context: Context,
                        sliceUri: Uri,
                        private val date: String? = null,
-                       private val orderList: List<Order>): SellerSuccessSlice<Order>(orderList, context, sliceUri) {
+                       private val orderList: List<Order>)
+    : SellerSuccessSlice<Order>(orderList, context, sliceUri, date.convertToOrderDateTitle(context)) {
 
     companion object {
         private const val MAX_PRODUCT_NAME_LENGTH = 15
@@ -36,14 +34,7 @@ class SellerOrderSlice(context: Context,
     override fun getSuccessSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
-                    title =
-                            if (date == null || date.isOrderDateToday()) {
-                                context.getString(R.string.seller_action_order_success_title_today)
-                            }
-                            else {
-                                val formattedDate = date.convertToDate(SellerActionConst.SLICE_DATE_FORMAT, Locale("in", "ID"))
-                                context.getString(R.string.seller_action_order_success_title_specific_date, formattedDate)
-                            }
+                    title = date.convertToOrderDateTitle(context)
                 }
                 orderList.forEach {
                     row {

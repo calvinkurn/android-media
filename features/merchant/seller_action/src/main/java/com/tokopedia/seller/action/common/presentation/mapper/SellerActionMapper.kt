@@ -10,7 +10,8 @@ import com.tokopedia.seller.action.common.presentation.slices.SellerNotLoginSlic
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
 
 abstract class SellerActionMapper<T : SellerSuccessItem>(protected val context: Context,
-                                                         protected val sliceUri: Uri) {
+                                                         protected val sliceUri: Uri,
+                                                         private val titleText: String? = null) {
 
     abstract fun <T : SellerSuccessItem> getSuccessSlice(itemList: List<T>): SellerSlice
 
@@ -25,15 +26,15 @@ abstract class SellerActionMapper<T : SellerSuccessItem>(protected val context: 
     }
 
     protected fun getLoadingSlice(): SellerSlice {
-        return SellerLoadingSlice(context, sliceUri)
+        return SellerLoadingSlice(context, sliceUri, titleText)
     }
 
     protected fun getNotLoginSlice(): SellerSlice {
-        return SellerNotLoginSlice(context, sliceUri)
+        return SellerNotLoginSlice(context, sliceUri, titleText)
     }
 
     protected fun getFailureSlice(): SellerSlice {
-        return SellerFailureSlice(context, sliceUri)
+        return SellerFailureSlice(context, sliceUri, titleText)
     }
 
 }

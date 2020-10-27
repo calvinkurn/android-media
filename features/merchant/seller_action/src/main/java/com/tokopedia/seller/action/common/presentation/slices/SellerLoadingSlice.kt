@@ -13,18 +13,19 @@ import androidx.slice.builders.row
 import com.tokopedia.seller.action.R
 
 class SellerLoadingSlice(context: Context,
-                         sliceUri: Uri): SellerSlice(context, sliceUri) {
+                         sliceUri: Uri,
+                         private val titleText: String? = null): SellerSlice(context, sliceUri) {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
-                    title = ""
+                    title = titleText.orEmpty()
                 }
                 row {
                     setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_loading), ListBuilder.LARGE_IMAGE)
                     title = context.getString(R.string.seller_action_loading_title)
-                    subtitle = context.getString(R.string.seller_action_order_loading_desc)
+                    subtitle = context.getString(R.string.seller_action_order_loading_desc_short)
                     primaryAction = createActivityAction()
                 }
             }
