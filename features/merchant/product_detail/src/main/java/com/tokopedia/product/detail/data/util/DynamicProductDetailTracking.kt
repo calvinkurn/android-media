@@ -470,6 +470,7 @@ object DynamicProductDetailTracking {
                             "position", position
                     )
             ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] =  ProductTrackingConstant.Tracking.SWIPE_IMAGE_BUSINESS_UNIT
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE};cpos:${componentTrackDataModel.adapterPosition};"
