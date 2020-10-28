@@ -44,9 +44,6 @@ data class CarouselPlayWidgetDataModel(
 
     override fun visitableId(): String = visitableId
 
-    /**
-     * Diff util implementation, I guess
-     */
     override fun equalsWith(obj: Any?): Boolean {
         if (obj is CarouselPlayWidgetDataModel) {
             return homeChannel.id == obj.homeChannel.id

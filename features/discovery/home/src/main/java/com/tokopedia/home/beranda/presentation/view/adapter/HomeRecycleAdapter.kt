@@ -56,10 +56,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
         }
-
-//        else if(holder is PlayBannerCardViewHolder){
-//            holder.onResume()
-//        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
@@ -69,10 +65,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         } else if(holder is BannerViewHolder){
             holder.onPause()
         }
-
-//        else if(holder is PlayBannerCardViewHolder){
-//            holder.onPause()
-//        }
     }
 
     private fun getViewHolder(position: Int): AbstractViewHolder<out Visitable<*>>? {
@@ -86,13 +78,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         }
         return list
     }
-
-//    private fun getPositionPlayCarousel(): Int{
-//        for (i in currentList.indices) {
-//            if(getItem(i) is PlayCarouselCardDataModel) return i
-//        }
-//        return -1
-//    }
 
     private fun getAllExoPlayers(): ArrayList<HomePlayWidgetHelper> {
         val list: ArrayList<HomePlayWidgetHelper> = ArrayList()
@@ -117,11 +102,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
         }
-
-//        val playCarouselIndex = getPositionPlayCarousel()
-//        if(playCarouselIndex != -1){
-//            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onResume()
-//        }
     }
 
     fun onPauseBanner() {
@@ -136,23 +116,12 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             currentSelected = positions.first()
             (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause(shouldPausePlay)
         }
-
-//        val playCarouselIndex = getPositionPlayCarousel()
-//        if(playCarouselIndex != -1){
-//            (getViewHolder(playCarouselIndex) as? PlayBannerCardViewHolder)?.onPause()
-//        }
     }
 
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
             exoPlayerHelper.onActivityDestroy()
         }
-//        for (i in 0 until itemCount){
-//            val viewHolder = getViewHolder(i)
-//            if(viewHolder is PlayBannerCardViewHolder){
-//                viewHolder.onDestroy()
-//            }
-//        }
     }
 
     fun resetImpressionHomeBanner() {
@@ -162,7 +131,7 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
     }
 
     /**
-     * Play widget
+     * Play Widget
      */
     fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {
         currentList.indexOfFirst { it is CarouselPlayWidgetDataModel }.let { position ->
