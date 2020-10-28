@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
@@ -137,8 +138,18 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         return ""
     }
 
-    override fun onStop() {
+//    override fun onStop() {
+//        stopTimer()
+//        super.onStop()
+//    }
+
+    override fun onDestroy() {
         stopTimer()
-        super.onStop()
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        Log.d("onResume", "onResume")
+        super.onResume()
     }
 }
