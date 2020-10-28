@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.coordinator
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +51,10 @@ class PlayWidgetCoordinator(
 
         override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
             autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        }
+
+        override fun onWidgetDetached(widget: View) {
+            autoPlayCoordinator.onWidgetDetached(widget)
         }
     }
 

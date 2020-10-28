@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.listener
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -8,4 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 interface PlayWidgetInternalListener {
 
     fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView)
+
+    fun onWidgetDetached(widget: View)
 }

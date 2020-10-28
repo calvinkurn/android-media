@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.coordinator
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -42,12 +43,7 @@ class PlayWidgetAutoPlayCoordinator(
             )
 
             videoPlayerMap.entries.forEach {
-                if (it.value !in autoPlayEligibleReceivers) {
-                    it.key.stop()
-                    it.key.listener = null
-                    it.value?.setPlayer(null)
-                    it.setValue(null)
-                }
+                if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
             }
 
             autoPlayEligibleReceivers
@@ -63,11 +59,18 @@ class PlayWidgetAutoPlayCoordinator(
         }
     }
 
+    override fun onWidgetDetached(widget: View) {
+        autoPlayJob?.cancel()
+        videoPlayerMap.entries.forEach { clearPlayerEntry(it) }
+    }
+
     fun onPause() {
+        autoPlayJob?.cancel()
         videoPlayerMap.keys.forEach { it.stop() }
     }
 
     fun onDestroy() {
+        autoPlayJob?.cancel()
         videoPlayerMap.keys.forEach { it.release() }
     }
 
@@ -96,6 +99,13 @@ class PlayWidgetAutoPlayCoordinator(
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
             lastVideoPlayer?.release()
         }
+    }
+
+    private fun clearPlayerEntry(entry: MutableMap.MutableEntry<PlayVideoPlayer, PlayVideoPlayerReceiver?>) {
+        entry.key.stop()
+        entry.key.listener = null
+        entry.value?.setPlayer(null)
+        entry.setValue(null)
     }
 
     private fun getNextIdlePlayer(): PlayVideoPlayer? {
