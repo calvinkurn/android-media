@@ -1,6 +1,5 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
-import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.developer_options.presentation.feedbackpage.domain.model.BaseImageFeedbackUiModel
@@ -15,11 +14,10 @@ interface FeedbackPageContract {
         fun showLoadingDialog()
         fun hideLoadingDialog()
         fun setSubmitFlag()
-        fun checkUriImage(feedbackId: Int, imageCount: Int)
+        fun checkUriImage(feedbackId: Int, imageCount: Int, feedbackFormRequest: FeedbackFormRequest)
         fun goToTicketCreatedActivity(issueUrl: String?)
         fun showError(throwable: Throwable)
         fun setFeedbackData(model: FeedbackModel)
-        fun getContext(): Context
     }
 
     interface Presenter{

@@ -176,11 +176,9 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun getContext(): Context {
-        return requireContext()
-    }
-
-    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+    override fun checkUriImage(feedbackId: Int, imageCount: Int, feedbackFormRequest: FeedbackFormRequest) {
+        Toast.makeText(context, feedbackFormRequest.platformID.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(context, feedbackFormRequest.appVersion, Toast.LENGTH_LONG).show()
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
             var initCountImage = imageCount
