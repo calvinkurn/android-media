@@ -41,6 +41,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.features.topAdsSdk)
+
 }
 
 project.ext {

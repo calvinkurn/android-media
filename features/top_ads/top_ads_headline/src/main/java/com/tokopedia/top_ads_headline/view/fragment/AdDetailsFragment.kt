@@ -66,17 +66,18 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
     }
 
-    override fun saveStepperModel(stepperModel: CreateHeadlineAdsStepperModel) {
-
-    }
-
     override fun gotoNextPage() {
         stepperModel?.groupName = headline_ad_name_input.textFieldInput.text.toString()
         stepperListener?.goToNextPage(stepperModel)
     }
 
+    override fun updateToolBar() {
+        if (activity is HeadlineStepperActivity) {
+            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_ad_detail_fragment_label))
+        }
+    }
+
     override fun populateView() {
-        updateToolBar()
         setUpSubmitButtonClick()
         setUpAdNameEditText()
     }
@@ -119,12 +120,6 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             } else {
                 validateGroup(headline_ad_name_input.textFieldInput.text.toString())
             }
-        }
-    }
-
-    private fun updateToolBar() {
-        if (activity is HeadlineStepperActivity) {
-            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_ad_detail_fragment_label))
         }
     }
 

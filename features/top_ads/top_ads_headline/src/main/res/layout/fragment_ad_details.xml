@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:text="@string/topads_headline_ad_name_header"
+        android:text="@string/topads_headline_ad_detail_name_header"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,8 +32,8 @@
         app:text_field_input_type="text"
         app:text_field_label_static="true"
         app:text_field_append_drawable_icon_1="@drawable/unify_chips_ic_close"
-        app:text_field_message="@string/topads_headline_ad_name_message"
-        app:text_field_placeholder="@string/topads_headline_ad_name_hint" />
+        app:text_field_message="@string/topads_headline_ad_detail_name_message"
+        app:text_field_placeholder="@string/topads_headline_ad_detail_name_hint" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/error_text"
@@ -54,10 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dp_16"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:text="@string/topads_headline_continue"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

@@ -17,6 +17,4 @@ class HeadlineAdsModule {
 
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
-
 }

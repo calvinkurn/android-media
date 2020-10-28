@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">top_ads_headline</string>
     <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
-    <string name="topads_headline_ad_name_header">Nama Iklan Headline</string>
-    <string name="topads_headline_ad_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
-    <string name="topads_headline_ad_name_hint">Masukkan nama iklan</string>
+    <string name="topads_headline_ad_content_fragment_label">Isi Konten Iklan</string>
+    <string name="topads_headline_ad_detail_name_header">Nama Iklan Headline</string>
+    <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
+    <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
     <string name="topads_headline_continue">Lanjutkan</string>
     <string name="topads_headline_ad_name_required">Nama iklan harus diisi</string>
+    <string name="topads_headline_ad_content_name_header">Produk yang ditampilkan</string>
+    <string name="topads_headline_as_recommended_text">(sesuai rekomendasi)</string>
+    <string name="topads_headline_product_not_selected">Produk belum dipilih</string>
+    <string name="topads_headline_product_selected">%s/10 produk dipilih</string>
+    <string name="topads_headline_promotional_message">Pesan Promosi</string>
+    <string name="topads_headline_promotional_message_hint">Mau beli [ProductName] kualitas terbaik? Cek toko [ShopName] sekarang!</string>
+    <string name="topads_headline_promotional_message_summary">Pesan promosimu sempurna!</string>
+    <string name="topads_headline_ad_preview_text">Preview Iklan Toko</string>
+    <string name="topads_headline_ad_disclaimer">Iklan Toko akan menampilkan 2-3 produkmu secara bergantian sesuai dengan kata kunci yang dicari.</string>
 </resources>

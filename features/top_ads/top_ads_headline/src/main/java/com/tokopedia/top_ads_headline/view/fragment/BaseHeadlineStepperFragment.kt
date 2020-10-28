@@ -15,9 +15,9 @@ abstract class BaseHeadlineStepperFragment<T : CreateHeadlineAdsStepperModel>: B
     }
 
     protected abstract fun initiateStepperModel()
-    protected abstract fun saveStepperModel(stepperModel: T)
     protected abstract fun gotoNextPage()
     protected abstract fun populateView()
+    protected abstract fun updateToolBar()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +30,7 @@ abstract class BaseHeadlineStepperFragment<T : CreateHeadlineAdsStepperModel>: B
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateToolBar()
         populateView()
     }
 }
