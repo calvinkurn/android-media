@@ -24,6 +24,7 @@ class ApiService(private val context: Context) {
 
     private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
+    private val DEFAULT_TIMEOUT = 30000L
     lateinit var firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
 
     init {
@@ -75,7 +76,7 @@ class ApiService(private val context: Context) {
                     it.proceed(requestBuilder)
                 }
                 .connectionSpecs(Collections.singletonList(spec))
-                .connectTimeout(30000, TimeUnit.MILLISECONDS)
+                .connectTimeout(irisTimeout(), TimeUnit.MILLISECONDS)
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
         addFringerInterceptor(builder)
@@ -83,6 +84,14 @@ class ApiService(private val context: Context) {
             builder.addInterceptor(ChuckerInterceptor(context))
         }
         return builder.build()
+    }
+
+    private fun irisTimeout(): Long {
+        try {
+            return firebaseRemoteConfigImpl.getLong(IRIS_CUSTOM_TIMEOUT, DEFAULT_TIMEOUT)
+        } catch (e: Exception){
+            return DEFAULT_TIMEOUT
+        }
     }
 
     private fun addUserAgent(request: Request.Builder) {
