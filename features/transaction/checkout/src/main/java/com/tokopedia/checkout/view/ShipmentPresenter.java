@@ -104,6 +104,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
@@ -1743,7 +1744,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
 
-        String mvc = getRatesMvcParams();
+        String mvc = generateRatesMvcParam();
 
         RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
@@ -1772,21 +1773,29 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ));
     }
 
-    private String getRatesMvcParams() {
+    @Override
+    public String generateRatesMvcParam() {
         String mvc = "";
-        if (lastApplyData != null) {
-            List<PromoSpIdUiModel> promoSpIdUiModels = lastApplyData.getAdditionalInfo().getPromoSpIds();
-            if (promoSpIdUiModels.size() > 0) {
-                mvc = gson.toJson(promoSpIdUiModels);
-            }
-        } else if (validateUsePromoRevampUiModel != null) {
-            List<PromoSpIdUiModel> promoSpIdUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
-            if (promoSpIdUiModels.size() > 0) {
-                mvc = gson.toJson(promoSpIdUiModels);
+
+        List<MvcShippingBenefitUiModel> tmpMvcShippingBenefitUiModel = new ArrayList<>();
+        List<PromoSpIdUiModel> promoSpIdUiModels = new ArrayList<>();
+        if (validateUsePromoRevampUiModel != null) {
+            promoSpIdUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        } else if (lastApplyData != null) {
+            promoSpIdUiModels = lastApplyData.getAdditionalInfo().getPromoSpIds();
+        }
+
+        if (promoSpIdUiModels.size() > 0) {
+            for (PromoSpIdUiModel promoSpIdUiModel : promoSpIdUiModels) {
+                tmpMvcShippingBenefitUiModel.addAll(promoSpIdUiModel.getMvcShippingBenefits());
             }
         }
 
-        return mvc;
+        if (tmpMvcShippingBenefitUiModel.size() > 0) {
+            mvc = gson.toJson(tmpMvcShippingBenefitUiModel);
+        }
+
+        return mvc.replace("\n", "").replace(" ", "");
     }
 
     @NonNull

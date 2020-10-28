@@ -23,12 +23,11 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.Shipping
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
@@ -47,7 +46,6 @@ import javax.inject.Inject;
 public class ShippingDurationBottomsheet extends BottomSheets
         implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
-    private static final String ARGUMENT_SHIPPING_PARAM = "ARGUMENT_SHIPPING_PARAM";
     private static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
     private static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
     private static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
@@ -61,6 +59,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
     private static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
     private static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
+    private static final String ARGUMENT_MVC = "ARGUMENT_MVC";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -96,7 +95,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           boolean isLeasing, String pslCode,
                                                           ArrayList<Product> products, String cartString,
                                                           boolean isDisableOrderPrioritas,
-                                                          boolean isTradeInDropOff) {
+                                                          boolean isTradeInDropOff,
+                                                          String mvc) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -111,6 +111,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putString(ARGUMENT_CART_STRING, cartString);
         bundle.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas);
         bundle.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
+        bundle.putString(ARGUMENT_MVC, mvc);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -127,16 +128,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
-    }
-
-    // Called from express checkout only
-    public void updateArguments(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARGUMENT_SHIPPING_PARAM, shippingParam);
-        bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
-        bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
-        bundle.putBoolean(ARGUMENT_DISABLE_PROMO_COURIER, true);
-        setArguments(bundle);
     }
 
     private void initializeInjector() {
@@ -198,7 +189,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(mCartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
-            ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
@@ -206,13 +196,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
             isDisableOrderPrioritas = getArguments().getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS);
             boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
+            String mvc = getArguments().getString(ARGUMENT_MVC, "");
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress);
-            } else if (shippingParam != null) {
-                // Called from express checkout
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments);
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, mvc);
             }
         }
     }
@@ -275,11 +263,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
                             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
                             boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
+                            String mvc = getArguments().getString(ARGUMENT_MVC, "");
                             if (shipmentDetailData != null) {
                                 presenter.loadCourierRecommendation(
                                         shipmentDetailData, selectedServiceId, shopShipments,
                                         codHistory, mIsCorner, isLeasing, pslCode,
-                                        products, cartString, isTradeInDropOff, recipientAddressModel
+                                        products, cartString, isTradeInDropOff, recipientAddressModel,
+                                        mvc
                                 );
                             }
                         }
