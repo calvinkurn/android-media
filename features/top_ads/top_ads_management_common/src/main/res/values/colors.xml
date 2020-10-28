@@ -17,6 +17,5 @@
     <color name="topads_light_shadow">#AD31353B</color>
     <color name="topads_common_red">#d6001c</color>
     <color name="topads_item_selected">#EBFFEF</color>
-
-
+    <color name="topads_common_text_disabled">#5231353B</color>
 </resources>

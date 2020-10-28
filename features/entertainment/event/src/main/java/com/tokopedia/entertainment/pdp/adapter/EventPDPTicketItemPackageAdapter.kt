@@ -147,7 +147,6 @@ class EventPDPTicketItemPackageAdapter(
                         }
 
                         val total = if(getDigit(txtTotal.toString()) < items.minQty.toInt()) EMPTY_QTY else getDigit(txtTotal.toString())
-
                         onBindItemTicketListener.quantityEditorValueButtonClicked(idPackage,items.id,items,items.salesPrice.toInt()*total,
                                 total.toString(), isError, items.name, items.productId,items.salesPrice,
                                 getDate(items.dates, onBindItemTicketListener.getSelectedDate()), packageName)

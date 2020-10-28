@@ -99,12 +99,13 @@ class StickyLoginView : FrameLayout, CoroutineScope {
                 }
             }
         } finally {
-            setContent(content, highlight)
             styleable.recycle()
         }
     }
 
     private fun initView() {
+        setContent(content, highlight)
+
         if (leftImage != null) {
             imageViewLeft.setImageDrawable(leftImage)
         }

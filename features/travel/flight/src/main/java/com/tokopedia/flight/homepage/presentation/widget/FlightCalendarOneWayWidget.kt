@@ -60,11 +60,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         initInjector()
 
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
+        fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {

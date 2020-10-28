@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -60,17 +59,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val button = findViewById<Button>(R.id.button)
-        val chuckButton = findViewById<Button>(R.id.chuckButton)
 
-        chuckButton.setOnClickListener { startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP)) }
         button.setOnClickListener {
             goTo()
         }
 
-
-        useOldPageButton.setOnClickListener {
-            startActivity(Intent(this, OldMainActivity::class.java))
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

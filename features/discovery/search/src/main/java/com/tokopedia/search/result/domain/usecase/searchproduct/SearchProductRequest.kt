@@ -99,6 +99,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         name
                         city
                         rating_average
+                        url
+                        isOfficial
+                        isPowerBadge
                     }
                     freeOngkir {
                         isActive
@@ -122,6 +125,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     warehouseIdDefault
                     boosterList
                     source_engine
+                    minOrder
+                    url
                     labelGroups {
                         title
                         position
@@ -195,6 +200,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     product_rating
                     product_rating_format
                     product_item_sold_payment_verified
+                    product_minimum_order
                     free_ongkir {
                       is_active
                       img_url
