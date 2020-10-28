@@ -8,13 +8,14 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingRight="@dimen/spacing_lvl3"
-        android:paddingEnd="8dp">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingRight="@dimen/spacing_lvl3"
+            android:paddingEnd="8dp"
+            >
 
             <View
                 android:id="@+id/view_header_card"
@@ -40,7 +41,7 @@
                 tools:textSize="10sp"
                 tools:textStyle="bold" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_recharge_product_image"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
