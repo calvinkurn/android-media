@@ -138,6 +138,8 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:ellipsize="end"
+        android:maxLines="3"
         android:textColor="@color/Neutral_N0"
         app:layout_constraintBottom_toTopOf="@id/tv_upcoming"
         app:layout_constraintEnd_toEndOf="@id/cl_media"
