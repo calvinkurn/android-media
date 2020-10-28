@@ -44,11 +44,6 @@ class MultiLineMetricsAdapter(
             val summary = item.summary
 
             with(itemView) {
-                val selectableItemBg = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
-                        selectableItemBg, true)
-                containerShcCardMetric.setBackgroundResource(selectableItemBg.resourceId)
-
                 tvShcMetricsTitle.text = summary.title
                 tvShcMetricsValue.text = summary.valueFmt.parseAsHtml()
                 tvShcMetricsSubValue.text = summary.description.parseAsHtml()
@@ -58,6 +53,10 @@ class MultiLineMetricsAdapter(
                     viewShcMetricsColor.setBackgroundColor(metricColor)
                 } else {
                     viewShcMetricsColor.setBackgroundColor(Color.TRANSPARENT)
+                }
+
+                setOnClickListener {
+                    listener.onItemClickListener(item, adapterPosition)
                 }
             }
         }
