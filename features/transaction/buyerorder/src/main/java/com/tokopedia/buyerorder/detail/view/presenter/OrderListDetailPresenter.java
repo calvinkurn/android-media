@@ -37,7 +37,6 @@ import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
@@ -696,9 +695,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (finishOrderUseCase != null) {
             finishOrderUseCase.unsubscribe();
         }
-        if (buyAgainUseCase != null) {
-            buyAgainUseCase.unsubscribe();
-        }
+        addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
     }
 
