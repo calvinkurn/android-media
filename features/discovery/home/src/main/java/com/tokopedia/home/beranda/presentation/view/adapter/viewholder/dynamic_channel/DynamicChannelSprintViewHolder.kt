@@ -19,10 +19,12 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.home_component.util.ConstantABTesting
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -92,7 +94,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private fun mappingHeader(channel: DynamicHomeChannel.Channels) {
         if (channel.header.backImage.isNotBlank()) {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
-            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
+            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.Unify_N0))
             backgroundThematic.show()
             seeAllButtonUnify?.setOnClickListener {
                 homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
@@ -198,8 +200,9 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                             element.freeOngkir.imageUrl
                     ),
                     isOutOfStock = element.isOutOfStock,
-                    ratingCount = element.rating,
-                    reviewCount = element.countReview
+                    ratingCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.rating else 0,
+                    reviewCount = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_RATING_ONLY) element.countReview else 0,
+                    countSoldRating = if(RemoteConfigInstance.getInstance().abTestPlatform.getString(ConstantABTesting.EXPERIMENT_NAME) == ConstantABTesting.EXPERIMENT_SALES_RATING) element.ratingFloat.toString() else ""
             )
         }
     }

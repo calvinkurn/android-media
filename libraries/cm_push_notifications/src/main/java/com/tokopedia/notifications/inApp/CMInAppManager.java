@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -37,6 +38,7 @@ import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.R
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
@@ -186,6 +188,8 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
             case TYPE_INTERSTITIAL:
                 interstitialDialog(data);
                 break;
+            case TYPE_SILENT:
+                break;
             default:
                 showLegacyDialog(data);
                 break;
@@ -276,6 +280,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         if (getCurrentActivity() != null) {
             Activity activity = currentActivity.get();
             activity.startActivity(RouteManager.getIntent(activity, appLink));
+            CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
         } else {
             Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
         }

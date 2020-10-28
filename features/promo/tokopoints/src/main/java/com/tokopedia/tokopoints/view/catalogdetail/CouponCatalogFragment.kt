@@ -138,11 +138,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         addRedeemCouponObserver()
     }
 
-    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
             is ValidationError<*, *> -> {
@@ -153,17 +153,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it) }
     })
 
-    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             checkValidation(it.item, it.title, it.desc, it.messageCode)
         }
     })
 
-    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
@@ -173,7 +173,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
@@ -321,7 +321,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         alertDialog.show()
     }
 
-    private fun showErrorDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int){
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int){
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -393,7 +393,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         decorateDialog(dialog)
     }
 
-    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
+    override fun checkValidation(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
        if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
            mViewModel.startSaveCoupon(item)
            AnalyticsTrackerUtil.sendEvent(context,

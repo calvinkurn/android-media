@@ -3,7 +3,7 @@
     <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
         android:id="@+id/exo_content_frame"
         android:orientation="vertical"
-        android:background="@color/grey_700"
+        android:background="@color/Unify_N500"
         android:transitionName="@string/home_transition_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -34,8 +34,9 @@ object GlobalSearchSellerMapper {
                 when (it.id) {
                     ORDER -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
-                        addAll(mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
-                        countItem += mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
+                        val orderSellerSearchList = mapToOrderSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
+                        addAll(orderSellerSearchList.first)
+                        countItem += orderSellerSearchList.second
                         if (it.has_more == true) {
                             add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
@@ -45,8 +46,9 @@ object GlobalSearchSellerMapper {
                     }
                     PRODUCT -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
-                        addAll(mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
-                        countItem += mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
+                        val productSellerSearchVisitable = mapToProductSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
+                        addAll(productSellerSearchVisitable.first)
+                        countItem += productSellerSearchVisitable.second
                         if (it.has_more == true) {
                             add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                     appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
@@ -56,14 +58,16 @@ object GlobalSearchSellerMapper {
                     }
                     NAVIGATION -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
-                        addAll(mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
-                        countItem += mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty()).size
+                        val navigationSellerSearchVisitable = mapToNavigationSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
+                        addAll(navigationSellerSearchVisitable.first)
+                        countItem += navigationSellerSearchVisitable.second
                         val isVisibleDivider = countItem < sellerSearch.data.count.orZero()
                         add(DividerSellerSearchUiModel(isVisibleDivider))
                     }
                     FAQ -> {
                         add(TitleHeaderSellerSearchUiModel(title = it.title.orEmpty()))
-                        addAll(mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty()))
+                        val faqSellerSearchVisitable = mapToFaqSellerSearchVisitable(it.items, keyword, it.title.orEmpty())
+                        addAll(faqSellerSearchVisitable.first)
                         if (it.has_more == true) {
                                 add(TitleHasMoreSellerSearchUiModel(id = it.id, title = it.action_title.orEmpty(),
                                         appActionLink = it.app_action_link.orEmpty(), actionTitle = it.action_title.orEmpty()))
@@ -76,8 +80,9 @@ object GlobalSearchSellerMapper {
 
     private fun mapToOrderSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
                                                 keyword: String,
-                                                title: String): List<OrderSellerSearchUiModel> {
-        return mutableListOf<OrderSellerSearchUiModel>().apply {
+                                                title: String): Pair<List<OrderSellerSearchUiModel>, Int> {
+        val orderSearchSellerList = mutableListOf<OrderSellerSearchUiModel>()
+         orderSearchSellerList.apply {
             sellerSearch.map { orderItem ->
                 add(OrderSellerSearchUiModel(
                         id = orderItem.id, title = orderItem.title,
@@ -87,12 +92,14 @@ object GlobalSearchSellerMapper {
                 ))
             }
         }
+        return Pair(orderSearchSellerList, orderSearchSellerList.size)
     }
 
     private fun mapToProductSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
                                                   keyword: String,
-                                                  title: String): List<ProductSellerSearchUiModel> {
-        return mutableListOf<ProductSellerSearchUiModel>().apply {
+                                                  title: String): Pair<List<ProductSellerSearchUiModel>, Int> {
+        val productSellerSearchList = mutableListOf<ProductSellerSearchUiModel>()
+        productSellerSearchList.apply {
             sellerSearch.map { productItem ->
                 add(ProductSellerSearchUiModel(
                         id = productItem.id, title = productItem.title,
@@ -102,12 +109,14 @@ object GlobalSearchSellerMapper {
                 ))
             }
         }
+        return Pair(productSellerSearchList, productSellerSearchList.size)
     }
 
     private fun mapToNavigationSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
                                                      keyword: String,
-                                                     title: String): List<NavigationSellerSearchUiModel> {
-        return mutableListOf<NavigationSellerSearchUiModel>().apply {
+                                                     title: String): Pair<List<NavigationSellerSearchUiModel>, Int> {
+        val navigationSellerSearchList = mutableListOf<NavigationSellerSearchUiModel>()
+        navigationSellerSearchList.apply {
             sellerSearch.map { navigationItem ->
                 add(NavigationSellerSearchUiModel(
                         id = navigationItem.id, title = navigationItem.title,
@@ -117,12 +126,14 @@ object GlobalSearchSellerMapper {
                 ))
             }
         }
+        return Pair(navigationSellerSearchList, navigationSellerSearchList.size)
     }
 
     private fun mapToFaqSellerSearchVisitable(sellerSearch: List<SellerSearchResponse.SellerSearch.SellerSearchData.Section.Item>,
                                               keyword: String,
-                                              title: String): List<FaqSellerSearchUiModel> {
-        return mutableListOf<FaqSellerSearchUiModel>().apply {
+                                              title: String): Pair<List<FaqSellerSearchUiModel>, Int> {
+        val faqSellerSearchList = mutableListOf<FaqSellerSearchUiModel>()
+        faqSellerSearchList.apply {
             sellerSearch.map { faqItem ->
                 add(FaqSellerSearchUiModel(
                         id = faqItem.id, title = faqItem.title,
@@ -132,6 +143,7 @@ object GlobalSearchSellerMapper {
                 ))
             }
         }
+        return Pair(faqSellerSearchList, faqSellerSearchList.size)
     }
 
     fun mapToInitialSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): InitialSearchUiModel {

@@ -290,7 +290,6 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle =  addWrapperValue(value);
         bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
-        logV5(getContext(), eventName, bundle);
         pushIris(eventName, bundle);
     }
 

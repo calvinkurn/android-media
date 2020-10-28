@@ -27,6 +27,7 @@ class CreateReviewTextArea : BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.widget_create_review_text_area, this)
+        this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
         createReviewEditText.apply {
             setOnTouchListener(OnTouchListener { v, event ->
                 if (createReviewEditText.hasFocus()) {
@@ -51,13 +52,13 @@ class CreateReviewTextArea : BaseCustomView {
         createReviewEditText.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
-                    this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_selected)
+                    this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
                     textAreaListener.apply {
                         trackWhenHasFocus(createReviewEditText.text.isBlank())
                         scrollToShowTextArea()
                     }
                 } else {
-                    this@CreateReviewTextArea.createReviewTextAreaContainer.background = ContextCompat.getDrawable(context, R.drawable.bg_review_create_text_area_default)
+                    this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
                 }
             }
         }

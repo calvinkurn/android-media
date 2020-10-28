@@ -5,7 +5,6 @@
     android:id="@+id/waitingPaymentOrderContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:paddingTop="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography

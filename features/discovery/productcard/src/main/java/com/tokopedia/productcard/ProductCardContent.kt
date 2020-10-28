@@ -4,7 +4,10 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ImageSpan
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,6 +34,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
     renderShopRating(productCardModel)
+    renderSalesAndRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
@@ -50,9 +54,7 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
-        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
-        it.text = productNameFromHtml
+        it.text = MethodChecker.fromHtml(productCardModel.productName)
     }
 }
 
@@ -62,7 +64,6 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
@@ -79,7 +80,6 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
         it.text = priceToRender
     }
 }
@@ -97,7 +97,6 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
         it.text = productCardModel.shopLocation
     }
 }
@@ -153,7 +152,7 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    if (productCardModel.willShowRatingAndReviewCount())
+    if (productCardModel.willShowRatingAndReviewCount() || productCardModel.willShowSalesAndRating())
         textViewIntegrity?.initLabelGroup(null)
     else
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
@@ -170,6 +169,21 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
+    }
+}
+
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
+    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+        textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
+    }
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
+        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
+        drawableStar?.let {
+            drawableStar.setBounds(0, 0, 25, 25)
+            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        }
+        salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
 
@@ -210,8 +224,8 @@ private fun Typography.changeFontInsideBoldTag(shopRating: String, startBold: In
         val inBoldTagEnd = beforeBoldTagEnd + inBoldTag.length
         val afterBoldTagEnd = inBoldTagEnd + afterBoldTag.length
 
-        val charcoalGrey44 = ContextCompat.getColor(this.context, R.color.charcoal_grey_44)
-        val charcoalGrey68 = ContextCompat.getColor(this.context, R.color.charcoal_grey_68)
+        val charcoalGrey44 = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
+        val charcoalGrey68 = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
 
         spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), beforeBoldTagStart, beforeBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableShopRating.setSpan(CustomTypefaceSpan("", boldTypeface, charcoalGrey68), beforeBoldTagEnd, inBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

@@ -19,6 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
+import dagger.Lazy as daggerLazy
 
 internal open class SearchShopViewModelTestFixtures {
 
@@ -49,10 +50,15 @@ internal open class SearchShopViewModelTestFixtures {
 
     protected open fun createSearchShopViewModel(parameter: Map<String, Any> = searchShopParameterCommon): SearchShopViewModel {
         return SearchShopViewModel(
-                TestDispatcherProvider(), parameter,
-                searchShopFirstPageUseCase, searchShopLoadMoreUseCase, getDynamicFilterUseCase, getShopCountUseCase,
-                shopCpmViewModelMapper, shopViewModelMapper,
-                userSession
+                TestDispatcherProvider(),
+                parameter,
+                daggerLazy { searchShopFirstPageUseCase },
+                daggerLazy { searchShopLoadMoreUseCase },
+                daggerLazy { getDynamicFilterUseCase },
+                daggerLazy { getShopCountUseCase },
+                daggerLazy { shopCpmViewModelMapper },
+                daggerLazy { shopViewModelMapper },
+                daggerLazy { userSession }
         )
     }
 

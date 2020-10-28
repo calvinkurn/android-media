@@ -23,6 +23,8 @@ class HotelSearchResultViewModel @Inject constructor(
 
     var selectedSort: Sort = Sort()
 
+    var defaultSort = ""
+
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
@@ -132,9 +134,17 @@ class HotelSearchResultViewModel @Inject constructor(
         addFilter(selectedFilters.values.toMutableList())
     }
 
+    fun getFilterCount(): Int {
+        var count = 0
+        getSelectedFilter().forEach {
+            count += if (it.name == "price") 1 else it.values.size
+        }
+        if (selectedSort.displayName != defaultSort) count += 1
+        return count
+    }
+
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
-
         private const val DEFAULT_SORT = "popularity"
     }
 }

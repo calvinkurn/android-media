@@ -30,7 +30,6 @@
                                         android:contentDescription="@string/recom_app_name"
                                         android:layout_marginStart="@dimen/dp_5"
                                         android:layout_marginLeft="@dimen/dp_5"
-                                        android:visibility="gone"
                                         app:layout_constraintDimensionRatio="1:1"
                                         app:layout_constraintTop_toTopOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +59,6 @@
                                         android:textColor="@color/charcoal_grey_88"
                                         android:textSize="@dimen/sp_14"
                                         android:textStyle="bold"
-                                        android:visibility="gone"
                                         app:typographyType="heading_5"
                                         app:layout_constraintEnd_toStartOf="@+id/fab_detail"
                                         app:layout_constraintStart_toEndOf="@+id/product_image"
@@ -74,7 +72,6 @@
                                         android:textColor="@color/discount"
                                         android:textStyle="bold"
                                         android:textSize="@dimen/sp_10"
-                                        android:visibility="gone"
                                         android:layout_marginStart="@dimen/dp_8"
                                         android:layout_marginLeft="@dimen/dp_8"
                                         android:layout_marginTop="@dimen/dp_4"
@@ -90,7 +87,6 @@
                                         android:layout_marginEnd="@dimen/dp_8"
                                         android:layout_marginRight="@dimen/dp_8"
                                         android:lineSpacingExtra="@dimen/sp_6"
-                                        android:visibility="gone"
                                         android:textColor="@color/slashed_price"
                                         android:textSize="@dimen/sp_10"
                                         app:layout_constraintBottom_toBottomOf="@+id/product_discount"
@@ -110,7 +106,6 @@
                                         android:textColor="@color/price"
                                         android:textSize="@dimen/sp_14"
                                         android:textStyle="bold"
-                                        android:visibility="gone"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toEndOf="@+id/product_image"
                                         app:layout_constraintTop_toBottomOf="@+id/product_discount"
@@ -119,7 +114,6 @@
                                         android:id="@+id/badge"
                                         android:layout_width="@dimen/dp_16"
                                         android:layout_height="@dimen/dp_16"
-                                        android:visibility="gone"
                                         android:layout_marginStart="@dimen/dp_8"
                                         android:layout_marginLeft="@dimen/dp_8"
                                         android:layout_marginTop="@dimen/dp_4"
@@ -134,7 +128,6 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="@dimen/sp_14"
                                         android:textColor="@color/text_location"
-                                        android:visibility="gone"
                                         android:lineSpacingExtra="@dimen/sp_6"
                                         android:layout_marginTop="@dimen/dp_4"
                                         android:layout_marginLeft="@dimen/dp_4"
@@ -151,7 +144,6 @@
                                         android:layout_marginLeft="@dimen/dp_8"
                                         android:layout_marginStart="@dimen/dp_8"
                                         android:layout_marginTop="@dimen/dp_4"
-                                        android:visibility="gone"
                                         android:contentDescription="@string/app_name"
                                         app:layout_constraintTop_toBottomOf="@+id/location"
                                         app:layout_constraintStart_toEndOf="@+id/product_image"
@@ -165,7 +157,6 @@
                                         android:textSize="@dimen/sp_12"
                                         android:layout_marginLeft="@dimen/dp_4"
                                         android:layout_marginStart="@dimen/dp_4"
-                                        android:visibility="gone"
                                         app:layout_constraintBottom_toBottomOf="@+id/rating"
                                         app:layout_constraintStart_toEndOf="@+id/rating"
                                         app:layout_constraintTop_toTopOf="@+id/rating"
@@ -182,8 +173,8 @@
                                         android:layout_marginStart="@dimen/dp_8"
                                         android:layout_marginLeft="@dimen/dp_8"
                                         android:foreground="?attr/selectableItemBackground"
-                                        android:visibility="gone"
                                         android:text="@string/recom_buy"
+                                        android:visibility="gone"
                                         tools:visibility="gone"
                                         app:unifyButtonType="transaction"
                                         app:unifyButtonVariant="ghost"
@@ -227,11 +218,8 @@
                                         app:constraint_referenced_ids="review_count,rating,location,badge,product_image"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <include layout="@layout/error_product_info_layout" />
-
                         <include layout="@layout/empty_product_info" />
 
-                        <include layout="@layout/shimmering_product_info" />
                 </FrameLayout>
         </com.tokopedia.unifycomponents.CardUnify>
 </com.tokopedia.unifycomponents.ContainerUnify>

@@ -36,7 +36,8 @@
           "dimension40": "{{.*}}",
           "dimension49": "",
           "dimension48": "{{\\d+}}",
-          "dimension16": "{{.*}}"
+          "dimension16": "{{.*}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",
@@ -79,7 +80,8 @@
           "dimension49": "",
           "dimension48": "{{\\d+}}",
           "dimension16": "{{.*}}",
-          "dimension12": "{{\\d+}}"
+          "dimension12": "{{\\d+}}",
+          "dimension104": "{{\\d*}}"
         }
       ],
       "eventLabel": "success",

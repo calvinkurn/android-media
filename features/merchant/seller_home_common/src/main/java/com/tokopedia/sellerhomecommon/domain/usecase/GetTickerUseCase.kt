@@ -40,7 +40,7 @@ class GetTickerUseCase(
         private const val KEY_PAGE = "page"
 
         private val QUERY = """
-            query (${'$'}page: String!) {
+            query getTicker(${'$'}page: String!) {
               ticker {
                 tickers(page: ${'$'}page) {
                   id

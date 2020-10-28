@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -43,11 +43,14 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
-        const val SOURCE_QUERY = "source"
-        const val PINNED_COMPONENT_ID = "componentID"
-        const val PINNED_ACTIVE_TAB = "activeTab"
-        const val PINNED_COMP_ID = "pinnedcompID"
+        const val SOURCE = "source"
+        const val COMPONENT_ID = "componentID"
+        const val ACTIVE_TAB = "activeTab"
+        const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
+        const val PIN_PRODUCT = "pinProduct"
+        const val CATEGORY_ID = "category_id"
+        const val EMBED_CATEGORY = "embedCategory"
 
         @JvmField
         var config: String = ""
@@ -153,7 +156,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun setLogCrash() {
         super.setLogCrash()
         this.javaClass.canonicalName?.let { className ->
-            if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
+            if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
         }
     }
 

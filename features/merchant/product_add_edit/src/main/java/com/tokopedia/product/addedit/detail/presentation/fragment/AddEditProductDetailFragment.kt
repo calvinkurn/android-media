@@ -571,6 +571,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        enableProductNameField()
         onFragmentResult()
         setupBackPressed()
 
@@ -588,6 +589,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
+
+    private fun enableProductNameField() {
+        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun onDestroyView() {
@@ -1021,7 +1026,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productCategoryLayout?.show()
             productCategoryRecListView?.show()
             val selectedCategory = ArrayList<ListItemUnify>()
-            selectedCategory.add(ListItemUnify(detailInputModel.categoryName, ""))
+            val listItemUnify = ListItemUnify(detailInputModel.categoryName, "")
+            listItemUnify.isBold = false
+            selectedCategory.add(listItemUnify)
             productCategoryRecListView?.setData(selectedCategory)
         }
 
@@ -1361,7 +1368,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             val destination = AddEditProductDetailFragmentDirections.actionAddEditProductDetailFragmentToAddEditProductDescriptionFragment()
             destination.cacheManagerId = cacheManagerId
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductDetailFragment, destination)
         }
     }
 
