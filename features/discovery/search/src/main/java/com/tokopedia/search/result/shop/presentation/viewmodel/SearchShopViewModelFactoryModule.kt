@@ -17,6 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
+import dagger.Lazy as daggerLazy
 
 @SearchScope
 @Module(includes = [
@@ -33,16 +34,16 @@ internal class SearchShopViewModelFactoryModule(
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_VIEW_MODEL_FACTORY)
     fun provideSearchShopViewModelFactory(
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_FIRST_PAGE_USE_CASE)
-            searchShopFirstPageUseCase: UseCase<SearchShopModel>,
+            searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
-            searchShopLoadMoreUseCase: UseCase<SearchShopModel>,
+            searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,
             @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
-            getDynamicFilterUseCase: UseCase<DynamicFilterModel>,
+            getDynamicFilterUseCase: daggerLazy<UseCase<DynamicFilterModel>>,
             @Named(SearchConstant.SearchShop.GET_SHOP_COUNT_USE_CASE)
-            getShopCountUseCase: UseCase<Int>,
-            shopCpmViewModelMapper: Mapper<SearchShopModel, ShopCpmViewModel>,
-            shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
-            userSession: UserSessionInterface
+            getShopCountUseCase: daggerLazy<UseCase<Int>>,
+            shopCpmViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmViewModel>>,
+            shopViewModelMapper: daggerLazy<Mapper<SearchShopModel, ShopViewModel>>,
+            userSession: daggerLazy<UserSessionInterface>
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
                 ProductionDispatcherProvider(),

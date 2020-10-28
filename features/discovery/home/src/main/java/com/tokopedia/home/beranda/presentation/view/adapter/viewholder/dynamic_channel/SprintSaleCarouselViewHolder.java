@@ -106,7 +106,6 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         Map<String, Object> evenMap = channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
                 countDownView.getCurrentCountDown(), grid.getLabel());
         HomePageTracking.eventEnhancedClickSprintSaleProduct(
-                context,
                 evenMap);
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));
@@ -157,7 +156,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     private void onClickSeeAll() {
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()));
-        HomePageTracking.eventClickSeeAllProductSprintBackground(context, channels.getId());
+        HomePageTracking.eventClickSeeAllProductSprintBackground(channels.getId());
         HomeTrackingUtils.homeSprintSaleViewAll(context,
                 DynamicLinkHelper.getActionLink(channels.getHeader()));
     }
@@ -260,10 +259,10 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                 ViewCompat.setBackgroundTintList(stockProgress,
                         ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),
-                                R.color.grey_hint_full)));
+                                com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             } else {
                 stockProgress.setBackgroundTintList(ColorStateList.valueOf(ContextCompat
-                        .getColor(itemView.getContext(), R.color.grey_hint_full)));
+                        .getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100)));
             }
         }
 

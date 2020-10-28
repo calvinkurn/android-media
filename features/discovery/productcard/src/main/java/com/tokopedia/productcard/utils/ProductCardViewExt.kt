@@ -226,8 +226,8 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 @ColorRes
 private fun String?.toUnifyLabelColor(): Int {
     return when(this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
+        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 }
 
@@ -239,17 +239,22 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+        it.setTextColor(labelGroup.type.toUnifyTextColor(context))
     }
 }
 
-private fun String?.toUnifyTextColor(): String {
-    return when(this) {
-        TEXT_DARK_ORANGE -> COLOR_TEXT_DARK_ORANGE
-        TEXT_DARK_RED -> COLOR_TEXT_DARK_RED
-        TEXT_DARK_GREY -> COLOR_TEXT_DARK_GREY
-        TEXT_LIGHT_GREY -> COLOR_TEXT_LIGHT_GREY
-        else -> this ?: ""
+private fun String?.toUnifyTextColor(context: Context): Int {
+    return try{
+        when(this) {
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, R.color.Unify_Y400)
+            TEXT_DARK_RED -> ContextCompat.getColor(context, R.color.Unify_R500)
+            TEXT_DARK_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_68)
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_44)
+            else -> Color.parseColor(this)
+        }
+    } catch (throwable: Throwable){
+        throwable.printStackTrace()
+        ContextCompat.getColor(context, R.color.Unify_N700)
     }
 }
 

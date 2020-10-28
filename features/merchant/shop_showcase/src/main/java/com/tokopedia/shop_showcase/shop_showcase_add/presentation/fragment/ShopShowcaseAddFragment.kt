@@ -242,12 +242,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun showChooseProduct() {
-        if (showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
-            emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
-            emptyStateProduct?.visible()
-            headerUnify?.actionTextView?.isEnabled = false
-            hideSelectedProductList()
-        }
+        emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
+        emptyStateProduct?.visible()
+        headerUnify?.actionTextView?.isEnabled = false
+        hideSelectedProductList()
     }
 
     override fun onDestroy() {
@@ -283,6 +281,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun initView() {
         showSoftKeyboard()
+        if(!isActionEdit) {
+            showChooseProduct()
+        }
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()

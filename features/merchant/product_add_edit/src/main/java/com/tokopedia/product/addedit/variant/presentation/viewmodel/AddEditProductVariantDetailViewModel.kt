@@ -44,19 +44,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         it.detailInputModel.wholesaleList.isNotEmpty()
     }
 
-    val hasSku: Boolean get () {
-        return productInputModel.value?.variantInputModel?.products?.any {
-             it.sku.isNotEmpty()
-        } ?: false
-    }
-
     val isEditMode: Boolean get() = productInputModel.value?.productId.orZero() > 0
 
     private val mErrorCounter = MutableLiveData(0)
     val errorCounter: LiveData<Int> get() = mErrorCounter
 
     private var inputFieldSize = 0
-
     private var collapsedFields = 0
 
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
@@ -71,6 +64,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun setInputFieldSize(inputFieldSize: Int) {
         this.inputFieldSize = inputFieldSize
+    }
+
+    fun getCollapsedFields(): Int {
+        return collapsedFields
     }
 
     fun resetCollapsedFields() {

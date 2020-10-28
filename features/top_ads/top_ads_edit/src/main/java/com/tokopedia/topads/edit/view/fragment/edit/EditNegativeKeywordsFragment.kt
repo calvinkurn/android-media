@@ -7,6 +7,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -17,9 +18,11 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_KEYWORD
@@ -157,6 +160,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             setVisibilityOperation(View.GONE)
 
         }
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
@@ -211,8 +215,11 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     fun sendData(): Bundle {
         val bundle = Bundle()
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+        list.addAll(adapter.getCurrentItems())
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_ADDED, addedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
+        bundle.putParcelableArrayList(NEGATIVE_KEYWORD_ALL, list)
         return bundle
     }
 

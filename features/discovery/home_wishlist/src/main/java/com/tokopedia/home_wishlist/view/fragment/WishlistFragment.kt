@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -398,7 +399,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             dataModel.recommendationItem.clickUrl,
@@ -415,7 +416,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitClickUrl(
                             className,
                             dataModel.recommendationItem.clickUrl,
@@ -468,7 +469,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
         when (dataModel) {
             is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
             is RecommendationItemDataModel -> {
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
                             dataModel.recommendationItem.trackerImageUrl,
@@ -480,7 +481,7 @@ open class WishlistFragment: Fragment(), WishlistListener, TopAdsListener {
                 WishlistTracking.impressionEmptyWishlistRecommendation(trackingQueue, dataModel.recommendationItem, position)
             }
             is RecommendationCarouselItemDataModel -> {
-                if (dataModel.recommendationItem.isTopAds) {
+                if(dataModel.recommendationItem.isTopAds) {
                     TopAdsUrlHitter(context).hitImpressionUrl(
                             className,
                             dataModel.recommendationItem.trackerImageUrl,
