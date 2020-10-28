@@ -1773,6 +1773,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ));
     }
 
+    /*here*/
     @Override
     public String generateRatesMvcParam() {
         String mvc = "";
@@ -1795,7 +1796,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             mvc = gson.toJson(tmpMvcShippingBenefitUiModel);
         }
 
-        return mvc.replace("\n", "").replace(" ", "");
+        return mvc.replace("\n", "").replace(" ", "").replace("benefitAmount", "benefit_amount").replace("spId", "sp_id");
     }
 
     @NonNull
