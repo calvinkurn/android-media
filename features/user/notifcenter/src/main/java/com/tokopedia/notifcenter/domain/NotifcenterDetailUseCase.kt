@@ -3,6 +3,7 @@ package com.tokopedia.notifcenter.domain
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
@@ -28,13 +29,15 @@ class NotifcenterDetailUseCase @Inject constructor(
 
     fun getNotifications(
             page: Int,
+            @NotificationFilterType
+            filter: Int,
             onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
                 dispatchers.io(),
                 {
-                    val params = generateParam(page)
+                    val params = generateParam(page, filter)
                     val response = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
                         setRequestParams(params)
@@ -53,12 +56,16 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
     }
 
-    private fun generateParam(page: Int): Map<String, Any?> {
+    private fun generateParam(
+            page: Int,
+            @NotificationFilterType
+            filter: Int
+    ): Map<String, Any?> {
         // TODO: refactor fot account switcher
         return mapOf(
                 PARAM_PAGE to page,
                 PARAM_TYPE_ID to 1,
-                PARAM_TAG_ID to 0,
+                PARAM_TAG_ID to filter,
                 PARAM_TIMEZONE to timeZone,
                 PARAM_LAST_NOTIF_ID to lastNotifId,
                 PARAM_FIELDS to arrayOf("new")

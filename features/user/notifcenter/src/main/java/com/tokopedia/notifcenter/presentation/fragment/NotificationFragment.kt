@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.inboxcommon.InboxCommonFragment
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
@@ -21,6 +22,7 @@ import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationIte
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -31,6 +33,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private var rv: VerticalRecyclerView? = null
     private var rvAdapter: NotificationAdapter? = null
+    private var filter: NotificationFilterView? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -52,6 +55,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             initView(it)
             setupObserver()
             setupRecyclerView()
+            setupFilter()
         }
     }
 
@@ -62,6 +66,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
+        filter = view.findViewById(R.id.sv_filter)
     }
 
     private fun setupObserver() {
@@ -76,6 +81,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         val itemDecoration = NotificationItemDecoration(context)
         rv?.clearItemDecoration()
         rv?.addItemDecoration(itemDecoration)
+    }
+
+    private fun setupFilter() {
+        filter?.filterListener = object : NotificationFilterView.FilterListener {
+            override fun onFilterChanged(@NotificationFilterType filterType: Int) {
+                viewModel.filter = filterType
+                loadInitialData()
+            }
+        }
     }
 
     override fun onRoleChanged(role: Int) {
