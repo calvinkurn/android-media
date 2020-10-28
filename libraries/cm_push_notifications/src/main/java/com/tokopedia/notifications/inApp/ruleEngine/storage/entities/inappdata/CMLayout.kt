@@ -26,7 +26,7 @@ data class CMLayout(
         @Expose
         @ColumnInfo(name = "img")
         @SerializedName("img")
-        val img: String = "",
+        var img: String = "",
 
         @Expose
         @SerializedName("appLink")
