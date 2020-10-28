@@ -90,22 +90,22 @@ internal open class BannerView(activity: Activity) {
 
     private fun setBanner(data: CMInApp) {
         val layout = data.getCmLayout()
-        imgBanner.setImage(layout.getImg(), 0f)
+        imgBanner.setImage(layout.img, 0f)
     }
 
     private fun setActionButton(data: CMInApp) {
         val layout = data.getCmLayout()
 
-        if (layout.getButton() == null || layout.getButton().isEmpty()) {
+        if (data.cmLayout.button.isNullOrEmpty()) {
             lstActionButton.visibility = View.GONE
             return
         }
 
-        lstActionButton.layoutManager = when (layout.getBtnOrientation()) {
+        lstActionButton.layoutManager = when (layout.btnOrientation) {
             ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
             ORIENTATION_HORIZONTAL -> GridLayoutManager(
                     mActivity.get(),
-                    layout.getButton().size
+                    layout.button?.size?: 2
             )
             else -> LinearLayoutManager(mActivity.get())
         }
@@ -131,10 +131,10 @@ internal open class BannerView(activity: Activity) {
 
     private fun getBannerAppLink(data: CMInApp): String {
         with(data.getCmLayout()) {
-            return if (data.type == TYPE_INTERSTITIAL && getButton().isNotEmpty()) {
-                getButton().first().getAppLink()
+            return if (data.type == TYPE_INTERSTITIAL && !button.isNullOrEmpty()) {
+                button.first().getAppLink()
             } else {
-                getAppLink()
+                appLink
             }
         }
     }
@@ -142,7 +142,7 @@ internal open class BannerView(activity: Activity) {
     private fun setBannerClicked(data: CMInApp) {
         // prevent banner click if has more than one CTA button
         with(data.getCmLayout()) {
-            if (getButton().size > 1) return
+            if (!button.isNullOrEmpty() && button.size > 1) return
             val bannerAppLink = getBannerAppLink(data)
 
             imgBanner.setOnClickListener {
@@ -166,7 +166,7 @@ internal open class BannerView(activity: Activity) {
             appLink: String,
             elementType: ElementType
     ) {
-        if (appLink.equals("close", true)) {
+        if (appLink.equals(CLOSE, true)) {
             dismissInteractionTracking(data)
             return
         }
@@ -179,6 +179,8 @@ internal open class BannerView(activity: Activity) {
     }
 
     companion object {
+        private const val CLOSE = "close"
+
         private fun getDisplayMetrics(activity: Activity?): Pair<Int, Int> {
             val displayMetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
