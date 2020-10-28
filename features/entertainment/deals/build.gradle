@@ -26,7 +26,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.70"
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
