@@ -271,16 +271,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        return new GCMHandler(this);
-    }
-
-    @Override
     public Intent getMaintenancePageIntent() {
         return new Intent();
     }
 
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }

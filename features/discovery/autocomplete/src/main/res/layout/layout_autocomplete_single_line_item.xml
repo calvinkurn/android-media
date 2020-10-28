@@ -29,7 +29,7 @@
         app:typographyType="body_2"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iconImage"
         app:layout_constraintRight_toLeftOf="@id/actionShortcutButton"

@@ -3,12 +3,11 @@ package com.tokopedia.shop.home.util.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
@@ -276,13 +275,12 @@ object ShopPageHomeMapper {
                 widgetResponse.layoutOrder,
                 widgetResponse.name,
                 widgetResponse.type,
-                mapToHeaderModel(widgetResponse.header),
-                mapToListVoucher(widgetResponse.data)
+                mapToHeaderModel(widgetResponse.header)
         )
     }
 
-    private fun mapToListVoucher(
-            data: List<ShopLayoutWidget.Widget.Data>
+    fun mapToListVoucher(
+            data: List<MerchantVoucherModel>
     ): List<MerchantVoucherViewModel>? {
         return mutableListOf<MerchantVoucherViewModel>().apply {
             data.onEach {
@@ -291,18 +289,18 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToVoucherItem(data: ShopLayoutWidget.Widget.Data): MerchantVoucherViewModel {
+    private fun mapToVoucherItem(data: MerchantVoucherModel): MerchantVoucherViewModel {
         return MerchantVoucherViewModel().apply {
-            voucherId = data.voucherID
-            voucherName = data.name
-            voucherCode = data.voucherCode
-            merchantVoucherType = data.voucherType.voucherType.takeIf { it != -1 }
+            voucherId = data.voucherId
+            voucherName = data.voucherName
+            voucherCode = data.voucherCode ?: ""
+            merchantVoucherType = data.merchantVoucherType?.type.takeIf { it != -1 }
                     ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-            merchantVoucherAmountType = data.amount.amountType.takeIf { it != -1 }
+            merchantVoucherAmountType = data.merchantVoucherAmount?.type.takeIf { it != -1 }
                     ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
-            merchantVoucherAmount = data.amount.amount.toFloat()
+            merchantVoucherAmount = data.merchantVoucherAmount?.amount
             minimumSpend = data.minimumSpend
-            ownerId = data.owner.ownerId
+            ownerId = data.merchantVoucherOwner.ownerId
             validThru = data.validThru.toLong()
             tnc = data.tnc
         }
