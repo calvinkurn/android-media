@@ -1,10 +1,8 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
 
 import android.os.Bundle
-import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.officialstore.official.data.model.Benefit
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
-import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 class OfficialBenefitViewModel(val benefit: MutableList<Benefit>) : OfficialHomeVisitable{
     override fun getChangePayloadFrom(b: Any?): Bundle? = null

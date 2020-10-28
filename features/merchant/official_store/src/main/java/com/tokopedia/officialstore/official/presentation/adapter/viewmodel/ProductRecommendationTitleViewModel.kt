@@ -1,10 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
-import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 class ProductRecommendationTitleViewModel (val title: String): OfficialHomeVisitable{
     override fun getChangePayloadFrom(b: Any?): Bundle? = null
