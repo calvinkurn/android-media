@@ -235,7 +235,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
-        return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker)
+        return OrderPaymentOvoActionData(true, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker)
     }
 
     private fun mapAddress(address: Address): OrderProfileAddress {

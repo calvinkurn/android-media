@@ -91,5 +91,7 @@
     <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
     <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
 
+    <string name="lbl_activate_ovo_now">Aktivasi OVO Sekarang</string>
+
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
 </resources>

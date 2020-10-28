@@ -2,13 +2,17 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.webkit.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -17,9 +21,12 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 
 class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
                                       private val listener: OvoActivationWebViewBottomSheetListener) {
+
+    private var context: Context? = null
 
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var webView: TkpdWebView? = null
@@ -31,6 +38,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
     fun show(fragment: OrderSummaryPageFragment, userSessionInterface: UserSessionInterface) {
         val context: Context = fragment.activity ?: return
+        this.context = context
         fragment.fragmentManager?.let {
             SplitCompat.installActivity(context)
             bottomSheetUnify = BottomSheetUnify().apply {
@@ -39,7 +47,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
                 isKeyboardOverlap = false
                 showCloseIcon = true
                 showHeader = true
-                setTitle(fragment.getString(R.string.lbl_choose_installment_type))
+                setTitle(fragment.getString(R.string.lbl_activate_ovo_now))
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_web_view, null)
                 setupChild(userSessionInterface, child)
@@ -47,9 +55,9 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
                     customPeekHeight = height
                 }
                 setChild(child)
-//                setCloseClickListener {
-//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-//                }
+                setCloseClickListener {
+                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+                }
                 setShowListener {
                     this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onStateChanged(p0: View, p1: Int) {
@@ -86,11 +94,12 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
-//        }
-//        webView?.loadUrl("https://www.google.com")
-//        webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+
+        webView?.loadUrl("https://www.google.com")
+//        webView?.loadAuthUrl("${TokopediaUrl.getInstance().WEB}/ovo/api/v2/activate", userSession)
         webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
             override fun onTopReached() {
                 isTopReached = true
@@ -108,7 +117,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
     private fun generateUrl(userSession: UserSessionInterface): String {
         return URLGenerator.generateURLSessionLogin(
-                "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate?redirect_url=${callbackUrl}".encodeOnce(),
+                "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate?redirect_url=${generateRedirectUrl()}".encodeOnce(),
                 userSession.deviceId,
                 userSession.userId)
     }
@@ -124,12 +133,32 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
             handler?.cancel()
         }
 
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+            Log.i("qwertyuiop", "start url ${url ?: "none"}")
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            Log.i("qwertyuiop", "finished url ${url ?: "none"}")
+        }
+
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            if (url?.contains(callbackUrl, true) == true) {
+            Log.i("qwertyuiop", "intercept url ${url ?: "none"}")
+            if (url?.contains(callbackUrl, true) == true || url?.contains(generateRedirectUrl(), true) == true) {
                 val uri = Uri.parse(url)
                 val isSuccessResult = uri.getQueryParameter("is_success") == "1"
                 listener.onActivationResult(isSuccessResult)
                 bottomSheetUnify?.dismiss()
+            } else if (!URLUtil.isNetworkUrl(url)) {
+                context?.let {
+                    try {
+                        it.startActivity(RouteManager.getIntentNoFallback(it, url))
+                    } catch (t: Throwable) {
+                        // ignore
+                        Timber.d(t)
+                    }
+                }
             }
             return super.shouldInterceptRequest(view, url)
         }
