@@ -2,45 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/headerSortDivider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4">
+        android:layout_height="@dimen/dp_1"
+        android:layout_alignParentEnd="true" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/headerSortDivider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSomFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:layout_below="@+id/headerSortDivider"
+        android:layout_above="@+id/btnShowOrder"
+        android:layout_alignParentStart="true"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSomFilter"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingEnd="@dimen/spacing_lvl4"
-            android:paddingRight="@dimen/spacing_lvl4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/headerSortDivider" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnShowOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_show_order"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_alignParentBottom="true"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_alignParentBottom="true"/>
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:text="@string/btn_show_order" />
 
 </RelativeLayout>

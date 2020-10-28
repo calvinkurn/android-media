@@ -24,6 +24,7 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
     override fun bind(element: SomFilterUiModel) {
         somFilterItemChipsAdapter = SomFilterItemChipsAdapter(filterListener)
         with(itemView) {
+            tvTitleHeaderSomFilter.text = element.nameFilter
             tvHeaderSeeAll.apply {
                 if (element.canSelectMany) {
                     show()

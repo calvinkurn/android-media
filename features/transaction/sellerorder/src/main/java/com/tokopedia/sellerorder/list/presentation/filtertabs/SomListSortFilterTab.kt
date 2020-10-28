@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
@@ -22,10 +23,12 @@ class SomListSortFilterTab(
 
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
+    private var somListFilterUiModel: SomListFilterUiModel? = null
 
     init {
         sortFilter.chipItems = arrayListOf()
         changeTabSortFilterText()
+        selectParentFilter()
     }
 
     private fun changeTabSortFilterText() {
@@ -45,6 +48,21 @@ class SomListSortFilterTab(
         sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
         changeTabSortFilterText()
+    }
+
+    fun updateTabFromFilter(statusList: List<SomListFilterUiModel.Status>) {
+        filterItems = ArrayList(filterItems.map { filterItems ->
+            statusList.find { filterItems.title.contains(it.status) }.let { statusItem ->
+                val amount = if(statusItem?.amount.toZeroIfNull() > 0) "(${statusItem?.amount})" else ""
+                SortFilterItem("${statusItem?.status} $amount").apply {
+                    listener = { statusItem?.let { onTabClicked(this, it) } }
+                    type = if (statusItem?.isChecked == true) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+                }
+        }})
+        sortFilter.chipItems.clear()
+        sortFilter.addItem(filterItems)
+        changeTabSortFilterText()
+        sortFilter.show()
     }
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
@@ -94,7 +112,15 @@ class SomListSortFilterTab(
         getDeepChildOffset(mainParent, parentGroup.getParent(), parentGroup, accumulatedOffset)
     }
 
+    fun updateCounterSortFilter(somListFilterUiModel: SomListFilterUiModel) {
+        var count = 0
+        sortFilter.indicatorCounter = count
+        somListFilterUiModel.statusList.forEach { if(it.isChecked) count++ }
+        sortFilter.indicatorCounter = count
+    }
+
     fun show(somListFilterUiModel: SomListFilterUiModel) {
+        this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.statusList)
         sortFilter.show()
     }
@@ -106,7 +132,7 @@ class SomListSortFilterTab(
         }
     }
 
-    fun selectParentFilter() {
+    private fun selectParentFilter() {
         sortFilter.apply {
             parentListener = {
                 listener.onParentSortFilterClicked()
@@ -117,6 +143,10 @@ class SomListSortFilterTab(
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
+
+    fun getSelectedTab() = selectedTab
+
+    fun getSomListFilterUiModel() = somListFilterUiModel
 
     interface SomListSortFilterTabClickListener {
         fun onTabClicked(status: SomListFilterUiModel.Status)

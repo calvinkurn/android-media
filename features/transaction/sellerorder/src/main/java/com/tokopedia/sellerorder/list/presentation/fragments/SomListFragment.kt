@@ -37,7 +37,11 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_BOTTOM_SHEET_TAG
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
+import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
@@ -65,7 +69,7 @@ import kotlin.coroutines.CoroutineContext
 class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
         TickerCallback, TickerPagerCallback, SearchInputView.Listener, SearchInputView.ResetListener,
-        SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope {
+        SomListOrderViewHolder.SomListOrderItemListener, SomFilterBottomSheet.SomFilterFinishListener, CoroutineScope {
 
     companion object {
         private const val REQEUST_DETAIL = 999
@@ -236,8 +240,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 put(EXTRA_SOM_LIST_GET_ORDER_PARAM, viewModel.getDataOrderListParams())
             }
         }
-        val bottomSheetFilter = SomFilterBottomSheet.createInstance().apply {
-
+        val bottomSheetFilter = SomFilterBottomSheet.createInstance(
+                cacheManager?.id.orEmpty(),
+                somListSortFilterTab.getSelectedTab()?.status.orEmpty()
+        ).apply {
+            setSomFilterFinishListener(this@SomListFragment)
+        }
+        childFragmentManager.let {
+            bottomSheetFilter.show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
     }
 
@@ -741,4 +751,21 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
+
+    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModel: List<SomFilterUiModel>?, idFilter: String, orderStatus: String) {
+        viewModel.updateGetOrderListParams(filterData)
+        val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
+                somFilterUiModel, idFilter, somListSortFilterTab.getSomListFilterUiModel(), orderStatus)
+        somListFilter.statusList.find { it.status == orderStatus }.let {
+            if(it != null) {
+                it.isChecked = true
+                onTabClicked(it)
+                somListSortFilterTab.selectTab(it)
+                somListSortFilterTab.updateTabFromFilter(somListFilter.statusList)
+            } else {
+                refreshOrderList()
+            }
+        }
+        somListSortFilterTab.updateCounterSortFilter(somListFilter)
+    }
 }

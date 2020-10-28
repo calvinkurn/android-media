@@ -30,22 +30,37 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     val updateFilterSelected: LiveData<List<SomFilterUiModel>> = _updateFilterSelected
 
     private val _somFilterUiModelData = MutableLiveData<SomListGetOrderListParam>()
-    val somFilterUiModelData = _somFilterUiModelData
+    val somFilterUiModelData: LiveData<SomListGetOrderListParam> = _somFilterUiModelData
 
     private var somFilterUiModel: List<SomFilterUiModel>? = null
-    private var somListGetOrderListParam: SomListGetOrderListParam = SomListGetOrderListParam()
+    private var somListGetOrderListParam: SomListGetOrderListParam? = null
 
-    fun getSomFilterData() {
+    fun getSomFilterUiModel() = somFilterUiModel
+
+    fun setSomListGetOrderListParam(somListGetOrderListParam: SomListGetOrderListParam) {
+        this.somListGetOrderListParam = somListGetOrderListParam
+    }
+
+    fun getSomFilterData(orderStatus: String) {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             somFilterUiModel = result
-            _filterResult.postValue(Success(result))
+            somFilterUiModel?.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData =
+                    result.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
+                        if (chips.name == orderStatus) {
+                            chips.isSelected = true
+                        }
+                    } ?: listOf()
+            somFilterUiModel?.let {
+                _filterResult.postValue(Success(it))
+            }
         }, onError = {
             _filterResult.postValue(Fail(it))
         })
     }
 
-    fun updateFilterSelected(idFilter: String, position: Int) {
+    fun updateFilterSelected(idFilter: String, position: Int, chipType: String) {
+        val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
         somFilterUiModel?.find {
             it.nameFilter == idFilter
         }?.somFilterData?.map {
@@ -53,47 +68,59 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         }
         somFilterUiModel?.firstOrNull {
             it.nameFilter == idFilter
-        }?.somFilterData?.getOrNull(position)?.isSelected = true
+        }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
 
         _updateFilterSelected.postValue(somFilterUiModel)
     }
 
-    fun updateFilterManySelected(idFilter: String, chipType: String) {
+    fun updateFilterManySelected(idFilter: String, chipType: String, position: Int) {
         val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
+        val isSelected = somFilterUiModel?.find { it.nameFilter == idFilter }?.somFilterData?.get(position)
         somFilterUiModel?.find {
             it.nameFilter == idFilter
         }?.somFilterData?.onEach {
-            it.isSelected = !updateChipsSelected
+            if (it == isSelected) {
+                it.isSelected = !updateChipsSelected
+            }
         }
 
         _updateFilterSelected.postValue(somFilterUiModel)
     }
 
     fun updateParamSom(idFilter: String) {
-        val idOneSelect = somFilterUiModel?.firstOrNull {
+        val idOneSelect = somFilterUiModel?.find {
             it.nameFilter == idFilter
-        }?.somFilterData?.firstOrNull { it.isSelected }?.id
+        }?.somFilterData?.find { it.isSelected }?.id
 
         val idManySelect = somFilterUiModel?.firstOrNull { it.nameFilter == idFilter }
                 ?.somFilterData?.filter { it.isSelected }?.map { it.id } ?: listOf()
 
         when (idFilter) {
             FILTER_SORT -> {
-                somListGetOrderListParam.sortBy = idOneSelect ?: 0
+                somListGetOrderListParam?.sortBy = idOneSelect ?: 0
             }
             FILTER_STATUS_ORDER -> {
-                val statusList = somFilterUiModel?.firstOrNull { it.nameFilter == idFilter }
+                val statusList = somFilterUiModel?.find { it.nameFilter == idFilter }
                         ?.somFilterData?.filter {
                             it.isSelected
-                        }?.flatMap { it.idStatus }
-                somListGetOrderListParam.statusList = statusList ?: listOf()
+                        }?.flatMap { it.idStatus } ?: listOf()
+                somListGetOrderListParam?.statusList = statusList
             }
-            FILTER_TYPE_ORDER -> somListGetOrderListParam.orderTypeList = idManySelect
-            FILTER_COURIER -> somListGetOrderListParam.shippingList = idManySelect
-            FILTER_LABEL -> somListGetOrderListParam.isShippingPrinted = idOneSelect ?: 0
-            FILTER_DEADLINE -> somListGetOrderListParam.deadline = idOneSelect ?: 0
+            FILTER_TYPE_ORDER -> somListGetOrderListParam?.orderTypeList = idManySelect
+            FILTER_COURIER -> somListGetOrderListParam?.shippingList = idManySelect
+            FILTER_LABEL -> somListGetOrderListParam?.isShippingPrinted = idOneSelect ?: 0
+            FILTER_DEADLINE -> somListGetOrderListParam?.deadline = idOneSelect ?: 0
         }
-        somFilterUiModelData.postValue(somListGetOrderListParam)
+        _somFilterUiModelData.postValue(somListGetOrderListParam)
+    }
 
+    fun resetFilterSelected() {
+        somFilterUiModel?.forEach {
+            it.somFilterData.onEach { chips ->
+                chips.isSelected = false
+            }
+        }
+        somListGetOrderListParam = SomListGetOrderListParam()
+        _updateFilterSelected.postValue(somFilterUiModel)
     }
 }

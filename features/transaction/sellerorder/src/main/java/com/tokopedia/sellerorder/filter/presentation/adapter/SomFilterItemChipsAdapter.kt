@@ -13,9 +13,16 @@ import kotlinx.android.synthetic.main.item_chips.view.*
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
     private var somFilterData: SomFilterUiModel? = null
+    private var somFilterChipsUiModel: List<SomFilterChipsUiModel>? = null
 
     fun setChipsFilter(somFilterUiModel: SomFilterUiModel) {
-        this.somFilterData = somFilterUiModel
+        if (somFilterUiModel.somFilterData.size >= MAX_CHIPS_FILTER) {
+            this.somFilterData = somFilterUiModel
+            somFilterChipsUiModel = somFilterUiModel.somFilterData.take(MAX_CHIPS_FILTER)
+        } else {
+            this.somFilterData = somFilterUiModel
+            somFilterChipsUiModel = somFilterUiModel.somFilterData
+        }
         notifyDataSetChanged()
     }
 
@@ -25,11 +32,11 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
     }
 
     override fun getItemCount(): Int {
-        return somFilterData?.somFilterData?.size ?: 0
+        return somFilterChipsUiModel?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ChipsListViewHolder, position: Int) {
-        somFilterData?.somFilterData?.get(position)?.let { holder.bind(it) }
+        somFilterChipsUiModel?.get(position)?.let { holder.bind(it) }
     }
 
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,10 +52,18 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        somFilterListener.onFilterChipsClicked(data, somFilterData?.nameFilter.orEmpty(), adapterPosition, chipType.orEmpty())
+                        somFilterListener.onFilterChipsClicked(data,
+                                somFilterData?.nameFilter.orEmpty(),
+                                adapterPosition,
+                                chipType.orEmpty(),
+                                data.name)
                     }
                 }
             }
         }
+    }
+
+    companion object {
+        const val MAX_CHIPS_FILTER = 6
     }
 }

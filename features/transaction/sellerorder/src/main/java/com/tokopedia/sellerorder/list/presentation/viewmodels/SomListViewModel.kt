@@ -167,7 +167,11 @@ class SomListViewModel @Inject constructor(
 
     fun getDataOrderListParams() = getOrderListParams
 
-    fun updateGetOrderListParams(getOrderListParam: SomListGetOrderListParam) {
+    fun updateGetOrderListParams(getOrderListParams: SomListGetOrderListParam) {
         this.getOrderListParams = getOrderListParams
+    }
+
+    fun updateSomListFilterUi(somListFilterUiModel: SomListFilterUiModel) {
+        _filterResult.postValue(Success(somListFilterUiModel))
     }
 }

@@ -11,8 +11,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 08/05/20.
  */
 class SomListGetFilterListUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<SomListFilterResponse.Data>,
-        private val mapper: FilterResultMapper) : BaseGraphqlUseCase() {
+        private val useCase: GraphqlUseCase<SomListFilterResponse.Data>) : BaseGraphqlUseCase() {
 
     init {
         useCase.setGraphqlQuery(QUERY)
@@ -22,7 +21,7 @@ class SomListGetFilterListUseCase @Inject constructor(
         useCase.setTypeClass(SomListFilterResponse.Data::class.java)
 
         val resultFilterList = useCase.executeOnBackground().orderFilterSom
-        return Success(mapper.mapResponseToUiModel(resultFilterList))
+        return Success(FilterResultMapper.mapResponseToUiModel(resultFilterList))
     }
 
     companion object {

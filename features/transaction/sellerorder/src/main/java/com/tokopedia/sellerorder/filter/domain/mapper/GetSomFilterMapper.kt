@@ -29,13 +29,13 @@ object GetSomFilterMapper {
 
     fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
         return mutableListOf<SomFilterUiModel>().apply {
-            add(SomFilterUiModel(FILTER_SORT, mapToFilterSortUiModel(), false, isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_STATUS_ORDER, mapToFilterStatusUiModel(data.orderFilterSom.statusList), true, isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_TYPE_ORDER, mapToFilterTypeUiModel(data.orderTypeList), true, isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_COURIER, mapToFilterCourierUiModel(data.orderFilterSom.shippingList), true, isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_LABEL, mapToFilterLabelUiModel(), false, isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_DEADLINE, mapToFilterDeadlineUiModel(), isDividerVisible = true))
-            add(SomFilterUiModel(FILTER_DATE, canSelectMany = false, isDividerVisible = false))
+            add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany =  false, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderTypeList), canSelectMany =  true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany =  true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_LABEL, somFilterData = mapToFilterLabelUiModel(), canSelectMany = false, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_DEADLINE, somFilterData =  mapToFilterDeadlineUiModel(), canSelectMany = false, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_DATE, canSelectMany = false, isDividerVisible = false))
         }
     }
 
@@ -77,7 +77,7 @@ object GetSomFilterMapper {
                     childStatusUiModel.add(SomFilterChipsUiModel.ChildStatusUiModel(idList, childStatus.key.orEmpty(),
                             childStatus.text.orEmpty(), childStatus.isChecked))
                 }
-                add(SomFilterChipsUiModel(idListStatus, name = it.orderStatus, isSelected = false, childStatus = childStatusUiModel))
+                add(SomFilterChipsUiModel(idListStatus, key = it.key, name = it.orderStatus, amount = it.orderStatusAmount, isSelected = false, childStatus = childStatusUiModel))
             }
         }
     }

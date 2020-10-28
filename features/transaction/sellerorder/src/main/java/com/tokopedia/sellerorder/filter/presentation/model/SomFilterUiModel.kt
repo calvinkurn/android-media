@@ -4,7 +4,8 @@ import com.tokopedia.sellerorder.filter.presentation.adapter.TypeFactorySomFilte
 
 data class SomFilterUiModel(
         val nameFilter: String = "",
-        val somFilterData: List<SomFilterChipsUiModel> = listOf(),
+        var date: String = "",
+        var somFilterData: List<SomFilterChipsUiModel> = listOf(),
         val canSelectMany: Boolean = false,
         val isDividerVisible: Boolean = false
 ): BaseSomFilter {
