@@ -28,6 +28,7 @@ class SellerOrderSlice(context: Context,
     companion object {
         private const val MAX_PRODUCT_NAME_LENGTH = 15
         private const val TRUNCATED_PRODUCT_NAME_LENGTH = 12
+        private const val MAX_ORDER_LIST_SIZE = 3
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -36,19 +37,23 @@ class SellerOrderSlice(context: Context,
                 header {
                     title = date.convertToOrderDateTitle(context)
                 }
-                orderList.forEach {
+                var numberOfOrder = 0
+                for ((orderId, status, orderStatusId, deadlineText, orderDate, buyerName, listOrderProduct) in orderList) {
+                    if (numberOfOrder >= MAX_ORDER_LIST_SIZE) {
+                        break
+                    }
                     row {
-                        val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, it.orderId).let { intent ->
+                        val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, orderId).let { intent ->
                             PendingIntent.getActivity(context, 0, intent, 0)
                         }
                         pendingIntent?.let { intent ->
                             primaryAction = createOrderDetailPrimaryAction(
                                     intent,
-                                    it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),
-                                    it.buyerName)
+                                    listOrderProduct.firstOrNull()?.pictureUrl.orEmpty(),
+                                    buyerName)
                         }
-                        setTitleItem(IconCompat.createWithBitmap(it.listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap(context)), SMALL_IMAGE)
-                        title = it.listOrderProduct.let { productList ->
+                        setTitleItem(IconCompat.createWithBitmap(listOrderProduct.firstOrNull()?.pictureUrl.orEmpty().getBitmap(context)), SMALL_IMAGE)
+                        title = listOrderProduct.let { productList ->
                             val displayedName = productList.firstOrNull()?.productName.orEmpty()
                             if (productList.size <= 1) {
                                 displayedName
@@ -64,10 +69,11 @@ class SellerOrderSlice(context: Context,
                                 }
                             }
                         }
-                        subtitle = (it.orderStatusId.mapToStatus() ?: it.status).let { status ->
-                            context.getString(R.string.seller_action_order_success_item_desc, status, it.deadlineText)
+                        subtitle = (orderStatusId.mapToStatus() ?: status).let { status ->
+                            context.getString(R.string.seller_action_order_success_item_desc, status, deadlineText)
                         }
                     }
+                    numberOfOrder++
                 }
             }
 
