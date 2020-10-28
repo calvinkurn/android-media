@@ -14,6 +14,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -29,9 +31,6 @@ class DealsBrandsActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
-
-    private val TAB_RELAKSASI = "Relaksasi"
-    private val QUERY = "Alfa"
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsBrandActivity> = object : IntentsTestRule<DealsBrandActivity>(DealsBrandActivity::class.java) {
@@ -63,7 +62,7 @@ class DealsBrandsActivityTest {
 
     private fun actionOnDealsBrandViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(QUERY), closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), closeSoftKeyboard())
 
         Thread.sleep(2000)
         onView(getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 0)).perform(click())
@@ -71,7 +70,7 @@ class DealsBrandsActivityTest {
 
     private fun clickOnRelaksasiTab() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(TAB_RELAKSASI))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
     }
 
     private fun changeLocationBrandPage() {

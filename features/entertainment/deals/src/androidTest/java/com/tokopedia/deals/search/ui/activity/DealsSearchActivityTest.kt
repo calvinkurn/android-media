@@ -16,6 +16,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_CATEGORY_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_LAST_SEEN_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
 import com.tokopedia.deals.search.ui.activity.mock.DealsSearchNotFoundMockResponse
@@ -33,8 +38,6 @@ class DealsSearchActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDbSource = GtmLogDBSource(context)
-
-    private val query = "tes"
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsSearchActivity> = object : IntentsTestRule<DealsSearchActivity>(DealsSearchActivity::class.java) {
@@ -72,17 +75,17 @@ class DealsSearchActivityTest {
         Thread.sleep(2000)
         onView(withId(R.id.tv_location)).perform(click())
         Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Mal Bali Galeria"))).perform(click())
+        onView(CommonMatcher.firstView(withText(DUMMY_LOCATION_ONE_STRING))).perform(click())
         Thread.sleep(2000)
         onView(withId(R.id.tv_location)).perform(click())
         Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Ramayana Mal Bali"))).perform(click())
+        onView(CommonMatcher.firstView(withText(DUMMY_LOCATION_TWO_STRING))).perform(click())
         Thread.sleep(2000)
     }
 
     private fun actionOnVoucherViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.voucher_deals_layout), 1)).perform(click())
@@ -91,7 +94,7 @@ class DealsSearchActivityTest {
 
     private fun actionOnMerchantViewHolder() {
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(query), ViewActions.closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
         Thread.sleep(2000)
         onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.brand_view_holder_layout), 1)).perform(click())
         Thread.sleep(2000)
@@ -99,13 +102,13 @@ class DealsSearchActivityTest {
 
     private fun actionOnLastSeen() {
         Thread.sleep(2000)
-        onView(withText("BBQ tes")).check(matches(isDisplayed())).perform(click())
+        onView(withText(DUMMY_RESPONSE_LAST_SEEN_TITLE)).check(matches(isDisplayed())).perform(click())
         Thread.sleep(2000)
     }
 
     private fun actionOnCuratedViewHolder() {
         Thread.sleep(2000)
-        onView(withText("Dessert")).check(matches(isDisplayed())).perform(click())
+        onView(withText(DUMMY_RESPONSE_CATEGORY_TITLE)).check(matches(isDisplayed())).perform(click())
         Thread.sleep(2000)
     }
 

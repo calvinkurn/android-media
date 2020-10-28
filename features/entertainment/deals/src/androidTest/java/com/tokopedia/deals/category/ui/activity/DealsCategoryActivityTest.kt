@@ -17,6 +17,11 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_TWO
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_FIRST_CATEGORY_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -35,8 +40,6 @@ class DealsCategoryActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
-
-    private val TAB_NAME = "Relaksasi"
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(DealsCategoryActivity::class.java) {
@@ -76,7 +79,7 @@ class DealsCategoryActivityTest {
 
     private fun actionOnBrandViewHolder() {
         Thread.sleep(1000)
-        val recyclerView = onView(AllOf.allOf(withId(R.id.deals_category_recycler_view), withTagStringValue(TAB_NAME)))
+        val recyclerView = onView(AllOf.allOf(withId(R.id.deals_category_recycler_view), withTagStringValue(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE)))
         recyclerView.perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
 
         Thread.sleep(1000)
@@ -91,17 +94,17 @@ class DealsCategoryActivityTest {
 
     private fun filterProducts() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Makanan"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
 
         Thread.sleep(3000)
-        onView(CommonMatcher.firstView(withText("Travel Entertainment Widget"))).perform(click())
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())
 
         Thread.sleep(2000)
-        onView(CommonMatcher.firstView(withText("Filters"))).perform(click())
+        onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
         Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Baju Baru"))).perform(click())
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
         Thread.sleep(1000)
-        onView(CommonMatcher.firstView(withText("Terapkan"))).perform(click())
+        onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
 
         Thread.sleep(1000)
     }
@@ -115,12 +118,12 @@ class DealsCategoryActivityTest {
 
     private fun clickOnRelaksasiTab() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(TAB_NAME))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(click())
     }
 
     private fun swipeUpOnCategoryTab() {
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.deals_category_recycler_view), withTagStringValue(TAB_NAME))).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(3))
+        onView(AllOf.allOf(withId(R.id.deals_category_recycler_view), withTagStringValue(DUMMY_RESPONSE_SECOND_CATEGORY_TITLE))).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(3))
     }
 
     private fun clickOnSearchBar() {

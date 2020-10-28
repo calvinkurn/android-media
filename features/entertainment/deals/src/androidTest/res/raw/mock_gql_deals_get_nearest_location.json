@@ -18,7 +18,7 @@
             "image_app": "",
             "location_type": {
               "id": 5,
-              "name": "landmark",
+              "name": "city",
               "display_name": "Landmark",
               "search_radius": "500m",
               "outer_radius": "250m",

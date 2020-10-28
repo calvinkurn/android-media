@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.ui.activity.mock.DealsHomeMockResponse
 import com.tokopedia.deals.location_picker.model.response.Location
@@ -27,6 +28,7 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.*
+import java.lang.Exception
 
 /**
  * @author by jessica on 28/09/20
@@ -79,7 +81,8 @@ class DealsHomeActivityTest {
 
     private fun changeLocation() {
         Thread.sleep(2000)
-        activityRule.activity.setCurrentLocation(Location())
+        activityRule.activity.setCurrentLocation(Location(name = DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING,
+        id = activityRule.activity.currentLoc.id++))
 
         Thread.sleep(2000)
     }
@@ -209,8 +212,9 @@ class DealsHomeActivityTest {
 
     private fun impressionOnLayout() {
         Thread.sleep(3000)
-        onView(withId(R.id.btn_ok_dialog)).perform(click())
-        Thread.sleep(3000)
+        try {
+            onView(withId(R.id.btn_ok_dialog)).perform(click())
+        } catch (e: Exception) { }
     }
 
     private fun clickOnOrderList() {

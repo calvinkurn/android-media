@@ -13,7 +13,7 @@ class DealsHomeMockResponse : MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(KEY_EVENT_HOME,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_get_homepage),
-        FIND_BY_CONTAINS)
+                FIND_BY_CONTAINS)
 
         addMockResponse(KEY_EVENT_LOCATION_SEARCH,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_get_nearest_location),
