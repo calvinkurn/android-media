@@ -107,6 +107,10 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             RouteManager.route(context, data.actionAppLink)
         }
 
+        rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
+        }
+
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
@@ -117,10 +121,6 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
         rvWidgetCardSmall.addItemDecoration(PlayWidgetCardSmallItemDecoration(context))
 
         snapHelper.attachToRecyclerView(rvWidgetCardSmall)
-
-        rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
-            mWidgetInternalListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
-        }
 
         rvWidgetCardSmall.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 

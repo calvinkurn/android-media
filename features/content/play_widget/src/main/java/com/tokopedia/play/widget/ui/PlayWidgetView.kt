@@ -43,6 +43,11 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mWidgetInternalListener?.onWidgetDetached(this)
+    }
+
     fun setModel(model: PlayWidgetUiModel) {
         when (model) {
             is PlayWidgetUiModel.Small -> addSmallView(model)
