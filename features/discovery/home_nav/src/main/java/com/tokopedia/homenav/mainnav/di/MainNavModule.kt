@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
-import com.tokopedia.homenav.common.util.NavCommandProcessor
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactory
 import com.tokopedia.homenav.mainnav.data.factory.MainNavDataFactoryImpl
 import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
@@ -12,7 +11,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
-import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 
