@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -13,7 +14,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.*
+import com.tokopedia.play_common.util.PlayConnectionCommon
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -25,13 +27,14 @@ open class PlayVideoPlayer(val context: Context) {
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
+    var maxDurationInSeconds: Int = 0
 
     init {
         exoPlayer.volume = 0F
-        exoPlayer.addListener(object : Player.EventListener{
+        exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
-                    Player.STATE_ENDED -> exoPlayer.seekTo(0)
+                    Player.STATE_ENDED -> if (PlayConnectionCommon.isConnectCellular(context)) whenIsPlayingChanged(isPlaying = false)
                     Player.STATE_READY -> whenIsPlayingChanged(isPlaying = true)
                     else -> whenIsPlayingChanged(isPlaying = false)
                 }
@@ -46,7 +49,10 @@ open class PlayVideoPlayer(val context: Context) {
     fun start() {
         if (videoUrl?.isBlank() == true) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        var mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        if (maxDurationInSeconds > 0) {
+            mediaSource = getClippingMediaSource(mediaSource, maxDurationInSeconds)
+        }
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource,true, false)
     }
@@ -92,4 +98,8 @@ open class PlayVideoPlayer(val context: Context) {
         return mediaSource.createMediaSource(uri)
     }
 
+    private fun getClippingMediaSource(mediaSource: MediaSource, duration: Int): ClippingMediaSource {
+        val endPositionUs = TimeUnit.SECONDS.toMicros(duration.toLong())
+        return ClippingMediaSource(mediaSource, endPositionUs)
+    }
 }

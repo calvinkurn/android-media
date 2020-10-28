@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.coordinator
 
 import android.view.View
+import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -11,6 +12,7 @@ import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play_common.util.PlayConnectionCommon
 import kotlinx.coroutines.*
 
 /**
@@ -81,7 +83,7 @@ class PlayWidgetAutoPlayCoordinator(
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
         mConfig = config
 
-        if (false) { //TODO(!config.autoPlay)
+        if (!config.autoPlay) {
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
@@ -92,7 +94,7 @@ class PlayWidgetAutoPlayCoordinator(
         if (videoPlayerMap.size < maxAutoPlay) {
             videoPlayerMap.putAll(
                     List(maxAutoPlay - videoPlayerMap.size) {
-                        PlayVideoPlayer(widget.context) to null
+                        getVideoPlayer(widget.context) to null
                     }
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {
@@ -130,6 +132,26 @@ class PlayWidgetAutoPlayCoordinator(
         } catch (e: Throwable) {
             emptyList()
         }
+    }
+
+    private fun getVideoPlayer(context: Context): PlayVideoPlayer {
+        val videoPlayer = PlayVideoPlayer(context)
+        if (::mConfig.isInitialized) {
+            return when {
+//                PlayConnectionCommon.isConnectWifi(context) -> {
+//                    videoPlayer.apply {
+//                        maxDurationInSeconds = mConfig.maxAutoPlayWifiDuration
+//                    }
+//                }
+                PlayConnectionCommon.isConnectCellular(context) -> {
+                    videoPlayer.apply {
+                        maxDurationInSeconds = mConfig.maxAutoPlayCellularDuration
+                    }
+                }
+                else -> videoPlayer
+            }
+        }
+        return videoPlayer
     }
 
     private fun getMaxAutoPlayCard(): Int {
