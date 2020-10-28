@@ -78,6 +78,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(requireContext())
         super.onCreate(savedInstanceState)
+        setupToolbar()
         shopId = userSession.shopId
     }
 
@@ -173,7 +174,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             moveToShopEditBasicInfoFragment()
         }
