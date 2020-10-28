@@ -25,6 +25,7 @@ import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.homepage.data.*
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
 import com.tokopedia.salam.umrah.homepage.presentation.activity.UmrahHomepageActivity
@@ -136,7 +137,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHideFAB()
-        umrahHomepageViewModel.homePageModel.observe(this, Observer {
+        umrahHomepageViewModel.homePageModel.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 renderList(this)
@@ -145,7 +146,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
             }
         })
 
-        umrahHomepageViewModel.isError.observe(this, Observer {
+        umrahHomepageViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
                     performanceMonitoring.stopTrace()
@@ -197,23 +198,22 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     override fun onBindParameterVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getSearchParamData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_home_page_search_parameter), isLoadedFromCloud)
+        umrahHomepageViewModel.getSearchParamData(
+                UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY, isLoadedFromCloud)
     }
 
     override fun onBindMyUmrahVH(isLoadFromCloud: Boolean) {
-        umrahHomepageViewModel.getUmrahSayaData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_saya_list), isLoadFromCloud)
+        umrahHomepageViewModel.getUmrahSayaData(UmrahQuery.UMRAH_SAYA_LIST_QUERY, isLoadFromCloud)
     }
 
     override fun onBindCategoryVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getCategoryData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_home_page_category), isLoadedFromCloud)
+        umrahHomepageViewModel.getCategoryData(
+                UmrahQuery.UMRAH_HOME_PAGE_CATEGORY_QUERY, isLoadedFromCloud)
     }
 
     override fun onBindCategoryFeaturedVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getCategoryFeaturedData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_home_page_featured), isLoadedFromCloud)
+        umrahHomepageViewModel.getCategoryFeaturedData(
+                UmrahQuery.UMRAH_HOME_PAGE_FEATURED_QUERY, isLoadedFromCloud)
     }
 
     override fun onClickDanaImpian() {
@@ -253,8 +253,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     override fun onBindBannerVH(isLoadedFromCloud: Boolean) {
-        umrahHomepageViewModel.getBannerData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_home_page_banner), isLoadedFromCloud)
+        umrahHomepageViewModel.getBannerData(
+                UmrahQuery.UMRAH_HOME_PAGE_BANNER_QUERY, isLoadedFromCloud)
     }
 
     override fun onClickBanner(banner: UmrahBanner, position: Int) {
@@ -266,8 +266,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     }
 
     override fun onBindPartnerVH(isLoadFromCloud: Boolean) {
-        umrahHomepageViewModel.getPartnerTravelData(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_umrah_common_travel_agents), isLoadFromCloud)
+        umrahHomepageViewModel.getPartnerTravelData(UmrahQuery.UMRAH_COMMON_TRAVEL_AGENT_QUERY, isLoadFromCloud)
     }
 
     override fun onPerformanceHomepageListener() {

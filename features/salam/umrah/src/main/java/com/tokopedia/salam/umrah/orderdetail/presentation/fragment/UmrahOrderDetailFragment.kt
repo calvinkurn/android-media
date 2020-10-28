@@ -24,6 +24,7 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -74,7 +75,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        umrahOrderDetailViewModel.orderDetailData.observe(this, Observer {
+        umrahOrderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     hideLoading()
@@ -92,7 +93,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             }
         })
 
-        umrahOrderDetailViewModel.myWidgetData.observe(this, Observer {
+        umrahOrderDetailViewModel.myWidgetData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderMyUmrahWidget(it.data)
@@ -110,11 +111,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         showLoading()
 
         umrahOrderDetailViewModel.getOrderDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_order_detail),
+                UmrahQuery.UMRAH_ORDER_DETAIL_QUERY,
                 orderId
         )
         umrahOrderDetailViewModel.getMyUmrahWidget(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_saya_by_order_id),
+                UmrahQuery.UMRAH_MY_UMRAH_BY_ORDER_ID_QUERY,
                 orderId
         )
     }

@@ -29,7 +29,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     val variantDetailTest1 = VariantDetail(
-            variantID=54,
+            variantID=1,
             identifier="",
             name="Ukuran Kemasan",
             status=1,

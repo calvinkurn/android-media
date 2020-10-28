@@ -1,9 +1,9 @@
 package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
+import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
@@ -14,16 +14,13 @@ import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
-import com.tokopedia.shop_settings.viewmodel.TestDispatcherProvider
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
-
+import java.lang.reflect.Field
 
 @ExperimentalCoroutinesApi
 abstract class ShopEditBasicInfoViewModelTestFixture {
@@ -50,6 +47,8 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     lateinit var validateDomainShopNameUseCase: ValidateDomainShopNameUseCase
 
     protected lateinit var shopEditBasicInfoViewModel: ShopEditBasicInfoViewModel
+    protected lateinit var privateCurrentShopNameField: Field
+    protected lateinit var privateCurrentShopField: Field
 
     @Before
     fun setup() {
@@ -61,13 +60,16 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
                 validateDomainShopNameUseCase,
-                TestDispatcherProvider()
+                TestCoroutineDispatcher
         )
-    }
 
-    protected fun LiveData<*>.verifyValueEquals(expected: Any) {
-        val actual = value
-        TestCase.assertEquals(expected, actual)
+        privateCurrentShopNameField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShopName").apply {
+            isAccessible = true
+        }
+
+        privateCurrentShopField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShop").apply {
+            isAccessible = true
+        }
     }
 
     protected fun verifyUnsubscribeUseCase() {
@@ -91,10 +93,10 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         } returns ValidateShopDomainNameResult()
     }
 
-    internal fun<T: Any> LiveData<Result<T>>.verifySuccessEquals(expected: Success<Any>?) {
-        val expectedResult = expected?.data
-        val actualResult = (value as? Success<T>)?.data
-        TestCase.assertEquals(expectedResult, actualResult)
+    protected fun onGetShopDomainNameSuggestion_thenReturn() {
+        coEvery {
+            getShopDomainNameSuggestionUseCase.executeOnBackground()
+        } returns ShopDomainSuggestionData()
     }
 
     protected fun _onUpdateShopBasicData_thenReturn() {
@@ -116,7 +118,6 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         } returns UploadShopEditImageModel()
     }
 
-
     protected fun verifySuccessGetAllowShopNameDomainChangesCalled() {
         coVerify { getAllowShopNameDomainChangesUseCase.executeOnBackground() }
     }
@@ -127,6 +128,10 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
 
     protected fun verifySuccessValidateDomainNameCalled() {
         coVerify { validateDomainShopNameUseCase.executeOnBackground() }
+    }
+
+    protected fun verifyGetShopDomainNameSuggestionCalled() {
+        coVerify { getShopDomainNameSuggestionUseCase.executeOnBackground() }
     }
 
     protected fun verifySuccessValidateShopNameRequestParamsCalled(shoName: String) {
