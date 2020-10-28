@@ -297,6 +297,14 @@
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
+    <!-- Dynamic feature for buyerorder-->
+    <string name="df_title_buyer_order">Daftar Transaksi</string>
+    <string name="title_activity_people_reason">Ajukan Pembatalan</string>
+    <string name="title_order_detail">Detail Pesanan</string>
+    <string name="title_buyer_order_list">Daftar Transaksi</string>
+    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+    <string name="title_uoh_list">Daftar Transaksi</string>
+
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
     <string name="kol_title_post_detail">Post Detail</string>

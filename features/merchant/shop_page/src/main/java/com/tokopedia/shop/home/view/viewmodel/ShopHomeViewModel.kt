@@ -198,54 +198,6 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-//    fun onRefreshPlayBanner(shopId: String){
-//        val result = _shopHomeLayoutData.value
-//        if(result is Success){
-//            launchCatchError(dispatcherProvider.io(), block = {
-//                result.data.listWidget.find { data -> data is ShopHomePlayCarouselUiModel }?.let { uiModel ->
-//                    getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
-//                    val playWidgetEntity = getPlayWidgetUseCase.executeOnBackground()
-//                    _updatePlayWidgetData.postValue((uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playWidgetEntity))
-//                }
-//            }){
-//                it.printStackTrace()
-//            }
-//        }
-//    }
-
-//    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean, position: Int){
-//        launchCatchError(dispatcherProvider.io(), block = {
-//            playToggleChannelReminderUseCase.setParams(channelId, isSet)
-//            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
-//            if(reminder.playToggleChannelReminder != null && reminder.playToggleChannelReminder?.header?.status == PlayToggleChannelReminder.SUCCESS_STATUS){
-//                _reminderPlayLiveData.postValue(Pair(position, Success(isSet)))
-//            } else {
-//                _reminderPlayLiveData.postValue(Pair(position, Fail(Throwable())))
-//            }
-//        }){
-//            _reminderPlayLiveData.postValue(Pair(position, Fail(it)))
-//        }
-//    }
-
-//    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
-//        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomePlayCarouselUiModel }
-//        if(index != -1){
-//            val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomePlayCarouselUiModel
-//            getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
-//            val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
-//            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
-//            if(playBannerDataModel.channelList.isNotEmpty()){
-//                newHomeLayout[index] = data.copy(playBannerCarouselDataModel = playBannerDataModel)
-//            }else{
-//                newHomeLayout.remove(data)
-//            }
-//            return shopPageHomeLayoutUiModel.copy(
-//                    listWidget = newHomeLayout
-//            )
-//        }
-//        return shopPageHomeLayoutUiModel
-//    }
-
     private suspend fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
         val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
@@ -308,23 +260,6 @@ class ShopHomeViewModel @Inject constructor(
             _checkWishlistData.value = Success(listResultCheckWishlist)
         }) {}
     }
-
-//    fun updatePlayWidgetData(channelId: String, totalView: String){
-//        val result = _shopHomeLayoutData.value
-//        if(result is Success){
-//            launchCatchError(block = {
-//                result.data.listWidget.withIndex().find { (_, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
-//                    val newList = (uiModel as ShopHomePlayCarouselUiModel).playBannerCarouselDataModel.channelList.toMutableList()
-//                    val indexOf = newList.indexOfFirst { it is PlayBannerCarouselItemDataModel && it.channelId == channelId }
-//                    if(indexOf != -1){
-//                        newList[index] = (newList[index] as PlayBannerCarouselItemDataModel).copy(countView = totalView)
-//                        _updatePlayWidgetData.postValue(uiModel.copy(playBannerCarouselDataModel = uiModel.playBannerCarouselDataModel.copy(channelList = newList)))
-//                    }
-//                }
-//            }){
-//            }
-//        }
-//    }
 
     private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)

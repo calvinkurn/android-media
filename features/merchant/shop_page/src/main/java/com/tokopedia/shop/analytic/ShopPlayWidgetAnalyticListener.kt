@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
@@ -12,7 +13,6 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-
 
 /**
  * Created by mzennis on 26/10/20.
@@ -49,7 +49,7 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_BUYER,
                 eventAction = "impression on play sgc banner",
@@ -87,7 +87,7 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) = withWidgetPosition { pos ->
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_BUYER,
                 eventAction = "impression on play sgc channel",
@@ -138,7 +138,7 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
-    override fun onClickBannerCard(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
+    override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,

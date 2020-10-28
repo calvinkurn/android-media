@@ -114,6 +114,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
                     product.productName,
+                    product.productName,
                     product.category.name,
                     product.category.id,
                     product.catalog.catalogID,

@@ -25,10 +25,7 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
@@ -122,8 +119,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private val bannerCardListener = object : PlayWidgetCardMediumBannerViewHolder.Listener {
 
-        override fun onBannerClicked(view: View) {
-            mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView)
+        override fun onBannerClicked(view: View, item: PlayWidgetMediumBannerUiModel, position: Int) {
+            mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView, item, position)
         }
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.analytics.v2.HomePlayWidgetAnalyticListener
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
@@ -9,31 +11,40 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
-
 /**
  * Created by mzennis on 19/10/20.
  */
 class CarouselPlayWidgetViewHolder(
-        private val widgetViewHolder: PlayWidgetViewHolder
-) : AbstractViewHolder<CarouselPlayWidgetDataModel>(widgetViewHolder.itemView) {
+        private val playWidgetViewHolder: PlayWidgetViewHolder,
+        val homeCategoryListener: HomeCategoryListener
+) : AbstractViewHolder<CarouselPlayWidgetDataModel>(playWidgetViewHolder.itemView) {
 
+    private val playWidgetAnalyticListener = HomePlayWidgetAnalyticListener(
+            trackingQueue = homeCategoryListener.getTrackingQueueObj(),
+            userId = homeCategoryListener.userId
+    )
+
+    init {
+        playWidgetViewHolder.coordinator.setAnalyticListener(playWidgetAnalyticListener)
+    }
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {
-        element?.let { item ->
-            widgetViewHolder.bind(item.widgetUiModel)
-        }
+        if (element == null) return
+        setupAnalyticVariable(element)
+        playWidgetViewHolder.bind(element.widgetUiModel)
     }
 
     override fun bind(element: CarouselPlayWidgetDataModel?, payloads: MutableList<Any>) {
         if (element == null || payloads.size <= 0) return
         val payload = payloads[0]
+
         val widgetUiModel = element.widgetUiModel
         if (widgetUiModel !is PlayWidgetUiModel.Medium) return
 
         if (payload is PlayWidgetReminderUiModel) {
-            widgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
+            playWidgetViewHolder.bind(updateToggleReminder(payload, widgetUiModel))
         } else if (payload is PlayWidgetTotalViewUiModel) {
-            widgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
+            playWidgetViewHolder.bind(updateTotalView(payload, widgetUiModel))
         }
     }
 
@@ -60,6 +71,14 @@ class CarouselPlayWidgetViewHolder(
             }
         }
         return widgetUiModel.copy(items = items)
+    }
+
+    private fun setupAnalyticVariable(element: CarouselPlayWidgetDataModel) {
+        if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
+            playWidgetAnalyticListener.widgetId = element.homeChannel.id
+            playWidgetAnalyticListener.widgetName = element.widgetUiModel.title
+            playWidgetAnalyticListener.widgetPosition = element.homeChannel.getPosition()
+        }
     }
 
     companion object {

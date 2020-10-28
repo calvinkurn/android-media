@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
-
 /**
  * Created by mzennis on 14/10/20.
  */
@@ -40,14 +39,11 @@ data class CarouselPlayWidgetDataModel(
     }
 
     override fun isCache(): Boolean {
-        return false // todo implement caching
+        return false
     }
 
     override fun visitableId(): String = visitableId
 
-    /**
-     * Diff util implementation, I guess
-     */
     override fun equalsWith(obj: Any?): Boolean {
         if (obj is CarouselPlayWidgetDataModel) {
             return homeChannel.id == obj.homeChannel.id
@@ -60,7 +56,7 @@ data class CarouselPlayWidgetDataModel(
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return null // todo implement change payload form
+        return null
     }
 
     override fun type(typeFactory: HomeTypeFactory?): Int {

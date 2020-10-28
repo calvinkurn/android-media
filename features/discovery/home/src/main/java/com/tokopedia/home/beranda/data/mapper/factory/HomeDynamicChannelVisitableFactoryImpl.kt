@@ -74,11 +74,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
 
-        // todo testing only
-        dynamicChannelList.add(2, DynamicHomeChannel.Channels(
-                layout = DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER
-        ))
-
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
@@ -406,7 +401,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     override fun build(): List<Visitable<*>> = visitableList
 
     /**
-     * Play widget
+     * Play Widget
      */
     private fun createCarouselPlayWidget(dynamicHomeChannel: DynamicHomeChannel.Channels, position: Int) {
         if (isCache) return
@@ -417,22 +412,4 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         if (!visitableList.contains(dataModel)) visitableList.add(dataModel)
     }
-
-//    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels, position: Int) {
-//        if (!isCache) {
-//            val playBanner = mappingPlayCarouselChannel(channel, position, HashMap(), isCache)
-//            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-//        }
-//    }
-
-//    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
-//                                           position: Int,
-//                                           trackingData: MutableMap<String, Any>,
-//                                           isCache: Boolean): Visitable<*> {
-//        val playCardViewModel = PlayCarouselCardDataModel(channel = channel, position = position)
-//        if (!isCache) {
-//            playCardViewModel.setTrackingData(trackingData)
-//        }
-//        return playCardViewModel
-//    }
 }

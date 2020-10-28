@@ -535,19 +535,6 @@ class HomeUseCaseModule {
         return CloseChannelUseCase(useCase)
     }
 
-//    @Provides
-//    @HomeScope
-//    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-//        return GetPlayWidgetUseCase(graphqlRepository)
-//    }
-//
-//    @Provides
-//    @HomeScope
-//    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
-//        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
-//        return PlayToggleChannelReminderUseCase(useCase)
-//    }
-
     @Provides
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {

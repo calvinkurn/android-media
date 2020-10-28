@@ -24,6 +24,7 @@ import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -90,11 +91,13 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
@@ -102,6 +105,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Advertisin
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -150,6 +154,9 @@ final class ProductListPresenter
     private RelatedViewModel relatedViewModel = null;
     private List<Option> quickFilterOptionList = new ArrayList<>();
     private DynamicFilterModel dynamicFilterModel;
+    @Nullable private ProductItemViewModel threeDotsProductItem = null;
+    private int firstProductPosition = 0;
+    private boolean hasFullThreeDotsOptions = false;
 
     @Inject
     ProductListPresenter(
@@ -191,6 +198,7 @@ final class ProductListPresenter
 
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
+        hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
     }
 
     private boolean getIsUseRatingString() {
@@ -223,6 +231,18 @@ final class ProductListPresenter
         catch (Exception e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    private boolean getHasFullThreeDotsOptions() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+                    .equals(AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -517,6 +537,7 @@ final class ProductListPresenter
                     item.setTopadsImpressionUrl(topAds.getProduct().getImage().getS_url());
                     item.setTopadsClickUrl(topAds.getProductClickUrl());
                     item.setTopadsWishlistUrl(topAds.getProductWishlistUrl());
+                    item.setTopadsClickShopUrl(topAds.getShopClickUrl());
                     item.setProductName(topAds.getProduct().getName());
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
@@ -529,13 +550,20 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setShopID(topAds.getShop().getId());
                     item.setShopName(topAds.getShop().getName());
+                    item.setShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopPowerMerchant(topAds.getShop().isGoldShop());
+                    item.setShopUrl(topAds.getShop().getUri());
                     item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
                     item.setPosition(topAdsCount);
+                    item.setCategoryID(topAds.getProduct().getCategory().getId());
                     item.setCategoryBreadcrumb(topAds.getProduct().getCategoryBreadcrumb());
+                    item.setProductUrl(topAds.getProduct().getUri());
+                    item.setMinOrder(topAds.getProduct().getProductMinimumOrder());
 
                     if (shopRatingABTestStrategy != null) {
                         shopRatingABTestStrategy.processShopRatingVariant(topAds, item);
@@ -927,6 +955,7 @@ final class ProductListPresenter
 
         topAdsCount = 1;
         productList = createProductItemVisitableList(productViewModel);
+        firstProductPosition = list.size();
         list.addAll(productList);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
@@ -1614,17 +1643,19 @@ final class ProductListPresenter
 
     public void onFreeOngkirOnBoardingShown() {
         if (getView() != null && !isSearchOnBoardingShown()) {
-            getView().showOnBoarding();
+            getView().showOnBoarding(firstProductPosition, hasFullThreeDotsOptions);
             toggleSearchOnBoardingShown();
         }
     }
 
     private Boolean isSearchOnBoardingShown() {
-        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN);
+        return searchOnBoardingLocalCache.getBoolean(FILTER_ONBOARDING_SHOWN)
+                && (searchOnBoardingLocalCache.getBoolean(THREE_DOTS_ONBOARDING_SHOWN) || !hasFullThreeDotsOptions);
     }
 
     private void toggleSearchOnBoardingShown() {
         searchOnBoardingLocalCache.putBoolean(FILTER_ONBOARDING_SHOWN, true);
+        if (hasFullThreeDotsOptions) searchOnBoardingLocalCache.putBoolean(THREE_DOTS_ONBOARDING_SHOWN, true);
         searchOnBoardingLocalCache.applyEditor();
     }
 
@@ -1725,6 +1756,121 @@ final class ProductListPresenter
                     broadMatchItemViewModel.getImageUrl(),
                     SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
             );
+    }
+
+    @Override
+    public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null) return;
+
+        this.threeDotsProductItem = item;
+
+        getView().trackEventLongPress(item.getProductID());
+        getView().showProductCardOptions(createProductCardOptionsModel(item));
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(item.isWishlistButtonEnabled());
+        productCardOptionsModel.setHasSimilarSearch(true);
+        productCardOptionsModel.setWishlisted(item.isWishlisted());
+        productCardOptionsModel.setKeyword(getView().getQueryKey());
+        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
+        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
+        productCardOptionsModel.setRecommendation(false);
+        productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
+        productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
+
+        productCardOptionsModel.setHasAddToCart(hasFullThreeDotsOptions);
+        productCardOptionsModel.setAddToCartParams(new ProductCardOptionsModel.AddToCartParams(item.getMinOrder()));
+        productCardOptionsModel.setCategoryName(item.getCategoryString());
+        productCardOptionsModel.setProductName(item.getProductName());
+        productCardOptionsModel.setFormattedPrice(item.getPrice());
+
+        ProductCardOptionsModel.Shop shop = new ProductCardOptionsModel.Shop();
+        shop.setShopId(item.getShopID());
+        shop.setShopName(item.getShopName());
+        shop.setShopUrl(item.getShopUrl());
+        productCardOptionsModel.setShop(shop);
+
+        productCardOptionsModel.setHasVisitShop(hasFullThreeDotsOptions);
+
+        productCardOptionsModel.setHasShareProduct(hasFullThreeDotsOptions);
+        productCardOptionsModel.setProductImageUrl(item.getImageUrl());
+        productCardOptionsModel.setProductUrl(item.getProductUrl());
+
+        return productCardOptionsModel;
+    }
+
+    @Override
+    public void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel) {
+        if (getView() == null) return;
+
+        ProductCardOptionsModel.AddToCartResult addToCartResult = productCardOptionModel.getAddToCartResult();
+
+        if (!addToCartResult.isUserLoggedIn())
+            getView().launchLoginActivity("");
+        else {
+            handleAddToCartForLoginUser(productCardOptionModel.getAddToCartResult());
+        }
+
+        this.threeDotsProductItem = null;
+    }
+
+    private void handleAddToCartForLoginUser(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+        if (addToCartResult.isSuccess()) {
+            handleAddToCartSuccess(addToCartResult);
+        } else {
+            handleAddToCartError(addToCartResult);
+        }
+    }
+
+    private void handleAddToCartSuccess(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+        if (threeDotsProductItem == null || getView() == null) return;
+
+        String cartId = addToCartResult.getCartId();
+        Object addToCartDataLayer = threeDotsProductItem.getProductAsATCObjectDataLayer(cartId);
+
+        if (threeDotsProductItem.isAds())
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    threeDotsProductItem.getTopadsClickUrl(),
+                    threeDotsProductItem.getProductID(),
+                    threeDotsProductItem.getProductName(),
+                    threeDotsProductItem.getImageUrl(),
+                    SearchConstant.TopAdsComponent.TOP_ADS
+            );
+
+        getView().trackSuccessAddToCartEvent(threeDotsProductItem.isAds(), addToCartDataLayer);
+        getView().showAddToCartSuccessMessage();
+    }
+
+    private void handleAddToCartError(ProductCardOptionsModel.AddToCartResult addToCartResult) {
+        if (getView() == null) return;
+
+        getView().showAddToCartFailedMessage(addToCartResult.getErrorMessage());
+    }
+
+    @Override
+    public void handleVisitShopAction() {
+        if (getView() == null || threeDotsProductItem == null) return;
+
+        if (threeDotsProductItem.isTopAds()) {
+            topAdsUrlHitter.hitClickUrl(
+                    getView().getClassName(),
+                    threeDotsProductItem.getTopadsClickShopUrl(),
+                    threeDotsProductItem.getProductID(),
+                    threeDotsProductItem.getProductName(),
+                    threeDotsProductItem.getImageUrl(),
+                    SearchConstant.TopAdsComponent.TOP_ADS
+            );
+        }
+
+        getView().routeToShopPage(threeDotsProductItem.getShopID());
+        getView().trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer());
+
+        this.threeDotsProductItem = null;
     }
 
     @Override
