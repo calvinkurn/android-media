@@ -35,12 +35,12 @@ data class RestrictionEngineDataRequestProduct(
 
 data class RestrictionEngineDataRequestShop(
         @Expose
-        @SerializedName("shop")
+        @SerializedName("shopID")
         var shopID: Int = 0
 )
 
 data class RestrictionEngineDataRequestCampaign(
         @Expose
-        @SerializedName("campaign")
+        @SerializedName("campaignID")
         var campaignID: Int = 0
 )

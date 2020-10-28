@@ -19,11 +19,12 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-   private var buttonStateCallback: SaveButtonStateCallBack? = null
+    private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
 
     companion object {
@@ -41,14 +42,16 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderViewPager()
-        keyword.isChecked = true
-        keyword_grp.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.keyword) {
-                view_pager.currentItem = POSITION0
-
-            } else {
-                view_pager.currentItem = POSITION1
-            }
+        keyword.chipType = ChipsUnify.TYPE_SELECTED
+        keyword.setOnClickListener {
+            keyword.chipType = ChipsUnify.TYPE_SELECTED
+            neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
+            view_pager.currentItem = POSITION0
+        }
+        neg_keyword.setOnClickListener {
+            neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
+            keyword.chipType = ChipsUnify.TYPE_NORMAL
+            view_pager.currentItem = POSITION1
         }
     }
 

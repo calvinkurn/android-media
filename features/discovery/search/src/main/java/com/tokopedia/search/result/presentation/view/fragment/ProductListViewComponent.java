@@ -14,6 +14,7 @@ import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFil
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
+import com.tokopedia.search.utils.ProductionSchedulersProviderModule;
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule;
 
 import dagger.Component;
@@ -32,6 +33,7 @@ import dagger.Component;
         AdvertisingLocalCacheHandlerModule.class,
         SearchOnBoardingLocalCacheModule.class,
         TopAdsUrlHitterModule.class,
+        ProductionSchedulersProviderModule.class,
         ProductListPresenterModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {

@@ -21,6 +21,7 @@ class IssueRegistry : IssueRegistry() {
                 TypographyDetector.ISSUE,
                 UnifyButtonDetector.ISSUE,
                 UnifyImageButtonDetector.ISSUE,
+                VectorDrawableDetector.ISSUE,
                 GradleDetector.DEPRECATED,
                 GradleDetector.BANNED
         )

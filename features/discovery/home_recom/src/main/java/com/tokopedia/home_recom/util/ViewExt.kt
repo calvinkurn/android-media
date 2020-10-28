@@ -3,9 +3,9 @@ package com.tokopedia.home_recom.util
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.unifycomponents.Toaster
 
 
 fun View.fadeHide(duration: Int = 50){
@@ -25,4 +25,30 @@ fun View.fadeShow(duration: Int = 200){
 fun View.startFade(isShow: Boolean){
     if(isShow) this.fadeShow()
     else this.fadeHide()
+}
+
+fun FragmentActivity.showToastSuccess(message: String){
+    Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+}
+
+fun FragmentActivity.showToastError(throwable: Throwable?){
+    Toaster.make(
+            findViewById(android.R.id.content),
+            RecommendationPageErrorHandler.getErrorMessage(this, throwable),
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR
+    )
+}
+
+fun FragmentActivity.showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
+    Toaster.make(
+            findViewById(android.R.id.content),
+            message,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            actionString,
+            View.OnClickListener {
+                action.invoke()
+            }
+    )
 }

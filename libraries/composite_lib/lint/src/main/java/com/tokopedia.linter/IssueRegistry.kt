@@ -20,7 +20,8 @@ class IssueRegistry : IssueRegistry() {
                 ToasterDetector.ISSUE,
                 TypographyDetector.ISSUE,
                 UnifyButtonDetector.ISSUE,
-                UnifyImageButtonDetector.ISSUE
+                UnifyImageButtonDetector.ISSUE,
+                VectorDrawableDetector.ISSUE
         )
 
     override val minApi: Int

@@ -102,10 +102,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   uiHidden
                 }
               }
-              favoriteData {
-                totalFavorite
-                alreadyFavorited
-              }
               activeProduct
               createInfo {
                 shopCreated
@@ -327,8 +323,21 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             shopFeature{
               IsGoApotik
             }
-          }
-        }""".trimIndent()
+            restrictionInfo{
+                message
+                restrictionData{
+                    productID
+                    isEligible
+                    action{
+                        actionType
+                        title
+                        description
+                        attributeName
+                    }
+                }
+            }
+        }
+    }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -386,6 +395,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE } ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
+            p2UiData.restrictionInfo = restrictionInfo
         }
         return p2UiData
     }

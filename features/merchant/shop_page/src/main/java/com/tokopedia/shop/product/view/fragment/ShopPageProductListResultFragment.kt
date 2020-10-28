@@ -53,22 +53,20 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
-import com.tokopedia.shop.common.constant.ShopParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
-import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
-import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
+import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -263,10 +261,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onSwipeRefresh() {
         viewModel.clearCache()
-        isNeedToReloadData = true
-        // set shop info to null so we can load all new fresh data
-        // when performing swipe refresh
-        shopInfo = null
+        // check RE for showcase type campaign eligibility
+        loadShopRestrictionInfo()
         super.onSwipeRefresh()
     }
 
@@ -347,8 +343,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             // get new shop info to sync already favorited data
             hideShopFollowersView()
             showToastSuccess(
-                    getString(R.string.text_success_follow_shop),
-                    ctaText = getString(R.string.shop_page_product_action_no_upload_product)
+                    message = getString(R.string.text_success_follow_shop),
+                    ctaText = getString(R.string.shop_page_product_action_no_upload_product),
+                    ctaAction = View.OnClickListener {
+                        shopPageTracking?.clickCTASuccessFollowNplToaster(
+                                shopId,
+                                userId,
+                                customDimensionShopPage
+                        )
+                    }
             )
         }
     }
@@ -458,8 +461,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Success -> {
                     val shopRestrictionData = it.data.dataResponse[0]
                     // handle view to follow shop for campaign type showcase
-                    val isFollowShop = shopInfo?.favoriteData?.alreadyFavorited == ALREADY_FOLLOW_SHOP
-                    if(isLogin && !isMyShop && shopRestrictionData.status == PRODUCT_INELIGIBLE && !isFollowShop) {
+                    val isFollowShop = shopRestrictionData.status != PRODUCT_INELIGIBLE
+                    if(isLogin && !isMyShop && !isFollowShop) {
                         val title = shopRestrictionData.actions[0].title
                         val description = shopRestrictionData.actions[0].description
                         showShopFollowersView(title, description, isFollowShop)
@@ -520,6 +523,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout?.let {
             partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
                 override fun onButtonFollowNplClick() {
+                    shopPageTracking?.clickFollowShowcaseNplButton(
+                            shopId,
+                            userId,
+                            customDimensionShopPage
+                    )
                     shopId?.let { shopId -> toggleFavoriteShop(shopId) }
                 }
             })
@@ -692,9 +700,24 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun showToastSuccess(message: String, ctaText: String = "") {
+    private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText)
+            ctaAction?.let { ctaClickListener ->
+                Toaster.make(
+                        findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        ctaText,
+                        ctaClickListener
+                )
+            } ?: Toaster.make(
+                        findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        ctaText
+            )
         }
     }
 
@@ -795,6 +818,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopProductAdapter.changeSelectedEtalaseFilter(selectedEtalaseId, selectedEtalaseName)
                     shopProductAdapter.refreshSticky()
                     if (needReloadData) {
+                        isNeedToReloadData = true
                         loadInitialData()
                         needReloadData = false
                     }
@@ -882,17 +906,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if (needReloadData) {
-//            loadInitialData()
-//            needReloadData = false
-//        }
-//    }
-
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        hideShopFollowersView()
     }
 
     override fun initInjector() {

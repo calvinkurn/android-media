@@ -1,6 +1,7 @@
 package com.tokopedia.gm.statistic.view.model;
 
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 
 /**
  * Created by normansyahputa on 7/18/17.
