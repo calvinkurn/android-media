@@ -47,6 +47,10 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
+    <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/fontSize_lvl5</item>
+    </style>
+
     <style name="TextAppearance">
         <item name="android:textColor">@android:color/black</item>
     </style>
