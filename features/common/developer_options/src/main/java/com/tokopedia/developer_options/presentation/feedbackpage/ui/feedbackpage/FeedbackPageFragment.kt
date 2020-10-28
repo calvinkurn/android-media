@@ -176,6 +176,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
+    override fun getContext(): Context {
+        return requireContext()
+    }
+
     override fun checkUriImage(feedbackId: Int, imageCount: Int) {
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
@@ -408,8 +412,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
             if(validate) {
                 emailTokopedia = "$emailText@tokopedia.com"
-                requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback)
-//                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
+                feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
 
                 if (reportType == 1) {
                     FeedbackPageAnalytics.eventClickSubmitButtonBug()
@@ -458,10 +461,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     private fun requestMapper(email: String, journey: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
-        Toast.makeText(context, versionCode, Toast.LENGTH_SHORT).show()
-        Toast.makeText(context, deviceInfo, Toast.LENGTH_SHORT).show()
-        Toast.makeText(context, androidVersion, Toast.LENGTH_SHORT).show()
-        Toast.makeText(context, detailFeedback, Toast.LENGTH_SHORT).show()
         val affectedVersion = if (GlobalConfig.isSellerApp()) "SA-$appVersion" else "MA-$appVersion"
         return FeedbackFormRequest(
                 platformID = 2,
@@ -584,4 +583,5 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 MediaStore.Images.Media.DATA
         )
     }
+
 }

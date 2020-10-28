@@ -1,7 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.domain.request
 
 data class FeedbackFormRequest(
-        var platformID: Int?,
+        var platformID: Int = 3,
         var email: String?,
         var appVersion: String?,
         var bundleVersion: String?,

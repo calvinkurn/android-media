@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.ui.feedbackpage
 
 import android.net.Uri
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.developer_options.api.ApiClient
 import com.tokopedia.developer_options.api.FeedbackApiInterface
@@ -51,6 +52,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
+        Toast.makeText(view.getContext(), feedbackFormRequest.platformID, Toast.LENGTH_LONG).show()
         view.showLoadingDialog()
         compositeSubscription.add(
                 feedbackApi.createFeedbackForm(feedbackFormRequest)
@@ -87,7 +89,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     override fun onNext(t: ImageResponse?) {
                         if (totalImage == imageCount) {
                             view.hideLoadingDialog()
-                            commitData(feedbackId)
+//                            commitData(feedbackId)
                         }
                     }
 
