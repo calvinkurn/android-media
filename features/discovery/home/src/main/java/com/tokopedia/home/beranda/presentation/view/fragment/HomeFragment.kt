@@ -822,20 +822,6 @@ open class HomeFragment : BaseDaggerFragment(),
         })
     }
 
-//    private fun observePlayReminder(){
-//        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
-//            if(it.isSuccess()){
-//                showToaster(
-//                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
-//                        else getString(R.string.home_page_play_card_success_remove_reminder),
-//                        Toaster.TYPE_NORMAL
-//                )
-//            } else {
-//                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
-//            }
-//        })
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeSearchHint()
@@ -1016,9 +1002,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
-        playWidgetCoordinator = PlayWidgetCoordinator(viewLifecycleOwner).apply {
-            setListener(this@HomeFragment)
-        }
+        setupPlayWidgetCoordinator()
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -1564,24 +1548,6 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(actionLink, activity)
         }
     }
-
-//    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
-//        getHomeViewModel().getPlayBannerCarousel(position)
-//    }
-
-//    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-//        if(getHomeViewModel().getUserId().isNotEmpty()) getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
-//        else RouteManager.route(context, ApplinkConst.LOGIN)
-//    }
-
-//    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-//        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
-//            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
-//            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-//        } else {
-//            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
-//        }
-//    }
 
     override fun getTopAdsBannerNextPageToken(): String {
         return getHomeViewModel().currentTopAdsBannerToken
@@ -2155,8 +2121,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     /**
-     * Play widget
+     * Play Widget
      */
+    private fun setupPlayWidgetCoordinator() {
+        playWidgetCoordinator = PlayWidgetCoordinator(viewLifecycleOwner).apply {
+            setListener(this@HomeFragment)
+        }
+    }
+
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         getHomeViewModel().getPlayWidget()
     }

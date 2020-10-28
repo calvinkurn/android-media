@@ -1,9 +1,10 @@
 package com.tokopedia.home.analytics.v2
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home.analytics.v2.BaseTracking.BusinessUnit.ADS_SOLUTION
+import com.tokopedia.home.analytics.v2.BaseTracking.Event.CLICK_HOMEPAGE
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
@@ -25,11 +26,11 @@ class HomePlayWidgetAnalyticListener(
     override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
-                        Event.KEY to "clickHomepage",
+                        Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click view all",
                         Label.KEY to "0 - Tokopedia Play - $pos",
-                        BusinessUnit.KEY to "ads solution",
+                        BusinessUnit.KEY to ADS_SOLUTION,
                         CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
                 )
@@ -62,7 +63,7 @@ class HomePlayWidgetAnalyticListener(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
-                eventAction = "click",
+                eventAction = Event.CLICK,
                 eventLabel = "click on banner play - ${item.imageUrl} - $channelPositionInList",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
@@ -106,7 +107,7 @@ class HomePlayWidgetAnalyticListener(
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
-                eventAction = "click",
+                eventAction = Event.CLICK,
                 eventLabel = "click channel - ${item.partner.id} - ${item.channelId} - $channelPositionInList - $pos - $isAutoPlay",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
@@ -124,11 +125,11 @@ class HomePlayWidgetAnalyticListener(
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
-                        Event.KEY to "clickHomepage",
+                        Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click ${if (isRemindMe) "on remove" else ""} remind me",
                         Label.KEY to "${item.channelId} - $channelPositionInList",
-                        BusinessUnit.KEY to "ads solution",
+                        BusinessUnit.KEY to ADS_SOLUTION,
                         CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
                 )
@@ -138,11 +139,11 @@ class HomePlayWidgetAnalyticListener(
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
-                        Event.KEY to "clickHomepage",
+                        Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click other content",
                         Label.KEY to "${item.imageUrl} - $channelPositionInList",
-                        BusinessUnit.KEY to "ads solution",
+                        BusinessUnit.KEY to ADS_SOLUTION,
                         CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
                 )
