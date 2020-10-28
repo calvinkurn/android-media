@@ -52,7 +52,8 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
     override fun sendFeedbackForm(feedbackFormRequest: FeedbackFormRequest) {
-        Toast.makeText(view.getContext(), feedbackFormRequest.platformID, Toast.LENGTH_LONG).show()
+        Toast.makeText(view.getContext(), feedbackFormRequest.platformID.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(view.getContext(), feedbackFormRequest.os, Toast.LENGTH_LONG).show()
         view.showLoadingDialog()
         compositeSubscription.add(
                 feedbackApi.createFeedbackForm(feedbackFormRequest)

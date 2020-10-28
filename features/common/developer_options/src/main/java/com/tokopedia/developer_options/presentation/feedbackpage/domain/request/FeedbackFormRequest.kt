@@ -1,22 +1,42 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.domain.request
 
+import com.google.gson.annotations.SerializedName
+
 data class FeedbackFormRequest(
-        var platformID: Int = 3,
+        @SerializedName("platformID")
+        var platformID: Int?,
+        @SerializedName("email")
         var email: String?,
+        @SerializedName("appVersion")
         var appVersion: String?,
+        @SerializedName("bundleVersion")
         var bundleVersion: String?,
+        @SerializedName("device")
         var device: String?,
+        @SerializedName("os")
         var os: String?,
+        @SerializedName("tokopediaUserID")
         var tokopediaUserID: String?,
+        @SerializedName("tokopediaEmail")
         var tokopediaEmail: String?,
+        @SerializedName("sessionToken")
         var sessionToken: String?,
+        @SerializedName("fcmToken")
         var fcmToken: String?,
+        @SerializedName("loginState")
         var loginState: String?,
+        @SerializedName("lastAccessedPage")
         var lastAccessedPage: String?,
+        @SerializedName("category")
         var category: Int?,
+        @SerializedName("journey")
         var journey: String?,
+        @SerializedName("expected")
         var expected: String?,
+        @SerializedName("labelsId")
         var labelsId: ArrayList<Int>?,
+        @SerializedName("type")
         var type: Int?,
+        @SerializedName("detail")
         var detail: String?
 )
