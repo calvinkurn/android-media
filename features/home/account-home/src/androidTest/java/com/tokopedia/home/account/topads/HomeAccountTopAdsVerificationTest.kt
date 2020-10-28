@@ -3,6 +3,7 @@ package com.tokopedia.home.account.topads
 import android.Manifest
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.home.account.R
@@ -19,7 +20,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class HomeAccountTopAdsVerificationTest {
-    private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
     var activityRule = object : ActivityTestRule<InstrumentationHomeAccountTestActivity>(InstrumentationHomeAccountTestActivity::class.java) {
@@ -36,19 +36,18 @@ class HomeAccountTopAdsVerificationTest {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var topAdsCount = 0
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
+
     @Before
     fun setTopAdsAssertion() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
-
         login()
         waitForData()
     }
 
     @After
-    fun deleteDatabase() {
+    fun tearDown() {
         topAdsAssertion?.after()
     }
 
@@ -75,6 +74,7 @@ class HomeAccountTopAdsVerificationTest {
         when (buyerRecyclerView.findViewHolderForAdapterPosition(i)) {
             is RecommendationProductViewHolder -> {
                 waitForData()
+                topAdsCount++
                 clickOnEachItemRecyclerView(
                         activityRule.activity.findViewById(com.tokopedia.home.account.test.R.id.container_home_account),
                         buyerRecyclerView.id,
