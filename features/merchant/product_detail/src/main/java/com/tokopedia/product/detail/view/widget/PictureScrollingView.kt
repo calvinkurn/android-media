@@ -46,7 +46,9 @@ class PictureScrollingView @JvmOverloads constructor(
                 override fun onPageSelected(position: Int) {
                     imageSliderPageControl?.setCurrentIndicator(position)
                     pagerAdapter.media[position].run {
-                        onSwipePictureListener.invoke(type, urlOriginal, position, componentTrackData)
+                        if(position != lastPosition) {
+                            onSwipePictureListener.invoke(type, urlOriginal, position, componentTrackData)
+                        }
                     }
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
