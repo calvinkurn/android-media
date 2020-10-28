@@ -4,9 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
+import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
-import com.tokopedia.homenav.common.util.*
 import com.tokopedia.homenav.mainnav.domain.interactor.*
+import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
 import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -22,7 +23,6 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.launch
@@ -38,7 +38,8 @@ class MainNavViewModel @Inject constructor(
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
-        private val userSession: Lazy<UserSessionInterface>
+        private val userSession: Lazy<UserSessionInterface>,
+        private val getResolutionNotification: Lazy<GetResolutionNotification>
 ): BaseViewModel(baseDispatcher.get().io()) {
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
@@ -69,8 +70,11 @@ class MainNavViewModel @Inject constructor(
         get() = _shopResultListener
     private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
+    private var resolutionNotification: NotificationResolutionModel = NotificationResolutionModel(unreadCount = 0)
+
     init {
         getMainNavData()
+        getNotification()
     }
 
     // ============================================================================================
@@ -109,10 +113,6 @@ class MainNavViewModel @Inject constructor(
             Timber.d("Update nav data failed")
             e.printStackTrace()
         }
-    }
-
-    fun setUserMenuList() {
-
     }
 
     // ============================================================================================
@@ -161,8 +161,11 @@ class MainNavViewModel @Inject constructor(
             if (!hasShop) firstSectionList.add(it.getMenu(ID_OPEN_SHOP_TICKER))
             firstSectionList.add(SeparatorViewModel())
 
+            val complainNotification = if (resolutionNotification.unreadCount != 0)
+                resolutionNotification.unreadCount.toString() else ""
+
             val secondSectionList = listOf(
-                    it.getMenu(ID_COMPLAIN),
+                    it.getMenu(ID_COMPLAIN, complainNotification),
                     it.getMenu(ID_TOKOPEDIA_CARE),
                     it.getMenu(ID_QR_CODE)
             )
@@ -240,6 +243,23 @@ class MainNavViewModel @Inject constructor(
         }){
             //apply global error for mainnav
             _ovoResultListener.postValue(Fail(it))
+        }
+    }
+
+    private fun getNotification() {
+        launchCatchError(coroutineContext, block = {
+            val result = getResolutionNotification.get().executeOnBackground()
+            if (result.unreadCount != 0) {
+                resolutionNotification = result
+                val findExistingResolutionMenu = _mainNavListVisitable.find { it.id() == ClientMenuGenerator.ID_COMPLAIN }
+                findExistingResolutionMenu?.let {
+                    val indexOfExistingResolutionMenu = _mainNavListVisitable.indexOf(it)
+                    (findExistingResolutionMenu as? HomeNavMenuViewModel)?.notifCount = resolutionNotification?.unreadCount.toString()
+                    updateWidget(findExistingResolutionMenu, indexOfExistingResolutionMenu)
+                }
+            }
+        }) {
+            it.printStackTrace()
         }
     }
 }

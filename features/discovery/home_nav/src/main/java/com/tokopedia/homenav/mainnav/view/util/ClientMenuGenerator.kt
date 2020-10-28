@@ -25,81 +25,88 @@ class ClientMenuGenerator(val context: Context) {
     val APPLINK_MY_BILLS = "tokopedia://mybills"
     val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
 
-    fun getMenu(menuId: Int): HomeNavVisitable {
+    fun getMenu(menuId: Int, notifCount: String = ""): HomeNavVisitable {
         when(menuId) {
-            ID_WISHLIST_MENU -> return getWishlistUserMenu()
-            ID_FAVORITE_SHOP -> return getFavoriteShopMenu()
-            ID_RECENT_VIEW -> return getRecentViewMenu()
-            ID_SUBSCRIPTION -> return getSubscriptionMenu()
-            ID_COMPLAIN -> return getComplainMenu()
-            ID_TOKOPEDIA_CARE -> return getTokopediaCareMenu()
-            ID_QR_CODE -> return getQRCodeMenu()
+            ID_WISHLIST_MENU -> return getWishlistUserMenu(notifCount)
+            ID_FAVORITE_SHOP -> return getFavoriteShopMenu(notifCount)
+            ID_RECENT_VIEW -> return getRecentViewMenu(notifCount)
+            ID_SUBSCRIPTION -> return getSubscriptionMenu(notifCount)
+            ID_COMPLAIN -> return getComplainMenu(notifCount)
+            ID_TOKOPEDIA_CARE -> return getTokopediaCareMenu(notifCount)
+            ID_QR_CODE -> return getQRCodeMenu(notifCount)
 
             ID_OPEN_SHOP_TICKER -> return getOpenShopTicker()
         }
         return HomeNavMenuViewModel()
     }
 
-    private fun getWishlistUserMenu(): HomeNavMenuViewModel {
+    private fun getWishlistUserMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_WISHLIST_MENU,
                 srcIconId = IconUnify.HEART,
                 itemTitle = context.getString(R.string.menu_user_menu_wishlist),
-                applink = ApplinkConst.NEW_WISHLIST
+                applink = ApplinkConst.NEW_WISHLIST,
+                notifCount = notifCount
         )
     }
 
-    private fun getFavoriteShopMenu(): HomeNavMenuViewModel {
+    private fun getFavoriteShopMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_FAVORITE_SHOP,
                 srcIconId = IconUnify.SHOP_FAVORITE,
                 itemTitle = context.getString(R.string.menu_user_menu_favorite_shop),
-                applink = ApplinkConst.FAVORITE
+                applink = ApplinkConst.FAVORITE,
+                notifCount = notifCount
         )
     }
 
-    private fun getRecentViewMenu(): HomeNavMenuViewModel {
+    private fun getRecentViewMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_RECENT_VIEW,
                 srcIconId = IconUnify.CLOCK,
                 itemTitle = context.getString(R.string.menu_user_menu_recent_view),
-                applink = ApplinkConst.RECENT_VIEW
+                applink = ApplinkConst.RECENT_VIEW,
+                notifCount = notifCount
         )
     }
 
-    private fun getSubscriptionMenu(): HomeNavMenuViewModel {
+    private fun getSubscriptionMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_SUBSCRIPTION,
                 srcIconId = IconUnify.BILL,
                 itemTitle = context.getString(R.string.menu_user_menu_subscription),
-                applink = APPLINK_MY_BILLS
+                applink = APPLINK_MY_BILLS,
+                notifCount = notifCount
         )
     }
 
-    private fun getComplainMenu(): HomeNavMenuViewModel {
+    private fun getComplainMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_COMPLAIN,
                 srcIconId = IconUnify.COMPLAINT,
                 itemTitle = context.getString(R.string.menu_user_menu_complain),
-                applink = APPLINK_COMPLAIN
+                applink = APPLINK_COMPLAIN,
+                notifCount = notifCount
         )
     }
 
-    private fun getTokopediaCareMenu(): HomeNavMenuViewModel {
+    private fun getTokopediaCareMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_TOKOPEDIA_CARE,
                 srcIconId = IconUnify.CALL_CENTER,
                 itemTitle = context.getString(R.string.menu_user_menu_tokopedia_care),
-                applink = ApplinkConst.CONTACT_US_NATIVE
+                applink = ApplinkConst.CONTACT_US_NATIVE,
+                notifCount = notifCount
         )
     }
 
-    private fun getQRCodeMenu(): HomeNavMenuViewModel {
+    private fun getQRCodeMenu(notifCount: String): HomeNavMenuViewModel {
         return HomeNavMenuViewModel(
                 id = ID_QR_CODE,
                 srcIconId = IconUnify.QR_CODE,
                 itemTitle = context.getString(R.string.menu_user_menu_qr_code),
-                applink = ApplinkConst.QRSCAN
+                applink = ApplinkConst.QRSCAN,
+                notifCount = notifCount
         )
     }
 

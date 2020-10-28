@@ -20,7 +20,8 @@ fun createViewModel (
         getMainNavDataUseCase: GetMainNavDataUseCase = mockk(relaxed = true),
         dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
         userSession: UserSessionInterface = mockk(relaxed = true),
-        clientMenuGenerator: ClientMenuGenerator = mockk(relaxed = true)
+        clientMenuGenerator: ClientMenuGenerator = mockk(relaxed = true),
+        getResolutionNotification: GetResolutionNotification = mockk(relaxed = true)
 ): MainNavViewModel {
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
@@ -30,7 +31,8 @@ fun createViewModel (
             getUserInfoUseCase = Lazy { getUserInfoUseCase },
             clientMenuGenerator = Lazy { clientMenuGenerator },
             userSession = Lazy { userSession },
-            getMainNavDataUseCase = Lazy { getMainNavDataUseCase }
+            getMainNavDataUseCase = Lazy { getMainNavDataUseCase },
+            getResolutionNotification = Lazy { getResolutionNotification }
     )
 }
 
