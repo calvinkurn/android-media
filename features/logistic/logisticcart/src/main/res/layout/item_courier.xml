@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/img_mvc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         app:srcCompat="@drawable/ic_kebab"
         android:layout_marginBottom="@dimen/dp_8"
         android:visibility="visible"/>
