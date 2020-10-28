@@ -43,7 +43,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_onboarding_item"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="@dimen/ip_common_dp_30"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_lvl2"
             android:ellipsize="end"
