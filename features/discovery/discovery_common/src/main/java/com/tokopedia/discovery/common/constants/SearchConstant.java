@@ -142,6 +142,8 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
         String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
     }
 
     interface ProductCardLabel {
@@ -152,6 +154,7 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
