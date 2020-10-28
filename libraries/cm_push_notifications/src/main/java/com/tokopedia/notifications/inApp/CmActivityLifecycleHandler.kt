@@ -10,7 +10,7 @@ import java.util.*
 class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
                                  val pushIntentHandler: PushIntentHandler,
                                  val callback: ShowInAppCallback,
-                                 val weakHashMap: WeakHashMap<Activity, Boolean>) {
+                                 val weakHashMap: WeakHashMap<Activity, Boolean>) {//todo chane nanme
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
@@ -39,6 +39,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
     fun onActivityStartedInternal(activity: Activity) {
         checkApplication(activity)
         updateCurrentActivity(activity)
+        // todo check for whether push is handled or not
         showInApp(activity.javaClass.name, activity.hashCode())
     }
 

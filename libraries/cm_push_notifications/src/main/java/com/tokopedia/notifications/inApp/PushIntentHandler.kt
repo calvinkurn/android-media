@@ -15,5 +15,6 @@ class PushIntentHandler {
 }
 
 interface PushIntentContract {
+    //todo Rahul should return boolean - will tell the cm whether to continue checkin for inapp or not
     fun checkPushIntent(activity: Activity, bundle: Bundle?)
 }
