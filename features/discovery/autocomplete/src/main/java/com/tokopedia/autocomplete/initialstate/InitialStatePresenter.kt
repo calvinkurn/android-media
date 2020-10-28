@@ -290,13 +290,16 @@ class InitialStatePresenter @Inject constructor(
 
             if (refreshedPopularSearchData.isEmpty()) return
 
-            listVisitable.forEachIndexed { _, visitable ->
-                if (visitable is PopularSearchViewModel) {
+            var refreshIndex = -1
+
+            listVisitable.forEachIndexed { index, visitable ->
+                if (visitable is PopularSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = refreshedPopularSearchData
+                    refreshIndex = index
                 }
             }
 
-            view.showInitialStateResult(listVisitable)
+            if (refreshIndex != -1) view.refreshViewWithPosition(refreshIndex)
         }
     }
 
@@ -332,13 +335,16 @@ class InitialStatePresenter @Inject constructor(
 
             if (dynamicInitialStateData.isEmpty()) return
 
-            listVisitable.forEachIndexed { _, visitable ->
-                if (visitable is DynamicInitialStateSearchViewModel) {
+            var refreshIndex = -1
+
+            listVisitable.forEachIndexed { index, visitable ->
+                if (visitable is DynamicInitialStateSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = dynamicInitialStateData
+                    refreshIndex = index
                 }
             }
 
-            view.showInitialStateResult(listVisitable)
+            if (refreshIndex != -1) view.refreshViewWithPosition(refreshIndex)
         }
     }
 
