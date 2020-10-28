@@ -14,6 +14,7 @@ object SomAnalytics {
     private const val CLICK = "Click"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ORDER_LIST = "click order card order list"
+    private const val CLICK_ORDER_CARD_ON_ORDER_LIST = "click order card on order list"
     private const val SUBMIT_SEARCH = "submit search"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
@@ -204,5 +205,14 @@ object SomAnalytics {
                 CUSTOM_DIMENSION_SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // SOM Revamp
+    fun eventClickOrderCard(orderStatus: Int, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventClickStatusFilter(orderStatus: String, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "$orderStatus - $orderStatusName")
     }
 }

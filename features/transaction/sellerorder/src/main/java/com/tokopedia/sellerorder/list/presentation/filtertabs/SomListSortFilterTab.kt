@@ -45,6 +45,7 @@ class SomListSortFilterTab(
                         it.title.contains(statusFilter.status)
                     }?.apply {
                         title = composeTabTitle(statusFilter.status, statusFilter.amount)
+                        type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
                     } ?: createNewTabs(statusFilter)
                 }
         filterItems = ArrayList(filters)

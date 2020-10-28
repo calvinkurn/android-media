@@ -392,4 +392,12 @@
     <string name="som_list_bulk_accept_dialog_description_failed">Hiks. Semua pesanan kamu gagal diterima. Coba lagi yuk</string>
     <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
     <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
+    <string name="som_list_coachmark_new_order_card_title">Cepat cek dan terima pesanan</string>
+    <string name="som_list_coachmark_new_order_card_description">Sekarang kamu bisa cek info kurir dan kota tujuan. Klik tombol untuk langsung terima pesanan.</string>
+    <string name="som_list_coachmark_sort_filter_title">Gampang cari pesanan dengan filter</string>
+    <string name="som_list_coachmark_sort_filter_description">Cukup geser untuk cari pesanan berdasarkan status dan sentuh tombol untuk lihat info detail.</string>
+    <string name="som_list_coachmark_waiting_payment_title">Fokus tunggu pembayaran pembeli</string>
+    <string name="som_list_coachmark_waiting_payment_description">Selain menunggu dan cek pesanan terbayar, pesanan gagal bayar atau terbayar saat stok habis nggak akan ditampilkan.</string>
+    <string name="som_list_coachmark_multi_select_title">Bisa atur pesanan sekaligus banyak</string>
+    <string name="som_list_coachmark_multi_select_description">Klik tombol Pilih Sekaligus untuk terima pesanan, cetak label, atau request pick-up beberapa order.</string>
 </resources>

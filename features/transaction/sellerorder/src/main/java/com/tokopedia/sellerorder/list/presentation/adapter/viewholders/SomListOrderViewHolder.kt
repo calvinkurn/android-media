@@ -7,6 +7,7 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -59,6 +60,9 @@ class SomListOrderViewHolder(
             setupCourierInfo(element, isOrderEnded)
             setupDestinationInfo(element, isOrderEnded)
             setupQuickActionButton(element)
+            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED) {
+                listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+            }
         }
     }
 
@@ -235,5 +239,6 @@ class SomListOrderViewHolder(
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
+        fun onFinishBindNewOrder(view: View, itemIndex: Int)
     }
 }
