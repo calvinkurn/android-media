@@ -9,7 +9,6 @@ import android.view.View
 import android.webkit.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -19,7 +18,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.webview.ext.encodeOnce
 
-class OvoActivationWebViewBottomSheet(private val callbackUrl: String, private val listener: OvoActivationWebViewBottomSheetListener) {
+class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
+                                      private val listener: OvoActivationWebViewBottomSheetListener) {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var webView: TkpdWebView? = null
@@ -47,9 +47,9 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String, private v
                     customPeekHeight = height
                 }
                 setChild(child)
-                setCloseClickListener {
-                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-                }
+//                setCloseClickListener {
+//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+//                }
                 setShowListener {
                     this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onStateChanged(p0: View, p1: Int) {
@@ -86,12 +86,11 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String, private v
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
-        }
-
-        webView?.loadUrl("https://www.google.com")
-//        webView?.loadAuthUrl("${TokopediaUrl.getInstance().WEB}/ovo/api/v2/activate", userSession)
+//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            WebView.setWebContentsDebuggingEnabled(true)
+//        }
+//        webView?.loadUrl("https://www.google.com")
+//        webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
         webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
             override fun onTopReached() {
                 isTopReached = true
@@ -109,7 +108,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String, private v
 
     private fun generateUrl(userSession: UserSessionInterface): String {
         return URLGenerator.generateURLSessionLogin(
-                "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate?redirect_url=${generateRedirectUrl()}".encodeOnce(),
+                "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate?redirect_url=${callbackUrl}".encodeOnce(),
                 userSession.deviceId,
                 userSession.userId)
     }
@@ -126,7 +125,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String, private v
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            if (url?.contains(generateRedirectUrl()) == true) {
+            if (url?.contains(callbackUrl, true) == true) {
                 val uri = Uri.parse(url)
                 val isSuccessResult = uri.getQueryParameter("is_success") == "1"
                 listener.onActivationResult(isSuccessResult)

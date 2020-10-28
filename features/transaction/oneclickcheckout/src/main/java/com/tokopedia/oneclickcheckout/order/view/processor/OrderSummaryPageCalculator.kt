@@ -118,7 +118,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.errorTickerMessage.isNotEmpty() && payment.isEnableNextButton) {
-                // OVO only campaign & OVO is not active
+                // OVO only campaign & OVO is not active for legacy apps
+                // Also for escape route if needed
                 return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.errorTickerMessage, buttonType = OccButtonType.CONTINUE, buttonState = currentState)
             }
             if (payment.isOvo && subtotal > payment.walletAmount) {

@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.data
+package com.tokopedia.oneclickcheckout.preference.edit.data.payment
 
 import com.google.gson.annotations.SerializedName
 

@@ -60,7 +60,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.view.OvoTopUpWebViewActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*

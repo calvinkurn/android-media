@@ -30,8 +30,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippin
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.data.OvoTopUpUrlGqlResponse
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.domain.GetOvoTopUpUrlUseCase
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.OvoTopUpUrlGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

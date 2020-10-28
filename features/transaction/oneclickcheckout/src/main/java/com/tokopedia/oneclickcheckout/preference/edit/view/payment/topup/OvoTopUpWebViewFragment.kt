@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.view
+package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -26,6 +26,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.TkpdWebView
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -34,13 +36,16 @@ import javax.inject.Inject
 class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: OvoTopUpWebViewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OvoTopUpWebViewViewModel::class.java]
     }
 
-    private var webView: WebView? = null
+    private var webView: TkpdWebView? = null
     private var progressBar: LoaderUnify? = null
     private var globalError: GlobalError? = null
 
@@ -62,7 +67,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_payment_method, container, false)
+        return inflater.inflate(R.layout.fragment_payment_web_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,6 +85,10 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         webView = view.findViewById(R.id.web_view)
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
+
+//        progressBar?.setOnClickListener {
+//            viewModel.getOvoTopUpUrl(getRedirectUrl())
+//        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -97,6 +106,10 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
+//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            WebView.setWebContentsDebuggingEnabled(true)
+//        }
+//        webView?.loadUrl("https://www.google.com")
     }
 
     private fun observeOvoTopUpUrl() {
@@ -120,7 +133,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(url: String) {
-        webView?.loadUrl(url)
+        webView?.loadAuthUrl(url, userSession)
         webView?.visible()
         globalError?.gone()
     }
@@ -163,7 +176,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         progressBar?.gone()
     }
 
-    inner class OvoTopUpWebViewClient: WebViewClient() {
+    inner class OvoTopUpWebViewClient : WebViewClient() {
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
@@ -182,6 +195,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
+            // Check if url is redirect_url
             if (url == getRedirectUrl()) {
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()

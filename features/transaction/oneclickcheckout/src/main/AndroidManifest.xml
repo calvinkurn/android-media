@@ -63,7 +63,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".preference.edit.view.payment.topup.view.OvoTopUpWebViewActivity"
+            android:name=".preference.edit.view.payment.topup.OvoTopUpWebViewActivity"
             android:label="@string/title_one_click_checkout_top_up_ovo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListViewModel
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodViewModel
-import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.view.OvoTopUpWebViewViewModel
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopUpWebViewViewModel
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationViewModel
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryViewModel
 import dagger.Binds

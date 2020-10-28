@@ -227,19 +227,78 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     }
 
     @Test
+    fun `Calculate Total OVO Inactive`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val buttonTitle = "button"
+        val errorTicker = "error aktivasi"
+        val callbackUrl = "url"
+        val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(activation = OrderPaymentOvoActionData(isRequired = true, buttonTitle = buttonTitle, errorTicker = errorTicker), callbackUrl = callbackUrl)
+        val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, ovoData = orderPaymentOvoAdditionalData)
+        orderSummaryPageViewModel._orderPayment = orderPayment
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, errorTicker), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(orderPayment.copy(
+                isCalculationError = true,
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
+        ), orderSummaryPageViewModel.orderPayment.value)
+    }
+
+    @Test
+    fun `Calculate Total OVO Inactive in OVO only campaign`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
+        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        val buttonTitle = "button"
+        val callbackUrl = "url"
+        val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(activation = OrderPaymentOvoActionData(isRequired = true, buttonTitle = buttonTitle), callbackUrl = callbackUrl)
+        val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true, ovoData = orderPaymentOvoAdditionalData)
+        orderSummaryPageViewModel._orderPayment = orderPayment
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(orderPayment.copy(
+                isCalculationError = true,
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
+        ), orderSummaryPageViewModel.orderPayment.value)
+    }
+
+    @Test
     fun `Calculate Total Above OVO Balance`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)
+        val buttonTitle = "button"
+        val errorTicker = "error topup"
+        val errorMessage = "error"
+        val callbackUrl = "url"
+        val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(topUp = OrderPaymentOvoActionData(buttonTitle = buttonTitle, errorTicker = errorTicker, errorMessage = errorMessage), callbackUrl = callbackUrl)
+        val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, ovoData = orderPaymentOvoAdditionalData)
+        orderSummaryPageViewModel._orderPayment = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, OrderSummaryPageViewModel.OVO_INSUFFICIENT_ERROR_MESSAGE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, errorTicker), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(orderPayment.copy(
+                isCalculationError = true,
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl)
+        ), orderSummaryPageViewModel.orderPayment.value)
     }
 
     @Test
@@ -249,13 +308,22 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true)
+        val buttonTitle = "button"
+        val errorMessage = "error"
+        val callbackUrl = "url"
+        val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(topUp = OrderPaymentOvoActionData(buttonTitle = buttonTitle, errorMessage = errorMessage), callbackUrl = callbackUrl)
+        val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true, ovoData = orderPaymentOvoAdditionalData)
+        orderSummaryPageViewModel._orderPayment = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CONTINUE, OrderSummaryPageViewModel.OVO_INSUFFICIENT_CONTINUE_MESSAGE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(orderPayment.copy(
+                isCalculationError = true,
+                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl)
+        ), orderSummaryPageViewModel.orderPayment.value)
     }
 
     @Test

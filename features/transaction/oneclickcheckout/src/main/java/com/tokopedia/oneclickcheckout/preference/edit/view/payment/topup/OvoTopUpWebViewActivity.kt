@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.view
+package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup
 
 import android.content.Context
 import android.content.Intent
