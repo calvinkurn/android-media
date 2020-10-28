@@ -84,7 +84,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        liveBadge.visibility = if (model.video.isLive) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = if (model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
@@ -117,6 +117,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         )
     }
 
+    private fun shouldStartVideo() = mModel.channelType == PlayWidgetChannelType.Live
+            || mModel.channelType == PlayWidgetChannelType.Vod
+
     override fun setPlayer(player: PlayVideoPlayer?) {
         mPlayer?.listener = null
         mPlayer = player
@@ -124,7 +127,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         if (player == null) {
             pvVideo.gone()
         } else {
-            if (::mModel.isInitialized) {
+            if (::mModel.isInitialized && shouldStartVideo()) {
                 player.videoUrl = mModel.video.videoUrl
                 player.start()
             }
