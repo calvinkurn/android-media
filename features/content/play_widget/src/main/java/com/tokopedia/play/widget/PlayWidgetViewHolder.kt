@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.model.ImpressionableModel
+import com.tokopedia.play.widget.analytic.ImpressionableModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -30,7 +30,7 @@ class PlayWidgetViewHolder(
 
     fun bind(item: PlayWidgetUiModel, holderWrapper: RecyclerView.ViewHolder) {
         if (item is ImpressionableModel) {
-            itemView.addOnImpressionListener(item.impressHolder) {
+            coordinator.getImpressionHelper().impress(itemView, item) {
                 mListener?.onWidgetImpressed(playWidgetView, holderWrapper.adapterPosition)
             }
         }

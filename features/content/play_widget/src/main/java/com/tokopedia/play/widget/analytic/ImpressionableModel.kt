@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.ui.model
+package com.tokopedia.play.widget.analytic
 
 import com.tokopedia.kotlin.model.ImpressHolder
 
