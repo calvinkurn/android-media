@@ -94,12 +94,16 @@ class PlayWidgetAutoPlayCoordinator(
         if (videoPlayerMap.size < maxAutoPlay) {
             videoPlayerMap.putAll(
                     List(maxAutoPlay - videoPlayerMap.size) {
-                        getVideoPlayer(widget.context) to null
+                        PlayVideoPlayer(widget.context) to null
                     }
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
             lastVideoPlayer?.release()
+        }
+
+        videoPlayerMap.keys.forEach {
+            it.maxDurationCellularInSeconds = config.maxAutoPlayCellularDuration
         }
     }
 
@@ -132,26 +136,6 @@ class PlayWidgetAutoPlayCoordinator(
         } catch (e: Throwable) {
             emptyList()
         }
-    }
-
-    private fun getVideoPlayer(context: Context): PlayVideoPlayer {
-        val videoPlayer = PlayVideoPlayer(context)
-        if (::mConfig.isInitialized) {
-            return when {
-//                PlayConnectionCommon.isConnectWifi(context) -> {
-//                    videoPlayer.apply {
-//                        maxDurationInSeconds = mConfig.maxAutoPlayWifiDuration
-//                    }
-//                }
-                PlayConnectionCommon.isConnectCellular(context) -> {
-                    videoPlayer.apply {
-                        maxDurationInSeconds = mConfig.maxAutoPlayCellularDuration
-                    }
-                }
-                else -> videoPlayer
-            }
-        }
-        return videoPlayer
     }
 
     private fun getMaxAutoPlayCard(): Int {
