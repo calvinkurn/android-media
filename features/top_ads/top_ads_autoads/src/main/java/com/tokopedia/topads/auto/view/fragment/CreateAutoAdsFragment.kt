@@ -11,8 +11,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.sheet.AutoAdsCreateSheet
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import kotlinx.android.synthetic.main.topads_autoads_create_auto_ad_layout.*
 
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan auto"
 class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener {
 
     override fun getLayoutId(): Int {
@@ -78,6 +80,7 @@ class CreateAutoAdsFragment : AutoAdsBaseBudgetFragment(), View.OnClickListener 
 
     override fun onClick(v: View?) {
         if (v?.id == R.id.btn_submit) {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, "")
             activatedAds()
         }
         if (v?.id == R.id.tip_btn) {

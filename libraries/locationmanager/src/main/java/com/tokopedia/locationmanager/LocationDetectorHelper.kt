@@ -6,12 +6,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.*
-import javax.inject.Inject
 
 /**
  * @author by nisie on 25/01/19.
  */
-class LocationDetectorHelper @Inject constructor(private val permissionCheckerHelper: PermissionCheckerHelper,
+class LocationDetectorHelper constructor(private val permissionCheckerHelper: PermissionCheckerHelper,
                                                  private val fusedLocationProvider:
                                                  FusedLocationProviderClient,
                                                  applicationContext: Context) {

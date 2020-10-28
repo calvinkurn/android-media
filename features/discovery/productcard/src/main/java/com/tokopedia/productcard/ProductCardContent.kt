@@ -19,6 +19,7 @@ import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
@@ -39,6 +40,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextShipping(productCardModel)
 }
 
+
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
     textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
 }
@@ -54,19 +56,17 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
-        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
-        it.text = productNameFromHtml
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productNameFromHtml.toString(), context.getString(R.string.content_desc_textViewProductName))
     }
 }
 
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
-        it.text = productCardModel.discountPercentage
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
-        it.text = productCardModel.slashedPrice
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.slashedPrice, context.getString(R.string.content_desc_textViewSlashedPrice))
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 }
@@ -82,8 +82,7 @@ private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewPrice, priceToRender)
-        it.text = priceToRender
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
     }
 }
 
@@ -100,8 +99,7 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
-        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
-        it.text = productCardModel.shopLocation
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
     }
 }
 
@@ -145,7 +143,7 @@ private fun View.setImageRating(rating: Int) {
 
 @DrawableRes
 private fun getRatingDrawable(isActive: Boolean): Int {
-    return if (isActive) R.drawable.product_card_ic_rating_active
+    return if(isActive) R.drawable.product_card_ic_rating_active
     else R.drawable.product_card_ic_rating_default
 }
 
@@ -169,7 +167,8 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
         textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
             it.setShopRatingText(productCardModel.shopRating)
         }
-    } else {
+    }
+    else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
     }
@@ -197,7 +196,8 @@ private fun Typography.setShopRatingText(shopRating: String) {
 
     if (boldTypeface != null && regularTypeface != null) {
         setShopRatingTextWithMultipleTypeface(shopRating, regularTypeface, boldTypeface)
-    } else {
+    }
+    else {
         text = MethodChecker.fromHtml(shopRating)
     }
 }
@@ -208,7 +208,8 @@ private fun Typography.setShopRatingTextWithMultipleTypeface(shopRating: String,
 
     if (startBold in 0 until endBold) {
         changeFontInsideBoldTag(shopRating, startBold, endBold, regularTypeface, boldTypeface)
-    } else {
+    }
+    else {
         text = MethodChecker.fromHtml(shopRating)
     }
 }
@@ -234,7 +235,8 @@ private fun Typography.changeFontInsideBoldTag(shopRating: String, startBold: In
         spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), inBoldTagEnd, afterBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         text = spannableShopRating
-    } catch (e: Exception) {
+    }
+    catch (e: Exception) {
         text = MethodChecker.fromHtml(shopRating)
     }
 }

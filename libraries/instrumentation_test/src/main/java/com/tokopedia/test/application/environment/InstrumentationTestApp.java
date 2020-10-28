@@ -14,11 +14,11 @@ import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -82,6 +82,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         GlobalConfig.VERSION_NAME = "3.66";
         SplitCompat.install(this);
         FpmLogger.init(this);
+        PersistentCacheManager.init(this);
+
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
@@ -95,7 +97,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         RemoteConfigInstance.initAbTestPlatform(this);
-        PersistentCacheManager.init(this);
 
         super.onCreate();
 
@@ -271,16 +272,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    public GCMHandler legacyGCMHandler() {
-        return new GCMHandler(this);
-    }
-
-    @Override
     public Intent getMaintenancePageIntent() {
         return new Intent();
     }
 
-    @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
     }
@@ -426,7 +421,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         return null;
     }
 
