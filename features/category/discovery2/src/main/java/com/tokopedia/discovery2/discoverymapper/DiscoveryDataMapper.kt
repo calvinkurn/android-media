@@ -17,7 +17,6 @@ import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
-private const val DEFAULT_RATING = 0
 
 class DiscoveryDataMapper {
 
