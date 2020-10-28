@@ -3,14 +3,14 @@ package com.tokopedia.productcard.test
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.productcard.test.utils.*
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.*
+import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.*
 import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
@@ -56,6 +56,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testShopRatingYellow())
     it.add(testHasRatingSales())
     it.add(testNoLabelIntegrityAndHasRatingFloat())
+    it.add(testNoRatingFloatAndHasLabelIntegrity())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -1036,6 +1037,34 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testNoRatingFloatAndHasLabelIntegrity(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val productCardModel = ProductCardModel(
+            productName = "Product with rating float",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelIntegrity)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+        it[R.id.textViewIntegrity] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
