@@ -49,6 +49,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -101,6 +102,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -609,7 +611,10 @@ public class ProductListFragment
 
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(
+                    requestCode, resultCode, data,
+                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction, this::handleShareProductAction
+            );
         }
     }
 
@@ -621,6 +626,45 @@ public class ProductListFragment
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
         presenter.handleWishlistAction(productCardOptionsModel);
+    }
+
+    private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
+        presenter.handleAddToCartAction(productCardOptionsModel);
+    }
+
+    @Override
+    public void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer) {
+        SearchTracking.trackEventAddToCart(getQueryKey(), isAds, addToCartDataLayer);
+    }
+
+    @Override
+    public void showAddToCartSuccessMessage() {
+        if (getView() == null) return;
+        Toaster.make(getView(), getString(R.string.search_add_to_cart_success), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
+    }
+
+    @Override
+    public void showAddToCartFailedMessage(String errorMessage) {
+        if (getView() == null) return;
+        Toaster.make(getView(), errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR);
+    }
+
+    private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (presenter != null) presenter.handleVisitShopAction();
+    }
+
+    @Override
+    public void routeToShopPage(String shopId) {
+        if (getContext() != null) RouteManager.route(getContext(), ApplinkConst.SHOP, shopId);
+    }
+
+    @Override
+    public void trackEventGoToShopPage(Object dataLayer) {
+        SearchTracking.trackEventGoToShopPage(getQueryKey(), dataLayer);
+    }
+
+    private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
+        SearchTracking.trackEventShareProduct(getQueryKey(), productCardOptionsModel.getProductId());
     }
 
     @Override
@@ -799,27 +843,19 @@ public class ProductListFragment
 
     @Override
     public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
-        if (getSearchParameter() == null || getActivity() == null) return;
+        if (getSearchParameter() == null || getActivity() == null || presenter == null) return;
 
-        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
+        presenter.onThreeDotsClick(item, adapterPosition);
     }
 
-    private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
-        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+    @Override
+    public void trackEventLongPress(String productID) {
+        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), productID);
+    }
 
-        productCardOptionsModel.setHasWishlist(item.isWishlistButtonEnabled());
-        productCardOptionsModel.setHasSimilarSearch(true);
-        productCardOptionsModel.setWishlisted(item.isWishlisted());
-        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
-        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
-        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
-        productCardOptionsModel.setRecommendation(false);
-        productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
-        productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
-
-        return productCardOptionsModel;
+    @Override
+    public void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel) {
+        ProductCardOptionsManager.showProductCardOptions(this, productCardOptionsModel);
     }
 
     @Override
@@ -1575,33 +1611,63 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding() {
-        if (searchSortFilter != null && searchSortFilter.getSortFilterPrefix() != null) {
-            ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
+        if (recyclerView == null) return;
 
-            CoachMarkItem item = createFilterOnBoardingCoachMarkItem();
-            coachMarkItemList.add(item);
+        recyclerView.post(() -> {
+            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
+
+            if (searchSortFilter == null) return;
+
+            if (firstProductPosition > 0 && threeDots != null)
+                recyclerView.smoothScrollToPosition(firstProductPosition);
+
+            ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
+                    searchSortFilter.getSortFilterPrefix(),
+                    threeDots
+            );
 
             CoachMarkBuilder builder = new CoachMarkBuilder();
             builder.allowPreviousButton(false);
             builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
-        }
+        });
     }
 
-    private CoachMarkItem createFilterOnBoardingCoachMarkItem() {
+    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+        if (recyclerView == null) return null;
+
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        if (viewHolder == null) return null;
+
+        if (viewHolder.itemView instanceof IProductCardView)
+            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+        else
+            return null;
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, @Nullable View threeDots) {
+        ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+
+        coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
+        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMarkItem createFilterOnBoarding(View sortFilterPrefix) {
         return new CoachMarkItem(
-                searchSortFilter.getSortFilterPrefix(),
-                getFilterOnBoardingTitle(),
-                getFilterOnBoardingDescription()
+                sortFilterPrefix,
+                getString(R.string.search_product_filter_onboarding_title),
+                getString(R.string.search_product_filter_onboarding_description)
         );
     }
 
-    private String getFilterOnBoardingTitle() {
-        return getString(R.string.search_product_filter_onboarding_title);
-    }
-
-    private String getFilterOnBoardingDescription() {
-        return getString(R.string.search_product_filter_onboarding_description);
+    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
+        return new CoachMarkItem(
+                threeDotsButton,
+                getString(R.string.search_product_three_dots_onboarding_title),
+                getString(R.string.search_product_three_dots_onboarding_description)
+        );
     }
 
     private Unit openBottomSheetFilterRevamp() {

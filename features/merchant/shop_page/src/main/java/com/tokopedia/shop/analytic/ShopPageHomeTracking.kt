@@ -1016,4 +1016,44 @@ class ShopPageHomeTracking(
                 customDimensionShopPage
         )
     }
+
+    fun clickFilterChips(productListName: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_CHIP,
+                productListName,
+                customDimensionShopPage
+        )
+    }
+
+    fun clickFilterSortBy(productListName: String, sortBy: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_SHORT_BY + sortBy,
+                productListName,
+                customDimensionShopPage
+        )
+    }
+
+    fun clickFilterPrice(productListName: String, min: String, max: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                String.format(CLICK_FILTER_PRICE,min, max),
+                productListName,
+                customDimensionShopPage
+        )
+    }
+
+    fun clickFilterRating(productListName: String, rating: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_FILTER_RATING + rating,
+                productListName,
+                customDimensionShopPage
+        )
+    }
 }

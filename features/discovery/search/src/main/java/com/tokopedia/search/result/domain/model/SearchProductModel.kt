@@ -362,7 +362,15 @@ data class SearchProductModel(
 
             @SerializedName("count_sold")
             @Expose
-            val countSold: String = ""
+            val countSold: String = "",
+
+            @SerializedName("minOrder")
+            @Expose
+            val minOrder: Int = 1,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -401,7 +409,19 @@ data class SearchProductModel(
 
             @SerializedName("rating_average")
             @Expose
-            val ratingAverage: String = ""
+            val ratingAverage: String = "",
+
+            @SerializedName("isOfficial")
+            @Expose
+            val isOfficial: Boolean = false,
+
+            @SerializedName("isPowerBadge")
+            @Expose
+            val isPowerBadge: Boolean = false,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductFreeOngkir(

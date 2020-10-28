@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -241,7 +240,16 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     private fun renderManualViewPager() {
         tab_layout.visibility = View.VISIBLE
         view_pager_frag?.adapter = getViewPagerAdapter()
-        view_pager_frag.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {}
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                loadStatisticsData()
+            }
+
+        })
         tab_layout.setupWithViewPager(view_pager_frag)
     }
 
@@ -390,7 +398,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun autoAds() {
-        adTypeCallBack?.adInfo(AUTO_AD)
+        adTypeCallBack?.adInfo(SINGLE_AD)
         setAutoAdsAdapter()
         autoAdsWidget?.loadData(0)
         autoAdsWidget?.visibility = View.VISIBLE
@@ -502,8 +510,13 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
-                ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
+        var adType = (activity as TopAdsDashboardActivity?)?.getAdInfo()
+                ?: MANUAL_AD
+
+        if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.selectedTabPosition == 1)
+            adType = SINGLE_AD
+
+        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
@@ -706,9 +719,9 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     companion object {
-        val MILLISECONDS_PER_INCH = 200f
-        val MANUAL_AD = "-1"
-        val AUTO_AD = "-2"
+        const val MILLISECONDS_PER_INCH = 200f
+        const val MANUAL_AD = "-1"
+        const val SINGLE_AD = "-2"
         fun createInstance(): TopAdsProductIklanFragment {
             return TopAdsProductIklanFragment()
         }
