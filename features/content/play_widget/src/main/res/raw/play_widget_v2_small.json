@@ -322,7 +322,7 @@
       "overlayImageWebLink": "",
       "gradient": [],
       "serverTimeOffset": "1602243910",
-      "maxAutoplayCell": 30,
+      "maxAutoplayCell": 5,
       "template": "SMALL"
     }
   }

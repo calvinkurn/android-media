@@ -81,7 +81,7 @@ class PlayWidgetAutoPlayCoordinator(
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
         mConfig = config
 
-        if (false) { //TODO(!config.autoPlay)
+        if (!config.autoPlay) {
             videoPlayerMap.keys.forEach { it.release() }
             videoPlayerMap.clear()
             return@synchronized
@@ -98,6 +98,10 @@ class PlayWidgetAutoPlayCoordinator(
         } else if (videoPlayerMap.size > maxAutoPlay) {
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
             lastVideoPlayer?.release()
+        }
+
+        videoPlayerMap.keys.forEach {
+            it.maxDurationCellularInSeconds = config.maxAutoPlayCellularDuration
         }
     }
 
