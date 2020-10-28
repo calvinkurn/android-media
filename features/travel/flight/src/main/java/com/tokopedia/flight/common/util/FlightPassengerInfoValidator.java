@@ -17,7 +17,7 @@ public class FlightPassengerInfoValidator {
     private static final int MIN_PASSENGER_LAST_NAME = 2;
     private static final String REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$";
     private static final String REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$";
-    private static final String REGEX_IS_ALPHA_AND_NUMERIC = "^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$";
+    private static final String REGEX_IS_ALPHA_AND_NUMERIC = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$";
 
     @Inject
     public FlightPassengerInfoValidator() {
