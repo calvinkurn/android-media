@@ -3,6 +3,7 @@ package com.tokopedia.search.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.analytic_constant.Event;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.iris.util.ConstantKt;
@@ -767,6 +768,53 @@ public class SearchTracking {
             SearchEventTracking.Category.SEARCH_RESULT,
             SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
             label
+        );
+    }
+
+    public static void trackEventAddToCart(String keyword, boolean isOrganicAds, Object productItem) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.ADDTOCART,
+                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS,
+                        TrackAppUtils.EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                SearchEventTracking.ECommerce.CURRENCY_CODE, SearchEventTracking.ECommerce.IDR,
+                                SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
+                                        SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
+                                                "list", getActionFieldString(isOrganicAds)
+                                        ),
+                                        SearchEventTracking.ECommerce.PRODUCTS, DataLayer.listOf(productItem)
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventGoToShopPage(String keyword, Object item) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, SearchEventTracking.Event.PROMO_CLICK,
+                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK,
+                        TrackAppUtils.EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                PROMO_CLICK, DataLayer.mapOf(
+                                        PROMOTIONS, DataLayer.listOf(item)
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void trackEventShareProduct(String queryKey, String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_SHARE_PRODUCT_OPTIONS,
+                        TrackAppUtils.EVENT_LABEL, queryKey + " - " + productId
+                )
         );
     }
 }

@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/red_30" />
+        tools:background="@color/Unify_Y200" />
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="0dp"
