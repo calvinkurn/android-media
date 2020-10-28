@@ -83,6 +83,15 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="keyboardHidden|orientation|screenSize">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_add_talk"/>
+            </intent-filter>
         </activity>
 
         <activity
@@ -108,21 +117,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_detail_talk"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name="com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity"
-            android:label="@string/write_new_talk"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_add_talk"/>
             </intent-filter>
         </activity>
 

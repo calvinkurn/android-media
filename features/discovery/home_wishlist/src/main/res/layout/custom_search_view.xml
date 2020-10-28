@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
-            android:tint="@android:color/darker_gray"
+            android:tint="@color/Unify_N200"
             app:srcCompat="@drawable/ic_system_action_search_grayscale_24" />
 
         <EditText
@@ -43,7 +43,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/sp_16" />
 
         <ImageButton
@@ -56,7 +56,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:tint="@android:color/darker_gray"
+            android:tint="@color/Unify_N200"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_system_action_close_grayscale_24" />
 
