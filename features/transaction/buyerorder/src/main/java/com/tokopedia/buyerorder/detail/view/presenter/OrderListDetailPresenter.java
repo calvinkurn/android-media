@@ -56,6 +56,7 @@ import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -112,6 +113,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     SendEventNotificationUseCase sendEventNotificationUseCase;
     @Inject
     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
+    @Inject
+    UserSessionInterface userSessionInterface;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -390,14 +393,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         onBuyAgainItems(orderDetails.getItems(), eventActionLabel, statusCode);
     }
 
-    private GraphqlUseCase buyAgainUseCase;
-
     @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
-        UserSession userSession = new UserSession(getView().getAppContext());
-        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSession.getUserId());
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
         addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
