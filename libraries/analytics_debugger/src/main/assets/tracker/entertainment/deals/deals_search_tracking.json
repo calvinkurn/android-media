@@ -15,18 +15,6 @@
       "userId" : "{{.*}}",
       "businessUnit" : "travel & entertainment"
     }, {
-      "event" : "clickDeals",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "click search",
-      "eventLabel" : "-",
-      "screenName" : "/deals/search",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{.+}}",
-      "userId" : "{{.*}}",
-      "businessUnit" : "travel & entertainment"
-    }, {
       "event" : "view_item_list",
       "eventCategory" : "digital - deals",
       "eventAction" : "impression on search result",
@@ -51,18 +39,6 @@
         }
       ],
       "item_list" : "/deals"
-    }, {
-      "event" : "viewDealsIris",
-      "eventCategory" : "digital - deals",
-      "eventAction" : "impression on search results",
-      "eventLabel" : "{{deals - .+ - .+ - result not found}}",
-      "screenName" : "/deals/",
-      "category" : "deals",
-      "currentSite" : "tokopediadigitaldeals",
-      "clientId" : "{{.+}}",
-      "sessionIris" : "{{.+}}",
-      "userId" : "{{.*}}",
-      "businessUnit": "travel & entertainment"
     }, {
       "event" : "select_content",
       "eventCategory" : "digital - deals",
@@ -159,7 +135,7 @@
       "currentSite" : "tokopediadigitaldeals",
       "clientId" : "{{.+}}",
       "sessionIris" : "{{.+}}",
-      "userId" : "{{.+}}",
+      "userId" : "{{.*}}",
       "businessUnit": "travel & entertainment"
     }
   ]
