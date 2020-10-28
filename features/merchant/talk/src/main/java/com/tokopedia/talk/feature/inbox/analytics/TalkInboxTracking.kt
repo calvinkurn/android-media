@@ -1,9 +1,11 @@
 package com.tokopedia.talk.feature.inbox.analytics
 
+import android.os.Bundle
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
 class TalkInboxTracking @Inject constructor() {
@@ -83,6 +85,42 @@ class TalkInboxTracking @Inject constructor() {
                 TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
                 TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK
         ))
+    }
+
+    fun eventItemImpress(inboxType: String, talkId: String, userId: String, position: Int, trackingQueue: TrackingQueue) {
+        val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, inboxType)
+        tracker.sendEnhanceEcommerceEvent(TalkInboxTrackingConstants.EVENT_PROMO_VIEW, Bundle().apply {
+            putString(TalkTrackingConstants.TRACKING_EVENT_ACTION, TalkInboxTrackingConstants.EVENT_ACTION_IMPRESS_ITEM)
+            putString(TalkTrackingConstants.TRACKING_EVENT_CATEGORY, eventCategory)
+            putString(TalkTrackingConstants.TRACKING_USER_ID, userId)
+            putString(TalkTrackingConstants.TRACKING_SCREEN_NAME, TalkInboxTrackingConstants.SCREEN_NAME)
+            putString(TalkTrackingConstants.TRACKING_CURRENT_SITE, TalkTrackingConstants.CURRENT_SITE_TALK)
+            putString(TalkTrackingConstants.TRACKING_BUSINESS_UNIT, TalkTrackingConstants.BUSINESS_UNIT_TALK)
+            putString(TalkTrackingConstants.TRACKING_ECOMMERCE, mapOf(
+                    TalkInboxTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                            TalkTrackingConstants.TRACKING_PROMOTIONS to listOf(
+                                    mapOf(
+                                            TalkTrackingConstants.TRACKING_ID to talkId,
+                                            TalkTrackingConstants.TRACKING_NAME to eventCategory,
+                                            TalkTrackingConstants.TRACKING_CREATIVE to talkId,
+                                            TalkTrackingConstants.TRACKING_POSITION to position.toString()
+                                    )
+                            )
+                    )).toString()
+            )
+        })
+        """
+
+ 'eventCategory' : 'inbox talk - {seller/user}
+// active tab name only, do not add number of unread messages',
+ 'eventAction' : 'view - talk on inbox talk',
+ 'eventLabel' : '',
+ 'ecommerce': {
+        'promoView': {
+        'promotions': [{
+            'creative': 'message status:{{read/unread}}',           // name of asset for banner, mandatory
+                    }]"
+        """.trimIndent()
     }
 
     private fun getEventCategoryInbox(tab: String): String {

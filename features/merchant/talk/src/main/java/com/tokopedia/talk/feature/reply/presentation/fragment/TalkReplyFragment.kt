@@ -101,6 +101,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
+    private var inboxType = ""
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -296,8 +297,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToPdp(productId)
     }
 
-    override fun onProductCardClicked() {
+    override fun onProductCardClicked(productName: String, position: Int) {
+        TalkReplyTracking.eventClickCard(inboxType, viewModel.userId, productName, productId, position)
+        goToPdp(productId)
+    }
 
+    override fun onProductCardImpressed(productName: String, position: Int) {
+        TalkReplyTracking.eventImpressCard(inboxType, viewModel.userId, productName, productId, position)
     }
 
     private fun goToReportActivity(commentId: String) {
