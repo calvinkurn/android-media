@@ -1362,7 +1362,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickMoreLikeThis()
     }
 
-    override fun onFollowShopClicked(shopId: String) {
+    override fun onFollowShopClicked(shopId: String, errorType: String) {
+        cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
         dPresenter.followShop(shopId)
     }
 

@@ -63,7 +63,7 @@ interface ActionListener {
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
-    fun onFollowShopClicked(shopId: String)
+    fun onFollowShopClicked(shopId: String, errorType: String)
 
     fun onSelectAllClicked()
 

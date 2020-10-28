@@ -133,7 +133,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             setOnClickListener {
                 data.data?.originData?.shopId?.let {
                     if (it.isNotEmpty()) {
-                        actionListener?.onFollowShopClicked(it)
+                        actionListener?.onFollowShopClicked(it, data.errorType)
                     }
                 }
             }

@@ -475,6 +475,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT = "click %s on unavailable section";
         String CLICK_UNDO_AFTER_DELETE_PRODUCT = "click undo after delete product";
         String VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart";
+        String CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section";
+        String CLICK_UNFOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click unfollow shop on unavailable section";
     }
 
     interface EventLabel {
@@ -541,6 +543,8 @@ public interface ConstantTransactionAnalytics {
         String USER_ID = "userId";
         String PROMO_CODE = "promoCode";
         String PAYMENT_TYPE = "paymentType";
+        String BUSINESS_UNIT = "businessUnit";
+        String CURRENT_SITE = "currentSite";
     }
 
     interface ScreenName {
@@ -563,5 +567,6 @@ public interface ConstantTransactionAnalytics {
 
     interface CustomDimension {
         String DIMENSION_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
+        String DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform";
     }
 }
