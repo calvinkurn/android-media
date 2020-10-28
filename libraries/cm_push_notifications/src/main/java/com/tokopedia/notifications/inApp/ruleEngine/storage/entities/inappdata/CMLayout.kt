@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant
+import java.util.ArrayList
 
 data class CMLayout(
         @Expose
@@ -40,5 +41,5 @@ data class CMLayout(
         @Expose
         @ColumnInfo(name = "inAppButtons")
         @SerializedName("inAppButtons")
-        val button: List<CMButton>? = emptyList()
+        val button: ArrayList<CMButton>? = arrayListOf()
 )
