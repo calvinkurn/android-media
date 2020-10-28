@@ -97,7 +97,7 @@ class PlayWidgetAutoPlayCoordinator(
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
-            lastVideoPlayer?.release()
+            lastVideoPlayer?.stop()
         }
 
         videoPlayerMap.keys.forEach {
