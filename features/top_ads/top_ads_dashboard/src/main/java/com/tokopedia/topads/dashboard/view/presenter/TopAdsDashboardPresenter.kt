@@ -23,6 +23,7 @@ import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
@@ -209,16 +210,25 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 
     fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                                startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
-        topAdsGetGroupStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+        topAdsGetGroupStatisticsUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_group_statistics))
-        topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
-        topAdsGetGroupStatisticsUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.getTopadsDashboardGroupStatistics)
-                },
-                {
-                    it.printStackTrace()
-                })
+        val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
+        topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<GroupStatisticsResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<GroupStatisticsResponse>
+                response?.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
+            }
+        })
     }
 
     fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
@@ -494,7 +504,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.unsubscribe()
         topAdsGetGroupProductDataUseCase.unsubscribe()
-        topAdsGetGroupStatisticsUseCase.cancelJobs()
+        topAdsGetGroupStatisticsUseCase.unsubscribe()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGroupActionUseCase.unsubscribe()
