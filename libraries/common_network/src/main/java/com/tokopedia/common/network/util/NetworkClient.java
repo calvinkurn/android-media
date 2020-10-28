@@ -3,7 +3,6 @@ package com.tokopedia.common.network.util;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.common.network.data.db.RestDatabase;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
 import com.tokopedia.network.CoroutineCallAdapterFactory;
@@ -36,7 +35,6 @@ public class NetworkClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession));
             tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
-            tkpdOkHttpBuilder.addInterceptor(new AkamaiBotInterceptor(context.getApplicationContext()));
             sRetrofit = new Retrofit.Builder()
                     .baseUrl(RestConstant.BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
