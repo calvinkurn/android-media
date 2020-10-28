@@ -270,7 +270,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setupNavigator() {
-        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter)
+        navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
     }
 
     private fun showToolbarNotificationBadge() {
