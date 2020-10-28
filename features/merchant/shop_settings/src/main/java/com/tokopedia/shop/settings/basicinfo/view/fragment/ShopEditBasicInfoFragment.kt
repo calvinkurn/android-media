@@ -155,7 +155,7 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun setupToolbar() {
         val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_info)
+        toolbar?.title = getString(R.string.shop_settings_basic_info)
 
         tvSave = activity?.findViewById(R.id.tvSave)
         tvSave?.show()

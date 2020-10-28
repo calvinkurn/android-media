@@ -317,7 +317,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun setupToolbar() {
         val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_info)
+        toolbar?.title = getString(R.string.shop_settings_manage_shop_info)
 
         val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()
