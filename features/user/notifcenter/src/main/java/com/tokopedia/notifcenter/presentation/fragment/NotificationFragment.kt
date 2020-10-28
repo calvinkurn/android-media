@@ -36,6 +36,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
     }
 
+    override fun hasInitialSwipeRefresh(): Boolean = true
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "Notification"
     override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl()
     override fun onItemClicked(t: Visitable<*>?) {}
