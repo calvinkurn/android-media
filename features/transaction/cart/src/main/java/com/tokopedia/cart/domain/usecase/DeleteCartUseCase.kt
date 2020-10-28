@@ -16,8 +16,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class DeleteCartUseCase @Inject constructor(private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
-                                            private val graphqlUseCase: GraphqlUseCase,
+class DeleteCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                             private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
     companion object {
