@@ -10,7 +10,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyInt
 
 open class SliceOrderMapperTestFixture {
 
