@@ -5,15 +5,21 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
+    companion object {
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_REPUTATION_ID = "reputationID"
+    }
+
     private val query by lazy {
         """
-            query getProductRevIncentiveOvo{
-            	productrevIncentiveOvo{
-                ticker{
+            query getProductRevIncentiveOvo(${'$'}productID: String, ${'$'}reputationID: String) {
+              productrevIncentiveOvo(productID: ${'$'}productID, reputationID: ${'$'}reputationID) {
+                ticker {
                   title
                   subtitle
                 }
@@ -22,23 +28,25 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                 description
                 numbered_list
                 cta_text
+                amount
               }
             }
         """.trimIndent()
     }
 
-    suspend fun getIncentiveOvo(): ProductRevIncentiveOvoDomain {
+    suspend fun getIncentiveOvo(productId: Int = 0, reputationId: Int = 0): ProductRevIncentiveOvoDomain? {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val graphqlRequest = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
-
-        val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
-
-        val data: ProductRevIncentiveOvoDomain? = response.getData(ProductRevIncentiveOvoDomain::class.java)
-        if (data == null) {
-            throw RuntimeException()
+        val graphqlRequest = if (productId != 0 && reputationId != 0) {
+            val requestParams = RequestParams.create().apply {
+                putString(PARAM_PRODUCT_ID, productId.toString())
+                putString(PARAM_REPUTATION_ID, reputationId.toString())
+            }.parameters
+            GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java, requestParams)
         } else {
-            return data
+            GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
         }
+        val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
+        return response.getData(ProductRevIncentiveOvoDomain::class.java)
     }
 
 }
