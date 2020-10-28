@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.player
 
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
@@ -13,7 +14,6 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.*
 
 
 /**
@@ -22,9 +22,11 @@ import kotlinx.coroutines.*
 open class PlayVideoPlayer(val context: Context) {
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
+    private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
+    var durationLimitInSeconds: Int? = null
 
     init {
         exoPlayer.volume = 0F
@@ -49,6 +51,9 @@ open class PlayVideoPlayer(val context: Context) {
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource,true, false)
+
+        durationLimitInSeconds?.let { if (it > 0) configureAutoStop(it) }
+        autoStopTimer?.start()
     }
 
     fun pause() {
@@ -61,6 +66,7 @@ open class PlayVideoPlayer(val context: Context) {
 
     fun stop() {
         exoPlayer.stop()
+        autoStopTimer?.cancel()
     }
 
     fun restart() {
@@ -70,6 +76,7 @@ open class PlayVideoPlayer(val context: Context) {
     fun release() {
         try {
             exoPlayer.release()
+            autoStopTimer?.cancel()
         } catch (throwable: Throwable) {
         }
     }
@@ -92,4 +99,13 @@ open class PlayVideoPlayer(val context: Context) {
         return mediaSource.createMediaSource(uri)
     }
 
+    private fun configureAutoStop(durationLimit: Int) {
+        autoStopTimer = object : CountDownTimer(durationLimit.toLong()*1000, 1000) {
+            override fun onFinish() {
+                exoPlayer.stop()
+            }
+
+            override fun onTick(millisUntilFinished: Long) { }
+        }
+    }
 }
