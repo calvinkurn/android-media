@@ -138,18 +138,20 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         return ""
     }
 
-//    override fun onStop() {
-//        stopTimer()
-//        super.onStop()
-//    }
-
-    override fun onDestroy() {
+    override fun onStop() {
         stopTimer()
-        super.onDestroy()
+        super.onStop()
     }
 
+//    override fun onDestroy() {
+//        stopTimer()
+//        super.onDestroy()
+//    }
+
     override fun onResume() {
-        Log.d("onResume", "onResume")
         super.onResume()
+        if(timerWithBannerCounter == null){
+            startTimer()
+        }
     }
 }
