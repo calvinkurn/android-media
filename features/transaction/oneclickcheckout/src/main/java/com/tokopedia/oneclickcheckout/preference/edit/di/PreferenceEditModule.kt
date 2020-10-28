@@ -30,6 +30,8 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippin
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.data.OvoTopUpUrlGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.domain.GetOvoTopUpUrlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -164,5 +166,11 @@ open class PreferenceEditModule(private val activity: Activity) {
     @Provides
     open fun providePaymentListingUrl(): String {
         return "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetOvoTopUpUrlUseCase(graphqlUseCase: GraphqlUseCase<OvoTopUpUrlGqlResponse>): GetOvoTopUpUrlUseCase {
+        return GetOvoTopUpUrlUseCase(graphqlUseCase)
     }
 }

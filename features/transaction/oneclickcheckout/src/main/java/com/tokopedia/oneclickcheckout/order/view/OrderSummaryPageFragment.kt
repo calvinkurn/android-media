@@ -60,6 +60,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.view.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
@@ -163,6 +164,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
                 REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(resultCode, data)
                 REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
+                REQUEST_CODE_OVO_TOP_UP -> refresh()
             }
         }
     }
@@ -792,7 +794,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onOvoTopUpClicked(callbackUrl: String) {
-
+            context?.let {
+                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl), REQUEST_CODE_OVO_TOP_UP)
+            }
         }
     }
 
@@ -1116,6 +1120,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         const val REQUEST_CODE_CREDIT_CARD = 15
         const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
+
+        const val REQUEST_CODE_OVO_TOP_UP = 17
 
         const val QUERY_PRODUCT_ID = "product_id"
 
