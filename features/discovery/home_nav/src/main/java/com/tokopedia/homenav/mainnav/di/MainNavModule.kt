@@ -11,6 +11,8 @@ import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
+import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 
@@ -24,10 +26,6 @@ class MainNavModule {
     fun provideMainNavDispatcher(): NavDispatcherProvider {
         return MainNavDispatcherProviderImpl()
     }
-
-    @MainNavScope
-    @Provides
-    fun provideMainNavCommandProcessor(dispatcher: NavDispatcherProvider) = NavCommandProcessor(dispatcher.io())
 
     @MainNavScope
     @Provides
@@ -46,4 +44,7 @@ class MainNavModule {
     @Provides
     fun provideMainNavMapper(mainNavDataFactory: MainNavDataFactory) = MainNavMapper(mainNavDataFactory)
 
+    @MainNavScope
+    @Provides
+    fun provideClientMenuGenerator(@ApplicationContext context: Context) = ClientMenuGenerator(context)
 }
