@@ -252,12 +252,16 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.insertTitleWithRefresh(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        if (title.isEmpty()) return this
+
         val titleSearch = PopularSearchTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
     }
 
     private fun MutableList<Visitable<*>>.insertDynamicTitle(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        if (title.isEmpty()) return this
+
         val titleSearch = DynamicInitialStateTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
