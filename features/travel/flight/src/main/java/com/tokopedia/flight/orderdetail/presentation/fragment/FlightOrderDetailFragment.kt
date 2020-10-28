@@ -144,61 +144,63 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
     }
 
     private fun renderTicketView(journeys: List<OrderDetailJourneyModel>) {
-        val onwardJourney = journeys[0]
-        val airlineLogo = flightOrderDetailViewModel.getAirlineLogo(onwardJourney)
-        if (airlineLogo != null) {
-            ivFlightOrderDepartureAirlineLogo.loadImage(airlineLogo)
-        } else {
-            ivFlightOrderDepartureAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
-        }
-
-        tgFlightOrderDepartureAirlineName.text = flightOrderDetailViewModel.getAirlineName(onwardJourney)
-
-        if (flightOrderDetailViewModel.getRefundableInfo(onwardJourney)) {
-            tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
-        } else {
-            tgFlightOrderDepartureTicketRefundableStatus.visibility = View.GONE
-        }
-
-        tgFlightOrderDepartureJourneyTrip.text = getString(R.string.flight_order_detail_trip_city,
-                onwardJourney.departureCityName, onwardJourney.departureId,
-                onwardJourney.arrivalCityName, onwardJourney.arrivalId)
-
-        if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].departureTerminal.isNotEmpty()) {
-            tgFlightOrderDepartureAirport.text = getString(R.string.flight_order_detail_airport_with_terminal,
-                    onwardJourney.departureAirportName, onwardJourney.routes[0].departureTerminal)
-        } else {
-            tgFlightOrderDepartureAirport.text = onwardJourney.departureAirportName
-        }
-
-        val departureDateAndTimePair = flightOrderDetailViewModel.getDepartureDateAndTime(onwardJourney)
-        if (onwardJourney.totalTransit > 0) {
-            tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_with_transit,
-                    departureDateAndTimePair.first, departureDateAndTimePair.second, onwardJourney.totalTransit)
-        } else {
-            tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_without_transit,
-                    departureDateAndTimePair.first, departureDateAndTimePair.second)
-        }
-
-        if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].pnr.isNotEmpty()) {
-            tgFlightOrderDepartureBookingCode.visibility = View.VISIBLE
-            tgFlightOrderDepartureBookingCodeLabel.visibility = View.VISIBLE
-            ivFlightOrderDepartureBookingCodeCopy.visibility = View.VISIBLE
-
-            tgFlightOrderDepartureBookingCode.text = onwardJourney.routes[0].pnr
-            ivFlightOrderDepartureBookingCodeCopy.setOnClickListener {
-                copyToClipboard(CLIP_LABEL_DEPARTURE_BOOKING_CODE, onwardJourney.routes[0].pnr)
+        if (journeys.isNotEmpty()) {
+            val onwardJourney = journeys[0]
+            val airlineLogo = flightOrderDetailViewModel.getAirlineLogo(onwardJourney)
+            if (airlineLogo != null) {
+                ivFlightOrderDepartureAirlineLogo.loadImage(airlineLogo)
+            } else {
+                ivFlightOrderDepartureAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
             }
-        } else {
-            tgFlightOrderDepartureBookingCode.visibility = View.GONE
-            tgFlightOrderDepartureBookingCodeLabel.visibility = View.GONE
-            ivFlightOrderDepartureBookingCodeCopy.visibility = View.GONE
-        }
 
-        if (journeys.size > 1) {
-            renderReturnTicketView(journeys[1])
-        } else {
-            hideReturnTicketView()
+            tgFlightOrderDepartureAirlineName.text = flightOrderDetailViewModel.getAirlineName(onwardJourney)
+
+            if (flightOrderDetailViewModel.getRefundableInfo(onwardJourney)) {
+                tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
+            } else {
+                tgFlightOrderDepartureTicketRefundableStatus.visibility = View.GONE
+            }
+
+            tgFlightOrderDepartureJourneyTrip.text = getString(R.string.flight_order_detail_trip_city,
+                    onwardJourney.departureCityName, onwardJourney.departureId,
+                    onwardJourney.arrivalCityName, onwardJourney.arrivalId)
+
+            if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].departureTerminal.isNotEmpty()) {
+                tgFlightOrderDepartureAirport.text = getString(R.string.flight_order_detail_airport_with_terminal,
+                        onwardJourney.departureAirportName, onwardJourney.routes[0].departureTerminal)
+            } else {
+                tgFlightOrderDepartureAirport.text = onwardJourney.departureAirportName
+            }
+
+            val departureDateAndTimePair = flightOrderDetailViewModel.getDepartureDateAndTime(onwardJourney)
+            if (onwardJourney.totalTransit > 0) {
+                tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_with_transit,
+                        departureDateAndTimePair.first, departureDateAndTimePair.second, onwardJourney.totalTransit)
+            } else {
+                tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_without_transit,
+                        departureDateAndTimePair.first, departureDateAndTimePair.second)
+            }
+
+            if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].pnr.isNotEmpty()) {
+                tgFlightOrderDepartureBookingCode.visibility = View.VISIBLE
+                tgFlightOrderDepartureBookingCodeLabel.visibility = View.VISIBLE
+                ivFlightOrderDepartureBookingCodeCopy.visibility = View.VISIBLE
+
+                tgFlightOrderDepartureBookingCode.text = onwardJourney.routes[0].pnr
+                ivFlightOrderDepartureBookingCodeCopy.setOnClickListener {
+                    copyToClipboard(CLIP_LABEL_DEPARTURE_BOOKING_CODE, onwardJourney.routes[0].pnr)
+                }
+            } else {
+                tgFlightOrderDepartureBookingCode.visibility = View.GONE
+                tgFlightOrderDepartureBookingCodeLabel.visibility = View.GONE
+                ivFlightOrderDepartureBookingCodeCopy.visibility = View.GONE
+            }
+
+            if (journeys.size > 1) {
+                renderReturnTicketView(journeys[1])
+            } else {
+                hideReturnTicketView()
+            }
         }
     }
 
