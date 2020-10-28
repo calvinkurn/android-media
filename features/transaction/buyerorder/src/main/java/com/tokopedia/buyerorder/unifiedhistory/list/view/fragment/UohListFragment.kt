@@ -354,6 +354,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+            search_bar?.searchBarTextField?.text?.clear()
+            paramUohOrder.searchableText = ""
+            refreshHandler?.startRefresh()
         }
 
         addEndlessScrollListener()
@@ -608,9 +611,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter1?.listener = {
             onClickFilterDate()
         }
-        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-            filter1?.title = arrayFilterDate[2]
-        }
         filter1?.let {
             chips.add(it)
         }
@@ -718,15 +718,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-            if (tempFilterDateKey == "0" && isFirstLoad) {
-                uohBottomSheetOptionAdapter.selectedKey = "2"
-            } else {
-                uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-            }
-        } else {
-            uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-        }
+        uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
     }
