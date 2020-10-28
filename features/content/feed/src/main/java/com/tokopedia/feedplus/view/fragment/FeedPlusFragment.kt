@@ -12,8 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RestrictTo
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -111,6 +114,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
+import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -193,6 +198,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var feedPlayWidgetAnalytic: FeedPlayWidgetAnalyticListener
+
+    @Inject
+    lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
@@ -485,7 +493,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             playWidgetModel.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Fail -> adapter.removePlayWidget()
-                    is Success -> adapter.updatePlayWidget(it.data)
+                    is Success -> {
+                        if (!it.data.isAutoRefresh) playWidgetImpressionValidator.invalidate()
+                        adapter.updatePlayWidget(it.data)
+                    }
                 }
             })
         }
@@ -495,6 +506,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@FeedPlusFragment)
             setAnalyticListener(feedPlayWidgetAnalytic)
+            setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)

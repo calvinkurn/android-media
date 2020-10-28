@@ -326,7 +326,7 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     fun doAutoRefreshPlayWidget() {
 
         launchCatchError(block = {
-            val newCarouselModel = processPlayWidget()
+            val newCarouselModel = processPlayWidget(isAutoRefresh = true)
             _playWidgetModel.value = Success(newCarouselModel)
         }, onError = {
             _playWidgetModel.value = Fail(it)
@@ -621,9 +621,9 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
         return model.postList.any { it is CarouselPlayCardViewModel }
     }
 
-    private suspend fun processPlayWidget(): CarouselPlayCardViewModel {
+    private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardViewModel {
         val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.Feeds, coroutineContext = baseDispatcher.io())
         val uiModel = playWidgetTools.mapWidgetToModel(response)
-        return CarouselPlayCardViewModel(uiModel)
+        return CarouselPlayCardViewModel(uiModel, isAutoRefresh)
     }
 }
