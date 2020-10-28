@@ -40,7 +40,7 @@
     </style>
 
     <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textSize">@dimen/fontSize_lvl2</item>
     </style>
 
     <style name="TitleTextAppearance.White">
