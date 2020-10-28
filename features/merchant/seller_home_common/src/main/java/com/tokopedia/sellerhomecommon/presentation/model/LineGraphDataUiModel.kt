@@ -12,9 +12,3 @@ data class LineGraphDataUiModel(
         val list: List<XYAxisUiModel> = emptyList(),
         val yLabels: List<XYAxisUiModel> = emptyList()
 ) : BaseDataUiModel
-
-data class XYAxisUiModel(
-        val xLabel: String,
-        val yLabel: String,
-        val yVal: Float
-)

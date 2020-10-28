@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.charts.config.LineChartConfig
+import com.tokopedia.charts.model.LineChartConfigModel
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -17,14 +19,15 @@ import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 class MultiLineGraphViewHolder(
         itemView: View?,
         private val listener: Listener
-) : AbstractViewHolder<MultiLineGraphWidgetUiModel>(itemView) {
+) : AbstractViewHolder<MultiLineGraphWidgetUiModel>(itemView), MultiLineMetricsAdapter.MetricsListener {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_multi_line_graph_widget
     }
 
-    private val metricsAdapter by lazy { MultiLineMetricsAdapter() }
+    private val metricsAdapter by lazy { MultiLineMetricsAdapter(this) }
+    private var lastSelectedMetric: MultiLineMetricUiModel? = null
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
         val data = element.data
@@ -33,6 +36,11 @@ class MultiLineGraphViewHolder(
             data.error.isNotBlank() -> setOnErrorState(element)
             else -> setOnSuccessState(element)
         }
+    }
+
+    override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
+        lastSelectedMetric = metric
+        itemView.rvShcGraphMetrics.scrollToPosition(position)
     }
 
     private fun setOnLoadingState(element: MultiLineGraphWidgetUiModel) {
@@ -44,6 +52,8 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
+        lastSelectedMetric = element.data?.metrics?.getOrNull(0)
+
         with(itemView) {
             tvShcMultiLineGraphTitle.text = element.title
 
@@ -65,7 +75,13 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setupLineGraph(element: MultiLineGraphWidgetUiModel) {
+        with(itemView.chartViewShcMultiLine) {
+            init(getLineGraphConfig(element))
+        }
+    }
 
+    private fun getLineGraphConfig(element: MultiLineGraphWidgetUiModel): LineChartConfigModel {
+        return LineChartConfig.create { }
     }
 
     interface Listener : BaseViewHolderListener {

@@ -127,6 +127,15 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideGetMultiLineGraphDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: MultiLineGraphMapper
+    ): GetMultiLineGraphUseCase {
+        return GetMultiLineGraphUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
             mapper: TickerMapper

@@ -16,8 +16,9 @@ data class MultiLineMetricUiModel(
         val errorMsg: String = "",
         val type: String = MetricsType.UNKNOWN,
         val summary: MetricsSummaryUiModel = MetricsSummaryUiModel(),
-        val yAxis: List<MultiLineYAxisUiModel> = emptyList(),
-        val linePeriod: LinePeriodUiModel = LinePeriodUiModel()
+        val yAxis: List<YAxisUiModel> = emptyList(),
+        val linePeriod: LinePeriodUiModel = LinePeriodUiModel(),
+        var isSelected: Boolean = false
 )
 
 data class MetricsSummaryUiModel(
@@ -28,18 +29,7 @@ data class MetricsSummaryUiModel(
         val lineColor: String = ""
 )
 
-data class MultiLineYAxisUiModel(
-        val yValue: Float = 0f,
-        val yLabel: String = ""
-)
-
 data class LinePeriodUiModel(
-        val currentPeriod: List<PeriodAxisUiModel> = emptyList(),
-        val lastPeriod: List<PeriodAxisUiModel> = emptyList()
-)
-
-data class PeriodAxisUiModel(
-        val yValue: Float = 0f,
-        val yLabelFmt: String = "",
-        val xLabelFmt: String = ""
+        val currentPeriod: List<XYAxisUiModel> = emptyList(),
+        val lastPeriod: List<XYAxisUiModel> = emptyList()
 )

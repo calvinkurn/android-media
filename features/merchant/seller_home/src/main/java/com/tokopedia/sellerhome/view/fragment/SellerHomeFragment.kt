@@ -119,6 +119,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomeTable: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeMultiLineGraph: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
@@ -151,6 +152,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.tableWidgetData, WidgetType.TABLE)
         observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
+        observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
     }
@@ -347,7 +349,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        performanceMonitoringSellerHomeBarChart = PerformanceMonitoring.start(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+        performanceMonitoringSellerHomeMultiLineGraph = PerformanceMonitoring.start(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
         sellerHomeViewModel.getMultiLineGraphData(dataKeys)
     }
 
@@ -668,6 +670,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             WidgetType.TABLE -> performanceMonitoringSellerHomeTable?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringSellerHomePieChart?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringSellerHomeBarChart?.stopTrace()
+            WidgetType.MULTI_LINE_GRAPH -> performanceMonitoringSellerHomeMultiLineGraph?.stopTrace()
         }
     }
 

@@ -38,24 +38,24 @@ class MultiLineGraphMapper @Inject constructor() {
                     ),
                     yAxis = it.yAxis.orEmpty()
                             .map { yAxis ->
-                                MultiLineYAxisUiModel(
+                                YAxisUiModel(
                                         yValue = yAxis.yVal ?: 0f,
                                         yLabel = yAxis.yLabel.orEmpty()
                                 )
                             },
                     linePeriod = LinePeriodUiModel(
                             currentPeriod = it.line?.currentPeriode.orEmpty().map { period ->
-                                PeriodAxisUiModel(
-                                        yValue = period.yVal ?: 0f,
-                                        yLabelFmt = period.yLabel.orEmpty(),
-                                        xLabelFmt = period.xLabel.orEmpty()
+                                XYAxisUiModel(
+                                        yVal = period.yVal ?: 0f,
+                                        yLabel = period.yLabel.orEmpty(),
+                                        xLabel = period.xLabel.orEmpty()
                                 )
                             },
                             lastPeriod = it.line?.lastPeriode.orEmpty().map { period ->
-                                PeriodAxisUiModel(
-                                        yValue = period.yVal ?: 0f,
-                                        yLabelFmt = period.yLabel.orEmpty(),
-                                        xLabelFmt = period.xLabel.orEmpty()
+                                XYAxisUiModel(
+                                        yVal = period.yVal ?: 0f,
+                                        yLabel = period.yLabel.orEmpty(),
+                                        xLabel = period.xLabel.orEmpty()
                                 )
                             }
                     )

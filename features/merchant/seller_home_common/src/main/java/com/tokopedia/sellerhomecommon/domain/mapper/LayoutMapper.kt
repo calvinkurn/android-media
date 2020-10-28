@@ -26,6 +26,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                     WidgetType.TABLE -> mapToTableWidget(it)
                     WidgetType.PIE_CHART -> mapToPieChartWidget(it)
                     WidgetType.BAR_CHART -> mapToBarChartWidget(it)
+                    WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it)
                     else -> mapToSectionWidget(it)
                 })
             }
@@ -170,6 +171,21 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
 
     private fun mapToBarChartWidget(widget: WidgetModel): BarChartWidgetUiModel {
         return BarChartWidgetUiModel(
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                url = widget.url.orEmpty(),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                data = null,
+                isLoaded = false
+        )
+    }
+
+    private fun mapToMultiLineGraphWidget(widget: WidgetModel): MultiLineGraphWidgetUiModel {
+        return MultiLineGraphWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),

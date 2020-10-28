@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.adapter
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,9 @@ import kotlinx.android.synthetic.main.shc_item_multi_line_metric.view.*
  * Created By @ilhamsuaib on 27/10/20
  */
 
-class MultiLineMetricsAdapter : RecyclerView.Adapter<MultiLineMetricsAdapter.ViewHolder>() {
+class MultiLineMetricsAdapter(
+        private val listener: MetricsListener
+) : RecyclerView.Adapter<MultiLineMetricsAdapter.ViewHolder>() {
 
     private var items: List<MultiLineMetricUiModel> = emptyList()
 
@@ -41,11 +44,16 @@ class MultiLineMetricsAdapter : RecyclerView.Adapter<MultiLineMetricsAdapter.Vie
             val summary = item.summary
 
             with(itemView) {
+                val selectableItemBg = TypedValue()
+                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
+                        selectableItemBg, true)
+                containerShcCardMetric.setBackgroundResource(selectableItemBg.resourceId)
+
                 tvShcMetricsTitle.text = summary.title
                 tvShcMetricsValue.text = summary.valueFmt.parseAsHtml()
                 tvShcMetricsSubValue.text = summary.description.parseAsHtml()
 
-                if (summary.lineColor.isNotBlank()) {
+                if (summary.lineColor.isNotBlank() && item.isSelected) {
                     val metricColor = Color.parseColor(summary.lineColor)
                     viewShcMetricsColor.setBackgroundColor(metricColor)
                 } else {
@@ -53,5 +61,9 @@ class MultiLineMetricsAdapter : RecyclerView.Adapter<MultiLineMetricsAdapter.Vie
                 }
             }
         }
+    }
+
+    interface MetricsListener {
+        fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int)
     }
 }

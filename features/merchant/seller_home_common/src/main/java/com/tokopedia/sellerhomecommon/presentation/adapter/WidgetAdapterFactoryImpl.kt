@@ -40,6 +40,8 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(tickerWidget: TickerWidgetUiModel): Int = TickerViewHolder.RES_LAYOUT
 
+    override fun type(multiLineGraphWidget: MultiLineGraphWidgetUiModel): Int = MultiLineGraphViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -54,6 +56,7 @@ class WidgetAdapterFactoryImpl(
             BarChartViewHolder.RES_LAYOUT -> BarChartViewHolder(parent, listener)
             WhiteSpaceViewHolder.RES_LAYOUT -> WhiteSpaceViewHolder(parent)
             TickerViewHolder.RES_LAYOUT -> TickerViewHolder(parent, listener)
+            MultiLineGraphViewHolder.RES_LAYOUT -> MultiLineGraphViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
