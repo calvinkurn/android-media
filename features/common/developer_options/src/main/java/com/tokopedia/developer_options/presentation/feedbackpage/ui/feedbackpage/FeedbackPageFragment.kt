@@ -176,9 +176,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun checkUriImage(feedbackId: Int, imageCount: Int, feedbackFormRequest: FeedbackFormRequest) {
-        Toast.makeText(context, feedbackFormRequest.platformID.toString(), Toast.LENGTH_LONG).show()
-        Toast.makeText(context, feedbackFormRequest.appVersion, Toast.LENGTH_LONG).show()
+    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
             var initCountImage = imageCount
@@ -507,7 +505,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "IMG_" + System.currentTimeMillis(), null)
         return Uri.parse(path)
     }
 

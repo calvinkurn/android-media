@@ -60,7 +60,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                             override fun onNext(t: FeedbackFormResponse?) {
                                 view.setSubmitFlag()
                                 if (t != null) {
-                                    view.checkUriImage(t.data.feedbackID, 0, feedbackFormRequest)
+                                    view.checkUriImage(t.data.feedbackID, 0)
                                 }
                             }
 
@@ -87,7 +87,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     override fun onNext(t: ImageResponse?) {
                         if (totalImage == imageCount) {
                             view.hideLoadingDialog()
-//                            commitData(feedbackId)
+                            commitData(feedbackId)
                         }
                     }
 

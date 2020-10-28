@@ -1,7 +1,10 @@
 package com.tokopedia.developer_options.presentation.feedbackpage.domain.request
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class FeedbackFormRequest(
         @SerializedName("platformID")
         var platformID: Int?,
@@ -39,4 +42,4 @@ data class FeedbackFormRequest(
         var type: Int?,
         @SerializedName("detail")
         var detail: String?
-)
+) : Parcelable
