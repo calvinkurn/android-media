@@ -22,7 +22,7 @@ abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
             window.apply {
                 addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                statusBarColor = ContextCompat.getColor(context, R.color.white_95)
+                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
             }
         }
     }

@@ -90,7 +90,8 @@ data class CartItemData(
             var slashPriceLabel: String = "",
             var initialPriceBeforeDrop: Int = 0,
             var productInformation: List<String> = emptyList(),
-            var productAlertMessage: String = ""
+            var productAlertMessage: String = "",
+            var campaignId: Int = 0
     ) : Parcelable
 
     @Parcelize

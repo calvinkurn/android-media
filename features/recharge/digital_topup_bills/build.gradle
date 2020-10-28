@@ -27,7 +27,12 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+//        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
+//
+//    testOptions {
+//        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+//    }
 }
 
 dependencies {
@@ -39,7 +44,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.baseList)
@@ -94,6 +99,8 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+//    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

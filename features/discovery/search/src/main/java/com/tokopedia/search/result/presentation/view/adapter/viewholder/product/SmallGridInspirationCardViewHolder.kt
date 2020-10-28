@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.Inspirat
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.utils.ChipSpacingItemDecoration
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
-import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_inspiration_card_layout.view.*
+import kotlinx.android.synthetic.main.search_result_product_small_grid_curated_inspiration_card_layout.view.*
 import kotlinx.android.synthetic.main.search_result_product_small_grid_inspiration_card_layout.view.*
 
 class SmallGridInspirationCardViewHolder(
@@ -53,14 +54,23 @@ class SmallGridInspirationCardViewHolder(
     private fun setCuratedLayout(element: InspirationCardViewModel) {
         val option = element.options.firstOrNull() ?: return
 
+        bindCuratedBackground()
         bindCuratedIcon(option)
         bindCuratedTitle(option)
         bindCuratedListener(option)
     }
 
+    private fun bindCuratedBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            itemView.inspirationCardCuratedBackground?.setBackgroundResource(R.drawable.search_background_layer_small_grid_curated_cards)
+            itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        }
+        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
+    }
+
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.smallGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
         }
     }
 

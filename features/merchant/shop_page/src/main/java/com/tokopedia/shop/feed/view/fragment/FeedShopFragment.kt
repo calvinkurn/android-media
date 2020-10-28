@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -165,10 +166,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun getRecyclerView(view: View?): RecyclerView {
         return view!!.findViewById(R.id.recyclerView)
-    }
-
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
     }
 
     override fun callInitialLoadAutomatically(): Boolean {

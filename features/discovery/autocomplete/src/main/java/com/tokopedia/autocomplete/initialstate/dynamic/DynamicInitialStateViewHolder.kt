@@ -94,7 +94,7 @@ class DynamicInitialStateViewHolder(
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
-                    clickListener.onItemClicked(item.applink, item.url)
+                    clickListener.onDynamicSectionItemClicked(item, adapterPosition)
                 }
             }
         }

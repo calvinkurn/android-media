@@ -25,9 +25,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
@@ -68,8 +68,6 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        const val URL_KEY = "url"
-
         private const val APPLINK_FORMAT = "%s?url=%s%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
@@ -141,11 +139,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(sellerHomeConfig.isNewSellerHomeDisabled()) {
-            (activity as? com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity)?.attachCallback(this)
-        } else {
-            (activity as? SellerHomeActivity)?.attachCallback(this)
-        }
+        (activity as? SellerHomeActivity)?.attachCallback(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -254,16 +248,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
-    private fun getStatisticPageApplink(): String {
-        val statisticVariantName = "StatsOverApp"
-        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(statisticVariantName, "")
-        return if (variant == statisticVariantName) {
-            ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
-        } else {
-            ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD
-        }
-    }
-
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
         val bottomSheetInfix: String
         val bottomSheetDescription: String
@@ -319,36 +303,40 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun populateAdapterData() {
-        val statisticPageAppLink = getStatisticPageApplink()
-
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
-                        R.drawable.ic_statistic_setting,
-                        statisticPageAppLink,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
+                        null,
+                        ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC,
+                        iconUnify = IconUnify.GRAPH),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        R.drawable.ic_ads_promotion,
+                        null,
                         ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION),
+                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
+                        iconUnify = IconUnify.PROMO_ADS),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),
-                        R.drawable.ic_setting_discussion,
+                        null,
                         ApplinkConst.TALK,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                        eventActionSuffix = SettingTrackingConstant.DISCUSSION,
+                        iconUnify = IconUnify.DISCUSSION),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_review),
-                        R.drawable.ic_star_setting,
+                        null,
                         ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW),
+                        eventActionSuffix = SettingTrackingConstant.REVIEW,
+                        iconUnify = IconUnify.STAR),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_complaint),
-                        R.drawable.ic_complaint,
                         null,
-                        eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.COMPLAINT,
+                        iconUnify = IconUnify.PRODUCT_INFO
+                ) {
                     val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
@@ -356,29 +344,36 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 DividerUiModel(),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),
-                        R.drawable.ic_finance,
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE){
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
+                        iconUnify = IconUnify.FINANCE
+                ) {
                     RouteManager.route(context,ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_seller_education_center),
-                        R.drawable.ic_seller_edu,
-                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
+                        iconUnify = IconUnify.SHOP_INFO
+                ) {
                     val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_tokopedia_care),
-                        R.drawable.ic_icon_tokopedia_care,
+                        null,
                         ApplinkConst.CONTACT_US_NATIVE,
-                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
+                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
+                        iconUnify = IconUnify.CALL_CENTER),
                 DividerUiModel(DividerType.THIN_PARTIAL),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_setting),
-                        R.drawable.ic_setting,
                         null,
-                        eventActionSuffix = SettingTrackingConstant.SETTINGS) {
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                        iconUnify = IconUnify.SETTING
+                ) {
                     startActivity(Intent(context, MenuSettingActivity::class.java))
                 }
         )

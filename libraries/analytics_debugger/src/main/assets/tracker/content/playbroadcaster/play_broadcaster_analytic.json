@@ -487,7 +487,7 @@
       "eventAction": "error state on preparation page",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+}}",
+      "eventLabel": "{{\\d+ - .+}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",

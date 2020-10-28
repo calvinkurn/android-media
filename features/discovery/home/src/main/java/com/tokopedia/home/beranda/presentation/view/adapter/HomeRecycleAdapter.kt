@@ -54,8 +54,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
-        } else if(holder is BannerViewHolder){
-            holder.onResume()
         } else if(holder is PlayBannerCardViewHolder){
             holder.onResume()
         }

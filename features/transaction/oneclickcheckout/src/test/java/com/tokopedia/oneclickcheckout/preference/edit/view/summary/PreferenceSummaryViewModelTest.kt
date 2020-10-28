@@ -48,7 +48,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
 
         assertEquals(OccState.Success(response), preferenceSummaryViewModel.preference.value)
     }
@@ -63,7 +63,7 @@ class PreferenceSummaryViewModelTest {
             (args[1] as ((Throwable) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
 
         assertEquals(OccState.Failed(Failure(response)), preferenceSummaryViewModel.preference.value)
     }
@@ -77,7 +77,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         preferenceSummaryViewModel.deletePreference(0)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
@@ -97,7 +97,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(ProfilesItemModel())
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         preferenceSummaryViewModel.deletePreference(0)
 
         assertEquals(OccState.Loading, preferenceSummaryViewModel.editResult.value)
@@ -210,7 +210,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(false, isDataChanged)
@@ -234,7 +234,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(true, isDataChanged)
@@ -258,7 +258,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(true, isDataChanged)
@@ -282,7 +282,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(true, isDataChanged)
@@ -306,7 +306,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(true, isDataChanged)
@@ -330,7 +330,7 @@ class PreferenceSummaryViewModelTest {
             (args[0] as ((ProfilesItemModel) -> Unit)).invoke(response)
         }
 
-        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "")
+        preferenceSummaryViewModel.getPreferenceDetail(0, 0, 0, "", "", "")
         val isDataChanged = preferenceSummaryViewModel.isDataChanged()
 
         assertEquals(true, isDataChanged)

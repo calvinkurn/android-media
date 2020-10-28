@@ -27,25 +27,35 @@ class PaymentMethodViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Success`() {
-        viewModel.getPaymentListingParam(PaymentListingParamRequest("","","","",""))
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""))
 
-        assertEquals(OccState.Loading, viewModel.paymentListingParam.value)
+        assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 
         val param = ListingParam()
         useCase.invokeOnSuccess(param)
 
-        assertEquals(OccState.Success(param), viewModel.paymentListingParam.value)
+        val result = "merchant_code=&" +
+                "profile_code=&" +
+                "user_id=&" +
+                "customer_name=&" +
+                "customer_email=&" +
+                "customer_msisdn=&" +
+                "address_id=&" +
+                "callback_url=&" +
+                "version=&" +
+                "signature="
+        assertEquals(OccState.Success(result), viewModel.paymentListingPayload.value)
     }
 
     @Test
     fun `Get Payment Listing Param Failed`() {
-        viewModel.getPaymentListingParam(PaymentListingParamRequest("","","","",""))
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""))
 
-        assertEquals(OccState.Loading, viewModel.paymentListingParam.value)
+        assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 
         val throwable = Throwable()
         useCase.invokeOnError(throwable)
 
-        assertEquals(OccState.Failed(Failure(throwable)), viewModel.paymentListingParam.value)
+        assertEquals(OccState.Failed(Failure(throwable)), viewModel.paymentListingPayload.value)
     }
 }

@@ -5,6 +5,8 @@ import com.tokopedia.topads.dashboard.view.adapter.product.ProductAdapterTypeFac
 
 class ProductItemViewModel( val data: WithoutGroupDataItem): ProductViewModel() {
     var isChecked = false
+    var isChanged = false
+    var valueChanged = false
 
     override fun type(typesFactory: ProductAdapterTypeFactory): Int {
         return typesFactory.type(this)

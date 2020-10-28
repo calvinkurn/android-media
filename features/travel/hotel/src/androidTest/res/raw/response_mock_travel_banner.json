@@ -1,0 +1,37 @@
+[
+  {
+    "data": {
+      "travelCollectiveBanner": {
+        "banners": [
+          {
+            "id": "501",
+            "product": "SUBHOMEPAGE",
+            "attributes": {
+              "description": "DGTOPED Sep",
+              "webURL": "https://www.tokopedia.com/promo/digital-cashback-11/",
+              "appURL": "tokopedia://promo/digital-cashback-11/",
+              "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/9/7/42484317/42484317_a1c73589-e2be-444a-a55f-cbbc010efeb0.jpg",
+              "promoCode": "DGTOPED"
+            }
+          },
+          {
+            "id": "493",
+            "product": "SUBHOMEPAGE",
+            "attributes": {
+              "description": "TOPED",
+              "webURL": "https://www.tokopedia.com/promo/digital-cashback-1",
+              "appURL": "tokopedia://promo/digital-cashback-1",
+              "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/9/1/42484317/42484317_608000c2-637c-485e-9678-d8da3b4bfc5d.jpg",
+              "promoCode": "TOPED"
+            }
+          }
+        ],
+        "meta": {
+          "title": "Lihat semua",
+          "webURL": "https://www.tokopedia.com/promo/tiket/?cta_src=4",
+          "appURL": "tokopedia://promo?menuID=4"
+        }
+      }
+    }
+  }
+]

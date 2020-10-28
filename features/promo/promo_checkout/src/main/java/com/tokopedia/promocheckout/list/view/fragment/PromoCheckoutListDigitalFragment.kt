@@ -25,6 +25,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
+
     @Inject
     lateinit var userSession: UserSession
     lateinit var promoDigitalModel: PromoDigitalModel

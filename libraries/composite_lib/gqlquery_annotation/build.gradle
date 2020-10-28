@@ -32,7 +32,7 @@ targetCompatibility = "8"
 project.ext {
     artifactId = 'gqlquery_annotation'
     groupId = 'com.tokopedia.gql_query_annotation'
-    versionName = "0.0.20"
+    versionName = "0.0.21"
     artifactName = "gqlquery_annotation"
 }
 

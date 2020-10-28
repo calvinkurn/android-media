@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
@@ -22,7 +23,7 @@ class HomeRecommendationViewModel @Inject constructor(
     private val loadingModel = HomeRecommendationLoading()
     private val loadMoreModel = HomeRecommendationLoadMore()
 
-    private var topAdsBannerNextPageToken = ""
+    var topAdsBannerNextPageToken = ""
 
     fun loadInitialPage(tabName: String, recommendationId: Int,count: Int){
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
@@ -34,16 +35,19 @@ class HomeRecommendationViewModel @Inject constructor(
             } else {
                 try{
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                    val topAdsBanner = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
-                                    "",
-                                    "1",
-                                    topAdsBannerNextPageToken,
-                                    homeBannerTopAds.size,
-                                    3,
-                                    ""
-                            )
-                    )
+                    var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
+                    if (homeBannerTopAds.isNotEmpty()) {
+                        topAdsBanner = topAdsImageViewUseCase.getImageData(
+                                topAdsImageViewUseCase.getQueryMap(
+                                        "",
+                                        "1",
+                                        topAdsBannerNextPageToken,
+                                        homeBannerTopAds.size,
+                                        3,
+                                        ""
+                                )
+                        )
+                    }
                     if(topAdsBanner.isEmpty()){
                         _homeRecommendationLiveData.postValue(data.copy(
                                 homeRecommendations = data.homeRecommendations.filter { it !is HomeRecommendationBannerTopAdsDataModel}

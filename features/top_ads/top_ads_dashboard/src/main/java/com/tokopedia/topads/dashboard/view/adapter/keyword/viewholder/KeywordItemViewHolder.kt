@@ -38,7 +38,11 @@ class KeywordItemViewHolder(val view: View,
             view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_rupee))
             view.check_box.isChecked = item.isChecked
             view.key_title.text = it.result.keywordTag
-            view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL
+            view.btn_switch.setOnCheckedChangeListener(null)
+            if (!item.isChanged)
+                view.btn_switch.isChecked = it.result.keywordStatus == STATUS_ACTIVE || it.result.keywordStatus == STATUS_TIDAK_TAMPIL
+            else
+                view.btn_switch.isChecked = item.changedValue
             view.label.setLabelType(Label.GENERAL_LIGHT_GREEN)
             view.label.text = it.result.keywordTypeDesc
             view.tampil_count.text = it.result.statTotalImpression
@@ -54,6 +58,8 @@ class KeywordItemViewHolder(val view: View,
                 view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+                item.changedValue = isChecked
+                item.isChanged = true
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }
 

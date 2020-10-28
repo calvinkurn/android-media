@@ -1,8 +1,0 @@
-query VideoSearch($query: String!, $size: Int!) {
-    videosearch(query:$query, nsize:$size){
-    data {
-        id
-        title
-    }
-    error}
-}

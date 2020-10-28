@@ -63,7 +63,7 @@ class CustomDatePicker : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         renderSinglePickCalendar(arrayListOf())
         setFieldEnable(false)
-        dateStart?.setOnFocusChangeListener { v, hasFocus ->
+        dateStart?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 dateFlag = 0
                 selectedDate = selectedStartDate
@@ -71,7 +71,7 @@ class CustomDatePicker : BottomSheetUnify() {
                 renderSinglePickCalendar(arrayListOf())
             }
         }
-        dateEnd?.setOnFocusChangeListener { v, hasFocus ->
+        dateEnd?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 if(dateStart.textFieldInput.text.isNullOrEmpty()){
                     return@setOnFocusChangeListener

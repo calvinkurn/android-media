@@ -1,0 +1,613 @@
+[
+  {
+    "data": {
+      "flightFare": {
+        "id": "CGKBTJ20202021",
+        "attributes": [
+          {
+            "date": "2020-09-24",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-19",
+            "cheapestPriceNumeric": 1467400,
+            "cheapestPrice": "Rp1.467.400",
+            "displayedFare": "1.467",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-29",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-10-13",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-21",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-01",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-08",
+            "cheapestPriceNumeric": 1482800,
+            "cheapestPrice": "Rp1.482.800",
+            "displayedFare": "1.482",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-03",
+            "cheapestPriceNumeric": 1420100,
+            "cheapestPrice": "Rp1.420.100",
+            "displayedFare": "1.420",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-25",
+            "cheapestPriceNumeric": 1405800,
+            "cheapestPrice": "Rp1.405.800",
+            "displayedFare": "1.405",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-12",
+            "cheapestPriceNumeric": 1420100,
+            "cheapestPrice": "Rp1.420.100",
+            "displayedFare": "1.420",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-05",
+            "cheapestPriceNumeric": 1793000,
+            "cheapestPrice": "Rp1.793.000",
+            "displayedFare": "1.793",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-16",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-26",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-11-02",
+            "cheapestPriceNumeric": 968000,
+            "cheapestPrice": "Rp968.000",
+            "displayedFare": "968",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-04",
+            "cheapestPriceNumeric": 1482800,
+            "cheapestPrice": "Rp1.482.800",
+            "displayedFare": "1.482",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-24",
+            "cheapestPriceNumeric": 1606600,
+            "cheapestPrice": "Rp1.606.600",
+            "displayedFare": "1.606",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-28",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-07",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-04",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-07",
+            "cheapestPriceNumeric": 1606600,
+            "cheapestPrice": "Rp1.606.600",
+            "displayedFare": "1.606",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-11",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-23",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-12-31",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-30",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-13",
+            "cheapestPriceNumeric": 1584000,
+            "cheapestPrice": "Rp1.584.000",
+            "displayedFare": "1.584",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-10",
+            "cheapestPriceNumeric": 1420100,
+            "cheapestPrice": "Rp1.420.100",
+            "displayedFare": "1.420",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-17",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-23",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-11-20",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-03",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-18",
+            "cheapestPriceNumeric": 1710000,
+            "cheapestPrice": "Rp1.710.000",
+            "displayedFare": "1.710",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-21",
+            "cheapestPriceNumeric": 1405800,
+            "cheapestPrice": "Rp1.405.800",
+            "displayedFare": "1.405",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-10",
+            "cheapestPriceNumeric": 1606600,
+            "cheapestPrice": "Rp1.606.600",
+            "displayedFare": "1.606",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-10",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-10-01",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-22",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-27",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-10-09",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-14",
+            "cheapestPriceNumeric": 1606600,
+            "cheapestPrice": "Rp1.606.600",
+            "displayedFare": "1.606",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-17",
+            "cheapestPriceNumeric": 1710000,
+            "cheapestPrice": "Rp1.710.000",
+            "displayedFare": "1.710",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-26",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-02",
+            "cheapestPriceNumeric": 1544400,
+            "cheapestPrice": "Rp1.544.400",
+            "displayedFare": "1.544",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-15",
+            "cheapestPriceNumeric": 1459700,
+            "cheapestPrice": "Rp1.459.700",
+            "displayedFare": "1.459",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-28",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-11-13",
+            "cheapestPriceNumeric": 1381600,
+            "cheapestPrice": "Rp1.381.600",
+            "displayedFare": "1.381",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-01",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-11-25",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-11-23",
+            "cheapestPriceNumeric": 1342600,
+            "cheapestPrice": "Rp1.342.600",
+            "displayedFare": "1.342",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-25",
+            "cheapestPriceNumeric": 1446000,
+            "cheapestPrice": "Rp1.446.000",
+            "displayedFare": "1.446",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-20",
+            "cheapestPriceNumeric": 1467400,
+            "cheapestPrice": "Rp1.467.400",
+            "displayedFare": "1.467",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-09",
+            "cheapestPriceNumeric": 1420100,
+            "cheapestPrice": "Rp1.420.100",
+            "displayedFare": "1.420",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-07",
+            "cheapestPriceNumeric": 1544400,
+            "cheapestPrice": "Rp1.544.400",
+            "displayedFare": "1.544",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-11",
+            "cheapestPriceNumeric": 1668700,
+            "cheapestPrice": "Rp1.668.700",
+            "displayedFare": "1.668",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-18",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-10-30",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-06",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-08",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-02",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-03",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-12-04",
+            "cheapestPriceNumeric": 1630800,
+            "cheapestPrice": "Rp1.630.800",
+            "displayedFare": "1.630",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-06",
+            "cheapestPriceNumeric": 1544400,
+            "cheapestPrice": "Rp1.544.400",
+            "displayedFare": "1.544",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-14",
+            "cheapestPriceNumeric": 1420100,
+            "cheapestPrice": "Rp1.420.100",
+            "displayedFare": "1.420",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-22",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-09-29",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": true
+          },
+          {
+            "date": "2020-10-17",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-10-20",
+            "cheapestPriceNumeric": 1343100,
+            "cheapestPrice": "Rp1.343.100",
+            "displayedFare": "1.343",
+            "isLowestFare": false
+          },
+          {
+            "date": "2020-09-01",
+            "cheapestPriceNumeric": 1817200,
+            "cheapestPrice": "Rp1.817.200",
+            "displayedFare": "1.817",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-01-03",
+            "cheapestPriceNumeric": 1063200,
+            "cheapestPrice": "Rp1.063.200",
+            "displayedFare": "1.063",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-02-01",
+            "cheapestPriceNumeric": 914700,
+            "cheapestPrice": "Rp914.700",
+            "displayedFare": "914",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-03-15",
+            "cheapestPriceNumeric": 971900,
+            "cheapestPrice": "Rp971.900",
+            "displayedFare": "971",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-03-29",
+            "cheapestPriceNumeric": 914700,
+            "cheapestPrice": "Rp914.700",
+            "displayedFare": "914",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-07-14",
+            "cheapestPriceNumeric": 1171000,
+            "cheapestPrice": "Rp1.171.000",
+            "displayedFare": "1.171",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-01-01",
+            "cheapestPriceNumeric": 1063200,
+            "cheapestPrice": "Rp1.063.200",
+            "displayedFare": "1.063",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-01-11",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-01-25",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-01-15",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-01-08",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-02-18",
+            "cheapestPriceNumeric": 914700,
+            "cheapestPrice": "Rp914.700",
+            "displayedFare": "914",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-01-04",
+            "cheapestPriceNumeric": 1515300,
+            "cheapestPrice": "Rp1.515.300",
+            "displayedFare": "1.515",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-01-21",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-02-25",
+            "cheapestPriceNumeric": 1374500,
+            "cheapestPrice": "Rp1.374.500",
+            "displayedFare": "1.374",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-03-31",
+            "cheapestPriceNumeric": 921300,
+            "cheapestPrice": "Rp921.300",
+            "displayedFare": "921",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-07-09",
+            "cheapestPriceNumeric": 2007500,
+            "cheapestPrice": "Rp2.007.500",
+            "displayedFare": "2.007",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-01-14",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          },
+          {
+            "date": "2021-02-02",
+            "cheapestPriceNumeric": 914700,
+            "cheapestPrice": "Rp914.700",
+            "displayedFare": "914",
+            "isLowestFare": false
+          },
+          {
+            "date": "2021-02-12",
+            "cheapestPriceNumeric": 910300,
+            "cheapestPrice": "Rp910.300",
+            "displayedFare": "910",
+            "isLowestFare": true
+          }
+        ]
+      }
+    }
+  }
+]

@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -54,7 +53,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceListViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PreferenceListViewModel::class.java]
     }
 
     private val adapter = PreferenceListAdapter(this)

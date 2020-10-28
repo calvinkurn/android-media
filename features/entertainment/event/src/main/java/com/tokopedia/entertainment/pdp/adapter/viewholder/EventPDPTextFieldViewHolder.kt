@@ -6,6 +6,8 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
 import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
 import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_TEXT
@@ -83,16 +85,23 @@ class EventPDPTextFieldViewHolder(val view: View,
                     txtValue.setMessage(element.title)
                     val list = getList(element.value)
                     if (list.isNotEmpty()) {
+
+                        val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
+                            list.getValueByPosition(0)
+                        } else list.get(keyActiveBottomSheet) ?: ""
+
+                        val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
+                            list.getKeyByPosition(0)
+                        } else keyActiveBottomSheet
+
+                        if(element.required==1 && !key.equals(BLANK_LIST)){
+                            txtValue.setMessage(element.helpText)
+                            txtValue.setError(false)
+                            element.isError = false
+                        }
+
                         txtValue.textFieldInput.apply {
                             keyListener = null
-
-                            val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
-                                list.getValueByPosition(0)
-                            } else list.get(keyActiveBottomSheet) ?: ""
-
-                            val key = if (keyActiveBottomSheet.isNullOrEmpty()) {
-                                list.getKeyByPosition(0)
-                            } else keyActiveBottomSheet
 
                             setText(value)
                             addOrRemoveData(position, key, value)
@@ -114,6 +123,15 @@ class EventPDPTextFieldViewHolder(val view: View,
             }
 
             if (element.elementType.equals(ELEMENT_LIST)) txtValue.setFirstIcon(R.drawable.ent_pdp_expand_arrow_down)
+
+            if (element.isError) {
+                if (element.errorType == EMPTY_TYPE) {
+                    txtValue.setMessage(resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
+                } else if (element.errorType == REGEX_TYPE) {
+                    txtValue.setMessage(element.errorMessage)
+                }
+                txtValue.setError(true)
+            }
         }
     }
 
@@ -164,15 +182,18 @@ class EventPDPTextFieldViewHolder(val view: View,
             this.values.toTypedArray()[position]
 
     fun getKeyActive(form: Form): String {
-        return if (!textFormListener.getKeyActive().isNullOrEmpty()) {
+        val key = if (!textFormListener.getKeyActive().isNullOrEmpty()) {
             textFormListener.getKeyActive()
         } else if (!form.valuePosition.isNullOrEmpty()) {
             form.valuePosition
         } else ""
+        textFormListener.resetActiveKey()
+        return key
     }
 
     interface TextFormListener {
         fun getKeyActive(): String
+        fun resetActiveKey()
         fun getAdditionalType(): AdditionalType
     }
 

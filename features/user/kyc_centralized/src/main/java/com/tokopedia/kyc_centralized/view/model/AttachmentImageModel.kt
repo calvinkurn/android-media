@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by alvinatin on 21/11/18.
  */
-class AttachmentImageModel {
+data class AttachmentImageModel (
     @SerializedName("picture_obj")
     @Expose
     val pictureObj: String = ""
-}
+)

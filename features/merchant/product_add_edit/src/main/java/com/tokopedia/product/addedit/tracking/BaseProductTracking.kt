@@ -19,6 +19,7 @@ object ProductAddEditTracking {
     const val EVENT_VIEW_ADD_PRODUCT = "viewAddProductIris"
     const val EVENT_CLICK_EDIT_PRODUCT = "clickEditProduct"
     const val EVENT_VIEW_EDIT_PRODUCT = "viewEditProductIris"
+    const val EVENT_SERVER_ERROR = "serverError"
     const val CAT_ADD_PRODUCT_PAGE = "add product page"
     const val CAT_EDIT_PRODUCT_PAGE = "edit product page"
     const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
@@ -41,13 +42,14 @@ object ProductAddEditTracking {
                 mapOf(KEY_SHOP_ID to shopId, KEY_SCREEN_NAME to screen))
     }
 
-    fun sendAddProductClickWithoutScreen(shopId: String, action: String, label: String = "") {
+    fun sendAddProductClickWithoutScreen(userId: String, action: String, label: String = "") {
         getTracker().sendGeneralEventCustom(
                 EVENT_CLICK_ADD_PRODUCT,
                 CAT_ADD_PRODUCT_PAGE,
                 action,
                 label,
-                mapOf(KEY_SHOP_ID to shopId))
+                mapOf(KEY_USER_ID to userId, KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                        KEY_CURRENT_SITE to CURRENT_SITE))
     }
 
     fun sendAddProductImpression(userId: String, action: String, label: String = "") {
@@ -55,6 +57,19 @@ object ProductAddEditTracking {
                 KEY_EVENT to EVENT_VIEW_ADD_PRODUCT,
                 KEY_CATEGORY to CAT_ADD_PRODUCT_PAGE,
                 KEY_ACTION to action,
+                KEY_LABEL to label,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE,
+                KEY_USER_ID to userId
+        )
+        ProductVariantTracking.getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendAddProductUpload(category: String, userId: String, label: String = "") {
+        val map = mapOf(
+                KEY_EVENT to EVENT_SERVER_ERROR,
+                KEY_CATEGORY to category,
+                KEY_ACTION to "",
                 KEY_LABEL to label,
                 KEY_BUSINESS_UNIT to BUSINESS_UNIT,
                 KEY_CURRENT_SITE to CURRENT_SITE,
@@ -72,11 +87,34 @@ object ProductAddEditTracking {
                 mapOf(KEY_SHOP_ID to shopId))
     }
 
+    fun sendEditProductClickWithoutScreen(userId: String, action: String, label: String = "") {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_EDIT_PRODUCT,
+                CAT_EDIT_PRODUCT_PAGE,
+                action,
+                label,
+                mapOf(KEY_USER_ID to userId, KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                        KEY_CURRENT_SITE to CURRENT_SITE))
+    }
+
     fun sendEditProductImpression(userId: String, action: String, label: String = "") {
         val map = mapOf(
                 KEY_EVENT to EVENT_VIEW_EDIT_PRODUCT,
                 KEY_CATEGORY to CAT_EDIT_PRODUCT_PAGE,
                 KEY_ACTION to action,
+                KEY_LABEL to label,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE,
+                KEY_USER_ID to userId
+        )
+        ProductVariantTracking.getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendEditProductUpload(category: String, userId: String, label: String = "") {
+        val map = mapOf(
+                KEY_EVENT to EVENT_SERVER_ERROR,
+                KEY_CATEGORY to category,
+                KEY_ACTION to "",
                 KEY_LABEL to label,
                 KEY_BUSINESS_UNIT to BUSINESS_UNIT,
                 KEY_CURRENT_SITE to CURRENT_SITE,

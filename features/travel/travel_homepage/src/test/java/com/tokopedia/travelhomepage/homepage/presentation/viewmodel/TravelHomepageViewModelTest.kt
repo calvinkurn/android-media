@@ -15,6 +15,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -98,11 +99,22 @@ class TravelHomepageViewModelTest {
         } returns listOf()
 
         // when
-        viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(),true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        runBlocking {
+            viewModel.getListFromCloud("", true)
+            viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0),true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+            viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        }
 
+        // then
+        Thread.sleep(1000)
         viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe true
+        }
     }
 
     @Test
@@ -121,11 +133,19 @@ class TravelHomepageViewModelTest {
 
         // when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
-        viewModel.isAllError.value shouldBe null
+        Thread.sleep(1000)
+        viewModel.isAllError.value shouldBe true
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe false
+            it[1].isSuccess shouldBe false
+        }
     }
 
     @Test
@@ -148,11 +168,19 @@ class TravelHomepageViewModelTest {
 
         // when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
+        Thread.sleep(1000)
         viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe false
+        }
     }
 
     @Test
@@ -176,10 +204,19 @@ class TravelHomepageViewModelTest {
 
         //when
         viewModel.getListFromCloud("", true)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
-        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 0), true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(position = 1), true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
 
         // then
+        // then
+        Thread.sleep(1000)
         viewModel.isAllError.value shouldBe null
+        viewModel.travelItemList.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe true
+        }
     }
 }

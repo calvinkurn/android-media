@@ -39,7 +39,6 @@ abstract class BaseWidgetUiTest{
     open val getBusinessWidgetTab = mockk<Lazy<GetBusinessWidgetTab>> (relaxed = true)
     open val getBusinessUnitDataUseCase = mockk<Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
     open val getPopularKeywordUseCase = mockk<Lazy<GetPopularKeywordUseCase>> (relaxed = true)
-    open val getDynamicChannelsUseCase = mockk<Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
     open val getAtcUseCase = mockk<Lazy<AddToCartOccUseCase>>(relaxed = true)
     open val getRechargeRecommendationUseCase = mockk<Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
     open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)
@@ -51,6 +50,7 @@ abstract class BaseWidgetUiTest{
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val playToggleChannelReminderUseCase = mockk<Lazy<PlayToggleChannelReminderUseCase>> (relaxed = true)
     open val getPlayBannerUseCase = mockk<Lazy<GetPlayWidgetUseCase>> (relaxed = true)
+    open val getDisplayHeadlineAds = mockk<Lazy<GetDisplayHeadlineAds>>(relaxed = true)
 
     open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
@@ -62,7 +62,6 @@ abstract class BaseWidgetUiTest{
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
@@ -86,6 +85,7 @@ abstract class BaseWidgetUiTest{
             topAdsImageViewUseCase = topAdsImageViewUseCase,
             playToggleChannelReminderUseCase = playToggleChannelReminderUseCase,
             getPlayBannerUseCase = getPlayBannerUseCase,
+            getDisplayHeadlineAds = getDisplayHeadlineAds,
             homeProcessor = mockk(relaxed = true)
     )
 

@@ -1194,8 +1194,16 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFiles(uri: String) {
         activity?.let {
-            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
-            helper.downloadFile { true }
+            try {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
+                helper.downloadFile { true }
+            } catch (iae: IllegalArgumentException) {
+                iae.printStackTrace()
+            } catch (se: SecurityException) {
+                se.printStackTrace()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
     }
 

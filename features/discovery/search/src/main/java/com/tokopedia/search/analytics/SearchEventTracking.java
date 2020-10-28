@@ -66,13 +66,14 @@ public interface SearchEventTracking {
         String IMPRESSION_INSPIRATION_CAROUSEL_INFO_PRODUCT = "impression - carousel banner";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
-        String CLICK_INSPIRATION_CAROUSEL_INFO_PRODUCT = "click - carousel banner";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
         String IMPRESSION_BROAD_MATCH = "impression - broad match";
         String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
         String CLICK_BROAD_MATCH = "click - broad match";
         String CLICK_INSPIRATION_CARD = "click inspiration card";
+        String CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS = "click add to cart on product options";
+        String CLICK_SHARE_PRODUCT_OPTIONS = "click - share - product options";
     }
 
     interface Label {
@@ -91,6 +92,14 @@ public interface SearchEventTracking {
 
     interface EventMoEngage {
         String SEARCH_ATTEMPT = "Search_Attempt";
+    }
+
+    interface ECommerce {
+        String CURRENCY_CODE = "currencyCode";
+        String IDR = "IDR";
+        String ADD = "add";
+        String ACTION_FIELD = "actionField";
+        String PRODUCTS = "products";
     }
 
     String CURRENT_SITE = "currentSite";

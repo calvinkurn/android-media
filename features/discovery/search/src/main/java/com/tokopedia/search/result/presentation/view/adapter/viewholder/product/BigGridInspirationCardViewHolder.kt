@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
+import android.os.Build
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -53,14 +54,23 @@ class BigGridInspirationCardViewHolder(
     private fun setCuratedLayout(element: InspirationCardViewModel) {
         val option = element.options.firstOrNull() ?: return
 
+        bindCuratedBackground()
         bindCuratedIcon(option)
         bindCuratedTitle(option)
         bindCuratedListener(option)
     }
 
+    private fun bindCuratedBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            itemView.inspirationCardCuratedBackground?.setBackgroundResource(R.drawable.search_background_layer_big_grid_curated_cards)
+            itemView.inspirationCardCuratedBackground?.visibility = View.VISIBLE
+        }
+        else itemView.inspirationCardCuratedBackground?.visibility = View.GONE
+    }
+
     private fun bindCuratedIcon(element: InspirationCardOptionViewModel) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            ImageHandler.loadImageFitCenter(itemView.context, itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
         }
     }
 

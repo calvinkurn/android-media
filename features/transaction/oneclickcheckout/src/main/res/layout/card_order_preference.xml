@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/iv_card_header"
+            <View
+                android:id="@+id/view_card_header"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_52"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -30,19 +30,18 @@
                 android:layout_height="@dimen/dp_1"
                 android:background="@color/Neutral_N100"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_card_header" />
+                app:layout_constraintTop_toBottomOf="@id/view_card_header" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_card_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_96"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
-                app:layout_constraintStart_toStartOf="@+id/iv_card_header"
-                app:layout_constraintTop_toTopOf="@+id/iv_card_header"
+                app:layout_constraintBottom_toBottomOf="@+id/view_card_header"
+                app:layout_constraintStart_toStartOf="@+id/view_card_header"
+                app:layout_constraintTop_toTopOf="@+id/view_card_header"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold" />
 
@@ -51,12 +50,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
                 app:labelTitle="@string/lbl_default_preference"
                 app:labelType="general_light_grey"
-                app:layout_constraintBottom_toBottomOf="@id/iv_card_header"
+                app:layout_constraintBottom_toBottomOf="@id/view_card_header"
                 app:layout_constraintStart_toEndOf="@+id/tv_card_header"
-                app:layout_constraintTop_toTopOf="@id/iv_card_header" />
+                app:layout_constraintTop_toTopOf="@id/view_card_header" />
 
             <ImageView
                 android:id="@+id/iv_edit_preference"
@@ -64,9 +62,9 @@
                 android:layout_height="0dp"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
+                app:layout_constraintBottom_toBottomOf="@+id/view_card_header"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/iv_card_header"
+                app:layout_constraintTop_toTopOf="@+id/view_card_header"
                 app:srcCompat="@drawable/ic_system_action_gear_normal_24"
                 tools:ignore="ContentDescription" />
 
@@ -75,12 +73,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_card_header"
+                app:layout_constraintTop_toBottomOf="@+id/view_card_header"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
@@ -89,7 +86,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/Neutral_N700_96"
@@ -161,10 +157,8 @@
                 android:layout_height="wrap_content"
                 android:lines="1"
                 android:paddingStart="@dimen/dp_6"
-                android:paddingLeft="@dimen/dp_6"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_12"
                 android:text="@string/label_choose_other_preference"
                 android:textColor="@color/Green_G500"

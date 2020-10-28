@@ -12,23 +12,25 @@ import javax.inject.Inject
 class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) {
 
     fun mapRemoteModelToUiModel(widgetList: List<WidgetModel>): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        return widgetList.filter {
+        val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
+        widgetList.onEach {
             val widgetType = it.widgetType.orEmpty()
-            return@filter WidgetType.isValidWidget(widgetType)
-        }.map {
-            return@map when (it.widgetType.orEmpty()) {
-                WidgetType.CARD -> mapToCardWidget(it)
-                WidgetType.CAROUSEL -> mapToCarouselWidget(it)
-                WidgetType.DESCRIPTION -> mapToDescriptionWidget(it)
-                WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it)
-                WidgetType.POST_LIST -> mapToPostWidget(it)
-                WidgetType.PROGRESS -> mapToProgressWidget(it)
-                WidgetType.TABLE -> mapToTableWidget(it)
-                WidgetType.PIE_CHART -> mapToPieChartWidget(it)
-                WidgetType.BAR_CHART -> mapToBarChartWidget(it)
-                else -> mapToSectionWidget(it)
+            if (WidgetType.isValidWidget(widgetType)) {
+                mappedList.add(when (widgetType) {
+                    WidgetType.CARD -> mapToCardWidget(it)
+                    WidgetType.CAROUSEL -> mapToCarouselWidget(it)
+                    WidgetType.DESCRIPTION -> mapToDescriptionWidget(it)
+                    WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it)
+                    WidgetType.POST_LIST -> mapToPostWidget(it)
+                    WidgetType.PROGRESS -> mapToProgressWidget(it)
+                    WidgetType.TABLE -> mapToTableWidget(it)
+                    WidgetType.PIE_CHART -> mapToPieChartWidget(it)
+                    WidgetType.BAR_CHART -> mapToBarChartWidget(it)
+                    else -> mapToSectionWidget(it)
+                })
             }
         }
+        return mappedList
     }
 
     private fun mapToCardWidget(widget: WidgetModel): CardWidgetUiModel {

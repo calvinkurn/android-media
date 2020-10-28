@@ -3,26 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "event": "viewSearchPage",
-      "eventAction": "view search result flight",
-      "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*}}",
-      "sessionIris": "{{.*}}",
-      "travelWithKids": "{{true|false}}",
-      "searchFound": "{{true|false}}",
-      "destination": "{{.*}}",
-      "deeplinkUrl": "{{.*}}",
-      "returnDateFormatted": "{{.*}}",
-      "url": "{{.*}}",
-      "returnDate": "{{.*}}",
-      "passenger": "{{\\d*}}",
-      "returnTicket": "{{true|false}}",
-      "from": "{{.*}}",
-      "departureDate": "{{.*}}",
-      "departureDateFormatted": "{{.*}}",
-      "class": "{{.*}}"
-    },
-    {
       "event": "select_content",
       "eventAction": "product click",
       "eventCategory": "digital - flight",

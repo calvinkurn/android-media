@@ -59,13 +59,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         multiBannerViewModel.checkApplink().observe(fragment.viewLifecycleOwner, Observer { applink ->
-            if (applink.isNotEmpty()) {
-                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                        customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
-                    multiBannerViewModel.navigate(customItemView.context, applink)
-                })
-            } else {
-                Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            try {
+                if (applink.isNotEmpty()) {
+                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                            customItemView.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
+                        multiBannerViewModel.navigate(customItemView.context, applink)
+                    })
+                } else {
+                    Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         })
 

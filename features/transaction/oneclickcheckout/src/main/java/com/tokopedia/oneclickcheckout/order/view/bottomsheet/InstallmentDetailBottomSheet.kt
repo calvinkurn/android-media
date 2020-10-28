@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 import android.content.Context
 import android.view.View
 import android.webkit.WebView
-import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -137,7 +137,7 @@ class InstallmentDetailBottomSheet {
 </html>
         """.trimIndent()
         webView.loadData(htmlText, "text/html", "UTF-8")
-        val ivExpandTerms = child.findViewById<ImageView>(R.id.iv_expand_terms)
+        val ivExpandTerms = child.findViewById<ImageUnify>(R.id.iv_expand_terms)
         ivExpandTerms.setOnClickListener {
             val newRotation = if (ivExpandTerms.rotation == 0f) 180f else 0f
             ivExpandTerms.rotation = newRotation

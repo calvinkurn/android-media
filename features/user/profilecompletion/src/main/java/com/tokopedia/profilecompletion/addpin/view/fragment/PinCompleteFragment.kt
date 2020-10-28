@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +40,13 @@ class PinCompleteFragment : BaseDaggerFragment() {
         btnComplete.setOnClickListener {
             trackingPinUtil.trackClickFinishButton()
             activity?.let {
-                it.setResult(Activity.RESULT_OK)
+                if (arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE) == SOURCE_FORGOT_PIN_2FA) {
+                    val intent = Intent().putExtras(arguments!!)
+                    intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                    it.setResult(Activity.RESULT_OK, intent)
+                } else {
+                    it.setResult(Activity.RESULT_OK)
+                }
                 it.finish()
             }
         }
@@ -52,7 +59,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.title_change_pin))
             }
-            SOURCE_FORGOT_PIN -> {
+            SOURCE_FORGOT_PIN or SOURCE_FORGOT_PIN_2FA -> {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
             }
@@ -86,6 +93,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
         const val SOURCE_ADD_PIN = 1
         const val SOURCE_CHANGE_PIN = 2
         const val SOURCE_FORGOT_PIN = 3
+        const val SOURCE_FORGOT_PIN_2FA = 4
 
         fun createInstance(bundle: Bundle): PinCompleteFragment {
             val fragment = PinCompleteFragment()

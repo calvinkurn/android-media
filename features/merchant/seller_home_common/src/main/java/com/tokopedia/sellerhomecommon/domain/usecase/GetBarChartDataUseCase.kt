@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.BarChartWidgetDataModel
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.GetBarChartDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -51,7 +51,7 @@ class GetBarChartDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getBarChartData(${'$'}dataKeys: [dataKey!]!) {
               fetchBarChartWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

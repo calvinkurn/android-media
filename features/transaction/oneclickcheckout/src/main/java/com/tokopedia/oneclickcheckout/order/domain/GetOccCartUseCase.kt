@@ -19,7 +19,9 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
@@ -45,6 +47,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                 val orderCart = OrderCart().apply {
                     cartId = cart.cartId
                     cartString = cart.cartString
+                    paymentProfile = cart.paymentProfile
                     product = generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(response.response.data)
                         tickerMessage = mapProductTickerMessage(response.response.data.tickerMessage)
@@ -61,7 +64,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
                         response.response.data.profileRecommendation,
                         mapProfile(response.response.data.profileResponse),
                         LastApplyMapper.mapPromo(response.response.data.promo),
-                        mapOrderPayment(response.response.data))
+                        mapOrderPayment(response.response.data),
+                        mapPrompt(response.response.data.prompt))
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
@@ -111,7 +115,11 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             shopId = shop.shopId
             userId = shop.userId
             shopName = shop.shopName
-            shopImage = shop.shopImage
+            shopBadge = when {
+                shop.isOfficial == 1 -> shop.officialStore.osLogoUrl
+                shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
+                else -> ""
+            }
             shopUrl = shop.shopUrl
             isGold = shop.isGold
             isOfficial = shop.isOfficial
@@ -155,6 +163,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             isPreorder = product.isPreorder
             categoryId = product.categoryId
             category = product.category
+            campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
@@ -203,7 +212,7 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
                 payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
-                mapPaymentErrorMessage(payment.errorMessage)
+                mapPaymentErrorMessage(payment.errorMessage), payment.tickerMessage
         )
     }
 
@@ -211,7 +220,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
         val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker)
+                payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign)
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -236,8 +246,8 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
             return OrderPaymentCreditCardAdditionalData()
         }
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
-                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature, data.paymentAdditionalData.changeCcLink,
-                data.paymentAdditionalData.callbackUrl)
+                data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
+                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
@@ -263,6 +273,13 @@ class GetOccCartUseCase @Inject constructor(val context: Context, val graphqlUse
     private fun mapTicker(tickers: List<Ticker>): TickerData? {
         val ticker = tickers.firstOrNull() ?: return null
         return TickerData(ticker.id, ticker.message, ticker.page, ticker.title)
+    }
+
+    private fun mapPrompt(promptResponse: OccPromptResponse): OccPrompt {
+        return OccPrompt(promptResponse.type.toLowerCase(Locale.ROOT), promptResponse.title,
+                promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
+            OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
+        })
     }
 
     companion object {

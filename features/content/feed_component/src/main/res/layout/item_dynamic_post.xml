@@ -70,7 +70,6 @@
 
                 <TextView
                     android:id="@+id/authorTitle"
-                    android:contentDescription="@string/content_desc_authorTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
@@ -152,7 +151,6 @@
 
             <TextView
                 android:id="@+id/caption"
-                android:contentDescription="@string/content_desc_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"

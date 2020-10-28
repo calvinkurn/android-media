@@ -26,6 +26,7 @@ interface DigitalTopupEventTracking {
     interface Event {
         companion object {
             const val CLICK_HOMEPAGE = "clickHomepage"
+            const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
             const val PROMO_VIEW = "promoView"
             const val PROMO_CLICK = "promoClick"
             const val PRODUCT_VIEW = "productView"
@@ -71,6 +72,7 @@ interface DigitalTopupEventTracking {
             const val CLICK_SAVE_QUICK_FILTER = "click Simpan"
             const val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
             const val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
+            const val IMPRESSION_FILTER_CLUSTER = "impression filter cluster"
         }
     }
 

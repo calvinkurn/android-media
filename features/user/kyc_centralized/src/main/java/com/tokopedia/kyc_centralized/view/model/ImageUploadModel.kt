@@ -42,7 +42,8 @@ class ImageUploadModel : Parcelable {
     }
 
     companion object {
-        val CREATOR: Parcelable.Creator<ImageUploadModel?> = object : Parcelable.Creator<ImageUploadModel?> {
+        @JvmField
+        val CREATOR: Parcelable.Creator<ImageUploadModel> = object : Parcelable.Creator<ImageUploadModel> {
             override fun createFromParcel(source: Parcel): ImageUploadModel? {
                 return ImageUploadModel(source)
             }

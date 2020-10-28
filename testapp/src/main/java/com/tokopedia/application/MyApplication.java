@@ -66,6 +66,7 @@ public class MyApplication extends BaseMainApplication
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     GCMHandler gcmHandler;
@@ -267,15 +268,6 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void onAppsFlyerInit() {
 
-    }
-
-    @Override
-    public GCMHandler legacyGCMHandler() {
-        if(gcmHandler == null){
-            return gcmHandler = new GCMHandler(this);
-        }else {
-            return gcmHandler;
-        }
     }
 
     @Override

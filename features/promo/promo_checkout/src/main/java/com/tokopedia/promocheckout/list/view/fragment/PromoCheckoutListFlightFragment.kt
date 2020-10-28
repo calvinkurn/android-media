@@ -5,7 +5,6 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListFlightPresenter
 import javax.inject.Inject
@@ -26,7 +25,8 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
 
     override fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailFlightActivity.newInstance(
-                activity, promoCheckoutListModel?.code ?: "", cartID, false, pageTracking), REQUEST_CODE_PROMO_DETAIL)
+                activity, promoCheckoutListModel?.code
+                ?: "", cartID, false, pageTracking), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun onPromoCodeUse(promoCode: String) {

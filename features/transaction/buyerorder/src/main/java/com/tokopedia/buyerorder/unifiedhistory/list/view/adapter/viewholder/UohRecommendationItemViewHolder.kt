@@ -49,7 +49,7 @@ class UohRecommendationItemViewHolder(itemView: View, private val actionListener
                 )
 
                 setAddToCartOnClickListener {
-                    actionListener?.trackAddToCartRecommendation(item.dataObject)
+                    actionListener?.atcRecommendationItem(item.dataObject)
                 }
 
                 setOnClickListener {

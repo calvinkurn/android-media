@@ -15,14 +15,38 @@ class PlayMockModelConfig : MockModelConfig() {
         addMockResponse(
                 KEY_QUERY,
                 RESPONSE_MOCK_CHANNEL_DETAIL,
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_SHOP_INFO,
+                RESPONSE_MOCK_SHOP_INFO,
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_TOTAL_LIKE,
+                RESPONSE_MOCK_TOTAL_LIKE,
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_IS_LIKED,
+                RESPONSE_MOCK_IS_LIKED,
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_TOTAL_CART,
+                RESPONSE_MOCK_TOTAL_CART,
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_TOTAL_CART,
+                RESPONSE_MOCK_TOTAL_CART,
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_QUERY_PINNED_PRODUCT,
+                RESPONSE_MOCK_PINNED_PRODUCT,
+                FIND_BY_CONTAINS)
         return this
     }
 
     companion object  {
         private const val KEY_QUERY = "GetPlayChannelDetail"
         private const val RESPONSE_MOCK_CHANNEL_DETAIL = """
-            {
+            [{
               "data": {
                 "playGetChannelDetails": {
                   "data": {
@@ -44,7 +68,7 @@ class PlayMockModelConfig : MockModelConfig() {
                       "orientation": "vertical",
                       "type": "vod",
                       "cover_url": "https://ecs7.tokopedia.net/img/jJtrdn/2020/8/10/d8bff2c4-7ff9-4482-9e71-3c62ae25c826.jpg",
-                      "stream_source": "https://vod.tokopedia.com/view/adaptive.m3u8?id=d3c51411b12746ca9f03253b10c99e3d",
+                      "stream_source": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                       "autoplay": true,
                       "buffer_control": {
                         "max_buffer_in_seconds": 18,
@@ -117,7 +141,7 @@ class PlayMockModelConfig : MockModelConfig() {
                   }
                 }
               }
-            }
+            }]
         """
     }
 }

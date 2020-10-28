@@ -116,15 +116,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
+        roomListViewModel.roomListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    if (firstTime) {
-                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
-                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
-                    }
-                    firstTime = false
-
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
@@ -133,6 +127,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     clearAllData()
                     roomList = it.data
                     renderList(roomList, false)
+                    if (firstTime) {
+                        firstTime = false
+                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
+                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -141,7 +140,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             }
         })
 
-        roomListViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
+        roomListViewModel.addCartResponseResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {

@@ -116,4 +116,6 @@ interface HomeCategoryListener {
     fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
 
     fun onDynamicChannelRetryClicked()
+
+    fun getTopAdsBannerNextPageToken(): String
 }

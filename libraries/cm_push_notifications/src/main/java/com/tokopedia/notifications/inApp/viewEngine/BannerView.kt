@@ -35,7 +35,6 @@ internal open class BannerView(activity: Activity) {
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
-        alertDialog.setCancelable(false)
         dialog.show()
 
         // resize dialog's width with 80% of screen

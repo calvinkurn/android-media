@@ -3,8 +3,12 @@ package com.tokopedia.logout.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.CookieManager
+import android.webkit.CookieSyncManager
+import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -36,7 +40,7 @@ import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -113,7 +117,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun initGoogleClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).apply {
-            requestIdToken(GOOGLE_API_KEY)
+            requestIdToken(getGoogleClientId(this@LogoutActivity))
             requestEmail()
             requestProfile()
         }.build()
@@ -164,6 +168,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         CacheApiClearAllUseCase(applicationContext).executeSync()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         NotificationModHandler(applicationContext).dismissAllActivedNotifications()
+        clearWebView()
 
         instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
 
@@ -218,6 +223,19 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun hideLoading() {
         logoutLoading?.visibility = View.GONE
+    }
+
+    private fun clearWebView() {
+        WebView(this).clearCache(true)
+        val cookieManager: CookieManager
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CookieSyncManager.createInstance(this)
+            cookieManager = CookieManager.getInstance()
+            cookieManager.removeAllCookie()
+        } else {
+            cookieManager = CookieManager.getInstance()
+            cookieManager.removeAllCookies {}
+        }
     }
 
     companion object {

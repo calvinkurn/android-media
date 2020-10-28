@@ -12,6 +12,7 @@ import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +27,6 @@ class CalendarPicker : BottomSheetUnify() {
             return CalendarPicker().apply {
                 isFullpage = true
                 clearContentPadding = true
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
             }
         }
     }
@@ -38,6 +38,11 @@ class CalendarPicker : BottomSheetUnify() {
     private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
     private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChild(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -45,7 +50,6 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
         val child = inflater.inflate(R.layout.bottomsheet_stc_calendar_picker, container, false)
-        child.calendarPickerStc.calendarPickerView
         setChild(child)
         calendarView = child.calendarPickerStc.calendarPickerView
     }
@@ -55,6 +59,7 @@ class CalendarPicker : BottomSheetUnify() {
 
         setupView()
         setDefaultSelectedDate()
+        dismissBottomSheet()
     }
 
     fun setMode(mode: CalendarPickerView.SelectionMode): CalendarPicker {
@@ -97,12 +102,20 @@ class CalendarPicker : BottomSheetUnify() {
             val startDate = selectedDates.firstOrNull()
             val endDate = selectedDates.lastOrNull()
             startDate?.let {
-                cpv.selectDate(it)
+                selectDate(cpv, it)
             }
             endDate?.let {
-                cpv.selectDate(it)
+                selectDate(cpv, it)
             }
             showSelectedDate()
+        }
+    }
+
+    private fun selectDate(cpv: CalendarPickerView, date: Date, smoothScroll: Boolean = false) {
+        try {
+            cpv.selectDate(date, smoothScroll)
+        } catch (e: IllegalArgumentException) {
+            Timber.w(e)
         }
     }
 
@@ -112,9 +125,9 @@ class CalendarPicker : BottomSheetUnify() {
             val selectedPair = getPerWeekSelectedPair(selected)
 
             try {
-                cpv.selectDate(selected)
-                cpv.selectDate(selectedPair.first)
-                cpv.selectDate(selectedPair.second)
+                selectDate(cpv, selected)
+                selectDate(cpv, selectedPair.first)
+                selectDate(cpv, selectedPair.second)
             } catch (e: IllegalArgumentException) {
                 val m6Days = TimeUnit.DAYS.toMillis(6)
                 val minDateMillis = minDate.time.plus(m6Days)
@@ -124,8 +137,8 @@ class CalendarPicker : BottomSheetUnify() {
                     val maxDateMillis = maxDate.time.minus(m6Days)
                     getPerWeekSelectedPair(Date(maxDateMillis))
                 }
-                cpv.selectDate(mSelectedPair.first)
-                cpv.selectDate(mSelectedPair.second, true)
+                selectDate(cpv, mSelectedPair.first)
+                selectDate(cpv, mSelectedPair.second, true)
             }
         }
         this.selectedDates = cpv.selectedDates
@@ -143,8 +156,12 @@ class CalendarPicker : BottomSheetUnify() {
         calendar.time = selected
         calendar.firstDayOfWeek = Calendar.MONDAY
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        val firstDateOfWeek = calendar.time
-        val lastDateOfWeek = Date(firstDateOfWeek.time + m6Day)
+        val firstDateOfWeek = if (calendar.time.time < minDate.time) {
+            minDate
+        } else {
+            calendar.time
+        }
+        val lastDateOfWeek = Date(calendar.time.time + m6Day)
         return Pair(firstDateOfWeek, lastDateOfWeek)
     }
 
@@ -180,6 +197,14 @@ class CalendarPicker : BottomSheetUnify() {
                 } else {
                     DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
                 }
+            }
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        view?.post {
+            if (selectedDates.isNullOrEmpty() && isVisible) {
+                dismiss()
             }
         }
     }

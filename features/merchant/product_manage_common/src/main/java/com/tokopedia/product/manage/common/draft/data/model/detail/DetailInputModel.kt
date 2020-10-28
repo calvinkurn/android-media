@@ -11,12 +11,14 @@ import java.math.BigInteger
 @Parcelize
 data class DetailInputModel(
         var productName: String = "",
+        var currentProductName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
         var price: BigInteger = 0.toBigInteger(),
         var stock: Int = 0,
         var minOrder: Int = 0,
         var condition: String = "NEW",
+        var status: Int = 1,
         var sku: String = "",
         var imageUrlOrPathList: List<String> = emptyList(),
         var preorder: PreorderInputModel = PreorderInputModel(),

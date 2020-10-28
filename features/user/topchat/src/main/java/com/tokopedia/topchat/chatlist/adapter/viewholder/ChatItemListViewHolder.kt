@@ -1,12 +1,17 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
-import android.graphics.Typeface.ITALIC
-import android.graphics.Typeface.NORMAL
+import android.graphics.Typeface.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -44,6 +49,8 @@ class ChatItemListViewHolder(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
+    private val unreadSpanColor: Int = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+    private val readSpanColor: Int = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
 
     private val menu = LongClickMenu()
 
@@ -124,6 +131,9 @@ class ChatItemListViewHolder(
             chat.markAsRead()
             listener.decreaseNotificationCounter()
             bindSmartReplyIndicator(chat)
+            if (chat.hasLabel()) {
+                bindMessageState(chat)
+            }
         }
 
         listener.chatItemClicked(chat, adapterPosition)
@@ -266,10 +276,39 @@ class ChatItemListViewHolder(
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
-        message.text = MethodChecker.fromHtml(chat.lastReplyMessage)
+        val spanText = SpannableStringBuilder()
+        val lastMsg = MethodChecker.fromHtml(chat.lastReplyMessage)
+        if (chat.label.isNotEmpty()) {
+            val labelSpan = createLabelSpan(chat)
+            spanText.append(labelSpan)
+        }
+        spanText.append(lastMsg)
+        message.text = spanText
         message.setLines(2)
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+    }
+
+    private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {
+        val labelSpan = SpannableString("${chat.label} • ")
+        val color = if (chat.isUnread()) {
+            unreadSpanColor
+        } else {
+            readSpanColor
+        }
+        labelSpan.setSpan(
+                ForegroundColorSpan(color),
+                0,
+                labelSpan.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        labelSpan.setSpan(
+                StyleSpan(BOLD),
+                0,
+                labelSpan.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return labelSpan
     }
 
     private fun bindReadState(chatItem: ItemChatListPojo) {

@@ -90,7 +90,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_choosen_courier"
-            android:contentDescription="@string/content_desc_label_choosen_courier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/iv_choose_courier"

@@ -14,5 +14,9 @@ data class SomListTickerParam(
 
         @SerializedName("client")
         @Expose
-        var client: String = ""
+        var client: String = "",
+
+        @SerializedName("user_id")
+        @Expose
+        var userId: String = ""
 )

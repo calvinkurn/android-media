@@ -80,7 +80,7 @@ import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;

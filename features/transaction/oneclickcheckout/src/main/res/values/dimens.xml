@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="qty_editor_product_width">108dp</dimen>
+</resources>

@@ -25,6 +25,8 @@ data class ItemChatListPojo(
         @Expose
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory> {
+
+    val label: String get() = attributes?.label ?: ""
     val tag: String get() = attributes?.contact?.tag ?: ""
     val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
@@ -36,6 +38,10 @@ data class ItemChatListPojo(
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
     }
 
     fun hasUnreadItem(): Boolean {

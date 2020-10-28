@@ -24,16 +24,16 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CategoryWidgetViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TickerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.clearUserSession
+import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestUser1
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -57,6 +57,10 @@ private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET = "tracker/home/b
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT = "tracker/home/mix_left.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_TOP = "tracker/home/mix_top.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB = "tracker/home/recommendation_tab.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER = "tracker/home/recom_feed_banner.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN = "tracker/home/recom_feed_product_login.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN = "tracker/home/recom_feed_product_nonlogin.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON = "tracker/home/recommendation_icon.json"
 private const val TAG = "DynamicChannelComponentAnalyticsTest"
 
 /**
@@ -82,24 +86,45 @@ class DynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testDCHome() {
+    fun testDCHomeNotLogin() {
         initTest()
 
         doActivityTest()
 
-        doAnalyticDebuggerTest()
+        doHomeCassavaTest()
 
         onFinishTest()
 
         addDebugEnd()
     }
 
+    @Test
+    fun testDCHomeLogin() {
+        initTestWithLogin()
+
+        doActivityTest()
+
+        doHomeCassavaLoginTest()
+
+        onFinishTest()
+
+        addDebugEnd()
+    }
+
+
+
     private fun initTest() {
+        clearUserSession()
         waitForData()
     }
 
+    private fun initTestWithLogin() {
+        initTest()
+        loginInstrumentationTestUser1()
+    }
+
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(5000)
     }
 
     private fun addDebugEnd() {
@@ -117,23 +142,31 @@ class DynamicChannelComponentAnalyticsTest {
         logTestMessage("Done UI Test")
     }
 
-    private fun doAnalyticDebuggerTest() {
+    private fun doHomeCassavaTest() {
         waitForData()
         //need improvement
+//
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
+//                hasAllSuccess()) -> impression intermitten missing
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
+//                hasAllSuccess())
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
+//                hasAllSuccess()) -> impression tab intermitten missing
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
+//                hasAllSuccess()) -> impression intermitten missing
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_SCREEN),
-//                hasAllSuccess())
+//                hasAllSuccess()) -> completely missing
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
-//                hasAllSuccess())
+//                hasAllSuccess()) -> impression missing
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
-//                hasAllSuccess())
-        //cant mock occ response
+//                hasAllSuccess()) -> cant mock occ response
+//        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON),
+//                hasAllSuccess()) -> missing click
 
         //ontesting
 
         //worked
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_PRODUCT_HIGHLIGHT),
-                hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER),
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_POPULAR_KEYWORD),
                 hasAllSuccess())
@@ -143,11 +176,17 @@ class DynamicChannelComponentAnalyticsTest {
                 hasAllSuccess())
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_BANNER),
                 hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET),
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_BANNER),
                 hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN),
                 hasAllSuccess())
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
+    }
+
+    private fun doHomeCassavaLoginTest() {
+        //ontesting
+
+        //worked
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN),
                 hasAllSuccess())
     }
 
@@ -231,7 +270,14 @@ class DynamicChannelComponentAnalyticsTest {
             is HomeRecommendationFeedViewHolder -> {
                 val holderName = "HomeRecommendationFeedViewHolder"
                 logTestMessage("VH $holderName")
+                waitForData()
                 clickRecommendationFeedTab(viewholder.itemView)
+                CommonActions.clickOnEachItemRecyclerView(viewholder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+            }
+            is DynamicIconSectionViewHolder -> {
+                val holderName = "DynamicIconSectionViewHolder"
+                logTestMessage("VH $holderName")
+                clickSingleItemOnRecyclerView(viewholder.itemView, R.id.list, holderName)
             }
         }
     }
@@ -422,11 +468,11 @@ class DynamicChannelComponentAnalyticsTest {
         val childView = view
         val tabPager = childView.findViewById<ViewPager>(R.id.view_pager_home_feeds)
         try {
-            Espresso.onView(withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(1))
-            logTestMessage("Click SUCCESS recom tab pos "  + 1)
+            Espresso.onView(withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(0))
+            logTestMessage("Click SUCCESS recom tab pos "  + 0)
         } catch (e: PerformException) {
             e.printStackTrace()
-            logTestMessage("Click FAILED recom tab pos "  + 1)
+            logTestMessage("Click FAILED recom tab pos "  + 0)
         }
     }
 

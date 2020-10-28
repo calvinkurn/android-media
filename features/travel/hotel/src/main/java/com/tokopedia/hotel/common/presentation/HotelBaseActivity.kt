@@ -78,7 +78,8 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (shouldShowOptionMenu()) {
-            if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+            if (item?.itemId ?: "" == R.id.action_overflow_menu ||
+                    item?.itemId ?: "" == R.id.action_overflow_menu_white) {
                 showBottomMenus()
                 return true
             }

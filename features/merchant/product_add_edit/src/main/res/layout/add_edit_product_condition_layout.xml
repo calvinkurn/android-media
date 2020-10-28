@@ -6,8 +6,7 @@
     android:paddingRight="-16dp"
     android:paddingEnd="-16dp"
     android:paddingLeft="@dimen/layout_lvl0"
-    android:paddingStart="@dimen/layout_lvl0"
-    android:background="@android:color/white">
+    android:paddingStart="@dimen/layout_lvl0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_condition_header"

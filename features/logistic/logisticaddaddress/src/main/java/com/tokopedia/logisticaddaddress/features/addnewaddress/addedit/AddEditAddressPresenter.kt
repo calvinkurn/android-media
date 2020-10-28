@@ -72,6 +72,7 @@ class AddEditAddressPresenter
     }
 
     fun getZipCodes(districtId: String) {
+        SimpleIdlingResource.increment()
         zipCodeUseCase.execute(districtId)
                 .subscribe(
                         { response ->
@@ -84,7 +85,7 @@ class AddEditAddressPresenter
                                     }
                                 }
                             }
-                        }, {}, {}
+                        }, {}, { SimpleIdlingResource.decrement() }
                 )
     }
 
