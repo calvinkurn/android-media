@@ -128,14 +128,14 @@ class PlayWidgetAutoPlayCoordinator(
         val videoPlayer = PlayVideoPlayer(context)
         if (::mConfig.isInitialized) {
             return when {
-                PlayConnectionCommon.isConnectWifi(context) -> {
-                    videoPlayer.apply {
-                        durationLimitInSeconds = mConfig.maxAutoPlayWifiDuration
-                    }
-                }
+//                PlayConnectionCommon.isConnectWifi(context) -> {
+//                    videoPlayer.apply {
+//                        maxDurationInSeconds = mConfig.maxAutoPlayWifiDuration
+//                    }
+//                }
                 PlayConnectionCommon.isConnectCellular(context) -> {
                     videoPlayer.apply {
-                        durationLimitInSeconds = mConfig.maxAutoPlayCellularDuration
+                        maxDurationInSeconds = mConfig.maxAutoPlayCellularDuration
                     }
                 }
                 else -> videoPlayer

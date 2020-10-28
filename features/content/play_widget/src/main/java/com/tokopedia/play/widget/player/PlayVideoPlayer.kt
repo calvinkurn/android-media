@@ -2,11 +2,11 @@ package com.tokopedia.play.widget.player
 
 import android.content.Context
 import android.net.Uri
-import android.os.CountDownTimer
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -14,6 +14,8 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.play_common.util.PlayConnectionCommon
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -22,18 +24,17 @@ import com.google.android.exoplayer2.util.Util
 open class PlayVideoPlayer(val context: Context) {
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
-    private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
-    var durationLimitInSeconds: Int? = null
+    var maxDurationInSeconds: Int = 0
 
     init {
         exoPlayer.volume = 0F
-        exoPlayer.addListener(object : Player.EventListener{
+        exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
-                    Player.STATE_ENDED -> exoPlayer.seekTo(0)
+                    Player.STATE_ENDED -> if (PlayConnectionCommon.isConnectCellular(context)) whenIsPlayingChanged(isPlaying = false)
                     Player.STATE_READY -> whenIsPlayingChanged(isPlaying = true)
                     else -> whenIsPlayingChanged(isPlaying = false)
                 }
@@ -48,12 +49,12 @@ open class PlayVideoPlayer(val context: Context) {
     fun start() {
         if (videoUrl?.isBlank() == true) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        var mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        if (maxDurationInSeconds > 0) {
+            mediaSource = getClippingMediaSource(mediaSource, maxDurationInSeconds)
+        }
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource,true, false)
-
-        durationLimitInSeconds?.let { if (it > 0) configureAutoStop(it) }
-        autoStopTimer?.start()
     }
 
     fun pause() {
@@ -66,7 +67,6 @@ open class PlayVideoPlayer(val context: Context) {
 
     fun stop() {
         exoPlayer.stop()
-        autoStopTimer?.cancel()
     }
 
     fun restart() {
@@ -76,7 +76,6 @@ open class PlayVideoPlayer(val context: Context) {
     fun release() {
         try {
             exoPlayer.release()
-            autoStopTimer?.cancel()
         } catch (throwable: Throwable) {
         }
     }
@@ -99,13 +98,8 @@ open class PlayVideoPlayer(val context: Context) {
         return mediaSource.createMediaSource(uri)
     }
 
-    private fun configureAutoStop(durationLimit: Int) {
-        autoStopTimer = object : CountDownTimer(durationLimit.toLong()*1000, 1000) {
-            override fun onFinish() {
-                exoPlayer.stop()
-            }
-
-            override fun onTick(millisUntilFinished: Long) { }
-        }
+    private fun getClippingMediaSource(mediaSource: MediaSource, duration: Int): ClippingMediaSource {
+        val endPositionUs = TimeUnit.SECONDS.toMicros(duration.toLong())
+        return ClippingMediaSource(mediaSource, endPositionUs)
     }
 }
