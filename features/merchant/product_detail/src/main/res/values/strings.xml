@@ -191,7 +191,7 @@
     <string name="product_detail_discussion_local_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_detail_discussion_dot">•</string>
     <string name="product_detail_discussion_label">Diskusi</string>
-    <string name="product_detail_check_discussion_label">Cek Diskusi</string>
+    <string name="product_detail_check_discussion_label">Lihat Diskusi</string>
     <string name="product_detail_ask_discussion_label">Tanya Diskusi</string>
 
     <!--Ticker-->
