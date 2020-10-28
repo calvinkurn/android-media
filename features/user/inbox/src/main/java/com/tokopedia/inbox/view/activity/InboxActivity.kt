@@ -12,7 +12,6 @@ import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
-import com.tokopedia.inbox.view.ext.setSelectedPage
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inboxcommon.RoleType
@@ -101,8 +100,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
     }
 
     private fun setupInitialPage() {
-        navigator?.start(InboxFragmentType.CHAT)
-        bottomNav?.setSelectedPage(InboxFragmentType.CHAT)
+        navigator?.start(InboxFragmentType.NOTIFICATION)
+        bottomNav?.setSelectedPage(InboxFragmentType.NOTIFICATION)
     }
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {

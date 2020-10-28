@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:paddingVertical="@dimen/notif_dp_12">
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/notif_dp_32"
+                app:chipSize="small"
+                app:chipText="@string/title_notification_transaction" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                app:chipSize="small"
+                app:chipText="@string/title_notification_promo" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                app:chipSize="small"
+                app:chipText="@string/title_notification_info" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:paddingVertical="@dimen/spacing_lvl4"
+        app:srcCompat="@drawable/ic_notifcenter_setting" />
+</merge>
