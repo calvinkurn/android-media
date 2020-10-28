@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.discoverymapper
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
+import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
@@ -12,8 +14,6 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
-import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
 
 private const val CHIPS = "Chips"
 private const val TABS_ITEM = "tabs_item"
@@ -177,14 +177,14 @@ class DiscoveryDataMapper {
 
     private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
         return ArrayList<ProductCardModel.ShopBadge>().apply {
-            if (dataItem.goldMerchant == true && dataItem.officialStore == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-            } else if (dataItem.goldMerchant == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = POWER_MERCHANT_URL))
-            } else if (dataItem.officialStore == true) {
-                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-            } else {
-                add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
+            when {
+                dataItem.goldMerchant == true && dataItem.officialStore == true ->
+                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
+                dataItem.goldMerchant == true ->
+                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = POWER_MERCHANT_URL))
+                dataItem.officialStore == true ->
+                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
+                else -> add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
             }
         }
     }
@@ -198,5 +198,4 @@ class DiscoveryDataMapper {
             ""
         }
     }
-
 }
