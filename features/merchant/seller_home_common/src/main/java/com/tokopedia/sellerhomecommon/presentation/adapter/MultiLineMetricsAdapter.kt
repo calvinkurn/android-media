@@ -56,6 +56,7 @@ class MultiLineMetricsAdapter(
                 }
 
                 setOnClickListener {
+                    item.isSelected = true
                     listener.onItemClickListener(item, adapterPosition)
                 }
             }

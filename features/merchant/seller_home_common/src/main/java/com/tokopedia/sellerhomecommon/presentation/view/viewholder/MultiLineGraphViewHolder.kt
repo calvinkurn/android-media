@@ -1,9 +1,11 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
@@ -35,9 +37,12 @@ class MultiLineGraphViewHolder(
     }
 
     private val metricsAdapter by lazy { MultiLineMetricsAdapter(this) }
+    private var element: MultiLineGraphWidgetUiModel? = null
     private var lastSelectedMetric: MultiLineMetricUiModel? = null
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
+        this.element = element
+
         val data = element.data
         when {
             data == null -> setOnLoadingState(element)
@@ -47,12 +52,15 @@ class MultiLineGraphViewHolder(
     }
 
     override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
-        if (lastSelectedMetric == metric) {
+        if (lastSelectedMetric == metric || lastSelectedMetric?.type == metric.type) {
+            lastSelectedMetric = metric
             return
         }
-
         lastSelectedMetric = metric
-        itemView.rvShcGraphMetrics.scrollToPosition(position)
+
+        itemView.rvShcGraphMetrics.post {
+            itemView.rvShcGraphMetrics.layoutManager?.scrollToPosition(position)
+        }
         showLineGraph(metric)
     }
 
@@ -71,9 +79,10 @@ class MultiLineGraphViewHolder(
         with(itemView) {
             tvShcMultiLineGraphTitle.text = element.title
 
-            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcMultiLineCta.visibility = ctaVisibility
+            btnShcMultiLineCta.text = element.ctaText
 
             setupMetrics(element.data?.metrics.orEmpty())
 
@@ -96,15 +105,24 @@ class MultiLineGraphViewHolder(
     }
 
     private fun showLineGraph(metric: MultiLineMetricUiModel) {
+        //set metrics selected status if have same type
+        element?.data?.metrics?.forEachIndexed { i, item ->
+            item.isSelected = (item.type == metric.type)
+            metricsAdapter.notifyItemChanged(i)
+        }
+
         with(itemView.chartViewShcMultiLine) {
             init(getLineGraphConfig(metric))
-            setDataSets(getLineChartData(metric))
+            setDataSets(*getLineChartData(metric).toTypedArray())
             invalidateChart()
         }
     }
 
     private fun getLineGraphConfig(element: MultiLineMetricUiModel): LineChartConfigModel {
-        val lineChartData = getLineChartData(element)
+        val lineChartDataSets = getLineChartData(element)
+
+        val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
+
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
@@ -112,7 +130,7 @@ class MultiLineGraphViewHolder(
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
-                val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
+                val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
@@ -121,7 +139,7 @@ class MultiLineGraphViewHolder(
             }
 
             yAxis {
-                val yAxisLabels = lineChartData.yAxisLabel
+                val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
@@ -129,6 +147,24 @@ class MultiLineGraphViewHolder(
                 labelCount { yAxisLabels.size }
             }
         }
+    }
+
+    private fun getHighestYAxisValue(lineChartDataSets: List<LineChartData>): LineChartData? {
+        var lineChartData: LineChartData? = lineChartDataSets.getOrNull(0)
+
+        lineChartDataSets.forEach {
+            if (lineChartData != it) {
+                val maxValueCurrent = lineChartData?.yAxisLabel?.maxBy { axis -> axis.value }?.value
+                        ?: 0f
+                val maxValue = it.yAxisLabel.maxBy { axis -> axis.value }?.value ?: 0f
+
+                if (maxValue >= maxValueCurrent) {
+                    lineChartData = it
+                }
+            }
+        }
+
+        return lineChartData
     }
 
     private fun getLineGraphTooltip(): ChartTooltip {
@@ -141,27 +177,38 @@ class MultiLineGraphViewHolder(
                 }
     }
 
-    private fun getLineChartData(element: MultiLineMetricUiModel): LineChartData {
+    private fun getLineChartData(metric: MultiLineMetricUiModel): List<LineChartData> {
 
-        val chartEntry: List<LineChartEntry> = element.linePeriod.currentPeriod.map {
+        val chartEntry: List<LineChartEntry> = metric.linePeriod.currentPeriod.map {
             LineChartEntry(it.yVal, it.yLabel, it.xLabel)
         }
 
-        val yAxisLabel = getYAxisLabel()
+        val yAxisLabel = getYAxisLabel(metric)
+        val lineHexColor = if (metric.summary.lineColor.isNotBlank()) {
+            metric.summary.lineColor
+        } else {
+            ChartColor.DEFAULT_LINE_COLOR
+        }
 
-        return LineChartData(
-                chartEntry = chartEntry,
-                yAxisLabel = yAxisLabel,
-                config = LineChartEntryConfigModel(
-                        lineWidth = 1.8f
-                )
-        )
+        return element?.data?.metrics.orEmpty()
+                .filter { it.type == metric.type }
+                .map {
+                    LineChartData(
+                            chartEntry = chartEntry,
+                            yAxisLabel = yAxisLabel,
+                            config = LineChartEntryConfigModel(
+                                    lineWidth = 1.8f,
+                                    drawFillEnabled = false,
+                                    lineColor = Color.parseColor(lineHexColor)
+                            )
+                    )
+                }
     }
 
-    private fun getYAxisLabel(): List<AxisLabel> {
-        return lastSelectedMetric?.yAxis?.map {
+    private fun getYAxisLabel(metric: MultiLineMetricUiModel): List<AxisLabel> {
+        return metric.yAxis.map {
             AxisLabel(it.yValue, it.yLabel)
-        }.orEmpty()
+        }
     }
 
     interface Listener : BaseViewHolderListener {
