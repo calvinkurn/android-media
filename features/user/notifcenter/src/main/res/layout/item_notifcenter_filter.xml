@@ -47,10 +47,13 @@
     </HorizontalScrollView>
 
     <ImageView
+        android:id="@+id/iv_setting_notif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingHorizontal="@dimen/spacing_lvl4"
-        android:paddingVertical="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/notif_dp_6"
+        android:background="?selectableItemBackgroundBorderless"
+        android:paddingHorizontal="@dimen/notif_dp_6"
+        android:paddingVertical="@dimen/notif_dp_6"
         app:srcCompat="@drawable/ic_notifcenter_setting" />
 </merge>

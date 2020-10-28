@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.ImageView
 import android.widget.LinearLayout
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -15,6 +18,7 @@ class NotificationFilterView : LinearLayout {
     private var promo: ChipsUnify? = null
     private var info: ChipsUnify? = null
     private var selectedFilter: ChipsUnify? = null
+    private var settingBtn: ImageView? = null
     var filterListener: FilterListener? = null
 
     interface FilterListener {
@@ -70,20 +74,28 @@ class NotificationFilterView : LinearLayout {
     private fun initViewInflation(context: Context?) {
         View.inflate(context, R.layout.item_notifcenter_filter, this)?.apply {
             bindView(this)
-            bindClick()
+            bindClickFilter()
+            bindClickNavigation()
         }
     }
 
-    private fun bindClick() {
+    private fun bindClickFilter() {
         transaction?.setOnClickListener(clickListener)
         promo?.setOnClickListener(clickListener)
         info?.setOnClickListener(clickListener)
+    }
+
+    private fun bindClickNavigation() {
+        settingBtn?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
+        }
     }
 
     private fun bindView(view: View) {
         transaction = view.findViewById(R.id.filter_transaction)
         promo = view.findViewById(R.id.filter_promo)
         info = view.findViewById(R.id.filter_info)
+        settingBtn = view.findViewById(R.id.iv_setting_notif)
     }
 
 }
