@@ -1,12 +1,19 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.os.Bundle
+import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.officialstore.official.data.model.Benefit
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
+import com.tokopedia.smart_recycler_helper.SmartVisitable
 
-class OfficialBenefitViewModel(val benefit: MutableList<Benefit>) : Visitable<OfficialHomeAdapterTypeFactory> {
+class OfficialBenefitViewModel(val benefit: MutableList<Benefit>) : OfficialHomeVisitable{
+    override fun getChangePayloadFrom(b: Any?): Bundle? = null
 
-    override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
-        return adapterTypeFactory.type(this)
-    }
+    override fun type(typeFactory: OfficialHomeTypeFactory): Int = typeFactory.type(this)
+
+    override fun visitableId(): String = this::class.java.simpleName
+
+    override fun equalsWith(b: Any?): Boolean = b is OfficialBenefitViewModel &&
+            benefit == b.benefit &&
+            benefit.map { it.id }.containsAll(b.benefit.map { it.id })
 }
