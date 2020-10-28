@@ -48,7 +48,16 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
+
         // Get wishlist use case returns 3 wishlist data with values for initial data
         getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"),
@@ -78,7 +87,16 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
+
         // Get wishlist usecase returns 3 wishlist data with values") {
         getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"),
@@ -86,10 +104,11 @@ class WishlistViewModelGetNextPageDataTest {
                 WishlistItem(id="3")
         ), page = currentPage)
 
-        // Live data is filled by data from getWishlistData
-        wishlistViewModel.getWishlistData()
         // User id
         every { userSessionInterface.userId } returns mockUserId
+
+        // Live data is filled by data from getWishlistData
+        wishlistViewModel.getWishlistData()
         // Get wishlist usecase returns 3 wishlist item data for next page
         getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                 wishlistItems = listOf(
@@ -114,7 +133,15 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
         // User id
         every { userSessionInterface.userId } returns mockUserId
         // Get wishlist usecase returns 20 wishlist data with values
@@ -157,7 +184,16 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
+
         // Get wishlist usecase returns 3 wishlist data with values
         getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                 WishlistItem(id="1"),
@@ -388,7 +424,16 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
+
         // User id
         every { userSessionInterface.userId } returns mockUserId
         // Get wishlist usecase returns 20 wishlist data on current page
@@ -430,7 +475,16 @@ class WishlistViewModelGetNextPageDataTest {
         val nextPage = 2
 
         // Wishlist view model
-        wishlistViewModel = createWishlistViewModel(userSessionInterface, getWishlistDataUseCase, getSingleRecommendationUseCase, getRecommendationUseCase)
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface = userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                getSingleRecommendationUseCase = getSingleRecommendationUseCase,
+                getRecommendationUseCase = getRecommendationUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase
+        )
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns arrayListOf()
+
         // User id
         every { userSessionInterface.userId } returns mockUserId
         // Get wishlist usecase successfully returns 3 wishlist item data

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/talkWriteProductImage"
+        android:layout_width="@dimen/dp_46"
+        android:layout_height="@dimen/dp_46"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkWriteProductName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintStart_toEndOf="@id/talkWriteProductImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/talkWriteProductImage"
+        app:layout_constraintBottom_toBottomOf="@id/talkWriteProductImage"
+        app:typographyWeight="bold"
+        app:typographyType="heading_5"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/talkWriteProductImage"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

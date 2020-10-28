@@ -116,15 +116,10 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             refreshThanksPageData()
-            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.paymentID.toString())
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         }
-        btnShopAgain.setOnClickListener {
-            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customOrderUrlApp.isNullOrBlank()) {
-                gotoHomePage()
-            } else {
-                launchApplink(thanksPageData.thanksCustomization.customHomeUrlApp)
-            }
-        }
+        setUpHomeButton(btnShopAgain)
     }
 
     private fun showDigitAnnouncementTicker() {
@@ -142,7 +137,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             }
         }
         thankYouPageAnalytics.get()
-                .sendSalinButtonClickEvent(thanksPageData.gatewayName,
+                .sendSalinButtonClickEvent(thanksPageData.profileCode,thanksPageData.gatewayName,
                         thanksPageData.paymentID.toString())
     }
 

@@ -3,18 +3,22 @@ package com.tokopedia.play.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.view.uimodel.FeedInfoUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -40,10 +44,15 @@ class PlayInteractionViewModel @Inject constructor(
         )
     }
 
-    fun doLikeUnlike(contentId: Int, contentType: Int, likeType: Int, shouldLike: Boolean) {
+    fun doLikeUnlike(feedInfoUiModel: FeedInfoUiModel?, shouldLike: Boolean) {
         scope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike)
+                postLikeUseCase.params = PostLikeUseCase.createParam(
+                        contentId = feedInfoUiModel?.contentId.toIntOrZero(),
+                        contentType = feedInfoUiModel?.contentType.orZero(),
+                        likeType = feedInfoUiModel?.likeType.orZero(),
+                        action = shouldLike
+                )
                 postLikeUseCase.executeOnBackground()
             }
         }) {}

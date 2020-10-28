@@ -2,10 +2,13 @@ package com.tokopedia.cart.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 
@@ -89,6 +92,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface ActionListener {
 
+        Activity getFragmentActivity();
+
         void onCartItemDeleteButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
         void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
@@ -97,7 +102,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView);
 
-        void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
+        void onCartItemProductClicked(CartItemData cartItemData);
 
         void onCartItemAfterErrorChecked();
 
@@ -107,7 +112,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
-        void onWishlistCheckChanged(String productId, boolean isChecked);
+        void onWishlistCheckChanged(String productId, int cartId);
 
         void onNeedToRefreshSingleShop(int parentPosition);
 
@@ -126,5 +131,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CompositeSubscription onGetCompositeSubscriber();
 
         void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
+
+        void onEditNoteDone(int position);
+
+        void onCartItemShowRemainingQty(String productId);
+
+        void onCartItemShowInformationLabel(String productId, String informationLabel);
     }
 }

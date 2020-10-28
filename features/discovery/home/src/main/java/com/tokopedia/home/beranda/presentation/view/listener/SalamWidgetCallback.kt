@@ -60,7 +60,7 @@ class SalamWidgetCallback (val context: Context?, val viewModel: HomeViewModel,
                     link = it.link,
                     iconURL = it.iconURL,
                     title = it.title,
-                    backgroundColor = it.backgroundColor,
+                    backgroundColor = it.backgroundColor.firstOrNull() ?: "",
                     buttonText = it.buttonText
             )
         }

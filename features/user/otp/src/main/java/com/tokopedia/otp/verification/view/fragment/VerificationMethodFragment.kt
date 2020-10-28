@@ -25,10 +25,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
-import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
-import com.tokopedia.otp.verification.common.IOnBackPressed
-import com.tokopedia.otp.verification.common.di.VerificationComponent
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
@@ -46,12 +47,13 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
+class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
 
     @Inject
-    lateinit var analytics: TrackingValidatorUtil
+    lateinit var analytics: TrackingOtpUtil
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -64,9 +66,9 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override var viewBound = VerificationMethodViewBinding()
 
-    override fun getScreenName(): String = TrackingValidatorConstant.Screen.SCREEN_VERIFICATION_METHOD
+    override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_VERIFICATION_METHOD
 
-    override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,16 +117,22 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun getVerificationMethod() {
         showLoading()
-        viewmodel.getVerificationMethod(
-                otpType = otpData.otpType.toString(),
-                userId = otpData.userId,
-                msisdn = otpData.msisdn,
-                email = otpData.email
-        )
+        val otpType = otpData.otpType.toString()
+        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
+                && otpData.userIdEnc.isNotEmpty()) {
+            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+        } else {
+            viewmodel.getVerificationMethod(
+                    otpType = otpType,
+                    userId = otpData.userId,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email
+            )
+        }
     }
 
     private fun initObserver() {
-        viewmodel.getVerificationMethodResult.observe(this, Observer {
+        viewmodel.getVerificationMethodResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetVerificationMethod().invoke(it.data)
                 is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
@@ -136,12 +144,13 @@ class VerificationMethodFragment : BaseVerificationFragment(), IOnBackPressed {
         return { otpModeListData ->
             if (otpModeListData.success && otpModeListData.modeList.isNotEmpty()) {
                 hideLoading()
-                if(!otpData.isShowChooseMethod) {
+
+                if (!otpData.isShowChooseMethod) {
                     val modeList = otpModeListData.modeList.singleOrNull {
                         it.modeText == otpData.otpMode
                     }
 
-                    if(modeList != null) {
+                    if (modeList != null) {
                         skipView(modeList)
                     } else {
                         showListView(otpModeListData)

@@ -7,6 +7,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -18,7 +19,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -47,21 +47,16 @@ class VoucherDetailViewModelTest {
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
-    lateinit var mViewModel: VoucherDetailViewModel
-    lateinit var testDispatcher: TestCoroutineDispatcher
-
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     lateinit var mViewModel: VoucherDetailViewModel
-    lateinit var testDispatcher: TestCoroutineDispatcher
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
 
-        testDispatcher = TestCoroutineDispatcher()
-        mViewModel = VoucherDetailViewModel(testDispatcher, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
+        mViewModel = VoucherDetailViewModel(TestCoroutineDispatchers, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
 
         with(mViewModel) {
             cancelVoucherResultLiveData.observeForever(cancelVoucherResultObserver)
@@ -71,8 +66,6 @@ class VoucherDetailViewModelTest {
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-
         with(mViewModel) {
             cancelVoucherResultLiveData.removeObserver(cancelVoucherResultObserver)
             merchantVoucherModelLiveData.removeObserver(merchantVoucherModelObserver)
@@ -124,7 +117,6 @@ class VoucherDetailViewModelTest {
 
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
-                shopBasicDataUseCase.executeOnBackground()
             }
 
             assert(merchantVoucherModelLiveData.value is Fail)

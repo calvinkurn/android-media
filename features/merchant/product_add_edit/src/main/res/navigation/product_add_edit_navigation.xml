@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_addedit_navigation"
+    app:startDestination="@id/addEditProductPreviewFragment">
+
+    <fragment
+        android:id="@+id/addEditProductPreviewFragment"
+        android:name="com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment"
+        tools:layout="@layout/fragment_add_edit_product_preview">
+        <argument
+            android:name="draftId"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="isProductDuplicate"
+            app:argType="boolean"
+            android:defaultValue="false" />
+
+        <action
+            android:id="@+id/action_addEditProductPreviewFragment_to_addEditProductDetailFragment"
+            app:destination="@id/addEditProductDetailFragment"
+            app:enterAnim="@anim/addedit_slide_in_right"
+            app:exitAnim="@anim/addedit_slide_out_left"
+            app:popEnterAnim="@anim/addedit_fade_in"
+            app:popExitAnim="@anim/addedit_fade_out" />
+        <action
+            android:id="@+id/action_addEditProductPreviewFragment_to_addEditProductDescriptionFragment"
+            app:destination="@id/addEditProductDescriptionFragment"
+            app:enterAnim="@anim/addedit_slide_in_right"
+            app:exitAnim="@anim/addedit_slide_out_left"
+            app:popEnterAnim="@anim/addedit_fade_in"
+            app:popExitAnim="@anim/addedit_fade_out" />
+        <action
+            android:id="@+id/action_addEditProductPreviewFragment_to_addEditProductShipmentFragment"
+            app:destination="@id/addEditProductShipmentFragment"
+            app:enterAnim="@anim/addedit_slide_in_right"
+            app:exitAnim="@anim/addedit_slide_out_left"
+            app:popEnterAnim="@anim/addedit_fade_in"
+            app:popExitAnim="@anim/addedit_fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditProductDetailFragment"
+        android:name="com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment"
+        tools:layout="@layout/fragment_add_edit_product_detail_layout" >
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+        <action
+            android:id="@+id/action_addEditProductDetailFragment_to_addEditProductDescriptionFragment"
+            app:destination="@id/addEditProductDescriptionFragment"
+            app:enterAnim="@anim/addedit_slide_in_right"
+            app:exitAnim="@anim/addedit_slide_out_left"
+            app:popEnterAnim="@anim/addedit_fade_in"
+            app:popExitAnim="@anim/addedit_fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditProductDescriptionFragment"
+        android:name="com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment"
+        tools:layout="@layout/fragment_add_edit_product_description" >
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+        <action
+            android:id="@+id/action_addEditProductDescriptionFragment_to_addEditProductShipmentFragment"
+            app:destination="@id/addEditProductShipmentFragment"
+            app:enterAnim="@anim/addedit_slide_in_right"
+            app:exitAnim="@anim/addedit_slide_out_left"
+            app:popEnterAnim="@anim/addedit_fade_in"
+            app:popExitAnim="@anim/addedit_fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditProductShipmentFragment"
+        android:name="com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment"
+        tools:layout="@layout/fragment_add_edit_product_shipment">
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+    </fragment>
+
+</navigation>

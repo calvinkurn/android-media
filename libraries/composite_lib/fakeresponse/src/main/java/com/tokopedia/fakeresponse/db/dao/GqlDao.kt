@@ -32,6 +32,9 @@ interface GqlDao {
     @Query("DELETE from GqlRecord")
     fun deleteAll()
 
+    @Query("DELETE from GqlRecord where id = :id")
+    fun delete(id:Int)
+
     @RawQuery
     fun searchRecords(query: SupportSQLiteQuery): List<GqlRecord>
 

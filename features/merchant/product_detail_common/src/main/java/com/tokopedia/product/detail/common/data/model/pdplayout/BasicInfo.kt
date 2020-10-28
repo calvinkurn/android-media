@@ -15,6 +15,8 @@ import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 data class BasicInfo(
         @SerializedName("alias")
         val alias: String = "",
+        @SerializedName("shopName")
+        val shopName: String = "",
         @SerializedName("blacklistMessage")
         val blacklistMessage: BlacklistMessage = BlacklistMessage(),
         @SerializedName("catalogID")

@@ -17,6 +17,7 @@ data class DetailInputModel(
         var stock: Int = 0,
         var minOrder: Int = 0,
         var condition: String = "NEW",
+        var status: Int = 1,
         var sku: String = "",
         var imageUrlOrPathList: List<String> = emptyList(),
         var preorder: PreorderInputModel = PreorderInputModel(),

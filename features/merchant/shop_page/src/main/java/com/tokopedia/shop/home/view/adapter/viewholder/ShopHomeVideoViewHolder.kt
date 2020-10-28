@@ -139,6 +139,22 @@ class ShopHomeVideoViewHolder(
     }
 
     private fun YoutubeVideoDetailModel?.getMaxResThumbnailUrl(): String {
-        return this?.items?.firstOrNull()?.snippet?.thumbnails?.maxres?.url.orEmpty()
+        return this?.items?.firstOrNull()?.snippet?.thumbnails?.let { thumbnails ->
+            thumbnails.maxres?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.standard?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.high?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.medium?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.default?.let{
+                return it.url.orEmpty()
+            }
+        } ?: ""
     }
 }

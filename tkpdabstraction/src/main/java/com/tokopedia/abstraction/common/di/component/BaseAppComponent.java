@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -32,8 +31,6 @@ public interface BaseAppComponent {
     Gson gson();
 
     AbstractionRouter provideAbstractionRouter();
-
-    TkpdAuthInterceptor tkpdAuthInterceptor();
 
     HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 

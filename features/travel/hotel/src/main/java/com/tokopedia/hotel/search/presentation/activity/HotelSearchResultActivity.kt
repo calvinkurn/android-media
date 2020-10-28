@@ -19,6 +19,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_hotel_search_result.*
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
 
     var hotelSearchModel = HotelSearchModel()
+    var selectedParam = ParamFilterV2()
 
     private lateinit var wrapper: LinearLayout
 
@@ -78,6 +80,10 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
             hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
             hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 1
             hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 1
+
+            selectedParam.name = uri.getQueryParameter(PARAM_FILTER_ID) ?: ""
+            val values: String = uri.getQueryParameter(PARAM_FILTER_VALUE) ?: ""
+            selectedParam.values = values.split(",").toMutableList()
 
         } else {
             //when activity open from intent
@@ -159,7 +165,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     }
 
     override fun getNewFragment(): Fragment {
-        return HotelSearchResultFragment.createInstance(hotelSearchModel)
+        return HotelSearchResultFragment.createInstance(hotelSearchModel, selectedParam)
     }
 
     override fun getComponent(): HotelSearchPropertyComponent =
@@ -222,6 +228,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val PARAM_CITY_NAME = "city_name"
         const val PARAM_REGION_ID = "region_id"
         const val PARAM_REGION_NAME = "region_name"
+        const val PARAM_FILTER_ID = "filter_selected_id"
+        const val PARAM_FILTER_VALUE = "filter_selected_value"
 
         const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
 

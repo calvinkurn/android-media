@@ -7,6 +7,7 @@ class TopAdsLogModel() {
     var productId: String = ""
     var productName: String = ""
     var imageUrl: String = ""
+    var componentName: String = ""
 
     val data: String
         get() = "EventType: " + eventType +
@@ -14,5 +15,6 @@ class TopAdsLogModel() {
                 "\r\nProductId: " + productId +
                 "\r\nProductName: " + productName +
                 "\r\nImageUrl: " + imageUrl +
-                "\r\nUrl: " + url
+                "\r\nUrl: " + url +
+                "\r\nComponentName: " + componentName
 }

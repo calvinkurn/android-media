@@ -43,6 +43,7 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
@@ -80,6 +81,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
+
+    private static final String COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads";
 
     @Inject
     InboxPresenter presenter;
@@ -457,7 +460,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new TopAdsUrlHitter(getActivity().getClass().getName()).hitImpressionUrl(getContext(), item.getTrackerImageUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
+        new TopAdsUrlHitter(getContext()).hitImpressionUrl(getActivity().getClass().getName(), item.getTrackerImageUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl(), COMPONENT_NAME_TOP_ADS);
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -466,7 +469,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new TopAdsUrlHitter(getActivity().getClass().getName()).hitClickUrl(getContext(), item.getClickUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl());
+        new TopAdsUrlHitter(getContext()).hitClickUrl(getActivity().getClass().getName(), item.getClickUrl(), String.valueOf(item.getProductId()), item.getName(), item.getImageUrl(), COMPONENT_NAME_TOP_ADS);
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 

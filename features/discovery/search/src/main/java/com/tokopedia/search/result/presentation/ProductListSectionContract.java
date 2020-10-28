@@ -12,6 +12,7 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -66,6 +67,8 @@ public interface ProductListSectionContract {
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
+        boolean isAnySortActive();
+
         void clearLastProductItemPositionFromCache();
 
         void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);
@@ -103,10 +106,6 @@ public interface ProductListSectionContract {
         void trackScreenAuthenticated();
 
         void reloadData();
-
-        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
-        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
 
         RemoteConfig getABTestRemoteConfig();
 
@@ -146,7 +145,7 @@ public interface ProductListSectionContract {
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
-        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onQuickFilterSelected(Option option);
 
@@ -169,6 +168,10 @@ public interface ProductListSectionContract {
         void openBottomSheetFilter(@Nullable DynamicFilterModel dynamicFilterModel);
 
         void setDynamicFilter(@NotNull DynamicFilterModel dynamicFilterModel);
+
+        void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void redirectionStartActivity(String applink, String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -215,5 +218,9 @@ public interface ProductListSectionContract {
         void onFreeOngkirOnBoardingShown();
 
         void openFilterPage(Map<String, Object> searchParameter);
+
+        void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
     }
 }

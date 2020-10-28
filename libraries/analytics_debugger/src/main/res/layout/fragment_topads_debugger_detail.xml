@@ -37,6 +37,25 @@
             style="@style/TextView"
             android:textColor="@color/topads_item_label"
             android:textSize="12sp"
+            android:text="@string/topads_debugger_detail_component_name_label"/>
+
+        <TextView
+            android:id="@+id/componentNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textIsSelectable="true"
+            tools:text="home_mix_top"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_debugger_detail_item_vertical_spacing"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_label"
+            android:textSize="12sp"
             android:text="@string/topads_debugger_detail_product_id_label"/>
 
         <TextView

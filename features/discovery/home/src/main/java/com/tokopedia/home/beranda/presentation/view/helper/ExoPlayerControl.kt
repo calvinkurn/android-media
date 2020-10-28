@@ -13,6 +13,6 @@ interface ExoPlayerControl {
     fun isPlayerPlaying(): Boolean
     fun setExoPlayerEventsListener(pExoPlayerListenerListener: ExoPlayerListener?)
     fun onActivityResume()
-    fun onActivityPause()
+    fun onActivityPause(shouldPausePlay: Boolean)
     fun onActivityDestroy()
 }

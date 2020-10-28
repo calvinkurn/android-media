@@ -21,7 +21,17 @@ data class GetKeywordResponse(
     data class Data(
 
             @field:SerializedName("keywords")
-            val keywords: List<KeywordsItem> = listOf()
+            val keywords: List<KeywordsItem> = listOf(),
+
+            @field:SerializedName("pagination")
+            val pagination: Pagination = Pagination()
+    )
+
+    data class Pagination(
+
+            @field:SerializedName("next_cursor")
+            val cursor: String = ""
+
     )
 
     data class Error(

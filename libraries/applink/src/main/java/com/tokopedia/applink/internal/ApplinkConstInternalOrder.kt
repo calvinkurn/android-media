@@ -7,11 +7,39 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 object ApplinkConstInternalOrder {
 
+    const val UNIFIED = "unified"
+    const val FILTER = "filter"
+    const val UNIFY_ORDER_STATUS = "tokopedia-android-internal://order/unified?filter={customFilter}"
+    const val PARAM_CUSTOM_FILTER = "{customFilter}"
+    const val SOURCE_FILTER = "source_filter"
+    const val PARAM_DALAM_PROSES = "dalam_proses"
+    const val PARAM_E_TIKET = "etiket"
+    const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
+    const val PARAM_MARKETPLACE = "marketplace"
+    const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
+    const val PARAM_DIGITAL = "digital"
+    const val PARAM_EVENTS = "events"
+    const val PARAM_DEALS = "deals"
+    const val PARAM_PESAWAT = "pesawat"
+    const val PARAM_GIFTCARDS = "giftcards"
+    const val PARAM_INSURANCE = "insurance"
+    const val PARAM_MODALTOKO = "modaltoko"
+    const val PARAM_HOTEL = "hotel"
+    const val PARAM_HISTORY = "history"
+    const val PARAM_FILTER_ID = "filter_id"
+    const val PARAM_ORDER_LIST = "order_list"
+
     @JvmField
     val HOST_SELLER = "seller"
 
     @JvmField
+    val HOST_BUYER = "buyer"
+
+    @JvmField
     val HOST_ORDER = "order"
+
+    @JvmField
+    val HOST_ORDERLIST = "orderlist"
 
     @JvmField
     val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
@@ -32,7 +60,7 @@ object ApplinkConstInternalOrder {
     val DELIVERED = "$INTERNAL_SELLER/delivered"
 
     @JvmField
-    val HISTORY = "$INTERNAL_SELLER/history"
+    val HISTORY = "$INTERNAL_SELLER/$PARAM_HISTORY"
 
     @JvmField
     val TRACK = "$INTERNAL_ORDER/track"
@@ -66,5 +94,66 @@ object ApplinkConstInternalOrder {
 
     @JvmField
     val INVOICE = "$INTERNAL_ORDER/invoice"
+
+    @JvmField
+    val UNIFY_ORDER = "$INTERNAL_ORDER/$UNIFIED"
+
+    @JvmField
+    val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE"
+
+    @JvmField
+    val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
+
+    @JvmField
+    val UNIFY_ORDER_DIGITAL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DIGITAL"
+
+    @JvmField
+    val UNIFY_ORDER_EVENTS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_EVENTS"
+
+    @JvmField
+    val UNIFY_ORDER_DEALS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DEALS"
+
+    @JvmField
+    val UNIFY_ORDER_PESAWAT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_PESAWAT"
+
+    @JvmField
+    val UNIFY_ORDER_GIFTCARDS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_GIFTCARDS"
+
+    @JvmField
+    val UNIFY_ORDER_INSURANCE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_INSURANCE"
+
+    @JvmField
+    val UNIFY_ORDER_MODALTOKO = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MODALTOKO"
+
+    @JvmField
+    val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
+
+    @JvmField
+    val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
+
+    @JvmField
+    val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
+
+    @JvmField
+    val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
+
+    @JvmField
+    val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+
+    @JvmField
+    val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
+
+    @JvmField
+    val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
+
+    @JvmField
+    val MP_INTERNAL_PROCESSED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=12"
+
+    @JvmField
+    val MP_INTERNAL_SHIPPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=13"
+
+    @JvmField
+    val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
+
 
 }

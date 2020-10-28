@@ -38,6 +38,9 @@ interface RestDao {
     @Query("DELETE from RestRecord")
     fun deleteAll()
 
+    @Query("DELETE from RestRecord where id = :id")
+    fun delete(id:Int)
+
     @RawQuery
     fun searchRecords(query: SupportSQLiteQuery): List<RestRecord>
 }

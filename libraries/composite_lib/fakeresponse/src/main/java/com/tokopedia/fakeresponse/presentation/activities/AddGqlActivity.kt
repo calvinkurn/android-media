@@ -133,6 +133,13 @@ class AddGqlActivity : BaseActivity() {
                 is Fail -> toast(it.ex.message)
             }
         })
+
+        viewModel.liveDataDeleteRecord.observe(this, Observer {
+            when (it) {
+                is Success<Boolean> -> finish()
+                is Fail -> toast(it.ex.message)
+            }
+        })
     }
 
     fun updateUi(transactionEntity: TransactionEntity) {
@@ -146,7 +153,7 @@ class AddGqlActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.gql_add_response_menu, menu)
+        menuInflater.inflate(R.menu.gql_add_response_menu_export, menu)
         return true
     }
 
@@ -164,6 +171,9 @@ class AddGqlActivity : BaseActivity() {
             }
             R.id.gql_menu_export -> {
                 performExport()
+            }
+            R.id.gql_menu_delete -> {
+                performDelete()
             }
         }
         return true
@@ -192,6 +202,11 @@ class AddGqlActivity : BaseActivity() {
         id?.let {
             viewModel.export(it, ResponseItemType.GQL)
         }
+    }
 
+    fun performDelete() {
+        id?.let {
+            viewModel.delete(it)
+        }
     }
 }

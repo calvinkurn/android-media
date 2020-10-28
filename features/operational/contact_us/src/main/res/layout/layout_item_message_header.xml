@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_priority_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_19"
+        android:drawableStart="@drawable/resized_priority_label_image"
+        android:drawablePadding="@dimen/dp_minus2"
+        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/layanan_prioritas"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/fontSize_lvl1"
+        android:lineSpacingExtra="@dimen/sp_2"
+        android:textStyle="normal"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/message_ticket_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_7"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:textColor="@color/contact_us_grey_n_700_96"
+        android:textStyle="normal"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_priority_label"
+        tools:text="Prifikasi dan
+dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_id_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/dp_9"
+        android:textColor="@color/contact_us_grey_n_700_44"
+        app:layout_constraintStart_toStartOf="@+id/message_ticket_title"
+        app:layout_constraintTop_toBottomOf="@+id/message_ticket_title"
+        tools:text="ID: #00079468" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_view_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/contact_us_transaction_details"
+        android:textColor="@color/contact_us_g_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_id_num"
+        app:layout_goneMarginTop="@dimen/dp_12" />
+
+    <View
+        android:id="@+id/top_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/tv_id_num"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

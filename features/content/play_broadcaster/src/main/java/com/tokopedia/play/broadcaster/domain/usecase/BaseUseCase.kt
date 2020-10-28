@@ -34,21 +34,17 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
                 if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
                 else {
                     if (retryCount++ < MAX_RETRY) executeWithRetry()
-                    else {
-                        val errors = gqlResponse?.getError(typeOfT)
-                        if (!errors.isNullOrEmpty()) {
-                            if (GlobalConfig.DEBUG) {
-                                throw DefaultErrorThrowable(errors[0].message)
-                            }
-                            sendCrashlyticsLog(0, errors[0].message)
-                        }
-                    }
                 }
-                sendCrashlyticsLog(0, throwable.localizedMessage)
+                sendCrashlyticsLog(throwable)
             }
         }
 
         executeWithRetry()
+
+        val errors = gqlResponse?.getError(typeOfT)
+        if (!errors.isNullOrEmpty()) {
+            throw DefaultErrorThrowable(errors[0].message)
+        }
 
         return gqlResponse?: throw DefaultErrorThrowable()
     }

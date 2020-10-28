@@ -26,7 +26,7 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
-      return ManageAddressViewHolder(parent.inflateLayout(R.layout.item_manage_people_address), listener)
+        return ManageAddressViewHolder(parent.inflateLayout(R.layout.item_manage_people_address), listener)
     }
 
     override fun getItemCount(): Int {
@@ -38,8 +38,12 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     fun addList(data: List<RecipientAddressModel>) {
-        addressList.clear()
         addressList.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun clearData() {
+        addressList.clear()
         notifyDataSetChanged()
     }
 

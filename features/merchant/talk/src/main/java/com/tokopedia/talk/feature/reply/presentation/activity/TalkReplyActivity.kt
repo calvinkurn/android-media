@@ -25,6 +25,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var shopId = ""
     private var source = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var talkReplyFragment: TalkReplyFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
@@ -39,7 +40,8 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId, source)
+        talkReplyFragment = TalkReplyFragment.createNewInstance(questionId, shopId, source)
+        return talkReplyFragment
     }
 
     override fun getComponent(): TalkComponent {
@@ -86,7 +88,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
-        pageLoadTimePerformanceMonitoring = null;
+        pageLoadTimePerformanceMonitoring = null
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -122,6 +124,15 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.let {
             it.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun onBackPressed() {
+        if(talkReplyFragment?.getDidUserWriteQuestion() == true) {
+            talkReplyFragment?.goToReading()
+            finish()
+        } else {
+            super.onBackPressed()
         }
     }
 }

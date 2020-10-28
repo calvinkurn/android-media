@@ -16,5 +16,7 @@ data class ShopPageHeaderDataModel(
         var statusTitle: String = "",
         var statusMessage: String = "",
         var shopStatus: Int = -1,
-        var broadcaster: Broadcaster.Config = Broadcaster.Config()
+        var broadcaster: Broadcaster.Config = Broadcaster.Config(),
+        var shopSnippetUrl: String = "",
+        var shopCoreUrl: String = ""
 )

@@ -14,46 +14,39 @@ public class RulesManager {
     private InterfaceRuleInterpreter ruleInterpreter;
     private static RulesManager rulesManager;
     private DataConsumer dataConsumer;
-    private long currentTime;
 
 
-    public RulesManager(Application application){
-        ruleInterpreter = new RuleInterpreterImpl();
-        dataConsumer = new DataConsumerImpl();
+    private RulesManager(Application application, InterfaceRuleInterpreter ruleInterpreter, DataConsumer dataConsumer) {
+        this.ruleInterpreter = ruleInterpreter;
+        this.dataConsumer = dataConsumer;
         RepositoryManager.initRepository(application);
     }
 
-    public static void initRuleEngine(Application application){
-        if(rulesManager == null) {
+    public static void initRuleEngine(Application application, InterfaceRuleInterpreter ruleInterpreter, DataConsumer dataConsumer) {
+        if (rulesManager == null) {
             synchronized (RulesManager.class) {
-                rulesManager = new RulesManager(application);
+                rulesManager = new RulesManager(application, ruleInterpreter, dataConsumer);
             }
         }
     }
 
-    public static RulesManager getInstance(){
+    public static RulesManager getInstance() {
         return rulesManager;
     }
 
-    public void checkValidity(String entity, long currentTime, DataProvider dataProvider){
-        int state = 0;
-        this.currentTime = currentTime;
-        ruleInterpreter.checkForValidity(entity, state, currentTime, dataProvider);
+    public void checkValidity(String entity, long currentTime, DataProvider dataProvider) {
+        ruleInterpreter.checkForValidity(entity, currentTime, dataProvider);
     }
 
-    public void dataConsumed(long id){
+    public void dataConsumed(long id) {
         dataConsumer.dataShown(id);
     }
 
-    public void dataInflateError(long id){
+    public void dataInflateError(long id) {
         dataConsumer.inflationError(id);
     }
 
-    public void dataConsumed(long id, long bufTime){
-        dataConsumer.dataShown(id, currentTime+bufTime);
-    }
-
-    public void viewDismissed(long id){
+    public void viewDismissed(long id) {
         dataConsumer.viewDismissed(id);
     }
 

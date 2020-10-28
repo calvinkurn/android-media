@@ -129,6 +129,7 @@ class SomFilterFragment : BaseDaggerFragment() {
             eventClickTerapkanOnFilterPage(tabActive)
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_LIST_ORDER, currentFilterParams)
+                putExtra(PARAM_TAB_ACTIVE, tabActive)
             })
             activity?.finish()
         }
@@ -235,7 +236,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     private fun observingOrderTypeList() {
-        somFilterViewModel.orderTypeListResult.observe(this, Observer {
+        somFilterViewModel.orderTypeListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     orderTypeList = it.data
@@ -247,7 +248,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     private fun observingCourierList() {
-        somFilterViewModel.shippingListResult.observe(this, Observer {
+        somFilterViewModel.shippingListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     courierList = it.data
@@ -259,7 +260,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     private fun observingStatusOrderList() {
-        somFilterViewModel.statusOrderListResult.observe(this, Observer {
+        somFilterViewModel.statusOrderListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     statusList = it.data
@@ -271,7 +272,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     private fun observingGetFilterStatus() {
-        somFilterViewModel.filterListResult.observe(this, Observer {
+        somFilterViewModel.filterListResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> toggleFilterView(true)
                 is Fail -> {
@@ -389,6 +390,7 @@ class SomFilterFragment : BaseDaggerFragment() {
             if (data != null) {
                 if (data.hasExtra(PARAM_LIST_ORDER)) {
                     currentFilterParams = data.getParcelableExtra(PARAM_LIST_ORDER)
+                    tabActive = data.getStringExtra(PARAM_TAB_ACTIVE).orEmpty()
                     renderCourierList()
                     renderOrderType()
                     renderStatusList()
@@ -434,7 +436,8 @@ class SomFilterFragment : BaseDaggerFragment() {
                 et_end_date?.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
             }
 
-            label_substatus?.text = statusList.first().text
+            tabActive = arguments?.getString(PARAM_TAB_ACTIVE).toString()
+            label_substatus?.text = tabActive
         }
     }
 }

@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -66,7 +67,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
         val firstName = fullName.split(" ")[0]
 
         setupAnimation(view, shopId)
-        shopOpenRevampTracking?.sendScreenCongratulations()
+        shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_CONGRATULATION)
         val greetingText = getString(R.string.open_shop_revamp_text_title_finish_success, firstName)
         txt_greeting.text = greetingText
     }

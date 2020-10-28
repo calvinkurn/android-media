@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -73,10 +74,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         formatRestoredData(data)
 
         add_btn.setOnClickListener {
-            if (keywordValidation(editText.text.toString().trim())) {
-                adapter.addKeyword(editText.text.toString().trim())
+            if (keywordValidation(editText.textFieldInput.text.toString().trim())) {
+                adapter.addKeyword(editText.textFieldInput.text.toString().trim())
                 onCheckedItem()
             }
+            add_btn?.isEnabled = false
+            editText.textFieldInput.text.clear()
         }
 
         btn_next.setOnClickListener {
@@ -89,7 +92,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
-        editText.addTextChangedListener(object : TextWatcher {
+        editText.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = validateKeyword(s)
                 if (s.toString().trim().isEmpty()) {
@@ -108,13 +111,13 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
         })
-        editText.setOnEditorActionListener { v, actionId, _ ->
+        editText.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (keywordValidation(editText.text.toString().trim())) {
-                    adapter.addKeyword(editText.text.toString().trim())
+                if (keywordValidation(editText.textFieldInput.text.toString().trim())) {
+                    adapter.addKeyword(editText.textFieldInput.text.toString().trim())
                     onCheckedItem()
                 }
-                Constants.dismissKeyboard(context, v)
+                Utils.dismissKeyboard(context, v)
 
             }
             true
@@ -138,7 +141,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun setValues(flag: Boolean) {
         add_btn.isEnabled = flag
-        editText.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
+        editText.textFieldInput?.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
         error_text.visibility = if (flag) View.INVISIBLE else View.VISIBLE
     }
 
@@ -169,7 +172,9 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun keywordValidation(key: String): Boolean {
-        if (key.isNotEmpty()) {
+        if (key.isEmpty()) {
+            return false
+        } else {
             adapter.items.forEach {
                 if (it.tag == key) {
                     makeToast(getString(R.string.keyword_already_exists))

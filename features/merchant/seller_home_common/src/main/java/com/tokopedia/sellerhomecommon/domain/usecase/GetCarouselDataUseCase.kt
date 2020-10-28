@@ -7,8 +7,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
-import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -61,7 +61,7 @@ class GetCarouselDataUseCase(
         }
 
         private val QUERY = """
-            query (${'$'}dataKeys: [dataKey!]!) {
+            query getCarouselWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchCarouselWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
                   dataKey

@@ -18,7 +18,7 @@ class ProductMenuViewModelTest {
         val menu: ProductMenuViewModel = Preview(product)
         val typeFactory = mockk<ProductMenuAdapterFactory>(relaxed = true)
 
-        every { typeFactory.type(any()) } returns viewType
+        every { typeFactory.type(menu) } returns viewType
 
         assertEquals(viewType, menu.type(typeFactory))
         assertEquals(product, menu.product)

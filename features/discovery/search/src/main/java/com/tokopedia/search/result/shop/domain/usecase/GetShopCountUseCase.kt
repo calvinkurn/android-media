@@ -12,14 +12,7 @@ internal class GetShopCountUseCase(
 ): UseCase<Int>() {
 
     companion object {
-        private const val QUERY =
-                """
-                    query SearchShop(${'$'}params: String!) {
-                      aceSearchShop(params: ${'$'}params) {
-                          total_shop
-                      }
-                    }
-                """
+        private const val QUERY = "query SearchShop(${'$'}params: String!) { aceSearchShop(params: ${'$'}params) { total_shop } }"
     }
 
     override suspend fun executeOnBackground(): Int {

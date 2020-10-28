@@ -28,6 +28,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_start_add_edit_product_description"
+        android:contentDescription="@string/content_desc_tv_start_add_edit_product_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_14"

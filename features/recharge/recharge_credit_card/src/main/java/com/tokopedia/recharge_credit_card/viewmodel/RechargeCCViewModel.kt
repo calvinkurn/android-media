@@ -135,10 +135,5 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
         private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
-
-        //production
-        //const val CC_MENU_ID = 169
-        //staging
-        //const val CC_MENU_ID = 86
     }
 }

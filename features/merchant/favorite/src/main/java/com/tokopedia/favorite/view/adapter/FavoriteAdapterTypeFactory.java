@@ -18,9 +18,12 @@ public class FavoriteAdapterTypeFactory
         extends BaseAdapterTypeFactory implements FavoriteTypeFactory {
 
     private FavoriteClickListener favoriteClickListener;
+    private TopAdsShopAdapter.ImpressionImageLoadedListener impressionImageLoadedListener;
 
-    public FavoriteAdapterTypeFactory(FavoriteClickListener favoriteClickListener) {
+    public FavoriteAdapterTypeFactory(FavoriteClickListener favoriteClickListener,
+                                      TopAdsShopAdapter.ImpressionImageLoadedListener impressionImageLoadedListener) {
         this.favoriteClickListener = favoriteClickListener;
+        this.impressionImageLoadedListener = impressionImageLoadedListener;
     }
 
     @Override
@@ -39,7 +42,8 @@ public class FavoriteAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder createViewHolder;
         if (type == TopAdsShopViewHolder.LAYOUT) {
-            createViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
+            createViewHolder = new TopAdsShopViewHolder(
+                    parent, favoriteClickListener, impressionImageLoadedListener);
         } else if (type == FavoriteShopViewHolder.LAYOUT) {
             createViewHolder = new FavoriteShopViewHolder(parent);
         } else {

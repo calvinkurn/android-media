@@ -5,16 +5,18 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 
 import java.util.List;
 
+import rx.Completable;
+
 public interface InterfaceDataStore {
-    void putDataToStore(CMInApp value);
-    void putDataToStore(List<CMInApp> inAppDataRecords);
+    Completable putDataToStore(CMInApp value);
+    Completable putDataToStore(List<CMInApp> inAppDataRecords);
     List<CMInApp> getDataFromStore(String key);
-    void putElapsedTimeToStore(ElapsedTime elapsedTime);
+    Completable putElapsedTimeToStore(ElapsedTime elapsedTime);
     ElapsedTime getElapsedTimeFromStore();
-    void deleteRecord(long id);
+    Completable deleteRecord(long id);
     CMInApp getInAppData(long id);
-    void updateInAppDataFreq(long id);
-    void updateInAppDataFreq(long id, long newSt);
-    void viewDismissed(long id);
-    void interactedWithView(long id);
+    Completable updateInAppDataFreq(long id);
+    Completable updateInAppDataFreq(long id, long newSt);
+    Completable viewDismissed(long id);
+    Completable interactedWithView(long id);
 }

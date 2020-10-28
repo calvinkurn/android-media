@@ -25,6 +25,7 @@ class TopAdsDebuggerDetailFragment : TkpdBaseV4Fragment() {
         timestampText.text = viewModel?.timestamp
         eventTypeText.text = viewModel?.eventType
         sourceNameText.text = viewModel?.sourceName
+        componentNameText?.text = viewModel?.componentName
         productIdText.text = viewModel?.productId
         productNameText.text = viewModel?.productName
         imageUrlText.text = viewModel?.imageUrl

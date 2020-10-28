@@ -60,11 +60,14 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.workManager
 
+    testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
 
 project.ext {

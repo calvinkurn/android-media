@@ -12,6 +12,8 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchersProvider
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadResponse
 import dagger.Module
@@ -43,4 +45,8 @@ class VoucherCreationModule {
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<ImageUploadResponse.ImageUploadData> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, ImageUploadResponse.ImageUploadData::class.java, imageUploaderUtils)
     }
+
+    @VoucherCreationScope
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

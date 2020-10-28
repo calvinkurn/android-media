@@ -72,7 +72,7 @@ data class ThanksPageData(
         @SerializedName("is_mub")
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
-        val thanksCustomization: ThanksCustomization
+        val thanksCustomization: ThanksCustomization?
 ) : Parcelable
 
 data class PaymentDetail(
@@ -250,7 +250,9 @@ data class PurchaseItem(
         @SerializedName("product_plan_protection")
         val productPlanProtection: Double,
         @SerializedName("bebas_ongkir_dimension")
-        val bebasOngkirDimension: String
+        val bebasOngkirDimension: String,
+        @SerializedName("is_bbi")
+        val isBBIProduct: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -268,7 +270,8 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readDouble(),
-            parcel.readString() ?: "")
+            parcel.readString() ?: "",
+            parcel.readByte() == 1.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
@@ -287,6 +290,7 @@ data class PurchaseItem(
         parcel.writeString(thumbnailProduct)
         parcel.writeDouble(productPlanProtection)
         parcel.writeString(bebasOngkirDimension)
+        parcel.writeByte(if (isBBIProduct) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -344,16 +348,18 @@ data class PaymentItem(
 @Parcelize
 data class ThanksCustomization(
         @SerializedName("tracking_data")
-        val trackingData: String,
+        val trackingData: String?,
         @SerializedName("custom_order_url_app")
-        val customOrderUrlApp: String,
+        val customOrderUrlApp: String?,
         @SerializedName("custom_home_url_app")
-        val customHomeUrlApp: String,
+        val customHomeUrlApp: String?,
         @SerializedName("custom_title")
-        val customTitle: String,
+        val customTitle: String?,
         @SerializedName("custom_subtitle")
-        val customSubtitle: String,
+        val customSubtitle: String?,
         @SerializedName("custom_title_order_button")
-        val customTitleOrderButton: String,
+        val customTitleOrderButton: String?,
         @SerializedName("custom_wtv_text")
-        val customWtvText: String) : Parcelable
+        val customWtvText: String?,
+        @SerializedName("custom_title_home_button")
+        val customHomeButtonTitle: String?) : Parcelable

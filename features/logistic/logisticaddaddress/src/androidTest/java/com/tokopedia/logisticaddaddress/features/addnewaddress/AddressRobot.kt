@@ -10,12 +10,11 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
@@ -26,8 +25,6 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
-        // Delay for animation
-        Thread.sleep(500L)
     }
 
     fun searchWithKeyword(keyword: String) {
@@ -47,6 +44,36 @@ class AddressRobot {
         onView(withId(R.id.et_detail_address))
                 .perform(typeText(detail), closeSoftKeyboard())
         onView(withId(R.id.btn_choose_location)).perform(click())
+    }
+
+    fun clickCity() {
+        onView(withId(R.id.et_kota_kecamatan_mismatch)).perform(click())
+    }
+
+    fun searchCityWithKeyword(keyword: String) {
+        onView(withId(R.id.et_search_district_recommendation))
+                .check(matches(isDisplayed()))
+                .perform(typeText(keyword), closeSoftKeyboard())
+        Thread.sleep(750L)
+    }
+
+    fun selectFirstCityItem() {
+        onView(withId(R.id.rv_list_district))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun zipCode() {
+        onView(withId(R.id.et_kode_pos_mismatch)).perform(click())
+    }
+
+    fun selectFirstZipCode() {
+        onView(withId(R.id.rv_kodepos_chips_mismatch))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun address(address: String) {
+        onView(withId(R.id.et_alamat_mismatch))
+                .perform(typeText(address), closeSoftKeyboard())
     }
 
     fun receiver(receiver: String) {

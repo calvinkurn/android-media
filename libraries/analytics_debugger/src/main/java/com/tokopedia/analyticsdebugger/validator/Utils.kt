@@ -7,7 +7,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-internal object Utils {
+object Utils {
 
     fun getJsonDataFromAsset(context: Context, fileName: String): String? {
         val jsonString: String

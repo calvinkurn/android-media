@@ -18,6 +18,7 @@ class AuthKey {
         private val RAW_ZEUS_KEY = intArrayOf(102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55)
         private val RAW_BRIZZI_CLIENT_SECRET = intArrayOf(82, 82, 49, 68, 74, 56, 81, 90, 115, 89, 85, 88, 84, 90, 80, 98)
         private val RAW_BRIZZI_CLIENT_ID = intArrayOf(116, 88, 110, 65, 54, 71, 122, 113, 57, 74, 52, 51, 57, 71, 73, 51, 106, 74, 57, 66, 106, 99, 66, 71, 48, 53, 116, 109, 113, 73, 81, 97)
+        private val RAW_SAFETYNET_KEY_TRADE_IN = intArrayOf(65, 73, 122, 97, 83, 121, 66, 117, 71, 83, 108, 109, 49, 68, 100, 85, 56, 79, 82, 99, 66, 76, 49, 119, 86, 122, 78, 53, 102, 69, 110, 67, 55, 71, 104, 87, 111, 68, 111)
 
         @JvmField val KEY_WSV4_NEW = encodeKey(RAW_KEY_WSV4)
         @JvmField val KEY_WSV4 = "web_service_v4"
@@ -39,6 +40,7 @@ class AuthKey {
         @JvmField val INSTANT_DEBIT_BCA_PROFILE_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE)
         @JvmField val BRIZZI_CLIENT_SECRET = encodeKey(RAW_BRIZZI_CLIENT_SECRET)
         @JvmField val BRIZZI_CLIENT_ID = encodeKey(RAW_BRIZZI_CLIENT_ID)
+        @JvmField val SAFETYNET_KEY_TRADE_IN = encodeKey(RAW_SAFETYNET_KEY_TRADE_IN)
 
         private fun encodeKey(keys: IntArray): String {
             return keys.joinToString(separator = "") { it.toChar().toString() }

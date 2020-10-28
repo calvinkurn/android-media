@@ -1,15 +1,15 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
 import android.annotation.TargetApi
-import android.content.Context
+import android.content.ActivityNotFoundException
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
-import android.print.PrintDocumentAdapter
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import androidx.core.content.ContextCompat
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
@@ -48,9 +48,9 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_print -> {
-               doWebViewPrint()
+                doWebViewPrint()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -59,18 +59,21 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun onPrintClicked(webView: WebView){
-        val printManager = getSystemService(Context.PRINT_SERVICE) as PrintManager
+    private fun onPrintClicked(webView: WebView) {
+        val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
         val jobName = getString(R.string.app_name) + " Document"
-        val printAdapter: PrintDocumentAdapter
-        printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.createPrintDocumentAdapter(jobName)
         } else {
             webView.createPrintDocumentAdapter()
         }
         val builder = PrintAttributes.Builder()
         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-        printManager.print(jobName, printAdapter, builder.build())
+        try {
+            printManager?.print(jobName, printAdapter, builder.build())
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
         SomAnalytics.eventClickButtonDownloadInvoice(orderCode)
     }
 

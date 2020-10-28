@@ -24,9 +24,4 @@ class ChatListSettingModule {
     @ChatListScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @ChatListScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
 }

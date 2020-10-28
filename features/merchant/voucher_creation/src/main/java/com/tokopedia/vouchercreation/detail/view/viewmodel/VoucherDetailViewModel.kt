@@ -8,22 +8,21 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class VoucherDetailViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        private val dispatchers: CoroutineDispatchers,
         private val voucherDetailUseCase: VoucherDetailUseCase,
         private val cancelVoucherUseCase: CancelVoucherUseCase,
-        private val shopBasicDataUseCase: ShopBasicDataUseCase) : BaseViewModel(dispatcher) {
+        private val shopBasicDataUseCase: ShopBasicDataUseCase) : BaseViewModel(dispatchers.main) {
 
     private val mVoucherIdLiveData = MutableLiveData<Int>()
 
@@ -31,7 +30,7 @@ class VoucherDetailViewModel @Inject constructor(
         addSource(mVoucherIdLiveData) { voucherId ->
             launchCatchError(
                     block = {
-                        withContext(Dispatchers.IO) {
+                        withContext(dispatchers.io) {
                             voucherDetailUseCase.params = VoucherDetailUseCase.createRequestParam(voucherId)
                             val voucherDetail = async { Success(voucherDetailUseCase.executeOnBackground()) }
                             val shopBasicData = async { Success(shopBasicDataUseCase.executeOnBackground()) }
@@ -55,7 +54,7 @@ class VoucherDetailViewModel @Inject constructor(
             launchCatchError(
                     block = {
                         cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(voucherPair.first, voucherPair.second)
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
                     },

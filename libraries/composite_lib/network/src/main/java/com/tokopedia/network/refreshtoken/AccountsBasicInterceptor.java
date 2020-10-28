@@ -19,6 +19,7 @@ import okhttp3.Request;
 
 public class AccountsBasicInterceptor extends TkpdAuthInterceptor {
     private static final String X_TKPD_PATH = "x-tkpd-path";
+    private static final String USER_AGENT = "User-Agent";
 
     public AccountsBasicInterceptor(Context context, NetworkRouter networkRouter,
                                     UserSessionInterface userSession) {
@@ -31,6 +32,7 @@ public class AccountsBasicInterceptor extends TkpdAuthInterceptor {
             throws IOException {
         Map<String, String> authHeaders = AuthHelper.generateHeadersAccount("");
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 }

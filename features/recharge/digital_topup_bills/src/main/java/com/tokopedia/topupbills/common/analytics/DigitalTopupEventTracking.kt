@@ -9,11 +9,12 @@ interface DigitalTopupEventTracking {
     interface Additional {
         companion object {
             const val CURRENT_SITE = "currentSite"
-            const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
+            const val CURRENT_SITE_RECHARGE = "tokopediadigital"
             const val BUSINESS_UNIT = "businessUnit"
-            const val BUSINESS_UNIT_RECHARGE = "top up and tagihan"
+            const val BUSINESS_UNIT_RECHARGE = "recharge"
             const val USER_ID = "userId"
             const val DIGITAL_SCREEN_NAME = "/digital/"
+            const val SCREEN_NAME = "screenName"
             const val IS_LOGIN_STATUS = "isLoggedInStatus"
             const val CATEGORY = "category"
             const val CATEGORY_ID = "digitalCategoryId"
@@ -25,6 +26,7 @@ interface DigitalTopupEventTracking {
     interface Event {
         companion object {
             const val CLICK_HOMEPAGE = "clickHomepage"
+            const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
             const val PROMO_VIEW = "promoView"
             const val PROMO_CLICK = "promoClick"
             const val PRODUCT_VIEW = "productView"
@@ -70,6 +72,7 @@ interface DigitalTopupEventTracking {
             const val CLICK_SAVE_QUICK_FILTER = "click Simpan"
             const val CLICK_RESET_QUICK_FILTER = "click Reset filter bottom sheet"
             const val CLICK_RESET_FILTER_CLUSTER = "click reset cluster"
+            const val IMPRESSION_FILTER_CLUSTER = "impression filter cluster"
         }
     }
 

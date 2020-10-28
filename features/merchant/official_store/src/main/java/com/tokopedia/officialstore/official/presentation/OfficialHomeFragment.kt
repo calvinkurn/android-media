@@ -142,10 +142,6 @@ class OfficialHomeFragment :
         }
         context?.let { tracking = OfficialStoreTracking(it) }
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
-        if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
-            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-        }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
@@ -175,21 +171,16 @@ class OfficialHomeFragment :
         return view
     }
 
-    private fun setPerformanceListenerForRecyclerView(){
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+    private fun setPerformanceListenerForRecyclerView() {
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if(officialStorePerformanceMonitoringListener != null){
-                    officialStorePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
-                    recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                }
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
-        }
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeBenefit()
@@ -199,6 +190,7 @@ class OfficialHomeFragment :
         resetData()
         loadData()
         setListener()
+        getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
     }
 
     override fun onPause() {
@@ -209,7 +201,7 @@ class OfficialHomeFragment :
     private fun resetData() {
         adapter?.clearAllElements()
         adapter?.resetState(this)
-        endlessScrollListener?.resetState()
+        endlessScrollListener.resetState()
     }
 
     private fun loadData(isRefresh: Boolean = false) {
@@ -220,6 +212,8 @@ class OfficialHomeFragment :
                 viewModel.loadFirstData(category)
                 isLoadedOnce = true
 
+                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
+
                 if (!isRefresh) {
                     tracking?.sendScreen(category?.title.toEmptyStringIfNull())
                 }
@@ -229,11 +223,6 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
-            if (getOfficialStorePageLoadTimeCallback() != null) {
-                getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-                getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-            }
-            setPerformanceListenerForRecyclerView()
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -804,7 +793,7 @@ class OfficialHomeFragment :
         if (cta.couponCode.isEmpty()) {
             RouteManager.route(context, applink)
         } else {
-            view?.let{
+            view?.let {
                 copyCoupon(it, cta)
             }
         }
@@ -821,11 +810,12 @@ class OfficialHomeFragment :
     }
 
     private fun removeLoading() {
-        if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+        val osPltCallback = getOfficialStorePageLoadTimeCallback()
+        if (osPltCallback != null) {
+            osPltCallback.stopNetworkRequestPerformanceMonitoring()
+            osPltCallback.startRenderPerformanceMonitoring()
         }
         setPerformanceListenerForRecyclerView()
-
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
@@ -882,8 +872,6 @@ class OfficialHomeFragment :
     }
 
     private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        return if (officialStorePerformanceMonitoringListener != null && officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface() != null) {
-            officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface()
-        } else null
+        return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
     }
 }

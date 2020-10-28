@@ -39,21 +39,6 @@
         </activity>
 
         <activity
-            android:name=".detail.presentation.activity.AddEditProductDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".shipment.presentation.activity.AddEditProductShipmentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name=".variant.presentation.activity.AddEditProductVariantActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

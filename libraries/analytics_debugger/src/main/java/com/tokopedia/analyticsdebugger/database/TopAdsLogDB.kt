@@ -42,5 +42,8 @@ data class TopAdsLogDB (
     var timestamp: Long = 0,
 
     @ColumnInfo(name = "fullResponse")
-    var fullResponse: String = ""
+    var fullResponse: String = "",
+
+    @ColumnInfo(name = "componentName")
+    var componentName: String = ""
 )

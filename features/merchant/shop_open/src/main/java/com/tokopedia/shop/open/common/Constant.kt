@@ -29,3 +29,10 @@ object TermsAndConditionsLink {
 object ImageAssets {
     val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://ecs7.tokopedia.net/android/others/seller_empty_state.png"
 }
+
+object ScreenNameTracker {
+    const val SCREEN_SHOP_REGISTRATION = "/shop registration"
+    const val SCREEN_SHOP_SURVEY = "/shop survey"
+    const val SCREEN_CONGRATULATION = "/registration page - shop/congratulation"
+    const val SCREEN_HOORAY = "/registration page - shop/hooray"
+}

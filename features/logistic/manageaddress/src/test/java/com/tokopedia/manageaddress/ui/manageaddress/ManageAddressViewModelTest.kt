@@ -35,7 +35,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Search Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.getAll(any()) } returns Observable.just(response).doOnSubscribe {
+        every { getPeopleAddressUseCase.execute(any()) } returns Observable.just(response).doOnSubscribe {
             assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
@@ -47,9 +47,31 @@ class ManageAddressViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.getAll(any()) } returns Observable.error(response)
+        every { getPeopleAddressUseCase.execute(any()) } returns Observable.error(response)
 
         manageAddressViewModel.searchAddress("")
+
+        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Load More Address Success`() {
+        val response = AddressListModel()
+        every { getPeopleAddressUseCase.loadMore(any(), any()) } returns Observable.just(response).doOnSubscribe {
+            assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
+        }
+
+        manageAddressViewModel.loadMore()
+
+        assertEquals(ManageAddressState.Success(response), manageAddressViewModel.addressList.value)
+    }
+
+    @Test
+    fun `Load More Address Failed`() {
+        val response = Throwable()
+        every { getPeopleAddressUseCase.loadMore(any(), any()) } returns Observable.error(response)
+
+        manageAddressViewModel.loadMore()
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }

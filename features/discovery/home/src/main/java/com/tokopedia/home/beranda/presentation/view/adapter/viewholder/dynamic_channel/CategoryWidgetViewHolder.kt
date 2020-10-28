@@ -1,29 +1,26 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
-import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
-import java.util.HashMap
+import java.util.*
 
-class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
+class CategoryWidgetViewHolder(val view: View, private val categoryListener: HomeCategoryListener) :
         DynamicChannelViewHolder(view, categoryListener) {
 
     companion object {
@@ -73,16 +70,11 @@ class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategor
 
         override fun onBindViewHolder(holder: CategoryWidgetItemViewHolder, position: Int) {
             val grid = grids[position]
-            holder.categoryImageView.loadImage(grid.imageUrl, FPM_CATEGORY_WIDGET_ITEM)
-            holder.categoryBackground.setBackgroundColor(
-                    if (grid.backColor.isNotEmpty()) Color.parseColor(grid.backColor)
-                    else ContextCompat.getColor(holder.itemView.context, R.color.light_N50)
-            )
+            holder.categoryImageView.loadImageRounded(grid.imageUrl, 8, FPM_CATEGORY_WIDGET_ITEM)
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(
                         CategoryWidgetTracking.getCategoryWidgetBannerClick(
-                                channels.header.name,
                                 channels.id,
                                 listener.userId,
                                 (position+1).toString(),
@@ -97,7 +89,6 @@ class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategor
 
     class CategoryWidgetItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val categoryImageView: ImageView = view.findViewById(R.id.category_image)
-        val categoryBackground: View = view.findViewById(R.id.category_background)
         val categoryName: Typography = view.findViewById(R.id.category_item_name)
 
         val context: Context

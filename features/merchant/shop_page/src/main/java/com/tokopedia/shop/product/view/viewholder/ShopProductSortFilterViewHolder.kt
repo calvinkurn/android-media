@@ -1,9 +1,9 @@
 package com.tokopedia.shop.product.view.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
-
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -11,6 +11,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_shop_product_sort_filter.view.*
+import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.item_shop_product_sort_filter.view.*
 
 class ShopProductSortFilterViewHolder(
         itemView: View,
-        private val shopProductEtalaseChipListViewHolderListener: ShopProductEtalaseChipListViewHolderListener?
+        private val shopProductSortFilterViewHolderListener: ShopProductSortFilterViewHolderListener?
 ) : AbstractViewHolder<ShopProductSortFilterUiModel>(itemView) {
 
     companion object {
@@ -27,10 +28,12 @@ class ShopProductSortFilterViewHolder(
         val LAYOUT = R.layout.item_shop_product_sort_filter
     }
 
-    interface ShopProductEtalaseChipListViewHolderListener {
+    interface ShopProductSortFilterViewHolderListener {
         fun onEtalaseFilterClicked()
         fun onSortFilterClicked()
         fun onClearFilterClicked()
+        fun setSortFilterMeasureHeight(measureHeight: Int)
+        fun onFilterClicked()
     }
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
@@ -44,14 +47,6 @@ class ShopProductSortFilterViewHolder(
         removeOnScrollChangedListener()
         this.shopProductSortFilterUiModel = data
         itemView.sort_filter?.sortFilterItems?.removeAllViews()
-        val scrollX = shopProductSortFilterUiModel?.scrollX ?: 0
-        itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollX = scrollX
-                itemView.viewTreeObserver.removeOnPreDrawListener(this)
-                return true
-            }
-        })
         itemView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 addScrollListener()
@@ -59,21 +54,25 @@ class ShopProductSortFilterViewHolder(
             }
         })
         val filterData = ArrayList<SortFilterItem>()
-        val sortFilter = if (data.selectedSortName.isNotEmpty()) {
-            SortFilterItem(data.selectedSortName).apply {
-                type = ChipsUnify.TYPE_SELECTED
+        var sortFilter: SortFilterItem? = null
+        if (data.isShowSortFilter) {
+            sortFilter = if (data.selectedSortName.isNotEmpty()) {
+                SortFilterItem(data.selectedSortName).apply {
+                    type = ChipsUnify.TYPE_SELECTED
+                }
+            } else {
+                SortFilterItem(itemView.resources.getString(
+                        R.string.shop_sort_filter_default_label)
+                ).apply {
+                    type = ChipsUnify.TYPE_NORMAL
+                }
             }
-        } else {
-            SortFilterItem(itemView.resources.getString(
-                    R.string.shop_sort_filter_default_label)
-            ).apply {
-                type = ChipsUnify.TYPE_NORMAL
+            sortFilter.typeUpdated = false
+            sortFilter.listener = {
+                shopProductSortFilterViewHolderListener?.onSortFilterClicked()
             }
+            filterData.add(sortFilter)
         }
-        sortFilter.listener = {
-            shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
-        }
-
 
         val etalaseFilter = if (data.selectedEtalaseName.isNotEmpty()) {
             SortFilterItem(data.selectedEtalaseName).apply {
@@ -86,23 +85,30 @@ class ShopProductSortFilterViewHolder(
                 type = ChipsUnify.TYPE_NORMAL
             }
         }
+        etalaseFilter.typeUpdated = false
         etalaseFilter.listener = {
-            shopProductEtalaseChipListViewHolderListener?.onEtalaseFilterClicked()
+            shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
-        filterData.add(sortFilter)
         filterData.add(etalaseFilter)
         itemView.sort_filter?.addItem(filterData)
-        sortFilter.refChipUnify.setChevronClickListener {
-            shopProductEtalaseChipListViewHolderListener?.onSortFilterClicked()
+        if (data.isShowSortFilter) {
+            sortFilter?.refChipUnify?.setChevronClickListener {
+                shopProductSortFilterViewHolderListener?.onSortFilterClicked()
+            }
         }
         etalaseFilter.refChipUnify.setChevronClickListener {
-            shopProductEtalaseChipListViewHolderListener?.onEtalaseFilterClicked()
+            shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
-        itemView.sort_filter?.filterType = SortFilter.TYPE_QUICK
+        itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
         itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
-        itemView.sort_filter?.dismissListener = {
-            shopProductEtalaseChipListViewHolderListener?.onClearFilterClicked()
+        itemView.sort_filter?.parentListener = {
+            shopProductSortFilterViewHolderListener?.onFilterClicked()
         }
+        itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        itemView.sort_filter?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
+
+        itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
+        shopProductSortFilterViewHolderListener?.setSortFilterMeasureHeight(itemView.measuredHeight)
     }
 
     private fun addScrollListener() {

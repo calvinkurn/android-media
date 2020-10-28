@@ -32,12 +32,16 @@ import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindLis
 import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener {
+class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel,
+        TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener,
+        CoroutineScope {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -139,16 +143,25 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
+    var job: Job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        travelHomepageViewModel.renderList.observe(this, Observer {
-            clearAllData()
-            hideLoading()
-            renderList(travelHomepageViewModel.travelItemList)
+        travelHomepageViewModel.travelItemListLiveData.observe(viewLifecycleOwner, Observer {
+            if(job.isActive) {
+                job.cancel()
+            }
+            job = launch {
+                isLoadingInitialData = true
+                renderList(it, false)
+                delay(750L)
+            }
         })
 
-        travelHomepageViewModel.isAllError.observe(this, Observer {
+        travelHomepageViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) {
                     clearAllData()
@@ -181,33 +194,34 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun getScreenName(): String = ""
 
-    override fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
-                travelLayoutSubhomepage, true)
-    }
-
     override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.SliderBannerResponse::class.java)
     }
 
     override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.CategoryResponse::class.java)
     }
 
     override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.DestinationResponse::class.java)
     }
 
     override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.LegoBannerResponse::class.java)
     }
 
     override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.ProductCardResponse::class.java)
     }
 
     override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
-        onItemBindViewHolder(travelLayoutSubhomepage, isFromCloud)
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage, true, TypeUnifiedSubhomepageResponse.HomepageSectionResponse::class.java)
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {

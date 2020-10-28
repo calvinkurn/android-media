@@ -17,15 +17,9 @@ public interface GlobalNavRouter {
 
     Fragment getFeedPlusFragment(Bundle bundle);
 
-    Fragment getCartFragment(Bundle bundle);
-
     Fragment getOfficialStoreFragment(Bundle bundle);
 
     ApplicationUpdate getAppUpdate(Context context);
-
-    int getCartCount(Context context);
-
-    void setCartCount(Context context, int count);
 
     Intent getHomeIntent(Context context);
 

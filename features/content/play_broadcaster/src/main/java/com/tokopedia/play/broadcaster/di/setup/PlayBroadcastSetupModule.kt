@@ -12,8 +12,6 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
-import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
@@ -40,10 +38,6 @@ class PlayBroadcastSetupModule {
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @Provides
-    @PlayBroadcastSetupScope
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider()
 
     @Provides
     @PlayBroadcastSetupScope

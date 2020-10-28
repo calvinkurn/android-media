@@ -28,6 +28,10 @@ data class OrderShipment(
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
 ) {
+    fun isValid(): Boolean {
+        return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
+    }
+
     fun getRealShipperProductId(): Int {
         return logisticPromoShipping?.productData?.shipperProductId
                 ?: shipperProductId.toZeroIfNull()
@@ -47,5 +51,23 @@ data class OrderShipment(
 
     fun getRealChecksum(): String {
         return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
+    }
+
+    fun getRealOriginalPrice(): Int {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shippingRate
+        } else shippingPrice ?: 0
+    }
+
+    fun getRealShippingPrice(): Int {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.discountedRate
+        } else shippingPrice ?: 0
+    }
+
+    fun getRealInsurancePrice(): Int {
+        return if (isCheckInsurance && insuranceData != null) {
+            insuranceData.insurancePrice
+        } else 0
     }
 }

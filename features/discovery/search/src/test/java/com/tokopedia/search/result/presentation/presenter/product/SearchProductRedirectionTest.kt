@@ -8,7 +8,6 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
-import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
@@ -58,6 +57,7 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
             verifyShowLoading(productListView)
 
+            productListView.sendTrackingGTMEventSearchAttempt(any())
             productListView.redirectSearchToAnotherPage(redirectApplink)
 
             verifyHideLoading(productListView)

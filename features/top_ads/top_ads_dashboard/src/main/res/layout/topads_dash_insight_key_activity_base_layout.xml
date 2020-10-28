@@ -80,13 +80,15 @@
                         android:layout_marginBottom="@dimen/dp_4"
                         app:layout_constraintTop_toBottomOf="@id/selectGroup" />
 
-                    <ImageButton
+                    <com.tokopedia.unifycomponents.UnifyImageButton
                         android:id="@+id/selectGroupInsight"
                         android:layout_width="wrap_content"
                         android:clickable="false"
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:unifyImageButtonType="main"
+                        app:unifyImageButtonVariant="image"
                         app:layout_constraintTop_toTopOf="@id/selectGroup"
                         app:srcCompat="@drawable/topads_arrow_down" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

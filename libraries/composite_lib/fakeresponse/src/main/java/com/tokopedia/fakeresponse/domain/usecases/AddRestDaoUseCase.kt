@@ -40,4 +40,8 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
     fun getRecordFromTable(id: Int): RestRecord {
         return repository.getResponse(id)
     }
+
+    fun deleteRecord(id:Int){
+        repository.delete(id)
+    }
 }

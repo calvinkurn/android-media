@@ -15,6 +15,9 @@
     <string name="host_setting" translatable="false">setting</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
+    <!--Feedback Form-->
+    <string name="internal_feedback" translatable="false">internal-feedback</string>
+
     <!--Shop Settings-->
     <string name="shop_settings_title">Pengaturan Toko</string>
 
@@ -93,4 +96,18 @@
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
+<!--    pms-->
+    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
+    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
+    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
+    <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
+    <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
+    <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
+
+
+    <!-- Seller Menu -->
+    <string name="title_seller_menu">Toko Saya</string>
+
+    <!-- Product Review -->
+    <string name="title_product_review">Product Review</string>
 </resources>

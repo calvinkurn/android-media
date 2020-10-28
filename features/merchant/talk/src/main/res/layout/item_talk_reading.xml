@@ -22,18 +22,40 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/readingInquirerYouLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reading_your_question_label"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:visibility="gone"
+            app:labelType="general_light_grey"
+            app:layout_constraintStart_toEndOf="@id/readingInquirerProfilePicture"
+            app:layout_constraintTop_toTopOf="@id/readingInquirerProfilePicture"
+            app:layout_constraintBottom_toBottomOf="@id/readingInquirerProfilePicture"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/readingInquirerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_68"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_marginLeft="@dimen/spacing_lvl1"
+            app:layout_goneMarginStart="@dimen/layout_lvl1"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="@id/readingInquirerProfilePicture"
             app:layout_constraintBottom_toBottomOf="@id/readingInquirerProfilePicture"
-            app:layout_constraintStart_toEndOf="@id/readingInquirerProfilePicture" />
+            app:layout_constraintStart_toEndOf="@id/readingInquirerYouLabel" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/reading_inquirer_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            tools:visibility="gone"
+            app:constraint_referenced_ids="readingInquirerYouLabel,readingInquirerName" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/reading_inquiry_dot"
@@ -43,7 +65,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintStart_toEndOf="@id/readingInquirerName"
+            app:layout_constraintStart_toEndOf="@id/reading_inquirer_barrier"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="@id/readingInquirerProfilePicture"
@@ -117,14 +139,14 @@
                 android:id="@+id/readingRespondentDisplayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="@dimen/spacing_lvl1"
+                android:layout_marginLeft="@dimen/spacing_lvl1"
                 android:textColor="@color/Neutral_N700_68"
                 android:visibility="gone"
                 app:layout_goneMarginStart="@dimen/layout_lvl2"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                app:layout_constraintStart_toEndOf="@id/readingRespondentProfilePicture"
+                app:layout_constraintStart_toEndOf="@id/readingRespondentSellerLabel"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 

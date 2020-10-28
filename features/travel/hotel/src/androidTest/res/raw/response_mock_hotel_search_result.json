@@ -1,0 +1,856 @@
+[
+  {
+    "data": {
+      "propertySearch": {
+        "propertyList": [
+          {
+            "id": 566915,
+            "name": "Adiwana Dara Ayu Villas Testing",
+            "type": "Resor",
+            "address": "Jl. Raya Buahan No. 88 X",
+            "roomPrice": [
+              {
+                "price": "Rp 750.000",
+                "priceAmount": 750000,
+                "totalPrice": "Rp 1.500.000",
+                "totalPriceAmount": 1500000,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 123.967",
+                      "priceAmount": 123966.94
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 136.364",
+                      "priceAmount": 136363.64
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/254530926.jpg?k=a67ed1f67a45d0bfa755e7e2fba171ff5da4a8ec5bc54b39463f831fc6a06ecd&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/254530926.jpg?k=a67ed1f67a45d0bfa755e7e2fba171ff5da4a8ec5bc54b39463f831fc6a06ecd&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/254530926.jpg?k=a67ed1f67a45d0bfa755e7e2fba171ff5da4a8ec5bc54b39463f831fc6a06ecd&o="
+              }
+            ],
+            "star": 4,
+            "features": [
+              "Free Cancellation",
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 8.9,
+              "reviewDescription": "Mengesankan"
+            },
+            "location": {
+              "cityName": "Payangan",
+              "description": "Payangan",
+              "latitude": -8.36106,
+              "longitude": 115.24303
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 569262,
+            "name": "The Royal Purnama",
+            "type": "Resor",
+            "address": "Jalan Pantai Purnama",
+            "roomPrice": [
+              {
+                "price": "Rp 4.172.597",
+                "priceAmount": 4172597,
+                "totalPrice": "Rp 8.345.194",
+                "totalPriceAmount": 8345194,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 689.686",
+                      "priceAmount": 689685.45
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 758.654",
+                      "priceAmount": 758654
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248815.jpg?k=1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443&o="
+              }
+            ],
+            "star": 5,
+            "features": [
+              "Free Cancellation",
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 9.1,
+              "reviewDescription": "Luar Biasa"
+            },
+            "location": {
+              "cityName": "Ketewel",
+              "description": "Ketewel",
+              "latitude": -8.61932,
+              "longitude": 115.30894
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 572901,
+            "name": "Barong Villas",
+            "type": "Vila",
+            "address": "Jalan Sidemen - Sangkan Gunung Telaga Tawang ",
+            "roomPrice": [
+              {
+                "price": "Rp 900.000",
+                "priceAmount": 900000,
+                "totalPrice": "Rp 1.800.000",
+                "totalPriceAmount": 1800000,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 148.761",
+                      "priceAmount": 148760.33
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 163.637",
+                      "priceAmount": 163636.36
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/149221147.jpg?k=aa4dd999ad26beb0d4325b14b5692be88128c00c5c4c0aa13ac9a4a506e3697f&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/149221147.jpg?k=aa4dd999ad26beb0d4325b14b5692be88128c00c5c4c0aa13ac9a4a506e3697f&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/149221147.jpg?k=aa4dd999ad26beb0d4325b14b5692be88128c00c5c4c0aa13ac9a4a506e3697f&o="
+              }
+            ],
+            "star": 4,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 9.4,
+              "reviewDescription": "Luar Biasa"
+            },
+            "location": {
+              "cityName": "Sidemen",
+              "description": "Sidemen",
+              "latitude": -8.4831,
+              "longitude": 115.44425
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 572535,
+            "name": "Bella Kita Mountain Retreat & Spa",
+            "type": "Vila",
+            "address": "Jl. Bukit Abah Kangin",
+            "roomPrice": [
+              {
+                "price": "Rp 672.750",
+                "priceAmount": 672750,
+                "totalPrice": "Rp 1.345.500",
+                "totalPriceAmount": 1345500,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 122.319",
+                      "priceAmount": 122318.18
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "Diskon Spesial",
+                  "price": "Rp 747.500",
+                  "priceAmount": 747500
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/121505318.jpg?k=25dec169b64fb77db3a7c3520fdfa70c9d401596ad0393c28f12a5fe68b12944&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/121505318.jpg?k=25dec169b64fb77db3a7c3520fdfa70c9d401596ad0393c28f12a5fe68b12944&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/121505318.jpg?k=25dec169b64fb77db3a7c3520fdfa70c9d401596ad0393c28f12a5fe68b12944&o="
+              }
+            ],
+            "star": 0,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 9.3,
+              "reviewDescription": "Luar Biasa"
+            },
+            "location": {
+              "cityName": "Klungkung",
+              "description": "Klungkung",
+              "latitude": -8.51709,
+              "longitude": 115.46591
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 566660,
+            "name": "Mara River Safari Lodge Bali",
+            "type": "Losmen",
+            "address": "Jalan By Pass Prof Dr Ida Bagus Mantra KM 19,8",
+            "roomPrice": [
+              {
+                "price": "Rp 1.725.036",
+                "priceAmount": 1725036,
+                "totalPrice": "Rp 3.450.072",
+                "totalPriceAmount": 3450072,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 287.506",
+                      "priceAmount": 287506
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 287.506",
+                      "priceAmount": 287506
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "Diskon Spesial",
+                  "price": "Rp 3.450.073",
+                  "priceAmount": 3450073
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/50054922.jpg?k=63046bf4ff8c811d2025f03ca8df88f553b21ac5b7f94822fcaf0f43d60b995d&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/50054922.jpg?k=63046bf4ff8c811d2025f03ca8df88f553b21ac5b7f94822fcaf0f43d60b995d&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/50054922.jpg?k=63046bf4ff8c811d2025f03ca8df88f553b21ac5b7f94822fcaf0f43d60b995d&o="
+              }
+            ],
+            "star": 4,
+            "features": [
+              "Free Cancellation",
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 8.5,
+              "reviewDescription": "Sangat Memuaskan"
+            },
+            "location": {
+              "cityName": "Keramas",
+              "description": "Keramas",
+              "latitude": -8.58697,
+              "longitude": 115.34321
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 570454,
+            "name": "Menjangan Dynasty Resort",
+            "type": "Kemah mewah",
+            "address": "Banyuwedang",
+            "roomPrice": [
+              {
+                "price": "Rp 2.265.750",
+                "priceAmount": 2265750,
+                "totalPrice": "Rp 4.531.500",
+                "totalPriceAmount": 4531500,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 374.505",
+                      "priceAmount": 374504.13
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 411.955",
+                      "priceAmount": 411954.55
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/82505612.jpg?k=4a527828fa8d0dba3d6f288d15aa1a59705774cda4a2b73d5616a7fa115925be&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/82505612.jpg?k=4a527828fa8d0dba3d6f288d15aa1a59705774cda4a2b73d5616a7fa115925be&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/82505612.jpg?k=4a527828fa8d0dba3d6f288d15aa1a59705774cda4a2b73d5616a7fa115925be&o="
+              }
+            ],
+            "star": 5,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 9.1,
+              "reviewDescription": "Luar Biasa"
+            },
+            "location": {
+              "cityName": "Banyuwedang",
+              "description": "Banyuwedang",
+              "latitude": -8.13541,
+              "longitude": 114.5622
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 1882849,
+            "name": "Villa Vajra",
+            "type": "Vila",
+            "address": "Jalan Raya Sebali",
+            "roomPrice": [
+              {
+                "price": "Rp 3.500.000",
+                "priceAmount": 3500000,
+                "totalPrice": "Rp 7.000.000",
+                "totalPriceAmount": 7000000,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 636.364",
+                      "priceAmount": 636363.64
+                    },
+                    {
+                      "name": "City tax",
+                      "excluded": false,
+                      "type": "CITYTAX",
+                      "price": "Rp 0",
+                      "priceAmount": 0
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/221729934.jpg?k=359cc6588d961b5c49b69775cf09711cdaee6e78ef0a73431404c818f9fa2ac3&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/221729934.jpg?k=359cc6588d961b5c49b69775cf09711cdaee6e78ef0a73431404c818f9fa2ac3&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/221729934.jpg?k=359cc6588d961b5c49b69775cf09711cdaee6e78ef0a73431404c818f9fa2ac3&o="
+              }
+            ],
+            "star": 0,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 0,
+              "reviewDescription": "Belum ada rating"
+            },
+            "location": {
+              "cityName": "Ubud",
+              "description": "Sambahan, Ubud",
+              "latitude": -8.47736,
+              "longitude": 115.26037
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 570599,
+            "name": "Signature Hotel Bali",
+            "type": "Hotel",
+            "address": "Jalan Mertanadi No. 74",
+            "roomPrice": [
+              {
+                "price": "Rp 213.750",
+                "priceAmount": 213750,
+                "totalPrice": "Rp 427.500",
+                "totalPriceAmount": 427500,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 35.331",
+                      "priceAmount": 35330.58
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 38.864",
+                      "priceAmount": 38863.64
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "Diskon Spesial",
+                  "price": "Rp 225.000",
+                  "priceAmount": 225000
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/242823566.jpg?k=4f6a7cbcddf27620a881349a6932befc75c375f8f66508e05571ed229193788a&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/242823566.jpg?k=4f6a7cbcddf27620a881349a6932befc75c375f8f66508e05571ed229193788a&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/242823566.jpg?k=4f6a7cbcddf27620a881349a6932befc75c375f8f66508e05571ed229193788a&o="
+              }
+            ],
+            "star": 3,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 7.7,
+              "reviewDescription": "Memuaskan"
+            },
+            "location": {
+              "cityName": "Seminyak",
+              "description": "Sunset Road, Seminyak",
+              "latitude": -8.67666,
+              "longitude": 115.1673
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 570563,
+            "name": "Villa Tegal Tis Ubud",
+            "type": "Vila",
+            "address": "Banjar Tibe Kauh Melinggih Kelod, Payangan, Ubud, Gianyar",
+            "roomPrice": [
+              {
+                "price": "Rp 433.696",
+                "priceAmount": 433696,
+                "totalPrice": "Rp 733.948",
+                "totalPriceAmount": 733948,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 60.657",
+                      "priceAmount": 60656.86
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 66.723",
+                      "priceAmount": 66722.55
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "Login Dapat Diskon",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/205735776.jpg?k=5bc656def8426fb118229afbeb6cb74130ff72e40360acac2c94107fb19d8d56&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/205735776.jpg?k=5bc656def8426fb118229afbeb6cb74130ff72e40360acac2c94107fb19d8d56&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/205735776.jpg?k=5bc656def8426fb118229afbeb6cb74130ff72e40360acac2c94107fb19d8d56&o="
+              }
+            ],
+            "star": 3,
+            "features": [
+              "Free Cancellation",
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 9.1,
+              "reviewDescription": "Luar Biasa"
+            },
+            "location": {
+              "cityName": "Payangan",
+              "description": "Payangan",
+              "latitude": -8.4472,
+              "longitude": 115.23727
+            },
+            "isDirectPayment": false
+          },
+          {
+            "id": 573826,
+            "name": "Dhyana Pura Hotel",
+            "type": "Hotel",
+            "address": "Jalan Raya Kapal, Desa Kapal",
+            "roomPrice": [
+              {
+                "price": "Rp 181.440",
+                "priceAmount": 181440,
+                "totalPrice": "Rp 347.760",
+                "totalPriceAmount": 347760,
+                "extraCharges": {
+                  "netPrice": "",
+                  "netPriceAmount": 0,
+                  "extraChargeInfo": [
+                    {
+                      "name": "Tax",
+                      "excluded": false,
+                      "type": "VAT",
+                      "price": "Rp 28.741",
+                      "priceAmount": 28740.5
+                    },
+                    {
+                      "name": "Service charge",
+                      "excluded": false,
+                      "type": "SERVICECHARGE",
+                      "price": "Rp 31.615",
+                      "priceAmount": 31614.55
+                    }
+                  ]
+                },
+                "deals": {
+                  "tagging": "Login Dapat Diskon",
+                  "price": "",
+                  "priceAmount": 0
+                }
+              }
+            ],
+            "roomAvailability": 999,
+            "image": [
+              {
+                "isLogoPhoto": false,
+                "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/175757281.jpg?k=1872f312935aab5337ff5f0a2615237331d3494f59dafdbd86f349d8eb401f49&o=",
+                "mainPhoto": true,
+                "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/175757281.jpg?k=1872f312935aab5337ff5f0a2615237331d3494f59dafdbd86f349d8eb401f49&o=",
+                "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/175757281.jpg?k=1872f312935aab5337ff5f0a2615237331d3494f59dafdbd86f349d8eb401f49&o="
+              }
+            ],
+            "star": 3,
+            "features": [
+              "Pay at Hotel"
+            ],
+            "review": {
+              "reviewScore": 8.3,
+              "reviewDescription": "Sangat Memuaskan"
+            },
+            "location": {
+              "cityName": "Mengwi",
+              "description": "Mengwi",
+              "latitude": -8.57712,
+              "longitude": 115.18271
+            },
+            "isDirectPayment": false
+          }
+        ],
+        "propertyDisplayInfo": {
+          "filter": {
+            "filterPrice": {
+              "minPrice": 0,
+              "maxPrice": 15000000
+            },
+            "filterAccomodation": [
+              {
+                "ID": 3,
+                "name": "Hotel",
+                "displayName": "Hotel"
+              },
+              {
+                "ID": 2,
+                "name": "Apartemen, Aparthotel",
+                "displayName": "Apartemen"
+              },
+              {
+                "ID": 4,
+                "name": "Vila",
+                "displayName": "Vila"
+              },
+              {
+                "ID": 5,
+                "name": "Hostel",
+                "displayName": "Hostel"
+              },
+              {
+                "ID": 6,
+                "name": "Guest house",
+                "displayName": "Guest house"
+              },
+              {
+                "ID": 7,
+                "name": "Cottage",
+                "displayName": "Cottage"
+              },
+              {
+                "ID": 8,
+                "name": "Perkemahan",
+                "displayName": "Perkemahan"
+              },
+              {
+                "ID": 1,
+                "name": "Bed & breakfast, Akomodasi pelajar, Kapal pesiar, Residence, Farmstay, Akomodasi kapal, Hotel kapsul, Hotel cinta, Ryokan, Rumah liburan, Losmen, Motel, Holiday park, Homestay, Penginapan, Kondominium, Hotel ekonomis, Health resort, Kemah mewah, Chalet, Gite, Resor, Uncertain, Rumah pedesaan, Riad, Wisma",
+                "displayName": "lainnya"
+              }
+            ],
+            "filterPreferences": [
+              {
+                "ID": 1,
+                "name": "CancellationPolicy",
+                "displayName": "Pembatalan Gratis",
+                "type": "cancellation_policy"
+              }
+            ],
+            "filterStar": {
+              "stars": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            "filterReview": {
+              "minReview": 5,
+              "maxReview": 9
+            }
+          },
+          "sort": [
+            {
+              "name": "popularity",
+              "displayName": "Popularitas Tertinggi"
+            },
+            {
+              "name": "price",
+              "displayName": "Harga Termurah"
+            },
+            {
+              "name": "reviewScore",
+              "displayName": "Rating Tertinggi"
+            },
+            {
+              "name": "star",
+              "displayName": "Bintang Hotel Tertinggi"
+            }
+          ]
+        },
+        "filters": [
+          {
+            "type": "selection",
+            "name": "star",
+            "displayName": "Bintang hotel",
+            "options": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "image": {
+              "light": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f6ee97ae-f3df-4941-b863-6cb9b105283b.png",
+              "dark": "https://ecs7.tokopedia.net/img/DAajKV/2020/8/19/f6ee97ae-f3df-4941-b863-6cb9b105283b.png"
+            }
+          },
+          {
+            "type": "open_range",
+            "name": "price",
+            "displayName": "Harga per kamar, per malam",
+            "options": [],
+            "image": {
+              "light": "",
+              "dark": ""
+            }
+          },
+          {
+            "type": "selection_range",
+            "name": "rating",
+            "displayName": "Rating dari tamu",
+            "options": [
+              "Semua",
+              "6.0",
+              "7.0",
+              "8.0",
+              "9.0"
+            ],
+            "image": {
+              "light": "",
+              "dark": ""
+            }
+          },
+          {
+            "type": "selection",
+            "name": "accommodation",
+            "displayName": "Tipe akomodasi",
+            "options": [
+              "Hotel",
+              "Apartemen",
+              "Vila",
+              "Hostel",
+              "Guest house",
+              "Cottage",
+              "Perkemahan",
+              "lainnya"
+            ],
+            "image": {
+              "light": "",
+              "dark": ""
+            }
+          },
+          {
+            "type": "selection",
+            "name": "policy",
+            "displayName": "Kebijakan pesanan",
+            "options": [
+              "Hygiene Verified",
+              "Gratis Pembatalan",
+              "Sarapan Gratis"
+            ],
+            "image": {
+              "light": "",
+              "dark": ""
+            }
+          }
+        ],
+        "quickFilter": [
+          {
+            "name": "policy",
+            "displayName": "Hygiene Verified",
+            "values": [
+              "Hygiene Verified"
+            ],
+            "selected": false
+          },
+          {
+            "name": "rating",
+            "displayName": "Rating Tamu 8+",
+            "values": [
+              "8.0"
+            ],
+            "selected": false
+          },
+          {
+            "name": "accommodation",
+            "displayName": "Hotel",
+            "values": [
+              "Hotel"
+            ],
+            "selected": false
+          },
+          {
+            "name": "star",
+            "displayName": "Hotel Bintang 4+",
+            "values": [
+              "4",
+              "5"
+            ],
+            "selected": false
+          },
+          {
+            "name": "policy",
+            "displayName": "Gratis Pembatalan",
+            "values": [
+              "Gratis Pembatalan"
+            ],
+            "selected": false
+          }
+        ]
+      }
+    }
+  }
+]

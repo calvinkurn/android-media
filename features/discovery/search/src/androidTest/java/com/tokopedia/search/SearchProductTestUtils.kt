@@ -67,6 +67,8 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
     }
 }
 
@@ -75,6 +77,7 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemViewModel: BroadMatchItemViewModel) {}
+        override fun onBroadMatchItemImpressed(broadMatchItemViewModel: BroadMatchItemViewModel) {}
     }
 }
 

@@ -133,13 +133,13 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private fun configureTitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         channelTitle.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
         channelTitle.text = playBannerCarouselDataModel.title
-        channelTitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
+        channelTitle.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700))
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotEmpty())
+        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
         channelSubtitle.text = playBannerCarouselDataModel.subtitle
-        channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
+        channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700))
     }
 
     private fun configureSeeMore(playBannerCarouselDataModel: PlayBannerCarouselDataModel){

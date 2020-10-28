@@ -128,7 +128,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            ContactUsTracking.eventInboxClick();
+            ContactUsTracking.eventInboxClick(getContext());
             startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
@@ -213,17 +213,17 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     }
 
     public void onViewClicked() {
-        ContactUsTracking.eventLihatBantuanClick();
+        ContactUsTracking.eventLihatBantuanClick(getContext());
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     public void onViewFullClicked() {
-        ContactUsTracking.eventLihatTransaksiClick();
+        ContactUsTracking.eventLihatTransaksiClick(getContext());
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
     public void onBtnContactUsClicked() {
-        ContactUsTracking.eventHomeHubungiKamiClick();
+        ContactUsTracking.eventHomeHubungiKamiClick(getContext());
         String encodedUrl;
         try {
             encodedUrl = URLEncoder.encode(ContactUsURL.NAVIGATE_NEXT_URL, "UTF-8");
@@ -235,7 +235,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     }
 
     public void onBtnChatClicked() {
-        ContactUsTracking.eventChatBotOkClick();
+        ContactUsTracking.eventChatBotOkClick(getContext());
         startActivity(RouteManager.getIntent(getContext(), ApplinkConst.CHATBOT
                 .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), msgId)));
     }

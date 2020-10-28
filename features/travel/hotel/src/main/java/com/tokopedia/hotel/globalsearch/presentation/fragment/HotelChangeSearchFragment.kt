@@ -201,7 +201,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
 
         const val REQUEST_CODE_DESTINATION = 101
         const val REQUEST_CODE_DETAIL = 103
-        const val SCREEN_NAME = "hotel/changesearch"
+        const val SCREEN_NAME = "/hotel/changesearch"
 
         fun getInstance(destinationId: Long, destinationName: String, destinationType: String, latitude: Double, longitude: Double,
                         checkInDate: String, checkOutDate: String, numOfGuests: Int, numOfRooms: Int, searchId: String, searchType: String) =

@@ -286,7 +286,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        pushEventV5(eventName, addWrapperValue(value), context);
+        Bundle bundle =  addWrapperValue(value);
+        bundle = addGclIdIfNeeded(eventName, bundle);
+        pushEventV5(eventName, bundle, context);
+        pushIris(eventName, bundle);
     }
 
     @SuppressWarnings("unchecked")
@@ -1002,10 +1005,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.just(params)
+            Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
-                    .map(this::pushGeneralGtmV5InternalOrigin)
                     .subscribe(getDefaultSubscriber());
         } else {
             pushGeneralGtmV5InternalOrigin(params);
@@ -1088,10 +1090,26 @@ public class GTMAnalytics extends ContextAnalytics {
             case ADDTOCART:
             case FirebaseAnalytics.Event.VIEW_ITEM:
             case VIEWPRODUCT:
+            case PRODUCTVIEW:
             case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
             case TRANSACTION:
                 values.put(KEY_GCLID, mGclid);
         }
+    }
+
+    private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
+        if (mGclid.isEmpty() || null == eventName) return values;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case PRODUCTVIEW:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.putString(KEY_GCLID, mGclid);
+        }
+        return values;
     }
 
     public void eventOnline(String uid) {
@@ -1114,6 +1132,17 @@ public class GTMAnalytics extends ContextAnalytics {
         if (iris != null) {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
+            }
+            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+                iris.saveEvent(values);
+            }
+        }
+    }
+
+    private void pushIris(String eventName, Bundle values) {
+        if (iris != null) {
+            if (!eventName.isEmpty()) {
+                values.putString("event", eventName);
             }
             if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
                 iris.saveEvent(values);

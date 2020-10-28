@@ -23,11 +23,11 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
                         "$dataSourceType," +
-                        "${networkData?.totalResponseSize}," +
-                        "${networkData?.totalResponseTime}," +
-                        "${networkData?.totalUserNetworkDuration}," +
-                        "${networkData?.responseSizeDetailMapString}," +
-                        "${networkData?.responseTimeDetailMapString}\n")
+                        "${networkData?.totalResponseSize ?: ""}," +
+                        "${networkData?.totalResponseTime ?: ""}," +
+                        "${networkData?.totalUserNetworkDuration ?: ""}," +
+                        "${networkData?.responseSizeDetailMapString ?: ""}," +
+                        "${networkData?.responseTimeDetailMapString ?: ""}\n")
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(

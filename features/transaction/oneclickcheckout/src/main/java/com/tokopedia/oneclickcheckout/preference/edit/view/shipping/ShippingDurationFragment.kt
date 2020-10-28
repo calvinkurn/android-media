@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.shipping
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,11 +24,9 @@ import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalyti
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
-import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -43,10 +41,10 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: ShippingDurationViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ShippingDurationViewModel::class.java]
     }
 
-    val adapter = ShippingDurationItemAdapter(this)
+    private val adapter = ShippingDurationItemAdapter(this)
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var tickerInfo: Ticker? = null
@@ -92,41 +90,30 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             }
         }
 
-        viewModel.shippingDuration.observe(this, Observer {
+        viewModel.shippingDuration.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     contentLayout?.visible()
-
-                    btn_save_duration.setOnClickListener {
-                        val selectedId = viewModel.selectedId
-                        if (selectedId > 0) {
-                            preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
-                            goToNextStep()
-                        }
-                    }
-
-                    renderData(it.data.services)
+                    adapter.renderData(it.data.services)
+                    validateButton()
                 }
 
-                is OccState.Fail -> {
-                    if (!it.isConsumed) {
-                        swipeRefreshLayout?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
+                is OccState.Failed -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
                     }
                 }
-                else -> swipeRefreshLayout?.isRefreshing = true
+
+                is OccState.Loading -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
 
-    private fun renderData(data: List<ServicesItem>) {
-        adapter.shippingDurationList.clear()
-        adapter.shippingDurationList.addAll(data)
-        adapter.notifyDataSetChanged()
+    private fun validateButton() {
+        buttonSaveDuration?.isEnabled = viewModel.selectedId > 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,13 +129,22 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun initViews() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         tickerInfo = view?.findViewById(R.id.ticker_info)
         shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
-        buttonSaveDuration = view?.findViewById(R.id.btn_save_address)
+        buttonSaveDuration = view?.findViewById(R.id.btn_save_duration)
         bottomLayout = view?.findViewById(R.id.bottom_layout_shipping)
         contentLayout = view?.findViewById(R.id.content_layout)
         globalError = view?.findViewById(R.id.global_error)
+
+        buttonSaveDuration?.setOnClickListener {
+            val selectedId = viewModel.selectedId
+            if (selectedId > 0) {
+                preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
+                goToNextStep()
+            }
+        }
     }
 
     private fun checkEntryPoint() {
@@ -200,14 +196,14 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 parent.hideDeleteButton()
                 parent.hideAddButton()
                 parent.showStepper()
-                parent.setStepperValue(50, true)
+                parent.setStepperValue(50)
                 parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
                 parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
             }
         }
     }
 
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(throwable: Throwable?) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
                 view?.let {
@@ -215,7 +211,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull()) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -223,7 +219,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -231,12 +227,11 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable?.message
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
-        viewModel.consumeGetShippingDurationFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -248,4 +243,14 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         contentLayout?.gone()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        swipeRefreshLayout = null
+        tickerInfo = null
+        shippingDurationList = null
+        buttonSaveDuration = null
+        bottomLayout = null
+        contentLayout = null
+        globalError = null
+    }
 }

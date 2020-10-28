@@ -15,6 +15,7 @@ import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.SaldoModel;
 import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
+import com.tokopedia.navigation_common.model.UohCounterModel.UohOrderCount;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -84,6 +85,8 @@ public class AccountModel {
     private SaldoModel saldoModel = new SaldoModel();
 
     private ShortcutResponse shortcutResponse = new ShortcutResponse();
+
+    private UohOrderCount uohOrderCount = new UohOrderCount();
 
     @SerializedName("isAffiliate")
     @Expose
@@ -238,6 +241,14 @@ public class AccountModel {
 
     public void setShortcutResponse(ShortcutResponse shortcutResponse) {
         this.shortcutResponse = shortcutResponse;
+    }
+
+    public UohOrderCount getUohOrderCount() {
+        return uohOrderCount;
+    }
+
+    public void setUohOrderCount(UohOrderCount uohOrderCount) {
+        this.uohOrderCount = uohOrderCount;
     }
 
     public DebitInstantModel getDebitInstant() {

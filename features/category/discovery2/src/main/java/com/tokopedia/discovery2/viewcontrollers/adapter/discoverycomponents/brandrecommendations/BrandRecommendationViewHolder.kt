@@ -49,8 +49,7 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun sendBrandRecommendationImpressionGtm(item: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                item)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(item, brandRecommendationViewModel.getComponentPosition())
     }
 
     private fun setTitle(title: String) {

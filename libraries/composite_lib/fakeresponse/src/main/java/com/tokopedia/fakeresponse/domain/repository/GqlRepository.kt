@@ -18,11 +18,15 @@ class GqlRepository(val dao: GqlDao) : BaseRepository {
         return dao.deleteAll()
     }
 
+    fun delete(id:Int) {
+        return dao.delete(id)
+    }
+
     fun toggleGqlRecord(gqlRecord: Int, enable: Boolean) {
         return dao.toggleGql(gqlRecord, enable)
     }
 
-    fun getGqlQueryResponse(gqlQuery: String, enable: Boolean): GqlRecord {
+    fun getGqlQueryResponse(gqlQuery: String, enable: Boolean): GqlRecord? {
         return dao.getRecordFromGqlQuery(gqlQuery, enable)
     }
 

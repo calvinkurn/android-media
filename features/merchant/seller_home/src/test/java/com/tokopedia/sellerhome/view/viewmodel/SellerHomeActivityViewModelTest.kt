@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -47,7 +48,7 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, Dispatchers.Unconfined)
+        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase, SellerHomeCoroutineTestDispatcher)
 
     @Test
     fun `get notifications then returns success result`() {

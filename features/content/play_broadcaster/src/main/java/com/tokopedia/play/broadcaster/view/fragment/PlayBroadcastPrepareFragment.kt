@@ -21,15 +21,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -51,8 +50,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
     private lateinit var btnSetup: UnifyButton
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvTermsCondition: TextView
-
-    private lateinit var loadingFragment: LoadingDialogFragment
 
     private val isFirstStreaming: Boolean
         get() = parentViewModel.isFirstStreaming
@@ -184,20 +181,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(
                 fragmentClass = PlayBeforeLiveFragment::class.java
         )
-    }
-
-    private fun getLoadingFragment(): LoadingDialogFragment {
-        if (!::loadingFragment.isInitialized) {
-            val setupClass = LoadingDialogFragment::class.java
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            loadingFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as LoadingDialogFragment
-        }
-        return loadingFragment
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) getLoadingFragment().show(childFragmentManager)
-        else getLoadingFragment().dismiss()
     }
 
     //region observe

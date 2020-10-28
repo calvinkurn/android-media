@@ -20,27 +20,28 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.contactus.createticket.utilities.CreateTicketProgressDialog;
 import com.tokopedia.contactus.createticket.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
-import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.createticket.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.createticket.listener.CreateTicketFormFragmentView;
 import com.tokopedia.contactus.createticket.model.ImageUpload;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenter;
 import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPresenterImpl;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -49,10 +50,11 @@ import java.util.UUID;
 /**
  * Created by Tkpd_Eka on 8/13/2015.
  */
-public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
+public class CreateTicketFormFragment extends TkpdBaseV4Fragment
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
     private static final int REQUEST_CODE_IMAGE = 1001;
+    private static final String SAVED_STATE_OF_CREATE_FORM_FRAGMENT = "saved state of CreateTicketFormFragment";
     private EditText mainCategory;
     private EditText detail;
     private TextView attachmentNote;
@@ -66,9 +68,11 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     private TextView detailTextView;
     private TextView attachmentLabelTextView;
     ImageUploadAdapter imageAdapter;
-    TkpdProgressDialog progressDialog;
-    ImageUploadHandler imageUploadHandler;
+    CreateTicketProgressDialog progressDialog;
     private FinishContactUsListener finishContactUsListener;
+    private Bundle savedState;
+
+    private CreateTicketFormFragmentPresenter presenter;
 
     public static CreateTicketFormFragment createInstance(Bundle extras) {
         CreateTicketFormFragment fragment = new CreateTicketFormFragment();
@@ -80,9 +84,17 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(getFragmentLayout(), container, false);
         findingViewsId(view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        setViewListener();
+        setInitFieldValue();
     }
 
     private void findingViewsId(View view) {
@@ -103,23 +115,43 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        setHasOptionsMenu(getOptionsMenuEnable());
         if (activity instanceof FinishContactUsListener) {
             finishContactUsListener = (FinishContactUsListener) activity;
         }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
+        setHasOptionsMenu(getOptionsMenuEnable());
         if (activity instanceof FinishContactUsListener) {
             finishContactUsListener = (FinishContactUsListener) activity;
         }
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setInitFieldValue();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        initialPresenter();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        restoreStateFromArguments();
     }
 
     private void setInitFieldValue() {
@@ -136,28 +168,30 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         }
     }
 
-    @Override
-    protected boolean isRetainInstance() {
-        return true;
+    private void saveStateToArguments() {
+        if (getView() != null)
+            savedState = new Bundle();
+        if (savedState != null) {
+            Bundle b = getArguments();
+            if (b == null) b = new Bundle();
+            b.putBundle(SAVED_STATE_OF_CREATE_FORM_FRAGMENT, savedState);
+        }
     }
 
-    @Override
-    protected void onFirstTimeLaunched() {
+    private void restoreStateFromArguments() {
+        Bundle b = getArguments();
+        if (b == null) b = new Bundle();
+        savedState = b.getBundle(SAVED_STATE_OF_CREATE_FORM_FRAGMENT);
+        if (savedState == null) {
+            onFirstTimeLaunched();
+        }
+    }
+
+    private void onFirstTimeLaunched() {
         presenter.initForm();
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
+    private boolean getOptionsMenuEnable() {
         return true;
     }
 
@@ -178,29 +212,16 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
     protected void initialPresenter() {
         presenter = new CreateTicketFormFragmentPresenterImpl(this, finishContactUsListener);
     }
 
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
+    private int getFragmentLayout() {
         return R.layout.fragment_create_ticket;
     }
 
-    @Override
     protected void initView(View view) {
-        UserSessionInterface userSession = new UserSession(context);
+        UserSessionInterface userSession = new UserSession(getContext());
         if (userSession.isLoggedIn()) {
             nameTitle.setVisibility(View.GONE);
             name.setVisibility(View.GONE);
@@ -213,11 +234,10 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         attachment.setLayoutManager(new LinearLayoutManager(getActivity(),
                 androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
         attachment.setAdapter(imageAdapter);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog = new CreateTicketProgressDialog(getActivity(), CreateTicketProgressDialog.NORMAL_PROGRESS);
 
     }
 
-    @Override
     protected void setViewListener() {
         imageAdapter.setListener(new ImageUploadAdapter.ProductImageListener() {
             @Override
@@ -253,15 +273,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
-    @Override
-    protected void initialVar() {
-        imageUploadHandler = ImageUploadHandler.createInstance(this);
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
 
     @Override
     public String getTicketCategoryId() {
@@ -358,6 +369,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        saveStateToArguments();
         presenter.onDestroyView();
     }
 
@@ -380,10 +392,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
                 imageAdapter.addImage(image);
             }
         }
-    }
-
-    public void setFinishContactUsListener(FinishContactUsListener finishContactUsListener) {
-        this.finishContactUsListener = finishContactUsListener;
     }
 
     public interface FinishContactUsListener {

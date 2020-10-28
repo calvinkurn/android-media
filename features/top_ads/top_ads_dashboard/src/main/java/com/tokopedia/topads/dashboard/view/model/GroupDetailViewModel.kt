@@ -4,11 +4,17 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.*
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.dashboard.data.model.DataStatistic
+import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
+import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,7 +46,7 @@ class GroupDetailViewModel @Inject constructor(
     fun getGroupProductData(resources: Resources, page: Int, groupId: Int, search: String, sort: String, status: Int?,
                             startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
         topAdsGetGroupProductDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.query_get_group_products_dashboard))
+                com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
         topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
         topAdsGetGroupProductDataUseCase.executeQuerySafeMode(
                 {
@@ -70,7 +76,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_statistics))
+                com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
         topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
@@ -128,7 +134,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
         topAdsGetGroupListUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.query_get_groups_dashboard))
+                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
         topAdsGetGroupListUseCase.setParams(search)
         topAdsGetGroupListUseCase.executeQuerySafeMode(
                 {
@@ -143,7 +149,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
         topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_product_action))
+                com.tokopedia.topads.common.R.raw.gql_query_product_action))
         topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.executeQuerySafeMode(
                 {

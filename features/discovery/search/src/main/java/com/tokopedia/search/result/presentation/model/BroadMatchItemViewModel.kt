@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class BroadMatchItemViewModel(
         val id: String = "",
@@ -17,8 +18,12 @@ data class BroadMatchItemViewModel(
         val freeOngkirViewModel: FreeOngkirViewModel = FreeOngkirViewModel(),
         var isWishlisted: Boolean = false,
         val position: Int = 0,
-        val alternativeKeyword: String = ""
-) {
+        val alternativeKeyword: String = "",
+        val isOrganicAds: Boolean = false,
+        val topAdsViewUrl: String = "",
+        val topAdsClickUrl: String = "",
+        val topAdsWishlistUrl: String = ""
+): ImpressHolder() {
 
     fun asImpressionObjectDataLayer(): Any {
         return DataLayer.mapOf(
@@ -28,9 +33,13 @@ data class BroadMatchItemViewModel(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", "/search - broad match",
+                "list", getDataLayerList(),
                 "position", position
         )
+    }
+
+    private fun getDataLayerList(): String {
+        return "/search - broad match - ${if (isOrganicAds) "organic ads" else "organic"}"
     }
 
     fun asClickObjectDataLayer(): Any {
@@ -41,7 +50,7 @@ data class BroadMatchItemViewModel(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", "/search - broad match",
+                "list", getDataLayerList(),
                 "position", position,
                 "attribution", "none / other"
         )

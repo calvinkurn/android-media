@@ -81,7 +81,7 @@ public class LoginTextView extends LinearLayout {
             customText = a.getString(R.styleable.LoginTextView_customText);
             textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);
-            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
+            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSizes, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
             resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);

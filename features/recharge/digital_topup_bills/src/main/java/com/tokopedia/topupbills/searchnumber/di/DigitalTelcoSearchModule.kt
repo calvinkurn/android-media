@@ -1,6 +1,6 @@
 package com.tokopedia.topupbills.searchnumber.di
 
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import dagger.Module
 import dagger.Provides

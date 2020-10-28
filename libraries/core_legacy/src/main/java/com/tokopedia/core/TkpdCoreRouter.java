@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -75,10 +74,6 @@ public interface TkpdCoreRouter {
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 
     void onAppsFlyerInit();
-
-    SessionHandler legacySessionHandler();
-
-    GCMHandler legacyGCMHandler();
 
     void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
 

@@ -88,8 +88,6 @@ class DealsHomeViewModel @Inject constructor(dispatcher: DealsDispatcherProvider
                             location.coordinates, NEAREST_LOCATION_SIZE_NUM_VALUE,
                             NEAREST_LOCATION_PAGE_NUM_VALUE,
                             DealsNearestLocationParam.VALUE_CATEGORY_ID_DEFAULT,
-                            DealsNearestLocationParam.VALUE_SORT_BY_PRIORITY,
-                            NEAREST_LOCATION_FIXED_VALUE,
                             DealsNearestLocationParam.VALUE_DISTANCE_20KM))
                 }.executeOnBackground()
                 data.eventLocationSearch.locations

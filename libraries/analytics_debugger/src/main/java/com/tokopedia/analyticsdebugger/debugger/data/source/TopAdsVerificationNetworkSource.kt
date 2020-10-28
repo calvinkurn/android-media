@@ -20,7 +20,7 @@ import kotlin.collections.HashMap
 class TopAdsVerificationNetworkSource @Inject
 constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
 
-    var PENDING_DURATION_MS = 8 * 60 * 1000 // 8 minutes
+    var PENDING_DURATION_MS = 10000 // 10 seconds
 
     private val topAdsLogDao: TopAdsLogDao
 

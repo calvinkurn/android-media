@@ -357,7 +357,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             cartItem.metaData.contactName = contactName
             cartItem.metaData.email = contactEmail
             cartItem.metaData.phone = contactPhone
-            cartItem.metaData.country = contactCountry
+            cartItem.metaData.country = if (contactCountry.isNotEmpty()) contactCountry else "ID"
             cartItem.metaData.ipAddress = FlightRequestUtil.getLocalIpAddress()
             cartItem.metaData.userAgent = FlightRequestUtil.getUserAgentForApiCall()
 

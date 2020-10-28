@@ -7,8 +7,5 @@ package com.tokopedia.gm.common.constant;
 public class GMParamApiContant {
 
     public static final String SHOP_ID = "shop_id";
-    public static final String AUTO_EXTEND = "auto_extend";
     public static final String INCLUDE_OS = "includeOS";
-    public static final String INCLUDE_OS_VALUE = "true";
-
 }

@@ -13,13 +13,8 @@ class ShopOpenRevampTracking (context: Context) {
     private val EVENT_VALUE = "clickCreateShop"
     private val EVENT_CATEGORY_VALUE = "registration page"
 
-    fun sendScreenHooray() {
-        val screenName = "/registration page - shop/hooray"
-        tracker.sendScreenAuthenticated(screenName)
-    }
 
-    fun sendScreenCongratulations() {
-        val screenName = "/registration page - shop/congratulation"
+    fun sendScreenNameTracker(screenName: String) {
         tracker.sendScreenAuthenticated(screenName)
     }
 

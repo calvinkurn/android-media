@@ -26,9 +26,9 @@ class EmptyChatViewHolder constructor(
         val LAYOUT = R.layout.empty_chat
     }
 
-    val title: Typography = itemView.findViewById(R.id.title)
+    val title: Typography = itemView.findViewById(R.id.title_empty_chat_list)
     val subtitle: Typography = itemView.findViewById(R.id.subtitle)
-    val image: SquareImageView = itemView.findViewById(R.id.thumbnail)
+    val image: SquareImageView = itemView.findViewById(R.id.thumbnail_empty_chat_list)
 
     override fun bind(element: EmptyChatModel) {
         bindText(element)

@@ -7,8 +7,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.tokopedia.play.util.video.state.BufferSource
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.fragment.PlayYouTubePlayerFragment
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -33,7 +34,8 @@ class YouTubeViewComponent(
     private var mStartMillis: Int = 0
     private var mShouldPlayOnReady = true
 
-    private var isFullscreen = false
+    private var mIsFullscreen = false
+    private var mIsInternalOrientationChanged = false
 
     private val playerStateChangedListener = object : YouTubePlayer.PlayerStateChangeListener {
         override fun onAdStarted() {
@@ -51,11 +53,11 @@ class YouTubeViewComponent(
         }
 
         override fun onVideoEnded() {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Ended)
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.End)
         }
 
         override fun onError(reason: YouTubePlayer.ErrorReason?) {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Error(Throwable("Reason: ${reason?.name ?: YouTubePlayer.ErrorReason.UNKNOWN}")))
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.Error(Throwable("Reason: ${reason?.name ?: YouTubePlayer.ErrorReason.UNKNOWN}")))
         }
     }
 
@@ -64,24 +66,26 @@ class YouTubeViewComponent(
         }
 
         override fun onBuffering(p0: Boolean) {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Buffering)
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.Buffer(BufferSource.Viewer))
         }
 
         override fun onPlaying() {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Playing)
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.Play)
         }
 
         override fun onStopped() {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Pause)
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.Pause)
         }
 
         override fun onPaused() {
-            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayVideoState.Pause)
+            listener.onVideoStateChanged(this@YouTubeViewComponent, PlayViewerVideoState.Pause)
         }
     }
 
     private val onFullscreenListener = object : YouTubePlayer.OnFullscreenListener {
         override fun onFullscreen(isFullscreen: Boolean) {
+            mIsInternalOrientationChanged = true
+
             if (isFullscreen) listener.onEnterFullscreen(this@YouTubeViewComponent)
             else listener.onExitFullscreen(this@YouTubeViewComponent)
         }
@@ -109,9 +113,13 @@ class YouTubeViewComponent(
         youTubePlayer = null
     }
 
-    fun setFullScreenButton(isFullscreen: Boolean) {
-        this.isFullscreen = isFullscreen
-        youTubePlayer?.doSafe { setFullscreen(isFullscreen) }
+    fun setIsFullScreen(isFullscreen: Boolean) {
+        this.mIsFullscreen = isFullscreen
+
+        if (!mIsInternalOrientationChanged) {
+            youTubePlayer?.doSafe { setFullscreen(isFullscreen) }
+        }
+        mIsInternalOrientationChanged = false
     }
 
     fun play() {
@@ -147,7 +155,7 @@ class YouTubeViewComponent(
         player.setPlayerStateChangeListener(playerStateChangedListener)
         player.setPlaybackEventListener(playbackEventListener)
         player.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT
-        player.setFullscreen(isFullscreen)
+        player.setFullscreen(mIsFullscreen)
         return player
     }
 
@@ -189,7 +197,7 @@ class YouTubeViewComponent(
         fun onEnterFullscreen(view: YouTubeViewComponent)
         fun onExitFullscreen(view: YouTubeViewComponent)
 
-        fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayVideoState)
+        fun onVideoStateChanged(view: YouTubeViewComponent, state: PlayViewerVideoState)
     }
 
     private fun <R: Any?> YouTubePlayer.doSafe(doHandler: YouTubePlayer.() -> R): R? {

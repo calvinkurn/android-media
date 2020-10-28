@@ -3,18 +3,22 @@ package com.tokopedia.play.view.measurement.scaling
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.Matrix
+import android.graphics.RectF
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.unifycomponents.dpToPx
 
 /**
  * Created by jegul on 05/08/20
  */
 class PlayVideoScalingManager(
-        container: ViewGroup
+        container: ViewGroup,
+        private val listener: Listener
 ) : VideoScalingManager {
 
     private val flInteraction: View = container.findViewById(R.id.fl_user_interaction)
@@ -126,6 +130,16 @@ class PlayVideoScalingManager(
 
         view.pivotX = (view.width / 2).toFloat()
         view.pivotY = ivClose.y - (ivClose.y * scaleFactor) - offset12
+
+        val matrix = Matrix()
+        matrix.setScale(scaleFactor, scaleFactor, view.pivotX, view.pivotY)
+        matrix.preTranslate(0f, translateDelta)
+
+        val visibleRect = view.globalVisibleRect
+        val visibleRectF = RectF(visibleRect)
+        matrix.mapRect(visibleRectF)
+        listener.onFinalBottomMostBoundsScalingCalculated(visibleRectF.bottom.toInt())
+
         animator.apply {
             removeAllListeners()
             addListener(onBottomInsetsShownAnimatorListener)
@@ -182,5 +196,10 @@ class PlayVideoScalingManager(
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
         private const val FULL_SCALE_FACTOR = 1.0f
         private const val NO_TRANSLATION = 0f
+    }
+
+    interface Listener {
+
+        fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int)
     }
 }

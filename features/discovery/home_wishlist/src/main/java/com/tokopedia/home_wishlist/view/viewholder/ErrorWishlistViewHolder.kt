@@ -17,7 +17,7 @@ class ErrorWishlistViewHolder(
     private val retry: UnifyButton by lazy { view.findViewById<UnifyButton>(R.id.retry_button) }
 
     override fun bind(element: ErrorWishlistDataModel, listener: SmartListener) {
-        description.text = element.error ?: ""
+        description.text = element.error ?: itemView.context.getString(R.string.wishlist_default_error_message)
         retry.setOnClickListener {
             (listener as WishlistListener).onTryAgainClick()
         }

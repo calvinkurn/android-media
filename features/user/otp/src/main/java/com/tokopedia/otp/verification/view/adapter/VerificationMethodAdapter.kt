@@ -55,17 +55,22 @@ class VerificationMethodAdapter(
                 listener?.onModeListClick(modeList, position)
             }
 
-            val spannable: Spannable
             val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
-            spannable = SpannableString(otpListTextHtml)
-            spannable.setSpan(object : ClickableSpan() {
+            val indexNewline = otpListTextHtml.indexOf("\n")
+            val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {}
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(itemView.context, R.color.Neutral_N700)
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
-            }, 0, otpListTextHtml.indexOf("\n"), 0)
+            }
+
+            val spannable: Spannable
+            spannable = SpannableString(otpListTextHtml)
+            if(indexNewline > -1) {
+                spannable.setSpan(clickableSpan, 0, indexNewline, 0)
+            }
             itemView.method_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }

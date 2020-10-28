@@ -23,7 +23,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     private ElapsedTime elapsedTimeObj;
 
     @Override
-    public void checkForValidity(String entity, int state, long currentTime,
+    public void checkForValidity(String entity, long currentTime,
                                  DataProvider dataProvider) {
         makeRequestForData(entity, currentTime, dataProvider);
     }
@@ -68,7 +68,8 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                     if (performDeletion(inAppData)) {
                                         RepositoryManager.getInstance()
                                                 .getStorageProvider()
-                                                .deleteRecord(inAppData.id);
+                                                .deleteRecord(inAppData.id)
+                                                .subscribe();
                                     }
                                 }
                             }

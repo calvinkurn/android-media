@@ -1,4 +1,8 @@
 <resources>
     <string name="search_tokopedia">Cari di Tokopedia</string>
     <string name="search_title_feed">Feed</string>
+    <string name="content_desc_et_search">input search</string>
+    <string name="content_desc_btn_wishlist">button wishlist</string>
+    <string name="content_desc_btn_inbox">button inbox</string>
+    <string name="content_desc_btn_notification">button notification</string>
 </resources>

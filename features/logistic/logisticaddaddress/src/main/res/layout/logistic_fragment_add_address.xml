@@ -40,6 +40,7 @@
 
                 <EditText
                     android:id="@+id/address_type"
+                    android:contentDescription="@string/content_desc_address_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_5"
@@ -56,6 +57,7 @@
 
                 <EditText
                     android:id="@+id/receiver_name"
+                    android:contentDescription="@string/content_desc_receiver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -83,6 +85,7 @@
 
                 <EditText
                     android:id="@+id/address"
+                    android:contentDescription="@string/content_desc_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -113,6 +116,7 @@
 
                 <EditText
                     android:id="@+id/district"
+                    android:contentDescription="@string/content_desc_district"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -128,6 +132,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
+                    android:contentDescription="@string/content_desc_autocomplete_postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:completionThreshold="1"
@@ -268,6 +273,7 @@
 
                 <EditText
                     android:id="@+id/receiver_phone"
+                    android:contentDescription="@string/content_desc_receiver_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -311,6 +317,7 @@
 
                 <EditText
                     android:id="@+id/value_location"
+                    android:contentDescription="@string/content_desc_value_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -338,6 +345,7 @@
 
         <TextView
             android:id="@+id/save_button"
+            android:contentDescription="@string/content_desc_save_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:layout_marginTop="@dimen/dp_10"

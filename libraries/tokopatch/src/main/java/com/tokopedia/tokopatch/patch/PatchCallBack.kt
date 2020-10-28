@@ -39,4 +39,7 @@ interface PatchCallBack {
             throwable: Throwable,
             where: String
     )
+
+    fun onStart()
+    fun onFinish()
 }

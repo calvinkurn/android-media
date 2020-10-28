@@ -21,6 +21,7 @@ import com.tokopedia.entertainment.common.util.EventQuery.getEventHistory
 import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchLocation
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
+import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
@@ -141,6 +142,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
                     if(job.isActive) job.cancel()
                     job = launch {
                         delay(200)
+                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(p0.toString())
                         viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST,getEventSearchLocation())
                     }
                 }

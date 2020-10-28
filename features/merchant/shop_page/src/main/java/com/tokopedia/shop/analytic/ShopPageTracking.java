@@ -49,15 +49,11 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUC
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
@@ -285,17 +281,6 @@ public class ShopPageTracking {
                 SHOP_PAGE_SELLER,
                 joinDash(MANAGE_SHOP, CLICK),
                 CLICK_HOW_TO_ACTIVATE_SHOP,
-                customDimensionShopPage);
-    }
-
-    public void searchKeyword(boolean isOwner,
-                              String keyword,
-                              boolean hasResult,
-                              CustomDimensionShopPage customDimensionShopPage) {
-        sendGeneralEvent(CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                joinDash(SEARCH_BAR, CLICK),
-                joinDash(joinSpace(SEARCH, keyword), hasResult ? SEARCH_RESULT : NO_SEARCH_RESULT),
                 customDimensionShopPage);
     }
 

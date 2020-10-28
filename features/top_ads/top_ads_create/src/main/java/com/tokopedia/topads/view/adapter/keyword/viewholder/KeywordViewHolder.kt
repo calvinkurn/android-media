@@ -8,5 +8,5 @@ import androidx.recyclerview.widget.RecyclerView
  */
 
 abstract class KeywordViewHolder<in T>(view: View): RecyclerView.ViewHolder(view) {
-    abstract fun bind(item: T)
+    open fun bind(item: T){}
 }

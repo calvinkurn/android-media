@@ -15,8 +15,12 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_RECOMMEN_PRODUC
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProviderImpl
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -76,5 +80,18 @@ class ProductDetailModule {
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
         return GetRecommendationUseCase(rawQueries[QUERY_RECOMMEN_PRODUCT]?:"", graphqlUseCase, userSessionInterface)
+    }
+
+    @ProductDetailScope
+    @Provides
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository): GetRecommendationFilterChips {
+        val graphqlUseCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
+        return GetRecommendationFilterChips(graphqlUseCase)
+    }
+
+    @ProductDetailScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 }

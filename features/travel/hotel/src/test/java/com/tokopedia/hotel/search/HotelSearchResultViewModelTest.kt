@@ -8,7 +8,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
+import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
+import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -33,12 +37,12 @@ class HotelSearchResultViewModelTest {
     private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelSearchResultViewModel: HotelSearchResultViewModel
 
-    private val graphqlRepository = mockk<GraphqlRepository>()
+    private val searchPropertyUseCase = mockk<SearchPropertyUseCase>()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelSearchResultViewModel = HotelSearchResultViewModel(graphqlRepository, dispatcher)
+        hotelSearchResultViewModel = HotelSearchResultViewModel(dispatcher, searchPropertyUseCase)
     }
 
     @Test
@@ -186,13 +190,9 @@ class HotelSearchResultViewModelTest {
     fun searchProperty_shouldBeSuccessWithData() {
         //given
         val properties = listOf(Property(1), Property(2), Property(3))
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf<Type, Any>(PropertySearch.Response::class.java to PropertySearch.Response(PropertySearch(properties))),
-                mapOf<Type, List<GraphqlError>>(),
-                false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlSuccessResponse
+            searchPropertyUseCase.execute(any() as String, any())
+        } returns Success(PropertySearch(properties))
 
         //when
         hotelSearchResultViewModel.searchProperty(0, "")
@@ -205,14 +205,9 @@ class HotelSearchResultViewModelTest {
     @Test
     fun searchProperty_shouldReturnFail() {
         //given
-        val properties = listOf(Property(1), Property(2), Property(3))
-        val graphqlErrorResponse = GraphqlResponse(
-                mapOf<Type, Any>(),
-                mapOf<Type, List<GraphqlError>>(PropertySearch.Response::class.java to listOf(GraphqlError())),
-                false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlErrorResponse
+            searchPropertyUseCase.execute(any() as String, any())
+        } returns Fail(Throwable())
 
         //when
         hotelSearchResultViewModel.searchProperty(0, "")
@@ -324,17 +319,63 @@ class HotelSearchResultViewModelTest {
     }
 
     @Test
-    fun addFilter_shouldUpdateFilter() {
+    fun addFilter_shouldUpdateFilterV2() {
         //given
-        val filter = ParamFilter(maxPrice = 50000, minPrice = 30000)
+        val filter = listOf(ParamFilterV2(name = "Filter 1", values = mutableListOf("aa", "bb")),
+                ParamFilterV2(name = "Filter 2"))
 
         //when
         hotelSearchResultViewModel.addFilter(filter)
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.filter.maxPrice == 50000)
-        assert(hotelSearchResultViewModel.searchParam.filter.minPrice == 30000)
-        assert(hotelSearchResultViewModel.selectedFilter.maxPrice == 50000)
-        assert(hotelSearchResultViewModel.isFilter)
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2() {
+        //given
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                                                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2_2() {
+        //given
+        val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
+        hotelSearchResultViewModel.addFilter(selectedFilter)
+
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_SELECTED),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 1)
+    }
+
+    @Test
+    fun addFilterWithQuickFilter_shouldUpdateFilterV2_3() {
+        //given
+        val selectedFilter = listOf(ParamFilterV2(name = "hygiene verified", values = mutableListOf("hygiene verified")))
+        hotelSearchResultViewModel.addFilter(selectedFilter)
+
+        val quickFilters= listOf(QuickFilter(name = "hygiene verified", values = listOf("hygiene verified")),
+                QuickFilter(name = "clean", values = listOf("clean")))
+        val sortFilterItems = arrayListOf(SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL),
+                SortFilterItem("hygiene  verified", type = ChipsUnify.TYPE_NORMAL))
+
+        //when
+        hotelSearchResultViewModel.addFilter(quickFilters, sortFilterItems)
+
+        assert(hotelSearchResultViewModel.getSelectedFilter().size == 0)
     }
 }

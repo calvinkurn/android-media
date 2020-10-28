@@ -1030,8 +1030,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
-        visitShopPageWithAnalytics(positionInFeed, shop)
         trackShopClickImpression(positionInFeed, adapterPosition, shop)
+        visitShopPageWithAnalytics(positionInFeed, shop)
     }
 
     override fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String) {
@@ -2013,5 +2013,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero() )),
                 userIdInt
         )
+        feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)
     }
 }

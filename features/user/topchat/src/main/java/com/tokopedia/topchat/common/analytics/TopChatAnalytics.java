@@ -14,7 +14,6 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
@@ -126,6 +125,7 @@ public class TopChatAnalytics {
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
         String CLICK_OP_ORDER_HISTORY = "click on order history";
         String VIEW_ORDER_PROGRESS_WIDGET = "view on order progress widget";
+        String CLICK_OCC_PRODUCT_THUMBNAIL = "click occ on product thumbnail";
     }
 
     public interface Label {
@@ -313,7 +313,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListClickBundler.KEY, bundle
         );
@@ -352,7 +351,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
@@ -393,7 +391,6 @@ public class TopChatAnalytics {
                 null,
                 null
         );
-        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
         );
@@ -627,6 +624,44 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.VIEW_ORDER_PROGRESS_WIDGET,
                 "buyer - " + chatOrder.getStatus()
+        );
+    }
+
+    // #OCC1
+    public void trackClickOccProduct(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull String shopType,
+            @NotNull String shopName,
+            @NotNull String cartId
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.EVENT_NAME_ATC,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.CLICK_OCC_PRODUCT_THUMBNAIL,
+                        EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", product.getProductName(),
+                                                        "id", product.getIdString(),
+                                                        "price", product.getPriceInt(),
+                                                        "brand", "",
+                                                        "category", product.getCategory(),
+                                                        "variant", product.getVariants().toString(),
+                                                        "quantity", product.getMinOrder(),
+                                                        "dimension79", product.getShopId(),
+                                                        "dimension81", shopType,
+                                                        "dimension80", shopName,
+                                                        "dimension45", cartId,
+                                                        "dimension40", getFrom(product)
+                                                )
+                                        )
+                                )
+                        )
+                )
         );
     }
 }

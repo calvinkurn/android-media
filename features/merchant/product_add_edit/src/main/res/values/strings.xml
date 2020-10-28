@@ -30,6 +30,7 @@
     <string name="action_pick_photo">Pilih Foto</string>
     <string name="action_edit_photo">Ubah Foto</string>
     <string name="error_max_product_photo">Hapus salah satu untuk bisa tambah foto</string>
+    <string name="error_message_invalid_photos">Terdapat foto yang telah dihapus, silakan periksa kembali foto anda</string>
 
     <!-- add edit product name -->
     <string name="add_product_name_header">Isi nama produk yang kamu jual</string>
@@ -222,6 +223,7 @@
     <string name="action_variant_next">Lanjut</string>
     <string name="action_variant_save">Simpan</string>
     <string name="action_variant_add">Tambah</string>
+    <string name="action_variant_add_button">Tambah %1$s Lain</string>
     <string name="action_variant_delete">Hapus</string>
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
@@ -276,4 +278,40 @@
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
+    <string name="content_desc_tv_add_product_photo">text tambah foto</string>
+    <string name="content_desc_tfu_product_name">input nama</string>
+    <string name="content_desc_tfu_product_price">input harga</string>
+    <string name="content_desc_tfu_available_stock">input stok</string>
+    <string name="content_desc_tfu_minimum_order">input minimum pemesanan</string>
+    <string name="content_desc_tfu_sku">input sku</string>
+    <string name="content_desc_tv_submit_text">button lanjut</string>
+    <string name="content_desc_textFieldDescription">input deskripsi produk</string>
+    <string name="content_desc_btnNext">button lanjut</string>
+    <string name="content_desc_btn_end">button selesai</string>
+    <string name="content_desc_tf_weight_amount">input berat produkk</string>
+    <string name="content_desc_tv_done">button selesai</string>
+    <string name="content_desc_tv_start_add_edit_product_detail">button ubah detail produk</string>
+    <string name="content_desc_tv_start_add_edit_product_description">button ubah deskripsi produk</string>
+    <string name="content_desc_switch_preorder">button switch preorder</string>
+    <string name="content_desc_tvEditVariant">text ubah varian</string>
+    <string name="content_desc_tvAddVariant">text tambah varian</string>
+    <string name="content_desc_chipsVariantTypeName">text tipe varian</string>
+    <string name="content_desc_linkAddVariantValueLevel1">text tambah tipe varian 1</string>
+    <string name="content_desc_linkAddVariantValueLevel2">text tambah tipe varian 2</string>
+    <string name="content_desc_tv_start_add_edit_product_variant">text tambah varian</string>
+    <string name="content_desc_su_wholesale">button switch grosir</string>
+    <string name="content_desc_tfu_wholesale_quantity">input jumlah minimal</string>
+    <string name="content_desc_tfu_wholesale_price">input harga grosir</string>
+    <string name="content_desc_iv_delete_button">button hapus grosir</string>
+    <string name="content_desc_tfu_duration_unit">dropdown durasi</string>
+    <string name="content_desc_tfu_duration">input jumlah durasi</string>
+    <string name="content_desc_textViewAddVideo">text tambah video</string>
+    <string name="content_desc_buttonSave">button simpan</string>
+    <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
+    <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
+
+
 </resources>

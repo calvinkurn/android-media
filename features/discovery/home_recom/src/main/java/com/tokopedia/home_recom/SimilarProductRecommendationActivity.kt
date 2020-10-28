@@ -1,5 +1,7 @@
 package com.tokopedia.home_recom
 
+import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,9 +16,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
  * Created by Lukas on 26/08/19
  */
 class SimilarProductRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent> {
-    companion object{
+    companion object {
         private const val EXTRA_REF = "REF"
         private const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
+
+        fun getInstance(context: Context, ref: String) = Intent(context, SimilarProductRecommendationActivity::class.java).apply {
+            putExtra(EXTRA_REF, ref)
+        }
     }
 
     override fun getNewFragment(): Fragment? {

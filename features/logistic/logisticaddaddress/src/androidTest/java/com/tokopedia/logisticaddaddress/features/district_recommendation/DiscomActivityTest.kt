@@ -18,12 +18,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.core.getAnalyticsWithQuery
-import com.tokopedia.analyticsdebugger.validator.core.hasAllSuccess
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
+import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -45,7 +48,9 @@ class DiscomActivityTest {
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
-
+        setupGraphqlMockResponse {
+            addMockResponse(GET_DISTRICT_KET, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
+        }
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
@@ -79,5 +84,9 @@ class DiscomActivityTest {
                 DiscomActivity::class.java).also {
             it.data = Uri.parse(ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
         }
+    }
+
+    companion object {
+        const val GET_DISTRICT_KET = "KeroDistrictRecommendation"
     }
 }

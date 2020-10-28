@@ -11,6 +11,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_cancel_notes"
+        android:contentDescription="@string/content_desc_tf_cancel_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
@@ -28,6 +29,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_cancel_order_canceled"
+            android:contentDescription="@string/content_desc_btn_cancel_order_canceled"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -37,6 +39,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_cancel_order_confirmed"
+            android:contentDescription="@string/content_desc_btn_cancel_order_confirmed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

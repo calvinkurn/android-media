@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
     tools:context=".detail.presentation.fragment.AddEditProductDetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -171,6 +170,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_submit_text"
+                android:contentDescription="@string/content_desc_tv_submit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/action_continue"

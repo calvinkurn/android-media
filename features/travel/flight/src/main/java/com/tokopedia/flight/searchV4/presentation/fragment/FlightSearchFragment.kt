@@ -113,6 +113,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                         for (error in errors) {
                             if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
                                 showNoRouteFlightEmptyState(error.title)
+                                flightSearchViewModel.sendProductNotFoundTrack()
                                 break
                             }
                         }
@@ -205,6 +206,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         if (isListEmpty && flightSearchViewModel.isDoneLoadData()) {
             hideLoading()
             adapter.addElement(emptyDataViewModel)
+            if (!flightSearchViewModel.isInFilterMode)
+                flightSearchViewModel.sendProductNotFoundTrack()
         } else {
             isLoadingInitialData = false
             if (isListEmpty) showLoading()

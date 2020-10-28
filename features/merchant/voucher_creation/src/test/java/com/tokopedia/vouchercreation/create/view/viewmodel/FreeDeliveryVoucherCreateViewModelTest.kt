@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -15,7 +16,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -39,7 +39,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @RelaxedMockK
     lateinit var expenseEstimationObserver: Observer<in Int>
 
-    lateinit var testDispatcher: TestCoroutineDispatcher
     lateinit var mViewModel: FreeDeliveryVoucherCreateViewModel
 
     @get:Rule
@@ -48,15 +47,12 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        testDispatcher = TestCoroutineDispatcher()
-        mViewModel = FreeDeliveryVoucherCreateViewModel(testDispatcher, freeDeliveryValidationUseCase)
+        mViewModel = FreeDeliveryVoucherCreateViewModel(TestCoroutineDispatchers, freeDeliveryValidationUseCase)
         mViewModel.expensesExtimationLiveData.observeForever(expenseEstimationObserver)
     }
 
     @After
     fun cleanup() {
-        testDispatcher.cleanupTestCoroutines()
-
         mViewModel.expensesExtimationLiveData.removeObserver(expenseEstimationObserver)
     }
 

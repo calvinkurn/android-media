@@ -3,20 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_topchat_12"
+    android:layout_marginEnd="@dimen/dp_topchat_12"
     android:orientation="vertical">
 
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
         android:id="@+id/containerProductAttachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_topchat_12"
-        android:layout_marginEnd="@dimen/dp_topchat_12"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        android:background="@drawable/bg_shadow_attach_product"
-        android:orientation="vertical"
-        tools:layout_gravity="end">
-
-        <include layout="@layout/item_topchat_product_card" />
-    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
+        tools:layout_gravity="end"/>
 
 </LinearLayout>

@@ -214,5 +214,12 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       urlDetail
       urlText
     }
+    ticker_info {
+      text
+      type
+      action_text
+      action_key
+      action_url
+    }
   }
 }

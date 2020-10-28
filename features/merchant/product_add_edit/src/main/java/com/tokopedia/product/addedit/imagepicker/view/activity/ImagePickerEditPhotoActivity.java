@@ -2,12 +2,18 @@ package com.tokopedia.product.addedit.imagepicker.view.activity;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.product.addedit.R;
 import com.tokopedia.product.addedit.tracking.ProductAddEditImageTracking;
 import com.tokopedia.product.addedit.tracking.ProductEditEditImageTracking;
 import com.tokopedia.user.session.UserSession;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import static com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX;
 
 
 public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
@@ -22,6 +28,13 @@ public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         isEditProduct = getIntent().getBooleanExtra(IS_EDIT, false);
         isAddProduct = getIntent().getBooleanExtra(IS_ADD, false);
+        ArrayList<String> selectedImagePaths = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
+
+        if (!checkImagePathsExist(selectedImagePaths)) {
+            Toast.makeText(getContext(), R.string.error_message_invalid_photos, Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
         // change the word selanjutnya to lanjut
@@ -52,5 +65,18 @@ public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
         } else {
             ProductEditEditImageTracking.INSTANCE.trackBack(userSession.getShopId());
         }
+    }
+
+    private boolean checkImagePathsExist(ArrayList<String> selectedImagePaths) {
+        boolean imagePathsExist = true;
+        for (String selectedImagePath : selectedImagePaths) {
+            if (!selectedImagePath.startsWith(HTTP_PREFIX)) {
+                File file = new File(selectedImagePath);
+                if (!file.exists()) {
+                    imagePathsExist = false;
+                }
+            }
+        }
+        return imagePathsExist;
     }
 }

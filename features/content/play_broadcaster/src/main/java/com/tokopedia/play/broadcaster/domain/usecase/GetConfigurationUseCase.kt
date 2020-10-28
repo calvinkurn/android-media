@@ -40,14 +40,13 @@ class GetConfigurationUseCase @Inject constructor(
         return try {
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
-            sendCrashlyticsLog(0, e.localizedMessage)
+            sendCrashlyticsLog(e)
             Config()
         }
     }
 
     companion object {
 
-        private const val TAG = "Play-GetConfigurationUseCase"
         private const val PARAMS_SHOP_ID = "shopId"
 
         fun createParams(

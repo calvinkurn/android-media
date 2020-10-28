@@ -1,8 +1,12 @@
 package com.tokopedia.analytics.performance.util
 
 import android.os.Build
+import android.os.Debug
 import android.os.Trace
+import android.util.Log
+import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.config.GlobalConfig
 
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
@@ -34,10 +38,12 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun startMonitoring(traceName: String) {
+        PerformanceAnalyticsUtil.increment()
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
+        startMethodTracing(traceName);
     }
 
     override fun stopMonitoring() {
@@ -45,13 +51,17 @@ open class PageLoadTimePerformanceCallback(
         if (!isRenderDone) renderDuration = 0
         if (!isNetworkDone) requestNetworkDuration = 0
 
-        performanceMonitoring?.stopTrace()
-        overallDuration = System.currentTimeMillis() - overallDuration
+        performanceMonitoring?.let {
+            performanceMonitoring?.stopTrace()
+            overallDuration = System.currentTimeMillis() - overallDuration
+            stopMethodTracing(traceName)
+        }
+        invalidate()
     }
 
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
-            beginSystraceSection("PageLoadTime.preparePage$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -61,14 +71,21 @@ open class PageLoadTimePerformanceCallback(
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
-            beginSystraceSection("PageLoadTime.networkRequest$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
+        }
+
+        /**
+         * Proceed from prepare metrics, since startNetwork is called before network process finished
+         */
+        if (!isPrepareDone) {
+            stopPreparePagePerformanceMonitoring()
         }
     }
 
@@ -77,14 +94,21 @@ open class PageLoadTimePerformanceCallback(
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
-            beginSystraceSection("PageLoadTime.renderPage$traceName")
+            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
+        }
+
+        /**
+         * Proceed from network metrics, since startRender is called before network process finished
+         */
+        if (!isNetworkDone) {
+            stopNetworkRequestPerformanceMonitoring()
         }
     }
 
@@ -93,19 +117,63 @@ open class PageLoadTimePerformanceCallback(
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
-            endSystraceSection()
+            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
         }
     }
 
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+            Trace.endAsyncSection(methodName, cookie)
+        }
+    }
+
+    override fun invalidate() {
+        performanceMonitoring = null
+        isPrepareDone = true
+        isNetworkDone = true
+        isRenderDone = true
+        PerformanceAnalyticsUtil.decrement()
+    }
+
     private fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.beginSection(sectionName)
         }
     }
 
     private fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && GlobalConfig.DEBUG) {
             Trace.endSection()
+        }
+    }
+
+    private fun startMethodTracing(traceName: String){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            for(item in GlobalConfig.DEBUG_TRACE_NAME){
+                if(item.equals(traceName)){
+                    Log.i("PageLoadTimePerformanceCallback" , "startMethodTracing ==> "+traceName)
+                    Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+                    break
+                }
+            }
+        }
+    }
+
+    private fun stopMethodTracing(traceName: String){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            for(item in GlobalConfig.DEBUG_TRACE_NAME){
+                if(item.equals(traceName)){
+                    Log.i("PageLoadTimePerformanceCallback" , "stopMethodTracing ==> "+traceName)
+                    Debug.stopMethodTracing();
+                    break
+                }
+            }
         }
     }
 }

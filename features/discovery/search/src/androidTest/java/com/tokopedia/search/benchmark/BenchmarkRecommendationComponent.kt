@@ -4,14 +4,13 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.search.createRecommendationListener
-import com.tokopedia.search.env.BlankTestActivity
 import com.tokopedia.search.mock.MockSearchProductModel.getRecommendationItemViewModel
 import com.tokopedia.search.mock.MockSearchProductModel.getRecommendationTitleViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,11 +19,11 @@ internal class BenchmarkRecommendationComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onBind_ViewHolder_recommendation_title() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(RecommendationTitleViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(RecommendationTitleViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = RecommendationTitleViewHolder(itemView)
         val data = getRecommendationTitleViewModel()
         benchmarkRule.measureRepeated {
@@ -36,7 +35,7 @@ internal class BenchmarkRecommendationComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_recommendation_title() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 RecommendationTitleViewHolder.LAYOUT) {
             RecommendationTitleViewHolder(it)
@@ -51,7 +50,7 @@ internal class BenchmarkRecommendationComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_recommendation_item() {
-        val itemView = BenchmarkObject.simpleViewFromLayout(RecommendationItemViewHolder.LAYOUT, activityRule.activity)
+        val itemView = BenchmarkObject.simpleViewFromLayout(RecommendationItemViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = RecommendationItemViewHolder(
                 itemView, createRecommendationListener())
         val data = getRecommendationItemViewModel()
@@ -64,7 +63,7 @@ internal class BenchmarkRecommendationComponent {
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_recommendation_item() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 RecommendationItemViewHolder.LAYOUT) {
             RecommendationItemViewHolder(it, createRecommendationListener())

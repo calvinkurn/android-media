@@ -3,22 +3,24 @@ package com.tokopedia.sellerhome.view.activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
@@ -60,7 +62,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
 
-        private const val SHOP_PAGE_PREFIX = "tokopedia://shop/"
+        private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -89,63 +91,27 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
     var sellerHomeLoadTimeMonitoringListener: SellerHomeLoadTimeMonitoringListener? = null
 
-    private var shouldMoveToReview: Boolean = false
-    private var shouldMoveToCentralizedPromo: Boolean = false
-    private var shouldMoveToShopPage: Boolean = false
-    private var shouldMoveToBalance: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        if(startOldSellerHomeIfEnabled()) {
-            super.onCreate(savedInstanceState)
-            return
-        }
-        initPerformanceMonitoring()
+        initSellerHomePlt()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
 
-        with (intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)?.firstOrNull().orEmpty()) {
-            shouldMoveToReview = this == ApplinkConst.REPUTATION
-            shouldMoveToCentralizedPromo = this == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-            shouldMoveToShopPage = this.startsWith(SHOP_PAGE_PREFIX)
-            shouldMoveToBalance = this == ApplinkConstInternalGlobal.SALDO_DEPOSIT
-        }
-        val isRedirectedFromSellerMigration = intent?.hasExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA) ?: false ||
-                intent?.hasExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME) ?: false
-
+        setupBackground()
         setupToolbar()
         setupStatusBar()
         setupNavigator()
-        setupDefaultPage()
+
+        val initialPage = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
+        setupDefaultPage(initialPage)
+
+        // if redirected from any seller migration entry point, no need to show the update dialog
+        val isRedirectedFromSellerMigrationEntryPoint = !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank()
+
         setupBottomNav()
-        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigration)
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val appLinks = ArrayList(intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA).orEmpty())
-        if (appLinks.isNotEmpty()) {
-            val appLinkToOpen = appLinks.firstOrNull().orEmpty()
-            if (shouldMoveToReview || shouldMoveToCentralizedPromo || shouldMoveToShopPage || shouldMoveToBalance) {
-                shouldMoveToReview = false
-                shouldMoveToCentralizedPromo = false
-                shouldMoveToShopPage = false
-                shouldMoveToBalance = false
-                RouteManager.getIntent(this, appLinkToOpen).apply {
-                    replaceExtras(this@SellerHomeActivity.intent.extras)
-                    appLinks.find { it != ApplinkConst.REPUTATION &&
-                                    it != ApplinkConstInternalSellerapp.CENTRALIZED_PROMO &&
-                                    !it.startsWith(SHOP_PAGE_PREFIX) &&
-                                    it != ApplinkConstInternalGlobal.SALDO_DEPOSIT }?.let { nextDestinationApplink ->
-                        putExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, nextDestinationApplink)
-                    }
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                    startActivity(this)
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -175,6 +141,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.getShopInfo()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        navigator?.getCurrentSelectedPage()?.let { page ->
+            outState.putInt(LAST_FRAGMENT_TYPE_KEY, page)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanupNavigator()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
     }
@@ -183,16 +161,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         performanceMonitoringSellerHomelayout?.stopTrace()
     }
 
-    private fun startOldSellerHomeIfEnabled(): Boolean {
-        if(remoteConfig.isNewSellerHomeDisabled()) {
-            val oldSellerHome = com.tokopedia.sellerhome.view.oldactivity.SellerHomeActivity.createIntent(this)
-            oldSellerHome.data = intent.data
-            startActivity(oldSellerHome)
-            finish()
-
-            return true
-        }
-        return false
+    private fun setupBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     private fun setupToolbar() {
@@ -211,20 +181,23 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun setupDefaultPage() {
+    private fun setupDefaultPage(@FragmentType initialPageType: Int) {
         if(intent?.data == null) {
-            showToolbar()
-            showSellerHome()
+            showToolbar(initialPageType)
+            showInitialPage(initialPageType)
         } else {
             handleAppLink(intent)
         }
     }
 
-    private fun showSellerHome() {
-        val home = FragmentType.HOME
-        setCurrentFragmentType(home)
-        sahBottomNav.currentItem = home
-        navigator?.start(home)
+    private fun showInitialPage(pageType: Int) {
+        setCurrentFragmentType(pageType)
+        sahBottomNav.currentItem = pageType
+
+        if (pageType == FragmentType.OTHER) {
+            hideToolbarAndStatusBar()
+        }
+        navigator?.start(pageType)
     }
 
     private fun handleAppLink(intent: Intent?) {
@@ -267,6 +240,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun setupBottomNav() {
+        sahBottomNav.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
         sahBottomNav.itemIconTintList = null
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
@@ -318,7 +292,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun showToolbar(@FragmentType pageType: Int = FragmentType.HOME) {
         val pageTitle = navigator?.getPageTitle(pageType)
         supportActionBar?.title = pageTitle
-        sahToolbar?.show()
+        if (pageType != FragmentType.OTHER) {
+            sahToolbar?.show()
+        } else {
+            sahToolbar?.hide()
+        }
     }
 
     private fun trackClickBottomNavigation(trackingAction: String) {
@@ -340,11 +318,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     }
 
     private fun showOtherSettingsFragment() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground?.hide()
-            statusBarCallback?.setStatusBar()
-        }
-        sahToolbar?.hide()
+        hideToolbarAndStatusBar()
 
         val type = FragmentType.OTHER
         setCurrentFragmentType(type)
@@ -371,7 +345,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         homeViewModel.shopInfo.observe(this, Observer {
             if (it is Success) {
                 navigator?.run {
-                    val shopName = it.data.shopName
+                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
                     val shopAvatar = it.data.shopAvatar
 
                     // update userSession
@@ -410,7 +384,27 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         }
     }
 
-    private fun initPerformanceMonitoring(){
+    private fun hideToolbarAndStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground?.hide()
+            statusBarCallback?.setStatusBar()
+        }
+        sahToolbar?.hide()
+    }
+
+    private fun initSellerHomePlt() {
+        if (intent.data == null) {
+            initPerformanceMonitoringSellerHome()
+        } else {
+            DeepLinkHandler.handleAppLink(intent) {
+                if (it.type == FragmentType.HOME) {
+                    initPerformanceMonitoringSellerHome()
+                }
+            }
+        }
+    }
+
+    private fun initPerformanceMonitoringSellerHome() {
         performanceMonitoringSellerHomelayout = PerformanceMonitoring.start(SELLER_HOME_LAYOUT_TRACE)
         performanceMonitoringSellerHomeLayoutPlt = HomeLayoutLoadTimeMonitoring()
         performanceMonitoringSellerHomeLayoutPlt?.initPerformanceMonitoring()

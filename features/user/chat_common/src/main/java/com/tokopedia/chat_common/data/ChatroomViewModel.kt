@@ -18,6 +18,18 @@ class ChatroomViewModel constructor(
         val attachmentIds: String = ""
 ) {
 
+    val shopName: String get() {
+        return headerModel.name
+    }
+    val shopType: String get() {
+        var shopType = "reguler"
+        if (headerModel.isGold) {
+            shopType = "gold_merchant"
+        } else if (headerModel.isOfficial) {
+            shopType = "official_Store"
+        }
+        return shopType
+    }
     val badgeUrl get() = headerModel.badge
 
     val role get() = headerModel.role.toLowerCase(Locale.getDefault())

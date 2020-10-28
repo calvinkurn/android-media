@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
-    <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
+    <string name="cart_error_message">Yaah, ada %1d barang tidak bisa diproses.</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="label_dialog_title_delete_item">Hapus barang?</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjangmu.</string>
@@ -29,7 +29,7 @@
     <string name="promo_desc_no_selected_item">Pilih barang dulu sebelum pakai promo</string>
     <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
     <string name="label_ellipsize">...</string>
-    <string name="label_button_change_note">Ubah Catatan</string>
+    <string name="label_button_change_note">Ubah</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
@@ -51,4 +51,13 @@
     <string name="label_menu_cart_remove">Hapus</string>
     <string name="label_action_snackbar_close">Tutup</string>
     <string name="label_action_snackbar_retry">Coba lagi</string>
+    <string name="cart_module_label_summary_transaction">Ringkasan Belanja</string>
+    <string name="content_desc_go_to_courier_page_button">button beli</string>
+    <string name="label_fulfilment_wording">Dilayani Tokopedia</string>
+    <string name="label_remark_title">Catatan untuk barang ini</string>
+    <string name="label_wholesale_product">Harga Grosir</string>
+    <string name="message_product_already_deleted">%d barang telah dihapus</string>
+    <string name="toaster_cta_cancel">Batalkan</string>
+    <string name="label_move_to_wishlist">Pindahkan ke Wishlist</string>
+    <string name="label_cannot_be_processed">Tidak bisa diproses (%d)</string>
 </resources>

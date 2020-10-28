@@ -7,6 +7,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.LIMIT
+import com.tokopedia.topads.common.data.internal.ParamObject.NEXT_CURSOR
+import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
 import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
@@ -20,11 +23,14 @@ import javax.inject.Inject
 class GetAdKeywordUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GetKeywordResponse>(graphqlRepository) {
 
 
-    fun setParams(groupId: Int) {
+    fun setParams(groupId: Int,cursor:String) {
         val map = HashMap<String, Any?>()
         map[ParamObject.SHOP_id] = userSession.shopId
         map[ParamObject.GROUP_ID] = groupId.toString()
-        val queryMap = mapOf(ParamObject.SOURCE to ParamObject.KEYWORD_SOURCE, ParamObject.FILTER to map)
+        val page = HashMap<String,Any?>()
+        page[NEXT_CURSOR] = cursor
+        page[LIMIT] = 50
+        val queryMap = mapOf(ParamObject.SOURCE to ParamObject.KEYWORD_SOURCE, ParamObject.FILTER to map,PAGE to page)
         setRequestParams(queryMap)
     }
 

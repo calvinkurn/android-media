@@ -21,8 +21,8 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.GroupListDataItem
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.GetDashboardProductStatistics
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupEmptyViewModel
@@ -99,7 +99,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
     }
 
@@ -211,6 +211,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private fun onSuccessGroupList(list: List<GroupListDataItem>) {
         val groupList: MutableList<MovetoGroupViewModel> = mutableListOf()
         val groupIds: MutableList<String> = mutableListOf()
+        recyclerviewScrollListener.updateStateAfterGetData()
         list.forEach {
             groupList.add(MovetoGroupItemViewModel(it))
             groupIds.add(it.groupId.toString())
@@ -302,6 +303,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         response.data.forEach {
             adIds.add(it.adId.toString())

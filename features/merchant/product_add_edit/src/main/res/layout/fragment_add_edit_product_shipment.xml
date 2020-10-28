@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/weight_input_layout"
@@ -26,6 +25,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_end"
+        android:contentDescription="@string/content_desc_btn_end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"

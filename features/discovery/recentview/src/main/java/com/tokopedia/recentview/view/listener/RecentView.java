@@ -42,8 +42,6 @@ public interface RecentView {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getRecentViewProduct();
-
         void addToWishlist(int adapterPosition, String productId);
 
         void removeFromWishlist(int adapterPosition, String productId);

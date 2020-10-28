@@ -6,14 +6,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
+import com.tokopedia.digital.home.di.RechargeHomepageComponent
+import com.tokopedia.digital.home.di.RechargeHomepageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
-class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<DigitalHomePageComponent> {
+class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<RechargeHomepageComponent> {
 
-    private lateinit var travelHomepageComponent: DigitalHomePageComponent
+    private lateinit var rechargeHomepageComponent: RechargeHomepageComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +24,11 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Digital
 
     override fun getNewFragment(): Fragment = DigitalHomePageSearchFragment.getInstance()
 
-    override fun getComponent(): DigitalHomePageComponent {
-        if (!::travelHomepageComponent.isInitialized) {
-            travelHomepageComponent = DigitalHomePageComponentInstance.getDigitalHomepageComponent(application)
+    override fun getComponent(): RechargeHomepageComponent {
+        if (!::rechargeHomepageComponent.isInitialized) {
+            rechargeHomepageComponent = RechargeHomepageComponentInstance.getRechargeHomepageComponent(application)
         }
-        return travelHomepageComponent
+        return rechargeHomepageComponent
     }
 
     companion object {

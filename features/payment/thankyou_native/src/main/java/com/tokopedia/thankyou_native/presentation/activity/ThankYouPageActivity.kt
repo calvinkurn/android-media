@@ -63,13 +63,21 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        postEventOnThankPageDataLoaded(thanksPageData)
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
+        showAppFeedbackBottomSheet(thanksPageData)
+        postEventOnThankPageDataLoaded(thanksPageData)
+    }
+
+    private fun showAppFeedbackBottomSheet(thanksPageData: ThanksPageData){
+        val paymentStatus = PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)
+        if(paymentStatus == PaymentVerified || paymentStatus == PaymentPreAuth) {
+            InAppReviewHelper.launchInAppReview(this, null)
+        }
     }
 
     private fun postEventOnThankPageDataLoaded(thanksPageData: ThanksPageData) {
@@ -132,7 +140,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * */
     override fun onBackPressed() {
         if(::thanksPageData.isInitialized)
-            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()
@@ -144,13 +153,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             return when (it) {
                 is LoaderFragment -> true
-                else -> {
-                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
-                        override fun onCompleted() {
-                            gotoHomePage()
-                        }
-                    })
-                }
+                else -> false
             }
 
         }

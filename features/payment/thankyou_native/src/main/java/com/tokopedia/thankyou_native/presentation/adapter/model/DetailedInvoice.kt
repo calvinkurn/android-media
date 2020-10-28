@@ -48,20 +48,16 @@ data class PaymentInfo(
 
 data class BenefitMap(
         val benefitName: String,
-        val benefitAmount: String
+        val benefitAmount: String,
+        var isBBICashBack : Boolean = false
 )
 
 data class PaymentModeMap(
         val paymentModeStr: String,
-        val paidAmountStr: String
+        val paidAmountStr: String,
+        val gatewayCode: String?
 )
 
-data class PaymentMethodModel(val paymentMethodStr : String) : Visitable<InvoiceTypeFactory>{
-    override fun type(typeFactory: InvoiceTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-}
 
 class PurchasedProductTag : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
@@ -96,5 +92,6 @@ data class OrderedItem(
         val itemName: String,
         val itemCount: Int?,
         val itemPrice: String,
-        val itemTotalPriceStr: String
+        val itemTotalPriceStr: String,
+        val isBBIProduct : Boolean
 )

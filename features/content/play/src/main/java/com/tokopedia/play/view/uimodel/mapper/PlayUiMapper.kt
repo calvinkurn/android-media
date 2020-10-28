@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -21,11 +22,11 @@ object PlayUiMapper {
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(
-                    channel.videoStream,
-                    channel.isActive,
-                    channel.backgroundUrl),
+                    channel.video,
+                    channel.configuration,
+                    channel.isLive),
             videoPlayer = mapVideoPlayer(
-                    channel.videoStream,
+                    channel.video,
                     exoPlayer
             ),
             pinnedMessage = mapPinnedMessage(
@@ -34,36 +35,45 @@ object PlayUiMapper {
             ),
             pinnedProduct = mapPinnedProduct(
                     partnerName,
-                    channel.isShowProductTagging,
-                    channel.pinnedProduct),
-            quickReply = mapQuickReply(channel.quickReply),
-            totalView = mapTotalViews(channel.totalViews),
+                    channel.configuration),
+            quickReply = mapQuickReply(channel.quickReplies),
+            totalView = mapTotalViews(channel.stats.view.formatted),
             event = mapEvent(channel, isBanned)
     )
 
     private fun mapEvent(channel: Channel, isBanned: Boolean) = EventUiModel(
             isBanned = isBanned,
-            isFreeze = !channel.isActive || channel.isFreeze,
-            bannedMessage = channel.banned.message,
-            bannedTitle = channel.banned.title,
-            bannedButtonTitle = channel.banned.buttonTitle,
-            freezeMessage = channel.freezeChannelState.desc,
-            freezeTitle = channel.freezeChannelState.title,
-            freezeButtonTitle = channel.freezeChannelState.btnTitle,
-            freezeButtonUrl = channel.freezeChannelState.btnAppLink
+            isFreeze = !channel.configuration.active || channel.configuration.freezed,
+            bannedMessage = channel.configuration.channelBannedMessage.message,
+            bannedTitle = channel.configuration.channelBannedMessage.title,
+            bannedButtonTitle = channel.configuration.channelBannedMessage.buttonText,
+            freezeMessage = channel.configuration.channelFreezeScreen.desc,
+            freezeTitle = String.format(channel.configuration.channelFreezeScreen.title, channel.title),
+            freezeButtonTitle = channel.configuration.channelFreezeScreen.btnTitle,
+            freezeButtonUrl = channel.configuration.channelFreezeScreen.btnAppLink
     )
 
-    fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
+    private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
-            title = channel.title,
-            description = channel.description,
-            moderatorName = channel.moderatorName,
-            partnerId = channel.partnerId,
-            partnerType = PartnerType.getTypeByValue(channel.partnerType),
-            contentId = channel.contentId,
-            contentType = channel.contentType,
-            likeType = channel.likeType,
-            isShowCart = channel.isShowCart
+            partnerInfo = mapPartnerInfo(channel.partner),
+            feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
+            showCart = channel.configuration.showCart,
+            showPinnedProduct = channel.configuration.showPinnedProduct,
+            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet
+    )
+
+    private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
+            id = partner.id.toLongOrZero(),
+            name = partner.name,
+            type = PartnerType.getTypeByValue(partner.type),
+            isFollowed = true,
+            isFollowable = false
+    )
+
+    private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
+            contentId = feedInfo.contentId,
+            contentType = feedInfo.contentType,
+            likeType = feedInfo.likeType
     )
 
     fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {
@@ -74,39 +84,47 @@ object PlayUiMapper {
         )
     } else null
 
-    fun mapPinnedProduct(partnerName: String, isShowProductTagging: Boolean, pinnedProduct: PinnedProduct) = if (isShowProductTagging)
+    private fun mapPinnedMessage(partnerName: String, pinnedMessage: Channel.PinnedMessage) = if (pinnedMessage.id.isNotEmpty()
+            && !pinnedMessage.id.contentEquals("0")
+            && pinnedMessage.title.isNotEmpty()) {
+        PinnedMessageUiModel(
+                applink = pinnedMessage.redirectUrl,
+                partnerName = partnerName,
+                title = pinnedMessage.title
+        )
+    } else null
+
+    private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = if (configuration.showPinnedProduct)
         PinnedProductUiModel(
             partnerName = partnerName,
-            title = pinnedProduct.title,
-            isPromo = pinnedProduct.isShowDiscount
+            title = configuration.pinnedProduct.title,
+            hasPromo = configuration.hasPromo
     ) else null
 
-    // TODO("testing")
-    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
-            uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            orientation = VideoOrientation.getByValue(videoStream.orientation),
-            backgroundUrl = backgroundUrl,
+    private fun mapVideoStream(video: Video, config: Channel.Configuration, isLive: Boolean) = VideoStreamUiModel(
+            uriString = video.streamSource,
+            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.getByValue(video.orientation),
+            backgroundUrl = config.roomBackground.imageUrl,
 //            channelType = PlayChannelType.Live,
 //            orientation = VideoOrientation.Horizontal(16, 9),
 //            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
-            isActive = isActive
+            isActive = config.active
     )
 
-    private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
+    private fun mapVideoPlayer(video: Video, exoPlayer: ExoPlayer) = when (video.type) {
         "live", "vod" -> General(exoPlayer)
-//        "live", "vod" -> YouTube("HrjRj4uQQ1o")
-        "youtube" -> YouTube(videoStream.config.youtubeId)
+        "youtube" -> YouTube(video.streamSource)
         else -> Unknown
     }
 
     fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 
-    fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)
+    private fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)
     fun mapTotalLikes(totalLike: TotalLike) = mapTotalLikes(totalLike.totalLike, totalLike.totalLikeFormatted)
 
-    fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
+    private fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
     fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalViewFormatted)
 
     fun mapPlayChat(userId: String, playChat: PlayChat) = PlayChatUiModel(

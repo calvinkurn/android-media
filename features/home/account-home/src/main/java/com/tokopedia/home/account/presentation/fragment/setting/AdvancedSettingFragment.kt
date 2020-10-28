@@ -32,8 +32,6 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
 
     override fun getSettingItems(): MutableList<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_PUSH_NOTIFICATION,
-                getString(R.string.title_app_advanced_push_notification)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE,
                 getString(R.string.title_app_advanced_clear_cache)))
         return settingItems
@@ -46,15 +44,9 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
     }
 
     override fun onItemClicked(settingId: Int) {
-        when (settingId) {
-            SettingConstant.SETTING_APP_ADVANCED_PUSH_NOTIFICATION -> {
-                RouteManager.route(context, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER)
-            }
-            SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
-                accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.CLEAR_CACHE)
-                showDialogClearCache()
-            }
-            else -> { }
+        if (settingId == SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE) {
+            accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.CLEAR_CACHE)
+            showDialogClearCache()
         }
     }
 

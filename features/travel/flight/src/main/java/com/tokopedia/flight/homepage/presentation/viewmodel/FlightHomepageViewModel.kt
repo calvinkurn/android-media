@@ -142,7 +142,9 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onBannerClicked(position: Int, banner: TravelCollectiveBannerModel.Banner) {
-        flightAnalytics.eventPromotionClick(position + 1, banner)
+        flightAnalytics.eventPromotionClick(position + 1, banner,
+                FlightAnalytics.Screen.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun onDepartureAirportChanged(departureAirport: FlightAirportModel) {
@@ -242,13 +244,15 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
         launch(dispatcherProvider.ui()) {
-            flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
+            flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData),
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             deleteAllFlightSearchDataUseCase.execute()
         }
     }
 
     fun sendTrackingOpenScreen(screenName: String) {
-        flightAnalytics.eventOpenScreen(screenName, userSessionInterface.isLoggedIn)
+        flightAnalytics.eventOpenScreen(screenName)
     }
 
     fun sendTrackingRoundTripSwitchChanged(tripType: String) {
@@ -257,7 +261,8 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun sendTrackingPromoScrolled(position: Int) {
         getBannerData(position)?.let {
-            flightAnalytics.eventPromoImpression(position, it)
+            flightAnalytics.eventPromoImpression(position, it, FlightAnalytics.Screen.HOMEPAGE,
+                    if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
     }
 

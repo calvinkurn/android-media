@@ -1,20 +1,14 @@
 package com.tokopedia.common_digital.cart.data.mapper
 
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
-import com.tokopedia.common_digital.cart.data.entity.response.AdditionalInfo
-import com.tokopedia.common_digital.cart.data.entity.response.AutoApplyVoucher
-import com.tokopedia.common_digital.cart.data.entity.response.Detail
-import com.tokopedia.common_digital.cart.data.entity.response.MainInfo
-import com.tokopedia.common_digital.cart.data.entity.response.RelationshipsCart
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCancelVoucherData
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData
 import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute
 import com.tokopedia.common_digital.cart.view.model.cart.*
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.MapperDataException
-import com.tokopedia.common_digital.product.data.response.PostPaidPopup
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Rizky on 27/08/18.
@@ -177,4 +171,17 @@ class CartMapperData : ICartMapperData {
 
     }
 
+    @Throws(MapperDataException::class)
+    override fun transformCancelVoucherData(responseCancelVoucherData: ResponseCancelVoucherData?): Boolean {
+        try {
+            responseCancelVoucherData?.let { response ->
+                response.attributes?.let {
+                    return it.success ?: false
+                }
+            }
+            return false
+        } catch (e: Exception) {
+            throw MapperDataException(e.message, e)
+        }
+    }
 }

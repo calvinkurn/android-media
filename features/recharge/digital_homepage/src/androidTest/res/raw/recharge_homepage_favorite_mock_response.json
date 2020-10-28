@@ -1,0 +1,140 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 2,
+            "title": "Rekomendasi Untukmu",
+            "sub_title": "",
+            "template": "TOP_ICONS",
+            "app_link": "tokopedia://",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression top icons\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"20\",\"item_name\":\"Langganan\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/4d15dffd-53e5-4c42-a525-b59561db9556.png\",\"creative_slot\":\"0\"},{\"item_id\":\"1\",\"item_name\":\"Pulsa\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png\",\"creative_slot\":\"1\"},{\"item_id\":\"2\",\"item_name\":\"Paket Data\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png\",\"creative_slot\":\"2\"},{\"item_id\":\"3\",\"item_name\":\"Listrik PLN\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png\",\"creative_slot\":\"3\"},{\"item_id\":\"34\",\"item_name\":\"Uang Elektronik\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_5ee75889-94bc-45d3-9ce6-5ecf466fb385.png\",\"creative_slot\":\"4\"}]}"
+              }
+            ],
+            "items": [
+              {
+                "id": 20,
+                "title": "Langganan",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top icons\",\"eventLabel\":\"0 - Rekomendasi Untukmu\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"20\",\"item_name\":\"Langganan\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/4d15dffd-53e5-4c42-a525-b59561db9556.png\",\"creative_slot\":\"0\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://webview?url=https://www.tokopedia.com/mybills/",
+                "web_link": "https://www.tokopedia.com/mybills/",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/2/4d15dffd-53e5-4c42-a525-b59561db9556.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 1,
+                "title": "Pulsa",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top icons\",\"eventLabel\":\"1 - Rekomendasi Untukmu - Pulsa\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"1\",\"item_name\":\"Pulsa\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png\",\"creative_slot\":\"1\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://digital/form?category_id=1",
+                "web_link": "https://www.tokopedia.com/pulsa",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 2,
+                "title": "Paket Data",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top icons\",\"eventLabel\":\"2 - Rekomendasi Untukmu - Paket Data\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"2\",\"item_name\":\"Paket Data\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png\",\"creative_slot\":\"2\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://digital/form?category_id=2",
+                "web_link": "https://www.tokopedia.com/paket-data",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 3,
+                "title": "Listrik PLN",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top icons\",\"eventLabel\":\"3 - Rekomendasi Untukmu - Listrik PLN\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"3\",\"item_name\":\"Listrik PLN\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png\",\"creative_slot\":\"3\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://digital/form?category_id=3",
+                "web_link": "https://www.tokopedia.com/pln/",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 34,
+                "title": "Uang Elektronik",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top icons\",\"eventLabel\":\"4 - Rekomendasi Untukmu - Uang Elektronik\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"34\",\"item_name\":\"Uang Elektronik\",\"creative_name\":\"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_5ee75889-94bc-45d3-9ce6-5ecf466fb385.png\",\"creative_slot\":\"4\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://digital/form?category_id=34",
+                "web_link": "https://www.tokopedia.com/top-up/emoney/",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_5ee75889-94bc-45d3-9ce6-5ecf466fb385.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

@@ -22,8 +22,6 @@ import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
@@ -143,14 +141,6 @@ public class NetModule {
     public Retrofit provideCartRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN).client(okHttpClient).build();
-    }
-
-    @UploadWsV4Qualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
-                                              Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS()).client(okHttpClient).build();
     }
 
     @TopAdsQualifier

@@ -19,36 +19,8 @@ public class GMFeaturedCashBackDetail {
     @Expose
     private long cashbackValue;
 
-    public long getCashbackStatus() {
-        return cashbackStatus;
-    }
-
-    public void setCashbackStatus(long cashbackStatus) {
-        this.cashbackStatus = cashbackStatus;
-    }
-
     public double getCashbackPercent() {
         return cashbackPercent;
-    }
-
-    public void setCashbackPercent(double cashbackPercent) {
-        this.cashbackPercent = cashbackPercent;
-    }
-
-    public long getIsCashbackExpired() {
-        return isCashbackExpired;
-    }
-
-    public void setIsCashbackExpired(long isCashbackExpired) {
-        this.isCashbackExpired = isCashbackExpired;
-    }
-
-    public long getCashbackValue() {
-        return cashbackValue;
-    }
-
-    public void setCashbackValue(long cashbackValue) {
-        this.cashbackValue = cashbackValue;
     }
 
 }

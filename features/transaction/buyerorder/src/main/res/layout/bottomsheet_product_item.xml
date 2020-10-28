@@ -34,7 +34,6 @@
         android:textColor="@color/Neutral_N700_96"
         tools:text="@string/product_name_placeholder"
         android:text="@string/product_name_placeholder"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_20"/>
 
@@ -49,7 +48,6 @@
         tools:text="@string/product_price_placeholder"
         android:text="@string/product_price_placeholder"
         app:typographyWeight="bold"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"/>
 
     <View

@@ -12,6 +12,9 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
@@ -55,14 +58,14 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCheckVoucherUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideFlightCancelVoucherUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
-        return FlightCancelVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCancelVoucherUseCase(): FlightCancelVoucherUseCase {
+        return FlightCancelVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope
@@ -113,6 +116,15 @@ class PromoCheckoutDetailModule {
                               eventCheckRepository: EventCheckRepository,
                               compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
         return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase,eventCheckRepository, compositeSubscription)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
+    fun provideDetailDealsPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                              dealsCheckRepository: PromoCheckoutDealsRepository,
+                              compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
+        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase, dealsCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
@@ -182,8 +194,27 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
+    fun provideDealsApiService(gson: Gson, client: OkHttpClient): DealsCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(EventCheckoutApi.BASE_URL_EVENT)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(DealsCheckoutApi::class.java)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
+        return DealsCheckRepositoryImpl(dealsCheckoutApi)
     }
 
 

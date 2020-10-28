@@ -21,6 +21,13 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/actionUpBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_back_search_bar"
+            android:layout_marginStart="@dimen/spacing_lvl4" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,15 +75,6 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_view_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:text="@string/button_cancel"
-                android:textColor="@color/bg_button_green_border_outline"
-                app:typographyType="body_2" />
         </LinearLayout>
 
 

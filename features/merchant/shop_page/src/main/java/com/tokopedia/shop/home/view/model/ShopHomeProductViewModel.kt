@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
@@ -37,10 +38,16 @@ class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolde
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
     var labelGroupList: List<LabelGroupViewModel> = listOf()
+    var stockLabel: String = ""
+    var hideGimmick: Boolean = false
+    var stockSoldPercentage: Int = 0
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){
             is ShopHomeAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopCampaignCarouselProductAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
             else ->  {

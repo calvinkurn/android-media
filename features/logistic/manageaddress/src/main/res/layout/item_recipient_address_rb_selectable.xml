@@ -6,19 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_view_address_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/shipping_address"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
     <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -46,6 +33,7 @@
 
                 <RadioButton
                     android:id="@+id/rb_check_address"
+                    android:contentDescription="@string/content_desc_rb_check_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
@@ -87,6 +75,7 @@
 
             <TextView
                 android:id="@+id/button_change_address"
+                android:contentDescription="@string/content_desc_button_change_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/v_separator"
@@ -104,6 +93,7 @@
 
     <Button
         android:id="@+id/button_add_new_address"
+        android:contentDescription="@string/content_desc_tv_button_add_new_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"

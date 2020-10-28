@@ -30,6 +30,10 @@ class TopadsSelectActionSheet {
                     behavior.isHideable = false
                 }
             }
+            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
+            it.img_active.setImageDrawable(context.getResDrawable(R.drawable.topads_dash_green_dot))
+            it.edit_img.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon))
+            it.img_delete.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             it.btn_close.setOnClickListener {
                 dismissDialog()
             }
@@ -85,7 +89,7 @@ class TopadsSelectActionSheet {
 
         fun newInstance(context: Context, activeStatus: Int, groupName: String): TopadsSelectActionSheet {
             val fragment = TopadsSelectActionSheet()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_select_action_on_group_bottomsheet)
             fragment.setupView(context, activeStatus, groupName)
             return fragment

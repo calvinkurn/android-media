@@ -121,6 +121,22 @@
     <string name="havent_pinpoint">Sudah Pinpoint</string>
     <string name="not_found_location">Lokasi tidak terdeteksi</string>
     <string name="not_found_location_desc">Kami tidak dapat menentukan lokasimu, silakan geser pada peta atau tulis secara manual</string>
+    <string name="content_desc_et_search">input cari</string>
+    <string name="content_desc_place_name">text nama tempat</string>
+    <string name="content_desc_et_detail_address">input detail alamat</string>
+    <string name="content_desc_btn_choose_location">button pilih lokasi ini</string>
+    <string name="content_desc_address_type">input simpan alamat sebagai</string>
+    <string name="content_desc_et_label_address">input label alamat</string>
+    <string name="content_desc_et_receiver_name">input nama penerima</string>
+    <string name="content_desc_et_phone">input nomor telepon</string>
+    <string name="content_desc_btn_save_address">button simpan alamat</string>
+    <string name="content_desc_receiver_name">input nama penerima</string>
+    <string name="content_desc_address">input alamat</string>
+    <string name="content_desc_district">input kota atau kecamatan</string>
+    <string name="content_desc_autocomplete_postal_code">input kode pos</string>
+    <string name="content_desc_receiver_phone">input nomor telepon</string>
+    <string name="content_desc_value_location">input lokasi pickup</string>
+    <string name="content_desc_save_button">button simpan</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

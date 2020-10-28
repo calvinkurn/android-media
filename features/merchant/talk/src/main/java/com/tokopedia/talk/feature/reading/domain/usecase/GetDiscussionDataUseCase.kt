@@ -43,6 +43,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                   state {
                     isMasked
                     allowReply
+                    isYours
                   }
                   totalAnswer
                   answer {
@@ -60,6 +61,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                         isMasked
                         isLiked
                         allowLike
+                        isYours
                     }
                     attachedProductCount
                   }

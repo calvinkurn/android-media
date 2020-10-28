@@ -32,8 +32,6 @@ class TalkReadingViewModel @Inject constructor(
         private const val REQUEST_DELAY = 1000L
     }
 
-    val userId: String = userSession.userId
-
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
     val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>
     get() = _discussionAggregate
@@ -156,6 +154,10 @@ class TalkReadingViewModel @Inject constructor(
 
     fun setSuccess(isEmpty: Boolean, page: Int) {
         _viewState.value = ViewState.Success(isEmpty, page)
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
     }
 
 }

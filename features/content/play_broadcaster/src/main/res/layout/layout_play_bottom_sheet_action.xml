@@ -10,11 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_inventory"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/play_dp_18"
-        android:paddingEnd="@dimen/play_dp_18"
-        android:paddingTop="@dimen/spacing_lvl2"
-        android:paddingBottom="@dimen/spacing_lvl2"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +20,10 @@
             android:id="@+id/iv_inventory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/play_dp_18"
+            android:layout_marginEnd="@dimen/play_dp_18"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_inventory_disabled"
@@ -36,13 +35,13 @@
             android:layout_height="@dimen/layout_lvl2"
             android:background="@drawable/bg_play_selected_product_badge"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:paddingStart="@dimen/spacing_lvl1"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingEnd="@dimen/spacing_lvl1"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N0"
             android:visibility="gone"
-            android:includeFontPadding="false"
             app:layout_constraintBottom_toTopOf="@id/iv_inventory"
             app:layout_constraintEnd_toEndOf="@id/iv_inventory"
             app:layout_constraintStart_toEndOf="@id/iv_inventory"
@@ -50,7 +49,17 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="10"
-            tools:visibility="visible"
+            tools:visibility="gone"
+            />
+
+        <FrameLayout
+            android:id="@+id/fl_inventory_click_area"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

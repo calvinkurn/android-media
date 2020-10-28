@@ -48,6 +48,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_page"
+        android:layout_width="@dimen/play_viewer_loading_size"
+        android:layout_height="@dimen/play_viewer_loading_size"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
         android:id="@+id/fl_youtube"
         android:layout_width="@dimen/layout_lvl0"

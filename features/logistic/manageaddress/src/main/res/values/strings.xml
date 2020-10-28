@@ -25,21 +25,17 @@
 
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
-    <string name="hint_search_corner">Cari kampus mu</string>
-    <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
-    <string name="brand_tokopedia_corner">Tokopedia Corner</string>
-    <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
-    <string name="button_mengerti">Mengerti</string>
-    <string name="corner_info_ticker">Hanya berlaku untuk mahasiswa / staf terdaftar di kampus yang dipilih</string>
-    <string name="gratis_ongkir">Gratis Ongkir</string>
-    <string name="information_icon">Information Icon</string>
     <string name="shipping_address">Alamat Pengiriman</string>
     <string name="change_address">Ubah Alamat</string>
     <string name="add_address">Tambah Alamat Baru</string>
     <string name="label_oops">Oopppsss..</string>
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
-    <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
+
+    <!--Content Description-->
+    <string name="content_desc_rb_check_address">radio pilih alamat</string>
+    <string name="content_desc_button_change_address">button ubah alamat</string>
+    <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
+    <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
 
 </resources>

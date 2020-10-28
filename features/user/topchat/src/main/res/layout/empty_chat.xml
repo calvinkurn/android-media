@@ -11,7 +11,7 @@
     android:paddingBottom="@dimen/dp_topchat_12">
 
     <com.tokopedia.design.image.SquareImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/thumbnail_empty_chat_list"
         android:layout_width="@dimen/dp_topchat_160"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -22,7 +22,7 @@
 
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
+        android:id="@+id/title_empty_chat_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl5"
@@ -35,7 +35,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/thumbnail_empty_chat_list"
         app:typographyType="heading_2"
         app:typographyWeight="reguler" />
 
@@ -53,7 +53,7 @@
         android:text="@string/seller_empty_chat_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title_empty_chat_list"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 

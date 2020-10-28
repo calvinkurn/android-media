@@ -29,12 +29,15 @@ class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
                                   val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
+
+    private var isCacheData = false
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
     }
 
     override fun bind(element: DynamicLegoBannerDataModel) {
+        isCacheData = element.isCache
         setHeaderComponent(element)
         setGrids(element)
     }
@@ -44,24 +47,30 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     private fun setGrids(element: DynamicLegoBannerDataModel) {
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
-        val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
-        setViewportImpression(element)
+        if (element.channelModel.channelGrids.isNotEmpty()) {
+            val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+            val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
+            if (!isCacheData) {
+                setViewportImpression(element)
+            }
+            parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
+            recyclerView.setHasFixedSize(true)
+            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                    GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
-        parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
-        recyclerView.setHasFixedSize(true)
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(defaultSpanCount, 0, true))
+            recyclerView.layoutManager = GridLayoutManager(
+                    itemView.context,
+                    defaultSpanCount,
+                    GridLayoutManager.VERTICAL, false)
 
-        recyclerView.layoutManager = GridLayoutManager(
-                itemView.context,
-                defaultSpanCount,
-                GridLayoutManager.VERTICAL, false)
-
-        recyclerView.adapter = LegoItemAdapter(
-                legoListener,
-                element.channelModel,
-                adapterPosition+1)
+            recyclerView.adapter = LegoItemAdapter(
+                    legoListener,
+                    element.channelModel,
+                    adapterPosition + 1,
+                    isCacheData)
+        } else {
+            legoListener?.getDynamicLegoBannerData(element.channelModel)
+        }
     }
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
@@ -89,7 +98,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     class LegoItemAdapter(private val listener: DynamicLegoBannerListener?,
                           private val channel: ChannelModel,
-                          private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
+                          private val parentPosition: Int,
+                          private val isCacheData: Boolean) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
         companion object{
@@ -110,7 +120,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 val grid = grids[position]
                 setLegoViewData(holder, grid)
                 setLegoClickListener(holder, grid, position)
-                setLegoImpressionListener(holder)
+                if (!isCacheData) {
+                    setLegoImpressionListener(holder)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

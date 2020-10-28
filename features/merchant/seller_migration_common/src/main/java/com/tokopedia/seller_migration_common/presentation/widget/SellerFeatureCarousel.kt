@@ -40,7 +40,7 @@ class SellerFeatureCarousel(context: Context, attrs: AttributeSet) : ConstraintL
         divider.showWithCondition(show)
     }
 
-    fun setListener(listener: SellerFeatureClickListener) {
+    fun setListener(listener: SellerFeatureClickListener?) {
         this.listener = listener
     }
 

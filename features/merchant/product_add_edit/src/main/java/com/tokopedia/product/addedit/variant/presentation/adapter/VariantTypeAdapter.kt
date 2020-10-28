@@ -70,15 +70,6 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         manageUnselectedItems(getSelectedCount())
     }
 
-    fun getPositionsByIds(variantIds: List<Int>): List<Int> {
-        val positions = mutableListOf<Int>()
-        items.forEachIndexed { index, variantDetail ->
-            val variantId = variantDetail.variantID
-            if (variantIds.contains(variantId)) positions.add(index)
-        }
-        return positions
-    }
-
     fun getSelectedItems(): List<VariantDetail> {
         return items.filterIndexed { index, _ ->
             selectedItems.getOrNull(index) == VariantTypeViewHolder.ViewHolderState.SELECTED

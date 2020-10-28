@@ -3,6 +3,7 @@ package com.tokopedia.play_common.util.extension
 import android.app.Dialog
 import android.content.ContentResolver
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -33,6 +34,33 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
     constraintSet.clone(this)
     constraintSet.transform()
     constraintSet.applyTo(this)
+}
+
+suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
+    if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
+    else {
+        val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                if (measuredWidth > 0 && measuredHeight > 0) {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    cont.resume(Unit)
+                }
+            }
+        }
+        cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+        viewTreeObserver.addOnGlobalLayoutListener(listener)
+    }
+}
+
+suspend inline fun View.awaitNextGlobalLayout() = suspendCancellableCoroutine<Unit> { cont ->
+    val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+            cont.resume(Unit)
+        }
+    }
+    cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    viewTreeObserver.addOnGlobalLayoutListener(listener)
 }
 
 inline fun View.doOnPreDraw(crossinline action: (view: View) -> Unit) {
@@ -103,6 +131,13 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
         addOnLayoutChangeListener(listener)
     }
 }
+
+val View.globalVisibleRect: Rect
+    get() {
+        val rect = Rect()
+        getGlobalVisibleRect(rect)
+        return rect
+    }
 
 var View.compatTransitionName: String?
     get() {

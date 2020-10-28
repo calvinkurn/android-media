@@ -53,11 +53,8 @@ data class ShopStatusModel(
         const val STATUS_ACTIVE = "active"
         const val STATUS_INACTIVE = "inactive"
         const val STATUS_IDLE = "idle"
-        const val STATUS_OFF = "off"
         const val STATUS_ON = "on"
         const val STATUS_PENDING = "pending"
-        const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
-        const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
     }
 
     fun isPowerMerchantActive(): Boolean {
@@ -80,14 +77,6 @@ data class ShopStatusModel(
         return (isPowerMerchantActive() || isPowerMerchantIdle()) && isAutoExtend()
     }
 
-    fun getMinimumShopScore(): Int {
-        return if (isPowerMerchantInactive()) {
-            MINIMUM_SCORE_ACTIVATE_REGULAR
-        } else {
-            MINIMUM_SCORE_ACTIVATE_IDLE
-        }
-    }
-
     @Deprecated("prefer use isRegularMerchantOrPending")
     fun isRegularMerchant(): Boolean {
         return powerMerchant.status == STATUS_INACTIVE && officialStore.status == STATUS_INACTIVE
@@ -99,10 +88,6 @@ data class ShopStatusModel(
 
     fun isOfficialStore(): Boolean {
         return officialStore.status == STATUS_ACTIVE
-    }
-
-    fun isTransitionPeriod(): Boolean {
-        return powerMerchant.shopPopup
     }
 
     fun isAutoExtend(): Boolean {

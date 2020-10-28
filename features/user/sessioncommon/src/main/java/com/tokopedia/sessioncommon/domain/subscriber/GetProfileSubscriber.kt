@@ -44,6 +44,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                     pojo.profileInfo.email,
                     isShopGold(pojo.shopInfo.shopData.shopLevel),
                     pojo.profileInfo.phone)
+            userSession.setIsShopOfficialStore(isOfficialStore(pojo.shopInfo.shopData.shopLevel))
             userSession.shopAvatar = pojo.shopInfo.shopData.shopAvatar
         }
     }
@@ -52,6 +53,11 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         val LEVEL_GOLD = 1
         val LEVEL_OFFICIAL_STORE = 2
         return shopLevel == LEVEL_GOLD  ||  shopLevel == LEVEL_OFFICIAL_STORE
+    }
+
+    private fun isOfficialStore(shopLevel: Int): Boolean {
+        val LEVEL_OFFICIAL_STORE = 2
+        return shopLevel == LEVEL_OFFICIAL_STORE
     }
 
     override fun onCompleted() {

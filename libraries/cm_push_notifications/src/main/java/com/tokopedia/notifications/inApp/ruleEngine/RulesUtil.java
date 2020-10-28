@@ -33,7 +33,7 @@ public class RulesUtil {
                                            long currentTimeStamp, ElapsedTime lastElapsedTime){
         //Should you delete all of the time data on reinitialization
         RepositoryManager.getInstance().getStorageProvider().
-                putElapsedTimeToStore(lastElapsedTime);
+                putElapsedTimeToStore(lastElapsedTime).subscribe();
         return startTime <= currentTimeStamp && (endTime >= currentTimeStamp ||
                 endTime == 0l);
     }

@@ -69,6 +69,12 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
             promoListWidget.toggleTitle(it)
         })
 
+        viewModel.promoImpression.observe(this, Observer {
+            viewModel.promos.value?.let {
+                promoListWidget.getVisibleRecentItemsToUsersTracking(it)
+            }
+        })
+
         promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {
             override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
                 clickCopyOnPromoCode(promoId)
@@ -84,7 +90,6 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
                             CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
                     )
                     clipboard.setPrimaryClip(clip)
-
                     view?.run {
                         Toaster.make(this,
                                 getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),

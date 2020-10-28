@@ -22,6 +22,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationModel
@@ -30,7 +31,6 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.MarketP
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,8 +41,8 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
-    private lateinit var trackingQueue: TrackingQueue
     private lateinit var paymentId: String
+    private lateinit var thanksPageData: ThanksPageData
 
 
     @Inject
@@ -93,11 +93,10 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(paymentId: String,
-                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue) {
-        this.paymentId = paymentId
+    override fun loadRecommendation(thanksPageData: ThanksPageData, fragment: BaseDaggerFragment) {
+        this.thanksPageData = thanksPageData
+        this.paymentId = thanksPageData.paymentID.toString()
         this.fragment = fragment
-        this.trackingQueue = trackingQueue
         startViewModelObserver()
         viewModel.loadRecommendationData()
     }
@@ -192,8 +191,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
-                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position,
-                        trackingQueue, paymentId)
+                analytics.get().sendRecommendationItemDisplayed(thanksPageData, recommendationItem, position)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
@@ -246,8 +244,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     }
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        analytics.get().sendRecommendationItemClick(item, position = position + 1,
-                paymentId = paymentId)
+        analytics.get().sendRecommendationItemClick(thanksPageData, item, position = position + 1)
         val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
 

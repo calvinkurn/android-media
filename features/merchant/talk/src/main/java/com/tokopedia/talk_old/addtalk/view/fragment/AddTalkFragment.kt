@@ -146,13 +146,13 @@ class AddTalkFragment : BaseDaggerFragment(),
         if(source == TalkConstants.READING_SOURCE) {
             activity?.run {
                 setResult(Activity.RESULT_OK, intent)
-                finish()
             }
         } else {
             context?.let {
                 startActivity(RouteManager.getIntent(it, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, productId)).toString()))
             }
         }
+        activity?.finish()
     }
 
     override fun onDestroyView() {

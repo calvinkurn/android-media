@@ -1,0 +1,65 @@
+[
+  {
+    "data": {
+      "keroAddressCorner": {
+        "status": "OK",
+        "config": "",
+        "server_process_time": "",
+        "data": [
+          {
+            "addr_id": 1,
+            "receiver_name": "User 1",
+            "addr_name": "Address 1",
+            "address_1": "Address Street 1",
+            "address_2": "1,1",
+            "postal_code": "1",
+            "province": 1,
+            "city": 1,
+            "district": 1,
+            "phone": "1",
+            "country": "Country 1",
+            "province_name": "Province 1",
+            "city_name": "City 1",
+            "district_name": "District 1",
+            "latitude": "1",
+            "longitude": "1",
+            "status": 2,
+            "is_primary": true,
+            "is_active": false,
+            "is_whitelist": true,
+            "partner_id": 0,
+            "partner_name": "",
+            "type": 1,
+            "is_corner": false
+          },
+          {
+            "addr_id": 2,
+            "receiver_name": "User 1",
+            "addr_name": "Address 2",
+            "address_1": "Address Street 2",
+            "address_2": "2,2",
+            "postal_code": "2",
+            "province": 2,
+            "city": 2,
+            "district": 2,
+            "phone": "2",
+            "country": "Country 2",
+            "province_name": "Province 2",
+            "city_name": "City 2",
+            "district_name": "District 2",
+            "latitude": "2",
+            "longitude": "2",
+            "status": 2,
+            "is_primary": true,
+            "is_active": false,
+            "is_whitelist": true,
+            "partner_id": 0,
+            "partner_name": "",
+            "type": 1,
+            "is_corner": false
+          }
+        ]
+      }
+    }
+  }
+]

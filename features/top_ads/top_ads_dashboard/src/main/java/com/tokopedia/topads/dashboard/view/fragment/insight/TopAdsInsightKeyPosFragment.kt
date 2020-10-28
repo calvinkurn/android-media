@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.INDEX_4
@@ -63,6 +64,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setView()
+        toolTip.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
         toolTip.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(0)
             sheet.show(fragmentManager!!, "")
@@ -73,7 +75,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
 
     private fun butttonClicked(position: Int) {
         itemCountCallBack?.onButtonClicked(listOf(adapter.items[position].mutationData), key
-                ?: "", 1)
+                ?: "", 1, false)
     }
 
     private fun setView() {
@@ -89,7 +91,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
         setHeader(totalPotential)
         btnTambah.setOnClickListener {
             itemCountCallBack?.onButtonClicked(mutationList, key
-                    ?: "", dataInsight?.get(key)?.keyword?.size ?: 0)
+                    ?: "", dataInsight?.get(key)?.keyword?.size ?: 0, true)
         }
         adapter.notifyDataSetChanged()
     }
@@ -129,6 +131,6 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
 
     interface SetCount {
         fun setCount(sizePos: Int, sizeNeg: Int, sizeBid: Int)
-        fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int)
+        fun onButtonClicked(mutationData: List<MutationData>, groupId: String, countToAdd: Int, forAllButton: Boolean)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
@@ -18,8 +19,6 @@ import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -34,8 +33,8 @@ class VoucherListViewModel @Inject constructor(
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
         private val voucherDetailUseCase: VoucherDetailUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val notStartedVoucherRequestParam by lazy {
         VoucherListParam.createParam(status = VoucherStatus.NOT_STARTED)
@@ -70,7 +69,7 @@ class VoucherListViewModel @Inject constructor(
             launchCatchError(
                     block = {
                         cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id, CancelVoucherUseCase.CancelStatus.DELETE)
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
                     },
@@ -88,7 +87,7 @@ class VoucherListViewModel @Inject constructor(
             launchCatchError(
                     block = {
                         cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id, CancelVoucherUseCase.CancelStatus.STOP)
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
                     },
@@ -106,7 +105,7 @@ class VoucherListViewModel @Inject constructor(
             launchCatchError(
                     block = {
                         voucherDetailUseCase.params = VoucherDetailUseCase.createRequestParam(id)
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             voucherDetailUseCase.executeOnBackground()
                         })
                     },
@@ -126,11 +125,11 @@ class VoucherListViewModel @Inject constructor(
     fun getActiveVoucherList(isFirstTime: Boolean) {
         launchCatchError(block = {
             if (isFirstTime) {
-                _shopBasicLiveData.value = Success(withContext(Dispatchers.IO) {
+                _shopBasicLiveData.value = Success(withContext(dispatchers.io) {
                     shopBasicDataUseCase.executeOnBackground()
                 })
             }
-            _voucherList.value = Success(withContext(Dispatchers.IO) {
+            _voucherList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
                 getNotStartedVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
                 val ongoingVoucherList = async { getVoucherListUseCase.executeOnBackground() }
@@ -157,7 +156,7 @@ class VoucherListViewModel @Inject constructor(
                             page = page,
                             isInverted = isInverted)
             )
-            withContext(Dispatchers.IO) {
+            withContext(dispatchers.io) {
                 val voucherList = getVoucherListUseCase.executeOnBackground()
                 if (page == 1) {
                     _fullVoucherListLiveData.value?.clear()

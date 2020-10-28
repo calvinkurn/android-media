@@ -1,15 +1,21 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.activity
 
-import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoring
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
+import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringType
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
@@ -23,7 +29,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchComponent>,
-        GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener, HistoryViewUpdateListener, SuggestionViewUpdateListener {
+        GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
+        HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
 
     companion object {
         const val MIN_CHARACTER_SEARCH = 3
@@ -31,6 +38,10 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val performanceMonitoring: GlobalSearchSellerPerformanceMonitoring by lazy {
+        GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
+    }
 
     private var searchBarView: GlobalSearchView? = null
 
@@ -43,10 +54,11 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private var userId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initial_seller_search)
-        window?.decorView?.setBackgroundColor(Color.WHITE)
+        setWhiteStatusBar()
         proceed()
     }
 
@@ -133,6 +145,26 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         }
         searchBarView?.mHandler?.removeCallbacksAndMessages(null)
         super.onDestroy()
+    }
+
+    private fun setWhiteStatusBar() {
+        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            setLightStatusBar(true)
+        }
+    }
+
+    override fun startNetworkPerformanceMonitoring() {
+        performanceMonitoring.startNetworkGlobalSearchSellerPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        performanceMonitoring.startRenderGlobalSearchSellerPerformanceMonitoring()
+    }
+
+    override fun finishMonitoring() {
+        performanceMonitoring.stopPerformanceMonitoring()
     }
 
 }

@@ -34,12 +34,12 @@
         app:layout_constraintStart_toEndOf="@id/searchBar"
         app:layout_constraintTop_toTopOf="@id/searchBar">
 
-        <ImageButton
+        <com.tokopedia.unifycomponents.UnifyImageButton
             android:id="@+id/btnFilter"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_10"
+            app:unifyImageButtonVariant="image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/topads_ic_filter" />
@@ -75,10 +75,10 @@
         app:layout_constraintTop_toTopOf="@id/search_filter_layout"
         tools:visibility="visible" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/btnAddItem"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_16"
@@ -86,6 +86,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="@dimen/dp_10"
         android:visibility="gone"
+        app:unifyImageButtonVariant="image"
         app:layout_constraintBottom_toBottomOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

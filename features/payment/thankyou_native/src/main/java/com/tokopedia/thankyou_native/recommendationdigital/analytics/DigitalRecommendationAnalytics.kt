@@ -22,25 +22,28 @@ class DigitalRecommendationAnalytics @Inject constructor(
         get() = TrackApp.getInstance().gtm
 
 
-    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue,
+    fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue?,
                                                recommendationItem: RecommendationsItem,
-                                               position: Int, paymentId: String) {
-        val data: MutableMap<String, Any> = mutableMapOf(
-                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                KEY_USER_ID to userSession.get().userId,
-                KEY_PAYMENT_ID to paymentId,
-                KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
-                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+                                               position: Int, paymentId: String, profileID: String) {
+        trackingQueue?.apply {
+            val data: MutableMap<String, Any> = mutableMapOf(
+                    KEY_EVENT to EVENT_PRODUCT_VIEW,
+                    KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                    KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                    KEY_PROFILE_ID to profileID,
+                    KEY_USER_ID to userSession.get().userId,
+                    KEY_PAYMENT_ID to paymentId,
+                    KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
+                    KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
+                    KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+            putEETracking(data as HashMap<String, Any>)
+        }
 
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
 
     fun sendDigitalRecommendationItemClick(recommendationItem: RecommendationsItem,
-                                           position: Int, paymentId: String) {
+                                           position: Int, paymentId: String, profileID: String) {
 
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -49,6 +52,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT to EVENT_PRODUCT_CLICK,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
+                                KEY_PROFILE_ID to profileID,
                                 KEY_USER_ID to userSession.get().userId,
                                 KEY_PAYMENT_ID to paymentId,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
@@ -100,6 +104,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
         const val KEY_EVENT_CATEGORY = "eventCategory"
         const val KEY_EVENT_ACTION = "eventAction"
         const val KEY_EVENT_LABEL = "eventLabel"
+        const val KEY_PROFILE_ID = "profileId"
         const val KEY_E_COMMERCE = "ecommerce"
 
         const val KEY_CLICK = "click"

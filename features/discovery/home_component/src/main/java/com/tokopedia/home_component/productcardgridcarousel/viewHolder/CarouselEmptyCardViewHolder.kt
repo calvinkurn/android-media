@@ -8,8 +8,9 @@ import com.tokopedia.home_component.R
 class CarouselEmptyCardViewHolder(view: View): AbstractViewHolder<CarouselEmptyCardDataModel>(view){
 
     override fun bind(element: CarouselEmptyCardDataModel?) {
-        element?.channel?.channelBanner?.applink?.let{ url ->
-            if(url.isNotBlank()) itemView.setOnClickListener {
+        itemView.setOnClickListener(null)
+        element?.applink?.let{ url ->
+            if(url.isNotEmpty()) itemView.setOnClickListener {
                 element.listener.onEmptyCardClicked(element.channel, url, element.parentPosition)
             }
         }

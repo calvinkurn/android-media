@@ -13,8 +13,6 @@ buildscript {
 }
 
 dependencies {
-    def newExoPlayerVersion = '2.11.1'
-
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.adapterDelegate)
@@ -38,13 +36,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
-//    implementation rootProject.ext.miscDependencies.exoPlayerCore
-//    implementation rootProject.ext.miscDependencies.exoPlayer
-//    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
-
-    implementation "com.google.android.exoplayer:exoplayer-core:$newExoPlayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
-    implementation "com.google.android.exoplayer:extension-rtmp:$newExoPlayerVersion"
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 }
 
 project.ext {

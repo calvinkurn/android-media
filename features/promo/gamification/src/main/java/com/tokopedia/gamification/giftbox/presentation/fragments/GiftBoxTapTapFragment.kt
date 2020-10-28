@@ -723,7 +723,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, ::handleGiftBoxTap)
             }
-            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 
@@ -735,7 +734,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
-            GtmGiftTapTap.viewError(userSession?.userId)
         }
     }
 

@@ -6,5 +6,6 @@ package com.tokopedia.charts.model
 
 data class LineChartData(
         val chartEntry: List<LineChartEntry>,
-        val yAxisLabel: List<AxisLabel>
+        val yAxisLabel: List<AxisLabel>,
+        val config: LineChartEntryConfigModel
 )

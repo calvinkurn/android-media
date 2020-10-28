@@ -1,10 +1,9 @@
 package com.tokopedia.cart.view
 
+import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
-import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
-import com.tokopedia.cart.view.uimodel.DisabledShopHolderData
+import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
+import com.tokopedia.cart.view.uimodel.*
 import javax.inject.Inject
 
 /**
@@ -19,12 +18,19 @@ class ViewHolderDataMapper @Inject constructor() {
         )
     }
 
+    fun mapDisabledReasonHolderData(unavailableGroupData: UnavailableGroupData): DisabledReasonHolderData {
+        return DisabledReasonHolderData().apply {
+            title = unavailableGroupData.title
+            subTitle = unavailableGroupData.description
+        }
+    }
+
     fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {
         return DisabledShopHolderData(
                 shopId = shopGroupWithErrorData.shopId,
                 shopName = shopGroupWithErrorData.shopName,
-                shopLocation = shopGroupWithErrorData.cityName,
-                errorLabel = shopGroupWithErrorData.errorLabel
+                shopBadgeUrl = shopGroupWithErrorData.shopBadge,
+                isFulfillment = shopGroupWithErrorData.isFulfillment
         )
     }
 
@@ -36,13 +42,22 @@ class ViewHolderDataMapper @Inject constructor() {
                 productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
                 productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
                         ?: 0.toDouble(),
-                error = cartItemHolderData.cartItemData?.errorMessageTitle,
                 isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
                 tickerMessage = cartItemHolderData.cartItemData?.warningMessageTitle,
-                similarProduct = cartItemHolderData.cartItemData?.similarProductData,
-                nicotineLiteMessageData = cartItemHolderData.cartItemData?.nicotineLiteMessageData,
                 showDivider = showDivider,
-                data = cartItemHolderData.cartItemData
+                data = cartItemHolderData.cartItemData,
+                actionsData = cartItemHolderData.actionsData,
+                selectedUnavailableActionId = cartItemHolderData.cartItemData?.selectedUnavailableActionId ?: 0,
+                selectedUnavailableActionLink = cartItemHolderData.cartItemData?.selectedUnavailableActionLink ?: "",
+                errorType = cartItemHolderData.errorType
+        )
+    }
+
+    fun mapDisabledAccordionHolderData(cartListData: CartListData): DisabledAccordionHolderData {
+        return DisabledAccordionHolderData(
+                isCollapsed = true,
+                showMoreWording = cartListData.showMoreUnavailableDataWording,
+                showLessWording = cartListData.showLessUnavailableDataWording
         )
     }
 }

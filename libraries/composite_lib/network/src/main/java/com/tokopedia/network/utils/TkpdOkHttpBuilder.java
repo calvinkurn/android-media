@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.CipherSuite;
 import okhttp3.ConnectionSpec;
+import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -25,10 +26,14 @@ public class TkpdOkHttpBuilder {
 
     private OkHttpClient.Builder builder;
     private Context context;
+    private int MAX_REQUEST_PER_HOST = 10;
 
     public TkpdOkHttpBuilder(Context context, OkHttpClient.Builder builder) {
         this.builder = builder;
         this.context = context;
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequestsPerHost(MAX_REQUEST_PER_HOST);
+        this.builder.dispatcher(dispatcher);
     }
 
     public OkHttpClient.Builder getBuilder() {

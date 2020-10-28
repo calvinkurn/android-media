@@ -2,6 +2,7 @@
 
 package com.tokopedia.shop.settings.common.util
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,6 +13,7 @@ val DEFAULT_LOCALE = Locale("in", "ID")
 const val FORMAT_DAY_DATE = "EEE, dd MMM yyyy"
 const val FORMAT_DATE = "dd MMM yyyy"
 const val FORMAT_DATE_TIME = "dd MMM yyyy, 'pukul' HH:mm"
+const val OS_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX"
 
 val currentCalendar: Calendar
     get() = Calendar.getInstance()
@@ -74,4 +76,16 @@ fun unixToDate(unixTimeMs: Long): Date {
         return currentDate
     }
 
+}
+
+fun dateFormatToBeReadable(date: String, datePattern: String, outputPattern: String): String? {
+    val dateFormat = SimpleDateFormat(datePattern, DEFAULT_LOCALE)
+    val output = SimpleDateFormat(outputPattern, DEFAULT_LOCALE)
+    return try {
+        val d: Date? = dateFormat.parse(date)
+        d?.let { output.format(d) }
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        ""
+    }
 }

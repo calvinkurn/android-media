@@ -1,0 +1,2623 @@
+[
+  {
+    "data": {
+      "flightSearch": {
+        "data": [
+          {
+            "id": "e56c3bd7fce18e0c5520cdbfafe218b1-2",
+            "term": "HLPBTJ202011111001",
+            "departureAirportID": "HLP",
+            "departureTime": "05:00",
+            "departureTimeInt": 500,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "08:55",
+            "arrivalTimeInt": 855,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "3j 55m",
+            "durationMinute": 235,
+            "durationLong": "3 jam 55 menit",
+            "total": "Rp 1.360.700",
+            "totalNumeric": 1360700,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "QG",
+                "departureAirportID": "HLP",
+                "departureTime": "2020-11-11T05:00:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T08:55:00Z",
+                "duration": "3 jam 55 menit",
+                "layover": "",
+                "flightNumber": "10",
+                "refundable": true,
+                "stop": 1,
+                "operatingAirlineID": "",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.360.700",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1360700,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "7d4356bfc93d68852c062502efeaeaa2-6",
+            "term": "HLPBTJ202011111001",
+            "departureAirportID": "HLP",
+            "departureTime": "07:50",
+            "departureTimeInt": 750,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "8j 5m",
+            "durationMinute": 485,
+            "durationLong": "8 jam 5 menit",
+            "total": "Rp 1.338.200",
+            "totalNumeric": 1338200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "HLP",
+                "departureTime": "2020-11-11T07:50:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T10:10:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "4 jam 40 menit",
+                "flightNumber": "7011",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.338.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1338200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "1f70f1533b76dc280cbb3522fe635e21-6",
+            "term": "HLPBTJ202011111001",
+            "departureAirportID": "HLP",
+            "departureTime": "16:55",
+            "departureTimeInt": 1655,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j 35m",
+            "durationMinute": 275,
+            "durationLong": "4 jam 35 menit",
+            "total": "Rp 1.338.200",
+            "totalNumeric": 1338200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "HLP",
+                "departureTime": "2020-11-11T16:55:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T19:15:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "1 jam 10 menit",
+                "flightNumber": "7013",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.338.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1338200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "a6abad30f2783d8db98b460780f405af-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "13:30",
+            "departureTimeInt": 1330,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "8j",
+            "durationMinute": 480,
+            "durationLong": "8 jam",
+            "total": "Rp 1.135.600",
+            "totalNumeric": 1135600,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T13:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T15:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "4 jam 35 menit",
+                "flightNumber": "200",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.135.600",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1135600,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "9d3790608493295443ecdf9257e937ac-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "12:00",
+            "departureTimeInt": 1200,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "14:55",
+            "arrivalTimeInt": 1455,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "2j 55m",
+            "durationMinute": 175,
+            "durationLong": "2 jam 55 menit",
+            "total": "Rp 2.585.800",
+            "totalNumeric": 2585800,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "GA",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T12:00:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T14:55:00Z",
+                "duration": "2 jam 55 menit",
+                "layover": "",
+                "flightNumber": "146",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "Hingga 20kg"
+                  },
+                  {
+                    "icon": "meal",
+                    "label": "Makanan"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 2.585.800",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 2585800,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "2bc4bd27034b0a76712f765206c95512-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "07:45",
+            "departureTimeInt": 745,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "10:35",
+            "arrivalTimeInt": 1035,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "2j 50m",
+            "durationMinute": 170,
+            "durationLong": "2 jam 50 menit",
+            "total": "Rp 1.928.100",
+            "totalNumeric": 1928100,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T07:45:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T10:35:00Z",
+                "duration": "2 jam 50 menit",
+                "layover": "",
+                "flightNumber": "6896",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.928.100",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1928100,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "8ea9ffcc29abea45e24c4af220b968a4-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "08:00",
+            "departureTimeInt": 800,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "7j 55m",
+            "durationMinute": 475,
+            "durationLong": "7 jam 55 menit",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T08:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T11:20:00Z",
+                "duration": "3 jam 20 menit",
+                "layover": "3 jam 30 menit",
+                "flightNumber": "298",
+                "refundable": true,
+                "stop": 1,
+                "operatingAirlineID": "",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "f79bad364069adf5930bd85ec8828041-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "12:30",
+            "departureTimeInt": 1230,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "9j",
+            "durationMinute": 540,
+            "durationLong": "9 jam",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T12:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T14:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "5 jam 35 menit",
+                "flightNumber": "382",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "a1bd4c04c2dea1548f2d8bbb4fda0d5a-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "04:30",
+            "departureTimeInt": 430,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "11j 25m",
+            "durationMinute": 685,
+            "durationLong": "11 jam 25 menit",
+            "total": "Rp 1.135.600",
+            "totalNumeric": 1135600,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T04:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T06:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "8 jam",
+                "flightNumber": "210",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.135.600",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1135600,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "128559b71d695f78c0e7bf086a577b97-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "11:30",
+            "departureTimeInt": 1130,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "10j",
+            "durationMinute": 600,
+            "durationLong": "10 jam",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T11:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T13:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "6 jam 35 menit",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "ac054b1651f825ae0af57135bf70c87e-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "14:00",
+            "departureTimeInt": 1400,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "7j 30m",
+            "durationMinute": 450,
+            "durationLong": "7 jam 30 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T14:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T16:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "4 jam 5 menit",
+                "flightNumber": "6884",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "43e2e4b6fb1a2c67c612dde99f1352e6-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "17:40",
+            "departureTimeInt": 1740,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "08:55",
+            "arrivalTimeInt": 855,
+            "totalTransit": 1,
+            "addDayArrival": 1,
+            "totalStop": 0,
+            "duration": "15j 15m",
+            "durationMinute": 915,
+            "durationLong": "15 jam 15 menit",
+            "total": "Rp 1.584.900",
+            "totalNumeric": 1584900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "QG",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T17:40:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T19:55:00Z",
+                "duration": "2 jam 15 menit",
+                "layover": "11 jam 55 menit",
+                "flightNumber": "920",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "QG",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "QG",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-12T07:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-12T08:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "10",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "QG",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.584.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1584900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "0483c7c7e5c872b610c09886a4d2af38-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "17:50",
+            "departureTimeInt": 1750,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "20:45",
+            "arrivalTimeInt": 2045,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "2j 55m",
+            "durationMinute": 175,
+            "durationLong": "2 jam 55 menit",
+            "total": "Rp 2.585.800",
+            "totalNumeric": 2585800,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "GA",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T17:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T20:45:00Z",
+                "duration": "2 jam 55 menit",
+                "layover": "",
+                "flightNumber": "142",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "Hingga 20kg"
+                  },
+                  {
+                    "icon": "meal",
+                    "label": "Makanan"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 2.585.800",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 2585800,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "325df1ba09ca49c359b8ce9e288f2310-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "13:40",
+            "departureTimeInt": 1340,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "16:30",
+            "arrivalTimeInt": 1630,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "2j 50m",
+            "durationMinute": 170,
+            "durationLong": "2 jam 50 menit",
+            "total": "Rp 1.235.100",
+            "totalNumeric": 1235100,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T13:40:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T16:30:00Z",
+                "duration": "2 jam 50 menit",
+                "layover": "",
+                "flightNumber": "304",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.235.100",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1235100,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "162f2b1bbbeab298fa3f7f84d2162a5f-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "08:00",
+            "departureTimeInt": 800,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j 25m",
+            "durationMinute": 265,
+            "durationLong": "4 jam 25 menit",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T08:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T11:20:00Z",
+                "duration": "3 jam 20 menit",
+                "layover": "",
+                "flightNumber": "298",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [
+                  {
+                    "code": "PKU",
+                    "city": "Sultan Syarif Kasim II"
+                  }
+                ],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "c889a73907cdd493fe5a3f54b0564694-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "04:30",
+            "departureTimeInt": 430,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "08:30",
+            "arrivalTimeInt": 830,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j",
+            "durationMinute": 240,
+            "durationLong": "4 jam",
+            "total": "Rp 1.443.000",
+            "totalNumeric": 1443000,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T04:30:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T08:30:00Z",
+                "duration": "4 jam",
+                "layover": "",
+                "flightNumber": "210",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [
+                  {
+                    "code": "KNO",
+                    "city": "Kualanamu"
+                  }
+                ],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.443.000",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1443000,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "a3c2b78a91d9ddab7f02b3c8f91bb534-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "11:30",
+            "departureTimeInt": 1130,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "4j 25m",
+            "durationMinute": 265,
+            "durationLong": "4 jam 25 menit",
+            "total": "Rp 1.027.200",
+            "totalNumeric": 1027200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T11:30:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "4 jam 25 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.027.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1027200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "0007aebb4b166b690c9994f2de2b813f-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "11:00",
+            "departureTimeInt": 1100,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j 55m",
+            "durationMinute": 295,
+            "durationLong": "4 jam 55 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T11:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T13:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "1 jam 30 menit",
+                "flightNumber": "6888",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "e72966d2efed9cd3c99268f22156493e-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "10:30",
+            "departureTimeInt": 1030,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "11j",
+            "durationMinute": 660,
+            "durationLong": "11 jam",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T10:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T12:40:00Z",
+                "duration": "2 jam 10 menit",
+                "layover": "7 jam 45 menit",
+                "flightNumber": "398",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "48fae44aa0d80820dd6b04f579239821-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "07:30",
+            "departureTimeInt": 730,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "8j 25m",
+            "durationMinute": 505,
+            "durationLong": "8 jam 25 menit",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T07:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T09:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "5 jam",
+                "flightNumber": "300",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "75c7dfc7a764948ca35b37701944961a-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "10:30",
+            "departureTimeInt": 1030,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "5j 25m",
+            "durationMinute": 325,
+            "durationLong": "5 jam 25 menit",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T10:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T12:40:00Z",
+                "duration": "2 jam 10 menit",
+                "layover": "2 jam 10 menit",
+                "flightNumber": "398",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "b305d72f077851cf510438d8836fb595-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "05:30",
+            "departureTimeInt": 530,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "10j 25m",
+            "durationMinute": 625,
+            "durationLong": "10 jam 25 menit",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T05:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T07:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "7 jam",
+                "flightNumber": "308",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "afdbd2fedfdc4ff454933bc2db56329a-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "07:00",
+            "departureTimeInt": 700,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "8j 55m",
+            "durationMinute": 535,
+            "durationLong": "8 jam 55 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T07:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T09:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "5 jam 30 menit",
+                "flightNumber": "6882",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "8b6e4066ccc1f9ba4b110ac9c50ce954-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "16:30",
+            "departureTimeInt": 1630,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "5j",
+            "durationMinute": 300,
+            "durationLong": "5 jam",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T16:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T18:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "1 jam 35 menit",
+                "flightNumber": "206",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "a4d63aab98de99d3bacfe07a073da4fe-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "06:30",
+            "departureTimeInt": 630,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "9j 25m",
+            "durationMinute": 565,
+            "durationLong": "9 jam 25 menit",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T06:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T08:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "6 jam",
+                "flightNumber": "202",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "f79373e33dcfe73969b9a44d75e7b2ec-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "14:30",
+            "departureTimeInt": 1430,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "7j",
+            "durationMinute": 420,
+            "durationLong": "7 jam",
+            "total": "Rp 967.300",
+            "totalNumeric": 967300,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T14:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T16:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "3 jam 35 menit",
+                "flightNumber": "208",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 967.300",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 967300,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "4cf42a4e5e55e1fdc073572a0acb343f-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "11:30",
+            "departureTimeInt": 1130,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j 25m",
+            "durationMinute": 265,
+            "durationLong": "4 jam 25 menit",
+            "total": "Rp 1.027.200",
+            "totalNumeric": 1027200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T11:30:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "4 jam 25 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [
+                  {
+                    "code": "KNO",
+                    "city": "Kualanamu"
+                  }
+                ],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.027.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1027200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "b7f85f92e6dc32615c5a97f9e2b00112-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "15:00",
+            "departureTimeInt": 1500,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "6j 30m",
+            "durationMinute": 390,
+            "durationLong": "6 jam 30 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T15:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T17:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "3 jam 5 menit",
+                "flightNumber": "6890",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "a5a0fbdcd9b2656138e5e38cb683d331-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "09:30",
+            "departureTimeInt": 930,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "12j",
+            "durationMinute": 720,
+            "durationLong": "12 jam",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T09:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T11:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "8 jam 35 menit",
+                "flightNumber": "204",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "dcc26fa2186913394b454da4e6994fa8-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "06:00",
+            "departureTimeInt": 600,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "9j 55m",
+            "durationMinute": 595,
+            "durationLong": "9 jam 55 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T06:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T08:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "6 jam 30 menit",
+                "flightNumber": "6880",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "915da7437375eabc46fb3b07fbb066c9-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "04:30",
+            "departureTimeInt": 430,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "08:30",
+            "arrivalTimeInt": 830,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "4j",
+            "durationMinute": 240,
+            "durationLong": "4 jam",
+            "total": "Rp 1.443.000",
+            "totalNumeric": 1443000,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T04:30:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T08:30:00Z",
+                "duration": "4 jam",
+                "layover": "",
+                "flightNumber": "210",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.443.000",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1443000,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "dde00f9fc700cbf94d2e887b56028c68-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "11:00",
+            "departureTimeInt": 1100,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "10j 30m",
+            "durationMinute": 630,
+            "durationLong": "10 jam 30 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T11:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T13:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "7 jam 5 menit",
+                "flightNumber": "6888",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T20:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "b5d4b9c73cdf2e54382d2ceb8856e930-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "17:25",
+            "departureTimeInt": 1725,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "4j 5m",
+            "durationMinute": 245,
+            "durationLong": "4 jam 5 menit",
+            "total": "Rp 1.027.200",
+            "totalNumeric": 1027200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T17:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "4 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [
+                  {
+                    "code": "KNO",
+                    "city": "Kualanamu"
+                  }
+                ],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.027.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1027200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "b6733f66075a60b925acccb3752c050a-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "09:30",
+            "departureTimeInt": 930,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "6j 25m",
+            "durationMinute": 385,
+            "durationLong": "6 jam 25 menit",
+            "total": "Rp 1.050.900",
+            "totalNumeric": 1050900,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T09:30:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T11:50:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "3 jam",
+                "flightNumber": "204",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.050.900",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1050900,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "29036d11312a3ff99d977aeb371293da-2",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "17:25",
+            "departureTimeInt": 1725,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "21:30",
+            "arrivalTimeInt": 2130,
+            "totalTransit": 0,
+            "addDayArrival": 0,
+            "totalStop": 0,
+            "duration": "4j 5m",
+            "durationMinute": 245,
+            "durationLong": "4 jam 5 menit",
+            "total": "Rp 1.027.200",
+            "totalNumeric": 1027200,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "JT",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T17:25:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T21:30:00Z",
+                "duration": "4 jam 5 menit",
+                "layover": "",
+                "flightNumber": "396",
+                "refundable": true,
+                "stop": 0,
+                "operatingAirlineID": "",
+                "amenities": [],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.027.200",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1027200,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          },
+          {
+            "id": "73eb6a642ab5fd8e7cfcf21d46cdd41a-6",
+            "term": "CGKBTJ202011111001",
+            "departureAirportID": "CGK",
+            "departureTime": "09:00",
+            "departureTimeInt": 900,
+            "arrivalAirportID": "BTJ",
+            "arrivalTime": "15:55",
+            "arrivalTimeInt": 1555,
+            "totalTransit": 1,
+            "addDayArrival": 0,
+            "totalStop": 1,
+            "duration": "6j 55m",
+            "durationMinute": 415,
+            "durationLong": "6 jam 55 menit",
+            "total": "Rp 1.353.400",
+            "totalNumeric": 1353400,
+            "beforeTotal": "",
+            "showSpecialPriceTag": false,
+            "routes": [
+              {
+                "airlineID": "ID",
+                "departureAirportID": "CGK",
+                "departureTime": "2020-11-11T09:00:00Z",
+                "arrivalAirportID": "KNO",
+                "arrivalTime": "2020-11-11T11:20:00Z",
+                "duration": "2 jam 20 menit",
+                "layover": "3 jam 30 menit",
+                "flightNumber": "6886",
+                "refundable": false,
+                "stop": 1,
+                "operatingAirlineID": "ID",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              },
+              {
+                "airlineID": "JT",
+                "departureAirportID": "KNO",
+                "departureTime": "2020-11-11T14:50:00Z",
+                "arrivalAirportID": "BTJ",
+                "arrivalTime": "2020-11-11T15:55:00Z",
+                "duration": "1 jam 5 menit",
+                "layover": "",
+                "flightNumber": "306",
+                "refundable": false,
+                "stop": 0,
+                "operatingAirlineID": "JT",
+                "amenities": [
+                  {
+                    "icon": "baggage",
+                    "label": "20kg"
+                  }
+                ],
+                "stopDetail": [],
+                "infos": [
+                  {
+                    "label": "Bagasi Kabin",
+                    "value": "7kg"
+                  }
+                ]
+              }
+            ],
+            "fare": {
+              "adult": "Rp 1.353.400",
+              "child": "Rp 0",
+              "infant": "Rp 0",
+              "adultNumeric": 1353400,
+              "childNumeric": 0,
+              "infantNumeric": 0
+            }
+          }
+        ],
+        "error": [],
+        "included": [
+          {
+            "type": "airline",
+            "id": "GA",
+            "attributes": {
+              "name": "Garuda Indonesia",
+              "shortName": "Garuda",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_f8cb0d41-ee3a-452d-b9f4-3df11118ad4c.png",
+              "city": null
+            }
+          },
+          {
+            "type": "airline",
+            "id": "ID",
+            "attributes": {
+              "name": "Batik Air",
+              "shortName": "Batik",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_87064c23-f57a-4e51-bc0f-3d2ca6e34ccf.png",
+              "city": null
+            }
+          },
+          {
+            "type": "airline",
+            "id": "JT",
+            "attributes": {
+              "name": "Lion Air",
+              "shortName": "Lion",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_dac705fb-9f2b-4e6e-a63c-cbbef9c5e91a.png",
+              "city": null
+            }
+          },
+          {
+            "type": "airline",
+            "id": "QG",
+            "attributes": {
+              "name": "Citilink Indonesia",
+              "shortName": "Citilink",
+              "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_7f755496-e7cd-480d-bcc0-081c84828d37.png",
+              "city": null
+            }
+          },
+          {
+            "type": "airport",
+            "id": "BTJ",
+            "attributes": {
+              "name": "Sultan Iskandar Muda",
+              "shortName": null,
+              "logo": null,
+              "city": "Banda Aceh"
+            }
+          },
+          {
+            "type": "airport",
+            "id": "CGK",
+            "attributes": {
+              "name": "Soekarno Hatta",
+              "shortName": null,
+              "logo": null,
+              "city": "Jakarta"
+            }
+          },
+          {
+            "type": "airport",
+            "id": "HLP",
+            "attributes": {
+              "name": "Halim Perdanakusuma",
+              "shortName": null,
+              "logo": null,
+              "city": "Jakarta"
+            }
+          },
+          {
+            "type": "airport",
+            "id": "KNO",
+            "attributes": {
+              "name": "Kualanamu",
+              "shortName": null,
+              "logo": null,
+              "city": "Medan"
+            }
+          },
+          {
+            "type": "airport",
+            "id": "PKU",
+            "attributes": {
+              "name": "Sultan Syarif Kasim II",
+              "shortName": null,
+              "logo": null,
+              "city": "Pekanbaru"
+            }
+          }
+        ],
+        "meta": {
+          "needRefresh": false,
+          "refreshTime": 2,
+          "maxRetry": 11,
+          "adult": 1,
+          "child": 0,
+          "infant": 0,
+          "requestID": "7ec050a9a8fbb46f815ef3eacbd0e810-jktabtj2020111110010",
+          "internationalTransitTag": "",
+          "backgroundRefreshTime": 1800
+        }
+      }
+    }
+  }
+]

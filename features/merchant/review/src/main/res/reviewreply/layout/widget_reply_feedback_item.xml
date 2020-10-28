@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl3">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRatingFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_rating_star_four" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
+        app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
+        app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Oleh Alexandra Ronodipuro •" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackDate"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
+        app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Hari ini" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackReview"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedbackDate"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi." />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvItemAttachmentFeedback"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerFeedbackReply"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
+    <View
+        android:id="@+id/replyFeedbackState"
+        android:layout_width="@dimen/spacing_lvl2"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:background="@drawable/rectangle_8"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvReplyUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Balasan otomatis •" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvReplyDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintStart_toEndOf="@id/tvReplyUser"
+        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Hari ini" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvReplyEdit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:background="?selectableItemBackground"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingLeft="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/spacing_lvl2"
+        android:text="@string/label_edit"
+        android:textColor="@color/light_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvReplyComment"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+        app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Thank you, semoga puas dan ditunggu orderan selanjutnya, Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi., Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi." />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        app:constraint_referenced_ids="dividerFeedbackReply, replyFeedbackState, tvReplyUser, tvReplyDate, tvReplyComment, tvReplyEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

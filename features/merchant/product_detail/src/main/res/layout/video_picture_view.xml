@@ -35,6 +35,7 @@
 
     <ImageView
         android:id="@+id/img_pdp_video"
+        android:contentDescription="@string/content_desc_img_pdp_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"/>

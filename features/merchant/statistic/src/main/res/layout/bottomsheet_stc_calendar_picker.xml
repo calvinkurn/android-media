@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
+    <com.tokopedia.statistic.view.customview.DateTextFieldView
         android:id="@+id/edtStcDate"
         android:layout_width="@dimen/shc_dimen_210dp"
         android:layout_height="wrap_content"

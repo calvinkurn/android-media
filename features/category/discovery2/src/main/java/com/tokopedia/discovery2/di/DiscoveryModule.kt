@@ -26,8 +26,12 @@ import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
+import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
@@ -57,6 +61,11 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository()
+    }
+
+    @Provides
+    fun provideTabsGQLRepository(): TabsRepository {
+        return TabsGQLRepository()
     }
 
     @Provides
@@ -131,6 +140,11 @@ class DiscoveryModule {
     @Provides
     fun providesDiscoveryTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): DiscoveryTopAdsTrackingUseCase {
         return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    @Provides
+    fun provideQuickFilterRestRepository(): QuickFilterRepository {
+        return QuickFilterRestRepository()
     }
 
     @DiscoveryScope

@@ -4,19 +4,19 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class UnitValue (
-        @SerializedName("variantUnitValueID")
+        @SerializedName("VariantUnitValueID")
         @Expose
         var variantUnitValueID: Int = 0,
-        @SerializedName("status")
+        @SerializedName("Status")
         @Expose
         var status: Int = 0,
-        @SerializedName("value")
+        @SerializedName("Value")
         @Expose
         var value: String = "",
-        @SerializedName("hex")
+        @SerializedName("Hex")
         @Expose
         var hex: String = "",
-        @SerializedName("icon")
+        @SerializedName("Icon")
         @Expose
         var icon: String = ""
 )

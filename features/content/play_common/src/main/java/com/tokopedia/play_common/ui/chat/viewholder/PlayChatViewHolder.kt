@@ -22,11 +22,6 @@ class PlayChatViewHolder(
         setType(typographyType)
     }
 
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        itemView.setOnClickListener {  }
-    }
-
     fun bind(chat: PlayChatUiModel) {
         val userName = SpannableString(chat.name)
         userName.setSpan(
@@ -42,11 +37,6 @@ class PlayChatViewHolder(
         tvChat.append(userName)
         tvChat.append(" ")
         tvChat.append(chat.message)
-    }
-
-    fun bind(quickReplyString: String, onQuickReplyClicked: (String) -> Unit) {
-        tvChat.text = quickReplyString
-        if (!itemView.hasOnClickListeners()) itemView.setOnClickListener { onQuickReplyClicked(quickReplyString) }
     }
 
     companion object {

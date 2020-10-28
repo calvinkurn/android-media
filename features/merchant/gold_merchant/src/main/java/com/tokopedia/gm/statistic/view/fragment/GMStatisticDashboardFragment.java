@@ -2,18 +2,18 @@ package com.tokopedia.gm.statistic.view.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 
-import com.tokopedia.applink.ApplinkConst;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;

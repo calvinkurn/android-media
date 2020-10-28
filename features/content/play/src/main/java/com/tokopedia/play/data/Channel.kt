@@ -2,112 +2,76 @@ package com.tokopedia.play.data
 
 import com.google.gson.annotations.SerializedName
 
+
 /**
- * Created by mzennis on 2019-12-03.
+ * Created by mzennis on 03/08/20.
  */
 data class Channel(
-
-        @SerializedName("gc_token")
-        val gcToken: String = "",
-
-        @SerializedName("partner_type")
-        val partnerType: Int = 0,
-
-        @SerializedName("partner_id")
-        val partnerId: Long = 0L,
-
-        @SerializedName("channel_id")
+        @SerializedName("id")
         val channelId: String = "",
-
         @SerializedName("title")
         val title: String = "",
-
         @SerializedName("description")
         val description: String = "",
-
-        @SerializedName("cover_url")
-        val coverUrl: String = "",
-
-        @SerializedName("background_url") // TODO("check response API")
-        val backgroundUrl: String = "",
-
         @SerializedName("start_time")
-        val startTime: Long = 0L,
-
+        val startTime: String = "",
         @SerializedName("end_time")
-        val endTime: Long = 0L,
-
-        @SerializedName("total_view_formatted")
-        val totalViews: String = "",
-
-        @SerializedName("total_participants_online")
-        val totalParticipantsOnline: String = "",
-
-        @SerializedName("is_active")
-        val isActive: Boolean = true,
-
-        @SerializedName("is_freeze")
-        val isFreeze: Boolean = false,
-
-        @SerializedName("moderator_id")
-        val moderatorId: String = "",
-
-        @SerializedName("moderator_name")
-        val moderatorName: String = "",
-
-        @SerializedName("moderator_thumb_url")
-        val moderatorThumbUrl: String = "",
-
-        @SerializedName("content_id")
-        val contentId: Int = 0,
-
-        @SerializedName("content_type")
-        val contentType: Int = 1,
-
-        @SerializedName("like_type")
-        val likeType: Int = 1,
-
-        @SerializedName("video_stream")
-        val videoStream: VideoStream = VideoStream(),
-
+        val endTime: String = "",
+        @SerializedName("is_live")
+        val isLive: Boolean = false,
+        @SerializedName("partner")
+        val partner: Partner = Partner(),
+        @SerializedName("video")
+        val video: Video = Video(),
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
-
-        @SerializedName("pinned_product")
-        val pinnedProduct: PinnedProduct = PinnedProduct(),
-
-        @SerializedName("quick_reply")
-        val quickReply: List<String> = emptyList(),
-
-        @SerializedName("settings")
-        val settings: Settings = Settings(),
-
-        @SerializedName("banned")
-        val banned: Banned = Banned(),
-
-        @SerializedName("exit_msg")
-        val exitMsg: ExitMsg = ExitMsg(),
-
-        @SerializedName("freeze_channel_state")
-        val freezeChannelState: FreezeChannelState = FreezeChannelState(),
-
-        @SerializedName("channel_type")
-        val channelType: Int = 0,
-
-        @SerializedName("is_show_cart")
-        val isShowCart: Boolean = false,
-
-        @SerializedName("is_show_product_tagging")
-        val isShowProductTagging: Boolean = false
-
+        @SerializedName("quick_replies")
+        val quickReplies: List<String> = emptyList(),
+        @SerializedName("configurations")
+        val configuration: Configuration = Configuration(),
+        @SerializedName("stats")
+        val stats: Statistic = Statistic(),
+        @SerializedName("app_link")
+        val appLink: String = "",
+        @SerializedName("webLink")
+        val webLink: String = ""
 ) {
 
-    data class Response(
-            @SerializedName("channel")
+    data class Data(
+            @SerializedName("data")
             val channel: Channel = Channel()
     )
 
-    data class Settings(
+    data class Response(
+            @SerializedName("playGetChannelDetails")
+            val data: Data = Data()
+    )
+
+    data class Partner(
+            @SerializedName("id")
+            val id: String = "",
+            @SerializedName("type")
+            val type: String = "",
+            @SerializedName("name")
+            val name: String = "",
+            @SerializedName("thumbnail_url")
+            val thumbnailUrl: String = "",
+            @SerializedName("badge_url")
+            val badgeUrl: String = ""
+    )
+
+    data class PinnedMessage(
+            @SerializedName("id")
+            val id: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("message")
+            val message: String = "",
+            @SerializedName("redirect_url")
+            val redirectUrl: String = ""
+    )
+
+    data class Configuration(
             @SerializedName("ping_interval")
             val pingInterval: Long = 0,
             @SerializedName("max_chars")
@@ -115,34 +79,81 @@ data class Channel(
             @SerializedName("max_retries")
             val maxRetries: Int = 0,
             @SerializedName("min_reconnect_delay")
-            val minReconnectDelay: Int = 0)
+            val minReconnectDelay: Int = 0,
+            @SerializedName("show_cart")
+            val showCart: Boolean = false,
+            @SerializedName("show_pinned_product")
+            val showPinnedProduct: Boolean = false,
+            @SerializedName("published")
+            val published: Boolean = false,
+            @SerializedName("active")
+            val active: Boolean = false,
+            @SerializedName("freezed")
+            val freezed: Boolean = false,
+            @SerializedName("has_promo")
+            val hasPromo: Boolean = false,
+            @SerializedName("feeds_like_params")
+            val feedsLikeParams: FeedLikeParam = FeedLikeParam(),
+            @SerializedName("channel_freeze_screen")
+            val channelFreezeScreen: ChannelFreezeScreen = ChannelFreezeScreen(),
+            @SerializedName("channel_banned_message")
+            val channelBannedMessage: ChannelBannedMessage = ChannelBannedMessage(),
+            @SerializedName("pinned_product_config")
+            val pinnedProduct: PinnedProduct = PinnedProduct(),
+            @SerializedName("room_background")
+            val roomBackground: RoomBackground = RoomBackground())
 
-    data class ExitMsg(
-            @SerializedName("title")
-            val title: String = "",
-            @SerializedName("body")
-            val body: String = "")
+    data class FeedLikeParam(
+            @SerializedName("content_type")
+            val contentType: Int = 0,
+            @SerializedName("content_id")
+            val contentId: String = "",
+            @SerializedName("like_type")
+            val likeType: Int = 1
+    )
 
-    data class FreezeChannelState(
+    data class Statistic(
+            @SerializedName("view")
+            val view: TotalView = TotalView()
+    )
+
+    data class TotalView(
+            @SerializedName("value")
+            val value: Long = 0L,
+            @SerializedName("formatted")
+            val formatted: String = ""
+    )
+
+    data class ChannelFreezeScreen(
             @SerializedName("category")
             val category: String = "",
             @SerializedName("title")
             val title: String = "",
-            @SerializedName("desc")
+            @SerializedName("description")
             val desc: String = "",
-            @SerializedName("btn_title")
+            @SerializedName("button_text")
             val btnTitle: String = "",
-            @SerializedName("btn_app_link")
+            @SerializedName("button_app_link")
             val btnAppLink: String = "")
 
-        data class Banned(
-                @SerializedName("msg")
-                val message: String = "",
+    data class ChannelBannedMessage(
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("message")
+            val message: String = "",
+            @SerializedName("button_text")
+            val buttonText: String = ""
+    )
 
-                @SerializedName("title")
-                val title: String = "",
+    data class PinnedProduct(
+            @SerializedName("pin_title")
+            val title: String = "",
+            @SerializedName("bottom_sheet_title")
+            val titleBottomSheet: String = ""
+    )
 
-                @SerializedName("button_title")
-                val buttonTitle: String = ""
-        )
+    data class RoomBackground(
+            @SerializedName("image_url")
+            val imageUrl: String = ""
+    )
 }

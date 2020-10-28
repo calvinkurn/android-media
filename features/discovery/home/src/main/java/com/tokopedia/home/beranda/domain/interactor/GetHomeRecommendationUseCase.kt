@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
-import com.tokopedia.home.beranda.domain.gql.searchHint.KeywordSearchHintQuery
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase

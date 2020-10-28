@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,7 +14,10 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import kotlinx.android.synthetic.main.item_ticker_info_view_holder.view.*
 
 /**
@@ -28,19 +32,24 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     override fun bind(element: ProductTickerInfoDataModel) {
-        with(view) {
+        if (element.generalTickerInfo == null) {
+            hideComponent()
+        } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
+            renderTicker(element)
+        }
+    }
 
-            if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
-                setupShopInfoTicker(element.statusInfo, element.closedInfo)
-            } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
-                setupShopInfoTicker(element.statusInfo, element.closedInfo)
-            } else if (element.generalTickerInfo.isNotEmpty()) {
-                setupGeneralTicker(element.generalTickerInfo)
-            } else {
-                shop_ticker_info.hide()
-                general_ticker_info.hide()
-            }
+    private fun renderTicker(element: ProductTickerInfoDataModel) {
+        showComponent()
+        if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
+            setupShopInfoTicker(element.statusInfo, element.closedInfo)
+        } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
+            setupShopInfoTicker(element.statusInfo, element.closedInfo)
+        } else if (element.generalTickerInfo?.isNotEmpty() == true) {
+            setupGeneralTicker(element.generalTickerInfo ?: listOf())
+        } else {
+            hideComponent()
         }
     }
 
@@ -58,7 +67,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 val statusTitle = getStringRes(R.string.ticker_title_shop_close)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
-            ProductShopStatusTypeDef.MODERATED_PERMANENTLY , ProductShopStatusTypeDef.MODERATED -> {
+            ProductShopStatusTypeDef.MODERATED_PERMANENTLY, ProductShopStatusTypeDef.MODERATED -> {
                 val statusMessage = if (listener.isOwner()) getStringRes(R.string.ticker_desc_shop_moderated_seller) else getStringRes(R.string.ticker_desc_shop_moderated_buyer)
                 val statusTitle = if (listener.isOwner()) getStringRes(R.string.ticker_title_shop_moderated_seller) else getStringRes(R.string.ticker_title_shop_moderated_buyer)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
@@ -69,7 +78,8 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 renderShopTicker(titleMessage, processedMessage, null)
             }
             else -> {
-                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage ?: "", null)
+                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage
+                        ?: "", null)
             }
         }
     }
@@ -102,6 +112,14 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 override fun onDismiss() {}
             })
         }
+    }
+
+    private fun hideComponent() = with(view) {
+        view_ticker_container.layoutParams.height = 0
+    }
+
+    private fun showComponent() = with(view) {
+        view_ticker_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private fun getStringRes(@StringRes value: Int): String = with(view) {

@@ -34,4 +34,18 @@
         android:id="@+id/gql_add_rest_record"
         android:title="@string/gql_add_rest_record" />
 
+    <item
+        android:id="@+id/gql_sort_by"
+        android:title="@string/gql_sort_by">
+        <menu>
+            <item
+                android:id="@+id/gql_sort_time_asc"
+                android:title="@string/gql_time_ascending" />
+            <item
+                android:id="@+id/gql_sort_default"
+                android:title="@string/gql_default" />
+        </menu>
+
+    </item>
+
 </menu>

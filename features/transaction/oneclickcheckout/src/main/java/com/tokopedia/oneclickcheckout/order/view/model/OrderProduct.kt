@@ -23,9 +23,23 @@ data class OrderProduct(
         var category: String = "",
         var productFinsurance: Int = 0,
         var isSlashPrice: Boolean = false,
+        var campaignId: Int = 0,
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage()
-)
+) {
+
+    fun getPrice(): Long {
+        var finalPrice = productPrice
+        if (wholesalePrice.isNotEmpty()) {
+            for (price in wholesalePrice) {
+                if (quantity.orderQuantity >= price.qtyMin) {
+                    finalPrice = price.prdPrc
+                }
+            }
+        }
+        return finalPrice
+    }
+}
 
 data class WholesalePrice(
         val qtyMinFmt: String = "",
@@ -33,7 +47,7 @@ data class WholesalePrice(
         val prdPrcFmt: String = "",
         val qtyMin: Int = 0,
         val qtyMax: Int = 0,
-        val prdPrc: Int = 0
+        val prdPrc: Long = 0
 )
 
 data class ProductTrackerData(

@@ -4,14 +4,13 @@ import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.home_component.mock.channel.MockChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout.LAYOUT_PRODUCT_HIGHLIGHT
-import com.tokopedia.home_component.test.env.BlankTestActivity
 import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleAdapter
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject.simpleViewFromLayout
+import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -20,11 +19,11 @@ class BenchmarkProductHighlightComponent {
     val benchmarkRule = BenchmarkRule()
 
     @get:Rule
-    var activityRule: ActivityTestRule<BlankTestActivity> = ActivityTestRule(BlankTestActivity::class.java)
+    val benchmarkViewRule = BenchmarkViewRule()
 
     @Test
     fun benchmark_onCreateViewHolder_ViewHolder_product_highlight_component() {
-        val viewGroup = FrameLayout(activityRule.activity)
+        val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = simpleAdapter(
                 ProductHighlightComponentViewHolder.LAYOUT) {
             ProductHighlightComponentViewHolder(it, null, null)
@@ -39,7 +38,7 @@ class BenchmarkProductHighlightComponent {
 
     @Test
     fun benchmark_onBind_ViewHolder_product_highlight_component() {
-        val itemView = simpleViewFromLayout(ProductHighlightComponentViewHolder.LAYOUT, activityRule.activity)
+        val itemView = simpleViewFromLayout(ProductHighlightComponentViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = ProductHighlightComponentViewHolder(
                 itemView, null, null
         )

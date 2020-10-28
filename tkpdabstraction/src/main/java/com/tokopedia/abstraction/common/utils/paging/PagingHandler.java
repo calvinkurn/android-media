@@ -20,6 +20,8 @@ import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Created by m.normansyah on 27/10/2015.
  */
@@ -31,6 +33,10 @@ public class PagingHandler implements PagingHandlerRotation {
     private int Page = 1;
     //	private int NextPage = -1;
     private PagingHandlerModel pagingHandlerModel;
+
+    @Inject
+    public PagingHandler() {
+    }
 
     public boolean CheckNextPage() {
         return hasNext;

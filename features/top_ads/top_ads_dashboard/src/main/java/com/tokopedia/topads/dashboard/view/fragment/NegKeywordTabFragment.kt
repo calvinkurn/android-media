@@ -117,7 +117,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
 
     }
@@ -254,9 +254,11 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun onSuccessKeyword(response: KeywordsResponse.GetTopadsDashboardKeywords) {
         loader.visibility = View.GONE
         totalPage = (totalCount / response.meta.page.perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
             adapter.items.add(NegKeywordItemViewModel(result))
         }
+        recyclerviewScrollListener.updateStateAfterGetData()
         adapter.notifyDataSetChanged()
         (activity as TopAdsGroupDetailViewActivity).setNegKeywordCount(adapter.itemCount)
     }

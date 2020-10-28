@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
@@ -258,4 +259,10 @@ class ChatModule {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 
+    @ChatScope
+    @Provides
+    @Named(AtcConstant.MUTATION_ATC_OCC)
+    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    }
 }

@@ -57,6 +57,8 @@ const val CLICK_NEXT_ON_CANCELLATION_PAGE = "click next on cancellation page"
 const val CLICK_SUBMIT_CANCELLATION = "click submit cancellation"
 const val VIEW_CANCELLATION_STATUS = "view cancellation status"
 const val CLICK_ON_CANCELLATION_RESULT_PAGE = "click on cancellation result page"
+const val CLICK_QUICK_FILTER_ON_SRP = "click quick filter on search result page"
+const val CLICK_USER_CLICK_FILTER = "user click filter"
 
 const val HOTEL_LABEL = "hotel"
 const val TRAVELENTERTAINMENT_LABEL = "travel & entertainment"

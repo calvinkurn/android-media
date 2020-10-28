@@ -8,21 +8,20 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.NonNullLiveData
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.VoucherTargetValidation
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MerchantVoucherTargetViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        private val dispatchers: CoroutineDispatchers,
         private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatchers.main) {
 
         private val mVoucherTargetListData = MutableLiveData<List<VoucherTargetItemUiModel>>()
         val voucherTargetListData : LiveData<List<VoucherTargetItemUiModel>>
@@ -91,7 +90,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
                                   couponName: String) {
             launchCatchError(
                     block = {
-                        withContext(Dispatchers.IO) {
+                        withContext(dispatchers.io) {
                             val code =
                                     if (mVoucherTargetTypeLiveData.value == VoucherTargetType.PUBLIC) {
                                         ""

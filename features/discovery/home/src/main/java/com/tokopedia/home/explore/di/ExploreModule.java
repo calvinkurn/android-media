@@ -16,12 +16,13 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.constant.GqlQueryConstant;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCaseRx;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME;
 
 /**
  * Created by errysuprayogi on 2/2/18.
@@ -59,7 +60,10 @@ public class ExploreModule {
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     String provideQueryGetShopInfo(@ApplicationContext Context context){
-        return GqlQueryConstant.INSTANCE.getShopInfoQuery(GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING);
+        return GqlQueryConstant.INSTANCE.getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING,
+                DEFAULT_SHOP_INFO_QUERY_NAME
+        );
     }
 
     @ExploreScope

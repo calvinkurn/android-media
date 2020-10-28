@@ -19,7 +19,7 @@ import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class WebSocketViewModel
 @Inject constructor(dispatcher: CoroutineDispatcher,
-                    private val userSession: UserSession,
+                    private val userSession: UserSessionInterface,
                     private val tkpdAuthInterceptor: TkpdAuthInterceptor,
                     private val fingerprintInterceptor: FingerprintInterceptor) : BaseViewModel(dispatcher), LifecycleObserver {
 
@@ -50,8 +50,10 @@ class WebSocketViewModel
 
     fun connectWebSocket() {
         launch {
-            client.run { newBuilder().addInterceptor(tkpdAuthInterceptor)
-                                     .addInterceptor(fingerprintInterceptor) }
+            client.run {
+                newBuilder().addInterceptor(tkpdAuthInterceptor)
+                        .addInterceptor(fingerprintInterceptor)
+            }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
 
             Timber.d(" Open: ${easyWS?.response}")
@@ -60,8 +62,8 @@ class WebSocketViewModel
                 for (response in it.textChannel) {
                     Timber.d(" Response: $response")
                     if (isOnStop) continue
-                    when(response.code) {
-                        EVENT_TOPCHAT_REPLY_MESSAGE ->  {
+                    when (response.code) {
+                        EVENT_TOPCHAT_REPLY_MESSAGE -> {
                             val chat = Success(mapToIncomingChat(response))
                             _itemChat.value = chat
                         }

@@ -9,18 +9,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
-class ChangeVoucherPeriodViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+class ChangeVoucherPeriodViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
                                                        private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase,
-                                                       private val getTokenUseCase: GetTokenUseCase) : BaseViewModel(dispatcher) {
+                                                       private val getTokenUseCase: GetTokenUseCase) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd"
@@ -50,7 +49,7 @@ class ChangeVoucherPeriodViewModel @Inject constructor(dispatcher: CoroutineDisp
                             launchCatchError(
                                     block = {
                                         val token = getTokenUseCase.executeOnBackground()
-                                        value = Success(withContext(Dispatchers.IO) {
+                                        value = Success(withContext(dispatchers.io) {
                                             changeVoucherPeriodUseCase.params =
                                                     ChangeVoucherPeriodUseCase.createRequestParam(
                                                             uiModel,

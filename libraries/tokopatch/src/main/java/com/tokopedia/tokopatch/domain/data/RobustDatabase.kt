@@ -28,7 +28,7 @@ abstract class RobustDatabase : RoomDatabase() {
                         context.applicationContext,
                         RobustDatabase::class.java,
                         "tokofix"
-                ).addMigrations(DBMigration.MIGRATION_1_2).build()
+                ).addMigrations(DBMigration.MIGRATION_1_2).allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }

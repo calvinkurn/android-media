@@ -33,6 +33,11 @@ class FragmentUserInteractionViewComponent(
         }
     }
 
+    fun setScaledVideoBottomBounds(finalBottomBounds: Int) {
+        val fragment = fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) as? PlayUserInteractionFragment
+        fragment?.maxTopOnChatMode(finalBottomBounds)
+    }
+
     private fun getPlayUserInteractionFragment(): Fragment {
         val fragmentFactory = fragmentManager.fragmentFactory
         return fragmentFactory.instantiate(container.context.classLoader, PlayUserInteractionFragment::class.java.name).apply {

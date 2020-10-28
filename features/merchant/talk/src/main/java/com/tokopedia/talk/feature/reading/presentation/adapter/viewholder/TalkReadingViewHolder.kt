@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
 class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
@@ -20,7 +21,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     override fun bind(element: TalkReadingUiModel) {
         element.question.apply {
             itemView.setOnClickListener { threadListener.onThreadClicked(questionID) }
-            showInquirerName(userName)
+            showInquirerName(userName, state.isYours)
             showInquirerProfilePicture(userThumbnail)
             showInquiryDate(createTimeFormatted)
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
@@ -28,7 +29,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 hideNoAnswersText()
                 showProfilePicture(answer.userThumbnail)
                 showDisplayName(answer.userName)
-                showSellerLabelWithCondition(answer.isSeller)
+                showLabelWithCondition(answer.isSeller, answer.state.isYours)
                 showDate(answer.createTimeFormatted)
                 if(answer.state.isMasked) {
                     showMaskedAnswer(answer.maskedContent, questionID)
@@ -53,7 +54,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showInquirerName(inquirerName: String) {
+    private fun showInquirerName(inquirerName: String, isMyQuestion: Boolean) {
+        if(isMyQuestion) {
+            itemView.readingInquirerYouLabel.show()
+        } else {
+            itemView.readingInquirerYouLabel.hide()
+        }
         if(inquirerName.isNotEmpty()) {
             itemView.readingInquirerName.apply{
                 text = inquirerName
@@ -159,12 +165,28 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean) {
-        if(isSeller) {
-            itemView.readingRespondentSellerLabel.show()
-            itemView.readingRespondentDisplayName.hide()
-        } else {
-            itemView.readingRespondentSellerLabel.hide()
+    private fun showLabelWithCondition(isSeller: Boolean, isYours: Boolean) {
+        with(itemView) {
+            when {
+                isSeller -> {
+                    readingRespondentSellerLabel.apply {
+                        text = context.getString(R.string.reading_seller_label)
+                        setLabelType(Label.GENERAL_LIGHT_GREEN)
+                        show()
+                    }
+                    readingRespondentDisplayName.hide()
+                }
+                isYours -> {
+                    readingRespondentSellerLabel.apply {
+                        text = context.getString(R.string.reading_your_question_label)
+                        setLabelType(Label.GENERAL_LIGHT_GREY)
+                        show()
+                    }
+                }
+                else -> {
+                    readingRespondentSellerLabel.hide()
+                }
+            }
         }
     }
 

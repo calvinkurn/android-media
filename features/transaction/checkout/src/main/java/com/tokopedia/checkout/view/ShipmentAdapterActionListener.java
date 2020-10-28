@@ -27,8 +27,6 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeAddress();
 
-    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel, String cartIds);
-
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   int cartPosition);

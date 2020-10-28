@@ -1,0 +1,78 @@
+{
+  "readme": "Recharge express checkout",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - native",
+      "eventAction": "click pakai promo",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - native",
+      "eventAction": "click 'x' on promo",
+      "eventLabel": "",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "add_to_cart",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click beli",
+      "eventLabel": "{{.* - .* - .*}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d*E\\d}}",
+          "item_variant": "none/other",
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "begin_checkout",
+      "eventCategory": "digital - checkout",
+      "eventAction": "view checkout",
+      "eventLabel": "{{.* - .*}}",
+      "checkout_step": "{{.*}}",
+      "checkout_option": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_category": "{{.*}}",
+          "price": "{{.*}}",
+          "item_variant": "none/other",
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "checkout_progress",
+      "eventCategory": "digital - checkout",
+      "eventAction": "click proceed to payment",
+      "eventLabel": "{{.* - .* - .*}}",
+      "checkout_step": "{{.*}}",
+      "checkout_option": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "items": [
+        {
+          "item_category": "{{.*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d*E\\d}}",
+          "item_variant": "none/other",
+          "quantity": "{{\\d+(.\\d+)?}}",
+          "item_id": "{{\\d+}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}"
+        }
+      ]
+    }
+  ]
+}

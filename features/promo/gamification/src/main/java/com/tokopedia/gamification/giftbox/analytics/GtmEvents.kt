@@ -172,4 +172,29 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
+    //20
+    fun viewNoInternetError(userId:String?) {
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_ERROR
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = GiftBoxLabel.INTERNET_CONN_ERROR
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //21
+    fun viewToastError(userId:String?, errorMessage:String) {
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_ERROR
+        map[GiftBoxTrackerConstants.EVENT_LABEL] = errorMessage
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
 }

@@ -12,7 +12,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
-        app:maximumHeight="@dimen/play_chat_max_height"
+        app:maximumHeight="@dimen/play_chat_vertical_max_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

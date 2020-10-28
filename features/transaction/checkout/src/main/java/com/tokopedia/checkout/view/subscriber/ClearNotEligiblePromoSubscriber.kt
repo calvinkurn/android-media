@@ -22,12 +22,10 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        view?.hideLoading()
         view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
     override fun onNext(response: ClearPromoUiModel?) {
-        view?.hideLoading()
         if (!TextUtils.isEmpty(response?.successDataModel?.tickerMessage)) {
             presenter.tickerAnnouncementHolderData.message = response?.successDataModel?.tickerMessage
                     ?: ""

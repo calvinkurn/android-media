@@ -5,33 +5,6 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-data class FinancingDataResponse(
-        @SerializedName("ft_installment_calculation")
-        val ftInstallmentCalculation: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
-) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readParcelable<FtInstallmentCalculationDataResponse>(FtInstallmentCalculationDataResponse::class.java.classLoader)!!)
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(ftInstallmentCalculation, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<FinancingDataResponse> {
-        override fun createFromParcel(parcel: Parcel): FinancingDataResponse {
-            return FinancingDataResponse(parcel)
-        }
-
-        override fun newArray(size: Int): Array<FinancingDataResponse?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
 data class FtInstallmentCalculationDataResponse(
         @SerializedName("data")
         val data: FtInstallmentCalcualtionData = FtInstallmentCalcualtionData()

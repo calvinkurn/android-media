@@ -48,7 +48,7 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
     }
 
     private AttachProductItemViewModel getDataRow(int position){
-        if(position < 0 && position >= visitables.size()) {
+        if(position < 0 || position >= visitables.size()) {
             return null;
         }
         else {

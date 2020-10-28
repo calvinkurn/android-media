@@ -23,9 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIc
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -51,7 +49,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val mixTopComponentListener: MixTopComponentListener,
                          private val reminderWidgetListener: ReminderWidgetListener,
                          private val productHighlightListener: ProductHighlightListener,
-                         private val lego4AutoBannerListener: Lego4AutoBannerListener
+                         private val lego4AutoBannerListener: Lego4AutoBannerListener,
+                         private val featuredShopListener: FeaturedShopListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -178,8 +177,20 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return ProductHighlightComponentViewHolder.LAYOUT
     }
 
+    override fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int {
+        return DynamicChannelLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int {
+        return DynamicChannelRetryViewHolder.LAYOUT
+    }
+
     override fun type(lego4AutoDataModel: Lego4AutoDataModel): Int {
         return Lego4AutoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
+        return FeaturedShopViewHolder.LAYOUT
     }
     //end of Home-Component section
 
@@ -296,12 +307,19 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
+            DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
+            DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
             Lego4AutoBannerViewHolder.LAYOUT -> viewHolder =
                     Lego4AutoBannerViewHolder(
                             view,
                             lego4AutoBannerListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+            FeaturedShopViewHolder.LAYOUT -> viewHolder = FeaturedShopViewHolder(
+                    view,
+                    featuredShopListener,
+                    homeComponentListener
+            )
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

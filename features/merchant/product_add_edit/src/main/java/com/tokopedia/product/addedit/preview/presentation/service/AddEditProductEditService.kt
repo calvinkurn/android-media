@@ -7,25 +7,25 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -60,28 +60,44 @@ class AddEditProductEditService : AddEditProductBaseService() {
         }
 
         // (1)
-        saveProductToDraft()
+        saveProductToDraftAsync()
     }
 
-    private fun saveProductToDraft() {
-        launch {
-            productDraftId = withContext(Dispatchers.IO){
-                saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
-                        mapProductInputModelDetailToDraft(productInputModel),
-                        productInputModel.draftId, false)
-                saveProductDraftUseCase.executeOnBackground()
-            }
+    private fun saveProductToDraftAsync() {
+        launchCatchError(block = {
+            asyncCatchError( coroutineContext,
+                    block = {
+                        saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(
+                                mapProductInputModelDetailToDraft(productInputModel),
+                                productInputModel.draftId, false)
+                        saveProductDraftUseCase.executeOnBackground()
+                    },
+                    onError = { throwable ->
+                        logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+                        0L
+                    }
+            ).await().let {
+                productDraftId = it ?: 0L
 
-            val detailInputModel = productInputModel.detailInputModel
-            val variantInputModel = productInputModel.variantInputModel
-            // (2)
-            uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
-        }
+                // (2)
+                val detailInputModel = productInputModel.detailInputModel
+                val variantInputModel = productInputModel.variantInputModel
+                uploadProductImages(detailInputModel.imageUrlOrPathList, variantInputModel)
+            }
+        }, onError = { throwable ->
+            logError(TITLE_ERROR_SAVING_DRAFT, throwable)
+        })
     }
 
     override fun onUploadProductImagesSuccess(uploadIdList: ArrayList<String>, variantInputModel: VariantInputModel) {
         // (3)
         editProduct(uploadIdList, variantInputModel)
+    }
+
+    override fun onUploadProductImagesFailed(errorMessage: String) {
+        ProductEditUploadTracking.uploadImageFailed(
+                userSession.shopId,
+                AddEditProductUploadErrorHandler.getUploadImageErrorName(errorMessage))
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -122,13 +138,24 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
             // (4)
             clearProductDraft()
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
+            ProductEditUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->
-            delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataError(getErrorMessage(throwable))
 
             logError(productEditUseCase.params, throwable)
+            if (AddEditProductUploadErrorHandler.isServerTimeout(throwable)) {
+                ProductEditUploadTracking.uploadGqlTimeout(
+                        ProductEditUseCase.QUERY_NAME,
+                        shopId,
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            } else {
+                ProductEditUploadTracking.uploadProductFinish(
+                        shopId,
+                        false,
+                        AddEditProductUploadErrorHandler.isValidationError(throwable),
+                        AddEditProductUploadErrorHandler.getErrorName(throwable))
+            }
         })
     }
 

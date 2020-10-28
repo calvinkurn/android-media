@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import kotlinx.android.synthetic.main.card_preference.view.*
 
 class PreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
@@ -74,8 +73,16 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 tvChoosePreference.text = itemView.context.getString(R.string.label_choose_this_preference)
                 tvChoosePreference.visible()
             }
-            tvChoosePreference.setOnClickListener {
-                listener.onPreferenceSelected(preference)
+            if (preference.enable) {
+                tvChoosePreference.setOnClickListener {
+                    listener.onPreferenceSelected(preference)
+                }
+                itemView.alpha = 1f
+            } else {
+                tvChoosePreference.setOnClickListener {
+                    //no op
+                }
+                itemView.alpha = 0.5f
             }
         }
 
@@ -120,7 +127,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         }
 
         ivEditPreference.setOnClickListener {
-            listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            if (preference.enable) {
+                listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
+            }
         }
     }
 }

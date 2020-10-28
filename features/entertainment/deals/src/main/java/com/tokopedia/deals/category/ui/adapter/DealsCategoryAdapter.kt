@@ -4,9 +4,9 @@ import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.deals.brand.ui.adapter.delegate.DealsBrandEmptyAdapterDelegate
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
-import com.tokopedia.deals.common.listener.ProductListListener
+import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandGridAdapterDelegate
-import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonProductAdapterDelegate
+import com.tokopedia.deals.common.ui.adapter.delegate.DealsProductCategoryAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDelegate
 
 /**
@@ -14,15 +14,15 @@ import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDel
  */
 
 class DealsCategoryAdapter(
-    brandActionListener: DealsBrandActionListener,
-    productListListener: ProductListListener,
-    emptyStateListener: EmptyStateListener
+        brandActionListener: DealsBrandActionListener,
+        productCardListener: ProductCardListener,
+        emptyStateListener: EmptyStateListener
 ) : BaseCommonAdapter() {
     init {
         delegatesManager
-            .addDelegate(DealsCommonBrandGridAdapterDelegate(brandActionListener))
-            .addDelegate(DealsCommonProductAdapterDelegate(productListListener))
-            .addDelegate(DealsBrandEmptyAdapterDelegate(emptyStateListener))
-            .addDelegate(LoadingMoreUnifyAdapterDelegate())
+                .addDelegate(DealsCommonBrandGridAdapterDelegate(brandActionListener))
+                .addDelegate(DealsProductCategoryAdapterDelegate(productCardListener))
+                .addDelegate(DealsBrandEmptyAdapterDelegate(emptyStateListener))
+                .addDelegate(LoadingMoreUnifyAdapterDelegate())
     }
 }

@@ -185,7 +185,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Inject
     UserSessionInterface userSession;
 
-    private String selectedFilter = "0";
+    private String selectedFilter = "18";
 
     private CustomViewRounderCornerFilterView quickSingleFilterView;
 

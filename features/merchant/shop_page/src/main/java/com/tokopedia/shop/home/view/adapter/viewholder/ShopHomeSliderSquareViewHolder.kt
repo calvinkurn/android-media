@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.widget_shop_page_home_slider_square.view.*
 class ShopHomeSliderSquareViewHolder(
         itemView: View,
         private val previousViewHolder: AbstractViewHolder<*>?,
-        listener: ShopHomeDisplayWidgetListener
+        private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -32,11 +32,11 @@ class ShopHomeSliderSquareViewHolder(
         val LAYOUT_RES = R.layout.widget_shop_page_home_slider_square
     }
 
-    private val shopHomeSliderSquareAdapter by lazy { ShopHomeSliderSquareAdapter(listener) }
+    private var shopHomeSliderSquareAdapter: ShopHomeSliderSquareAdapter? = null
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-
+        shopHomeSliderSquareAdapter = ShopHomeSliderSquareAdapter(listener)
         itemView.rvCarouselShopPageHome.apply {
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
@@ -44,10 +44,10 @@ class ShopHomeSliderSquareViewHolder(
             }
             adapter = shopHomeSliderSquareAdapter
         }
-        shopHomeSliderSquareAdapter.displayWidgetUiModel = element
-        shopHomeSliderSquareAdapter.heightRatio = getHeightRatio(element)
-        shopHomeSliderSquareAdapter.parentPosition = adapterPosition
-        shopHomeSliderSquareAdapter.submitList(element.data)
+        shopHomeSliderSquareAdapter?.displayWidgetUiModel = element
+        shopHomeSliderSquareAdapter?.heightRatio = getHeightRatio(element)
+        shopHomeSliderSquareAdapter?.parentPosition = adapterPosition
+        shopHomeSliderSquareAdapter?.submitList(element.data)
         itemView.tgHeaderSliderSquare?.apply {
             val title = element.header.title
             if (title.isEmpty()) {

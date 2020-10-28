@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,7 +18,7 @@ import javax.inject.Inject
  */
 class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase,
-        private val dispatcher: DigitalHomePageDispatchersProvider
+        private val dispatcher: RechargeHomepageDispatchersProvider
 ): BaseViewModel(dispatcher.Main) {
 
     private val mutableSearchCategoryList = MutableLiveData<Result<List<DigitalHomePageSearchCategoryModel>>>()

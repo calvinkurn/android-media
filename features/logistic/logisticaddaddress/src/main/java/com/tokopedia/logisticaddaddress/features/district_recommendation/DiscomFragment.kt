@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -17,13 +16,11 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticdata.data.entity.address.Token
-
-import javax.inject.Inject
-
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictTypeFactory
+import com.tokopedia.logisticdata.data.entity.address.Token
+import javax.inject.Inject
 
 class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), DiscomContract.View {
 
@@ -77,6 +74,14 @@ class DiscomFragment : BaseSearchListFragment<Address, DistrictTypeFactory>(), D
             analytics?.gtmOnClearTextDistrictRecommendationInput()
         }
         swipeRefreshLayout!!.isEnabled = false
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 
     override fun onDetach() {

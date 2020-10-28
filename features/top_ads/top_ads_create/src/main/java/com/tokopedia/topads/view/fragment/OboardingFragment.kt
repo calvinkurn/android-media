@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -16,6 +18,7 @@ import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.activity.StepperActivity
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
+import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.view.*
 
 /**
  * Author errysuprayogi on 08,November,2019
@@ -35,6 +38,22 @@ class OboardingFragment: TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.imageView7.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
+        context?.let {
+            view.top_corner_bg1.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
+            view.top_corner_bg2.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
+        }
+        view.icon1.setImageResource(R.drawable.topads_create_ic_thumb_up)
+        view.icon2.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_1)
+        view.icon3.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_2)
+        view.icon4.setImageResource(R.drawable.topads_create_ic_iklan_otomatis_3)
+
+        view.icon5.setImageResource(R.drawable.topads_create_ic_gear)
+        view.icon6.setImageResource(R.drawable.topads_create_ic_iklan_manual_1)
+        view.icon7.setImageResource(R.drawable.topads_create_ic_iklan_manual_2)
+        view.icon8.setImageResource(R.drawable.topads_create_ic_iklan_manual_3)
+
+
         btn_start_auto_ads.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
             RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {

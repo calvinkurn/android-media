@@ -36,8 +36,8 @@ class TopAdsImageViewViewModel constructor(application: Application) :AndroidVie
                 })
     }
 
-    fun getQueryParams(query: String,source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String): MutableMap<String, Any> {
-        return useCase.getQueryMap(query,source, pageToken, adsCount, dimenId,depId)
+    fun getQueryParams(query: String, source: String, pageToken: String, adsCount: Int, dimenId: Int, depId: String, productID: String): MutableMap<String, Any> {
+        return useCase.getQueryMap(query, source, pageToken, adsCount, dimenId, depId, productID)
     }
 
 

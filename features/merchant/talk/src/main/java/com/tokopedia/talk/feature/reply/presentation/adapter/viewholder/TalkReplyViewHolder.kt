@@ -7,6 +7,8 @@ import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -16,20 +18,31 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedPr
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREEN
+import com.tokopedia.unifycomponents.Label.Companion.GENERAL_LIGHT_GREY
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
                           private val onKebabClickedListener: OnKebabClickedListener,
                           private val threadListener: ThreadListener
-) : AbstractViewHolder<TalkReplyUiModel>(view) {
+) : AbstractViewHolder<TalkReplyUiModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
         const val IN_VIEWHOLDER = true
+    }
+
+    override fun onUnmaskQuestionOptionSelected(isMarkNotFraud: Boolean, commentId: String) {
+        if(isMarkNotFraud) {
+            threadListener.onUnmaskCommentOptionSelected(commentId)
+        } else {
+            threadListener.onDismissUnmaskCard(commentId)
+        }
     }
 
     override fun bind(element: TalkReplyUiModel) {
@@ -38,10 +51,11 @@ class TalkReplyViewHolder(view: View,
             showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
             showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
-            showSellerLabelWithCondition(isSeller)
-            showAnswer(content, state.isMasked, maskedContent)
+            showLabelWithCondition(isSeller, element.isMyQuestion)
+            showAnswer(content, state.isMasked, maskedContent, state.allowUnmask)
             showAttachedProducts(attachedProducts.toMutableList())
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
+            showUnmaskCardWithCondition(state.allowUnmask, answerID)
         }
     }
 
@@ -84,13 +98,22 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showSellerLabelWithCondition(isSeller: Boolean)  = with(itemView){
-        if (isSeller) {
-            replyDisplayName.hide()
-            replySellerLabel.show()
-        } else {
-            replyDisplayName.show()
-            replySellerLabel.hide()
+    private fun showLabelWithCondition(isSeller: Boolean, isMyQuestion :Boolean) = with(itemView){
+        when {
+            isSeller -> {
+                replySellerLabel.text = context.getString(R.string.reading_seller_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREEN)
+                replyDisplayName.hide()
+                replySellerLabel.show()
+            }
+            isMyQuestion -> {
+                replySellerLabel.text = context.getString(R.string.reading_your_question_label)
+                replySellerLabel.setLabelType(GENERAL_LIGHT_GREY)
+                replySellerLabel.show()
+            }
+            else -> {
+                replySellerLabel.hide()
+            }
         }
     }
 
@@ -98,17 +121,18 @@ class TalkReplyViewHolder(view: View,
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String) {
+    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String, allowUnmask: Boolean) {
         if(isMasked) {
             itemView.replyMessage.apply {
-                text = maskedContent
+                text = if(allowUnmask) HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString() else maskedContent
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 show()
-                isEnabled = false
             }
             return
         }
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                 text = HtmlLinkHelper(context, answer).spannedString
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
@@ -168,5 +192,14 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-
+    private fun showUnmaskCardWithCondition(allowUnmask: Boolean, commentId: String) {
+        if(allowUnmask) {
+            itemView.replyCommentUnmaskCard.apply {
+                show()
+                setListener(this@TalkReplyViewHolder, commentId)
+            }
+        } else {
+            itemView.replyCommentUnmaskCard.hide()
+        }
+    }
 }

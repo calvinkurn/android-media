@@ -6,11 +6,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.design.image.SquareImageView
+    <ImageView
         android:id="@+id/category_image"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_margin="@dimen/dp_12"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_margin="@dimen/category_icon_margin"
         android:layout_gravity="center"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -18,10 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:paddingStart="@dimen/spacing_lvl1"
+        android:paddingLeft="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl1"
+        android:paddingRight="@dimen/spacing_lvl1"
         app:typographyType="small"
         tools:text="Digital Home" />
 </LinearLayout>

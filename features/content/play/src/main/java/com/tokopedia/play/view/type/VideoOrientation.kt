@@ -23,6 +23,9 @@ sealed class VideoOrientation {
     val isHorizontal: Boolean
         get() = this is Horizontal
 
+    val isVertical: Boolean
+        get() = this is Vertical
+
     companion object {
         private const val VERTICAL = "vertical"
         private const val HORIZONTAL = "horizontal"

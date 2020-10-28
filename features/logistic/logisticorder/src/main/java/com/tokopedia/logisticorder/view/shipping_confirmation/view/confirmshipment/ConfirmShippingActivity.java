@@ -36,7 +36,7 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.di.DaggerOrderCour
 import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierComponent;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;

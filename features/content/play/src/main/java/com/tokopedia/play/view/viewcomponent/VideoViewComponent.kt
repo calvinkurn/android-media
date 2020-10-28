@@ -37,7 +37,6 @@ class VideoViewComponent(
     private var mExoPlayer: ExoPlayer? = null
 
     fun setPlayer(exoPlayer: ExoPlayer?) {
-        mExoPlayer = exoPlayer
         pvVideo.player = exoPlayer
     }
 
@@ -58,6 +57,10 @@ class VideoViewComponent(
         } else {
             ivThumbnail.hide()
         }
+    }
+
+    fun hideThumbnail() {
+        ivThumbnail.hide()
     }
 
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
@@ -122,6 +125,7 @@ class VideoViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        mExoPlayer = pvVideo.player as? ExoPlayer
         setPlayer(null)
     }
 

@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
+import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -30,10 +30,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     lateinit var isInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
-    lateinit var emptyVuvObserver: Observer<Boolean>
-
-    @RelaxedMockK
-    lateinit var getCategoryVariantCombinationUseCase: GetCategoryVariantCombinationUseCase
+    lateinit var getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase
 
     @Suppress("UNCHECKED_CAST")
     private val mIsInputValid: MediatorLiveData<Boolean> by lazy {
@@ -48,7 +45,7 @@ abstract class AddEditProductVariantViewModelTestFixture {
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     val variantDetailTest1 = VariantDetail(
-            variantID=54,
+            variantID=1,
             identifier="",
             name="Ukuran Kemasan",
             status=1,
@@ -138,14 +135,14 @@ abstract class AddEditProductVariantViewModelTestFixture {
     protected val spiedViewModel: AddEditProductVariantViewModel by lazy {
         spyk(AddEditProductVariantViewModel(
                 testCoroutineDispatcher,
-                getCategoryVariantCombinationUseCase
+                getVariantCategoryCombinationUseCase
         ))
     }
 
     protected val viewModel: AddEditProductVariantViewModel by lazy {
         AddEditProductVariantViewModel(
                 testCoroutineDispatcher,
-                getCategoryVariantCombinationUseCase)
+                getVariantCategoryCombinationUseCase)
     }
 
     @Before
@@ -153,8 +150,6 @@ abstract class AddEditProductVariantViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         mIsInputValid.observeForever(isInputValidObserver)
-        viewModel.isSelectedVariantUnitValuesEmpty.observeForever(emptyVuvObserver)
-        spiedViewModel.isSelectedVariantUnitValuesEmpty.observeForever(emptyVuvObserver)
     }
 
     @AfterEach
@@ -166,8 +161,6 @@ abstract class AddEditProductVariantViewModelTestFixture {
     @After
     fun cleanUp() {
         mIsInputValid.removeObserver(isInputValidObserver)
-        viewModel.isSelectedVariantUnitValuesEmpty.removeObserver(emptyVuvObserver)
-        spiedViewModel.isSelectedVariantUnitValuesEmpty.removeObserver(emptyVuvObserver)
     }
 
     private fun getPrivateField(owner: Any, name: String): Any? {
