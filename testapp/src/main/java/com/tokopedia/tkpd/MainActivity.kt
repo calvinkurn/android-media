@@ -9,12 +9,10 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
@@ -71,17 +69,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val button = findViewById<Button>(R.id.button)
-        val chuckButton = findViewById<Button>(R.id.chuckButton)
 
-        chuckButton.setOnClickListener { startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP)) }
         button.setOnClickListener {
             goTo()
         }
 
-
-        useOldPageButton.setOnClickListener {
-            startActivity(Intent(this, OldMainActivity::class.java))
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
