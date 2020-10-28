@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -85,34 +84,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
     private var performanceMonitoringFull: PerformanceMonitoring? = null
-
-    object DeeplinkIntents {
-        @DeepLink(ApplinkConst.PRODUCT_INFO)
-        @JvmStatic
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment)
-
-            if (!uri.getQueryParameter(PARAM_LAYOUT_ID).isNullOrBlank()) {
-                intent.putExtra(PARAM_LAYOUT_ID, uri.getQueryParameter(PARAM_LAYOUT_ID))
-            }
-
-            return intent ?: Intent()
-        }
-
-        @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
-        @JvmStatic
-        fun getAffiliateIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            val intent = RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    uri.lastPathSegment) ?: Intent()
-            intent.putExtra(IS_FROM_EXPLORE_AFFILIATE, true)
-            return intent
-        }
-    }
 
     fun stopMonitoringP1() {
         performanceMonitoringP1?.stopTrace()

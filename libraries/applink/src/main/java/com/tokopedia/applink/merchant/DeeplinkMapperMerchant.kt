@@ -6,6 +6,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -245,4 +246,20 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
+    fun isProductDetailPageDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toIntOrZero() != 0
+    }
+
+    fun getRegisteredProductDetail(deeplink: String): String {
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+        val layoutId = parsedUri.getQueryParameter("layoutId") ?: ""
+        val productDetailInternal = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, segments[0])
+        return Uri.parse(productDetailInternal)
+                .buildUpon()
+                .appendQueryParameter("layoutId", layoutId)
+                .build()
+                .toString()
+    }
 }

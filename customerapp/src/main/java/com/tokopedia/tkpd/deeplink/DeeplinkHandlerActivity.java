@@ -13,7 +13,6 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -43,8 +42,6 @@ import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.data.repository.HistoryRepository;
@@ -58,7 +55,6 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -66,9 +62,6 @@ import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -80,7 +73,6 @@ import timber.log.Timber;
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         SellerApplinkModule.class,
-        ProductDetailApplinkModule.class,
         FeedDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
@@ -105,7 +97,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
-                    new ProductDetailApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
