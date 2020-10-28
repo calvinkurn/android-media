@@ -296,6 +296,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToPdp(productId)
     }
 
+    override fun onProductCardClicked() {
+
+    }
+
     private fun goToReportActivity(commentId: String) {
         val intent = if(commentId.isNotBlank()) {
             context?.let { ReportTalkActivity.createIntentReportComment(it, questionId, commentId, shopId, productId) }
