@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata
 
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -22,22 +23,22 @@ data class CMLayout(
         val messageText: CMText? = CMText(),
 
         @Expose
-        @Embedded(prefix = "img")
+        @ColumnInfo(name = "img")
         @SerializedName("img")
         val img: String = "",
 
         @Expose
-        @Embedded(prefix = "appLink")
         @SerializedName("appLink")
+        @ColumnInfo(name = "appLink")
         val appLink: String = "",
 
         @Expose
-        @Embedded(prefix = "btnOri")
+        @ColumnInfo(name = "btnOri")
         @SerializedName("btnOri")
         val btnOrientation: String = CmInAppConstant.ORIENTATION_VERTICAL,
 
         @Expose
-        @Embedded(prefix = "inAppButtons")
+        @ColumnInfo(name = "inAppButtons")
         @SerializedName("inAppButtons")
         val button: List<CMButton>? = emptyList()
 )
