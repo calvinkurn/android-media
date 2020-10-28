@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import com.google.android.material.internal.CheckableImageButton;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
