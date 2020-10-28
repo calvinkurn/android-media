@@ -176,6 +176,10 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
+    override fun getContext(): Context {
+        return requireContext()
+    }
+
     override fun checkUriImage(feedbackId: Int, imageCount: Int) {
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
@@ -579,4 +583,5 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 MediaStore.Images.Media.DATA
         )
     }
+
 }
