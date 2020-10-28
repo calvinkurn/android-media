@@ -9,13 +9,31 @@ import com.tokopedia.unifyprinciples.Typography
 class SectionTitleViewHolder(itemView: View?) : AbstractViewHolder<SectionTitleUiModel>(itemView) {
 
     private val title: Typography? = itemView?.findViewById(R.id.txt_section_title)
+    private val topPadding = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifycomponents.R.dimen.spacing_lvl4
+    ) ?: 0f
 
     override fun bind(element: SectionTitleUiModel) {
+        bindTopPadding()
         bindTitle(element)
     }
 
     private fun bindTitle(element: SectionTitleUiModel) {
         title?.text = element.title
+    }
+
+    private fun bindTopPadding() {
+        title?.apply {
+            if (isFirstPosition()) {
+                setPadding(paddingLeft, 0, paddingRight, paddingBottom)
+            } else {
+                setPadding(paddingLeft, topPadding.toInt(), paddingRight, paddingBottom)
+            }
+        }
+    }
+
+    private fun isFirstPosition(): Boolean {
+        return adapterPosition == 0
     }
 
     companion object {
