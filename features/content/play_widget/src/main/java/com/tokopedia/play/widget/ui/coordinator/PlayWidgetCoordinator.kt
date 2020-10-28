@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
+import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -51,6 +52,8 @@ class PlayWidgetCoordinator(
             autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
         }
     }
+
+    private var impressionHelper = ImpressionHelper()
 
     init {
         lifecycleOwner?.let { configureLifecycle(it) }
@@ -111,6 +114,14 @@ class PlayWidgetCoordinator(
             autoRefreshCoordinator.configureAutoRefresh(model.config)
             autoPlayCoordinator.configureAutoPlay(widget, model.config)
         }
+    }
+
+    fun setImpressionHelper(helper: ImpressionHelper) {
+        impressionHelper = helper
+    }
+
+    fun getImpressionHelper(): ImpressionHelper {
+        return impressionHelper
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
