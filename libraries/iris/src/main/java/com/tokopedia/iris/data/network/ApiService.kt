@@ -75,7 +75,7 @@ class ApiService(private val context: Context) {
                     it.proceed(requestBuilder)
                 }
                 .connectionSpecs(Collections.singletonList(spec))
-                .connectTimeout(15000, TimeUnit.MILLISECONDS)
+                .connectTimeout(30000, TimeUnit.MILLISECONDS)
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
         addFringerInterceptor(builder)
