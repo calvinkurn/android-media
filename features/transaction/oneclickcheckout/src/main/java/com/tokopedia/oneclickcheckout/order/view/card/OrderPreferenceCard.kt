@@ -353,12 +353,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         if (newBottomPaymentIv != bottomPaymentIv) {
             bottomPaymentIv = newBottomPaymentIv
-            if (paymentLayoutConstraintSet == null) {
-                paymentLayoutConstraintSet = ConstraintSet()
-                paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
+            paymentLayoutContainer.post {
+                if (paymentLayoutConstraintSet == null) {
+                    paymentLayoutConstraintSet = ConstraintSet()
+                    paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
+                }
+                paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
+                paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
             }
-            paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
-            paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
         }
     }
 

@@ -13,10 +13,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
@@ -30,7 +33,9 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var webView: TkpdWebView? = null
+    private var progressBar: LoaderUnify? = null
     private var isTopReached = true
+    private var isDone = false
 
     companion object {
         private const val REDIRECT_URL_ENDPOINT = "occ"
@@ -80,6 +85,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupChild(userSession: UserSessionInterface, child: View) {
+        progressBar = child.findViewById(R.id.progress_bar)
         webView = child.findViewById(R.id.web_view)
         webView?.clearCache(true)
         val webSettings = webView?.settings
@@ -98,7 +104,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
             WebView.setWebContentsDebuggingEnabled(true)
         }
 
-        webView?.loadUrl("https://www.google.com")
+        webView?.loadUrl("https://www.bing.com")
 //        webView?.loadAuthUrl("${TokopediaUrl.getInstance().WEB}/ovo/api/v2/activate", userSession)
         webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
             override fun onTopReached() {
@@ -123,7 +129,34 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
     }
 
     private fun generateRedirectUrl(): String {
-        return "${TokopediaUrl.getInstance().WEB}$REDIRECT_URL_ENDPOINT"
+        return "https://www.google.com"
+    }
+
+    private fun onActivationResult(isSuccess: Boolean) {
+        if (!isDone) {
+            isDone = true
+            bottomSheetUnify?.dismiss()
+            listener.onActivationResult(isSuccess)
+            context = null
+            webView = null
+            progressBar = null
+            bottomSheetUnify = null
+        }
+    }
+
+    private fun onMoveToIntent(link: String) {
+        if (!isDone) {
+            context?.let {
+                try {
+                    isDone = true
+                    bottomSheetUnify?.dismiss()
+                    it.startActivity(RouteManager.getIntent(it, link))
+                } catch (t: Throwable) {
+                    // ignore
+                    Timber.d(t)
+                }
+            }
+        }
     }
 
     inner class OvoActivationWebViewClient: WebViewClient() {
@@ -136,29 +169,22 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             Log.i("qwertyuiop", "start url ${url ?: "none"}")
+            progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            Log.i("qwertyuiop", "finished url ${url ?: "none"}")
+            progressBar?.gone()
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             Log.i("qwertyuiop", "intercept url ${url ?: "none"}")
-            if (url?.contains(callbackUrl, true) == true || url?.contains(generateRedirectUrl(), true) == true) {
+            if (url != null && (url.contains(callbackUrl, true) || url.contains(generateRedirectUrl(), true))) {
                 val uri = Uri.parse(url)
                 val isSuccessResult = uri.getQueryParameter("is_success") == "1"
-                listener.onActivationResult(isSuccessResult)
-                bottomSheetUnify?.dismiss()
-            } else if (!URLUtil.isNetworkUrl(url)) {
-                context?.let {
-                    try {
-                        it.startActivity(RouteManager.getIntentNoFallback(it, url))
-                    } catch (t: Throwable) {
-                        // ignore
-                        Timber.d(t)
-                    }
-                }
+                onActivationResult(isSuccessResult)
+            } else if (url != null && !URLUtil.isNetworkUrl(url)) {
+                onMoveToIntent(url)
             }
             return super.shouldInterceptRequest(view, url)
         }
