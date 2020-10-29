@@ -10,12 +10,8 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.StatsData
-import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
