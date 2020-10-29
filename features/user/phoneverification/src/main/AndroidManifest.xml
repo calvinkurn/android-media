@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity"
+            android:name="com.tokopedia.referral.view.activity.ReferralPhoneNumberVerificationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.White" >

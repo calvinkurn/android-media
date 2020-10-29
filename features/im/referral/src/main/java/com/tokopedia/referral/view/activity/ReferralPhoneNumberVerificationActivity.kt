@@ -1,4 +1,4 @@
-package com.tokopedia.phoneverification.view.activity
+package com.tokopedia.referral.view.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.phoneverification.R
-import com.tokopedia.phoneverification.view.fragment.ReferralPhoneNumberVerificationFragment
+import com.tokopedia.referral.view.fragment.ReferralPhoneNumberVerificationFragment
 
 /**
  * * For navigate: use [ApplinkConstInternalGlobal.SETTING_REFERRAL_PHONE_VERIFICATION]

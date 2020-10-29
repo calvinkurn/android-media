@@ -266,7 +266,6 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)

@@ -1,4 +1,4 @@
-package com.tokopedia.phoneverification;
+package com.tokopedia.referral.analytics;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
