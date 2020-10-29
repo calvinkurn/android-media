@@ -2,17 +2,13 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.
 
 import android.view.View;
 
-import androidx.fragment.app.FragmentManager;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.LoadingInboxReputationDetailViewholder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.inboxdetail.InboxReputationDetailItemViewHolder;
-
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
@@ -49,11 +45,11 @@ public class InboxReputationDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public AbstractViewHolder createViewHolder(View view, int type, ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain, FragmentManager fragmentManager) {
+    public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
         if (type == InboxReputationDetailHeaderViewHolder.LAYOUT)
-            viewHolder = new InboxReputationDetailHeaderViewHolder(view, reputationListener, productRevIncentiveOvoDomain, fragmentManager);
+            viewHolder = new InboxReputationDetailHeaderViewHolder(view, reputationListener);
         else if (type == InboxReputationDetailItemViewHolder.LAYOUT)
             viewHolder = new InboxReputationDetailItemViewHolder(view, viewListener);
         else if (type == LoadingInboxReputationDetailViewholder.LAYOUT)

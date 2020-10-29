@@ -487,6 +487,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_do_query_hashing</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>android_async_user_based_timber_session</key>
         <value>false</value>
     </entry>
