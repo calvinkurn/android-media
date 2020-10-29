@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_add_phone.*
 import javax.inject.Inject
 
 
-class AddPhoneFragment : BaseDaggerFragment() {
+open class AddPhoneFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -189,7 +189,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessAddPhone(result: AddPhoneResult) {
+    open fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
         storeLocalSession(result.phoneNumber)
         activity?.run {
@@ -203,7 +203,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun storeLocalSession(phone: String) {
+    protected fun storeLocalSession(phone: String) {
         userSession.setIsMSISDNVerified(true)
         userSession.phoneNumber = phone
     }
@@ -213,7 +213,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         progressBar?.visibility = View.VISIBLE
     }
 
-    private fun dismissLoading() {
+    protected fun dismissLoading() {
         mainView?.visibility = View.VISIBLE
         progressBar?.visibility = View.GONE
     }
