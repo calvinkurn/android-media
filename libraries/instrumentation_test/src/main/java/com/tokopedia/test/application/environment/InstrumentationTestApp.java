@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -12,7 +13,6 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -44,6 +44,7 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -72,6 +73,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     private int topAdsProductCount = 0;
     private Long totalSizeInBytes = 0L;
     private Map<String, Interceptor> testInterceptors = new HashMap<>();
+    private CacheManager cacheManager;
 
     @Override
     public void onCreate() {
@@ -419,7 +421,9 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public CacheManager getPersistentCacheManager() {
-        return null;
+        if (cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override
