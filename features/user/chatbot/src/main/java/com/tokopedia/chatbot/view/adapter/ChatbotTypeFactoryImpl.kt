@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -31,7 +32,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   AttachedInvoiceSelectionListener,
                                   private val chatRatingListener: ChatRatingListener,
                                   private val chatActionListBubbleListener: ChatActionListBubbleListener,
-                                  private val chatOptionListListener: ChatOptionListListener) :
+                                  private val chatOptionListListener: ChatOptionListListener,
+                                  private val csatOptionListListener: CsatOptionListListener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -46,6 +48,10 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     override fun type(helpFullQuestionsViewModel: HelpFullQuestionsViewModel): Int {
         return ChatHelpfullQuestionViewHolder.LAYOUT
+    }
+
+    override fun type(csatOptionsViewModel: CsatOptionsViewModel): Int {
+        return CsatOptionListViewHolder.LAYOUT
     }
 
     override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
@@ -83,6 +89,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener)
             ChatBotMessageViewHolder.LAYOUT -> ChatBotMessageViewHolder(parent, chatLinkHandlerListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener)
+            CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener)
             else -> super.createViewHolder(parent, type)
         }
     }

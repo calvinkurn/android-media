@@ -38,6 +38,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
@@ -47,7 +48,6 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_COD
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -87,7 +87,8 @@ class ChatbotPresenter @Inject constructor(
         private val leaveQueueUseCase: LeaveQueueUseCase,
         private val getTickerDataUseCase: GetTickerDataUseCase,
         private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
-        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
+        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
 
@@ -511,6 +512,13 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
+    override fun submitChatCsat(input: ChipSubmitChatCsatInput,
+                                onsubmitingChatCsatSuccess: (String) -> Unit,
+                                onError: (Throwable) -> Unit) {
+        chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
+                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
@@ -521,6 +529,7 @@ class ChatbotPresenter @Inject constructor(
         getTickerDataUseCase.unsubscribe()
         chipGetChatRatingListUseCase.unsubscribe()
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
+        chipSubmitChatCsatUseCase.unsubscribe()
         super.detachView()
     }
 

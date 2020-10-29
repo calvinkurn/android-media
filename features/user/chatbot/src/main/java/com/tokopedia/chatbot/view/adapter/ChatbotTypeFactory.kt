@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -30,5 +31,7 @@ interface ChatbotTypeFactory : AdapterTypeFactory{
     fun type(chatSepratorViewModel: ChatSepratorViewModel): Int
 
     fun type(helpFullQuestionsViewModel: HelpFullQuestionsViewModel): Int
+
+    fun type(csatOptionsViewModel: CsatOptionsViewModel): Int
 
 }

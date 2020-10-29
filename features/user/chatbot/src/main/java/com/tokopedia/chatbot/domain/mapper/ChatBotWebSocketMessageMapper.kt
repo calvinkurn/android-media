@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
@@ -20,6 +21,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
@@ -30,6 +32,7 @@ import javax.inject.Inject
  * @author by nisie on 10/12/18.
  */
 const val TYPE_HELPFULL_QUESTION = "22"
+const val TYPE_CSAT_OPTIONS = "23"
 class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
@@ -46,6 +49,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
+            TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
@@ -64,6 +68,23 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
                 helpFullQuestionPojo.helpfulQuestion
+        )
+    }
+
+    private fun convertToCsatOptionsViewModel(pojo: ChatSocketPojo): Visitable<*> {
+        val csatAttributesPojo = GsonBuilder().create()
+                .fromJson<CsatAttributesPojo>(pojo.attachment?.attributes,
+                        CsatAttributesPojo::class.java)
+        return CsatOptionsViewModel(
+                pojo.msgId.toString(),
+                pojo.fromUid,
+                pojo.from,
+                pojo.fromRole,
+                pojo.attachment?.id ?: "",
+                pojo.attachment?.type ?: "",
+                pojo.message.timeStampUnixNano,
+                pojo.message.censoredReply,
+                csatAttributesPojo.csat
         )
     }
 

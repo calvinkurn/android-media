@@ -5,12 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import java.util.*
 
 
-class ChatOptionListAdapter(private val onOptionListSelected: (HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions) -> Unit) : RecyclerView.Adapter<ChatOptionListViewHolder>() {
-    private val data = ArrayList<HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions>()
+class ChatOptionListAdapter(private val onOptionListSelected: (ChatOptionListViewModel) -> Unit) : RecyclerView.Adapter<ChatOptionListViewHolder>() {
+    private val data = ArrayList<ChatOptionListViewModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatOptionListViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -32,7 +33,7 @@ class ChatOptionListAdapter(private val onOptionListSelected: (HelpFullQuestionP
         notifyItemRangeRemoved(0, size)
     }
 
-    fun setDataList(elements: List<HelpFullQuestionPojo.HelpfulQuestion.HelpfulQuestions>) {
+    fun setDataList(elements: List<ChatOptionListViewModel>) {
         data.clear()
         data.addAll(elements)
         notifyDataSetChanged()

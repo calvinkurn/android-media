@@ -3,6 +3,8 @@ package com.tokopedia.chatbot.domain.subscriber
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
@@ -53,15 +55,17 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
         if (ratings?.ratingListData?.isSuccess == 1) {
             for (rate in ratings.ratingListData.list ?: listOf()) {
                 val rateListMsgs = mappedPojo.listChat.filter { msg ->
-                    if (msg is HelpFullQuestionsViewModel) {
-                        (msg.helpfulQuestion?.caseChatId == rate?.caseChatID)
-                    } else {
-                        false
+                    when (msg) {
+                        is HelpFullQuestionsViewModel -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
+                        is CsatOptionsViewModel -> (msg.csat?.caseChatId == rate.caseChatID)
+                        else -> false
                     }
                 }
                 rateListMsgs.forEach {
                     if (it is HelpFullQuestionsViewModel) {
-                        it.isSubmited = rate?.isSubmitted ?: false
+                        it.isSubmited = rate.isSubmitted ?: false
+                    }else if (it is CsatOptionsViewModel){
+                        it.isSubmited = rate.isSubmitted ?: false
                     }
                 }
 
@@ -85,6 +89,12 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
                     chatCaseIds = message.helpfulQuestion?.caseChatId ?: ""
                 } else {
                     chatCaseIds = chatCaseIds + "," + message.helpfulQuestion?.caseChatId
+                }
+            }else if (message is CsatOptionsViewModel) {
+                if (chatCaseIds.isEmpty()) {
+                    chatCaseIds = message.csat?.caseChatId?:""
+                } else {
+                    chatCaseIds = chatCaseIds + "," + message.csat?.caseChatId
                 }
             }
         }

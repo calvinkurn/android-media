@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 
 /**
  * @author by nisie on 07/12/18.
@@ -95,6 +96,10 @@ interface ChatbotContract {
         fun destroyWebSocket()
 
         fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?)
+
+        fun submitChatCsat(input: ChipSubmitChatCsatInput,
+                           onsubmitingChatCsatSuccess: (String) -> Unit,
+                           onError: (Throwable) -> Unit)
 
     }
 }

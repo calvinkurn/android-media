@@ -4,8 +4,20 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_12">
+
+    <ImageView
+        android:id="@+id/chat_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="@id/helpfull_question_option"
+        app:layout_constraintBottom_toBottomOf="@id/helpfull_question_option"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:src="@drawable/rating_active_5"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/helpfull_question_option"
@@ -18,7 +30,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/chatbot_color_option_list_text"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/chat_rating"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
