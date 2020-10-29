@@ -164,6 +164,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         val chatDividerPojo = GsonBuilder().create().fromJson<ChatDividerResponse>(pojo
                 .attachment?.attributes, ChatDividerResponse::class.java)
         return ConnectionDividerViewModel(
+                replyTime = pojo.replyTime,
                 dividerMessage = chatDividerPojo?.divider?.label,
                 isShowButton = false,
                 type = SHOW_TEXT,
@@ -177,6 +178,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         val chatDividerPojo = GsonBuilder().create().fromJson<ChatDividerResponse>(pojo
                 .attachment?.attributes, ChatDividerResponse::class.java)
         return ChatSepratorViewModel(
+                replyTime = pojo.replyTime,
                 sepratorMessage = chatDividerPojo?.divider?.label,
                 dividerTiemstamp = pojo.replyTime)
     }
