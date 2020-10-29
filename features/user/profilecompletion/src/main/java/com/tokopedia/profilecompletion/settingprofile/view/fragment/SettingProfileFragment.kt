@@ -440,7 +440,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                             goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
 //                            goToVerifyPhone()
-                            goToAddPhoneBy(profileCompletionData.msisdn)
+                            goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                         }
                     }
             )
@@ -454,7 +454,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        goToVerifyPhone()
+//                        goToVerifyPhone()
+                        goToAddPhoneBy(PhoneNumberUtil.replace62with0(profileCompletionData.msisdn))
                     }
 
                     override fun onDismiss() {
