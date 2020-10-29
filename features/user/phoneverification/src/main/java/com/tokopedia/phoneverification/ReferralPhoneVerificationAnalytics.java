@@ -1,16 +1,12 @@
 package com.tokopedia.phoneverification;
 
-import android.content.Context;
-
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 8/21/18.
  */
-public class PhoneVerificationAnalytics {
+public class ReferralPhoneVerificationAnalytics {
 
     public static class Action{
         public static final String CLICK_VERIFY_NUMBER = "click verify number";
@@ -26,8 +22,8 @@ public class PhoneVerificationAnalytics {
 
     }
 
-    public static PhoneVerificationAnalytics createInstance() {
-        return new PhoneVerificationAnalytics();
+    public static ReferralPhoneVerificationAnalytics createInstance() {
+        return new ReferralPhoneVerificationAnalytics();
     }
 
     public void eventReferralAndShare(String action, String label) {
