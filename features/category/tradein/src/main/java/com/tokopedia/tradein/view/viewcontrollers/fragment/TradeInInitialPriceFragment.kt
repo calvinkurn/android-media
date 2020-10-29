@@ -38,6 +38,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInInitialPriceViewModel: TradeInInitialPriceViewModel
     private lateinit var tradeinHomeViewModel: TradeInHomeViewModel
+    private val getImeiBS : GetImeiBS? = null
 
     override fun initInject() {
         getComponent().inject(this)
@@ -64,7 +65,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             handleEligibility(getString(EXTRA_MAX_PRICE, "-"), getBoolean(EXTRA_IS_ELIGIBLE, false), getString(EXTRA_NOT_ELIGIBLE_MESSAGE, ""))
         }
 
-        // tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
+        tradeInInitialPriceViewModel.checkAndroid10(getTradeInDeviceId())
         tradeinHomeViewModel.tradeInParams.apply {
             product_name.text = productName
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
@@ -81,6 +82,15 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             activity?.onBackPressed()
         }
         initCollapse()
+
+        btn_continue.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val getImeiBS = GetImeiBS.newInstance(tradeinHomeViewModel)
+                fragmentManager?.let { fm -> getImeiBS.show(fm, "") }
+            } else {
+                tradeinHomeViewModel.onInitialPriceClick(null)
+            }
+        }
     }
 
     private fun initCollapse() {
@@ -171,14 +181,9 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     fun notElligible(notEligibleText: String) {
         progress_bar_layout.hide()
-        //btn_continue.isEnabled = false
-        //LK save_upto.hide()
+        btn_continue.isEnabled = false
         phone_valid_ticker.show()
         phone_valid_ticker.setTextDescription(notEligibleText)
-        btn_continue.setOnClickListener {
-            val getImeiBS = GetImeiBS.newInstance()
-            fragmentManager?.let { fm -> getImeiBS.show(fm, "") }
-        }
     }
 
     private fun setMaxPrice(maxPrice: String) {
@@ -194,14 +199,9 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.isEnabled = true
     }
 
-    /* fun setWrongImei(error: String?) {
-         when (error) {
-             getString(R.string.tradein_laku6_imei_error) -> typography_imei_description.text = getString(R.string.wrong_imei_string)
-             getString(R.string.tradein_laku6_imei_cheat) -> typography_imei_description.text = getString(R.string.tradein_wrong_imei_string)
-             else -> typography_imei_description.text = error ?: getString(R.string.wrong_imei_string)
-         }
-         typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
-     }*/
+     fun setWrongImei(error: String?) {
+         getImeiBS?.setWrongImei(error)
+     }
 
     fun expand(v: View) {
         val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
