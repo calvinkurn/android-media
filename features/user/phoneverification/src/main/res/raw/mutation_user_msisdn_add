@@ -1,6 +1,0 @@
-mutation userMsisdnAdd($msisdn: String!) {
-  userMsisdnAdd(msisdn:$msisdn) {
-    isSuccess
-    message
-  }
-}
