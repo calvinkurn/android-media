@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.historydetails.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
@@ -14,23 +15,21 @@ class InboxReviewInsertReputationUseCase @Inject constructor(graphqlRepository: 
         const val PARAM_USERID = "userId"
         const val PARAM_BUYER_SELLER = "buyerSeller"
         const val BUYER_SELLER_VALUE = 1
-        private val query by lazy {
+        const val INSERT_REPUTATION_QUERY_CLASS_NAME = "InsertReputation"
+        const val INSERT_REPUTATION_MUTATION =
             """
                 mutation inboxReviewInsertReputation(${'$'}reputationId: Int,${'$'}reputationScore: Int,${'$'}userId: Int,${'$'}buyerSeller: Int) {
                   inboxReviewInsertReputation(reputationId:${'$'}reputationId, reputationScore:${'$'}reputationScore, userId:${'$'}userId, buyerSeller:${'$'}buyerSeller) {
                     success
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
-    init {
-        setGraphqlQuery(query)
-        setTypeClass(InboxReviewInsertReputationResponseWrapper::class.java)
-    }
-
+    @GqlQuery(INSERT_REPUTATION_QUERY_CLASS_NAME, INSERT_REPUTATION_MUTATION)
     fun setParams(reputationId: Int, reputationScore: Int, userId: Int) {
+        setGraphqlQuery(InsertReputation.GQL_QUERY)
+        setTypeClass(InboxReviewInsertReputationResponseWrapper::class.java)
         setRequestParams(
                 RequestParams.create().apply {
                     putInt(PARAM_REPUTATION_ID, reputationId)

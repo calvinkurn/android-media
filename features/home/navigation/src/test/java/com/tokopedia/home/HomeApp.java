@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -107,7 +107,7 @@ public class HomeApp extends BaseMainApplication implements GlobalNavRouter, Net
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         return mock(CacheManager.class);
     }
 
