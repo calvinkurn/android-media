@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.headline.view.model.HeadlineDetailViewModel
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
 import dagger.Binds
 import dagger.Module
@@ -33,4 +34,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GroupDetailViewModel::class)
     internal abstract fun topadsGroupDetailViewModel(viewModel: GroupDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HeadlineDetailViewModel::class)
+    internal abstract fun topadsHeadlineDetailViewModel(viewModel: HeadlineDetailViewModel): ViewModel
 }

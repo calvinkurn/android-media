@@ -59,5 +59,10 @@ data class DataItem(
 	val statAvgClick: String = "",
 
 	@field:SerializedName("group_type")
-	val groupType: String = ""
+	val groupType: String = "",
+
+	@field:SerializedName("group_end_date")
+	val groupEndDate: String = ""
+
+
 )

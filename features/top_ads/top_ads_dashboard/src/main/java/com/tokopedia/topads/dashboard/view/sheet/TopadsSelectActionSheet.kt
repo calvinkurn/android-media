@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.sheet
 
 import android.content.Context
+import android.view.View
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -83,6 +84,13 @@ class TopadsSelectActionSheet {
 
     private fun dismissDialog() {
         dialog?.dismiss()
+    }
+
+    fun disableEdit(){
+        dialog.let {
+            it?.action_edit?.visibility = View.GONE
+        }
+
     }
 
     companion object {

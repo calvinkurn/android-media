@@ -123,6 +123,35 @@
             app:typographyType="small"
             tools:text="4" />
 
+        <ImageView
+            android:id="@+id/scheduleImg"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_11"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginTop="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/key_count"
+            app:layout_constraintTop_toBottomOf="@id/group_title"
+            app:srcCompat="@drawable/topads_ic_calendar"
+            tools:layout_height="@dimen/dp_16"
+            tools:layout_width="@dimen/dp_16"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/scheduleDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:includeFontPadding="false"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/scheduleImg"
+            app:layout_constraintTop_toTopOf="@id/scheduleImg"
+            app:typographyType="small"
+            tools:text="Berakhir 10 Jan, 2020"
+            tools:visibility="visible" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="match_parent"

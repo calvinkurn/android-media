@@ -35,15 +35,16 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
-                    style="?tabTheme"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/white"
                     app:elevation="4dp"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:tabIndicatorColor="@color/topads_common_tab_green"
-                    app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/Green_G500"
                     app:tabTextColor="@color/font_black_disabled_38" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>

@@ -158,7 +158,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
         topAdsDashboardPresenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,
+                startDate, endDate,1,
                 this::onSuccessGroupResult)
     }
 
@@ -259,7 +259,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         val endDate = format.format((parentFragment as TopAdsProductIklanFragment).endDate)
         topAdsDashboardPresenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                startDate, endDate,
+                startDate, endDate,1,
                 this::onSuccessGroupResult)
     }
 

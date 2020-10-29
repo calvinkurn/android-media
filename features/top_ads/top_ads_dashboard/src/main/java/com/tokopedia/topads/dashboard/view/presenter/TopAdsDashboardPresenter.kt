@@ -37,6 +37,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
@@ -50,6 +51,7 @@ import javax.inject.Inject
 
 class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
+            private val shopAdInfoUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ShopAdInfo>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
@@ -142,6 +144,22 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
   }
 }
 """
+        const val SHOP_AD_INFO = """
+            query topadsGetShopInfoV2(${'$'}shopID: Int!) {
+  topadsGetShopInfoV2(shopID: ${'$'}shopID) {
+    data {
+      ads {
+        type
+        is_used
+      }
+    }
+    errors {
+      code
+      detail
+      title
+    }
+  }
+}"""
     }
 
     @GqlQuery("DepositQuery", DEPOSIT)
@@ -161,10 +179,10 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 
 
     fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
-                     startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
+                     startDate: String, endDate: String, groupType: Int, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
         topAdsGetGroupDataUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
-        topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate)
+        topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate, groupType)
         topAdsGetGroupDataUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getTopadsDashboardGroups)
@@ -289,6 +307,21 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
             })
         }
     }
+
+    @GqlQuery("ShopInfo", TopAdsDashboardPresenter.SHOP_AD_INFO)
+    fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
+        val params = mapOf(SHOP_ID to userSession.shopId.toIntOrZero())
+        shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
+        shopAdInfoUseCase.setRequestParams(params)
+        shopAdInfoUseCase.setGraphqlQuery(ShopInfo.GQL_QUERY)
+        shopAdInfoUseCase.execute({
+            onSuccess(it)
+        }, {
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", it.localizedMessage)
+        }
+        )
+    }
+
 
     @GqlQuery("StatsList", STATS_URL)
     fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
