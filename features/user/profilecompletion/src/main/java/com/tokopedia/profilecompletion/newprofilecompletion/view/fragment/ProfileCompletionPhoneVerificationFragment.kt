@@ -7,7 +7,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil.transform

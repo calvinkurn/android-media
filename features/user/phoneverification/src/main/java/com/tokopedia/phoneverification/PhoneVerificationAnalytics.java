@@ -18,66 +18,16 @@ public class PhoneVerificationAnalytics {
     }
 
     public static class Event {
-        public static final String CLICK_REGISTER = "clickRegister";
         public static final String CLICK_APP_SHARE_REFERRAL = "clickReferral";;
     }
 
     public static class Category {
-        public static final String REGISTER_VERIFICATION_NUMBER = "register - verification phone " +
-                "number";
         public static final String REFERRAL = "Referral";
 
     }
 
     public static PhoneVerificationAnalytics createInstance() {
         return new PhoneVerificationAnalytics();
-    }
-
-
-    public void eventClickOnBackPressed() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_VERIFICATION_NUMBER,
-                "click on back",
-                ""
-        ));
-    }
-
-    public void eventClickVerifRegister() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_VERIFICATION_NUMBER,
-                "click on verifikasi",
-                ""
-        ));
-    }
-
-
-    public void eventClickSkipRegister() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_VERIFICATION_NUMBER,
-                "click on lewati",
-                ""
-        ));
-    }
-
-    public void eventClickChangePhoneRegister() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_VERIFICATION_NUMBER,
-                "click on ubah",
-                ""
-        ));
-    }
-
-    public void eventClickRequestOtpSMSRegister() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_VERIFICATION_NUMBER,
-                "click on kirim sms verifikasi",
-                ""
-        ));
     }
 
     public void eventReferralAndShare(String action, String label) {
