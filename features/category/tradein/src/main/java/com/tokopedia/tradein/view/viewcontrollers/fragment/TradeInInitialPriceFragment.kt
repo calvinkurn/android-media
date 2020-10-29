@@ -71,6 +71,8 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
             ImageHandler.loadImageWithoutPlaceholder(product_image, productImage)
         }
+        tv_final_amt.text = getString(R.string.tradein_final_price, tradeinHomeViewModel.finalPrice)
+        tv_final_amt_2.text = tradeinHomeViewModel.finalPrice
         //no_imei_value.text = getTradeInDeviceId()
         model_value.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
 //        typography_imei_help.setOnClickListener {

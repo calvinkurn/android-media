@@ -36,6 +36,7 @@ class TradeInHomeViewModel @Inject constructor(
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
     var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
     var imei: String? = null
+    var finalPrice : String = "-"
 
     var tradeInType: Int = TRADEIN_OFFLINE
 
@@ -70,6 +71,7 @@ class TradeInHomeViewModel @Inject constructor(
         if (response != null && response.deviceDiagInputRepsponse != null) {
             val result = HomeResult()
             result.isSuccess = true
+            finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
             if (response.deviceDiagInputRepsponse.isEligible) {
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName
@@ -160,6 +162,7 @@ class TradeInHomeViewModel @Inject constructor(
         result.isSuccess = true
         result.maxPrice = maxPrice
         result.minPrice = minPrice
+        finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {

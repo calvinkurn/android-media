@@ -180,7 +180,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail">
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail"
+            app:layout_constraintBottom_toTopOf="@id/guideline">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/new_gadget_price"
@@ -327,17 +329,23 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <View
+            android:id="@+id/guideline"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/btn_continue"
+            app:layout_constraintTop_toBottomOf="@id/parent_collapse" />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_margin="@dimen/dp_16"
             android:gravity="center_horizontal"
             android:text="@string/tradein_lanjut"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
