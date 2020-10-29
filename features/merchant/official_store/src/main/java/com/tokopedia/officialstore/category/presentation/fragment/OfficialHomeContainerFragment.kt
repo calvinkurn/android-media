@@ -56,12 +56,12 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
-    private var statusBar: View? = null
+//    private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
-    private var appbarCategory: AppBarLayout? = null
+//    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var keyCategory = "0"
@@ -173,7 +173,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories), appbarCategory!!)
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
@@ -220,22 +220,21 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
-        appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
     }
 
     //status bar background compability
     private fun configStatusBar(view: View) {
-        statusBar = view.findViewById(R.id.statusbar)
-        activity?.let {
-            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
-        }
-        statusBar?.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
-        }
+//
+//        activity?.let {
+//            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
+//        }
+//        statusBar?.visibility = when {
+//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
+//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
+//            else -> View.GONE
+//        }
     }
 
     private fun removeLoading() {

@@ -3,8 +3,12 @@ package com.tokopedia.officialstore.category.presentation.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.View
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,8 +16,6 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
-import android.view.*
-import com.google.android.material.appbar.AppBarLayout
 
 class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
@@ -25,7 +27,7 @@ class OfficialCategoriesTab(context: Context,
     private var tabMinHeight: Int = 0
 
     @SuppressLint("ClickableViewAccessibility")
-    fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>, appBarLayout: AppBarLayout) {
+    fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
         this.categoriesItemTab.clear()
         this.categoriesItemTab.addAll(tabItemDataList)
         initResources()
@@ -93,10 +95,9 @@ class OfficialCategoriesTab(context: Context,
             val tab = getTabAt(i)
             tab?.customView = getTabView(context, i)
         }
-
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                startTabHeightExpandAnimation(appBarLayout)
+//                startTabHeightExpandAnimation(appBarLayout)
             }
 
             override fun onPageSelected(position: Int) {}
@@ -126,24 +127,45 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
+    private fun setInitStartIcon(){
+        for (i in 0 until tabCount) {
+            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+
+            if(icon is MotionLayout){
+                (findViewByIdFromTab(getTabAt(i), R.id.guideline_horizontal) as? Guideline)?.let{
+
+                }
+                icon.setTransition(R.id.start, R.id.end)
+                icon.setTransitionDuration(300)
+                icon.transitionToState(R.id.start)
+            }
+        }
+    }
+
     private fun showIconForAllTabs() {
         for (i in 0 until tabCount) {
-            val icon = findViewByIdFromTab(getTabAt(i), R.id.image_view_category_icon)
-            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is ImageView) {
-                icon.animate().translationY(0f).duration = 100
-                textCategory?.animate()?.translationY(0f)?.duration = 200
+            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+//            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
+            if (icon is MotionLayout && icon.currentState == R.id.end) {
+
+//                icon.setTransitionDuration(1000)
+                icon.transitionToStart()
+//                icon.animate().translationY(0f).duration = 100
+//                textCategory?.animate()?.translationY(0f)?.duration = 200
             }
         }
     }
 
     private fun hideIconForAllTabs() {
         for (i in 0 until tabCount) {
-            val icon = findViewByIdFromTab(getTabAt(i), R.id.image_view_category_icon)
-            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is ImageView) {
-                icon.animate().translationY(-50f).duration = 200
-                textCategory?.animate()?.translationY(-14.0f)?.duration = 200
+            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+
+//            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
+            if (icon is MotionLayout && icon.currentState == R.id.start) {
+//                icon.setTransition(R.id.start, R.id.end
+                icon.transitionToEnd()
+//                icon.animate().translationY(-50f).duration = 200
+//                textCategory?.animate()?.translationY(-14.0f)?.duration = 200
             }
         }
     }
