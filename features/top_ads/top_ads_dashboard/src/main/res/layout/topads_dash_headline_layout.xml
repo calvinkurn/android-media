@@ -36,11 +36,10 @@
 
             <include
                 android:id="@+id/headlinList"
-                layout="@layout/topads_dash_fragment_group_list"
+                layout="@layout/topads_dash_fragment_headline_group_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar_layout_2"
                 android:layout_width="match_parent"
@@ -86,6 +85,13 @@
                         </com.tokopedia.unifycomponents.CardUnify>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <include
+                    android:id="@+id/search"
+                    layout="@layout/topads_dash_layout_common_searchbar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

@@ -46,15 +46,9 @@ import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdIte
 import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsItemViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_product_iklan.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.searchBar
+import kotlinx.android.synthetic.main.topads_dash_fragment_headline_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_headline_layout.*
-import kotlinx.android.synthetic.main.topads_dash_headline_layout.app_bar_layout_2
-import kotlinx.android.synthetic.main.topads_dash_headline_layout.empty_view
-import kotlinx.android.synthetic.main.topads_dash_headline_layout.hari_ini
 import kotlinx.android.synthetic.main.topads_dash_headline_layout.loader
-import kotlinx.android.synthetic.main.topads_dash_headline_layout.swipe_refresh_layout
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
@@ -180,6 +174,7 @@ open class TopAdsHeadlineBaseFragment : BaseDaggerFragment(), CustomDatePicker.A
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
         Utils.setSearchListener(context, view, ::fetchData)
+
         hari_ini?.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         hari_ini?.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hari_ini?.setOnClickListener {
@@ -471,7 +466,7 @@ open class TopAdsHeadlineBaseFragment : BaseDaggerFragment(), CustomDatePicker.A
     private fun fetchNextPage(currentPage: Int) {
         presenter.getGroupData(resources, currentPage, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                "", "", 3,
+                Utils.format.format(startDate), Utils.format.format(endDate), 3,
                 this::onSuccessGroupResult)
     }
 
@@ -487,8 +482,6 @@ open class TopAdsHeadlineBaseFragment : BaseDaggerFragment(), CustomDatePicker.A
         if (adapter.items.size.isZero()) {
             onEmptyResult()
         } else if (groupIds.isNotEmpty()) {
-            val startDate = ""
-            val endDate = ""
             presenter.getGroupStatisticsData(resources, 1, ",", "", 0,
                     "", "", groupIds, ::onSuccessStatistics)
             presenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
@@ -531,7 +524,7 @@ open class TopAdsHeadlineBaseFragment : BaseDaggerFragment(), CustomDatePicker.A
         adapter.notifyDataSetChanged()
         presenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
-                /*Utils.outputFormat.format(startDate)*/"", /*Utils.outputFormat.format(endDate)*/"", 3,
+                Utils.format.format(startDate), Utils.format.format(endDate), 3,
                 this::onSuccessGroupResult)
     }
 
@@ -554,6 +547,7 @@ open class TopAdsHeadlineBaseFragment : BaseDaggerFragment(), CustomDatePicker.A
         setDateRangeText(TopAdsDashboardConstant.CUSTOM_DATE)
         loadStatisticsData()
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is AppBarActionHeadline)
