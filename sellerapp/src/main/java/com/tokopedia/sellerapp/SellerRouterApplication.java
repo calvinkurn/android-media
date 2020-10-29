@@ -93,7 +93,6 @@ public abstract class SellerRouterApplication extends MainApplication
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
-        PhoneVerificationRouter,
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
