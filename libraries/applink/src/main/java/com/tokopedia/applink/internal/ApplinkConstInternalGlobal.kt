@@ -497,10 +497,11 @@ object ApplinkConstInternalGlobal {
     val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
 
 
-    // Phone Number Verification Activity
+    //ReferralPhoneNumberVerificationActivity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 

@@ -5,8 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.phoneverification.R
 import com.tokopedia.phoneverification.view.fragment.ReferralPhoneNumberVerificationFragment
+
+/**
+ * * For navigate: use [ApplinkConstInternalGlobal.SETTING_REFERRAL_PHONE_VERIFICATION]
+ */
 
 class ReferralPhoneNumberVerificationActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
