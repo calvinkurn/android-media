@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -53,5 +54,7 @@ interface ChatbotViewState : BaseChatViewState {
     fun hideActionBubble(model: ChatActionSelectionBubbleViewModel)
 
     fun hideOptionList(model: HelpFullQuestionsViewModel)
+
+    fun hideCsatOptionList(model: CsatOptionsViewModel)
 
 }

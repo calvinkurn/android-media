@@ -781,6 +781,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
+        model?.let { getViewState().hideCsatOptionList(it) }
         startActivityForResult(context?.let {
             ChatBotCsatActivity
                     .getInstance(it, selected.value, model)
