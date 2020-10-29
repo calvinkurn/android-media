@@ -2,9 +2,14 @@ package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.thankyou_native.presentation.adapter.factory.FeatureListingFactory
+import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommedationFactory
 
-data class FeatureListItem(
+
+open class GyroModel {
+    var isVisited : Boolean = false
+}
+
+data class GyroRecommendationListItem(
         var id : Int,
         @SerializedName("url")
         val url : String?,
@@ -16,9 +21,9 @@ data class FeatureListItem(
         val title : String,
         @SerializedName("desc")
         val description : String
-) : Visitable<FeatureListingFactory>{
+) : Visitable<GyroRecommedationFactory>, GyroModel() {
 
-    override fun type(typeFactory: FeatureListingFactory): Int {
+    override fun type(typeFactory: GyroRecommedationFactory): Int {
         return typeFactory.type(this)
     }
 }

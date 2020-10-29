@@ -13,7 +13,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.views.FeatureListView
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import java.util.zip.ZipInputStream
 
@@ -53,7 +53,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
     }
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
-    override fun getFeatureListingContainer(): FeatureListView? = featureListingContainer
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {

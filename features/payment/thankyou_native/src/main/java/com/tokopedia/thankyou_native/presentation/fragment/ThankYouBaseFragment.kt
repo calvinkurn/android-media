@@ -18,16 +18,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
+import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
-import com.tokopedia.thankyou_native.presentation.views.FeatureListView
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -42,7 +44,7 @@ import javax.inject.Inject
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
-    abstract fun getFeatureListingContainer(): FeatureListView?
+    abstract fun getFeatureListingContainer(): GyroView?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -54,6 +56,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var gyroRecommendationAnalytics: dagger.Lazy<GyroRecommendationAnalytics>
 
     private var iRecommendationView: IRecommendationView? = null
 
@@ -181,13 +186,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             when (it) {
                 is Success -> {
                     if (it.data.success && !it.data.engineData.featureEngineItem.isNullOrEmpty()) {
-                        getFeatureListingContainer()?.visible()
-                        getFeatureListingContainer()?.addData(it.data.engineData)
+                        addDataToGyroRecommendationView(it.data.engineData)
                     }
                 }
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
         })
+    }
+
+    private fun addDataToGyroRecommendationView(engineData: FeatureEngineData) {
+        if (::thanksPageData.isInitialized) {
+            getFeatureListingContainer()?.visible()
+            getFeatureListingContainer()?.addData(engineData, thanksPageData,
+                    gyroRecommendationAnalytics.get())
+        }
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {

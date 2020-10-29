@@ -4,26 +4,27 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.presentation.adapter.FeatureListingAdapterListener
-import com.tokopedia.thankyou_native.presentation.adapter.model.FeatureListItem
+import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import kotlinx.android.synthetic.main.thank_item_feature_list.view.*
 
-class FeatureListViewHolder(val view: View, val listener : FeatureListingAdapterListener)
-    : AbstractViewHolder<FeatureListItem>(view) {
+class GyroListItemViewHolder(val view: View, val listener : GyroAdapterListener)
+    : AbstractViewHolder<GyroRecommendationListItem>(view) {
 
     private val ivFeatureItem = itemView.ivFeatureItem
     private val tvFeatureItemTitle = itemView.tvFeatureItemTitle
     private val tvFeatureItemDescription = itemView.tvFeatureItemDescription
 
-    override fun bind(element: FeatureListItem?) {
+
+    override fun bind(element: GyroRecommendationListItem?) {
         element?.apply {
-            listener.onItemDisplayed(element)
+            itemView.tag = element
             ivFeatureItem.scaleType =  ImageView.ScaleType.CENTER_INSIDE
             ivFeatureItem.setImageUrl(image)
             tvFeatureItemTitle.text = title
             tvFeatureItemDescription.text = description
             view.setOnClickListener {
-                listener.onItemClicked(element)
+                listener.onItemClicked(element, adapterPosition)
                 urlApp?.let {
                     listener.openAppLink(urlApp)
                 }?: run {
