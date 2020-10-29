@@ -2,8 +2,8 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 
 class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory): BaseAdapter<SomFilterAdapterTypeFactory>(adapterTypeFactory) {
 
@@ -11,7 +11,7 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory): BaseAda
         const val PAYLOAD_DATE_FILTER = 104
     }
 
-    fun updateData(dataList: List<SomFilterUiModel>) {
+    fun updateData(dataList: List<BaseSomFilter>) {
         visitables.clear()
         visitables.addAll(dataList)
         notifyDataSetChanged()
@@ -24,11 +24,19 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory): BaseAda
     }
 
     fun updateDateFilterText(startDate: String, endDate: String) {
-        val date = "$startDate - $endDate"
-        val topicIndex = visitables.indexOfFirst { it is SomFilterUiModel }
-        visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == FILTER_DATE }?.date = date
-        if (topicIndex != -1) {
-            notifyItemChanged(topicIndex, PAYLOAD_DATE_FILTER)
+        val date = if(startDate.isBlank() && endDate.isBlank()) {
+            ""
+        } else if(endDate.isBlank()) {
+            startDate
+        } else {
+            "$startDate - $endDate"
+        }
+        val dateIndex = visitables.indexOfFirst { it is SomFilterDateUiModel }
+        visitables.find { it is SomFilterDateUiModel }?.also {
+            (it as SomFilterDateUiModel).date = date
+        }
+        if (dateIndex != -1) {
+            notifyItemChanged(dateIndex, PAYLOAD_DATE_FILTER)
         }
     }
 }

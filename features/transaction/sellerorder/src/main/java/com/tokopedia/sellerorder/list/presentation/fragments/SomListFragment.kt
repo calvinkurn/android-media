@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -37,7 +36,6 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
-import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_BOTTOM_SHEET_TAG
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
@@ -76,8 +74,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val REQUEST_FILTER = 998
         private const val REQUEST_CONFIRM_SHIPPING = 997
         private const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
-
-        const val EXTRA_SOM_LIST_GET_ORDER_PARAM = "extra_som_list_get_order_param"
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -235,20 +231,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onParentSortFilterClicked() {
-        val cacheManager = context?.let {
-            SaveInstanceCacheManager(it, true).apply {
-                put(EXTRA_SOM_LIST_GET_ORDER_PARAM, viewModel.getDataOrderListParams())
-            }
-        }
         val bottomSheetFilter = SomFilterBottomSheet.createInstance(
-                cacheManager?.id.orEmpty(),
-                somListSortFilterTab.getSelectedTab()?.status.orEmpty()
-        ).apply {
-            setSomFilterFinishListener(this@SomListFragment)
-        }
-        childFragmentManager.let {
-            bottomSheetFilter.show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
-        }
+                somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
+                viewModel.getDataOrderListParams().statusList,
+                viewModel.getSomFilterUi())
+        bottomSheetFilter.setFragmentManager(childFragmentManager)
+        bottomSheetFilter.setSomFilterFinishListener(this@SomListFragment)
+        bottomSheetFilter.show()
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -752,10 +741,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
-    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModel: List<SomFilterUiModel>?, idFilter: String, orderStatus: String) {
+    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String) {
         viewModel.updateGetOrderListParams(filterData)
         val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
-                somFilterUiModel, idFilter, somListSortFilterTab.getSomListFilterUiModel(), orderStatus)
+                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
         somListFilter.statusList.find { it.status == orderStatus }.let {
             if(it != null) {
                 it.isChecked = true
@@ -766,6 +755,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 refreshOrderList()
             }
         }
-        somListSortFilterTab.updateCounterSortFilter(somListFilter)
+        viewModel.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
     }
 }

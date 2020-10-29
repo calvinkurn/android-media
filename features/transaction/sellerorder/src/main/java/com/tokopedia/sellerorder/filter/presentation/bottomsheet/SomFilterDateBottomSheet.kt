@@ -4,22 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import timber.log.Timber
 import java.util.*
 
+
 class SomFilterDateBottomSheet : BottomSheetUnify() {
 
     companion object {
-        const val START_DATE_INDEX = 1
-        const val END_DATE_INDEX = 2
-        const val PATTERN_DATE = "dd MMM yyyy"
+        const val PATTERN_DATE = "EEE, dd MMM"
+        const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
+        const val PATTER_DATE_EDT = "dd MMM yyyy"
         const val TITLE_FILTER_DATE = "Pilih Tanggal"
 
         fun newInstance(): SomFilterDateBottomSheet {
@@ -27,66 +32,79 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         }
     }
 
-    var selectedDates: Map<Int, List<Date>> = mutableMapOf()
+    var selectedDates: List<Date> = emptyList()
 
     private var calendarViewFilter: UnifyCalendar? = null
     private var tfStartDate: TextFieldUnify? = null
     private var tfEndDate: TextFieldUnify? = null
     private var calendarView: CalendarPickerView? = null
     private var btnSaveCalendar: UnifyButton? = null
+    private var cvSaveCalendar: CardView? = null
 
     private var calenderFilterListener: CalenderListener? = null
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.RANGE
 
+    private var fm: FragmentManager? = null
+
+    private var startDateParam = ""
+    private var endDateParam = ""
+    private var startDateEditText = ""
+    private var endDateEditText = ""
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.bottom_sheet_filter_date, container, false)
-        setChildView(view)
+        setChild(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         setupCalendarView()
         setDefaultSelectedDate()
-        selectStartDate()
-        selectEndDate()
-        selectDateClickListener()
         btnSaveCalendar()
     }
 
-    private fun setChildView(view: View) {
+    fun show() {
+        fm?.let {
+            show(it, SOM_FILTER_DATE_BOTTOM_SHEET_TAG)
+        }
+    }
+
+    fun setFragmentManager(fm: FragmentManager): SomFilterDateBottomSheet {
+        this.fm = fm
+        return this
+    }
+
+    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
+        val child: View = inflater.inflate(R.layout.bottom_sheet_filter_date, container, false)
+        setTitle(TITLE_FILTER_DATE)
+        clearContentPadding = true
+        isFullpage = true
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDateDialogStyle)
+        setChild(child)
+    }
+
+    private fun initView(view: View) {
         calendarViewFilter = view.findViewById(R.id.somFilterCalendar)
         tfStartDate = view.findViewById(R.id.tfStartDate)
         tfEndDate = view.findViewById(R.id.tfEndDate)
         btnSaveCalendar = view.findViewById(R.id.btnSaveCalendar)
+        cvSaveCalendar = view.findViewById(R.id.cvSaveCalendar)
         calendarView = calendarViewFilter?.calendarPickerView
-        setChild(view)
-        setTitle(TITLE_FILTER_DATE)
-        isFullpage = true
-    }
-
-    private fun selectStartDate() {
-        tfStartDate?.textFieldInput?.setOnClickListener {
-            selectDateClickListener()
-        }
-    }
-
-    private fun selectEndDate() {
-        tfEndDate?.textFieldInput?.setOnClickListener {
-            selectDateClickListener()
-        }
     }
 
     private fun setDefaultSelectedDate() {
         calendarView?.let { cpv ->
-            val startDate = selectedDates[START_DATE_INDEX]?.firstOrNull()
-            val endDate = selectedDates[END_DATE_INDEX]?.firstOrNull()
+            val startDate = selectedDates.firstOrNull()
+            val endDate = selectedDates.lastOrNull()
             startDate?.let {
                 selectDate(cpv, it)
+                selectStartDate(it)
             }
             endDate?.let {
                 selectDate(cpv, it)
+                selectEndDate(it)
             }
         }
     }
@@ -100,32 +118,42 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupCalendarView() {
-        val minDate = Date(Utils.getNPastYearTimeStamp(2))
-        val maxDate = Date(Utils.getNNextDaysTimestamp(1L))
+        val minDate = Utils.getNPastYearTimeStamp(2)
+        val maxDate = Utils.getNowDaysTimestamp()
 
         calendarView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(maxDate)
-            selectDateClickListener()
+            cpv.selectDateClickListener()
         }
     }
 
-    private fun selectDateClickListener() {
-        calendarView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+    private fun CalendarPickerView.selectDateClickListener() {
+        setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             var dateIn: Date? = null
             override fun onDateSelected(date: Date) {
-                when (mode) {
-                    CalendarPickerView.SelectionMode.RANGE -> {
-                        if(dateIn != null && date.after(dateIn) && tfStartDate?.textFieldInput?.isFocused == true) {
-                            tfEndDate?.textFieldInput?.setText(getSelectedDate(date))
-                            tfEndDate?.textFieldInput?.requestFocus()
-                        } else {
-                            dateIn = date
-                            tfStartDate?.textFieldInput?.setText("")
-                            tfStartDate?.textFieldInput?.setText(getSelectedDate(date))
-                            tfStartDate?.textFieldInput?.requestFocus()                            }
+                if (tfEndDate?.textFieldInput?.isFocused == false && tfStartDate?.textFieldInput?.isFocused == false) {
+                    when (mode) {
+                        CalendarPickerView.SelectionMode.RANGE -> {
+                            if (dateIn != null && date.after(dateIn)) {
+                                selectEndDate(date)
+                            } else {
+                                dateIn = date
+                                selectStartDate(date)
+                            }
+                            this@SomFilterDateBottomSheet.selectedDates = selectedDates
+                        }
+                        else -> {
+                        }
                     }
-                    else -> { }
+                } else {
+                    if (dateIn != null && tfEndDate?.textFieldInput?.isFocused == true && date.after(dateIn)) {
+                        selectEndDate(date)
+                    } else if (tfStartDate?.textFieldInput?.isFocused == true) {
+                        dateIn = date
+                        selectStartDate(date)
+                    }
+                    this@SomFilterDateBottomSheet.selectedDates = selectedDates
                 }
             }
 
@@ -133,15 +161,31 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private fun getSelectedDate(date: Date): String {
-        return Utils.format(date.time, PATTERN_DATE)
+    private fun selectEndDate(date: Date) {
+        endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
+        endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
+        tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length
+                ?: 0)
+        tfEndDate?.textFieldInput?.requestFocus()
+    }
+
+    private fun selectStartDate(date: Date) {
+        startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
+        startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
+        tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length
+                ?: 0)
+        tfStartDate?.textFieldInput?.requestFocus()
+    }
+
+    private fun getSelectedDate(date: Date, patternDate: String): String {
+        return Utils.format(date.time, patternDate)
     }
 
     private fun btnSaveCalendar() {
         btnSaveCalendar?.setOnClickListener {
-            val startDate = tfStartDate?.textFieldInput?.text?.trim().toString()
-            val endDate = tfEndDate?.textFieldInput?.text?.trim().toString()
-            calenderFilterListener?.onBtnSaveCalendarClicked(startDate, endDate)
+            calenderFilterListener?.onBtnSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
             dismiss()
         }
     }
@@ -151,6 +195,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     interface CalenderListener {
-        fun onBtnSaveCalendarClicked(startDate: String, endDate: String)
+        fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>)
     }
 }

@@ -33,13 +33,12 @@ object FilterResultMapper {
 
     fun convertToMapSomListFilterUiModel(data: List<SomFilterUiModel>?,
                                          idFilter: String,
-                                         statusList: SomListFilterUiModel?,
-                                         orderStatus: String): SomListFilterUiModel {
-        return SomListFilterUiModel(statusList = mapFilterStatusList(data?.find { it.nameFilter == idFilter }?.somFilterData, statusList, orderStatus))
+                                         statusList: SomListFilterUiModel?): SomListFilterUiModel {
+        return SomListFilterUiModel(statusList = mapFilterStatusList(data?.find { it.nameFilter == idFilter }?.somFilterData, statusList))
     }
 
     private fun mapFilterStatusList(dataList: List<SomFilterChipsUiModel>?,
-                                    statusListOld: SomListFilterUiModel?, orderStatus: String): List<SomListFilterUiModel.Status> {
+                                    statusListOld: SomListFilterUiModel?): List<SomListFilterUiModel.Status> {
         val statusList = mutableListOf<SomListFilterUiModel.Status>()
         dataList?.map {
             var amount = 0

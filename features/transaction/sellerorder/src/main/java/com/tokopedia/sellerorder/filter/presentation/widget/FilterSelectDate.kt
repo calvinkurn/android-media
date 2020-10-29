@@ -3,11 +3,12 @@ package com.tokopedia.sellerorder.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.sellerorder.R
-import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.item_widget_filter_date.view.*
 
-class FilterSelectDate: BaseCustomView {
+class FilterSelectDate: RelativeLayout {
 
     constructor(context: Context) : super(context) {
         init()
@@ -27,5 +28,11 @@ class FilterSelectDate: BaseCustomView {
 
     fun setDateLabel(date: String) {
         tvSelectDateText?.text = date
+        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700))
+    }
+
+    fun setDateLabelEmpty(date: String) {
+        tvSelectDateText?.text = date
+        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, R.color.light_N700_44))
     }
 }

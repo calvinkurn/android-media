@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -51,15 +52,16 @@ class SomListSortFilterTab(
     }
 
     fun updateTabFromFilter(statusList: List<SomListFilterUiModel.Status>) {
-        filterItems = ArrayList(filterItems.map { filterItems ->
-            statusList.find { filterItems.title.contains(it.status) }.let { statusItem ->
-                val amount = if(statusItem?.amount.toZeroIfNull() > 0) "(${statusItem?.amount})" else ""
-                SortFilterItem("${statusItem?.status} $amount").apply {
-                    listener = { statusItem?.let { onTabClicked(this, it) } }
-                    type = if (statusItem?.isChecked == true) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        sortFilter.chipItems.clear()
+        sortFilter.indicatorCounter = 0
+        filterItems = ArrayList(statusList.map { filterItem ->
+            filterItems.find { it.title.contains(filterItem.status) }.let { statusItem ->
+                val amount = if(filterItem.amount.toZeroIfNull() > 0) "(${filterItem.amount})" else ""
+                SortFilterItem("${filterItem.status} $amount").apply {
+                    listener = { statusItem?.let { onTabClicked(this, filterItem) } }
+                    type = if (filterItem.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
                 }
         }})
-        sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
         changeTabSortFilterText()
         sortFilter.show()
@@ -112,10 +114,13 @@ class SomListSortFilterTab(
         getDeepChildOffset(mainParent, parentGroup.getParent(), parentGroup, accumulatedOffset)
     }
 
-    fun updateCounterSortFilter(somListFilterUiModel: SomListFilterUiModel) {
+    fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
         var count = 0
-        sortFilter.indicatorCounter = count
-        somListFilterUiModel.statusList.forEach { if(it.isChecked) count++ }
+        somListFilterUiModel.forEach {
+            it.somFilterData.forEach { somFilter ->
+                if(somFilter.isSelected) count++
+            }
+        }
         sortFilter.indicatorCounter = count
     }
 

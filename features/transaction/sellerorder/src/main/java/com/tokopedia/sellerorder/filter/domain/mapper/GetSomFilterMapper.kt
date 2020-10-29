@@ -22,12 +22,21 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TODAY_TOMORROW_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.TOMORROW
 import com.tokopedia.sellerorder.common.util.SomConsts.TOMORROW_LABEL
 import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
+import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 
 object GetSomFilterMapper {
 
-    fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
+    fun mapToSomFilterVisitable(data: SomFilterResponse): List<BaseSomFilter> {
+        return mutableListOf<BaseSomFilter>().apply {
+            addAll(mapToSomFilterUiModel(data))
+            add(SomFilterDateUiModel(nameFilter = FILTER_DATE))
+        }
+    }
+
+    private fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
         return mutableListOf<SomFilterUiModel>().apply {
             add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany =  false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))
@@ -35,7 +44,6 @@ object GetSomFilterMapper {
             add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany =  true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_LABEL, somFilterData = mapToFilterLabelUiModel(), canSelectMany = false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_DEADLINE, somFilterData =  mapToFilterDeadlineUiModel(), canSelectMany = false, isDividerVisible = true))
-            add(SomFilterUiModel(nameFilter = FILTER_DATE, canSelectMany = false, isDividerVisible = false))
         }
     }
 

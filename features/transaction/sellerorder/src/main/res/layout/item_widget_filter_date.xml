@@ -10,6 +10,7 @@
         android:id="@+id/tvSelectDateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_alignParentStart="true"
         android:text="@string/select_date"
@@ -20,12 +21,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:padding="@dimen/spacing_lvl2"
+        android:layout_above="@+id/dividerWidgetSomFilter"
         app:srcCompat="@drawable/ic_calendar"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/horLineDtf"
+        android:id="@+id/dividerWidgetSomFilter"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_below="@+id/tvSelectDateText"/>
+
 </RelativeLayout>

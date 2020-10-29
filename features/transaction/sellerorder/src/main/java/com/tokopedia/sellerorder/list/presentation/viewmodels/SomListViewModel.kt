@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -77,6 +78,8 @@ class SomListViewModel @Inject constructor(
         startDate = Utils.getFormattedDate(90, DATE_FORMAT)
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
+
+    private var somFilterUiModel: List<SomFilterUiModel> = mutableListOf()
 
     fun getTickers() {
         launchCatchError(block = {
@@ -171,7 +174,9 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun updateSomListFilterUi(somListFilterUiModel: SomListFilterUiModel) {
-        _filterResult.postValue(Success(somListFilterUiModel))
+    fun getSomFilterUi() = somFilterUiModel
+
+    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
+        this.somFilterUiModel = somFilterUiModelList
     }
 }

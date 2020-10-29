@@ -1,12 +1,14 @@
 package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -28,7 +30,6 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
-import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment.Companion.EXTRA_SOM_LIST_GET_ORDER_PARAM
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,35 +49,27 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
-    private var cacheManager: SaveInstanceCacheManager? = null
-    private var cacheManagerId: String = ""
     private var orderStatus: String = ""
 
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
 
+    private var fm: FragmentManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        cacheManagerId = arguments?.getString(SOM_FILTER_CACHE_MANAGER_ID).orEmpty()
-        orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
-        activity?.let {
-            cacheManager = SaveInstanceCacheManager(it, savedInstanceState)
-        }
-        val manager = if (savedInstanceState == null) {
-            context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
-        } else {
-            cacheManager
-        }
-        somListOrderParam = manager?.get(EXTRA_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
         super.onCreate(savedInstanceState)
         initInject()
+        orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
+        val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
+                ?: arrayListOf()
+        somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList() ?: listOf()
+        somFilterViewModel.setSomFilterUiModel(somFilterUiModelList.toList())
         somFilterViewModel.setSomListGetOrderListParam(somListOrderParam ?: SomListGetOrderListParam())
-        val view = View.inflate(requireContext(), R.layout.bottomsheet_som_filter_list, null)
-        rvSomFilter = view.findViewById(R.id.rvSomFilter)
-        btnShowOrder = view.findViewById(R.id.btnShowOrder)
-        setChild(view)
-        setTitle(TITLE_FILTER)
-        showKnob = true
-        isFullpage = true
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setChildView(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,10 +104,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     }
 
-    override fun onBtnSaveCalendarClicked(startDate: String, endDate: String) {
-        somListOrderParam?.startDate = startDate
-        somListOrderParam?.endDate = endDate
-        somFilterAdapter?.updateDateFilterText(startDate, endDate)
+    override fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
+        somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
+        somListOrderParam?.startDate = startDate.first
+        somListOrderParam?.endDate = endDate.first
+        somFilterAdapter?.updateDateFilterText(startDate.second, endDate.second)
     }
 
     override fun getComponent(): SomFilterComponent? {
@@ -131,6 +125,26 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         removeObservers(somFilterViewModel.updateFilterSelected)
         removeObservers(somFilterViewModel.somFilterUiModelData)
         super.onDestroy()
+    }
+
+    private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
+        val view = inflater.inflate(R.layout.bottomsheet_som_filter_list, container, false)
+        rvSomFilter = view.findViewById(R.id.rvSomFilter)
+        btnShowOrder = view.findViewById(R.id.btnShowOrder)
+        setChild(view)
+        setTitle(TITLE_FILTER)
+        showKnob = true
+    }
+
+    fun show() {
+        fm?.let {
+            show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+        }
+    }
+
+    fun setFragmentManager(fm: FragmentManager): SomFilterBottomSheet {
+        this.fm = fm
+        return this
     }
 
     private fun loadSomFilterData() {
@@ -169,12 +183,10 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun clickDateFilter() {
-        val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance().apply {
-            setCalendarListener(this@SomFilterBottomSheet)
-        }
-        childFragmentManager.let {
-            somFilterDateBottomSheet.show(it, SOM_FILTER_DATE_BOTTOM_SHEET_TAG)
-        }
+        val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance()
+        somFilterDateBottomSheet.setCalendarListener(this)
+        somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
+        somFilterDateBottomSheet.show()
     }
 
     private fun observeSomFilter() {
@@ -185,6 +197,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                     if (it.data.isEmpty()) {
                         somFilterAdapter?.setEmptyState(EmptyModel())
                     } else {
+                        showHideBottomSheetReset()
                         somFilterAdapter?.updateData(it.data)
                     }
                 }
@@ -193,15 +206,19 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             }
         }
         observe(somFilterViewModel.updateFilterSelected) {
-            if (checkIsSelected()) {
-                bottomSheetAction.show()
-            } else {
-                bottomSheetAction.hide()
-            }
+            showHideBottomSheetReset()
             somFilterAdapter?.updateData(it)
         }
         observe(somFilterViewModel.somFilterUiModelData) {
             somListOrderParam = it
+        }
+    }
+
+    private fun showHideBottomSheetReset() {
+        if (checkIsSelected()) {
+            bottomSheetAction.show()
+        } else {
+            bottomSheetAction.hide()
         }
     }
 
@@ -211,13 +228,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             bottomSheetAction.text = it.resources.getString(R.string.reset)
         }
         bottomSheetAction.setOnClickListener {
-            somFilterViewModel.resetFilterSelected()
+            somFilterViewModel.resetFilterSelected(orderStatus)
         }
     }
 
     private fun checkIsSelected(): Boolean {
-        somFilterViewModel.getSomFilterUiModel()?.forEach {
-            it.somFilterData.forEach { chips ->
+        somFilterViewModel.getSomFilterUiModel().forEach {
+            it.somFilterData.filter { somChips -> somChips.name != orderStatus }.onEach { chips ->
                 if (chips.isSelected) {
                     return true
                 }
@@ -232,22 +249,26 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     companion object {
         const val TITLE_FILTER = "Filter"
-        const val SOM_FILTER_CACHE_MANAGER_ID = "som_filter cache_manager_id"
         const val SOM_FILTER_BOTTOM_SHEET_TAG = "SomFilterBottomSheetTag"
         const val SOM_FILTER_DATE_BOTTOM_SHEET_TAG = "SomFilterDateBottomSheetTag"
         const val KEY_ORDER_STATUS = "key_order_status"
+        const val KEY_SOM_FILTER_LIST = "key_som_filter_list"
+        const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
 
-        fun createInstance(cacheObjectId: String, orderStatus: String): SomFilterBottomSheet {
+        fun createInstance(orderStatus: String,
+                           orderStatusIdList: List<Int>,
+                           somFilterUiModelList: List<SomFilterUiModel>): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet()
             val args = Bundle()
-            args.putString(SOM_FILTER_CACHE_MANAGER_ID, cacheObjectId)
             args.putString(KEY_ORDER_STATUS, orderStatus)
+            args.putIntegerArrayList(KEY_SOM_FILTER_LIST, ArrayList(orderStatusIdList))
+            args.putParcelableArrayList(KEY_SOM_FILTER_LIST, ArrayList(somFilterUiModelList))
             fragment.arguments = args
             return fragment
         }
     }
 
     interface SomFilterFinishListener {
-        fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModel: List<SomFilterUiModel>?, idFilter: String, orderStatus: String)
+        fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String)
     }
 }
