@@ -96,7 +96,7 @@ internal open class BannerView(activity: Activity) {
     private fun setActionButton(data: CMInApp) {
         val layout = data.getCmLayout()
 
-        if (data.cmLayout.button.isNullOrEmpty()) {
+        if (layout.button.isNullOrEmpty()) {
             lstActionButton.visibility = View.GONE
             return
         }
@@ -105,7 +105,7 @@ internal open class BannerView(activity: Activity) {
             ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
             ORIENTATION_HORIZONTAL -> GridLayoutManager(
                     mActivity.get(),
-                    layout.button?.size?: 2
+                    layout.button.size
             )
             else -> LinearLayoutManager(mActivity.get())
         }
