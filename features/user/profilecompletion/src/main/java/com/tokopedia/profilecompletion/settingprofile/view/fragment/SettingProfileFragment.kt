@@ -125,21 +125,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        profileInfoViewModel.userProfileInfo.observe(this, Observer {
+        profileInfoViewModel.userProfileInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetUserProfileInfo(it.data)
                 is Fail -> onErrorGetProfileInfo(it.throwable)
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
+        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
 
-        profileRoleViewModel.userProfileRole.observe(this, Observer {
+        profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
@@ -439,7 +439,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         if (profileCompletionData.isMsisdnVerified) {
                             goToChangePhone(profileCompletionData.msisdn, profileCompletionData.email)
                         } else {
-                            goToVerifyPhone()
+//                            goToVerifyPhone()
+                            goToAddPhoneBy(profileCompletionData.msisdn)
                         }
                     }
             )
@@ -496,6 +497,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun goToAddPhone() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+    }
+
+    private fun goToAddPhoneBy(phone: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 

@@ -20,6 +20,7 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
+import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -63,6 +64,13 @@ class AddPhoneFragment : BaseDaggerFragment() {
         setListener()
         setObserver()
         buttonSubmit.isEnabled = false
+        presetView()
+    }
+
+    private fun presetView() {
+        arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let {
+            phone -> etPhone.textFieldInput.setText(phone)
+        }
     }
 
     private fun setListener() {
@@ -139,7 +147,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.addPhoneResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddPhone(it.data)
@@ -149,7 +157,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         )
 
         viewModel.userValidateResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessUserValidate(it.data)

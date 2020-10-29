@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.phoneverification.data.model.response.PhoneVerificationResponseData
+import com.tokopedia.phoneverification.domain.usecase.ChangePhoneUseCase
 import com.tokopedia.phoneverification.domain.usecase.VerifyPhoneUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class PhoneVerificationViewModel @Inject constructor(
         private val verifyPhoneUseCase: VerifyPhoneUseCase,
+        private val changePhoneUseCase: ChangePhoneUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -34,5 +36,9 @@ class PhoneVerificationViewModel @Inject constructor(
         return { error ->
             _response.postValue(Fail(error))
         }
+    }
+
+    fun changePhoneNumber(phoneNumber: String) {
+        changePhoneUseCase.changePhone(phoneNumber, onSuccessVerifyPhone(), onErrorVerifyPhone())
     }
 }

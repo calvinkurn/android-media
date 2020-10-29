@@ -11,8 +11,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.phoneverification.R
 import com.tokopedia.phoneverification.di.revamp.DaggerPhoneVerificationComponent
 import com.tokopedia.phoneverification.di.revamp.PhoneVerificationComponent
-import com.tokopedia.phoneverification.di.revamp.PhoneVerificationModule
 import com.tokopedia.phoneverification.di.revamp.PhoneVerificationQueryModule
+import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment.Companion.createInstance
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment.PhoneVerificationFragmentListener
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFragment.Companion.createInstance
@@ -22,8 +22,6 @@ import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFra
  * * For navigate: use [ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION]
  */
 class PhoneVerificationProfileActivity : BaseSimpleActivity(), HasComponent<PhoneVerificationComponent> {
-
-    private lateinit var phoneVerificationComponent: PhoneVerificationComponent
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +34,13 @@ class PhoneVerificationProfileActivity : BaseSimpleActivity(), HasComponent<Phon
         if (supportFragmentManager.findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.javaClass.simpleName)
         }
-        if (supportFragmentManager.findFragmentById(R.id.container) == null) {
+
+        val fragmentFromContainer = supportFragmentManager.findFragmentById(R.id.container)
+        if (fragmentFromContainer == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.javaClass.simpleName)
+        }  else if ((fragmentFromContainer as PhoneVerificationFragment).listener == null) {
+            fragmentFromContainer.setPhoneVerificationListener(phoneVerificationListener)
         }
-        //        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container)).listener == null) {
-//            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
-//                    .setPhoneVerificationListener(getPhoneVerificationListener());
-//        }
         fragmentTransaction.commit()
     }
 

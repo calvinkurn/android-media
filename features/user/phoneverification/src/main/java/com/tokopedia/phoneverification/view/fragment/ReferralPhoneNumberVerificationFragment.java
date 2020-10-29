@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
@@ -134,10 +136,13 @@ public class ReferralPhoneNumberVerificationFragment extends BaseDaggerFragment 
             @Override
             public void onClick(View view) {
                 if (listener != null) {
+                    String rawPhone = tvPhoneNumber.getText().toString().replace("-", "");
                     analytics.eventReferralAndShare(
                             PhoneVerificationAnalytics.Action.CLICK_VERIFY_NUMBER,
                             tvPhoneNumber.getText().toString().replace("-", ""));
-                    listener.onClickVerification(tvPhoneNumber.getText().toString());
+//                    listener.onClickVerification(tvPhoneNumber.getText().toString());
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_PHONE_WITH, rawPhone);
+                    startActivity(intent);
                 }
             }
         });

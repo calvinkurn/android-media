@@ -1,7 +1,9 @@
 package com.tokopedia.phoneverification.di.revamp
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity
+import com.tokopedia.phoneverification.view.fragment.ChangePhoneNumberFragment
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
 import dagger.Component
 
@@ -14,6 +16,10 @@ import dagger.Component
     PhoneVerificationQueryModule::class]
 , dependencies = [BaseAppComponent::class])
 interface PhoneVerificationComponent {
+
+    fun inject(activity: ChangePhoneNumberActivity)
+    fun inject(fragment: ChangePhoneNumberFragment)
+
     fun inject(activity: PhoneVerificationProfileActivity)
     fun inject(fragment: PhoneVerificationFragment)
 }

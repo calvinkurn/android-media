@@ -15,7 +15,5 @@ import dagger.Component;
 @Component(modules = PhoneVerificationModule.class, dependencies = BaseAppComponent.class)
 public interface PhoneVerificationComponent {
 
-    void inject(ChangePhoneNumberFragment fragment);
-
     void inject(ReferralPhoneNumberVerificationFragment fragment);
 }
