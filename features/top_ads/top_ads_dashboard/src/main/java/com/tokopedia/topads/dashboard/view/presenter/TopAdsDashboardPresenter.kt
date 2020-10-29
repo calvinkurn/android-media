@@ -54,7 +54,6 @@ import javax.inject.Inject
 class TopAdsDashboardPresenter @Inject
 constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsGetStatisticsUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StatsData>,
             private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
             private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
             private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
@@ -499,7 +498,6 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetStatisticsUseCase.cancelJobs()
         topAdsGetGroupDataUseCase.unsubscribe()
         topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupDataUseCase.unsubscribe()

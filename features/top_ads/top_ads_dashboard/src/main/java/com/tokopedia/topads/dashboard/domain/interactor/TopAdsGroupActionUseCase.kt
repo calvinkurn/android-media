@@ -39,17 +39,20 @@ class TopAdsGroupActionUseCase @Inject constructor(val userSession: UserSessionI
 
     fun setParams(action: String, groupIds: List<String>): RequestParams {
 
+        var requestParams = RequestParams.create()
+
         val group: ArrayList<Map<String, String?>> = arrayListOf()
         groupIds.forEach {
             val map = mapOf(GROUPID to it, PRICE_BID to null, PRICE_DAILY to null)
             group.add(map)
         }
-        val queryMap = RequestParams.create()
-        queryMap.putString(ParamObject.SHOP_ID, userSession.shopId)
-        queryMap.putString(ACTION,  action)
-        queryMap.putString(SOURCE, SOURCE_DASH)
-        queryMap.putObject(GROUPS, group)
-        return queryMap
+        val queryMap = HashMap<String, Any?>()
+        queryMap[ParamObject.SHOP_ID] = userSession.shopId
+        queryMap[ACTION] = action
+        queryMap[SOURCE] = SOURCE_DASH
+        queryMap[GROUPS] = group
+        requestParams.putAll(queryMap)
+        return requestParams
     }
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {

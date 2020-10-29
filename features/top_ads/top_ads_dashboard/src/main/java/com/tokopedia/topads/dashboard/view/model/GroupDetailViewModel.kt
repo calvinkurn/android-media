@@ -191,8 +191,8 @@ class GroupDetailViewModel @Inject constructor(
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
         topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_group_action))
-        topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
+        var requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
+        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
             }
 
