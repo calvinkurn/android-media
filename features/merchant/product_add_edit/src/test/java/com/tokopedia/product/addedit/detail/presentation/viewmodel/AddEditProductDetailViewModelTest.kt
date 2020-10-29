@@ -6,8 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
+import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
+import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
@@ -40,6 +44,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var getNameRecommendationUseCase: GetNameRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var validateProductUseCase: ValidateProductUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -92,7 +99,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase)
     }
 
     @Test
@@ -284,6 +291,56 @@ class AddEditProductDetailViewModelTest {
 
         val isError = viewModel.isProductNameInputError.getOrAwaitValue()
         Assert.assertTrue(isError && viewModel.productNameMessage.isNotBlank() && viewModel.productNameMessage == stringResMessage)
+    }
+
+    @Test
+    fun `validateProductNameInput should invalid when product name is exist`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertTrue(resultViewmodel)
+    }
+
+    @Test
+    fun `validateProductNameInput should valid when product name is not exist`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = true,
+                        data = ProductValidateData(resultMessage)
+                )
+        )
+
+        viewModel.isProductNameChanged = true
+        viewModel.validateProductNameInput( "batik cociks")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertFalse(resultViewmodel)
     }
 
     @Test
@@ -660,6 +717,54 @@ class AddEditProductDetailViewModelTest {
 
         val isError = viewModel.isPreOrderDurationInputError.getOrAwaitValue()
         Assert.assertTrue(isError && viewModel.preOrderDurationMessage.isNotBlank() && viewModel.preOrderDurationMessage == stringResErrorMessage)
+    }
+
+    @Test
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ESKU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
+    }
+
+    @Test
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ES KU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == resultMessage.joinToString("\n"))
     }
 
     @Test

@@ -144,7 +144,11 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        inflater.inflate(R.menu.chat_options_menu, menu)
+        if (GlobalConfig.isSellerApp()) {
+            inflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
+        } else {
+            inflater.inflate(R.menu.chat_options_menu, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

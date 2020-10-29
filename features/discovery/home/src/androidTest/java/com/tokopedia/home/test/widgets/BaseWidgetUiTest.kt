@@ -39,7 +39,6 @@ abstract class BaseWidgetUiTest{
     open val getBusinessWidgetTab = mockk<Lazy<GetBusinessWidgetTab>> (relaxed = true)
     open val getBusinessUnitDataUseCase = mockk<Lazy<GetBusinessUnitDataUseCase>> (relaxed = true)
     open val getPopularKeywordUseCase = mockk<Lazy<GetPopularKeywordUseCase>> (relaxed = true)
-    open val getDynamicChannelsUseCase = mockk<Lazy<GetDynamicChannelsUseCase>> (relaxed = true)
     open val getAtcUseCase = mockk<Lazy<AddToCartOccUseCase>>(relaxed = true)
     open val getRechargeRecommendationUseCase = mockk<Lazy<GetRechargeRecommendationUseCase>>(relaxed = true)
     open val declineRechargeRecommendationUseCase = mockk<Lazy<DeclineRechargeRecommendationUseCase>>(relaxed = true)

@@ -157,7 +157,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopTagLineTextField() {
-        shopTagLineTextField.textFieldInput.isSingleLine = false
         shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 shopTagLineTextField.setMessage("")
@@ -216,7 +215,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.name)
             addTextChangedListener(textWatcher)
             isEnabled = false
-            isSingleLine = false
         }
     }
 
@@ -225,7 +223,6 @@ class ShopEditBasicInfoFragment: Fragment() {
             setText(shopBasicDataModel?.domain)
             addTextChangedListener(shopDomainTextWatcher)
             isEnabled = false
-            isSingleLine = false
         }
     }
 
