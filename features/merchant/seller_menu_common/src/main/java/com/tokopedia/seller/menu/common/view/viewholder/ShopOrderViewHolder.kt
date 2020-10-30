@@ -47,18 +47,14 @@ class ShopOrderViewHolder(
     }
 
     private fun setClickListeners() {
-        listOf(itemView.cardNewOrder, itemView.labelNewOrder).forEach {
-            it.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
-                sellerMenuTracker?.sendEventClickOrderNew()
-            }
+        itemView.cardNewOrder.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            sellerMenuTracker?.sendEventClickOrderNew()
         }
 
-        listOf(itemView.cardReadyToShip, itemView.labelDelivery).forEach {
-            it.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
-                sellerMenuTracker?.sendEventClickOrderReadyToShip()
-            }
+        itemView.cardReadyToShip.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            sellerMenuTracker?.sendEventClickOrderReadyToShip()
         }
     }
 }
