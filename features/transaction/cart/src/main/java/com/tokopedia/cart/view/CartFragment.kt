@@ -120,10 +120,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.UnifyImageButton
-import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -156,7 +153,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
     lateinit var imgChevronSummary: UnifyImageButton
     lateinit var textTotalPaymentLabel: Typography
-    lateinit var tmpAnimatedImage: ImageView
+    lateinit var tmpAnimatedImage: ImageUnify
 
     @Inject
     lateinit var dPresenter: ICartListPresenter

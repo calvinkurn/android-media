@@ -12,9 +12,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 
-/**
- * Created by meta on 19/07/18.
- */
 class CartToolbarView : Toolbar, CartToolbar {
 
     lateinit var textView: Typography

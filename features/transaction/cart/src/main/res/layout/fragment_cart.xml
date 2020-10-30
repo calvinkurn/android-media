@@ -191,7 +191,7 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tmp_animated_image"
         android:layout_width="@dimen/dp_72"
         android:layout_height="@dimen/dp_72"

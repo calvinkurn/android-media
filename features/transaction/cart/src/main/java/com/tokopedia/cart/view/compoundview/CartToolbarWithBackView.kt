@@ -13,9 +13,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyImageButton
 
-/**
- * Created by meta on 19/07/18.
- */
 class CartToolbarWithBackView : Toolbar, CartToolbar {
 
     lateinit var btnBack: ImageView
