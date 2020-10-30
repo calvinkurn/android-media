@@ -339,7 +339,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     override fun onRingtoneTest(uri: Uri) {
-        RingtoneManager.getRingtone(context, uri).play()
+        RingtoneManager.getRingtone(context, uri)?.play()
     }
 
     override fun initInjector() {

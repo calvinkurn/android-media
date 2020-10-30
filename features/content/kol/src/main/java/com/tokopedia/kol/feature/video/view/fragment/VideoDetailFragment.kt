@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -220,7 +220,7 @@ class VideoDetailFragment:
         videoView.setVideoURI(Uri.parse(url))
         videoView.setOnErrorListener { _, p1, p2 ->
             try {
-                Crashlytics.logException(Throwable(String.format("%s - what : %s - extra : %s ",
+                FirebaseCrashlytics.getInstance().recordException(Throwable(String.format("%s - what : %s - extra : %s ",
                         VideoDetailFragment::class.java.simpleName, p1.toString(), p2.toString())))
             } catch (e: IllegalStateException) {
                 e.printStackTrace()

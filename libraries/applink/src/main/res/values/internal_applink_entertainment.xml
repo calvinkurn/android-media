@@ -15,4 +15,5 @@
 
     <string name="path_event_checkout" translatable="false">/checkout</string>
     <string name="path_event_form" translatable="false">/form/.*\</string>
+    <string name="path_event_redeem">/redeem</string>
 </resources>

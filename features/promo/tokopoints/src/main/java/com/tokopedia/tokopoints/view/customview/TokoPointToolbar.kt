@@ -134,7 +134,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.design.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(android.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }
@@ -185,7 +185,7 @@ class TokoPointToolbar : Toolbar {
             if (dynamicActionItem.counter?.isShowCounter != null && dynamicActionItem.counter.counterStr != null
                     && dynamicActionItem.counter.counterStr.isNotEmpty() && dynamicActionItem.counter.counterStr != "0") {
                 viewCntainer.notif_dynamic.visibility = View.VISIBLE
-                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                viewCntainer.notif_dynamic.setNotification(dynamicActionItem.counter.counterStr, NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             }
             it.container_scrolledState.addView(viewCntainer, param)
             return viewCntainer

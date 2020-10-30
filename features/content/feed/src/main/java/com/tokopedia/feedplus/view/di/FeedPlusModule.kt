@@ -21,6 +21,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
@@ -215,4 +217,16 @@ class FeedPlusModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_feed_detail)
     }
 
+    @FeedPlusScope
+    @Provides
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, networkRouter: NetworkRouter, userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
 }

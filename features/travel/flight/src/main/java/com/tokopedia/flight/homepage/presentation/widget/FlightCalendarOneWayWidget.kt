@@ -10,7 +10,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.SubTitle
@@ -18,6 +17,7 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
+import com.tokopedia.flight.homepage.data.cache.FlightCalendarQuery
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel

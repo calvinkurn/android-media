@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/dp_4"
     android:paddingBottom="@dimen/dp_4"
     android:gravity="center_vertical"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0">
 
         <ImageView
             android:id="@+id/actionUpBtn"
@@ -38,8 +38,8 @@
             android:imeOptions="actionSearch"
             android:inputType="textNoSuggestions"
             android:lines="1"
-            android:textColor="@color/edit_text_color"
-            android:textColorHint="@color/edit_text_color_hint"
+            android:textColor="@color/Unify_N700_96"
+            android:textColorHint="@color/Unify_N700_44"
             android:textCursorDrawable="@drawable/autocomplete_cursor_color"
             android:textSize="@dimen/sp_14"
             app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/unify_G500"
+            android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:typographyType="body_2"
             app:typographyWeight="reguler"

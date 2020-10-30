@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Point
+import android.net.Uri
 import android.view.Display
 import android.view.WindowManager
 import java.io.File
@@ -43,7 +44,7 @@ object ImageUtil {
 
     // This will handle OOM for too large Bitmap
     @JvmStatic
-    fun getBitmapFromFile(context: Context, imagePath: String): Bitmap {
+    fun getBitmapFromFile(context: Context, imagePath: String): Bitmap? {
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inJustDecodeBounds = true
@@ -61,7 +62,7 @@ object ImageUtil {
                 options.inSampleSize *= 2
             }
         }
-        return tempPic!!
+        return tempPic
     }
 
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int { // Raw height and width of image
@@ -106,5 +107,19 @@ object ImageUtil {
             max = height
         }
         return min != 0 && max / min > 2
+    }
+
+    @JvmStatic
+    fun getWidthAndHeight(context: Context, uri: Uri): Pair<Int, Int> {
+        return try {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            val input = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(input, null, options)
+            input?.close()
+            options.outWidth to options.outHeight
+        } catch (ignored: Exception) {
+            0 to 0
+        }
     }
 }

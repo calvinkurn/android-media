@@ -69,7 +69,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
         } ?: run { gotoHomePage() }
+
         showAppFeedbackBottomSheet(thanksPageData)
+
         postEventOnThankPageDataLoaded(thanksPageData)
     }
 
@@ -140,7 +142,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * */
     override fun onBackPressed() {
         if(::thanksPageData.isInitialized)
-            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.paymentID.toString())
+            thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

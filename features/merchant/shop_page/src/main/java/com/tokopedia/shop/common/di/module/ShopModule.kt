@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi
 import com.tokopedia.shop.common.di.ShopCommonModule
@@ -55,5 +57,12 @@ class ShopModule(val context: Context) {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @Provides
+    fun provideTkpdAuthInterceptor(@ShopPageContext context: Context,
+                                    userSession: UserSessionInterface,
+                                    networkRouter: NetworkRouter): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 }

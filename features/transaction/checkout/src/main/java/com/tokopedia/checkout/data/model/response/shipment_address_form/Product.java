@@ -136,6 +136,9 @@ public class Product {
     @SerializedName("product_information")
     @Expose
     private List<String> productInformation;
+    @SerializedName("campaign_id")
+    @Expose
+    private int campaignId;
 
     public String getProductCategory() {
         return productCategory;
@@ -303,5 +306,9 @@ public class Product {
 
     public List<String> getProductInformation() {
         return productInformation;
+    }
+
+    public int getCampaignId() {
+        return campaignId;
     }
 }

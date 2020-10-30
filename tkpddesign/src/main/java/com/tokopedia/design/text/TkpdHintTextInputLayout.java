@@ -638,7 +638,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     void passwordVisibilityToggleRequested() {
         if (mPasswordToggleEnabled) {
             // Store the current cursor position
-            final int selection = mEditText.getSelectionEnd();
+            int selection = mEditText.getSelectionEnd();
 
             if (hasPasswordTransformation()) {
                 mEditText.setTransformationMethod(null);
@@ -650,6 +650,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
             mPasswordToggleView.setChecked(mPasswordToggledVisible);
 
+            if(selection < 0) selection = 0;
             // And restore the cursor position
             mEditText.setSelection(selection);
         }

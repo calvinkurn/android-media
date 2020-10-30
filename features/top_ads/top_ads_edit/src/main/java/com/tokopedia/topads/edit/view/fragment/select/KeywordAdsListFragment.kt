@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -30,10 +31,20 @@ import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFact
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordSelectedAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.btn_next
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.emptyLayout
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.headlineList
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.keyword_list
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.selected_info
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.tip_btn
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.txtRecommendation
 import javax.inject.Inject
 
 private const val EVENT_LIST_CHECKBOX = "kata kunci pilihan yang di ceklist"
@@ -59,6 +70,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     var productId = ""
     private var selected: ArrayList<KeywordDataItem>? = arrayListOf()
     var groupId = 0
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
 
     companion object {
         const val PRODUCT_IDS_SELECTED = "product_ids"
@@ -150,14 +163,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun removeSearchedItem(pos: Int) {
-        var id = -1
-        selectedKeyFromSearch?.forEachIndexed { index, it ->
-            if (it.keyword == keywordSelectedAdapter.items[pos].keyword) {
-                id = index
+        val iterator = selectedKeyFromSearch?.iterator()
+        while (iterator?.hasNext() == true) {
+            val key = iterator.next()
+            if (key.keyword == keywordSelectedAdapter.items[pos].keyword) {
+                iterator.remove()
             }
         }
-        if (id != -1 && selectedKeyFromSearch?.size ?: 0 > id)
-            selectedKeyFromSearch?.removeAt(id)
     }
 
 
@@ -300,6 +312,15 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 activity?.finish()
             }
         }
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            tvToolTipText = this.findViewById(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_common_tip_memilih_kata_kunci)
+
+            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(AppCompatResources.getDrawable(this.context, com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+        }
+
+        tip_btn?.addItem(tooltipView)
         tip_btn.setOnClickListener {
             TipSheetKeywordList().show(childFragmentManager, KeywordAdsListFragment::class.java.name)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_TIPS_KEYWORD, groupId.toString(), userID)
@@ -387,7 +408,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         selectedKeyFromSearch?.forEach { item ->
             if (keywordSelectedAdapter.items.find { selected -> selected.keyword == item.keyword } == null) {
                 list.add(KeywordDataItem(item.bidSuggest, item.totalSearch.toString(), item.keyword
-                        ?: "", item.source ?: "", item.competition ?: ""))
+                        ?: "", item.source ?: "", item.competition ?: "",true, fromSearch = true))
             }
         }
         return list

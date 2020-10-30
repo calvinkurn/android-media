@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -30,17 +31,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
@@ -72,10 +75,16 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkItem;
+import com.tokopedia.imagepicker.picker.instagram.data.model.User;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +95,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.hansel.core.react.HanselLogsRn;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 /**
  * Created by baghira on 09/05/18.
@@ -106,7 +117,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
     private static final String INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim";
+    private static final String PREFERENCES_NAME = "deals_banner_preferences";
+    private static final String SHOW_COACH_MARK_KEY = "show_coach_mark_key_deals_banner";
+
     public static int RETRY_COUNT = 0;
+    private static long DELAY_COACH_MARK_START = 500L;
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -137,10 +152,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     LinearLayout userInfo;
     TextView userInfoLabel;
     private String categoryName;
-    View dividerUserInfo, dividerActionBtn, dividerInfoLabel;
+    View dividerUserInfo, dividerActionBtn, dividerInfoLabel, dividerBannerDeals;
     private CardView policy;
     private CardView claim;
+    private View bannerDeals;
+    private Typography bannerMainTitle;
+    private Typography bannerSubTitle;
+    private NestedScrollView parentScroll;
 
+    private LocalCacheHandler localCacheHandler;
 
     @Override
     protected String getScreenName() {
@@ -191,11 +211,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         dividerUserInfo = view.findViewById(R.id.divider_above_userInfo);
         dividerActionBtn = view.findViewById(R.id.divider_above_actionButton);
         dividerInfoLabel = view.findViewById(R.id.divider_above_info_label);
+        dividerBannerDeals = view.findViewById(R.id.divider_above_banner_deals);
         actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
         policy = view.findViewById(R.id.policy);
         claim = view.findViewById(R.id.claim);
+        bannerDeals = view.findViewById(R.id.banner_deals_order_detail);
+        bannerMainTitle = view.findViewById(R.id.tg_deal_banner_title);
+        bannerSubTitle = view.findViewById(R.id.tg_deal_banner_sub_title);
+        parentScroll = view.findViewById(R.id.parentScroll);
 
+        localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
         initInjector();
         setMainViewVisible(View.GONE);
@@ -236,10 +262,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             shape.setColor(Color.parseColor(conditionalInfo.color().background()));
         }
         if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), Color.parseColor(conditionalInfo.color().border()));
+            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.color().border()));
         }
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
         if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
             conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
@@ -355,7 +381,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void updateDrawState(TextPaint ds) {
                     super.updateDrawState(ds);
                     ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                    ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
                 }
             }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             helpLabel.setHighlightColor(Color.TRANSPARENT);
@@ -368,13 +394,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.white));
-        shape.setStroke(2, getResources().getColor(R.color.grey_300));
+        shape.setColor(getResources().getColor(com.tokopedia.design.R.color.white));
+        shape.setStroke(2, getResources().getColor(com.tokopedia.design.R.color.grey_300));
         primaryActionBtn.setBackground(shape);
         if (isSingleButton) {
             primaryActionBtn.setLayoutParams(params);
@@ -390,9 +416,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.deep_orange_500));
+        shape.setColor(getResources().getColor(com.tokopedia.design.R.color.deep_orange_500));
         secondaryActionBtn.setBackground(shape);
-        secondaryActionBtn.setTextColor(getResources().getColor(R.color.white));
+        secondaryActionBtn.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
         if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
             secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
         }
@@ -459,7 +485,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        doubleTextView.setBottomGravity(Gravity.END);
         paymentMethodInfo.addView(doubleTextView);
     }
 
@@ -594,12 +620,49 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void setDealsBanner(Items item){
+        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
+        if(metaDataInfo != null){
+            if (metaDataInfo.getCustomLinkType() != null) {
+                if (metaDataInfo.getCustomLinkType().equalsIgnoreCase(KEY_REDIRECT)) {
+                    UserSession userSession = new UserSession(getContext());
+                    dividerBannerDeals.setVisibility(View.VISIBLE);
+                    bannerDeals.setVisibility(View.VISIBLE);
+
+                    if (isCoachmarkAlreadyShowed()) {
+                        bannerDeals.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int scrollTo = ((View) bannerDeals.getParent()).getTop() + bannerDeals.getTop();
+                                parentScroll.smoothScrollTo(0, scrollTo);
+                                addCoachmarkBannerDeals();
+                            }
+                        });
+                    }
+
+                    bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+                    if (!metaDataInfo.getCustomLinkLabel().isEmpty()) {
+                        bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
+                    }
+                    bannerDeals.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!metaDataInfo.getCustomLinkAppUrl().isEmpty()) {
+                                RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
     public void setEventDetails(ActionButton actionButton, Items item) {
 
         MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
         if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
             actionButtonLayout.setVisibility(View.GONE);
-            dividerActionBtn.setVisibility(View.GONE);
         } else {
             dividerActionBtn.setVisibility(View.VISIBLE);
             actionButtonLayout.setVisibility(View.VISIBLE);
@@ -633,9 +696,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                     DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                     doubleTextView.setTopText(entityPessenger.getTitle());
-                    doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
+                    doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_560));
                     doubleTextView.setBottomText(entityPessenger.getValue());
-                    doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
+                    doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_796));
                     doubleTextView.setBottomTextStyle("bold");
 
                     userInfo.addView(doubleTextView);
@@ -687,9 +750,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         for (PassengerInformation passengerInformation : passengerForm.getPassengerInformations()) {
                             DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                             doubleTextView.setTopText(passengerInformation.getTitle());
-                            doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
+                            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_560));
                             doubleTextView.setBottomText(passengerInformation.getValue());
-                            doubleTextView.setBottomTextColor(ContextCompat.getColor(getContext(), R.color.title_gray_color));
+                            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_796));
                             doubleTextView.setBottomTextStyle("bold");
 
                             userInfo.addView(doubleTextView);
@@ -729,7 +792,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             disableText.setText(header.getStatusLabel());
         }
 
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (actionButton.getHeaderObject() != null) {
             poweredBy.setText(header.getPoweredBy());
@@ -758,12 +821,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lp.gravity = Gravity.CENTER;
         dialog.getWindow().setAttributes(lp);
         View v = dialog.getWindow().getDecorView();
-        v.setBackgroundResource(android.R.color.transparent);
+        v.setBackgroundResource(com.tokopedia.design.R.color.transparent);
 
         ImageView qrCode = view.findViewById(R.id.qrCode);
         LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
         TextView closeButton = view.findViewById(R.id.redeem_ticket);
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
 
         if (!actionButton.getBody().getBody().isEmpty()) {
             String[] voucherCodes = actionButton.getBody().getBody().split(",");
@@ -771,13 +834,39 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 voucherCodeLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < voucherCodes.length; i++) {
                     BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], 0, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes[i].length());
-                    bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
+                    bookingCodeView.setBackground(getContext().getResources().getDrawable(com.tokopedia.design.R.drawable.bg_search_input_text_area));
                     voucherCodeLayout.addView(bookingCodeView);
                 }
             }
         }
         closeButton.setOnClickListener(v1 -> dialog.dismiss());
         dialog.show();
+    }
+
+    private void addCoachmarkBannerDeals(){
+        CoachMarkItem coachMarkItem = new CoachMarkItem(bannerDeals,
+                getResources().getString(R.string.banner_deals_coachmark_title),
+                getResources().getString(R.string.banner_deals_coachmark_sub_title));
+
+        ArrayList<CoachMarkItem> listCoachMark = new ArrayList<>();
+        listCoachMark.add(coachMarkItem);
+
+        CoachMarkBuilder coachMarkBuilder = new CoachMarkBuilder();
+        CoachMark coachMark =  coachMarkBuilder.build();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                coachMark.show(getActivity(),"",listCoachMark);
+            }
+        }, DELAY_COACH_MARK_START);
+
+        localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY,false);
+        localCacheHandler.applyEditor();
+
+    }
+
+    private Boolean isCoachmarkAlreadyShowed(){
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY,true);
     }
 
     @Override

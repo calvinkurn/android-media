@@ -7,8 +7,11 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
@@ -17,9 +20,13 @@ import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.
 import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
@@ -35,12 +42,12 @@ import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
+import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +68,12 @@ class ShopHomeViewModel @Inject constructor(
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
         private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>
+        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+        private val shopProductSortMapper: ShopProductSortMapper,
+        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
@@ -79,6 +91,10 @@ class ShopHomeViewModel @Inject constructor(
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
+
+    val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
+            get() = _shopHomeMerchantVoucherLayoutData
+    private val _shopHomeMerchantVoucherLayoutData = MutableLiveData<Result<ShopHomeVoucherUiModel>>()
 
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>
         get() = _checkWishlistData
@@ -102,6 +118,18 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkCampaignNplRemindMeStatusData
     private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
+
+    val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
+        get() = _bottomSheetFilterLiveData
+    private val _bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
+
+    val shopProductFilterCountLiveData : LiveData<Result<Int>>
+        get() = _shopProductFilterCountLiveData
+    private val _shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
+
+
+    private var sortListData: List<ShopProductSortModel> = listOf()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -111,7 +139,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getShopPageHomeData(
             shopId: String,
-            sortId: Int,
+            shopProductFilterParameter: ShopProductFilterParameter,
             isRefreshShopLayout: Boolean = false
     ) {
         launchCatchError(block = {
@@ -129,10 +157,20 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io(),
                     block = {
                         if (!isRefreshShopLayout)
-                            getProductListData(shopId, sortId, 1)
+                            getProductListData(shopId, 1, shopProductFilterParameter)
                         else null
                     },
                     onError = { null }
+            )
+
+            val sortResponse  = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getSortListData()
+                    },
+                    onError = {
+                        null
+                    }
             )
 
             shopLayoutWidget.await()?.let {
@@ -149,6 +187,9 @@ class ShopHomeViewModel @Inject constructor(
                 productList.await()?.let { productListData ->
                     _initialProductListData.postValue(Success(productListData))
                 }
+                sortResponse.await()?.let{  sortResponse ->
+                    sortListData  = sortResponse
+                }
             }
         }) {
             it.printStackTrace()
@@ -157,12 +198,12 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getNewProductList(
             shopId: String,
-            sortId: Int,
-            page: Int
+            page: Int,
+            shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductListData(shopId, sortId, page)
+                getProductListData(shopId, page, shopProductFilterParameter)
             }
             _newProductListData.postValue(Success(listProductData))
         }) {
@@ -216,6 +257,30 @@ class ShopHomeViewModel @Inject constructor(
             )
         }
         return shopPageHomeLayoutUiModel
+    }
+
+    private suspend fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
+        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
+        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
+        if (index != 1) {
+            val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
+                getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
+            }
+            return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
+        }
+        return data
+    }
+
+    fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
+        val result = shopHomeLayoutData.value
+        if (result is Success) {
+            launchCatchError(block = {
+                val addMerchantVoucherLayout = getMerchantVoucherList(shopId, numVoucher, result.data)
+                _shopHomeMerchantVoucherLayoutData.value = Success(addMerchantVoucherLayout)
+            }) {
+                _shopHomeMerchantVoucherLayoutData.value = Fail(it)
+            }
+        }
     }
 
     fun addProductToCart(
@@ -285,15 +350,18 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getProductListData(
             shopId: String,
-            sortId: Int,
-            page: Int
+            page: Int,
+            shopProductFilterParameter: ShopProductFilterParameter
     ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {
                     etalaseMenu = ALL_SHOWCASE_ID
                     this.page = page
-                    sort = sortId
+                    sort = shopProductFilterParameter.getSortId().toIntOrZero()
+                    rating = shopProductFilterParameter.getRating()
+                    pmax = shopProductFilterParameter.getPmax()
+                    pmin = shopProductFilterParameter.getPmin()
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -310,6 +378,11 @@ class ShopHomeViewModel @Inject constructor(
                 productListUiModelData,
                 totalProductListData
         )
+    }
+
+    private suspend fun getSortListData(): List<ShopProductSortModel> {
+        val listSort = gqlGetShopSortUseCase.executeOnBackground()
+        return shopProductSortMapper.convertSort(listSort)
     }
 
     fun getVideoYoutube(videoUrl: String, widgetId: String) {
@@ -402,5 +475,59 @@ class ShopHomeViewModel @Inject constructor(
             )
             executeOnBackground()
         }
+    }
+
+
+    fun getBottomSheetFilterData() {
+        launchCatchError(coroutineContext, block = {
+            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.executeOnBackground()
+            }
+            filterBottomSheetData.data.let {
+                it.filter = it.filter.filter { filterItem ->
+                    ShopUtil.isFilterNotIgnored(filterItem.title)
+                }
+            }
+            _bottomSheetFilterLiveData.postValue(Success(filterBottomSheetData))
+        }) {
+
+        }
+    }
+
+    fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
+        launchCatchError(block = {
+            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+                getFilterResultCountData(shopId, tempShopProductFilterParameter)
+            }
+            _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
+        }) {}
+    }
+
+    private suspend fun getFilterResultCountData(
+            shopId: String,
+            tempShopProductFilterParameter: ShopProductFilterParameter
+    ): Int {
+        val filter = ShopProductFilterInput(
+                ShopPageConstant.START_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
+                "",
+                ALL_SHOWCASE_ID,
+                tempShopProductFilterParameter.getSortId().toIntOrZero(),
+                tempShopProductFilterParameter.getRating(),
+                tempShopProductFilterParameter.getPmax(),
+                tempShopProductFilterParameter.getPmin()
+        )
+        getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
+                shopId,
+                filter
+        )
+        return getShopFilterProductCountUseCase.executeOnBackground()
+    }
+
+    fun getSortNameById(sortId: String): String {
+        return sortListData.firstOrNull {
+            it.value == sortId
+        }?.name.orEmpty()
     }
 }

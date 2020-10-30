@@ -108,14 +108,16 @@ abstract class BaseTrackerConst {
             val isFreeOngkir: Boolean,
             val channelId: String = "",
             val persoType: String = "",
-            val isTopAds: Boolean = false,
+            val isTopAds: Boolean? = false,
             val cartId: String = "",
             val categoryId: String = "",
             val clusterId: Int = -1,
             val quantity: String = "",
             val headerName: String = "",
             val isCarousel: Boolean? = null,
-            val recommendationType: String = "")
+            val recommendationType: String = "",
+            val shopId:String = "",
+            val pageName: String = "")
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -154,6 +156,10 @@ abstract class BaseTrackerConst {
         private const val KEY_DIMENSION_11 = "dimension11"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
+        private const val KEY_DIMENSION_79 = "dimension79"
+        private const val KEY_DIMENSION_80 = "dimension80"
+        private const val KEY_DIMENSION_81 = "dimension81"
+        private const val KEY_DIMENSION_82 = "dimension82"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
@@ -186,7 +192,7 @@ abstract class BaseTrackerConst {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
-                    LIST, list  + if(products.first().isTopAds) " - topads" else ""
+                    LIST, setNewList(products.firstOrNull(), list)
             ),
                     PRODUCTS, getProductsClick(products, list)
             )
@@ -197,7 +203,7 @@ abstract class BaseTrackerConst {
                     CURRENCY_CODE, IDR,
                     ADD, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
-                    LIST, list  + if(products.first().isTopAds) " - topads" else ""
+                    LIST, setNewList(products.firstOrNull(), list)
             ),
                     PRODUCTS, getProductsClick(products, list)
             )
@@ -257,20 +263,28 @@ abstract class BaseTrackerConst {
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
-            map[KEY_DIMENSION_40] = list + if(product.isTopAds) " - topads" else ""
+            map[KEY_DIMENSION_40] = setNewList(product, list)
             if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) {
-                var newList = list + if(product.isTopAds) " - topads" else ""
-                if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
-                if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
-                if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
-                map[KEY_LIST] = newList
-            }
+            if (list.isNotEmpty()) map[KEY_LIST] = setNewList(product, list)
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_79] = product.shopId
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_80] = NONE
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_81] = ""
+            if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
+        }
+
+        private fun setNewList(product: Product?, list: String): String{
+            if(product == null) return list
+            var newList = list + if(product.isTopAds == true) " - topads" else if(product.isTopAds == false) " - non topads" else ""
+            if(product.isCarousel != null) newList += if (product.isCarousel == true) " - carousel" else "- non carousel"
+            if(product.recommendationType.isNotEmpty()) newList += " - ${product.recommendationType}"
+            if(product.pageName.isNotEmpty()) newList += " - ${product.pageName}"
+            if(product.headerName.isNotEmpty()) newList += " - ${product.headerName}"
+            return newList
         }
     }
 
