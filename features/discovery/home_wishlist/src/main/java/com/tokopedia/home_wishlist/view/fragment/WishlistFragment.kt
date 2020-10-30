@@ -60,7 +60,6 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
 import javax.inject.Inject
 
@@ -123,6 +122,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         private const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
         private const val className = "com.tokopedia.home_wishlist.view.fragment.WishlistFragment"
+        private const val CACHE_CART = "CART"
+        private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
+        private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
         fun newInstance() = WishlistFragment()
     }
 
@@ -171,7 +173,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     private fun initCartLocalCacheHandler() {
         activity?.let {
-            cartLocalCacheHandler = LocalCacheHandler(it, "CART")
+            cartLocalCacheHandler = LocalCacheHandler(it, CACHE_CART)
         }
     }
 
@@ -205,7 +207,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
             if (::cartLocalCacheHandler.isInitialized) {
                 val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
                 if (drawable is LayerDrawable) {
-                    val cartCount = cartLocalCacheHandler.getInt("CACHE_TOTAL_CART", 0)
+                    val cartCount = cartLocalCacheHandler.getInt(CACHE_KEY_TOTAL_CART, 0)
                     val countDrawable = CountDrawable(it)
                     countDrawable.setCount(cartCount.toString())
                     drawable.mutate()
@@ -572,8 +574,8 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         activity?.let { activity ->
             count?.let {
                 val cache = LocalCacheHandler(activity, "CART")
-                cache.putInt("IS_HAS_CART", if (count > 0) 1 else 0)
-                cache.putInt("CACHE_TOTAL_CART", count)
+                cache.putInt(CACHE_KEY_IS_HAS_CART, if (count > 0) 1 else 0)
+                cache.putInt(CACHE_KEY_TOTAL_CART, count)
                 cache.applyEditor()
 
                 activity.invalidateOptionsMenu()
