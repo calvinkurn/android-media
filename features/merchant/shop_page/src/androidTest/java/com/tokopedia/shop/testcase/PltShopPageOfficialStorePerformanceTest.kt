@@ -18,7 +18,7 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Comp
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
-
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
 class PltShopPageOfficialStorePerformanceTest {
 
     companion object {
@@ -41,8 +41,10 @@ class PltShopPageOfficialStorePerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            setupGraphqlMockResponseWithCheck(ShopPageWithHomeTabMockResponseConfig())
-            setupTotalSizeInterceptor(listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL))
+            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
+                    ShopPageWithHomeTabMockResponseConfig(),
+                    listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL)
+            )
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
