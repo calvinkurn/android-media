@@ -48,23 +48,23 @@ object TalkReplyTracking {
                         TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
                         TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK,
                         TalkTrackingConstants.TRACKING_ECOMMERCE to mapOf<String, Any>(
-                        TalkTrackingConstants.TRACKING_CLICK to mapOf(
-                                TalkTrackingConstants.TRACKING_ACTION_FIELD to mapOf(TalkTrackingConstants.TRACKING_LIST to eventCategory),
-                                TalkTrackingConstants.TRACKING_PRODUCTS to listOf(
-                                        mapOf(
-                                                TalkTrackingConstants.TRACKING_NAME to productName,
-                                                TalkTrackingConstants.TRACKING_ID to productId,
-                                                TalkTrackingConstants.TRACKING_LIST to eventCategory,
-                                                TalkTrackingConstants.TRACKING_POSITION to position.toString()
+                                TalkTrackingConstants.TRACKING_CLICK to mapOf(
+                                        TalkTrackingConstants.TRACKING_ACTION_FIELD to mapOf(TalkTrackingConstants.TRACKING_LIST to eventCategory),
+                                        TalkTrackingConstants.TRACKING_PRODUCTS to listOf(
+                                                mapOf(
+                                                        TalkTrackingConstants.TRACKING_NAME to productName,
+                                                        TalkTrackingConstants.TRACKING_ID to productId,
+                                                        TalkTrackingConstants.TRACKING_LIST to eventCategory,
+                                                        TalkTrackingConstants.TRACKING_POSITION to position.toString()
+                                                )
                                         )
-                                )
-                        ))
+                                ))
                 )
         )
     }
 
     fun eventImpressCard(inboxType: String, userId: String, productName: String, productId: String, position: Int) {
-        val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, inboxType)
+        val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, getInboxType(inboxType))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 mapOf(
                         TalkTrackingConstants.TRACKING_EVENT to TalkReplyTrackingConstants.EVENT_PRODUCT_VIEW,
@@ -77,19 +77,16 @@ object TalkReplyTracking {
                         TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK,
                         TalkTrackingConstants.TRACKING_ECOMMERCE to mapOf(
                                 TalkTrackingConstants.TRACKING_CURRENCY_CODE to TalkTrackingConstants.IDR_CURRENCY,
-                                TalkTrackingConstants.TRACKING_IMPRESSIONS to mapOf(
-                                        TalkTrackingConstants.TRACKING_ACTION_FIELD to "${TalkTrackingConstants.TRACKING_LIST to eventCategory}",
-                                        TalkTrackingConstants.TRACKING_PRODUCTS to listOf(
-                                                mapOf(
-                                                        TalkTrackingConstants.TRACKING_NAME to productName,
-                                                        TalkTrackingConstants.TRACKING_ID to productId,
-                                                        TalkTrackingConstants.TRACKING_LIST to eventCategory,
-                                                        TalkTrackingConstants.TRACKING_POSITION to position.toString()
-                                                )
+                                TalkTrackingConstants.TRACKING_IMPRESSIONS to listOf(
+                                        mapOf(
+                                                TalkTrackingConstants.TRACKING_NAME to productName,
+                                                TalkTrackingConstants.TRACKING_ID to productId,
+                                                TalkTrackingConstants.TRACKING_LIST to eventCategory,
+                                                TalkTrackingConstants.TRACKING_POSITION to position.toString()
                                         )
                                 )
+                        )
                 )
-            )
         )
     }
 
