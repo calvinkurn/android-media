@@ -106,6 +106,7 @@ import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberAct
 
 /**
  * @author anggaprasetiyo on 4/25/17.
+ * Routing applink to add to cart use isFromWidget and button back will go back to caller page
  */
 public class DigitalProductFragment extends BaseDaggerFragment
         implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
@@ -918,7 +919,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                 //handle back button from applink cart widget
                 if (isFromWidget) {
                     isFromWidget = false;
-                    getActivity().finish();
+                    closeView();
                 }
                 break;
             case REQUEST_CODE_CONTACT_PICKER:
