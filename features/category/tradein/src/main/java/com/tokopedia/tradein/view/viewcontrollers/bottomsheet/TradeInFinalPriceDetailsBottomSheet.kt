@@ -12,9 +12,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.tradein.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.layout_activity_tradein_info.*
 
-class TradeInFinalPriceDetailsBottomSheet: BottomSheetDialogFragment() {
+class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
     companion object {
         private const val DEVICE_REVIEW = "DEVICE_REVIEW"
 
@@ -37,6 +38,9 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetDialogFragment() {
     }
 
     private fun init() {
+        showCloseIcon = false
+        showKnob = true
+        setTitle("Detail Pengecekan")
         linear_layout.removeAllViews()
         arguments?.getStringArrayList(DEVICE_REVIEW)?.let {
             val textSize = 14.0f
