@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -29,11 +30,6 @@ import kotlinx.android.synthetic.main.tradein_address_fragment.iv_back
 import kotlinx.android.synthetic.main.tradein_address_fragment.progress_bar_layout
 import kotlinx.android.synthetic.main.tradein_final_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_final_price_fragment.btn_continue
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.product_name
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.product_price
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.total_price
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.tukar_tambah_price
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.valid_till
 import javax.inject.Inject
 
 class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
@@ -131,8 +127,10 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
 
         tv_slash_amt.apply {
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            text = "Striked thru text"
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(viewModel.tradeInParams?.newPrice
+                    ?: 0, true)
         }
+        ImageHandler.LoadImage(pdp_image, viewModel.tradeInParams?.productImage)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

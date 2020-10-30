@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,8 +24,15 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setUpObserver()
         initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setUpObserver() {
+        vm.imeiResponseLiveData.observe(viewLifecycleOwner, Observer {
+            setWrongImei(it)
+        })
     }
 
     private fun initLayout() {
@@ -66,7 +74,7 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
         fun onCourierButtonClick(shipperName: String?, price: String?)
     }
 
-    fun setWrongImei(error: String?) {
+    private fun setWrongImei(error: String?) {
         etWrapper?.isError = true
         when (error) {
             getString(R.string.tradein_laku6_imei_error) -> {

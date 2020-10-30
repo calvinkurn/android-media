@@ -71,7 +71,8 @@ class TradeInHomeViewModel @Inject constructor(
         if (response != null && response.deviceDiagInputRepsponse != null) {
             val result = HomeResult()
             result.isSuccess = true
-            finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
+            if(tradeInParams.newPrice - diagnostics.tradeInPrice >= 0)
+                finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
             if (response.deviceDiagInputRepsponse.isEligible) {
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName
@@ -162,7 +163,8 @@ class TradeInHomeViewModel @Inject constructor(
         result.isSuccess = true
         result.maxPrice = maxPrice
         result.minPrice = minPrice
-        finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
+        if(tradeInParams.newPrice - maxPrice >= 0)
+            finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
@@ -175,10 +177,13 @@ class TradeInHomeViewModel @Inject constructor(
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
-            result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
-
+            if(maxPrice > tradeInParams.newPrice){
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+            } else {
+                result.displayMessage = String.format("%1\$s",
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
+                result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
+            }
         }
         if (homeResultData.value?.deviceDisplayName != null) {
             result.deviceDisplayName = homeResultData.value?.deviceDisplayName

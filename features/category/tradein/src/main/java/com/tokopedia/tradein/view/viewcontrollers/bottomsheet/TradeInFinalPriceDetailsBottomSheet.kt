@@ -1,21 +1,18 @@
 package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.tradein.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.layout_activity_tradein_info.*
 
 class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
+    private var contentView: View? = null
+
     companion object {
         private const val DEVICE_REVIEW = "DEVICE_REVIEW"
 
@@ -29,19 +26,17 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.tradein_final_price_detail_bottom_sheet, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         init()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun init() {
         showCloseIcon = false
         showKnob = true
-        setTitle("Detail Pengecekan")
-        linear_layout.removeAllViews()
+        setTitle(getString(R.string.tradein_detail_pengecekan))
+        contentView = View.inflate(context,
+                R.layout.tradein_final_price_detail_bottom_sheet, null)
+        contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.removeAllViews()
         arguments?.getStringArrayList(DEVICE_REVIEW)?.let {
             val textSize = 14.0f
             for(review in it){
@@ -55,26 +50,10 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
                     setBottomTextStyle("bold")
                     setBottomText(review.substringAfter(":"))
                 }
-                linear_layout.addView(doubleTextView)
+                contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.addView(doubleTextView)
             }
         }
-        close_button.setOnClickListener {
-            dialog?.hide()
-        }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
-
-        bottomSheetDialog.setOnShowListener {
-            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            behavior.skipCollapsed = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
-        return bottomSheetDialog
+        setChild(contentView)
     }
 
 }

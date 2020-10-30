@@ -38,7 +38,6 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     lateinit var tradeInAnalytics: TradeInAnalytics
     private lateinit var tradeInInitialPriceViewModel: TradeInInitialPriceViewModel
     private lateinit var tradeinHomeViewModel: TradeInHomeViewModel
-    private val getImeiBS : GetImeiBS? = null
 
     override fun initInject() {
         getComponent().inject(this)
@@ -189,7 +188,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     }
 
     private fun setMaxPrice(maxPrice: String) {
-        tv_old_product_price.text = maxPrice
+        tv_old_product_price.text = getString(R.string.tradein_minus, maxPrice)
 //        val spannableString = SpannableString(getString(R.string.tradein_save_upto, maxPrice))
 //        val start = 18
 //        spannableString.setSpan(StyleSpan(Typeface.BOLD), start, start + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -200,10 +199,6 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         progress_bar_layout.hide()
         btn_continue.isEnabled = true
     }
-
-     fun setWrongImei(error: String?) {
-         getImeiBS?.setWrongImei(error)
-     }
 
     fun expand(v: View) {
         val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)

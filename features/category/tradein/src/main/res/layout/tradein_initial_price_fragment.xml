@@ -1,13 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:background="@drawable/bg_toolbar_drop_shadow"
+        android:elevation="@dimen/dp_2"
+        tools:layout_height="@dimen/dp_56">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:text="@string/tradein_price_range"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintBottom_toTopOf="@id/typography_subheader"
+                app:layout_constraintLeft_toRightOf="@id/iv_back"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography_subheader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:text="@string/tradein_step2_of_4"
+                android:textColor="@color/tradein_clr_AD31353B"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/iv_back"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/typography_header"
+                app:typographyType="body_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -19,67 +79,6 @@
             android:layout_height="match_parent"
             android:background="@color/white">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?android:actionBarSize"
-                android:background="@drawable/bg_toolbar_drop_shadow"
-                android:elevation="@dimen/dp_2"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_height="@dimen/dp_56">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white">
-
-                    <ImageView
-                        android:id="@+id/iv_back"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/typography_header"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:paddingStart="@dimen/dp_12"
-                        android:paddingEnd="@dimen/dp_12"
-                        android:text="@string/tradein_price_range"
-                        android:textColor="@color/clr_f531353b"
-                        app:layout_constraintBottom_toTopOf="@id/typography_subheader"
-                        app:layout_constraintLeft_toRightOf="@id/iv_back"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        app:typographyType="heading_4"
-                        app:typographyWeight="bold" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/typography_subheader"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:paddingStart="@dimen/dp_12"
-                        android:paddingEnd="@dimen/dp_12"
-                        android:text="@string/tradein_step2_of_4"
-                        android:textColor="@color/tradein_clr_AD31353B"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/iv_back"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/typography_header"
-                        app:typographyType="body_3" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.appcompat.widget.Toolbar>
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/phone_valid_ticker"
@@ -87,15 +86,16 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:closeButtonVisibility="visible"
-                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                app:layout_constraintTop_toTopOf="parent"
                 app:tickerShapeType="full"
-                app:tickerType="announcement"
+                app:tickerType="error"
                 tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/product_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_230"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_230"
                 android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintEnd_toStartOf="parent"
@@ -160,10 +160,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_detail"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:minHeight="@dimen/dp_30"
                 android:text="@string/tradein_rincian"
                 android:textColor="@color/black"
                 android:typeface="sans"
@@ -188,7 +186,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/tv_detail"
                 tools:visibility="visible">
 
@@ -197,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/spacing_lvl4"
-                    android:paddingBottom="@dimen/spacing_lvl3"
+                    android:paddingBottom="@dimen/spacing_lvl2"
                     android:text="@string/tradein_new_gadget_price"
                     android:textColor="@color/clr_f531353b"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -236,9 +233,10 @@
                     android:id="@+id/model"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
                     android:paddingLeft="@dimen/spacing_lvl4"
                     android:paddingRight="@dimen/spacing_lvl4"
+                    android:paddingBottom="@dimen/spacing_lvl2"
                     android:text="Harga HP-mu"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintTop_toBottomOf="@id/product_name"
@@ -311,9 +309,10 @@
                     android:id="@+id/t_label_prize_diff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:paddingLeft="@dimen/spacing_lvl4"
                     android:paddingRight="@dimen/spacing_lvl4"
+                    android:paddingBottom="@dimen/spacing_lvl4"
                     android:text="Maks. Total Bayar"
                     android:textColor="@color/tradein_clr_AD31353B"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -325,14 +324,14 @@
                     android:id="@+id/tv_final_amt_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:paddingLeft="@dimen/spacing_lvl4"
                     android:paddingRight="@dimen/spacing_lvl4"
-                    android:text="19999"
+                    android:text="Rp19.000.000"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider2"
-                    app:typographyType="heading_2"
+                    app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -357,10 +356,10 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/btn_continue_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:background="@color/white">
+        android:background="@drawable/card_shadow_top">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
