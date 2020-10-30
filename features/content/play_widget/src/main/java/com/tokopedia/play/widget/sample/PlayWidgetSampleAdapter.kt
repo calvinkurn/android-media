@@ -18,7 +18,7 @@ class PlayWidgetSampleAdapter(
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {
-        return oldItem == newItem
+        return true
     }
 
     override fun areContentsTheSame(oldItem: PlayWidgetUiModel, newItem: PlayWidgetUiModel): Boolean {

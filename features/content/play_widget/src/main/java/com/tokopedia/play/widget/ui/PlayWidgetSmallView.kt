@@ -17,8 +17,7 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.small.PlayWidgetCardSmall
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardSmallItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetSmallListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 
 /**
@@ -107,7 +106,10 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
             RouteManager.route(context, data.actionAppLink)
         }
 
+        val isNewChannelAdded = isNewItemAdded(data.items)
+
         rvWidgetCardSmall.addOneTimeGlobalLayoutListener {
+            if(isNewChannelAdded && adapter.itemCount > 0) rvWidgetCardSmall.smoothScrollToPosition(0)
             mWidgetInternalListener?.onWidgetCardsScrollChanged(rvWidgetCardSmall)
         }
 
@@ -132,5 +134,13 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                 }
             }
         })
+    }
+
+    private fun isNewItemAdded(items: List<PlayWidgetSmallItemUiModel>): Boolean {
+        return when {
+            adapter.itemCount == 0 -> false
+            items.firstOrNull() !is PlayWidgetSmallChannelUiModel -> false
+            else -> !adapter.areItemsTheSame(items.first(), adapter.getItem(0))
+        }
     }
 }
