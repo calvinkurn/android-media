@@ -10,7 +10,7 @@ data class HomeNavMenuViewModel(
         val srcIconId: Int? = null,
         val itemTitle: String = "",
         val applink: String = "",
-        val notifCount: String = "",
+        var notifCount: String = "",
         val submenu: List<HomeNavMenuViewModel> = listOf()
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
@@ -19,7 +19,7 @@ data class HomeNavMenuViewModel(
             visitable is HomeNavMenuViewModel &&
             srcImage == visitable.srcImage &&
             itemTitle == visitable.itemTitle &&
-            applink == visitable.applink
+            applink == visitable.applink && notifCount == visitable.notifCount
 
 
     override fun type(factory: HomeNavTypeFactory): Int {

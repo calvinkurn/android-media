@@ -29,4 +29,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/menu_image"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/menu_notification"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:notificationType="counter_type"
+        tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

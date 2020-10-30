@@ -7,6 +7,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.holder_home_nav_menu.view.*
 
 class HomeNavMenuViewHolder(
@@ -27,6 +28,17 @@ class HomeNavMenuViewHolder(
         }
         itemView.setOnClickListener {
             listener.onMenuClick(element)
+        }
+
+        if (element.notifCount.isNotEmpty()) {
+            itemView.menu_notification.setNotification(
+                    notif = element.notifCount,
+                    notificationType = NotificationUnify.COUNTER_TYPE,
+                    colorType = NotificationUnify.COLOR_PRIMARY
+            )
+            itemView.menu_notification.visibility = View.VISIBLE
+        } else {
+            itemView.menu_notification.visibility = View.GONE
         }
     }
 }

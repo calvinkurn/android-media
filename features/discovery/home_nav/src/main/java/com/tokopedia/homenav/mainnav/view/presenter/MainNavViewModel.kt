@@ -1,22 +1,33 @@
 package com.tokopedia.homenav.mainnav.view.presenter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
-import com.tokopedia.homenav.common.util.*
 import com.tokopedia.homenav.mainnav.domain.interactor.*
+import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_COMPLAIN
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_OPEN_SHOP_TICKER
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_QR_CODE
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_RECENT_VIEW
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_SUBSCRIPTION
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
@@ -25,17 +36,15 @@ class MainNavViewModel @Inject constructor(
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val navProcessor: Lazy<NavCommandProcessor>,
-        private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>
+        private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>,
+        private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
+        private val userSession: Lazy<UserSessionInterface>,
+        private val getResolutionNotification: Lazy<GetResolutionNotification>
 ): BaseViewModel(baseDispatcher.get().io()) {
-
-    init {
-        getMainNavData()
-    }
-
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
+    private var _mainNavListVisitable = mutableListOf<HomeNavVisitable>()
 
     val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
         get() = _businessListLiveData
@@ -61,53 +70,49 @@ class MainNavViewModel @Inject constructor(
         get() = _shopResultListener
     private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
+    private var resolutionNotification: NotificationResolutionModel = NotificationResolutionModel(unreadCount = 0)
+
+    init {
+        getMainNavData()
+        getNotification()
+    }
+
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
     fun updateWidget(visitable: HomeNavVisitable, position: Int) {
-        navProcessor.get().sendWithQueueMethod(
-                UpdateWidgetCommand(visitable, position) { homeNavVisitable: HomeNavVisitable, position: Int ->
-                    val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
-                    newMainLiveData[position] = visitable
-                    _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
-                }
-        )
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList[position] = visitable
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun addWidget(visitable: HomeNavVisitable, position: Int) {
-        navProcessor.get().sendWithQueueMethod(
-                AddWidgetCommand(visitable, position) { homeNavVisitable: HomeNavVisitable, position: Int ->
-                    val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
-                    newMainLiveData.add(visitable)
-                    _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
-                }
-        )
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.add(visitable)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
-    suspend fun addWidgetList(visitables: List<HomeNavVisitable>) {
-        navProcessor.get().sendWithQueueMethod(
-                AddWidgetListCommand(visitables, visitables.lastIndex) { list: List<HomeNavVisitable>, position: Int ->
-                    val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
-                    newMainLiveData.addAll(visitables)
-                    _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
-                })
+    fun addWidgetList(visitables: List<HomeNavVisitable>) {
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.addAll(visitables)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     fun deleteWidget(visitable: HomeNavVisitable, position: Int) {
-        navProcessor.get().sendWithQueueMethod(
-                DeleteWidgetCommand(visitable, 0) { homeNavVisitable: HomeNavVisitable, position: Int ->
-                    val newMainLiveData = _mainNavLiveData.value?.dataList?.toMutableList() ?: mutableListOf()
-                    newMainLiveData.removeAt(position)
-                    _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainLiveData))
-                })
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.removeAt(position)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
-        navProcessor.get().sendWithQueueMethod(
-                UpdateNavigationData(navigationDataModel) { navigationDataModel ->
-                    _mainNavLiveData.postValue(navigationDataModel)
-                })
+        try {
+            _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
+            _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
+        } catch (e: Exception) {
+            Timber.d("Update nav data failed")
+            e.printStackTrace()
+        }
     }
 
     // ============================================================================================
@@ -115,13 +120,23 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun getMainNavData() {
-        launchCatchError(coroutineContext, block = {
-            getMainNavContent()
-            getUserSection()
-//            getUserMenu()
-        }){
-            //apply global error for mainnav
-            Log.d("Error","Error ya")
+        launch {
+            val p1DataJob = launchCatchError(context = coroutineContext, block = {
+                getMainNavContent()
+                getUserSection()
+            }) {
+                Timber.d("P1 error")
+                it.printStackTrace()
+            }
+            p1DataJob.join()
+
+            val p2DataJob = launchCatchError(context = coroutineContext, block = {
+                getUserMenu()
+            }) {
+                Timber.d("P2 error")
+                it.printStackTrace()
+            }
+            p2DataJob.join()
         }
     }
 
@@ -135,41 +150,29 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun buildUserMenuList(): List<HomeNavVisitable> {
-        val ID_USER_MENU = 901
-        val ID_FAVORITE_SHOP = 902
-        val ID_RECENT_VIEW = 903
-        val ID_SUBSCRIPTION = 904
-        val ID_COMPLAIN = 905
-        val ID_TOKOPEDIA_CARE = 906
-        val ID_QR_CODE = 907
+        clientMenuGenerator.get()?.let {
+            val firstSectionList = mutableListOf<HomeNavVisitable>(
+                    it.getMenu(ID_WISHLIST_MENU),
+                    it.getMenu(ID_FAVORITE_SHOP),
+                    it.getMenu(ID_RECENT_VIEW),
+                    it.getMenu(ID_SUBSCRIPTION)
+            )
+            val hasShop = userSession.get().hasShop()
+            if (!hasShop) firstSectionList.add(it.getMenu(ID_OPEN_SHOP_TICKER))
+            firstSectionList.add(SeparatorViewModel())
 
-        val userMenuWishlist = HomeNavMenuViewModel(
-                id = ID_USER_MENU,
-                srcIconId = IconUnify.BELL,
-                itemTitle = "Test"
-        )
-        val userMenuWishlist1 = HomeNavMenuViewModel(
-                id = ID_USER_MENU,
-                srcIconId = IconUnify.BELL,
-                itemTitle = "Test"
-        )
-        val userMenuWishlist2 = HomeNavMenuViewModel(
-                id = ID_USER_MENU,
-                srcIconId = IconUnify.BELL,
-                itemTitle = "Test"
-        )
-        val userMenuWishlist3 = HomeNavMenuViewModel(
-                id = ID_USER_MENU,
-                srcIconId = IconUnify.BELL,
-                itemTitle = "Test"
-        )
+            val complainNotification = if (resolutionNotification.unreadCount != 0)
+                resolutionNotification.unreadCount.toString() else ""
 
-        return listOf(
-                userMenuWishlist,
-                userMenuWishlist1,
-                userMenuWishlist2,
-                userMenuWishlist3
-        )
+            val secondSectionList = listOf(
+                    it.getMenu(ID_COMPLAIN, complainNotification),
+                    it.getMenu(ID_TOKOPEDIA_CARE),
+                    it.getMenu(ID_QR_CODE)
+            )
+            val completeList = firstSectionList.plus(secondSectionList)
+            return completeList
+        }
+        return listOf()
     }
 
     private suspend fun getUserSection(){
@@ -240,6 +243,23 @@ class MainNavViewModel @Inject constructor(
         }){
             //apply global error for mainnav
             _ovoResultListener.postValue(Fail(it))
+        }
+    }
+
+    private fun getNotification() {
+        launchCatchError(coroutineContext, block = {
+            val result = getResolutionNotification.get().executeOnBackground()
+            if (result.unreadCount != 0) {
+                resolutionNotification = result
+                val findExistingResolutionMenu = _mainNavListVisitable.find { it.id() == ClientMenuGenerator.ID_COMPLAIN }
+                findExistingResolutionMenu?.let {
+                    val indexOfExistingResolutionMenu = _mainNavListVisitable.indexOf(it)
+                    (findExistingResolutionMenu as? HomeNavMenuViewModel)?.notifCount = resolutionNotification?.unreadCount.toString()
+                    updateWidget(findExistingResolutionMenu, indexOfExistingResolutionMenu)
+                }
+            }
+        }) {
+            it.printStackTrace()
         }
     }
 }
