@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.inbox.analytics
 
-import android.os.Bundle
 import com.tokopedia.talk.common.analytics.TalkEventTracking
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
@@ -87,70 +86,78 @@ class TalkInboxTracking @Inject constructor() {
         ))
     }
 
-    fun eventItemImpress(inboxType: String, talkId: String, userId: String, position: Int, trackingQueue: TrackingQueue) {
-        val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, inboxType)
-        tracker.sendEnhanceEcommerceEvent(TalkInboxTrackingConstants.EVENT_PROMO_VIEW, Bundle().apply {
-            putString(TalkTrackingConstants.TRACKING_EVENT_ACTION, TalkInboxTrackingConstants.EVENT_ACTION_IMPRESS_ITEM)
-            putString(TalkTrackingConstants.TRACKING_EVENT_CATEGORY, eventCategory)
-            putString(TalkTrackingConstants.TRACKING_USER_ID, userId)
-            putString(TalkTrackingConstants.TRACKING_SCREEN_NAME, TalkInboxTrackingConstants.SCREEN_NAME)
-            putString(TalkTrackingConstants.TRACKING_CURRENT_SITE, TalkTrackingConstants.CURRENT_SITE_TALK)
-            putString(TalkTrackingConstants.TRACKING_BUSINESS_UNIT, TalkTrackingConstants.BUSINESS_UNIT_TALK)
-            putString(TalkTrackingConstants.TRACKING_ECOMMERCE, mapOf(
-                    TalkInboxTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-                            TalkTrackingConstants.TRACKING_PROMOTIONS to listOf(
-                                    mapOf(
-                                            TalkTrackingConstants.TRACKING_ID to talkId,
-                                            TalkTrackingConstants.TRACKING_NAME to eventCategory,
-                                            TalkTrackingConstants.TRACKING_CREATIVE to talkId,
-                                            TalkTrackingConstants.TRACKING_POSITION to position.toString()
-                                    )
-                            )
-                    )).toString()
-            )
-        })
-        """
-
- 'eventCategory' : 'inbox talk - {seller/user}
-// active tab name only, do not add number of unread messages',
- 'eventAction' : 'view - talk on inbox talk',
- 'eventLabel' : '',
- 'ecommerce': {
-        'promoView': {
-        'promotions': [{
-            'creative': 'message status:{{read/unread}}',           // name of asset for banner, mandatory
-                    }]"
-        """.trimIndent()
+    fun eventItemImpress(inboxType: String, talkId: String, userId: String, position: Int, isUnread: Boolean, trackingQueue: TrackingQueue) {
+        val eventCategory = String.format(TalkTrackingConstants.EVENT_CATEGORY_INBOX_PRODUCT, getInboxType(inboxType))
+        trackingQueue.putEETracking(
+                hashMapOf(
+                        TalkTrackingConstants.TRACKING_EVENT to TalkInboxTrackingConstants.EVENT_PROMO_VIEW,
+                        TalkTrackingConstants.TRACKING_EVENT_ACTION to TalkInboxTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+                        TalkTrackingConstants.TRACKING_EVENT_LABEL to "",
+                        TalkTrackingConstants.TRACKING_EVENT_CATEGORY to eventCategory,
+                        TalkTrackingConstants.TRACKING_USER_ID to userId,
+                        TalkTrackingConstants.TRACKING_SCREEN_NAME to TalkInboxTrackingConstants.SCREEN_NAME,
+                        TalkTrackingConstants.TRACKING_CURRENT_SITE to TalkTrackingConstants.CURRENT_SITE_TALK,
+                        TalkTrackingConstants.TRACKING_BUSINESS_UNIT to TalkTrackingConstants.BUSINESS_UNIT_TALK,
+                        TalkTrackingConstants.TRACKING_ECOMMERCE to mapOf(
+                                TalkInboxTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                                        TalkTrackingConstants.TRACKING_PROMOTIONS to listOf(
+                                                mapOf(
+                                                        TalkTrackingConstants.TRACKING_ID to talkId,
+                                                        TalkTrackingConstants.TRACKING_NAME to eventCategory,
+                                                        TalkTrackingConstants.TRACKING_CREATIVE to String.format(TalkInboxTrackingConstants.CREATIVE_MESSAGE_STATUS, getStatusRead(!isUnread)),
+                                                        TalkTrackingConstants.TRACKING_POSITION to position.toString()
+                                                )
+                                        )
+                                )
+                        )
+                )
+        )
     }
 
     private fun getEventCategoryInbox(tab: String): String {
-        return when(tab) {
+        return when (tab) {
             TalkInboxTab.SHOP_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_SELLER)
             }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_CATEGORY_INBOX, TalkInboxTrackingConstants.TAB_BUYER)
-            } else -> {
+            }
+            else -> {
                 ""
             }
         }
     }
 
     private fun getTab(tab: String): String {
-        return when(tab) {
+        return when (tab) {
             TalkInboxTab.SHOP_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_SELLER)
             }
             TalkInboxTab.BUYER_TAB -> {
                 String.format(TalkInboxTrackingConstants.EVENT_ACTION_CLICK_TAB, TalkInboxTrackingConstants.TAB_BUYER)
-            } else -> {
+            }
+            else -> {
+                ""
+            }
+        }
+    }
+
+    private fun getInboxType(inboxType: String): String {
+        return when (inboxType) {
+            TalkInboxTab.SHOP_TAB -> {
+                TalkInboxTrackingConstants.TAB_SELLER
+            }
+            TalkInboxTab.BUYER_TAB -> {
+                TalkInboxTrackingConstants.TAB_BUYER
+            }
+            else -> {
                 ""
             }
         }
     }
 
     private fun getFilter(filter: String): String {
-        return when(filter) {
+        return when (filter) {
             TalkInboxTrackingConstants.STATUS_READ -> {
                 TalkInboxTrackingConstants.FILTER_READ
             }
@@ -164,10 +171,10 @@ class TalkInboxTracking @Inject constructor() {
     }
 
     private fun getStatusRead(isRead: Boolean): String {
-        return if(isRead) TalkInboxTrackingConstants.STATUS_READ else TalkInboxTrackingConstants.STATUS_UNREAD
+        return if (isRead) TalkInboxTrackingConstants.STATUS_READ else TalkInboxTrackingConstants.STATUS_UNREAD
     }
 
-    private fun getFilterStatus(filterStatus: Boolean): String  {
-        return if(filterStatus) TalkInboxTrackingConstants.FILTER_STATUS_ACTIVE else TalkInboxTrackingConstants.FILTER_STATUS_INACTIVE
+    private fun getFilterStatus(filterStatus: Boolean): String {
+        return if (filterStatus) TalkInboxTrackingConstants.FILTER_STATUS_ACTIVE else TalkInboxTrackingConstants.FILTER_STATUS_INACTIVE
     }
 }
