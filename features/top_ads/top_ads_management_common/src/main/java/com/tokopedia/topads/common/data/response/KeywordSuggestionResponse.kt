@@ -41,7 +41,7 @@ data class KeywordData(
 @Parcelize
 data class KeywordDataItem(
         @field:SerializedName("bid_suggest")
-        val bidSuggest: Int = 0,
+        var bidSuggest: Int = 0,
 
         @field:SerializedName("total_search")
         val totalSearch: String = "",

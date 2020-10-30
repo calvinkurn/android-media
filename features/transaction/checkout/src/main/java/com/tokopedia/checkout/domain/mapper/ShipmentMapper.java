@@ -591,6 +591,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
                                     analyticsProductCheckoutData.setIsFulfillment(String.valueOf(groupShop.isFulfillment()));
                                     analyticsProductCheckoutData.setDiscountedPrice(product.getProductOriginalPrice() > 0);
+                                    analyticsProductCheckoutData.setCampaignId(product.getCampaignId());
 
                                     productResult.setError(!UtilsKt.isNullOrEmpty(product.getErrors()));
                                     if (product.getErrors() != null) {

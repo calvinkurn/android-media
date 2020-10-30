@@ -1,8 +1,11 @@
 package com.tokopedia.play.broadcaster.socket
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.url.TokopediaUrl
@@ -10,6 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
 import okhttp3.WebSocket
 import rx.subscriptions.CompositeSubscription
+import java.lang.reflect.Type
 
 
 /**
@@ -32,6 +36,8 @@ class PlayBroadcastSocketImpl constructor(
             maxRetries = DEFAULT_MAX_RETRIES,
             pingInterval = DEFAULT_PING
     )
+
+    private val newMetricListType: Type = object: TypeToken<List<NewMetricList.NewMetric>>(){}.type
 
     override fun config(minReconnectDelay: Int, maxRetries: Int, pingInterval: Long) {
         this.config = SocketConfiguration(minReconnectDelay, maxRetries, pingInterval)
@@ -82,8 +88,8 @@ class PlayBroadcastSocketImpl constructor(
                     PlaySocketEnum.LiveStats.value -> {
                         data = convertToModel(webSocketResponse.jsonObject, LiveStats::class.java)
                     }
-                    PlaySocketEnum.Metric.value -> {
-                        data = convertToModel(webSocketResponse.jsonObject, Metric::class.java)
+                    PlaySocketEnum.NewMetric.value -> {
+                        data = NewMetricList(convertToModel(webSocketResponse.jsonArray, newMetricListType) ?: emptyList())
                     }
                     PlaySocketEnum.ProductTag.value -> {
                         data = convertToModel(webSocketResponse.jsonObject, ProductTagging::class.java)
@@ -93,6 +99,9 @@ class PlayBroadcastSocketImpl constructor(
                     }
                     PlaySocketEnum.Freeze.value -> {
                         data = convertToModel(webSocketResponse.jsonObject, Freeze::class.java)
+                    }
+                    PlaySocketEnum.Banned.value -> {
+                        data = convertToModel(webSocketResponse.jsonObject, Banned::class.java)
                     }
                 }
 
@@ -145,5 +154,20 @@ class PlayBroadcastSocketImpl constructor(
             sendCrashlyticsLog(e)
         }
         return null
+    }
+
+    private fun <T> convertToModel(jsonElement: JsonElement?, typeOfT: Type): T? {
+        try {
+            return gson.fromJson(jsonElement, typeOfT)
+        } catch (e: Exception) {
+            if (!GlobalConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
+            }
+        }
+        return null
+    }
+
+    companion object {
+        private const val TAG = "PlayBroadcastSocketImpl"
     }
 }

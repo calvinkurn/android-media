@@ -7,14 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.EmptyReputationSearchViewHolder;
-import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.InboxReputationOvoIncentiveViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.InboxReputationViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.LoadingInboxReputationViewholder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder.SellerMigrationReviewViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
 
 /**
@@ -49,11 +47,6 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(InboxReputationOvoIncentiveViewModel viewModel) {
-        return InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT();
-    }
-
-    @Override
     public int type(SellerMigrationReviewModel model) {
         return SellerMigrationReviewViewHolder.Companion.getLAYOUT();
     }
@@ -73,8 +66,6 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyReputationSearchViewHolder(view);
         } else if (type == LoadingInboxReputationViewholder.LAYOUT) {
             viewHolder = new LoadingInboxReputationViewholder(view);
-        } else if (type == InboxReputationOvoIncentiveViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new InboxReputationOvoIncentiveViewHolder(view, viewListener);
         } else if (type == SellerMigrationReviewViewHolder.Companion.getLAYOUT()) {
             viewHolder = new SellerMigrationReviewViewHolder(view, sellerMigrationReviewClickListener);
         } else

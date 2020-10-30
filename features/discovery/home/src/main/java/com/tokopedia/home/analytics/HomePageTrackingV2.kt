@@ -5,8 +5,8 @@ import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.analytics.v2.BaseTrackingBuilder
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
@@ -113,13 +113,13 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL = "sprint sale click view all"
         private const val LIST_VALUE_SPRINT_SALE = "sprint sale"
 
-        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = BaseTrackerBuilder().constructBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = EVENT_ACTION_SPRINT_SALE_IMPRESSION,
                 eventLabel = Label.NONE,
                 products = channel.grids.mapIndexed { index, grid ->
-                    Product(
+                    BaseTrackerConst.Product(
                             name = grid.name,
                             id =  grid.id,
                             productPrice = convertRupiahToInt(grid.price).toString(),
@@ -131,22 +131,25 @@ object HomePageTrackingV2 : BaseTracking() {
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
                             categoryId = channel.categoryID,
-                            isTopAds = grid.isTopads
+                            recommendationType = grid.recommendationType,
+                            pageName = channel.pageName,
+                            isTopAds = grid.isTopads,
+                            isCarousel = false,
+                            headerName = channel.header.name
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
-        )
-        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+        ).build()
+
+        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = BaseTrackerBuilder().constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
                 eventLabel = currentCountDown,
-                channelId = channel.id,
-                campaignCode = channel.campaignCode,
                 products = listOf(
-                        Product(
+                        BaseTrackerConst.Product(
                                 name = grid.name,
                                 id = grid.id,
                                 productPrice = convertRupiahToInt(grid.price).toString(),
@@ -158,13 +161,17 @@ object HomePageTrackingV2 : BaseTracking() {
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
                                 categoryId = channel.categoryID,
+                                recommendationType = grid.recommendationType,
+                                pageName = channel.pageName,
                                 isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
-        )
+        ).appendChannelId(channel.id)
+        .appendCampaignCode(channel.campaignCode)
+        .build()
 
         fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) {
             getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, currentCountDown, grid, position))

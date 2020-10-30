@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.item_home_banner_topads_layout.view.*
 class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHolder<HomeRecommendationBannerTopAdsDataModel>(view){
     companion object{
         val LAYOUT = R.layout.item_home_banner_topads_layout
+        private const val HOME_RECOM_TAB_BANNER = "home_recom_tab_banner"
     }
 
     override fun bind(element: HomeRecommendationBannerTopAdsDataModel, listener: SmartListener) {
@@ -33,7 +34,8 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                     element.topAdsImageViewModel?.adClickUrl,
                     "",
                     "",
-                    element.topAdsImageViewModel?.imageUrl
+                    element.topAdsImageViewModel?.imageUrl,
+                    HOME_RECOM_TAB_BANNER
             )
             listener.onBannerTopAdsClick(element, adapterPosition)
         }
@@ -49,7 +51,8 @@ class HomeRecommendationBannerTopAdsViewHolder(view: View) : SmartAbstractViewHo
                             recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.adViewUrl,
                             "",
                             "",
-                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl
+                            recommendationBannerTopAdsDataModelDataModel.topAdsImageViewModel.imageUrl,
+                            HOME_RECOM_TAB_BANNER
                     )
                     listener.onBannerTopAdsImpress(recommendationBannerTopAdsDataModelDataModel, adapterPosition)
                 }

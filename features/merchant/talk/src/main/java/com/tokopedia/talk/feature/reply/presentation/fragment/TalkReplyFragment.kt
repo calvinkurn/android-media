@@ -545,6 +545,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                             hideSuccessToaster = true
                             showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
                         }
+                        shopId = discussionDataByQuestionID.shopID
                     }
                 }
                 else -> {
@@ -815,6 +816,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
 }

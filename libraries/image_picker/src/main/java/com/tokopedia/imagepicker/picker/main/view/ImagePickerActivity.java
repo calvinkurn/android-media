@@ -416,7 +416,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        onImageSelected(item.getRealPath(), isChecked, null);
+        onImageSelected(item.getPath(), isChecked, null);
     }
 
     @Override
@@ -573,15 +573,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     protected void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
-                                                ArrayList<String> originalImageList,
-                                                ArrayList<String> imageDescriptionList,
-                                                ArrayList<Boolean> isEdittedList) {
+                                                  ArrayList<String> originalImageList,
+                                                  ArrayList<String> imageDescriptionList,
+                                                  ArrayList<Boolean> isEdittedList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
         intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
+
         trackContinue();
         finish();
     }
@@ -678,7 +679,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onVideoRecorder(int state) {
-        if (state == StateRecorderType.START){
+        if (state == StateRecorderType.START) {
             tabLayout.setClickable(false);
         } else {
             tabLayout.setClickable(true);
@@ -695,15 +696,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
         onCameraViewVisible();
     }
 
-    public void trackOpen(){
+    public void trackOpen() {
         //to be overridden
     }
 
-    public void trackBack(){
+    public void trackBack() {
         //to be overridden
     }
 
-    public void trackContinue(){
+    public void trackContinue() {
         //to be overridden
     }
 }
