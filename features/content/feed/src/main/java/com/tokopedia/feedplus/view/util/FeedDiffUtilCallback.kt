@@ -63,4 +63,9 @@ internal class FeedDiffUtilCallback(
         return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel) oldItem == newItem
         else !(oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel)
     }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        return if (oldList[oldItemPosition] is CarouselPlayCardViewModel && newList[newItemPosition] is CarouselPlayCardViewModel) Unit
+        else super.getChangePayload(oldItemPosition, newItemPosition)
+    }
 }

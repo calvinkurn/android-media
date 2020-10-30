@@ -15,6 +15,10 @@ class CarouselPlayCardViewHolder(
         playWidgetViewHolder.bind(element.playWidgetUiModel, this)
     }
 
+    override fun bind(element: CarouselPlayCardViewModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     companion object {
         val LAYOUT = PlayWidgetViewHolder.layout
     }
