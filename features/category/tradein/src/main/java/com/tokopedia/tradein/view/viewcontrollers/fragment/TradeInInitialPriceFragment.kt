@@ -69,7 +69,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         tradeinHomeViewModel.tradeInParams.apply {
             product_name.text = productName
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
-            ImageHandler.loadImageWithoutPlaceholder(product_image, productImage)
+            ImageHandler.LoadImage(product_image, productImage)
         }
         tv_final_amt.text = getString(R.string.tradein_final_price, tradeinHomeViewModel.finalPrice)
         tv_final_amt_2.text = tradeinHomeViewModel.finalPrice
