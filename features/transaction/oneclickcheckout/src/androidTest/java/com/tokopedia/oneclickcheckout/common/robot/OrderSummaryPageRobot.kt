@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.TextView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -74,6 +75,11 @@ class OrderSummaryPageRobot {
     fun clickBboTicker() {
         onView(withId(R.id.ticker_shipping_promo)).perform(scrollTo())
         onView(withId(R.id.ticker_action)).perform(click())
+    }
+
+    fun clickOvoActivationButton(func: OvoActivationBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+        OvoActivationBottomSheetRobot().apply(func)
     }
 
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
@@ -245,6 +251,13 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
+    fun assertProfilePaymentOvoError(message: String?, buttonText: String) {
+        if (message != null) {
+            onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
+        }
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+    }
+
     fun assertPayment(total: String, buttonText: String) {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText))).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -390,5 +403,17 @@ class InstallmentDetailBottomSheetRobot {
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             radioButtonUnify.performClick()
         }
+    }
+}
+
+class OvoActivationBottomSheetRobot {
+
+    fun performActivation(isSuccess: Boolean) {
+        onView(withId(R.id.web_view)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            (view as? WebView)?.loadUrl("https://www.google.com/?is_success=${if (isSuccess) 1 else 0}")
+        }
+        //block main thread for webview processing
+        Thread.sleep(1000)
     }
 }
