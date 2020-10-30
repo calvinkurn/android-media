@@ -9,9 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATED_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATION_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -22,7 +20,7 @@ import org.junit.Test
 class OrderSummaryPageActivityOvoTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -124,6 +122,44 @@ class OrderSummaryPageActivityOvoTest {
             assertPaymentErrorTicker("OVO kamu belum aktif. Silahkan aktifkan atau pilih pembayaran lain.")
 
             assertProfilePaymentOvoError(message = null, buttonText = "Aktivasi")
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_OvoTopUpFlow() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_LOW_WALLET_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertPayment("Rp115.000", "Pilih Pembayaran")
+
+            assertPaymentErrorTicker("OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain.")
+
+            assertProfilePaymentOvoError(message = "Rp1.000. OVO Cash kamu tidak cukup.", buttonText = "Top-Up")
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_TOP_UP_RESPONSE_PATH
+            clickOvoTopUpButton()
+
+            assertPayment("Rp115.000", "Bayar")
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

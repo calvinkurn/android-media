@@ -78,6 +78,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         observeOvoTopUpUrl()
 
+        // DEBUG
         viewModel.getOvoTopUpUrl(getRedirectUrl())
     }
 
@@ -86,6 +87,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
 
+        // DEBUG
 //        progressBar?.setOnClickListener {
 //            viewModel.getOvoTopUpUrl(getRedirectUrl())
 //        }
@@ -106,10 +108,11 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
+        // DEBUG
 //        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            WebView.setWebContentsDebuggingEnabled(true)
+//            webView?.loadUrl("https://www.google.com")
 //        }
-//        webView?.loadUrl("https://www.google.com")
     }
 
     private fun observeOvoTopUpUrl() {
@@ -191,6 +194,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            // DEBUG
             progressBar?.gone()
         }
 

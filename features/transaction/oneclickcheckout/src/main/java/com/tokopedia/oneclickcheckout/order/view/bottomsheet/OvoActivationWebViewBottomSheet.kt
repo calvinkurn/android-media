@@ -18,13 +18,13 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.webview.ext.encodeOnce
 import timber.log.Timber
 
-class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
+class OvoActivationWebViewBottomSheet(private val activationUrl: String,
+                                      private val callbackUrl: String,
                                       private val listener: OvoActivationWebViewBottomSheetListener) {
 
     private var context: Context? = null
@@ -60,9 +60,10 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
                     customPeekHeight = height
                 }
                 setChild(child)
-//                setCloseClickListener {
-//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-//                }
+                // DEBUG
+                setCloseClickListener {
+                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+                }
 //                setShowListener {
 //                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 //                        override fun onStateChanged(p0: View, p1: Int) {
@@ -100,13 +101,14 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
+        // DEBUG
 //        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            WebView.setWebContentsDebuggingEnabled(true)
-//        webView?.loadUrl("https://www.bing.com")
+//            webView?.loadUrl("https://www.bing.com")
 //        }
 
-        webView?.loadAuthUrl(generateUrl(userSession), userSession)
-//        webView?.loadAuthUrl("${TokopediaUrl.getInstance().WEB}/ovo/api/v2/activate", userSession)
+        // DEBUG
+//        webView?.loadAuthUrl(generateUrl(userSession), userSession)
 //        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
 //            override fun onTopReached() {
 //                isTopReached = true
@@ -124,7 +126,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
     private fun generateUrl(userSession: UserSessionInterface): String {
         return URLGenerator.generateURLSessionLogin(
-                "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate?redirect_url=${generateRedirectUrl()}".encodeOnce(),
+                "$activationUrl?redirect_url=${generateRedirectUrl()}".encodeOnce(),
                 userSession.deviceId,
                 userSession.userId)
     }
@@ -160,7 +162,7 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         }
     }
 
-    inner class OvoActivationWebViewClient: WebViewClient() {
+    inner class OvoActivationWebViewClient : WebViewClient() {
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)

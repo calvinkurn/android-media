@@ -12,10 +12,12 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
 import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.oneclickcheckout.preference.edit.data.payment.OvoTopUpUrlGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.create.CreatePreferenceUseCaseImpl
@@ -24,14 +26,13 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
+import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetPaymentListingParamUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.shipping.mapper.ShippingDurationModelMapper
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
-import com.tokopedia.oneclickcheckout.preference.edit.data.payment.OvoTopUpUrlGqlResponse
-import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,6 +40,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 @Module
 open class PreferenceEditModule(private val activity: Activity) {
@@ -164,6 +166,7 @@ open class PreferenceEditModule(private val activity: Activity) {
 
     @PreferenceEditScope
     @Provides
+    @Named(PAYMENT_LISTING_URL)
     open fun providePaymentListingUrl(): String {
         return "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
     }
