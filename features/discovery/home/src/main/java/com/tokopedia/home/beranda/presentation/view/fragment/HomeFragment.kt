@@ -23,6 +23,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -605,6 +606,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
         if(!shouldPausePlay) adapter?.onResumePlayWidget()
@@ -645,6 +647,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
@@ -656,6 +659,13 @@ open class HomeFragment : BaseDaggerFragment(),
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
         homeMainToolbar?.stopHintAnimation()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::playWidgetCoordinator.isInitialized) {
+            playWidgetCoordinator.onDestroy()
+        }
     }
 
     override fun onDestroy() {
@@ -1021,7 +1031,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator = playWidgetCoordinator
+                playWidgetCoordinator
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1653,6 +1663,9 @@ open class HomeFragment : BaseDaggerFragment(),
         resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
         conditionalViewModelRefresh()
+        playWidgetOnVisibilityChanged(
+                isUserVisibleHint = isVisibleToUser
+        )
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
@@ -2124,7 +2137,7 @@ open class HomeFragment : BaseDaggerFragment(),
      * Play Widget
      */
     private fun setupPlayWidgetCoordinator() {
-        playWidgetCoordinator = PlayWidgetCoordinator(viewLifecycleOwner).apply {
+        playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@HomeFragment)
         }
     }
@@ -2171,5 +2184,18 @@ open class HomeFragment : BaseDaggerFragment(),
         val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
         val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
         adapter?.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+    }
+
+    private fun playWidgetOnVisibilityChanged(
+            isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+            isUserVisibleHint: Boolean = userVisibleHint,
+            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+    ) {
+        if (::playWidgetCoordinator.isInitialized) {
+            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+
+            if (isViewVisible) playWidgetCoordinator.onResume()
+            else playWidgetCoordinator.onPause()
+        }
     }
 }
