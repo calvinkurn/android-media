@@ -279,7 +279,8 @@ public class ProductViewModelMapper {
         return new LabelGroupViewModel(
                 labelGroupModel.getPosition(),
                 labelGroupModel.getType(),
-                labelGroupModel.getTitle()
+                labelGroupModel.getTitle(),
+                labelGroupModel.getUrl()
         );
     }
 
