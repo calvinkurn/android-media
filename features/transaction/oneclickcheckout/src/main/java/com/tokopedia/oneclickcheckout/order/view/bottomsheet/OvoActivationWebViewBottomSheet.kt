@@ -61,9 +61,9 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 }
                 setChild(child)
                 // DEBUG
-                setCloseClickListener {
-                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-                }
+//                setCloseClickListener {
+//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+//                }
 //                setShowListener {
 //                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 //                        override fun onStateChanged(p0: View, p1: Int) {
@@ -108,7 +108,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
 //        }
 
         // DEBUG
-//        webView?.loadAuthUrl(generateUrl(userSession), userSession)
+        webView?.loadAuthUrl(generateUrl(userSession), userSession)
 //        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
 //            override fun onTopReached() {
 //                isTopReached = true
