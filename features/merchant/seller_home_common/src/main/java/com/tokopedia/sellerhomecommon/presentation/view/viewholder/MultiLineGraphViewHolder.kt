@@ -112,14 +112,14 @@ class MultiLineGraphViewHolder(
         }
 
         with(itemView.chartViewShcMultiLine) {
-            init(getLineGraphConfig(metric))
-            setDataSets(*getLineChartData(metric).toTypedArray())
+            val lineChartDataSets = getLineChartData(metric.type)
+            init(getLineGraphConfig(lineChartDataSets))
+            setDataSets(*lineChartDataSets.toTypedArray())
             invalidateChart()
         }
     }
 
-    private fun getLineGraphConfig(element: MultiLineMetricUiModel): LineChartConfigModel {
-        val lineChartDataSets = getLineChartData(element)
+    private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
 
         val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
 
@@ -177,23 +177,26 @@ class MultiLineGraphViewHolder(
                 }
     }
 
-    private fun getLineChartData(metric: MultiLineMetricUiModel): List<LineChartData> {
-
-        val chartEntry: List<LineChartEntry> = metric.linePeriod.currentPeriod.map {
-            LineChartEntry(it.yVal, it.yLabel, it.xLabel)
-        }
-
-        val yAxisLabel = getYAxisLabel(metric)
-        val lineHexColor = if (metric.summary.lineColor.isNotBlank()) {
-            metric.summary.lineColor
-        } else {
-            ChartColor.DEFAULT_LINE_COLOR
-        }
+    private fun getLineChartData(metricType: String): List<LineChartData> {
 
         return element?.data?.metrics.orEmpty()
-                .filter { it.type == metric.type }
-                .map {
-                    LineChartData(
+                .filter { it.type == metricType }
+                .map { met ->
+
+                    val hexColor = met.summary.lineColor
+                    val lineHexColor = if (hexColor.isNotBlank()) {
+                        hexColor
+                    } else {
+                        ChartColor.DEFAULT_LINE_COLOR
+                    }
+
+                    val chartEntry: List<LineChartEntry> = met.linePeriod.currentPeriod.map {
+                        LineChartEntry(it.yVal, it.yLabel, it.xLabel)
+                    }
+
+                    val yAxisLabel = getYAxisLabel(met)
+
+                    return@map LineChartData(
                             chartEntry = chartEntry,
                             yAxisLabel = yAxisLabel,
                             config = LineChartEntryConfigModel(
