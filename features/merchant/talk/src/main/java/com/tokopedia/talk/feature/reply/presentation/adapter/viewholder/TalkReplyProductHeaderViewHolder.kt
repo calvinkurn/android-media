@@ -36,9 +36,6 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
         itemView.replyProductHeaderImage.apply {
             if(imageUrl.isNotBlank()) {
                 loadImage(imageUrl)
-                setOnClickListener {
-                    talkReplyProductHeaderListener.onProductClicked()
-                }
                 return
             }
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
@@ -51,9 +48,6 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             if(productName.isNotBlank()) {
                 text = productName
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
-                setOnClickListener {
-                    talkReplyProductHeaderListener.onProductClicked()
-                }
                 return
             }
             text = getString(R.string.reply_product_deleted)

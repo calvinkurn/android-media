@@ -294,10 +294,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.reportTalk(questionId)
     }
 
-    override fun onProductClicked() {
-        goToPdp(productId)
-    }
-
     override fun onProductCardClicked(productName: String, position: Int) {
         TalkReplyTracking.eventClickCard(inboxType, viewModel.userId, productName, productId, position)
         goToPdp(productId)
