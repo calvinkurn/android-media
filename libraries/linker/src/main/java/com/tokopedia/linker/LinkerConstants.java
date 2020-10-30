@@ -75,6 +75,10 @@ public interface LinkerConstants {
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
     String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
 
+    String HOTEL_LABEL = "hotel";
+    String PDP_LABEL = "pdp";
+    String SHARE_LABEL = "Share";
+
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
     int ERROR_SOMETHING_WENT_WRONG = 103;

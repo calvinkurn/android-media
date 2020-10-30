@@ -275,10 +275,10 @@ public class BranchWrapper implements WrapperInterface {
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
             linkProperties.setFeature(LinkerConstants.FEATURE_TYPE_HOTEL);
-            linkProperties.addTag("hotel");
-            linkProperties.addTag("pdp");
+            linkProperties.addTag(LinkerConstants.HOTEL_LABEL);
+            linkProperties.addTag(LinkerConstants.PDP_LABEL);
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
-            linkProperties.setCampaign("Share");
+            linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();
         }
 
