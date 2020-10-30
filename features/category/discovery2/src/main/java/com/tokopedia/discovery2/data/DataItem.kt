@@ -300,7 +300,7 @@ data class DataItem(
         @SerializedName("rating")
         val rating: String? = "",
 
-        @SerializedName("average_rating")
+        @SerializedName("rating_average")
         val averageRating: String = "",
 
         @SerializedName("shop_logo")
