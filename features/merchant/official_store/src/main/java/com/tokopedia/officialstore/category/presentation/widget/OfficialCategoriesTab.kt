@@ -127,26 +127,11 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-    private fun setInitStartIcon(){
-        for (i in 0 until tabCount) {
-            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
-
-            if(icon is MotionLayout){
-                (findViewByIdFromTab(getTabAt(i), R.id.guideline_horizontal) as? Guideline)?.let{
-
-                }
-                icon.setTransition(R.id.start, R.id.end)
-                icon.setTransitionDuration(300)
-                icon.transitionToState(R.id.start)
-            }
-        }
-    }
-
     private fun showIconForAllTabs() {
         for (i in 0 until tabCount) {
             val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
 //            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is MotionLayout && icon.currentState == R.id.end) {
+            if (icon is MotionLayout) {
 
 //                icon.setTransitionDuration(1000)
                 icon.transitionToStart()
@@ -161,7 +146,7 @@ class OfficialCategoriesTab(context: Context,
             val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
 
 //            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is MotionLayout && icon.currentState == R.id.start) {
+            if (icon is MotionLayout) {
 //                icon.setTransition(R.id.start, R.id.end
                 icon.transitionToEnd()
 //                icon.animate().translationY(-50f).duration = 200
