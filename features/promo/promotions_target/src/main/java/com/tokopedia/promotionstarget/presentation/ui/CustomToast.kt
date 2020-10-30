@@ -2,6 +2,7 @@ package com.tokopedia.promotionstarget.presentation.ui
 
 import android.content.Context
 import android.util.DisplayMetrics
+import android.view.Gravity
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
@@ -20,7 +21,7 @@ class CustomToast {
         fun show(activityContext: Context,
                  @NonNull text: String,
                  duration: Int = Toast.LENGTH_LONG,
-                 bg:Int = R.drawable.t_promo_custom_toast_bg
+                 bg: Int = R.drawable.t_promo_custom_toast_bg
         ) {
 
             val leftPadding = dpToPx(activityContext, 16).toInt()
@@ -34,6 +35,7 @@ class CustomToast {
             val toast = Toast(activityContext)
             toast.duration = duration
             toast.view = textView
+            toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, dpToPx(activityContext, 16).toInt())
             toast.show()
         }
     }
