@@ -11,6 +11,7 @@ data class OrderDetailPassengerModel(
         val passengerNo: Int,
         val id: Int,
         val type: Int,
+        val typeString: String,
         val title: Int,
         val titleString: String,
         val firstName: String,

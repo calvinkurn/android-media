@@ -1,6 +1,7 @@
 package com.tokopedia.flight.orderdetail.domain
 
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
+import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailEntity
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailGqlConst
 import com.tokopedia.flight.orderdetail.presentation.model.*
@@ -183,6 +184,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     passengerNo = index + 1,
                                     id = passenger.id,
                                     type = passenger.type,
+                                    typeString = getPassengerTypeString(passenger.type),
                                     title = passenger.title,
                                     titleString = getPassengerTitleString(passenger.title),
                                     firstName = passenger.firstName,
@@ -299,6 +301,14 @@ class FlightOrderDetailUseCase @Inject constructor(
                 FlightPassengerTitle.NYONYA.id -> FlightPassengerTitle.NYONYA.salutation
                 FlightPassengerTitle.NONA.id -> FlightPassengerTitle.NONA.salutation
                 else -> FlightPassengerTitle.TUAN.salutation
+            }
+
+    private fun getPassengerTypeString(typeId: Int): String =
+            when (typeId) {
+                FlightPassengerType.ADULT.id -> FlightPassengerType.ADULT.type
+                FlightPassengerType.CHILDREN.id -> FlightPassengerType.CHILDREN.type
+                FlightPassengerType.INFANT.id -> FlightPassengerType.INFANT.type
+                else -> FlightPassengerType.ADULT.type
             }
 
 
