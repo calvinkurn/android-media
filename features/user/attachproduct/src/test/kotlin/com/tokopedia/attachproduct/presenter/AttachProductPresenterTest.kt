@@ -5,11 +5,8 @@ import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
-import io.mockk.verify
 import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -109,11 +106,28 @@ class AttachProductPresenterTest {
     }
 
     @Test
+    fun `update checkedlist not null` () {
+        //make the checklist not null
+        presenter.updateCheckedList(listOf(mockk()))
+
+        presenter.updateCheckedList(listOf(mockk()))
+        verify {
+            view.updateButtonBasedOnChecked(any())
+        }
+    }
+
+    @Test
     fun `on Reset Checked List` () {
         presenter.updateCheckedList(listOf(mockk()))
         presenter.resetCheckedList()
 
         assertTrue(presenter.checkedList.isEmpty())
+    }
+
+    @Test
+    fun `on Detach View all null` () {
+        val presenter = spyk(AttachProductPresenter(null))
+        presenter.detachView()
     }
 
     @Test
