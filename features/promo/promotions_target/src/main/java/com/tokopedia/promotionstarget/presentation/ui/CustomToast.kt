@@ -3,6 +3,8 @@ package com.tokopedia.promotionstarget.presentation.ui
 import android.content.Context
 import android.util.DisplayMetrics
 import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
@@ -32,10 +34,15 @@ class CustomToast {
             textView.setTextColor(ContextCompat.getColor(activityContext, R.color.t_promo_toastColor))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3
+            val fm = FrameLayout(activityContext)
+            fm.addView(textView)
+            val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            lp.setMargins(leftPadding, 0, leftPadding, 0)
+            textView.layoutParams = lp
             val toast = Toast(activityContext)
             toast.duration = duration
-            toast.view = textView
-            toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, dpToPx(activityContext, 16).toInt())
+            toast.view = fm
+            toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, leftPadding)
             toast.show()
         }
     }
