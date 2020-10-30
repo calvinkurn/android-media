@@ -915,11 +915,10 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         }
                     }
                 }
+                //handle back button from applink cart widget
                 if (isFromWidget) {
                     isFromWidget = false;
-                    presenter.processGetCategoryAndBannerData(
-                            categoryId, operatorId, productId, clientNumber);
-                    setMenuVisibility(true);
+                    getActivity().finish();
                 }
                 break;
             case REQUEST_CODE_CONTACT_PICKER:
