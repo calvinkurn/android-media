@@ -25,13 +25,8 @@ class WishlistDiffUtilCallback(private val oldList: List<CartWishlistItemHolderD
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        if (oldItemPosition >= oldList.size) return false
-        if (newItemPosition >= newList.size) return false
-
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
-        return oldItem.id == newItem.id
+        // Just return true because id comparison on `areItemsTheSame` is enough
+        return true
     }
 
 }

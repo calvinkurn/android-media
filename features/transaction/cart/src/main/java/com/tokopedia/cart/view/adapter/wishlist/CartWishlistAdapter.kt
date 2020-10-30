@@ -38,16 +38,10 @@ class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Ad
     }
 
     fun updateWishlistItems(visitableList: List<CartWishlistItemHolderData>) {
-        val newList: MutableList<CartWishlistItemHolderData> = mutableListOf()
-        newList.addAll(visitableList)
-        updateList(newList)
-    }
-
-    private fun updateList(newList: List<CartWishlistItemHolderData>) {
-        val diffResult = DiffUtil.calculateDiff(WishlistDiffUtilCallback(list, newList))
+        val diffResult = DiffUtil.calculateDiff(WishlistDiffUtilCallback(list, visitableList))
 
         list.clear()
-        list.addAll(newList)
+        list.addAll(visitableList)
 
         diffResult.dispatchUpdatesTo(this)
     }
