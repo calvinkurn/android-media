@@ -9,6 +9,7 @@ import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.domain.usecase.UpdateGratifNotification
+import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.promotionstarget.presentation.ui.Locks
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,7 +28,7 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
                                                    val sharedPreferences: SharedPreferences
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
-    val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
+    val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
 
     fun autoApply(code: String) {
         launchCatchError(block = {
