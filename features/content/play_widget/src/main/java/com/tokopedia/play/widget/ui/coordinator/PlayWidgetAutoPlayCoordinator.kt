@@ -1,7 +1,6 @@
 package com.tokopedia.play.widget.ui.coordinator
 
 import android.view.View
-import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -12,7 +11,6 @@ import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play_common.util.PlayConnectionCommon
 import kotlinx.coroutines.*
 
 /**
@@ -99,7 +97,7 @@ class PlayWidgetAutoPlayCoordinator(
             )
         } else if (videoPlayerMap.size > maxAutoPlay) {
             val lastVideoPlayer = videoPlayerMap.keys.lastOrNull()
-            lastVideoPlayer?.release()
+            lastVideoPlayer?.stop()
         }
 
         videoPlayerMap.keys.forEach {
