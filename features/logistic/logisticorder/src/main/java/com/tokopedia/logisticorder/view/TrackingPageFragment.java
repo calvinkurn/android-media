@@ -91,6 +91,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private TextView retryStatus;
     private CountDownTimer mCountDownTimer;
     private Ticker tickerInfoCourier;
+    private LinearLayout tickerInfoLayout;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -150,7 +151,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         retryStatus = view.findViewById(R.id.tv_retry_status);
 
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
+
         tickerInfoCourier = view.findViewById(R.id.ticker_info_courier);
+        tickerInfoLayout = view.findViewById(R.id.ticker_info_layout);
         fetchData();
     }
 
@@ -272,9 +275,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         if (trackingUiModel.getAdditionalInfoList() != null) {
             List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingUiModel.getAdditionalInfoList();
             if (additionalInfoUiModelList.isEmpty()) {
-                tickerInfoCourier.setVisibility(View.GONE);
+                tickerInfoLayout.setVisibility(View.GONE);
             } else {
-                tickerInfoCourier.setVisibility(View.VISIBLE);
+                tickerInfoLayout.setVisibility(View.VISIBLE);
                 if (additionalInfoUiModelList.size() > 1) {
                     List<TickerData> tickerDataList = new ArrayList<>();
                     for (int i=0; i<additionalInfoUiModelList.size(); i++) {
@@ -310,7 +313,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                 }
             }
         } else {
-            tickerInfoCourier.setVisibility(View.GONE);
+            tickerInfoLayout.setVisibility(View.GONE);
         }
     }
 
