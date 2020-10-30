@@ -100,7 +100,7 @@ object TrackingUtil {
             linkerData.level3Id = it.id
             linkerData.productCategory = it.name
         }
-        linkerData.quantity = productInfo.data.stock.value.toString()
+        linkerData.quantity = ProductTrackingConstant.Tracking.BRANCH_QUANTITY
         return linkerData
     }
 
