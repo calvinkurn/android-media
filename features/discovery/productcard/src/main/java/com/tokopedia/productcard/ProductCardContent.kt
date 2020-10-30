@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
@@ -179,7 +179,7 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
         textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
     }
 
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating() || productCardModel.willShowRating()) {
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowRating()) {
         val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
         val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
         drawableStar?.let {
