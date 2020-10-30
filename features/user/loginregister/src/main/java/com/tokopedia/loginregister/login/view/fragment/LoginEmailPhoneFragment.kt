@@ -50,6 +50,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -89,12 +90,14 @@ import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -108,6 +111,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -687,11 +691,37 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         presenter.getUserInfo()
     }
 
-    override fun onSuccessLoginEmail() {
-        setSmartLock()
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
-        else presenter.getUserInfo()
+    override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo) {
+        if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
+                loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
+                loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
+            showPopupError(
+                    loginTokenPojo.loginToken.popupError.header,
+                    loginTokenPojo.loginToken.popupError.body,
+                    loginTokenPojo.loginToken.popupError.action
+            )
+        } else {
+            setSmartLock()
+            RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+            if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+            else presenter.getUserInfo()
+        }
+    }
+
+    override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
+        if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
+                loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
+                loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
+            showPopupError(
+                    loginTokenPojo.loginToken.popupError.header,
+                    loginTokenPojo.loginToken.popupError.body,
+                    loginTokenPojo.loginToken.popupError.action
+            )
+        } else {
+            RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+            if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+            else presenter.getUserInfo()
+        }
     }
 
     override fun onSuccessLogin() {
@@ -953,6 +983,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
             if (isEmailNotActive(it, email)) {
                 onGoToActivationPage(email)
+            } else if (it is AkamaiErrorException) {
+                showPopupError(
+                        "Permintaanmu gagal diproses",
+                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                )
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
                 onErrorLogin(it.errorDescription)
             } else {
@@ -1033,19 +1069,36 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            val errorMessage = ErrorHandler.getErrorMessage(context, it)
-            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-                presenter.reloginAfterSQ(validateToken)
-            }.showRetrySnackbar()
 
-            analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+            if (it is AkamaiErrorException) {
+                showPopupError(
+                        "Permintaanmu gagal diproses",
+                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                )
+            } else {
+                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+                    presenter.reloginAfterSQ(validateToken)
+                }.showRetrySnackbar()
+
+                analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+            }
         }
     }
 
     override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            if (it is AkamaiErrorException) {
+                showPopupError(
+                        "Permintaanmu gagal diproses",
+                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                )
+            } else {
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            }
         }
     }
 
@@ -1062,14 +1115,30 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorLoginFacebookPhone(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            if (it is AkamaiErrorException) {
+                showPopupError(
+                        "Permintaanmu gagal diproses",
+                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                )
+            } else {
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            }
         }
     }
 
     override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
         return {
             logoutGoogleAccountIfExist()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            if (it is AkamaiErrorException) {
+                showPopupError(
+                        "Permintaanmu gagal diproses",
+                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                )
+            } else {
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            }
         }
     }
 
@@ -1506,6 +1575,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }
+        }
+    }
+
+    private fun showPopupError(header: String, body: String, url: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(header)
+            dialog.setDescription(body)
+            dialog.setPrimaryCTAText("Cek Informasi Lengkap")
+            dialog.setSecondaryCTAText("Tutup")
+            dialog.setPrimaryCTAClickListener {
+                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            dialog.show()
         }
     }
 

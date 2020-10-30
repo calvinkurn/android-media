@@ -148,6 +148,10 @@ class ChooseAccountViewModel @Inject constructor(
                     it.loginToken.refreshToken.isNotEmpty() &&
                     it.loginToken.tokenType.isNotEmpty()) {
                 mutableLoginPhoneNumberResponse.value = Success(it.loginToken)
+            } else if (it.loginToken.popupError.header.isNotEmpty() &&
+                    it.loginToken.popupError.body.isNotEmpty() &&
+                    it.loginToken.popupError.action.isNotEmpty()) {
+                mutableLoginPhoneNumberResponse.value = Success(it.loginToken)
             } else if (it.loginToken.errors.isNotEmpty() &&
                     it.loginToken.errors[0].message.isNotEmpty()) {
                 mutableLoginPhoneNumberResponse.value = Fail(MessageErrorException(it.loginToken.errors[0].message))

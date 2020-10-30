@@ -37,7 +37,9 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail()
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo)
+
+        fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
         fun showLoadingDiscover()
 

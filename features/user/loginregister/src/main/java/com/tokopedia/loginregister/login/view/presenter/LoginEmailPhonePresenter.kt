@@ -182,7 +182,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        { view.onSuccessLoginEmail() },
+                        { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
@@ -196,7 +196,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
-                    { getUserInfo() },
+                    { view.onSuccessReloginAfterSQ(it) },
                     view.onErrorReloginAfterSQ(validateToken),
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
