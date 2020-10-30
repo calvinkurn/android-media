@@ -85,8 +85,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
 
-    private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
-
     public GTMAnalytics(Context context) {
         super(context);
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -240,16 +238,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.just(value)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .map(this::sendEnhanceECommerceEventOrigin)
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            sendEnhanceECommerceEventOrigin(value);
-        }
-
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(this::sendEnhanceECommerceEventOrigin)
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
@@ -1004,14 +997,10 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            pushGeneralGtmV5InternalOrigin(params);
-        }
+        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
