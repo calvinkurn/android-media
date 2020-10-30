@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.detail.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ValidateProductNameExistResponse (
+data class ValidateProductResponse (
         @SerializedName("ProductValidateV3")
         @Expose
         var productValidateV3: ProductValidateV3 = ProductValidateV3()
@@ -24,7 +24,10 @@ data class ProductValidateV3 (
 data class ProductValidateData (
     @SerializedName("productName")
     @Expose
-    var productName: List<String>? = null
+    var productName: List<String> = emptyList(),
+    @SerializedName("sku")
+    @Expose
+    var productSku: List<String> = emptyList()
 )
 
 data class ProductValidateHeader (

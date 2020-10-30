@@ -117,7 +117,10 @@ class HomePlayWidgetAnalyticListener(
                                 position = channelPositionInList.toString()
                         )
                 )
-        ).appendUserId(userId).build()
+        )
+                .appendChannelId(item.channelId)
+                .appendUserId(userId)
+                .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
@@ -127,10 +130,8 @@ class HomePlayWidgetAnalyticListener(
                 mapOf(
                         Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
-                        Action.KEY to "click ${if (isRemindMe) "on remove" else ""} remind me",
+                        Action.KEY to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
                         Label.KEY to "${item.channelId} - $channelPositionInList",
-                        BusinessUnit.KEY to ADS_SOLUTION,
-                        CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
                 )
         )
