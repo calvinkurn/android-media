@@ -177,8 +177,9 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     )
                             )
                         }.toList(),
-                        passengers = it.flight.passengers.map { passenger ->
+                        passengers = it.flight.passengers.mapIndexed { index, passenger ->
                             OrderDetailPassengerModel(
+                                    passengerNo = index + 1,
                                     id = passenger.id,
                                     type = passenger.type,
                                     title = passenger.title,
