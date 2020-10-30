@@ -9,10 +9,8 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.webkit.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
@@ -49,9 +47,11 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
+                isFullpage = true
                 isKeyboardOverlap = false
                 showCloseIcon = true
                 showHeader = true
+                clearContentPadding = true
                 setTitle(fragment.getString(R.string.lbl_activate_ovo_now))
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_web_view, null)
@@ -60,24 +60,24 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
                     customPeekHeight = height
                 }
                 setChild(child)
-                setCloseClickListener {
-                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-                }
-                setShowListener {
-                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                        override fun onStateChanged(p0: View, p1: Int) {
-                            if (p1 == BottomSheetBehavior.STATE_DRAGGING && !isTopReached) {
-                                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-                            } else if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
-                                dismiss()
-                            }
-                        }
-
-                        override fun onSlide(p0: View, p1: Float) {
-
-                        }
-                    })
-                }
+//                setCloseClickListener {
+//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+//                }
+//                setShowListener {
+//                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+//                        override fun onStateChanged(p0: View, p1: Int) {
+//                            if (p1 == BottomSheetBehavior.STATE_DRAGGING && !isTopReached) {
+//                                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+//                            } else if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
+//                                dismiss()
+//                            }
+//                        }
+//
+//                        override fun onSlide(p0: View, p1: Float) {
+//
+//                        }
+//                    })
+//                }
                 show(it, null)
             }
         }
@@ -100,25 +100,26 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
-        }
+//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            WebView.setWebContentsDebuggingEnabled(true)
+//        webView?.loadUrl("https://www.bing.com")
+//        }
 
-        webView?.loadUrl("https://www.bing.com")
+        webView?.loadAuthUrl(generateUrl(userSession), userSession)
 //        webView?.loadAuthUrl("${TokopediaUrl.getInstance().WEB}/ovo/api/v2/activate", userSession)
-        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
-            override fun onTopReached() {
-                isTopReached = true
-            }
-
-            override fun onEndReached() {
-
-            }
-
-            override fun onHasScrolled() {
-                isTopReached = false
-            }
-        })
+//        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
+//            override fun onTopReached() {
+//                isTopReached = true
+//            }
+//
+//            override fun onEndReached() {
+//
+//            }
+//
+//            override fun onHasScrolled() {
+//                isTopReached = false
+//            }
+//        })
     }
 
     private fun generateUrl(userSession: UserSessionInterface): String {
@@ -169,6 +170,14 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             Log.i("qwertyuiop", "start url ${url ?: "none"}")
+            // moved here because it is "GET" operation
+            if (url != null && (url.startsWith(callbackUrl, true) || url.startsWith(generateRedirectUrl(), true))) {
+                val uri = Uri.parse(url)
+                val isSuccessResult = uri.getQueryParameter("is_success") == "1"
+                onActivationResult(isSuccessResult)
+            } else if (url != null && !URLUtil.isNetworkUrl(url)) {
+                onMoveToIntent(url)
+            }
             progressBar?.visible()
         }
 
@@ -179,13 +188,13 @@ class OvoActivationWebViewBottomSheet(private val callbackUrl: String,
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             Log.i("qwertyuiop", "intercept url ${url ?: "none"}")
-            if (url != null && (url.contains(callbackUrl, true) || url.contains(generateRedirectUrl(), true))) {
-                val uri = Uri.parse(url)
-                val isSuccessResult = uri.getQueryParameter("is_success") == "1"
-                onActivationResult(isSuccessResult)
-            } else if (url != null && !URLUtil.isNetworkUrl(url)) {
-                onMoveToIntent(url)
-            }
+//            if (url != null && (url.contains(callbackUrl, true) || url.contains(generateRedirectUrl(), true))) {
+//                val uri = Uri.parse(url)
+//                val isSuccessResult = uri.getQueryParameter("is_success") == "1"
+//                onActivationResult(isSuccessResult)
+//            } else if (url != null && !URLUtil.isNetworkUrl(url)) {
+//                onMoveToIntent(url)
+//            }
             return super.shouldInterceptRequest(view, url)
         }
     }

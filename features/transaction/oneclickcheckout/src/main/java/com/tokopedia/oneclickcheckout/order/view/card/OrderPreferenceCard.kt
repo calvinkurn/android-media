@@ -289,6 +289,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 setupPaymentSelector(payment)
 
                 setupPaymentInstallment(payment.creditCard.selectedTerm)
+                (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_detail
             } else {
                 if (payment.errorMessage.message.isNotEmpty()) {
                     tvPaymentErrorMessage?.text = payment.errorMessage.message
@@ -313,14 +314,17 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         //do nothing
                     }
                     setPaymentErrorAlpha(payment.isCalculationError)
+                    (ivPayment?.layoutParams as ConstraintLayout.LayoutParams).bottomToBottom = R.id.tv_payment_detail
                 } else if (payment.ovoErrorData != null) {
                     if (payment.ovoErrorData.message.isNotBlank()) {
                         tvPaymentErrorMessage?.text = payment.ovoErrorData.message
                         tvPaymentErrorMessage?.visible()
                         newBottomPaymentIv = R.id.tv_payment_error_message
+                        (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_error_message
                     } else {
                         tvPaymentErrorMessage?.gone()
                         newBottomPaymentIv = R.id.tv_payment_ovo_error_action
+                        (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_ovo_error_action
                     }
                     tvPaymentDetail?.gone()
                     tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
@@ -343,6 +347,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     tvPaymentErrorAction?.gone()
                     tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha(payment.isCalculationError)
+                    (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_detail
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
@@ -351,17 +356,15 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             }
         }
 
-        if (newBottomPaymentIv != bottomPaymentIv) {
-            bottomPaymentIv = newBottomPaymentIv
-            paymentLayoutContainer.post {
-                if (paymentLayoutConstraintSet == null) {
-                    paymentLayoutConstraintSet = ConstraintSet()
-                    paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
-                }
-                paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
-                paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
-            }
-        }
+//        if (newBottomPaymentIv != bottomPaymentIv) {
+//            bottomPaymentIv = newBottomPaymentIv
+//            if (paymentLayoutConstraintSet == null) {
+//                paymentLayoutConstraintSet = ConstraintSet()
+//                paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
+//            }
+//            paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
+//            paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
+//        }
     }
 
     private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
