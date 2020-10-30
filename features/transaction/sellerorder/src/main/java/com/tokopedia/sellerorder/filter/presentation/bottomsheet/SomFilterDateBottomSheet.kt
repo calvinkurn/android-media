@@ -9,6 +9,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
@@ -63,6 +65,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         setupCalendarView()
         setDefaultSelectedDate()
         btnSaveCalendar()
+        toggleBtnShowOrder()
     }
 
     fun show() {
@@ -92,6 +95,17 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         btnSaveCalendar = view.findViewById(R.id.btnSaveCalendar)
         cvSaveCalendar = view.findViewById(R.id.cvSaveCalendar)
         calendarView = calendarViewFilter?.calendarPickerView
+    }
+
+    private fun toggleBtnShowOrder() {
+        val isShowStartDate = tfStartDate?.textFieldInput?.text?.trim().toString().isNotBlank()
+        val isShowEndDate = tfEndDate?.textFieldInput?.text?.trim().toString().isNotBlank()
+
+        if(isShowStartDate || isShowEndDate) {
+            cvSaveCalendar?.show()
+        } else {
+            cvSaveCalendar?.hide()
+        }
     }
 
     private fun setDefaultSelectedDate() {
@@ -142,6 +156,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
                                 selectStartDate(date)
                             }
                             this@SomFilterDateBottomSheet.selectedDates = selectedDates
+                            toggleBtnShowOrder()
                         }
                         else -> {
                         }
@@ -154,6 +169,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
                         selectStartDate(date)
                     }
                     this@SomFilterDateBottomSheet.selectedDates = selectedDates
+                    toggleBtnShowOrder()
                 }
             }
 
@@ -165,8 +181,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length
-                ?: 0)
+        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length ?: 0)
         tfEndDate?.textFieldInput?.requestFocus()
     }
 
@@ -174,8 +189,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length
-                ?: 0)
+        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length ?: 0)
         tfStartDate?.textFieldInput?.requestFocus()
     }
 

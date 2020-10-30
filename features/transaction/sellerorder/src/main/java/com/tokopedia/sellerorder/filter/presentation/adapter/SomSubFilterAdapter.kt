@@ -6,23 +6,28 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
-import com.tokopedia.sellerorder.common.presenter.model.SomSubFilter
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.oldlist.presentation.activity.SomSubFilterActivity
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import kotlinx.android.synthetic.main.filter_checkbox_item.view.*
 import kotlinx.android.synthetic.main.filter_radio_item.view.*
 
-class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHolder<*>>(), SomSubFilterActivity.ActionListener {
+class SomSubFilterAdapter(private val somSubFilterClickListener: SomSubFilterClickListener) : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHolder<*>>() {
 
-    var listSubFilter = mutableListOf<SomSubFilter>()
-    var currentFilterParam = SomListOrderParam()
-    var category: String = ""
+    private var listSubFilter = mutableListOf<SomFilterChipsUiModel>()
+    private var currentFilterParam = SomListOrderParam()
+    private var idFilter: String = ""
     private var allCleared = false
-    private var listId: ArrayList<Int> = ArrayList()
+    private var idList: ArrayList<Int> = ArrayList()
 
     companion object {
         private const val TYPE_RADIO = 0
         private const val TYPE_CHECKBOX = 1
+    }
+
+    fun setSubFilterList(subFilterList: List<SomFilterChipsUiModel>, idFilter: String) {
+        this.listSubFilter = subFilterList.toMutableList()
+        this.idFilter = idFilter
+        notifyDataSetChanged()
     }
 
     abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,9 +50,9 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (listSubFilter[position].typeFilter) {
-            SomConsts.FILTER_TYPE_RADIO -> TYPE_RADIO
-            SomConsts.FILTER_TYPE_CHECKBOX -> TYPE_CHECKBOX
+        return when (listSubFilter[position].idFilter) {
+            SomConsts.FILTER_STATUS_ORDER -> TYPE_RADIO
+            SomConsts.FILTER_COURIER, SomConsts.FILTER_TYPE_ORDER -> TYPE_CHECKBOX
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -57,133 +62,75 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        val element = listSubFilter[position]
         when (holder) {
             is RadioViewHolder -> {
+                val element = listSubFilter.filter { it.idFilter == SomConsts.FILTER_STATUS_ORDER }.getOrNull(position)
+                        ?: SomFilterChipsUiModel()
                 holder.bind(element, position)
             }
             is CheckboxViewHolder -> {
+                val element = listSubFilter.filter {
+                    it.idFilter == SomConsts.FILTER_COURIER ||
+                            it.idFilter == SomConsts.FILTER_TYPE_ORDER
+                }.getOrNull(position) ?: SomFilterChipsUiModel()
                 holder.bind(element, position)
             }
         }
     }
 
-    inner class RadioViewHolder(itemView: View) : BaseViewHolder<SomSubFilter>(itemView) {
+    inner class RadioViewHolder(itemView: View) : BaseViewHolder<SomFilterChipsUiModel>(itemView) {
         private val titleRadio = itemView.label_radio
         private val radioBtn = itemView.rb_filter
-        private val divider = itemView.divider
 
-        override fun bind(item: SomSubFilter, position: Int) {
+        override fun bind(item: SomFilterChipsUiModel, position: Int) {
             titleRadio.text = item.name
-            radioBtn.isChecked = item.isChecked
+            radioBtn.isChecked = item.isSelected
 
-            if (item.isChecked) {
-                listId = item.listValue as ArrayList<Int>
+            if (item.isSelected) {
+                idList = ArrayList(item.idList)
             }
 
             itemView.rb_filter.setOnClickListener(clickHandlerRadio(item))
             itemView.label_radio.setOnClickListener(clickHandlerRadio(item))
-
-            when {
-                item.typeView.equals(SomConsts.FILTER_TYPE_SEPARATOR, true) -> {
-                    titleRadio.visibility = View.GONE
-                    radioBtn.visibility = View.GONE
-                    divider.visibility = View.VISIBLE
-
-                }
-                item.typeView.equals(SomConsts.FILTER_TYPE_LABEL, true) -> {
-                    divider.visibility = View.GONE
-                    radioBtn.visibility = View.GONE
-                    titleRadio.visibility = View.VISIBLE
-
-                }
-                else -> {
-                    divider.visibility = View.GONE
-                    titleRadio.visibility = View.VISIBLE
-                    radioBtn.visibility = View.VISIBLE
-                }
-            }
         }
 
-        private fun clickHandlerRadio(item: SomSubFilter): (View) -> Unit = {
+        private fun clickHandlerRadio(item: SomFilterChipsUiModel): (View) -> Unit = {
             listSubFilter.forEach {
-                if (it.typeFilter == SomConsts.FILTER_TYPE_RADIO) it.isChecked = false
+                if (it.idFilter == SomConsts.FILTER_STATUS_ORDER) it.isSelected = false
             }
 
-            item.isChecked = true
+            item.isSelected = true
             allCleared = false
 
-            listId = listSubFilter[adapterPosition].listValue as ArrayList<Int>
+            idList = ArrayList(listSubFilter[adapterPosition].idList)
             notifyDataSetChanged()
         }
 
     }
 
-    inner class CheckboxViewHolder(itemView: View) : BaseViewHolder<SomSubFilter>(itemView) {
+    inner class CheckboxViewHolder(itemView: View) : BaseViewHolder<SomFilterChipsUiModel>(itemView) {
         private val titleCheckbox = itemView.label_checkbox
         private val checkbox = itemView.cb_filter
 
-        override fun bind(item: SomSubFilter, position: Int) {
+        override fun bind(item: SomFilterChipsUiModel, position: Int) {
             titleCheckbox.text = item.name
-            if (allCleared) {
-                listId.clear()
-                checkbox.isChecked = false
+            checkbox.isChecked = item.isSelected
 
-            } else {
-                if (category.equals(SomConsts.CATEGORY_COURIER_TYPE, true)) {
-                    if (currentFilterParam.shippingList.isNotEmpty()) {
-                        currentFilterParam.shippingList.filter { it == item.id }.map {
-                            listId.add(item.id)
-                            checkbox.isChecked = it == item.id
-                        }
-                    }
-                } else if (category.equals(SomConsts.CATEGORY_ORDER_TYPE, true)) {
-                    if (currentFilterParam.orderTypeList.isNotEmpty()) {
-                        currentFilterParam.orderTypeList.filter { it == item.id }.map {
-                            listId.add(item.id)
-                            checkbox.isChecked = it == item.id
-                        }
-                    }
-                }
-            }
+            itemView.setOnClickListener(clickHandler)
         }
 
         private val clickHandler: (View) -> Unit = {
             val id = listSubFilter[adapterPosition].id
-            if (itemView.cb_filter.isChecked) listId.add(id)
-            else listId.remove(id)
-        }
+            if (itemView.cb_filter.isChecked) idList.add(id)
+            else idList.remove(id)
 
-        init {
-            itemView.cb_filter.setOnClickListener(clickHandler)
-            itemView.label_checkbox.setOnClickListener(clickHandler)
+            val checkBoxChecked = checkbox.isChecked
+            somSubFilterClickListener.onCheckboxItemClicked(checkBoxChecked, idList, adapterPosition)
         }
     }
 
-    override fun onResetClicked() {
-        listSubFilter.forEach {
-            if (it.key == SomConsts.STATUS_ALL_ORDER) {
-                it.isChecked = true
-                listId = it.listValue as ArrayList<Int>
-            } else {
-                it.isChecked = false
-            }
-        }
-        allCleared = true
-        notifyDataSetChanged()
-    }
-
-    override fun saveSubFilter(): SomListOrderParam {
-        when {
-            category.equals(SomConsts.CATEGORY_COURIER_TYPE, true) -> currentFilterParam.shippingList = listId
-            category.equals(SomConsts.CATEGORY_ORDER_TYPE, true) -> currentFilterParam.orderTypeList = listId
-            category.equals(SomConsts.CATEGORY_ORDER_STATUS, true) -> currentFilterParam.statusList = listId
-        }
-        return currentFilterParam
-    }
-
-    override fun saveSubFilterKey(): String {
-        return listSubFilter.find { it.isChecked }?.key.orEmpty()
+    interface SomSubFilterClickListener {
+        fun onCheckboxItemClicked(checkboxChecked: Boolean, idList: List<Int>, position: Int)
     }
 
 }

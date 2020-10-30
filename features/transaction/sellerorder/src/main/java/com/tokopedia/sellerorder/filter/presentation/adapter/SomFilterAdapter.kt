@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 
-class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory): BaseAdapter<SomFilterAdapterTypeFactory>(adapterTypeFactory) {
+class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAdapter<SomFilterAdapterTypeFactory>(adapterTypeFactory) {
 
     companion object {
         const val PAYLOAD_DATE_FILTER = 104
@@ -17,20 +17,14 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory): BaseAda
         notifyDataSetChanged()
     }
 
+
     fun setEmptyState(emptyData: EmptyModel) {
         visitables.clear()
         visitables.add(emptyData)
         notifyDataSetChanged()
     }
 
-    fun updateDateFilterText(startDate: String, endDate: String) {
-        val date = if(startDate.isBlank() && endDate.isBlank()) {
-            ""
-        } else if(endDate.isBlank()) {
-            startDate
-        } else {
-            "$startDate - $endDate"
-        }
+    fun updateDateFilterText(date: String) {
         val dateIndex = visitables.indexOfFirst { it is SomFilterDateUiModel }
         visitables.find { it is SomFilterDateUiModel }?.also {
             (it as SomFilterDateUiModel).date = date

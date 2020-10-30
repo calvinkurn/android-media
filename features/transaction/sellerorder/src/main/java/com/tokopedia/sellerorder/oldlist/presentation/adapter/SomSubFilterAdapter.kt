@@ -80,7 +80,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     inner class RadioViewHolder(itemView: View) : BaseViewHolder<SomSubFilter>(itemView) {
         private val titleRadio = itemView.label_radio
         private val radioBtn = itemView.rb_filter
-        private val divider = itemView.divider
+        private val divider = itemView.rbDivider
 
         override fun bind(item: SomSubFilter, position: Int) {
             titleRadio.text = item.name

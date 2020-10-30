@@ -11,7 +11,7 @@ data class SomFilterUiModel(
         var somFilterData: List<SomFilterChipsUiModel> = listOf(),
         val canSelectMany: Boolean = false,
         val isDividerVisible: Boolean = false
-): BaseSomFilter, Parcelable {
+) : BaseSomFilter, Parcelable {
     override fun type(typeFactory: TypeFactorySomFilterAdapter): Int {
         return typeFactory.type(this)
     }

@@ -50,7 +50,7 @@ object FilterResultMapper {
             statusList.add(SomListFilterUiModel.Status(
                     key = it.key,
                     status = it.name,
-                    id = it.idStatus,
+                    id = it.idList,
                     isChecked = it.isSelected,
                     amount = amount,
                     childStatuses = it.childStatus.map { childStatus ->

@@ -1,0 +1,3 @@
+package com.tokopedia.sellerorder.filter.presentation.adapter
+
+class SomSubStatusFilterAdapter

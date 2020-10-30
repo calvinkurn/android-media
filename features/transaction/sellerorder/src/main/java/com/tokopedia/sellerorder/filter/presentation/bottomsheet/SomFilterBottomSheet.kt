@@ -26,6 +26,7 @@ import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
+import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterActivity
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
@@ -38,7 +39,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet : BottomSheetUnify(),
-        SomFilterListener, SomFilterDateBottomSheet.CalenderListener, HasComponent<SomFilterComponent> {
+        SomFilterListener, SomFilterDateBottomSheet.CalenderListener, SomSubFilterActivity.SubFilterListener,
+        HasComponent<SomFilterComponent> {
 
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
@@ -50,6 +52,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
     private var orderStatus: String = ""
+    private var filterDate: String = ""
 
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
@@ -62,9 +65,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
-        somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList() ?: listOf()
+        somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
+                ?: listOf()
         somFilterViewModel.setSomFilterUiModel(somFilterUiModelList.toList())
-        somFilterViewModel.setSomListGetOrderListParam(somListOrderParam ?: SomListGetOrderListParam())
+        somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
+                ?: SomListGetOrderListParam())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,25 +95,53 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         this.orderStatus = orderStatus
         when (idFilter) {
             FILTER_SORT, FILTER_LABEL, FILTER_DEADLINE, FILTER_STATUS_ORDER -> {
-                somFilterViewModel.updateFilterSelected(idFilter, position, chipType)
+                somFilterViewModel.updateFilterSelected(idFilter, position, chipType, filterDate)
                 somFilterViewModel.updateParamSom(idFilter)
             }
             FILTER_TYPE_ORDER, FILTER_COURIER -> {
-                somFilterViewModel.updateFilterManySelected(idFilter, chipType, position)
+                somFilterViewModel.updateFilterManySelected(idFilter, chipType, position, filterDate)
                 somFilterViewModel.updateParamSom(idFilter)
             }
         }
     }
 
-    override fun onSeeAllFilter(somFilterData: SomFilterUiModel, position: Int) {
+    override fun onSeeAllFilter(somFilterData: SomFilterUiModel, position: Int, idFilter: String) {
+        val somFilterChipsList = somFilterViewModel.getSomFilterUiModel()
+                .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
 
+        val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
+                somFilterViewModel.getSomListGetOrderListParam(),
+                filterDate,
+                idFilter,
+                somFilterChipsList
+        )
+        val somSubFilterActivity = SomSubFilterActivity()
+        somSubFilterActivity.setupFilterListener(this)
+        startActivity(intentSomSubFilter)
     }
 
     override fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
         somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
         somListOrderParam?.startDate = startDate.first
         somListOrderParam?.endDate = endDate.first
-        somFilterAdapter?.updateDateFilterText(startDate.second, endDate.second)
+        val date = if (startDate.second.isBlank() && endDate.second.isBlank()) {
+            ""
+        } else if (endDate.second.isBlank()) {
+            startDate.second
+        } else {
+            "${startDate.second} - ${endDate.second}"
+        }
+        filterDate = date
+        somFilterAdapter?.updateDateFilterText(date)
+    }
+
+
+    override fun onSaveSubFilter(somListGetOrderListParam: SomListGetOrderListParam,
+                                 filterDate: String, idFilter: String,
+                                 somSubFilterList: List<SomFilterChipsUiModel>) {
+        this.somListOrderParam = somListGetOrderListParam
+        somFilterViewModel.setSomListGetOrderListParam(somListGetOrderListParam)
+        somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList, filterDate)
     }
 
     override fun getComponent(): SomFilterComponent? {
@@ -150,7 +183,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private fun loadSomFilterData() {
         somFilterAdapter?.showLoading()
         btnShowOrder?.hide()
-        somFilterViewModel.getSomFilterData(orderStatus)
+        somFilterViewModel.getSomFilterData(orderStatus, filterDate)
     }
 
     private fun finishSomFilterData() {
@@ -201,8 +234,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                         somFilterAdapter?.updateData(it.data)
                     }
                 }
-                is Fail -> {
-                }
+                is Fail -> { }
             }
         }
         observe(somFilterViewModel.updateFilterSelected) {
@@ -269,6 +301,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     interface SomFilterFinishListener {
-        fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String)
+        fun onClickShowOrderFilter(filterData: SomListGetOrderListParam,
+                                   somFilterUiModelList: List<SomFilterUiModel>,
+                                   idFilter: String,
+                                   orderStatus: String)
     }
 }

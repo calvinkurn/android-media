@@ -85,7 +85,8 @@ object GetSomFilterMapper {
                     childStatusUiModel.add(SomFilterChipsUiModel.ChildStatusUiModel(idList, childStatus.key.orEmpty(),
                             childStatus.text.orEmpty(), childStatus.isChecked))
                 }
-                add(SomFilterChipsUiModel(idListStatus, key = it.key, name = it.orderStatus, amount = it.orderStatusAmount, isSelected = false, childStatus = childStatusUiModel))
+                add(SomFilterChipsUiModel(idListStatus, key = it.key, name = it.orderStatus, amount = it.orderStatusAmount,
+                        isSelected = false, childStatus = childStatusUiModel, idFilter = FILTER_STATUS_ORDER))
             }
         }
     }
@@ -93,7 +94,7 @@ object GetSomFilterMapper {
     private fun mapToFilterCourierUiModel(shippingList: List<SomFilterResponse.OrderFilterSom.Shipping>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             shippingList.map {
-                add(SomFilterChipsUiModel(id = it.shippingId, name = it.shippingName.orEmpty()))
+                add(SomFilterChipsUiModel(id = it.shippingId, name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
             }
         }
     }
@@ -101,7 +102,7 @@ object GetSomFilterMapper {
     private fun mapToFilterTypeUiModel(typeList: List<SomFilterResponse.OrderType>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
-                add(SomFilterChipsUiModel(id = it.id, name = it.name.orEmpty()))
+                add(SomFilterChipsUiModel(id = it.id, name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
             }
         }
     }

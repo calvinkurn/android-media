@@ -236,7 +236,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.getDataOrderListParams().statusList,
                 viewModel.getSomFilterUi())
         bottomSheetFilter.setFragmentManager(childFragmentManager)
-        bottomSheetFilter.setSomFilterFinishListener(this@SomListFragment)
+        bottomSheetFilter.setSomFilterFinishListener(this)
         bottomSheetFilter.show()
     }
 

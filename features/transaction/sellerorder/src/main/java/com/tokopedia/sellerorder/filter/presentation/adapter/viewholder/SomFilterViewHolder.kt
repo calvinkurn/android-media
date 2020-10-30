@@ -29,7 +29,7 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
                 if (element.canSelectMany) {
                     show()
                     setOnClickListener {
-                        filterListener.onSeeAllFilter(element, adapterPosition)
+                        filterListener.onSeeAllFilter(element, adapterPosition, element.nameFilter)
                     }
                 } else {
                     hide()
@@ -53,7 +53,7 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
             rvSomFilter?.also {
-                if(it.itemDecorationCount == 0) {
+                if (it.itemDecorationCount == 0) {
                     it.addItemDecoration(FilterItemDecoration())
                 }
                 it.layoutManager = layoutManagerChips
