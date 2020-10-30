@@ -376,6 +376,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (addToCartUseCase != null) {
             addToCartUseCase.unsubscribe();
         }
+        addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
     }
 
