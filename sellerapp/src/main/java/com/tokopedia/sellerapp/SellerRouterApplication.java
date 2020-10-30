@@ -8,11 +8,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -20,14 +18,14 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -36,13 +34,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.gm.common.di.component.DaggerGMComponent;
-import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
@@ -52,8 +44,7 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -72,8 +63,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -99,24 +90,22 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
         PhoneVerificationRouter,
-        TopAdsManagementRouter,
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter{
 
     protected RemoteConfig remoteConfig;
-    private DaggerGMComponent.Builder daggerGMBuilder;
-    private GMComponent gmComponent;
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private TetraDebugger tetraDebugger;
+    protected CacheManager cacheManager;
 
     @Override
     public void onCreate() {
@@ -142,7 +131,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
@@ -159,13 +147,6 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
-    public GMComponent getGMComponent() {
-        if (gmComponent == null) {
-            gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return gmComponent;
-    }
-
     @Override
     public TopAdsComponent getTopAdsComponent() {
         if (topAdsComponent == null) {
@@ -180,13 +161,11 @@ public abstract class SellerRouterApplication extends MainApplication
         EtalaseUtils.clearDepartementCache(context);
     }
 
-    /**
-     * User PersistentCacheManager Library directly
-     */
-    @Deprecated
     @Override
-    public CacheManager getGlobalCacheManager() {
-        return new GlobalCacheManager();
+    public CacheManager getPersistentCacheManager() {
+        if(cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override
@@ -248,22 +227,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
-    @Override
-    public Observable<DataDeposit> getDataDeposit(String shopId) {
-        GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
-        return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
-    }
-
     @NonNull
     @Override
     public Intent getSplashScreenIntent(@NonNull Context context) {
         return new Intent(context, SplashScreenActivity.class);
-    }
-
-    @Override
-    public void goToTopAdsDashboard(Activity activity) {
-        Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
-        activity.startActivity(intent);
     }
 
     @Override
@@ -404,18 +371,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         return DevOptConfig.isChuckNotifEnabled(this);
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsDashboardIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT);
     }
 
     @Override

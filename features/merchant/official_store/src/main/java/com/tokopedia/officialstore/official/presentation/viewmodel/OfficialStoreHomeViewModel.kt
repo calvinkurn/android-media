@@ -95,7 +95,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
 
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)

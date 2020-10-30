@@ -6,7 +6,7 @@
       "eventCategory": "homepage",
       "item_list": "{{.*}}",
       "event": "select_content",
-      "eventAction": "product recommendation click - non login",
+      "eventAction": "product recommendation click",
       "sessionIris": "{{.*}}",
       "items": [{
         "dimension11": "{{.*}}",
@@ -26,7 +26,7 @@
       "eventCategory": "homepage",
       "item_list": "{{.*}}",
       "event": "view_item_list",
-      "eventAction": "product recommendation impression - non login",
+      "eventAction": "product recommendation impression",
       "sessionIris": "{{.*}}",
       "items": [{
         "dimension11": "{{.*}}",

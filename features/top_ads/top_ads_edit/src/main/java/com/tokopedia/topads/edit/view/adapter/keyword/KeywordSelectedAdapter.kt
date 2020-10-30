@@ -61,6 +61,7 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
 
 
         } else {
+            holder.view.keywordCompetition.visibility = View.VISIBLE
             when (items[holder.adapterPosition].competition) {
                 KeywordItemViewHolder.LOW -> {
                     holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)

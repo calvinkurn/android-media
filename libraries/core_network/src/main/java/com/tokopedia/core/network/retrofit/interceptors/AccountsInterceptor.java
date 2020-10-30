@@ -24,7 +24,6 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
-    private static final String TAG = AccountsInterceptor.class.getSimpleName();
     private final String authKey;
     private final boolean isUsingHMAC;
     private final boolean isUsingBothAuthorization;

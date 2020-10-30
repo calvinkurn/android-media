@@ -215,8 +215,6 @@ public class RemoteConfigKey {
     public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
-    public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
-
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
@@ -228,8 +226,12 @@ public class RemoteConfigKey {
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
+
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+
+    public static final String ENABLE_UOH = "android_enable_uoh";
 }
