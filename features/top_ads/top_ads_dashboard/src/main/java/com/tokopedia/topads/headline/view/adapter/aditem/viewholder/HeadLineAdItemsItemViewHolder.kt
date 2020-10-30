@@ -3,6 +3,7 @@ package com.tokopedia.topads.headline.view.adapter.aditem.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
@@ -35,6 +36,9 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         var LAYOUT = R.layout.topads_dash_item_with_group_card
     }
 
+    private  val sheet: TopadsSelectActionSheet? by lazy {
+        TopadsSelectActionSheet.newInstance()
+    }
     override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
@@ -74,6 +78,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     view.persentase_klik_count.text = statsData[index].statTotalCtr
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
                     view.produk_terjual_count.text = statsData[index].statTotalConversion
+                    view.pendapatan_count.text = statsData[index].groupTotalIncome
                     if (it.data.groupEndDate != TIDAK_DIBATASI) {
                         view.scheduleImg.visibility = View.VISIBLE
                         view.scheduleDate.visibility = View.VISIBLE
@@ -84,8 +89,6 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     }
                 }
             }
-            view.pendapatan.visibility = View.GONE
-            view.pendapatan_count.visibility = View.GONE
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
@@ -111,14 +114,12 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.groupStatus, item.data.groupName)
-            sheet.disableEdit()
-            sheet.show()
-            sheet.onDeleteClick = {
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.groupStatus, item.data.groupName , true)
+            sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
-            sheet.changeStatus = {
+            sheet?.changeStatus = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

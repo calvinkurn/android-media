@@ -111,7 +111,6 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         fetchData()
         setSearchBar()
         close_butt?.setOnClickListener { setSelectMode(false) }
@@ -121,6 +120,10 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             showConfirmationDialog(context!!)
         }
         Utils.setSearchListener(context, view, ::fetchData)
+        btnFilter?.setOnClickListener {
+            groupFilterSheet.show()
+            groupFilterSheet.onSubmitClick = { fetchData() }
+        }
     }
 
     private fun setSearchBar() {

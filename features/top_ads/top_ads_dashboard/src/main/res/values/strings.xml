@@ -305,7 +305,8 @@
       <string name="topads_dash_headline_title">Iklan Toko</string>
     <string name="topads_dash_headline_confirm_delete_ad_text">Yakin hapus iklan “%s”?</string>
     <string name="topads_dash_headline_delete_toast">Iklan Toko berhasil dihapus</string>
-    <string name="topads_dash_headline_bulk_delete_title">Yakin hapus [N] Iklan Toko?</string>
+    <string name="topads_dash_headline_delete_toast_multiple">[%d] Iklan Toko berhasil dihapus</string>
+    <string name="topads_dash_headline_bulk_delete_title">Yakin hapus [%d] Iklan Toko?</string>
     <string name="topads_dasg_headline_bulk_delete_desc">Iklan Toko dapat membuat iklanmu tampil teratas di halaman pencarian.</string>
     <string name="topads_headline_detail_title">Detail Iklan Toko</string>
     <string name="topads_headline_empty_state_title">Pasang iklanmu lebih besar dengan Iklan Toko</string>

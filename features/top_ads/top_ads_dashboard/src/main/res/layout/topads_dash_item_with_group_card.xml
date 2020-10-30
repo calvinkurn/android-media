@@ -231,8 +231,7 @@
                     android:text="@string/topads_common_pendapatan"
                     app:layout_constraintEnd_toStartOf="@id/produk_terjual"
                     app:layout_constraintStart_toEndOf="@id/pengeluaran"
-                    app:layout_constraintTop_toBottomOf="@id/klik_count"
-                    tools:visibility="gone" />
+                    app:layout_constraintTop_toBottomOf="@id/klik_count" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/pendapatan_count"
@@ -241,8 +240,7 @@
                     app:layout_constraintEnd_toStartOf="@id/produk_terjual_count"
                     app:layout_constraintStart_toEndOf="@id/pengeluaran_count"
                     app:layout_constraintTop_toBottomOf="@id/pendapatan"
-                    tools:text="Rp 0"
-                    tools:visibility="gone" />
+                    tools:text="Rp 0" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/persentase_klik"
@@ -266,16 +264,16 @@
                     android:id="@+id/produk_terjual"
                     style="@style/CardView.Text"
                     android:text="@string/topads_common_produk_terjual"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pendapatan"
-                    app:layout_constraintStart_toStartOf="@id/klik"
                     app:layout_constraintTop_toBottomOf="@id/klik_count"
                     app:layout_constraintTop_toTopOf="@id/pengeluaran" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/produk_terjual_count"
                     style="@style/CardView.CountView"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pendapatan_count"
-                    app:layout_constraintStart_toStartOf="@id/klik"
                     app:layout_constraintTop_toTopOf="@id/pengeluaran_count"
                     tools:text="0" />
 

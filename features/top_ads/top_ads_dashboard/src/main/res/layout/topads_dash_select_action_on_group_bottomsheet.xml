@@ -6,42 +6,12 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintEnd_toStartOf="@+id/txt_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:gravity="center_vertical"
-        android:includeFontPadding="false"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_close"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:typographyType="heading_3"
-        tools:text="This and That" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_activate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
         app:layout_constraintBottom_toTopOf="@id/div1"
-        app:layout_constraintTop_toBottomOf="@id/txt_title">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_action_active"
@@ -60,8 +30,6 @@
             android:id="@+id/img_active"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/txt_action_active"
             app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +40,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/div1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="@dimen/dp_1"
         app:layout_constraintTop_toBottomOf="@id/action_activate" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,8 +66,6 @@
             android:id="@+id/edit_img"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/action_edit"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +75,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/div2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="@dimen/dp_1"
         app:layout_constraintTop_toBottomOf="@id/action_edit" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -135,8 +101,6 @@
             android:id="@+id/img_delete"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/txt_action_delete"
             app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +109,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="@dimen/dp_1"
         app:layout_constraintTop_toBottomOf="@id/action_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
