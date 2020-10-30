@@ -3,59 +3,144 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TierPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointStatusPojo
-import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointsPojo
-import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
-import com.tokopedia.homenav.mainnav.data.pojo.user.ProfilePojo
-import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.domain.interactor.GetCoroutineWalletBalanceUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetShopInfoUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetUserInfoUseCase
-import com.tokopedia.homenav.mainnav.domain.interactor.GetUserMembershipUseCase
+import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.mainnav.domain.interactor.*
+import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
+import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.rule.CoroutinesTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 
+@ExperimentalCoroutinesApi
+class TestMainNavViewModel {
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-//@ExperimentalCoroutinesApi
-//class TestMainNavViewModel {
-//    @get:Rule
-//    val instantTaskExecutorRule = InstantTaskExecutorRule()
-//
-//    @get:Rule
-//    val rule = CoroutinesTestRule()
-//
-//
-//    private val getUserInfoUseCase = mockk<GetUserInfoUseCase>(relaxed = true)
-//    private val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
-//    private val getUserMembershipUseCase = mockk<GetUserMembershipUseCase>(relaxed = true)
-//    private val getShopInfoUseCase = mockk<GetShopInfoUseCase>(relaxed = true)
-//
-//    @ApplicationContext
-//    lateinit var context: Context
-//
-//    private val defaultLoginState = AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-//    private lateinit var viewModel : MainNavViewModel
-//    private val shopId = 1224
-//
-//    @Before
-//    fun setup(){
-//        MockKAnnotations.init(this, relaxUnitFun = true)
-//        viewModel = createViewModel(getUserInfoUseCase, getWalletBalanceUseCase, getUserMembershipUseCase, getShopInfoUseCase)
-//    }
-//
+    @get:Rule
+    val rule = CoroutinesTestRule()
+
+    private val getUserInfoUseCase = mockk<GetUserInfoUseCase>(relaxed = true)
+    private val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
+    private val getUserMembershipUseCase = mockk<GetUserMembershipUseCase>(relaxed = true)
+    private val getShopInfoUseCase = mockk<GetShopInfoUseCase>(relaxed = true)
+    private val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>(relaxed = true)
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
+
+    @ApplicationContext
+    lateinit var context: Context
+
+    private val defaultLoginState = AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
+    private lateinit var viewModel : MainNavViewModel
+    private val shopId = 1224
+
+    @Before
+    fun setup(){
+        MockKAnnotations.init(this, relaxUnitFun = true)
+    }
+
+    @Test
+    fun `test when viewmodel created and user has no shop then viewmodel create at least 9 user menu`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
+        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
+
+        val userMenuMockId = 99
+        val defaultUserMenuCount = 9
+
+        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
+        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(0) }
+
+        every { clientMenuGenerator.getMenu(anyInt()) }.answers { HomeNavMenuViewModel(id = userMenuMockId) }
+        every { userSession.hasShop() }.answers { false }
+
+        viewModel = createViewModel(
+                getUserInfoUseCase = getUserInfoUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase,
+                getShopInfoUseCase = getShopInfoUseCase,
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                clientMenuGenerator = clientMenuGenerator,
+                userSession = userSession,
+                getResolutionNotification = getResolutionNotification
+        )
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        visitableList.filter { it.id() == userMenuMockId }
+
+        Assert.assertEquals(defaultUserMenuCount, visitableList.size)
+    }
+
+    @Test
+    fun `test when viewmodel created and user has shop then viewmodel create at least 8 user menu`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
+        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
+        val userMenuMockId = 99
+        val defaultUserMenuCount = 8
+
+        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
+        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(9) }
+
+        every { clientMenuGenerator.getMenu(anyInt()) }.answers { HomeNavMenuViewModel(id = userMenuMockId) }
+        every { userSession.hasShop() }.answers { true }
+
+        viewModel = createViewModel(
+                getUserInfoUseCase = getUserInfoUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase,
+                getShopInfoUseCase = getShopInfoUseCase,
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                clientMenuGenerator = clientMenuGenerator,
+                userSession = userSession,
+                getResolutionNotification = getResolutionNotification
+        )
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        visitableList.filter { it.id() == userMenuMockId }
+
+        Assert.assertEquals(defaultUserMenuCount, visitableList.size)
+    }
+
+    @Test
+    fun `test when get complain notification then viewmodel update complain visitable with notification`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
+        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
+        val mockUnreadCount = 800
+
+        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
+        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(mockUnreadCount) }
+
+        every { clientMenuGenerator.getMenu(ClientMenuGenerator.ID_COMPLAIN) }.answers {
+            HomeNavMenuViewModel(id = ClientMenuGenerator.ID_COMPLAIN)
+        }
+
+        viewModel = createViewModel(
+                getUserInfoUseCase = getUserInfoUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase,
+                getShopInfoUseCase = getShopInfoUseCase,
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                clientMenuGenerator = clientMenuGenerator,
+                userSession = userSession,
+                getResolutionNotification = getResolutionNotification
+        )
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val complainVisitable = visitableList.find { it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuViewModel
+
+        Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
+    }
+
 //    @Test
 //    fun `test login state non login`(){
 //        rule.testDispatcher.runBlockingTest {
@@ -361,4 +446,4 @@ import org.junit.Test
 //                    (dataList.first() as AccountHeaderViewModel).ovoPoint.equals("Rp 0"))
 //        }
 //    }
-//}
+}

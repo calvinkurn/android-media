@@ -7,9 +7,11 @@ import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.base.viewmodel.HomeNavGlobalErrorViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTitleViewModel
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.AccountHeaderViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.SeparatorViewHolder
@@ -48,12 +50,17 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return TransactionListViewHolder.LAYOUT
     }
 
+    override fun type(visitable: HomeNavTickerViewModel): Int {
+        return HomeNavTickerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
+            HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<HomeNavVisitable>
     }

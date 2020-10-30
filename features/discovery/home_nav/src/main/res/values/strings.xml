@@ -19,4 +19,15 @@
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<b><font color=#03AC0E>%1$s<font></b>]]></string>
 
     <string name="host_navigation">navigation</string>
+    <string name="menu_user_menu_wishlist">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
+    <string name="menu_user_menu_subscription">Langganan</string>
+    <string name="menu_user_menu_complain">Komplain sebagai pembeli</string>
+    <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code">QR Code</string>
+
+    <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
+    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. <a href="/">Buka Toko Gratis</a></string>
+
 </resources>
