@@ -51,23 +51,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="end">
-
-                    <ImageView
-                        android:id="@+id/courier_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        tools:src="@drawable/googleg_standard_color_18"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <View

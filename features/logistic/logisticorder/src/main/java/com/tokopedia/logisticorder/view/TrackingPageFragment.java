@@ -7,7 +7,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,12 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter;
@@ -33,9 +30,10 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent;
 import com.tokopedia.logisticorder.di.TrackingPageComponent;
 import com.tokopedia.logisticorder.di.TrackingPageModule;
 import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
-import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
+import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
@@ -72,7 +70,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     private ProgressBar loadingScreen;
     private TextView referenceNumber;
-    private ImageView courierLogo;
     private TextView deliveryDate;
     private TextView storeName;
     private TextView storeAddress;
@@ -133,7 +130,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
         rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
-        courierLogo = view.findViewById(R.id.courier_logo);
         deliveryDate = view.findViewById(R.id.delivery_date);
         storeName = view.findViewById(R.id.store_name);
         storeAddress = view.findViewById(R.id.store_address);
@@ -159,8 +155,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     @Override
     public void populateView(TrackingUiModel model) {
-        referenceNumber.setText(model.getReferenceNumber());
-        ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
+        referenceNumber.setText(model.getReferenceNumber());;
         if (TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(model.getDeliveryDate()))
             deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
