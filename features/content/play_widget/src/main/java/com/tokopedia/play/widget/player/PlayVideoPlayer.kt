@@ -54,7 +54,7 @@ open class PlayVideoPlayer(val context: Context) {
     }
 
     fun start() {
-        if (videoUrl?.isBlank() == true) return
+        if (videoUrl == null || videoUrl?.isBlank() == true) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
 
