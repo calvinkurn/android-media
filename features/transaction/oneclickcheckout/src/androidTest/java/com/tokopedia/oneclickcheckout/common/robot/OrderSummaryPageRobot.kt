@@ -82,6 +82,10 @@ class OrderSummaryPageRobot {
         OvoActivationBottomSheetRobot().apply(func)
     }
 
+    fun clickOvoTopUpButton() {
+        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).perform(click())
+    }
+
     fun clickChangeInstallment(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
         onView(withId(R.id.tv_installment_detail)).perform(scrollTo()).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
@@ -222,7 +226,7 @@ class OrderSummaryPageRobot {
     }
 
     fun assertProfilePayment(paymentName: String) {
-        onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(withText(paymentName)))
+        onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
     }
 
     fun assertInstallment(detail: String?) {
@@ -323,7 +327,7 @@ class OrderSummaryPageRobot {
 class OrderSummaryPageResultRobot {
 
     fun assertGoToPayment(redirectUrl: String, queryString: String, method: String) {
-        val paymentPassData = Intents.getIntents().first().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
+        val paymentPassData = Intents.getIntents().last().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)!!
         assertEquals(redirectUrl, paymentPassData.redirectUrl)
         assertEquals(queryString, paymentPassData.queryString)
         assertEquals(method, paymentPassData.method)
