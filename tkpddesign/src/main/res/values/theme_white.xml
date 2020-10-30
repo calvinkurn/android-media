@@ -18,9 +18,9 @@
 
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/green_600</item>
-        <item name="android:background">@android:color/white</item>
-        <item name="actionModeBackground">@android:color/white</item>
-        <item name="android:actionModeBackground">@android:color/white</item>
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
         <item name="android:textColorPrimary">@color/font_black_primary_70</item>
         <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
         <item name="android:textColorSecondary">@color/font_black_primary_70</item>
@@ -28,7 +28,7 @@
 
     <style name="TabBar.White" parent="BaseTabBar">
         <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@color/Unify_N0</item>
         <item name="tabTextColor">@color/grey_title</item>
         <item name="tabTextAppearance">@style/TitlePageWhiteIndicator</item>
         <item name="tabIndicatorColor">@color/tkpd_main_green</item>

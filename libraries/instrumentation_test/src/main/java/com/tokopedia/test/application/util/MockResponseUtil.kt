@@ -53,7 +53,7 @@ fun setupGraphqlMockResponse(mockModelConfig: MockModelConfig) {
     val application = context.applicationContext as InstrumentationTestApp
 
     mockModelConfig.createMockModel(context)
-    application.addInterceptor(MockInterceptor(mockModelConfig))
+    application.setInterceptor(MockInterceptor(mockModelConfig))
 }
 
 fun setupGraphqlMockResponse(createMockModel: MockModelConfig.() -> Unit) {

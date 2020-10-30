@@ -10,6 +10,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.UseCase
@@ -18,6 +19,7 @@ import io.mockk.CapturingSlot
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
+import rx.schedulers.Schedulers
 
 internal open class ProductListPresenterTestFixtures {
 
@@ -41,6 +43,13 @@ internal open class ProductListPresenterTestFixtures {
     protected val remoteConfig = mockk<RemoteConfig>()
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
+    protected val testSchedulersProvider = object : SchedulersProvider {
+        override fun io() = Schedulers.immediate()
+
+        override fun ui() = Schedulers.immediate()
+
+        override fun computation() = Schedulers.immediate()
+    }
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
@@ -56,6 +65,7 @@ internal open class ProductListPresenterTestFixtures {
                 dagger.Lazy { getDynamicFilterUseCase },
                 dagger.Lazy { getProductCountUseCase },
                 topAdsUrlHitter,
+                testSchedulersProvider,
                 dagger.Lazy { remoteConfig }
         )
         productListPresenter.attachView(productListView)
@@ -114,6 +124,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
         productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
+        productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
     }
 
@@ -133,5 +144,10 @@ internal open class ProductListPresenterTestFixtures {
             productItem.topadsImpressionUrl shouldBe ""
             productItem.topadsWishlistUrl shouldBe ""
         }
+
+        productItem.productID shouldBe organicProduct.id
+        productItem.productName shouldBe organicProduct.name
+        productItem.price shouldBe organicProduct.price
+        productItem.minOrder shouldBe organicProduct.minOrder
     }
 }

@@ -32,6 +32,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -196,6 +197,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var selectedEtalaseId = ""
     private var selectedEtalaseName = ""
     private var defaultEtalaseName = ""
+    private var productListName: String = ""
     private var recyclerViewTopPadding = 0
     private var shopSortFilterHeight = 0
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
@@ -484,9 +486,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val etalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
                 val isNeedToReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
+                shopPageTracking?.clickEtalaseChip(
+                        isOwner,
+                        etalaseName,
+                        CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+                )
                 shopPageTracking?.clickMoreMenuChip(
                         isOwner,
-                        getSelectedEtalaseChip(),
+                        etalaseName,
                         customDimensionShopPage
                 )
                 if (shopPageTracking != null) {
@@ -528,8 +535,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     if (shopProductAdapter.isLoading) {
                         return
                     }
+                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
-                    val sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     changeSortData(sortId)
                     scrollToChangeProductGridSegment()
                 }
@@ -1063,6 +1070,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
+                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
                 is Fail -> {
                     showErrorToasterWithRetry(it.throwable)
@@ -1308,11 +1316,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onEtalaseFilterClicked() {
-        shopPageTracking?.clickEtalaseChip(
-                isOwner,
-                getSelectedEtalaseChip(),
-                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        )
         redirectToEtalasePicker()
     }
 
@@ -1342,6 +1345,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onFilterClicked() {
+        shopPageTracking?.clickFilterChips(productListName, customDimensionShopPage)
         showBottomSheetFilter()
     }
 
@@ -1383,14 +1387,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        val isResetButtonVisible = sortFilterBottomSheet?.bottomSheetAction?.isVisible
         sortFilterBottomSheet = null
         shopProductFilterParameter?.clearParameter()
         shopProductFilterParameter?.setMapData(applySortFilterModel.mapParameter)
-        if(applySortFilterModel.selectedSortName.isEmpty()){
+        if(isResetButtonVisible == false){
             sortId = ""
         }
         changeSortData(shopProductFilterParameter?.getSortId().orEmpty())
         scrollToChangeProductGridSegment()
+        applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
     }
 
     private fun changeSortData(sortId: String){
@@ -1413,6 +1419,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopId,
                 tempShopProductFilterParameter
         )
+    }
+
+    private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
+        if (selectedSortName.isNotBlank()) {
+            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
+        }
+        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
+        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
     }
 
 }

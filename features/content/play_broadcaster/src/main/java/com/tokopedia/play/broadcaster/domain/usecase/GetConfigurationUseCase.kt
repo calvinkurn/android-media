@@ -47,7 +47,6 @@ class GetConfigurationUseCase @Inject constructor(
 
     companion object {
 
-        private const val TAG = "Play-GetConfigurationUseCase"
         private const val PARAMS_SHOP_ID = "shopId"
 
         fun createParams(

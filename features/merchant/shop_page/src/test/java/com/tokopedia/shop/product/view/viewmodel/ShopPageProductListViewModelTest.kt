@@ -3,10 +3,12 @@ package com.tokopedia.shop.product.view.viewmodel
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
@@ -36,9 +38,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyString(),
                     listOf(),
                     ShopEtalaseItemDataModel(),
-                    anyString(),
-                    false,
-                    Pair(true, listOf())
+                    anyBoolean(),
+                    GetShopProductUiModel(),
+                    ShopProductFilterParameter()
             )
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
@@ -59,9 +61,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyString(),
                     listOf(),
                     ShopEtalaseItemDataModel(),
-                    anyString(),
                     anyBoolean(),
-                    Pair(true, listOf())
+                    GetShopProductUiModel(),
+                    ShopProductFilterParameter()
             )
 
             verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
@@ -101,7 +103,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getNewProductListData(
                     anyString(),
                     anyString(),
-                    anyString()
+                    ShopProductFilterParameter()
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -117,7 +119,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get new product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString(), anyString())
+            viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString(), ShopProductFilterParameter())
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -131,7 +133,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), anyString())
+            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
             verifyGetShopProductUseCaseCaseCalled()
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -145,7 +147,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response get next product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), anyString())
+            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 

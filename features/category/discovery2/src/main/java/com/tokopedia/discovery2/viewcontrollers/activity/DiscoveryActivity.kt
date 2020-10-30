@@ -6,9 +6,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -156,7 +157,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun setLogCrash() {
         super.setLogCrash()
         this.javaClass.canonicalName?.let { className ->
-            if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
+            if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
         }
     }
 
@@ -167,6 +168,10 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun onStop() {
         super.onStop()
         preSelectedTab = -1
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageLoadTimePerformanceInterface?.getPltPerformanceData()
     }
 
 }

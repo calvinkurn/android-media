@@ -30,7 +30,7 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
         return ShopInvoiceViewHolder.LAYOUT_ID
     }
 
-    fun type(billDetail: BillDetail): Int {
+    fun type(totalFee: TotalFee): Int {
         return BillDetailViewHolder.LAYOUT_ID
     }
 
@@ -38,7 +38,7 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
         return PaymentInfoViewHolder.LAYOUT_ID
     }
 
-    fun type(obtainedAfterTransaction: ObtainedAfterTransaction): Int {
+    fun type(cashBackEarned: CashBackEarned): Int {
         return ObtainedBenefitViewHolder.LAYOUT_ID
     }
 

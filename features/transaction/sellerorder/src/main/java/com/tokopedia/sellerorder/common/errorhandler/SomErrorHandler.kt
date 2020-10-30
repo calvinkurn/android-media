@@ -1,6 +1,6 @@
 package com.tokopedia.sellerorder.common.errorhandler
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.common.exception.SomException
 import timber.log.Timber
@@ -19,7 +19,7 @@ object SomErrorHandler {
                     cause = cause.cause
                     stackTrace.append(stringWriter)
                 }
-                Crashlytics.log("$message $stackTrace")
+                FirebaseCrashlytics.getInstance().recordException(RuntimeException(message, throwable))
             } else {
                 Timber.e(throwable, message)
             }
@@ -32,7 +32,7 @@ object SomErrorHandler {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
-                Crashlytics.logException(SomException(
+                FirebaseCrashlytics.getInstance().recordException(SomException(
                         message = exceptionMessage,
                         cause = throwable
                 ))
