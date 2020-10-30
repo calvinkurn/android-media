@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderdetail.domain
 
+import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailEntity
 import com.tokopedia.flight.orderdetail.data.FlightOrderDetailGqlConst
 import com.tokopedia.flight.orderdetail.presentation.model.*
@@ -183,6 +184,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     id = passenger.id,
                                     type = passenger.type,
                                     title = passenger.title,
+                                    titleString = getPassengerTitleString(passenger.title),
                                     firstName = passenger.firstName,
                                     lastName = passenger.lastName,
                                     dob = passenger.dob,
@@ -289,6 +291,14 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList()
                 )
+            }
+
+    private fun getPassengerTitleString(titleId: Int): String =
+            when (titleId) {
+                FlightPassengerTitle.TUAN.id -> FlightPassengerTitle.TUAN.salutation
+                FlightPassengerTitle.NYONYA.id -> FlightPassengerTitle.NYONYA.salutation
+                FlightPassengerTitle.NONA.id -> FlightPassengerTitle.NONA.salutation
+                else -> FlightPassengerTitle.TUAN.salutation
             }
 
 

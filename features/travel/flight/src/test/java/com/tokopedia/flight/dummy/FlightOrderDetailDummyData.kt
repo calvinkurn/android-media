@@ -133,6 +133,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                         1,
                         1,
                         1,
+                        "Tuan",
                         "Muhammad",
                         "Furqan",
                         "",
