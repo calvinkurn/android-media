@@ -919,6 +919,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
             btn_apply?.setOnClickListener {
+                isFilterClicked = true
                 isReset = false
                 currFilterType = tempFilterType
                 when (currFilterType) {
