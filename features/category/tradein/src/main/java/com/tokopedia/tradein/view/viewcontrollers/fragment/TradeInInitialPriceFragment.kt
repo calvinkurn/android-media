@@ -25,7 +25,14 @@ import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.android.synthetic.main.tradein_final_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.btn_continue
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.iv_back
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.product_name
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.product_price
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.progress_bar_layout
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.tv_final_amt
 import javax.inject.Inject
 
 class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceViewModel>() {
@@ -69,6 +76,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         tradeinHomeViewModel.tradeInParams.apply {
             product_name.text = productName
             product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
+            tv_slash_amt.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(newPrice, true)
             ImageHandler.LoadImage(product_image, productImage)
         }
         tv_final_amt.text = getString(R.string.tradein_final_price, tradeinHomeViewModel.finalPrice)
