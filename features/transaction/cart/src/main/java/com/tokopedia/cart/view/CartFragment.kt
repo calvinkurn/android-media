@@ -139,8 +139,8 @@ import javax.inject.Inject
  */
 
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, CartToolbarListener,
-        InsuranceItemActionListener, TickerAnnouncementActionListener, SellerCashbackListener {
+        RefreshHandler.OnRefreshHandlerListener, CartToolbarListener, InsuranceItemActionListener,
+        TickerAnnouncementActionListener, SellerCashbackListener {
 
     lateinit var toolbar: CartToolbar
     lateinit var appBarLayout: AppBarLayout
@@ -426,7 +426,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
             showToastMessageRed(getString(R.string.default_request_error_unknown))
-            sendAnalyticsScreenName(screenName)
+            cartPageAnalytics.sendScreenName(activity, screenName)
             refreshHandler?.isRefreshing = true
             if (cartListData != null) {
                 renderInitialGetCartListDataSuccess(cartListData)
@@ -434,7 +434,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.processInitialGetCartData(getCartId(), false, false)
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            sendAnalyticsScreenName(screenName)
+            cartPageAnalytics.sendScreenName(activity, screenName)
             refreshHandler?.isRefreshing = true
             if (cartListData != null) {
                 renderInitialGetCartListDataSuccess(cartListData)
@@ -618,7 +618,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        sendAnalyticsOnClickBackArrow()
+        cartPageAnalytics.eventClickAtcCartClickArrowBack()
         if (isAtcExternalFlow()) {
             routeToHome()
         }
@@ -896,8 +896,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         } else {
             showToastMessageRed(message)
-            sendAnalyticsOnButtonCheckoutClickedFailed()
-            sendAnalyticsOnGoToShipmentFailed(message)
+            cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
+            cartPageAnalytics.eventViewErrorWhenCheckout(message)
         }
     }
 
@@ -949,7 +949,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
-        sendAnalyticsOnClickRemoveIconCartItem()
+        cartPageAnalytics.eventClickAtcCartClickTrashBin()
         val cartItemDatas = mutableListOf<CartItemData>()
         cartItemHolderData.cartItemData?.let {
             cartItemDatas.add(it)
@@ -965,7 +965,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog?.setPrimaryCTAClickListener {
                 if (cartItemDatas.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, true, removeMacroInsurance)
-                    sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
+                    cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(
                             dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
@@ -974,7 +974,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog?.setSecondaryCTAClickListener {
                 if (cartItemDatas.size > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, removeMacroInsurance)
-                    sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                    cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                             dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
@@ -984,7 +984,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             if (cartItemDatas.size > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, removeMacroInsurance)
-                sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                         dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                 )
             }
@@ -992,12 +992,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
-        sendAnalyticsOnClickButtonPlusCartItem()
+        cartPageAnalytics.eventClickAtcCartClickButtonPlus()
         cartAdapter.increaseQuantity(position, parentPosition)
     }
 
     override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
-        sendAnalyticsOnClickButtonMinusCartItem()
+        cartPageAnalytics.eventClickAtcCartClickButtonMinus()
         cartAdapter.decreaseQuantity(position, parentPosition)
     }
 
@@ -1006,14 +1006,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
-        sendAnalyticsOnClickProductNameCartItem(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
@@ -1224,11 +1224,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             for (wishlist in wishLists as List<CartWishlistItemHolderData>) {
                 if (wishlist.id.equals(productId, ignoreCase = true)) {
                     if (FLAG_IS_CART_EMPTY) {
-                        sendAnalyticsOnClickProductWishlistOnEmptyCart(position.toString(),
-                                dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position))
+                        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
+                                position.toString(),
+                                dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position)
+                        )
                     } else {
-                        sendAnalyticsOnClickProductWishlistOnCartList(position.toString(),
-                                dPresenter.generateWishlistProductClickDataLayer(wishlist, position))
+                        cartPageAnalytics.enhancedEcommerceClickProductWishListOnCartList(
+                                position.toString(),
+                                dPresenter.generateWishlistProductClickDataLayer(wishlist, position)
+                        )
                     }
                 }
                 position++
@@ -1240,7 +1244,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onWishlistImpression() {
         wishLists?.let {
-            sendAnalyticsOnViewProductWishlist(
+            cartPageAnalytics.enhancedEcommerceProductViewWishList(
                     dPresenter.generateWishlistDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
             )
         }
@@ -1252,11 +1256,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         for (recentView in recentViewList as List<CartRecentViewItemHolderData>) {
             if (recentView.id.equals(productId, ignoreCase = true)) {
                 if (FLAG_IS_CART_EMPTY) {
-                    sendAnalyticsOnClickProductRecentViewOnEmptyCart(position.toString(),
-                            dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position))
+                    cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
+                            position.toString(),
+                            dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position)
+                    )
                 } else {
-                    sendAnalyticsOnClickProductRecentViewOnCartList(position.toString(),
-                            dPresenter.generateRecentViewProductClickDataLayer(recentView, position))
+                    cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(
+                            position.toString(),
+                            dPresenter.generateRecentViewProductClickDataLayer(recentView, position)
+                    )
                 }
             }
             position++
@@ -1267,7 +1275,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onRecentViewImpression() {
         recentViewList?.let {
-            sendAnalyticsOnViewProductRecentView(
+            cartPageAnalytics.enhancedEcommerceProductViewLastSeen(
                     dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
             )
         }
@@ -1291,8 +1299,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         recommendationItemClick?.let {
-            sendAnalyticsOnClickProductRecommendation(index.toString(),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index))
+            cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
+                    index.toString(),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index)
+            )
         }
 
         when {
@@ -1349,7 +1359,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun sendImpressionOneRecommendationItem(it: List<CartRecommendationItemHolderData>, currentIndex: Int) {
         val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
         cartRecommendationList.add(it[currentIndex])
-        sendAnalyticsOnViewProductRecommendation(
+        cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(
                 dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
         )
     }
@@ -1358,7 +1368,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartRecommendationList = ArrayList<CartRecommendationItemHolderData>()
         cartRecommendationList.add(it[currentIndex - 1])
         cartRecommendationList.add(it[currentIndex])
-        sendAnalyticsOnViewProductRecommendation(
+        cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(
                 dPresenter.generateRecommendationImpressionDataAnalytics(currentIndex, cartRecommendationList, FLAG_IS_CART_EMPTY)
         )
     }
@@ -1402,7 +1412,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
         if (shopId != null && shopName != null) {
-            sendAnalyticsOnClickShopCartItem(shopId, shopName)
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
             routeToShopPage(shopId)
         }
     }
@@ -1430,11 +1440,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityInputFormClicked(qty: String) {
-        sendAnalyticsOnClickQuantityCartItemInput(qty)
+        cartPageAnalytics.eventClickAtcCartClickInputQuantity(qty)
     }
 
     override fun onCartItemLabelInputRemarkClicked() {
-        sendAnalyticsOnClickCreateNoteCartItem()
+        cartPageAnalytics.eventClickAtcCartClickTulisCatatan()
     }
 
     override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean) {
@@ -1541,7 +1551,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 return@let
             }
 
-            sendAnalyticsScreenName(screenName)
+            cartPageAnalytics.sendScreenName(activity, screenName)
 
             renderAbTestButton(cartListData.abTestButton)
 
@@ -1680,13 +1690,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
         enableSwipeRefresh()
-        sendAnalyticsOnDataCartIsEmpty()
         showEmptyCartContainer()
         notifyBottomCartParent()
 
         cartAdapter.notifyDataSetChanged()
 
         setActivityBackgroundColor()
+        cartPageAnalytics.eventViewAtcCartImpressionCartEmpty()
     }
 
     private fun renderTickerAnnouncement(cartListData: CartListData) {
@@ -2343,16 +2353,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderErrorToShipmentForm(message: String, ctaText: String) {
-        sendAnalyticsOnButtonCheckoutClickedFailed()
-        sendAnalyticsOnGoToShipmentFailed(message)
+        cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
+        cartPageAnalytics.eventViewErrorWhenCheckout(message)
         showToastMessageRed(message)
 
         refreshCart()
     }
 
     private fun renderGlobalErrorBottomsheet(message: String) {
-        sendAnalyticsOnButtonCheckoutClickedFailed()
-        sendAnalyticsOnGoToShipmentFailed(message)
+        cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
+        cartPageAnalytics.eventViewErrorWhenCheckout(message)
 
         if (!hasCalledOnSaveInstanceState && fragmentManager != null && context != null) {
             showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
@@ -2658,132 +2668,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun sendAnalyticsOnClickBackArrow() {
-        cartPageAnalytics.eventClickAtcCartClickArrowBack()
-    }
-
-    override fun sendAnalyticsOnClickRemoveButtonHeader() {
-        cartPageAnalytics.eventClickAtcCartClickHapusOnTopRightCorner()
-    }
-
-    override fun sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickRemoveIconCartItem() {
-        cartPageAnalytics.eventClickAtcCartClickTrashBin()
-    }
-
-    override fun sendAnalyticsOnClickButtonPlusCartItem() {
-        cartPageAnalytics.eventClickAtcCartClickButtonPlus()
-    }
-
-    override fun sendAnalyticsOnClickButtonMinusCartItem() {
-        cartPageAnalytics.eventClickAtcCartClickButtonMinus()
-    }
-
-    override fun sendAnalyticsOnClickProductNameCartItem(productName: String) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(productName)
-    }
-
-    override fun sendAnalyticsOnClickShopCartItem(shopId: String, shopName: String) {
-        cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
-    }
-
-    override fun sendAnalyticsOnClickCancelPromoCodeAndCouponBanner() {
-        cartPageAnalytics.eventClickAtcCartClickXOnBannerPromoCode()
-    }
-
-    override fun sendAnalyticsOnClickRemoveCartConstrainedProduct(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusProdukBerkendala(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromHapusProdukBerkendala(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickQuantityCartItemInput(quantity: String) {
-        cartPageAnalytics.eventClickAtcCartClickInputQuantity(quantity)
-    }
-
-    override fun sendAnalyticsOnClickCreateNoteCartItem() {
-        cartPageAnalytics.eventClickAtcCartClickTulisCatatan()
-    }
-
-    override fun sendAnalyticsOnDataCartIsEmpty() {
-        cartPageAnalytics.eventViewAtcCartImpressionCartEmpty()
-    }
-
-    override fun sendAnalyticsScreenName(screenName: String) {
-        cartPageAnalytics.sendScreenName(activity, screenName)
-    }
-
     override fun getScreenName(): String {
         return ConstantTransactionAnalytics.ScreenName.CART
-    }
-
-    override fun sendAnalyticsOnButtonCheckoutClickedFailed() {
-        cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
-    }
-
-    override fun sendAnalyticsOnGoToShipmentFailed(errorMessage: String) {
-        cartPageAnalytics.eventViewErrorWhenCheckout(errorMessage)
-    }
-
-    override fun sendAnalyticsOnButtonSelectAllChecked() {
-        cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukChecklist()
-    }
-
-    override fun sendAnalyticsOnButtonSelectAllUnchecked() {
-        cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukUnChecklist()
-    }
-
-    override fun sendAnalyticsOnViewPromoManualApply(type: String) {
-        cartPageAnalytics.eventViewPromoManualApply(type)
-    }
-
-    override fun sendAnalyticsOnViewProductRecommendation(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickProductRecommendation(position: String, eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(position, eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnViewProductWishlist(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceProductViewWishList(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickProductWishlistOnEmptyCart(position: String, eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(position, eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickProductWishlistOnCartList(position: String, eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceClickProductWishListOnCartList(position, eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnViewProductRecentView(eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceProductViewLastSeen(eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickProductRecentViewOnEmptyCart(position: String, eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(position, eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnClickProductRecentViewOnCartList(position: String, eeDataLayerCart: Map<String, Any>) {
-        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(position, eeDataLayerCart)
-    }
-
-    override fun sendAnalyticsOnViewPromoAutoApply() {
-        cartPageAnalytics.eventViewPromoAutoApply()
     }
 
     override fun notifyBottomCartParent() {
@@ -3067,7 +2953,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 break
             }
         }
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(
+        cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusProdukBerkendala(
                 dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
         )
 
@@ -3076,7 +2962,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog?.setPrimaryCTAClickListener {
                 dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
                 cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
-                sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
+                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(
                         dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
                 )
                 dialog.dismiss()
@@ -3096,7 +2982,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (data.data?.selectedUnavailableActionId ?: 0 == ACTION_CHECKOUTBROWSER) {
                 cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco()
             } else {
-                sendAnalyticsOnClickRemoveIconCartItem()
+                cartPageAnalytics.eventClickAtcCartClickTrashBin()
             }
             val cartItemDatas = listOf(it)
             val allCartItemDataList = cartAdapter.allCartItemData
@@ -3109,10 +2995,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false, forceExpand)
-            sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+            cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
                     dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
             )
-
         }
     }
 
@@ -3299,24 +3184,4 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
-
-    /* RESTRUCTURE */
-
-    // View Callback
-
-    // Local View Method
-
-    // Cart List Section
-
-    // Promo Section
-
-    // Wishlist Section
-
-    // Recent View Section
-
-    // Insurance Section
-
-    // Animation
-
-    // Analytics
 }
