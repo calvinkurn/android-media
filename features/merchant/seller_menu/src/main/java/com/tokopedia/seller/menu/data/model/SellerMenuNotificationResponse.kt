@@ -4,16 +4,16 @@ import com.google.gson.annotations.SerializedName
 
 data class SellerMenuNotificationResponse(
     @SerializedName("notifications")
-    val notifications: Notifications,
-    @SerializedName("notifcenter_total_unread")
-    val notifCenterTotalUnread: NotifCenterTotalUnread,
-    @SerializedName("inbox")
-    val inbox: Inbox
+    val notifications: Notifications
 ) {
 
     data class Notifications(
         @SerializedName("sellerOrderStatus")
-        val sellerOrderStatus: SellerOrderStatus
+        val sellerOrderStatus: SellerOrderStatus,
+        @SerializedName("notifcenter_total_unread")
+        val notifCenterTotalUnread: NotifCenterTotalUnread,
+        @SerializedName("inbox")
+        val inbox: Inbox
     )
 
     data class SellerOrderStatus(

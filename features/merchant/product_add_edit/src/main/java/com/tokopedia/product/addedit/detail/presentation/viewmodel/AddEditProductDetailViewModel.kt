@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -33,7 +35,8 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        private val validateProductUseCase: ValidateProductUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -94,6 +97,11 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
+    private val mIsProductSkuInputError = MutableLiveData<Boolean>()
+    val isProductSkuInputError: LiveData<Boolean>
+        get() = mIsProductSkuInputError
+    var productSkuMessage: String = ""
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
@@ -128,6 +136,9 @@ class AddEditProductDetailViewModel @Inject constructor(
             }
         }
         addSource(wholeSaleErrorCounter) {
+            this.value = isInputValid()
+        }
+        addSource(mIsProductSkuInputError) {
             this.value = isInputValid()
         }
     }
@@ -166,9 +177,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         val isPreOrderActivated = isPreOrderActivated.value ?: false
         val isPreOrderDurationError = isPreOrderActivated && mIsPreOrderDurationInputError.value ?: false
 
+        // by default the product sku is allowed to empty
+        val isProductSkuError = mIsProductSkuInputError.value ?: false
+
         return (!isProductPhotoError && !isProductNameError &&
                 !isProductPriceError && !isProductStockError &&
-                !isOrderQuantityError && !isProductWholeSaleError && !isPreOrderDurationError)
+                !isOrderQuantityError && !isProductWholeSaleError &&
+                !isPreOrderDurationError && !isProductSkuError)
     }
 
     fun validateProductPhotoInput(productPhotoCount: Int) {
@@ -177,14 +192,35 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
+            // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
-            return
+        } else {
+            // show product name tips
+            val productNameTips = provider.getProductNameTips()
+            productNameTips?.let { productNameMessage = it }
+            mIsProductNameInputError.value = false
+
+            if (productNameInput != productInputModel.detailInputModel.currentProductName) {
+                // remote product name validation
+                launchCatchError(block = {
+                    val response = withContext(Dispatchers.IO) {
+                        validateProductUseCase.setParamsProductName(productNameInput)
+                        validateProductUseCase.executeOnBackground()
+                    }
+                    val validationMessage = response.productValidateV3.data.productName
+                            .joinToString("\n")
+                    if (validationMessage.isNotEmpty()) {
+                        productNameMessage = validationMessage
+                    }
+                    mIsProductNameInputError.value = validationMessage.isNotEmpty()
+                }, onError = {
+                    // log error
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+                })
+            }
         }
-        val productNameTips = provider.getProductNameTips()
-        productNameTips?.let { productNameMessage = it }
-        mIsProductNameInputError.value = false
     }
 
     fun validateProductPriceInput(productPriceInput: String) {
@@ -300,6 +336,23 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         orderQuantityMessage = ""
         mIsOrderQuantityInputError.value = false
+    }
+
+    fun validateProductSkuInput(productSkuInput: String) {
+        // remote product sku validation
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                validateProductUseCase.setParamsProductSku(productSkuInput)
+                validateProductUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.productSku
+                    .joinToString("\n")
+            productSkuMessage = validationMessage
+            mIsProductSkuInputError.value = validationMessage.isNotEmpty()
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {
