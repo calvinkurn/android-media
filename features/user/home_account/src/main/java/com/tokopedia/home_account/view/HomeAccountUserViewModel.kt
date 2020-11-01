@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.view
 
+import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -14,6 +15,7 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -37,6 +39,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
         private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
         private val getBuyerWalletBalanceUseCase: HomeAccountWalletBalanceUseCase,
+        private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
         private val walletPref: WalletPref,
         private val permissionChecker: PermissionChecker,
         val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
@@ -65,12 +68,18 @@ class HomeAccountUserViewModel @Inject constructor(
     val memberData: LiveData<MemberDataView>
         get() = _memberData
 
-    fun getBuyer2(){
-        getHomeAccountUserUseCase.executeUseCase({
-            _buyerAccountData.postValue(Success(it))
-        }, {
-            _buyerAccountData.postValue(Fail(it))
-        })
+    fun setSafeMode(isActive: Boolean){
+//        val savedValue: Boolean = !accountPref.getSafeMode()
+        setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
+                { (userProfileSettingUpdate) ->
+                    if (userProfileSettingUpdate.isSuccess) {
+                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+                        accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+                    }
+                },
+                { throwable ->
+                    throwable.printStackTrace()
+                }, isActive)
     }
 
     fun getBuyerData() {
@@ -96,34 +105,6 @@ class HomeAccountUserViewModel @Inject constructor(
         return getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
     }
 
-    private fun getProfileData() {
-//        _profileLiveData.value = ProfileDataView(
-//                name = userSession.name,
-//                phone = userSession.phoneNumber,
-//                email = userSession.email,
-//                avatar = userSession.profilePicture,
-//                members = getMemberData(),
-//                financial = getFinancialData()
-//        )
-    }
-
-//    private fun getMemberData(): MemberDataView {
-//        return MemberDataView("Member Gold", "" ,listOf(
-//                MemberItemDataView(title = "8 Member", subtitle = "TokoMember", icon = R.drawable.ic_account_cc),
-//                MemberItemDataView(title = "3 Tantangan", subtitle = "TopQuest", icon = R.drawable.ic_account_top_quest),
-//                MemberItemDataView(title = "22 Kupon", subtitle = "Kupon Saya", icon = R.drawable.ic_account_my_coupon)
-//        ))
-//    }
-
-    private fun getFinancialData(): SettingDataView {
-        return SettingDataView("Dana & Investasi", mutableListOf(
-                CommonDataView(title = "Rp 20.000.000", body = "Points 10.000", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_ovo),
-                CommonDataView(title = "Rp 20.000.000", body = "Saldo", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_balance),
-                CommonDataView(title = "Rp 20.000.000", body = "Emas", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_emas)
-                ))
-
-    }
-
     private fun getSettingData() {
         _settingData.value =
                 SettingDataView("Pengaturan Akun", mutableListOf(
@@ -131,7 +112,7 @@ class HomeAccountUserViewModel @Inject constructor(
                         CommonDataView(applink = ApplinkConstInternalGlobal.SETTING_BANK, title = "Rekening Bank", body = "Tarik Saldo Tokopedia ke rekening tujuan", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_bank, id = AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID),
                         CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = "Pembayaran Instan", body = "OVO, kartu kredit, & debit instan terdaftar", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_card),
                         CommonDataView(applink = ApplinkConstInternalMarketplace.PREFERENCE_LIST, title = "Beli Langsung", body = "Atur pengiriman & pembayaran favorit", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_quick_buy),
-                        CommonDataView(title = "Keamanan Akun", body = "Kata sandi, PIN , & verifikasi data diri", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_lock),
+                        CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = "Keamanan Akun", body = "Kata sandi, PIN , & verifikasi data diri", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_lock, id = AccountConstants.SettingCode.SETTING_SECURITY),
                         CommonDataView(applink = ApplinkConst.NOTIFICATION, title = "Notifikasi", body = "Atur segala jenis pesan notifikasi", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_ring, id = AccountConstants.SettingCode.SETTING_NOTIFICATION)
                 ), isExpanded = true)
     }
@@ -166,8 +147,6 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getInitialData() {
-        getProfileData()
-//        getMemberData()
         getSettingData()
         getSettingApp()
         getAboutTokopediaData()
@@ -186,7 +165,7 @@ class HomeAccountUserViewModel @Inject constructor(
         }
     }
 
-    private fun saveLocallyAttributes(accountDataModel: UserAccountDataModel) {
+    fun saveLocallyAttributes(accountDataModel: UserAccountDataModel) {
         saveLocallyWallet(accountDataModel)
         saveLocallyVccUserStatus(accountDataModel)
         savePhoneVerified(accountDataModel)
