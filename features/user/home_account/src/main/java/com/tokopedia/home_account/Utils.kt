@@ -1,6 +1,5 @@
 package com.tokopedia.home_account
 
-import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -12,6 +11,17 @@ object Utils {
 
     fun normalizePhoneNumber(phoneNum: String): String? {
         return if (phoneNum.isNotEmpty()) phoneNum.replaceFirst("^0(?!$)".toRegex(), "62") else ""
+    }
+
+    fun formatPhoneNumber(phoneNum: String): String? {
+        if (phoneNum.isNotEmpty()) {
+            return when {
+                phoneNum.startsWith("62") -> phoneNum.replaceFirst("62", "0")
+                phoneNum.startsWith("+62") -> phoneNum.replaceFirst("+62", "0")
+                else -> phoneNum
+            }
+        }
+        return ""
     }
 
     fun convertResponseToJson(gqlResponse: GraphqlResponse): Map<String, Any> {

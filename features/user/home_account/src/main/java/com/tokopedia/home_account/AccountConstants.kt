@@ -293,6 +293,7 @@ object AccountConstants {
     object KEY {
         const val KEY_PREF_SHAKE = "notification_shake_shake"
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
+        const val KEY_SHOW_COACHMARK = "home_account_coachmark"
         const val CLEAR_CACHE = "clear cache"
     }
 

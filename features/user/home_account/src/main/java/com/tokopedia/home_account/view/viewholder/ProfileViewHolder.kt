@@ -29,7 +29,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
             account_user_item_profile_name?.text = profile.name
-            account_user_item_profile_phone?.text = Utils.normalizePhoneNumber(profile.phone)
+            account_user_item_profile_phone?.text = Utils.formatPhoneNumber(profile.phone)
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
 

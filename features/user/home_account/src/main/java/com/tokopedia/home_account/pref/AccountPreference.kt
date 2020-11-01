@@ -2,7 +2,6 @@ package com.tokopedia.home_account.pref
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.Preference
 import android.preference.PreferenceManager
 import com.tokopedia.home_account.AccountConstants
 import javax.inject.Inject
@@ -27,6 +26,10 @@ class AccountPreference @Inject constructor(val context: Context) {
         val editor = preference?.edit()
         editor?.putBoolean(key, isChecked)
         editor?.apply()
+    }
+
+    fun isShowCoachmark(): Boolean {
+        return preference?.getBoolean(AccountConstants.KEY.KEY_SHOW_COACHMARK, true) ?: true
     }
 
     fun getSafeMode(): Boolean {

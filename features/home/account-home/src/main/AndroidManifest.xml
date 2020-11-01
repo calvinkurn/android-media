@@ -100,7 +100,7 @@
 
                 <data
                     android:host="@string/host_global"
-                    android:path="@string/path_payment_setting"
+                    android:path="@string/path_account_setting"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

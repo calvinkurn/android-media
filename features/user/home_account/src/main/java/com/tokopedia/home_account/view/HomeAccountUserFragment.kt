@@ -1,16 +1,13 @@
 package com.tokopedia.home_account.view
 
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark
@@ -40,26 +36,30 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
+import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import javax.inject.Inject
 
@@ -93,6 +93,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
 
+    @Inject
+    lateinit var menuGenerator: StaticMenuGenerator
+
+    @Inject
+    lateinit var permissionChecker: PermissionChecker
+
     override fun getScreenName(): String = "homeAccountUserFragment"
 
     override fun initInjector() {
@@ -104,30 +110,22 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (context is HomeAccountUserActivity) appBarCollapseListener = context
     }
 
-    private fun isItemSelected(key: String, defaultValue: Boolean): Boolean {
-        val settings = PreferenceManager.getDefaultSharedPreferences(activity)
-        return settings.getBoolean(key, defaultValue)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.home_account_coordinator_layout, container, false)
+        return inflater.inflate(R.layout.home_account_user_fragment, container, false)
     }
 
     private fun setupObserver() {
-        viewModel.settingData.observe(viewLifecycleOwner, Observer {
-            addItem(it)
-        })
-        viewModel.settingApplication.observe(viewLifecycleOwner, Observer {
-            addItem(it)
-        })
-        viewModel.aboutTokopedia.observe(viewLifecycleOwner, Observer {
-            addItem(it)
-            addItem(
-                    SettingDataView("", mutableListOf(
-                            CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = "Keluar Akun", body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
-                    ), isExpanded = true)
-            )
-        })
+//        viewModel.settingData.observe(viewLifecycleOwner, Observer {
+//            addItem(it)
+//        })
+//        viewModel.settingApplication.observe(viewLifecycleOwner, Observer {
+//            addItem(it)
+//        })
+//        viewModel.aboutTokopedia.observe(viewLifecycleOwner, Observer {
+//            addItem(it)
+//            addItem(
+//            )
+//        })
 
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -144,16 +142,25 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel){
         hideLoading()
-        addItem(mapper.mapToProfileDataView(buyerAccount))
-        viewModel.getInitialData()
+        adapter?.run {
+            if(adapter?.getItem(0) is ProfileDataView) {
+                adapter?.removeItemAt(0)
+            }
+            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            notifyItemRangeChanged(0, 4)
+        }
     }
 
     fun showLoading() {
-        container_main?.displayedChild = CONTAINER_LOADER
+        home_account_shimmer_layout?.show()
+//        home_account_main_container?.hide()
+//        container_main?.displayedChild = CONTAINER_LOADER
     }
 
     fun hideLoading() {
-        container_main?.displayedChild = CONTAINER_DATA
+        home_account_shimmer_layout?.hide()
+//        home_account_main_container?.show()
+//        container_main?.displayedChild = CONTAINER_DATA
     }
 
     private fun setupStatusBar() {
@@ -206,11 +213,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
         ))
 
+        home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
         home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
             home_account_user_fragment_swipe_refresh?.isRefreshing = false
             getData()
         }
-
     }
 
     private fun getData(){
@@ -253,10 +260,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
-    }
 
-    private fun addItem(item: Any) {
-        adapter?.addItem(item)
+        adapter?.addItem(menuGenerator.generateUserSettingMenu())
+        adapter?.addItem(menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker))
+        adapter?.addItem(menuGenerator.generateAboutTokopediaSettingMenu())
+        adapter?.addItem(
+            SettingDataView("", mutableListOf(
+                    CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
+            ), isExpanded = true)
+        )
         adapter?.notifyDataSetChanged()
     }
 
@@ -474,20 +486,21 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun showNoPasswordDialog() {
-        val builder = AlertDialog.Builder(activity)
-        builder.setTitle(resources.getString(R.string.error_bank_no_password_title))
-        builder.setMessage(resources.getString(R.string.error_bank_no_password_content))
-        builder.setPositiveButton(resources.getString(R.string.error_no_password_yes)) { dialogInterface: DialogInterface, i: Int ->
-            intentToAddPassword()
-            dialogInterface.dismiss()
+        activity?.run {
+            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.error_bank_no_password_title))
+            dialog.setDescription(getString(R.string.error_bank_no_password_content))
+            dialog.setPrimaryCTAText(getString(R.string.error_no_password_yes))
+            dialog.setPrimaryCTAClickListener {
+                intentToAddPassword()
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAText(getString(R.string.error_no_password_no))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        builder.setNegativeButton(resources.getString(R.string.error_no_password_no)) { dialogInterface: DialogInterface, i: Int -> dialogInterface.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(activity, R.color.colorSheetTitle))
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
     }
 
     private fun intentToAddPassword() {
@@ -498,40 +511,45 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     override fun onItemViewBinded(position: Int, itemView: View) {
-        when(position) {
-            0 -> {
-                coachMarkItem.add(
-                        CoachMarkItem(
-                                itemView.findViewById(R.id.account_user_item_profile_edit),
-                                "Ubah data diri",
-                                "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
-                                CoachMarkContentPosition.BOTTOM
-                        )
-                )
+        if(accountPref.isShowCoachmark()) {
+            when (position) {
+                0 -> {
+                    coachMarkItem.add(
+                            CoachMarkItem(
+                                    itemView.findViewById(R.id.account_user_item_profile_edit),
+                                    "Ubah data diri",
+                                    "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
+                                    CoachMarkContentPosition.BOTTOM
+                            )
+                    )
 
-                coachMarkItem.add(
-                        CoachMarkItem(
-                                itemView.findViewById(R.id.home_account_profile_financial_section),
-                                "Cek jumlah dana dan investasimu",
-                                "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
-                                CoachMarkContentPosition.BOTTOM
-                        )
-                )
+                    coachMarkItem.add(
+                            CoachMarkItem(
+                                    itemView.findViewById(R.id.home_account_profile_financial_section),
+                                    "Cek jumlah dana dan investasimu",
+                                    "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
+                                    CoachMarkContentPosition.BOTTOM
+                            )
+                    )
 
-                coachMarkItem.add(
-                        CoachMarkItem(
-                                itemView.findViewById(R.id.home_account_profile_member_section),
-                                "Lihat keuntunganmu di sini",
-                                "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
-                                CoachMarkContentPosition.TOP
-                        )
-                )
+                    coachMarkItem.add(
+                            CoachMarkItem(
+                                    itemView.findViewById(R.id.home_account_profile_member_section),
+                                    "Lihat keuntunganmu di sini",
+                                    "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
+                                    CoachMarkContentPosition.TOP
+                            )
+                    )
+                }
             }
-        }
 
-        if(position == 0){
-            val coachMark = CoachMark()
-            coachMark.show(activity, "homeAccountUserFragmentCoachmark", coachMarkItem)
+            if (position == 0) {
+                val coachMark = CoachMark()
+                coachMark.onFinishListener = {
+                    accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                }
+                coachMark.show(activity, "homeAccountUserFragmentCoachmark", coachMarkItem)
+            }
         }
     }
 
