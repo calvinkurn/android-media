@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
@@ -32,6 +33,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
     private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: Label = itemView.findViewById(R.id.see_more_label)
+    private val openHomeNav: Label = itemView.findViewById(R.id.homenav)
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
@@ -40,6 +42,10 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         seeAllPromo.unlockFeature = true
         seeAllPromo.setLabelType("#31353b")
         seeAllPromo.opacityLevel = 0.9f
+
+        openHomeNav.unlockFeature = true
+        openHomeNav.setLabelType("#31353b")
+        openHomeNav.opacityLevel = 0.9f
     }
 
     override fun bind(element: HomepageBannerDataModel) {
@@ -78,6 +84,9 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     private fun initSeeAllPromo(){
         seeAllPromo.setOnClickListener { onPromoAllClick() }
+        openHomeNav.setOnClickListener {
+            RouteManager.route(itemView.context, "tokopedia://navigation/main")
+        }
     }
 
     private fun initBanner(list: List<CircularModel>){

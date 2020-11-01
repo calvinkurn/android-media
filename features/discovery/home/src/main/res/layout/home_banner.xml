@@ -44,4 +44,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <com.tokopedia.unifycomponents.Label
+        app:cardCornerRadius="@dimen/dp_4"
+        app:layout_constraintEnd_toStartOf="@id/see_more_label"
+        app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
+        android:id="@+id/homenav"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="open homenav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

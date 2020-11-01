@@ -1,0 +1,25 @@
+<resources>
+    <string name="search_tokopedia">Cari di Tokopedia</string>
+    <string name="search_title_feed">Feed</string>
+    <string name="content_desc_et_search">input search</string>
+    <string name="content_desc_btn_wishlist">button wishlist</string>
+    <string name="content_desc_btn_inbox">button inbox</string>
+    <string name="content_desc_btn_notification">button notification</string>
+
+    <string name="title_category">Kategori</string>
+
+    <string name="btn_login">Masuk</string>
+    <string name="btn_register">Daftar</string>
+
+    <string name="menu_user_menu_wishlist">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
+    <string name="menu_user_menu_subscription">Langganan</string>
+    <string name="menu_user_menu_complain">Komplain sebagai pembeli</string>
+    <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code">QR Code</string>
+
+    <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
+    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. <a href="/">Buka Toko Gratis</a></string>
+
+</resources>
