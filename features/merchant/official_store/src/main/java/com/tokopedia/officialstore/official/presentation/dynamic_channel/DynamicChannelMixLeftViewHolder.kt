@@ -38,7 +38,7 @@ class DynamicChannelMixLeftViewHolder(
 
     private val masterJob = SupervisorJob()
 
-    override val coroutineContext = masterJob + Dispatchers.Main
+    override val coroutineContext = masterJob + Dispatchers.IO
 
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -118,10 +118,13 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, this, channel)
         val productDataList = convertDataToProductData(channel)
-        adapter = MixWidgetAdapter(typeFactoryImpl)
+        if(adapter == null){
+            adapter = MixWidgetAdapter(typeFactoryImpl)
+            recyclerViewProductList.adapter = adapter
+        }
+        adapter?.clearAllElements()
         adapter?.addElement(EmptyModel())
         adapter?.addElement(productDataList)
-        recyclerViewProductList.adapter = adapter
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
         launch {
             try {
@@ -148,7 +151,7 @@ class DynamicChannelMixLeftViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
             val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
-            return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+            return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.IO, productCardWidth)
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {

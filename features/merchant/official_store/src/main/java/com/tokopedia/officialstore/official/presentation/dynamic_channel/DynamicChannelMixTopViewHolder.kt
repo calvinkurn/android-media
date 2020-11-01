@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_ALTERNATE
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_DISABLED
@@ -21,7 +20,8 @@ import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_FILLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_GHOST
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_TEXT
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.*
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -44,7 +44,7 @@ class DynamicChannelMixTopViewHolder(
 
     private val masterJob = SupervisorJob()
 
-    override val coroutineContext = masterJob + Dispatchers.Main
+    override val coroutineContext = masterJob + Dispatchers.IO
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
@@ -177,9 +177,12 @@ class DynamicChannelMixTopViewHolder(
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, null, channel)
         val productDataList = convertDataToProductData(channel)
-        adapter = MixWidgetAdapter(typeFactoryImpl)
+        if(adapter == null){
+            adapter = MixWidgetAdapter(typeFactoryImpl)
+            recyclerViewProductList.adapter = adapter
+        }
+        adapter?.clearAllElements()
         adapter?.addElement(productDataList)
-        recyclerViewProductList.adapter = adapter
         launch {
             try {
                 recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -202,7 +205,7 @@ class DynamicChannelMixTopViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.IO, productCardWidth)
     }
 
     private fun convertDataToProductData(channel: Channel): List<ProductFlashSaleDataModel> {

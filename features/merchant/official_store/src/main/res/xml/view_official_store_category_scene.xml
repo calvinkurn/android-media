@@ -44,7 +44,7 @@
         app:autoTransition="none"
         app:motionInterpolator="easeInOut"
         app:constraintSetEnd="@id/end"
+        app:duration="300"
         app:constraintSetStart="@id/start">
-
     </Transition>
 </MotionScene>

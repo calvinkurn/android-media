@@ -1,12 +1,14 @@
 package com.tokopedia.officialstore.category.presentation.widget
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.widget.Guideline
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
@@ -17,6 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
 
+
 class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
 
@@ -25,6 +28,11 @@ class OfficialCategoriesTab(context: Context,
     private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
+
+    private var animationExpand: ValueAnimator ?= null
+    private var animationCollapse: ValueAnimator ?= null
+
+    private var isExpand = true
 
     @SuppressLint("ClickableViewAccessibility")
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
@@ -88,6 +96,7 @@ class OfficialCategoriesTab(context: Context,
                         setWeight(Typography.BOLD)
                     }
                 }
+                expandAllTab()
             }
         })
 
@@ -104,6 +113,7 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
+
     }
 
 
@@ -114,43 +124,80 @@ class OfficialCategoriesTab(context: Context,
 
     private fun adjustCollapseExpandTab(isCollapse: Boolean) {
         if (isCollapse) {
-            hideIconForAllTabs()
+            collapseAllTab()
         } else {
-            showIconForAllTabs()
+            expandAllTab()
         }
     }
 
     private fun startTabHeightExpandAnimation(appBarLayout: AppBarLayout) {
-        showIconForAllTabs()
+        expandAllTab()
         if (layoutParams.height != tabMaxHeight) {
             appBarLayout.setExpanded(true)
         }
     }
 
-    private fun showIconForAllTabs() {
-        for (i in 0 until tabCount) {
-            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
-//            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is MotionLayout) {
+    private fun expandAllTab() {
+        if(animationExpand == null)
+            animationExpand = getValueAnimator(32.dp.toFloat(), 64.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+                if (this.layoutParams != null) {
+                    val params: ViewGroup.LayoutParams = layoutParams
+                    params.height = it.toInt()
+                    requestLayout()
+                }
+            }
+        if(animationExpand?.isStarted != true && !isExpand) {
+            animationExpand?.start()
+            isExpand = true
+            for (i in 0 until tabCount) {
 
-//                icon.setTransitionDuration(1000)
-                icon.transitionToStart()
-//                icon.animate().translationY(0f).duration = 100
-//                textCategory?.animate()?.translationY(0f)?.duration = 200
+                val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+                val container = findViewByIdFromTab(getTabAt(i), R.id.tab_category_container)
+                if (icon is MotionLayout) {
+                    icon.setTransitionListener(object : MotionLayout.TransitionListener {
+                        override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
+
+                        override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {}
+
+                        override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {}
+
+                        override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+                    })
+                    icon.transitionToStart()
+                }
             }
         }
+
     }
 
-    private fun hideIconForAllTabs() {
-        for (i in 0 until tabCount) {
-            val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+    private fun collapseAllTab() {
+        if(animationCollapse == null) animationCollapse =
+            getValueAnimator(64.dp.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+                if (this.layoutParams != null) {
+                    val params: ViewGroup.LayoutParams = layoutParams
+                    params.height = it.toInt()
+                    requestLayout()
+                }
+            }
+        if(animationCollapse?.isStarted != true && isExpand) {
+            animationCollapse?.start()
+            isExpand = false
+            for (i in 0 until tabCount) {
+                val icon = findViewByIdFromTab(getTabAt(i), R.id.motion_layout)
+                if (icon is MotionLayout) {
+                    icon.setTransitionListener(object : MotionLayout.TransitionListener {
+                        override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
 
-//            val textCategory = findViewByIdFromTab(getTabAt(i), R.id.text_view_category_title)
-            if (icon is MotionLayout) {
-//                icon.setTransition(R.id.start, R.id.end
-                icon.transitionToEnd()
-//                icon.animate().translationY(-50f).duration = 200
-//                textCategory?.animate()?.translationY(-14.0f)?.duration = 200
+                        override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {}
+
+                        override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                        }
+
+                        override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+                        }
+                    })
+                    icon.transitionToEnd()
+                }
             }
         }
     }
@@ -173,6 +220,16 @@ class OfficialCategoriesTab(context: Context,
                     R.drawable.ic_loading_image
             )
             text_view_category_title.text = categoriesItemTab[position].title
+            tab_category_container?.afterMeasured {
+                categoriesItemTab[position].currentWidth = width
+                categoriesItemTab[position].minWidth = width
+                categoriesItemTab[position].maxWidth = width + 32.dp
+
+                categoriesItemTab[position].currentHeight = height
+                categoriesItemTab[position].minHeight = height - 32.dp
+                categoriesItemTab[position].maxHeight = height
+
+            }
         }
         return view
     }
@@ -191,5 +248,15 @@ class OfficialCategoriesTab(context: Context,
         adjustCollapseExpandTab(totalScrollUp in 0..10)
     }
 
-    class CategoriesItemTab(val title: String, val iconUrl: String, val inactiveIconUrl: String)
+    class CategoriesItemTab(
+            val title: String,
+            val iconUrl: String,
+            val inactiveIconUrl: String,
+            var currentWidth: Int = 64.dp,
+            var currentHeight: Int = 64.dp,
+            var minWidth: Int = 64.dp,
+            var maxWidth: Int = 64.dp,
+            var minHeight: Int = 64.dp,
+            var maxHeight: Int = 64.dp
+    )
 }

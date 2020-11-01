@@ -1,22 +1,20 @@
 package com.tokopedia.officialstore.category.presentation.fragment
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -65,6 +63,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var keyCategory = "0"
+    private var totalScrollUp = 0
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
@@ -119,7 +118,17 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     // config collapse & expand tablayout
     override fun onContentScrolled(dy: Int) {
+        if(dy == 0) return;
+
         tabLayout?.adjustTabCollapseOnScrolled(dy)
+
+//        if(dy < 0){
+//            totalScrollUp -= dy;
+//        } else {
+//            totalScrollUp = 0
+//        }
+//        if(totalScrollUp in 0..10) tablayout_motion?.transitionToEnd()
+//        else tablayout_motion?.transitionToStart()
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -141,7 +150,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun observeOfficialCategoriesData() {
-        viewModel.officialStoreCategoriesResult.observe(this, Observer {
+        viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -149,7 +158,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                 }
                 is Fail -> {
                     removeLoading()
-                    NetworkErrorHelper.showEmptyState(context, coordinator_layout_fragment_os) {
+                    NetworkErrorHelper.showEmptyState(context, official_home_motion) {
                         viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
                     }
                 }
@@ -238,9 +247,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun removeLoading() {
-        loadingCategoryLayout?.visibility = View.GONE
-        view_content_loading?.hide()
-        tabLayout?.visibility = View.VISIBLE
+        loadingCategoryLayout?.gone()
+        view_content_loading?.gone()
+        tabLayout?.visible()
     }
 
     private fun configMainToolbar(view: View) {
