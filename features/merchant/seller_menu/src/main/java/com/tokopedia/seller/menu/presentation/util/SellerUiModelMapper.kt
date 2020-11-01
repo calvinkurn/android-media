@@ -27,12 +27,13 @@ object SellerUiModelMapper {
     }
 
     fun mapToNotificationUiModel(response: SellerMenuNotificationResponse): NotificationUiModel {
-        val sellerOrder = response.notifications.sellerOrderStatus
+        val notifications = response.notifications
+        val sellerOrder = notifications.sellerOrderStatus
         val shopOrderUiModel = ShopOrderUiModel(sellerOrder.newOrder, sellerOrder.readyToShip)
 
         return NotificationUiModel(
-            response.inbox.talk,
-            response.notifCenterTotalUnread.seller,
+            notifications.inbox.talk,
+            notifications.notifCenterTotalUnread.seller,
             shopOrderUiModel
         )
     }

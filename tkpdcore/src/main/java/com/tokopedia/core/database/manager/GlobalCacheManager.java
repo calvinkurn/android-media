@@ -1,8 +1,5 @@
 package com.tokopedia.core.database.manager;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 
@@ -29,16 +26,6 @@ public class GlobalCacheManager implements CacheManager {
 
     public GlobalCacheManager setValue(String value) {
         this.Value = value;
-        return this;
-    }
-
-    /**
-     * @param duration value in second
-     * @return
-     */
-    public GlobalCacheManager setCacheDuration(long duration) {
-        Log.d(TAG, "Storing expired time: " + (System.currentTimeMillis()));
-        this.expiredTime = System.currentTimeMillis() + (duration * 1000);
         return this;
     }
 
@@ -71,11 +58,6 @@ public class GlobalCacheManager implements CacheManager {
 
     public String getValueString(String key) {
         return get(key);
-    }
-
-    public <T> T getConvertObjData(String key, Class<T> clazz) {
-        Gson gson = new Gson();
-        return gson.fromJson(getValueString(key), clazz);
     }
 
     @Deprecated

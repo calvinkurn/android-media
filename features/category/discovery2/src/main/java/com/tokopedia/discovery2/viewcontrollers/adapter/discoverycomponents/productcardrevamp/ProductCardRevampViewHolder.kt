@@ -38,6 +38,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem) {
+        mHeaderView.removeAllViews()
         mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context, ComponentsList.LihatSemua, componentsItem, fragment))
     }
 
