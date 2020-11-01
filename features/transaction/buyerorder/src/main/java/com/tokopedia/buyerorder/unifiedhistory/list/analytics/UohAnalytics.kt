@@ -61,7 +61,7 @@ object UohAnalytics {
     private const val DIMENSION40 = "dimension40"
     private const val DIMENSION87 = "dimension87"
     private const val DIMENSION88 = "dimension88"
-    private const val ORDER_MANAGEMENT = "ordermanagement"
+    private const val ORDER_MANAGEMENT = "order management"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
     private const val ITEM_LIST = "item_list"
@@ -120,6 +120,7 @@ object UohAnalytics {
         event[IS_LOGGED_IN_STATUS] = isLoggedInStatus
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+        event[USER_ID] = userId
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
