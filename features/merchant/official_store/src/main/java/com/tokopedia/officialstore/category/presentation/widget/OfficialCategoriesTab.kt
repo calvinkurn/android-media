@@ -46,12 +46,7 @@ class OfficialCategoriesTab(context: Context,
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
                 tab.customView?.apply {
-                    ImageHandler.loadImage(
-                            context,
-                            image_view_category_icon,
-                            categoriesItemTab[tab.position].iconUrl,
-                            R.drawable.ic_loading_image
-                    )
+                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -64,12 +59,7 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
-                    ImageHandler.loadImage(
-                            context,
-                            image_view_category_icon,
-                            categoriesItemTab[tab.position].inactiveIconUrl,
-                            R.drawable.ic_loading_image
-                    )
+                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -82,12 +72,7 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    ImageHandler.loadImage(
-                            context,
-                            image_view_category_icon,
-                            categoriesItemTab[tab.position].iconUrl,
-                            R.drawable.ic_loading_image
-                    )
+                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,

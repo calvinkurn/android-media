@@ -4,12 +4,16 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.Point
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.officialstore.R
+
 /**
  * Created by Lukas on 31/10/20.
  */
@@ -25,6 +29,17 @@ inline fun getValueAnimator(
     a.duration = duration
     a.interpolator = interpolator
     return a
+}
+
+inline fun ImageView.loadImageWithCache(url: String){
+    Glide.with(context)
+            .load(url)
+            .centerCrop()
+            .dontAnimate()
+            .thumbnail(0.1f)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .error(R.drawable.error_drawable)
+            .into(this)
 }
 
 
