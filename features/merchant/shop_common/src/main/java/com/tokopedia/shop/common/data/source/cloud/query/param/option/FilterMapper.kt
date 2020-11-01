@@ -16,7 +16,7 @@ class FilterMapper {
                     is FilterByCondition -> ProductListParam(filter.id, listOf(VALUE_TRUE))
                     is FilterByPage -> ProductListParam(filter.id, listOf(filter.page.toString()))
                     is FilterByKeyword -> ProductListParam(filter.id, listOf(filter.keyword))
-                    is FilterByStatus -> ProductListParam(filter.id, listOf(filter.status))
+                    is FilterByStatus -> ProductListParam(filter.id, listOf(filter.status.name))
                 }
             }
         }
@@ -24,7 +24,7 @@ class FilterMapper {
         fun mapToRequestParam(sortOption: SortOption): ProductListParam {
             val sortId = sortOption.id.name
             val option = sortOption.option.name
-            return ProductListParam(sortId, option)
+            return ProductListParam(sortId, listOf(option))
         }
 
         fun mapKeysToFilterOptionList(filterKeys: List<String>): List<FilterOption> {
