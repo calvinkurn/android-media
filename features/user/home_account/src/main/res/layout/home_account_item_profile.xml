@@ -17,7 +17,7 @@
         android:paddingBottom="50dp"
         android:scaleType="centerCrop"
         android:translationY="-13dp"
-        app:layout_constraintBottom_toBottomOf="@+id/include2"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_profile_member_section"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="84dp"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -79,7 +79,7 @@
         app:srcCompat="@drawable/ic_account_edit" />
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/home_account_profile_financial_section"
         layout="@layout/home_account_expandable_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,13 +89,13 @@
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
 
     <include
-        android:id="@+id/include2"
+        android:id="@+id/home_account_profile_member_section"
         layout="@layout/home_account_member"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/home_account_profile_financial_section" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
