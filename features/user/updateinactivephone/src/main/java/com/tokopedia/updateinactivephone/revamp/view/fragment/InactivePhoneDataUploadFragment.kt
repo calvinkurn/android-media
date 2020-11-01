@@ -10,13 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ID_CARD
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_EMAIL
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_PHONE
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_USER_ID
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.SELFIE
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.filePath
 import com.tokopedia.updateinactivephone.revamp.common.ThumbnailFileView
@@ -70,6 +69,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                 return@setOnClickListener
             }
 
+            showLoading()
             viewModel.userValidation(userDataTemp.getOldPhone(), userDataTemp.getIndex())
         }
 
@@ -91,15 +91,16 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.validation.isSuccess && it.data.validation.status == 1) {
+                    if (it.data.validation.status == 1) {
                         viewModel.getUploadHost()
-                    } else {
-                        // message if status not success / 1
                     }
                 }
 
                 is Fail -> {
-
+                    hideLoading()
+                    view?.let { view ->
+                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         })
@@ -112,7 +113,10 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                 }
 
                 is Fail -> {
-
+                    hideLoading()
+                    view?.let { view ->
+                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         })
@@ -132,12 +136,16 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                 }
 
                 is Fail -> {
-
+                    hideLoading()
+                    view?.let { view ->
+                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         })
 
         viewModel.submitData.observe(viewLifecycleOwner, Observer {
+            hideLoading()
             when(it) {
                 is Success -> {
                     gotoSuccessPage()
@@ -146,7 +154,9 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                     if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
                         textPhoneNumber?.error = getString(R.string.error_input_another_phone)
                     } else {
-
+                        view?.let { view ->
+                            Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        }
                     }
                 }
             }
@@ -163,11 +173,9 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         activity?.let {
             val intent = InactivePhoneSuccessPageActivity.createIntent(it)
             startActivity(intent)
-
             it.finish()
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -206,5 +214,21 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             if (path.isNotEmpty())
                 imageView.setImage(path)
         }
+    }
+
+    private fun showLoading() {
+        btnNext?.isEnabled = false
+        imgIdCard?.isEnabled = false
+        imgSelfie?.isEnabled = false
+        textPhoneNumber?.isEnabled = false
+        loader?.show()
+    }
+
+    private fun hideLoading() {
+        btnNext?.isEnabled = true
+        imgIdCard?.isEnabled = true
+        imgSelfie?.isEnabled = true
+        textPhoneNumber?.isEnabled = true
+        loader?.hide()
     }
 }

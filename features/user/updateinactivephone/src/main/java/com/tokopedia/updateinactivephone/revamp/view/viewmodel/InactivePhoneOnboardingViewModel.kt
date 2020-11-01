@@ -4,16 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_EMPTY_PHONE
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_FAILED_UPLOAD_IMAGE
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_INVALID_PHONE_NUMBER
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_PHONE_NUMBER_MAX
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_PHONE_NUMBER_MIN
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_VALIDATE_PHONE_NUMBER
-import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.PhoneValidationDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.ImageUploadUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.PhoneValidationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,7 +33,11 @@ class InactivePhoneOnboardingViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             phoneValidationUseCase.setParam(phone)
             phoneValidationUseCase.execute(onSuccess = {
-                _phoneValidation.postValue(Success(it))
+                if (it.validation.isSuccess) {
+                    _phoneValidation.postValue(Success(it))
+                } else {
+                    _phoneValidation.postValue(Fail(Throwable(it.validation.error)))
+                }
             }, onError = {
                 _phoneValidation.postValue(Fail(it))
             })

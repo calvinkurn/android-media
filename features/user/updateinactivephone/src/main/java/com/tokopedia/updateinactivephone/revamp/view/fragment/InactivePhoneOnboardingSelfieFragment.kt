@@ -13,8 +13,7 @@ import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterf
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQUEST_CAPTURE_SELFIE
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.SELFIE
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
-import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneUploadDataActivity
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneDataUploadActivity
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding.*
 
 class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
@@ -51,7 +50,7 @@ class InactivePhoneOnboardingSelfieFragment : BaseDaggerFragment() {
 
     private fun gotoPageUploadData() {
         activity?.let {
-            startActivity(InactivePhoneUploadDataActivity.getIntent(it, SELFIE))
+            startActivity(InactivePhoneDataUploadActivity.getIntent(it, SELFIE))
             it.finish()
         }
     }

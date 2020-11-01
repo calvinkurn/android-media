@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_PHONE
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_USER_DETAIL_DATA
@@ -25,6 +27,7 @@ import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneAcco
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_inactive_phone_account_list.*
+import kotlinx.android.synthetic.main.activity_inactive_phone_account_list.loader
 import javax.inject.Inject
 
 class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<InactivePhoneComponent> {
@@ -81,11 +84,13 @@ class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<Inac
             adapter = accountListAdapter
         }
 
+        showLoading()
         viewModel.getAccountList(userDataTemp.getOldPhone())
     }
 
     private fun initObserver() {
         viewModel.accountList.observe(this, Observer { result ->
+            hideLoading()
             when (result) {
                 is Success -> {
                     onGetAccountListSuccess(result.data)
@@ -127,6 +132,14 @@ class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<Inac
 
     private fun onGetAccountListFail(throwable: Throwable) {
 
+    }
+
+    private fun showLoading() {
+        loader?.show()
+    }
+
+    private fun hideLoading() {
+        loader?.hide()
     }
 
     companion object {

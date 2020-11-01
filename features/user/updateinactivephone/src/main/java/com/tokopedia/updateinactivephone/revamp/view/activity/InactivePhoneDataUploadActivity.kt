@@ -11,7 +11,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneDataUploadFragment
 
-class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
+class InactivePhoneDataUploadActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return InactivePhoneDataUploadFragment()
@@ -57,7 +57,7 @@ class InactivePhoneUploadDataActivity : BaseSimpleActivity() {
 
         fun getIntent(context: Context, source: String): Intent {
             val bundle = Bundle()
-            val intent = Intent(context, InactivePhoneUploadDataActivity::class.java)
+            val intent = Intent(context, InactivePhoneDataUploadActivity::class.java)
             bundle.putString(KEY_SOURCE, source)
             intent.putExtras(bundle)
             return intent

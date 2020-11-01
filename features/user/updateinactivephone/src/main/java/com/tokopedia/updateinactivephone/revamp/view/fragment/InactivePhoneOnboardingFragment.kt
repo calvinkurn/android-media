@@ -14,13 +14,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_USER_ID
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.revamp.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.revamp.di.module.InactivePhoneModule
-import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -69,9 +70,14 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
         arguments?.let {
             /**- Test =========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
+            if (it.isEmpty) return
+
             phoneNumber = it.getString(PARAM_PHONE, "")
             email = it.getString(PARAM_EMAIL, "")
             userId = it.getString(PARAM_USER_ID, "")
+            if (userId.isEmpty()) {
+                userId = userSession.userId
+            }
             /**-=========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
         }
     }
@@ -80,35 +86,34 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext?.setOnClickListener {
-            // need improvement on login / register page to set login method
+            showLoading()
             if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
-                viewModel.phoneValidation(phoneNumber)
-            } else {
+                userDataTemp.setOldPhone(phoneNumber)
+                viewModel.phoneValidation(userDataTemp.getOldPhone())
+            } else if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
+                userDataTemp.setEmail(email)
                 gotoOnboardingIdCardPage()
             }
         }
-
-
-        /**- Test =========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
-        userDataTemp.setUserId(userId)
-        userDataTemp.setEmail(email)
-        userDataTemp.setOldPhone(phoneNumber)
-        /**-=========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
     }
 
     private fun initObserver() {
         viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+
             when (it) {
                 is Success -> {
                     if (it.data.validation.status == 1) {
-                        gotoOnboardingIdCardPage()
                         userDataTemp.setIndex(1)
+                        gotoOnboardingIdCardPage()
                     } else if (it.data.validation.status == 2) {
-                        gotoAccountListPage(phoneNumber)
+                        gotoAccountListPage(userDataTemp.getOldPhone())
                     }
                 }
                 is Fail -> {
-
+                    view?.let { view ->
+                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         })
@@ -117,14 +122,6 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-            val userData = data?.extras?.getParcelable<AccountListDataModel.UserDetailDataModel>(InactivePhoneConstant.PARAM_USER_DETAIL_DATA)
-            userData?.let {
-                /**- Test =========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
-//                userDataTemp.setUserId(userData.userId)
-//                userDataTemp.setEmail(email)
-//                userDataTemp.setOldPhone(phoneNumber)
-                /**-=========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
-            }
             gotoOnboardingIdCardPage()
         }
     }
@@ -138,6 +135,14 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
             val intent = InactivePhoneAccountListActivity.createIntent(it, phoneNumber)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
+    }
+
+    private fun showLoading() {
+        loader?.show()
+    }
+
+    private fun hideLoading() {
+        loader?.hide()
     }
 
     companion object {

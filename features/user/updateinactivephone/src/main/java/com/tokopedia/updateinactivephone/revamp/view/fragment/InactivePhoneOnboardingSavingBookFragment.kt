@@ -14,7 +14,7 @@ import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.REQ
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.SAVING_BOOk
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneImagePickerActivity
-import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneUploadDataActivity
+import com.tokopedia.updateinactivephone.revamp.view.activity.InactivePhoneDataUploadActivity
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_inactive_phone_onboarding_saving_book.*
 
@@ -73,7 +73,7 @@ class InactivePhoneOnboardingSavingBookFragment : BaseDaggerFragment() {
 
     private fun gotoPageUploadData() {
         activity?.let {
-            startActivity(InactivePhoneUploadDataActivity.getIntent(it, SAVING_BOOk))
+            startActivity(InactivePhoneDataUploadActivity.getIntent(it, SAVING_BOOk))
         }
     }
 }

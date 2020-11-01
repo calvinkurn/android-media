@@ -47,7 +47,11 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             phoneValidationUseCase.setParam(phone, index)
             phoneValidationUseCase.execute(onSuccess = {
-                _phoneValidation.postValue(Success(it))
+                if (it.validation.isSuccess) {
+                    _phoneValidation.postValue(Success(it))
+                } else {
+                    _phoneValidation.postValue(Fail(Throwable(it.validation.error)))
+                }
             }, onError = {
                 _phoneValidation.postValue(Fail(it))
             })
