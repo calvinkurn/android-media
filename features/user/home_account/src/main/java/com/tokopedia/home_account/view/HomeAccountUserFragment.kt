@@ -12,10 +12,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.provider.Settings
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -31,12 +29,26 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkContentPosition
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountConstants.Analytics.ABOUT_US
+import com.tokopedia.home_account.AccountConstants.Analytics.ACCOUNT_BANK
+import com.tokopedia.home_account.AccountConstants.Analytics.ADDRESS_LIST
+import com.tokopedia.home_account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home_account.AccountConstants.Analytics.LOGOUT
+import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
+import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
+import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
+import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.SettingDataView
+import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -45,9 +57,13 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
+import kotlinx.android.synthetic.main.home_account_item_profile.*
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import javax.inject.Inject
 
@@ -75,6 +91,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     @Inject
     lateinit var accountPref: AccountPreference
+
+    @Inject
+    lateinit var homeAccountAnalytic: HomeAccountAnalytics
 
     override fun getScreenName(): String = "homeAccountUserFragment"
 
@@ -118,28 +137,29 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-//                    toolbar_tokopoint?.addItem(mapper.mapToProfileDataView(it.data))
-                    addItem(mapper.mapToProfileDataView(it.data))
-                    setLayoutParams(200)
-//                    activity?.run {
-//                        if(this is HomeAccountUserActivity){
-//                            setupToolbarContent(mapper.mapToProfileDataView(it.data))
-//                        }
-//                    }
-                    viewModel.getInitialData()
-
-                    hideLoading()
-                }
+                is Success -> onSuccessGetBuyerAccount(it.data)
             }
         })
     }
 
+    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel){
+        hideLoading()
+        addItem(mapper.mapToProfileDataView(buyerAccount))
+        viewModel.getInitialData()
+//        setLayoutParams(200)
+
+//        createCoachmark()
+    }
+
     fun showLoading() {
+//        home_account_shimmer_layout?.show()
+//        home_account_main_container?.invisible()
         container_main?.displayedChild = CONTAINER_LOADER
     }
 
     fun hideLoading() {
+//        home_account_shimmer_layout?.hide()
+//        home_account_main_container?.show()
         container_main?.displayedChild = CONTAINER_DATA
     }
 
@@ -207,9 +227,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter = HomeAccountUserAdapter(this)
         setupList()
 
-        viewModel.getBuyerData()
+        getData()
+
+        home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
+            home_account_user_fragment_swipe_refresh?.isRefreshing = false
+            getData()
+        }
     }
 
+    private fun getData(){
+        showLoading()
+        viewModel.getBuyerData()
+    }
 
     private fun setLayoutParams(cardheight: Int) {
         val statusBarHeight = getStatusBarHeight(activity)
@@ -227,9 +256,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     fun getStatusBarHeight(context: Context?): Int {
         var height = 0
-        val resId = context!!.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0) {
-            height = context.resources.getDimensionPixelSize(resId)
+        context?.run {
+            val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+            if (resId > 0) {
+                height = context.resources.getDimensionPixelSize(resId)
+            }
         }
         return height
     }
@@ -325,30 +356,62 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_SHAKE_ID -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
             }
-//            AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> hasLocationPermission()
-//            AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> isItemSelected(getString(R.string.pref_safe_mode), isActive)
+            AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
+                createAndShowLocationAlertDialog(isActive)
+            }
+            AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
+                createAndShowSafeModeAlertDialog(isActive)
+            }
             else -> {
             }
         }
+    }
+
+    private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
+        var dialogTitleMsg = getString(R.string.account_home_safe_mode_selected_dialog_title)
+        var dialogBodyMsg = getString(R.string.account_home_safe_mode_selected_dialog_msg)
+        var dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button)
+        val dialogNegativeButton = getString(R.string.account_home_label_cancel)
+
+        if (currentValue) {
+            dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title)
+            dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg)
+            dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button)
+        }
+
+        context?.run {
+            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.apply  {
+                setTitle(dialogTitleMsg)
+                setDescription(dialogBodyMsg)
+                setPrimaryCTAText(dialogPositiveButton)
+                setPrimaryCTAClickListener {
+                    viewModel.setSafeMode(currentValue)
+                }
+                setSecondaryCTAText(dialogNegativeButton)
+                setSecondaryCTAClickListener { dismiss() }
+            }
+        }
+
     }
 
 
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_ACCOUNT_PERSONAL_DATA_ID -> {
-//                accountAnalytics.eventClickAccountSetting(PERSONAL_DATA)
+                homeAccountAnalytic.eventClickAccountSetting(PERSONAL_DATA)
 //                goToApplink(item.applink)
 //                intent = RouteManager.getIntent(activity, ApplinkConst.SETTING_PROFILE)
 //                activity!!.startActivityForResult(intent, 0)
             }
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
-//                accountAnalytics.eventClickAccountSetting(ADDRESS_LIST)
+                homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
                 goToApplink(item.applink)
             }
 //            AccountConstants.SettingCode.SETTING_ACCOUNT_KYC_ID -> onKycMenuClicked()
 //            AccountConstants.SettingCode.SETTING_ACCOUNT_SAMPAI_ID -> goToTokopediaCorner()
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
-//                accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK)
+                homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
                 if (userSession.hasPassword()) {
                     goToApplink(item.applink)
                 } else {
@@ -357,18 +420,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
 
             AccountConstants.SettingCode.SETTING_TKPD_PAY_ID -> {
-//                accountAnalytics.eventClickSetting(PAYMENT_METHOD)
+                homeAccountAnalytic.eventClickSetting(PAYMENT_METHOD)
                 goToApplink(item.applink)
 //                startActivity(TkpdPaySettingActivity.createIntent(activity))
             }
 
             AccountConstants.SettingCode.SETTING_TNC_ID -> {
-//                accountAnalytics.eventClickSetting(TERM_CONDITION)
+                homeAccountAnalytic.eventClickSetting(TERM_CONDITION)
                 RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_TERM_CONDITION)
             }
 
             AccountConstants.SettingCode.SETTING_ABOUT_US -> {
-//                accountAnalytics.eventClickSetting(ABOUT_US)
+                homeAccountAnalytic.eventClickSetting(ABOUT_US)
                 RouteManager.getIntent(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK
                         + AccountConstants.Url.BASE_MOBILE
                         + AccountConstants.Url.PATH_ABOUT_US).run {
@@ -377,22 +440,31 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
 
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
-//                accountAnalytics.eventClickSetting(PRIVACY_POLICY)
+                homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_PRIVACY_POLICY)
             }
 
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
-//                accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
+                homeAccountAnalytic.eventClickSetting(APPLICATION_REVIEW)
                 goToPlaystore()
             }
 
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
-//                accountAnalytics.eventClickSetting(LOGOUT)
+                homeAccountAnalytic.eventClickSetting(LOGOUT)
                 showDialogLogout()
             }
 
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 showDialogClearCache()
+            }
+
+            AccountConstants.SettingCode.SETTING_SECURITY -> {
+                val intent = RouteManager.getIntent(context, item.applink).apply {
+                    putExtras(Bundle().apply {
+                        putExtra(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT, true)
+                    })
+                }
+                startActivity(intent)
             }
 
             else -> {
@@ -441,6 +513,40 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 //        }
     }
 
+    private fun createAndShowLocationAlertDialog(currentValue: Boolean) {
+        if (!currentValue) {
+            homeAccountAnalytic.eventClickToggleOnGeolocation(activity)
+        } else {
+            homeAccountAnalytic.eventClickToggleOffGeolocation(activity)
+        }
+
+        context?.run {
+            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+//                setTitle(getString(R.string.account_home_title_geolocation_alertdialog))
+                setDescription(getString(R.string.account_home_title_geolocation_alertdialog))
+                setPrimaryCTAText(getString(R.string.account_home_ok_geolocation_alertdialog))
+                setPrimaryCTAClickListener {
+                    goToApplicationDetailActivity()
+                }
+                setSecondaryCTAText(getString(R.string.account_home_batal_geolocation_alertdialog))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }
+            dialog.show()
+        }
+    }
+
+    private fun goToApplicationDetailActivity() {
+        activity?.let {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts("package", it.packageName, null)
+            intent.data = uri
+            it.startActivity(intent)
+        }
+    }
+
     private fun goToPlaystore() {
         activity?.let {
             val uri = Uri.parse("market://details?id=" + it.application.packageName)
@@ -477,6 +583,44 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             startActivityForResult(RouteManager.getIntent(activity,
                     ApplinkConstInternalGlobal.ADD_PASSWORD), AccountConstants.REQUEST.REQUEST_ADD_PASSWORD)
         }
+    }
+
+    private fun createCoachmark(){
+        val coachMarkItem = ArrayList<CoachMarkItem>().apply {
+            add(
+                    CoachMarkItem(
+                            account_user_item_profile_edit,
+                            "Ubah data diri",
+                            "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
+                            CoachMarkContentPosition.BOTTOM,
+                            scrollView = home_account_user_fragment_rv
+                    )
+            )
+
+            add(
+                    CoachMarkItem(
+                            home_account_profile_financial_section,
+                            "Cek jumlah dana dan investasimu",
+                            "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
+                            CoachMarkContentPosition.BOTTOM,
+                            scrollView = home_account_user_fragment_rv
+                    )
+            )
+
+            add(
+                    CoachMarkItem(
+                            home_account_profile_member_section,
+                            "Lihat keuntunganmu di sini",
+                            "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
+                            CoachMarkContentPosition.TOP,
+                            scrollView = home_account_user_fragment_rv
+                    )
+            )
+
+        }
+        val coachMark = CoachMark()
+
+        coachMark.show(activity, "homeAccountUserFragmentCoachmark", coachMarkItem)
     }
 
     companion object {

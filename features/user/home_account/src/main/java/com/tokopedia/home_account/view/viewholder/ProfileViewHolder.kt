@@ -1,14 +1,15 @@
 package com.tokopedia.home_account.view.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -31,7 +32,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
             account_user_item_profile_name?.text = profile.name
-            account_user_item_profile_phone?.text = profile.phone
+            account_user_item_profile_phone?.text = Utils.normalizePhoneNumber(profile.phone)
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
 
@@ -43,10 +44,9 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             setupMemberAdapter(itemView, profile)
             setupFinancialAdapter(itemView, profile)
 
-            val params: ViewGroup.LayoutParams = account_user_item_profile_backdrop.layoutParams
-            params.height = params.height - (home_account_member_card.height/2)
-            account_user_item_profile_backdrop.layoutParams = params
-
+//            val params: ViewGroup.LayoutParams = account_user_item_profile_backdrop.layoutParams
+//            params.height = params.height - (home_account_member_card.height/2)
+//            account_user_item_profile_backdrop.layoutParams = params
         }
     }
 

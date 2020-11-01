@@ -63,6 +63,9 @@ object ApplinkConstInternalGlobal {
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
 
     @JvmField
+    val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
+
+    @JvmField
     val PARAM_USER_ID_ENC = "userIdEncrypted"
     @JvmField
     val PARAM_USER_ACCESS_TOKEN = "accessToken"
@@ -530,6 +533,10 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
+    // AccountHomeActivity
+    // tokopedia-android-internal://global/account-home-old
+    @JvmField
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/account-home-old"
 
     //SeamlessActivity
     @JvmField

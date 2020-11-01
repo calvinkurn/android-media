@@ -280,6 +280,7 @@ object AccountConstants {
         const val SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
+        const val SETTING_SECURITY = 39
 
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
         const val RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller"
@@ -292,6 +293,7 @@ object AccountConstants {
     object KEY {
         const val KEY_PREF_SHAKE = "notification_shake_shake"
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
+        const val CLEAR_CACHE = "clear cache"
     }
 
     object REQUEST {
