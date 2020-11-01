@@ -16,4 +16,14 @@
     <dimen name="tp_text_size_regular">16sp</dimen>
     <dimen name="tp_home_top_bg_height">196dp</dimen>
 
+
+    <dimen name="home_account_shimmer_text_title_height">8dp</dimen>
+    <dimen name="home_account_shimmer_text_title_height_bold">14dp</dimen>
+
+    <dimen name="home_account_shimmer_text_title_common_width">90dp</dimen>
+    <dimen name="home_account_shimmer_text_title_width_regular">206dp</dimen>
+
+    <dimen name="home_account_shimmer_text_radius_small">5</dimen>
+    <dimen name="home_account_shimmer_text_radius_large">8</dimen>
+
 </resources>
