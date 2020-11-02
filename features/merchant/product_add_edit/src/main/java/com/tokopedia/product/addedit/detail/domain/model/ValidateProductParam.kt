@@ -3,8 +3,11 @@ package com.tokopedia.product.addedit.detail.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ValidateProductNameExistParam(
+data class ValidateProductParam(
         @SerializedName("productName")
         @Expose
-        val productName: String
+        var productName: String? = null,
+        @SerializedName("sku")
+        @Expose
+        var productSku: String? = null
 )

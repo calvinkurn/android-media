@@ -48,6 +48,7 @@ class OfficialHomeMapper {
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
+            adapter?.getVisitables()?.removeAll { it is DynamicLegoBannerDataModel || it is DynamicChannelViewModel}
             if (dynamicChannel.channels.isNotEmpty()) {
                 var availableScreens = setOf<String>()
                 var availableLegoBannerScreens = setOf<String>()
