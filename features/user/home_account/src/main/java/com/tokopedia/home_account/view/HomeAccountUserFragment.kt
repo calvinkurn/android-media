@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -60,6 +62,10 @@ import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
@@ -142,10 +148,17 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         })
     }
 
+    private fun setStatusBarAlpha(alpha: Float) {
+        val drawable = status_bar_bg.background
+        drawable.alpha = alpha.toInt()
+        status_bar_bg.background = drawable
+    }
+
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel){
         hideLoading()
         addItem(mapper.mapToProfileDataView(buyerAccount))
         viewModel.getInitialData()
+
 //        setLayoutParams(200)
 
 //        createCoachmark()
@@ -163,76 +176,127 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         container_main?.displayedChild = CONTAINER_DATA
     }
 
-    private fun hideStatusBar() {
-        home_account_coordinator!!.fitsSystemWindows = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            home_account_coordinator!!.requestApplyInsets()
+//    private fun hideStatusBar() {
+//        home_account_coordinator!!.fitsSystemWindows = false
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//            home_account_coordinator!!.requestApplyInsets()
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            var flags = home_account_coordinator!!.systemUiVisibility
+//            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+//            home_account_coordinator!!.systemUiVisibility = flags
+//            activity!!.window.statusBarColor = Color.WHITE
+//        }
+//        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+//            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
+//        }
+//        if (Build.VERSION.SDK_INT >= 19) {
+//            activity!!.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//        }
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+//            activity!!.window.statusBarColor = Color.TRANSPARENT
+//        }
+//    }
+
+//    fun setWindowFlag(activity: Activity?, bits: Int, on: Boolean) {
+//        val win = activity!!.window
+//        val winParams = win.attributes
+//        if (on) {
+//            winParams.flags = winParams.flags or bits
+//        } else {
+//            winParams.flags = winParams.flags and bits.inv()
+//        }
+//        win.attributes = winParams
+//    }
+
+//    private fun setStatusBarViewHeight() {
+//        if (activity != null) status_bar_bg?.layoutParams?.height = getStatusBarHeight(activity)
+//    }
+
+    private fun setupStatusBar() {
+        activity?.let {
+            status_bar_bg.background = ColorDrawable(
+                    ContextCompat.getColor(it, R.color.green_600)
+            )
         }
+        //status bar background compability, we show view background for android >= Kitkat
+//because in that version, status bar can't forced to dark mode, we must set background
+//to keep status bar icon visible
+        status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = home_account_coordinator!!.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            home_account_coordinator!!.systemUiVisibility = flags
-            activity!!.window.statusBarColor = Color.WHITE
-        }
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            activity!!.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            activity!!.window.statusBarColor = Color.TRANSPARENT
-        }
-    }
-
-    fun setWindowFlag(activity: Activity?, bits: Int, on: Boolean) {
-        val win = activity!!.window
-        val winParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or bits
+            status_bar_bg.visibility = View.INVISIBLE
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            status_bar_bg.visibility = View.VISIBLE
         } else {
-            winParams.flags = winParams.flags and bits.inv()
+            status_bar_bg.visibility = View.GONE
         }
-        win.attributes = winParams
-    }
-
-    private fun setStatusBarViewHeight() {
-        if (activity != null) status_bar_bg?.layoutParams?.height = getStatusBarHeight(activity)
+        //initial condition for status and searchbar
+        setStatusBarAlpha(0f)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hideStatusBar()
+//        hideStatusBar()
 
-        setStatusBarViewHeight()
+//        setStatusBarViewHeight()
 
-        (activity as BaseSimpleActivity?)?.run {
-            setSupportActionBar(toolbar_tokopoint)
-            toolbar_tokopoint?.title = "Akun Saya"
+//        (activity as BaseSimpleActivity?)?.run {
+//            setSupportActionBar(toolbar_tokopoint)
+//            toolbar_tokopoint?.title = "Akun Saya"
+//        }
+
+//        collapsing_toolbar?.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
+//        collapsing_toolbar?.setTitle(" ")
+//        home_account_user_fragment_rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                val offset = recyclerView.computeVerticalScrollOffset()
+//                handleAppBarOffsetChange(offset)
+//                handleAppBarIconChange(offset)
+//            }
+//        })
+
+        home_account_user_toolbar?.let {
+            it.setIcon(IconBuilder()
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+
+        }
+        activity?.run {
+            home_account_user_toolbar?.setupToolbarWithStatusBar(this)
         }
 
-        collapsing_toolbar?.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
-        collapsing_toolbar?.setTitle(" ")
-        home_account_user_fragment_rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val offset = recyclerView.computeVerticalScrollOffset()
-                handleAppBarOffsetChange(offset)
-                handleAppBarIconChange(offset)
-            }
-        })
-
+        setupStatusBar()
         setupObserver()
         adapter = HomeAccountUserAdapter(this)
         setupList()
 
         getData()
 
-        home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
-            home_account_user_fragment_swipe_refresh?.isRefreshing = false
-            getData()
-        }
+        home_account_user_fragment_rv?.addOnScrollListener(NavRecyclerViewScrollListener(
+                navToolbar = home_account_user_toolbar,
+                startTransitionPixel = 200,
+                toolbarTransitionRangePixel = 50,
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) {
+                        setStatusBarAlpha(offsetAlpha)
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+
+                    }
+
+                    override fun onSwitchToLightToolbar() {
+
+                    }
+                }
+        ))
+
+//        home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
+//            home_account_user_fragment_swipe_refresh?.isRefreshing = false
+//            getData()
+//        }
     }
 
     private fun getData(){
@@ -240,18 +304,18 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getBuyerData()
     }
 
-    private fun setLayoutParams(cardheight: Int) {
-        val statusBarHeight = getStatusBarHeight(activity)
-        val layoutParams = toolbar_tokopoint!!.layoutParams as FrameLayout.LayoutParams
-        layoutParams.topMargin = statusBarHeight
-        toolbar_tokopoint!!.layoutParams = layoutParams
-        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.account_user_item_profile_avatar)?.layoutParams as? RelativeLayout.LayoutParams
-        imageEggLp?.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
-        view?.findViewById<AppCompatImageView>(R.id.account_user_item_profile_avatar)?.layoutParams = imageEggLp
-        val imageBigLp = view?.findViewById<ImageView>(R.id.account_user_item_profile_backdrop)?.layoutParams as? RelativeLayout.LayoutParams
-        imageBigLp?.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
-        view?.findViewById<ImageView>(R.id.account_user_item_profile_backdrop)?.layoutParams = imageBigLp
-    }
+//    private fun setLayoutParams(cardheight: Int) {
+//        val statusBarHeight = getStatusBarHeight(activity)
+//        val layoutParams = toolbar_tokopoint!!.layoutParams as FrameLayout.LayoutParams
+//        layoutParams.topMargin = statusBarHeight
+//        toolbar_tokopoint!!.layoutParams = layoutParams
+//        val imageEggLp = view?.findViewById<AppCompatImageView>(R.id.account_user_item_profile_avatar)?.layoutParams as? RelativeLayout.LayoutParams
+//        imageEggLp?.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_top_margin_big_image)).toInt()
+//        view?.findViewById<AppCompatImageView>(R.id.account_user_item_profile_avatar)?.layoutParams = imageEggLp
+//        val imageBigLp = view?.findViewById<ImageView>(R.id.account_user_item_profile_backdrop)?.layoutParams as? RelativeLayout.LayoutParams
+//        imageBigLp?.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height) + cardheight).toInt()
+//        view?.findViewById<ImageView>(R.id.account_user_item_profile_backdrop)?.layoutParams = imageBigLp
+//    }
 
 
     fun getStatusBarHeight(context: Context?): Int {
@@ -265,22 +329,22 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         return height
     }
 
-    private fun handleAppBarOffsetChange(offset: Int) {
-        val toolbarTransitionRange = (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height)
-                - toolbar_tokopoint!!.height - getStatusBarHeight(activity))
-        var offsetAlpha = 255f / toolbarTransitionRange * (toolbarTransitionRange - offset)
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
-        }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
-        }
-        var alpha = offsetAlpha / 255 - 1
-        if (alpha < 0) alpha = alpha * -1
-        status_bar_bg?.alpha = alpha
-        if (alpha > 0.5) toolbar_tokopoint?.switchToDarkMode() else toolbar_tokopoint?.switchToTransparentMode()
-        toolbar_tokopoint?.applyAlphaToToolbarBackground(alpha)
-    }
+//    private fun handleAppBarOffsetChange(offset: Int) {
+//        val toolbarTransitionRange = (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height)
+//                - toolbar_tokopoint!!.height - getStatusBarHeight(activity))
+//        var offsetAlpha = 255f / toolbarTransitionRange * (toolbarTransitionRange - offset)
+//        if (offsetAlpha < 0) {
+//            offsetAlpha = 0f
+//        }
+//        if (offsetAlpha >= 255) {
+//            offsetAlpha = 255f
+//        }
+//        var alpha = offsetAlpha / 255 - 1
+//        if (alpha < 0) alpha = alpha * -1
+//        status_bar_bg?.alpha = alpha
+//        if (alpha > 0.5) toolbar_tokopoint?.switchToDarkMode() else toolbar_tokopoint?.switchToTransparentMode()
+//        toolbar_tokopoint?.applyAlphaToToolbarBackground(alpha)
+//    }
 
     private fun showDialogClearCache() {
         context?.let {
@@ -313,13 +377,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    private fun handleAppBarIconChange(verticalOffset: Int) {
-        val verticalOffset1 = Math.abs(verticalOffset)
-        if (verticalOffset1 >= (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height))) {
-            toolbar_tokopoint?.showToolbarIcon()
-        } else
-            toolbar_tokopoint?.hideToolbarIcon()
-    }
+//    private fun handleAppBarIconChange(verticalOffset: Int) {
+//        val verticalOffset1 = Math.abs(verticalOffset)
+//        if (verticalOffset1 >= (resources.getDimensionPixelSize(R.dimen.tp_home_top_bg_height))) {
+//            toolbar_tokopoint?.showToolbarIcon()
+//        } else
+//            toolbar_tokopoint?.hideToolbarIcon()
+//    }
 
     private fun setupList() {
         home_account_user_fragment_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
