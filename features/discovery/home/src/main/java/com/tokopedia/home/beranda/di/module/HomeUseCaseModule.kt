@@ -42,6 +42,7 @@ import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
@@ -556,7 +557,7 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
     }
