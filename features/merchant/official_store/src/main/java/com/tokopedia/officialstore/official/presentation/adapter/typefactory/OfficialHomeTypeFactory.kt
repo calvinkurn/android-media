@@ -1,9 +1,15 @@
-package com.tokopedia.officialstore.official.presentation.adapter
+package com.tokopedia.officialstore.official.presentation.adapter.typefactory
 
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.officialstore.base.diffutil.OfficialTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 
-interface OfficialHomeTypeFactory {
+interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactory {
+
+    fun type(officialLoadingViewModel: OfficialLoadingViewModel): Int
+
+    fun type(officialLoadingMoreViewModel: OfficialLoadingMoreViewModel): Int
 
     fun type(officialBannerViewModel: OfficialBannerViewModel): Int
 
