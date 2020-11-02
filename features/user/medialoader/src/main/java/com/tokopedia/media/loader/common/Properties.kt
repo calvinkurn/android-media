@@ -5,7 +5,6 @@ import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.data.Resize
-import com.tokopedia.media.loader.target.Target
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
