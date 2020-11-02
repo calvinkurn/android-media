@@ -16,12 +16,15 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
@@ -93,9 +96,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToDiscussion(discussionCount: Int) {
         if (discussionCount > 0) {
-            listener?.goToReadingActivity()
+            listener?.goToTalkReadingBottomSheet()
         } else {
-            listener?.onDiscussionSendQuestionClicked(null)
+            listener?.onDiscussionSendQuestionBottomSheetClicked()
         }
     }
 
@@ -116,7 +119,22 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     override fun goToApplink(url: String) {
-        listener?.goToApplink(url)
+        val categoryApplink: String = context?.getString(R.string.pdp_category_applink) ?: ""
+
+        when {
+            url.startsWith(categoryApplink) -> {
+                onCategoryClicked(url)
+            }
+            else -> {
+                val uriLink = Uri.parse(url).pathSegments
+
+                if (uriLink.size >= 2 && uriLink[1] == "etalase") {
+                    onEtalaseClicked()
+                } else {
+                    RouteManager.route(context, url)
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -180,19 +198,23 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun goToShopNotes(title: String, date: String, desc: String) {
         context?.let {
+            DynamicProductDetailTracking.ProductDetailSheet.onShopNotesClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+                    ?: "", title)
             val bsShopNotes = ProductDetailBottomSheetBuilder.getShopNotesBottomSheet(it, date, desc, title)
             bsShopNotes.show(childFragmentManager, "shopNotes")
         }
     }
 
     override fun goToSpecification(specification: List<Specification>) {
+        DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+                ?: "")
         val bs = ProductSpecificationBottomSheet()
         bs.getData(specification)
         bs.show(childFragmentManager, "specBs")
     }
 
     override fun goToImagePreview(url: String) {
-        listener?.onVariantGuideLineClicked(url)
+        onVariantGuideLineBottomSheetClicked(url)
     }
 
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
@@ -224,11 +246,41 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         rvBsProductDetail?.isNestedScrollingEnabled = false
     }
 
+    private fun onVariantGuideLineBottomSheetClicked(url: String) {
+        activity?.let {
+            DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+                    ?: "")
+            startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
+        }
+    }
+
+    private fun onCategoryClicked(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+                    ?: "")
+            RouteManager.route(context, url)
+        }
+    }
+
+    private fun onEtalaseClicked() {
+        val etalaseId = listener?.getPdpDataSource()?.basic?.menu?.id ?: ""
+        val shopId = listener?.getPdpDataSource()?.basic?.shopID ?: ""
+
+        val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
+            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
+        } else {
+            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
+        })
+
+        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), viewModel?.userSession?.userId
+                ?: "")
+        startActivity(intent)
+    }
+
 }
 
 interface ProductDetailBottomSheetListener {
-    fun goToReadingActivity()
-    fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onVariantGuideLineClicked(url: String)
-    fun goToApplink(url: String)
+    fun goToTalkReadingBottomSheet()
+    fun onDiscussionSendQuestionBottomSheetClicked()
+    fun getPdpDataSource(): DynamicProductInfoP1?
 }

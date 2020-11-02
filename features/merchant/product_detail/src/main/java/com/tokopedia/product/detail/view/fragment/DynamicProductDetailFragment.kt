@@ -1005,16 +1005,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel?) {
-        doActionOrLogin({
+        writeDiscussion {
             val totalAvailableVariants = (viewModel.variantData?.getBuyableVariantCount()
                     ?: 0).toString()
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId, pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()?.not()
                         ?: false, totalAvailableVariants)
             }
-            goToWriteActivity()
-        })
-        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
+        }
     }
 
     override fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String) {
@@ -2321,6 +2319,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    /**
+     * ProductDetailInfoBottomSheet Listener
+     */
+    override fun getPdpDataSource(): DynamicProductInfoP1? {
+        return viewModel.getDynamicProductInfoP1
+    }
+
+    override fun goToTalkReadingBottomSheet() {
+        viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.ProductDetailSheet.onCheckDiscussionSheetClicked(it, viewModel.userId)
+        }
+        goToReadingActivity()
+    }
+
+    override fun onDiscussionSendQuestionBottomSheetClicked() {
+        writeDiscussion {
+            DynamicProductDetailTracking.ProductDetailSheet.onWriteDiscussionSheetClicked(viewModel.getDynamicProductInfoP1, viewModel.userId)
+        }
+    }
+
     private fun initBtnAction() {
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, this)
@@ -2952,7 +2970,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun goToReadingActivity() {
+    private fun goToReadingActivity() {
         viewModel.getDynamicProductInfoP1?.let {
             val intent = RouteManager.getIntent(context,
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID))
@@ -3024,6 +3042,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
             enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
+    }
+
+    private fun writeDiscussion(tracker: () -> Unit) {
+        doActionOrLogin({
+            tracker.invoke()
+            goToWriteActivity()
+        })
+        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
     }
 
     override fun refreshPage() {

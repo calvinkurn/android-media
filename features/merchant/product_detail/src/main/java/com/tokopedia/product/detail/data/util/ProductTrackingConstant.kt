@@ -170,6 +170,15 @@ object ProductTrackingConstant {
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+
+        const val CLICK_VARIANT_GUIDELINE_BOTTOM_SHEET = "click - panduan ukuran on product detail bottomsheet"
+        const val CLICK_SHOP_NOTES_BOTTOM_SHEET = "click - lihat informasi penting catatan toko on product detail bottomsheet"
+        const val CLICK_SPECIFICATION_BOTTOM_SHEET = "click - selengkapnya on product detail bottomsheet"
+        const val CLICK_CATEGORY_BOTTOM_SHEET = "click - kategori on product detail bottomsheet"
+        const val CLICK_ETALASE_BOTTOM_SHEET = "click - etalase on product detail bottomsheet"
+        const val CLICK_WRITE_DISCUSSION_BOTTOM_SHEET = "click - tanya di diskusi on product detail bottomsheet"
+        const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"
+
     }
 
 
