@@ -191,8 +191,8 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
                     resizeImage(image)
-                    val resizedData = resizedUriImage?.let { handleItem(it) }
-                    val resizedFile = File(resizedData?.path)
+//                    val resizedData = resizedUriImage?.let { handleItem(it) }
+                    val resizedFile = File(resizedUriImage?.path)
                     sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
                     sendAttachmentImage(feedbackId, originalFile, totalImage, initCountImage)
@@ -507,7 +507,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
-        val destHeight = 1920
+        val destHeight = 1440
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
         resizedUriImage = Uri.parse(ImagePreviewUtils.saveImageFromBitmap(requireActivity(), b2, ImagePreviewUtils.processPictureName(Math.random().toInt())))
