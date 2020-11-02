@@ -26,17 +26,12 @@ class NotificationMapper @Inject constructor() {
 
     private fun getChatUiModel(model: ChatModel?): NotificationChatUiModel {
         if (null == model) return NotificationChatUiModel()
-        return NotificationChatUiModel(
-                unreads = model.unreads,
-                unreadsUser = model.unreadsUser,
-                unreadsSeller = model.unreadsSeller
-        )
+        return NotificationChatUiModel(model.unreadsSeller)
     }
 
     private fun getNotifCenterUnreadUiModel(model: NotifCenterUnreadModel?): NotificationCenterUnreadUiModel {
         if (null == model) return NotificationCenterUnreadUiModel()
         return NotificationCenterUnreadUiModel(
-                notifUnread = model.notifUnread,
                 notifUnreadInt = model.notifUnreadInt
         )
     }
@@ -44,10 +39,8 @@ class NotificationMapper @Inject constructor() {
     private fun getSellerOrderStatusUiModel(model: SellerOrderStatusModel?): NotificationSellerOrderStatusUiModel {
         if (null == model) return NotificationSellerOrderStatusUiModel()
         return NotificationSellerOrderStatusUiModel(
-                arriveAtDestination = model.arriveAtDestination,
                 newOrder = model.newOrder,
-                readyToShip = model.readyToShip,
-                shipped = model.shipped
+                readyToShip = model.readyToShip
         )
     }
 }

@@ -85,19 +85,14 @@ class GetNotificationUseCaseTest {
     private fun getExpectedNotification(): NotificationUiModel {
         return NotificationUiModel(
                 chat = NotificationChatUiModel(
-                        unreads = 3,
-                        unreadsSeller = 0,
-                        unreadsUser = 3
+                        unreadsSeller = 0
                 ),
                 notifCenterUnread = NotificationCenterUnreadUiModel(
-                        notifUnread = "0",
                         notifUnreadInt = 0
                 ),
                 sellerOrderStatus = NotificationSellerOrderStatusUiModel(
-                        arriveAtDestination = 0,
                         newOrder = 16,
-                        readyToShip = 10,
-                        shipped = 146
+                        readyToShip = 10
                 )
         )
     }

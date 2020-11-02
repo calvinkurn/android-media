@@ -5,7 +5,5 @@ package com.tokopedia.sellerhome.view.model
  */
  
 data class NotificationChatUiModel(
-        val unreads: Int = 0,
-        val unreadsSeller: Int = 0,
-        val unreadsUser: Int = 0
+        val unreadsSeller: Int = 0
 )

@@ -5,6 +5,5 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class NotificationCenterUnreadUiModel(
-        val notifUnread: String = "",
         val notifUnreadInt: Int = 0
 )
