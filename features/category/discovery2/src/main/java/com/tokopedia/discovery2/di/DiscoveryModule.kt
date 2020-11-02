@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
@@ -46,7 +47,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class DiscoveryModule {
+class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideBaseRepository(): BaseRepository {

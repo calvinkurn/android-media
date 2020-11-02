@@ -1,8 +1,5 @@
 package com.tokopedia.discovery2.di
 
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
@@ -19,19 +16,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
-import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
-import dagger.Component
+import dagger.Subcomponent
 
 
-@DiscoveryScope
-@Component(modules = [DiscoveryModule::class,
-    DiscoveryViewModelModule::class,
-    TopAdsUrlHitterModule::class], dependencies = [BaseAppComponent::class])
-interface DiscoveryComponent {
-    fun inject(discoveryActivity: DiscoveryActivity)
-    fun inject(discoveryFragment: DiscoveryFragment)
+@Subcomponent
+interface UIWidgetComponent {
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(tokopointsViewModel: TokopointsViewModel)
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)
@@ -48,6 +37,4 @@ interface DiscoveryComponent {
     fun inject(loadMoreViewModel: LoadMoreViewModel)
     fun inject(quickCouponViewModel: QuickCouponViewModel)
     fun inject(quickFilterViewModel: QuickFilterViewModel)
-
-    fun provideSubComponent() : UIWidgetComponent
 }

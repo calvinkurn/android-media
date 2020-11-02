@@ -26,7 +26,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
                 removeObservers(lifecycleOwner)
                 this.discoveryBaseViewModel?.onDetachToViewHolder()
                 this.discoveryBaseViewModel = discoveryBaseViewModel
-
             }
         } else {
             this.discoveryBaseViewModel = discoveryBaseViewModel

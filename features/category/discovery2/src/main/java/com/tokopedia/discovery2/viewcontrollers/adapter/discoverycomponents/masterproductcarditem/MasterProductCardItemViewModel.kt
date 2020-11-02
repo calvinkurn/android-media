@@ -27,7 +27,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
 
     init {
-        initDaggerInject()
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -78,11 +77,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 
 }

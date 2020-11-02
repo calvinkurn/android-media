@@ -42,7 +42,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 
-class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
+open class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,

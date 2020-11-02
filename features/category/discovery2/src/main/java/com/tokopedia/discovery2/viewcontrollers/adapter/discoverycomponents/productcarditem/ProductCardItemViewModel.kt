@@ -54,10 +54,6 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
 
-    init {
-        initDaggerInject()
-    }
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -280,10 +276,5 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return campaignNotifyMeRequest
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
+
 }

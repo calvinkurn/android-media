@@ -14,9 +14,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.di.DiscoveryComponent
+import com.tokopedia.discovery2.di.DiscoveryModule
+import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -54,7 +58,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val EMBED_CATEGORY = "embedCategory"
 
         @JvmField
-        var config: String = ""
+        var config: String = NATIVE
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -120,11 +124,14 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 
+    lateinit var discoveryComponent: DiscoveryComponent
     fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
+        discoveryComponent = DaggerDiscoveryComponent.builder().discoveryModule(DiscoveryModule(getRepositoryprovider()))
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+                .build().apply {
+                    inject(this@DiscoveryActivity)
+                }
+
     }
 
 
@@ -173,5 +180,17 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     fun getPltPerformanceResultData(): PltPerformanceData? {
         return pageLoadTimePerformanceInterface?.getPltPerformanceData()
     }
+
+    var repositoryProvider: RepositoryProvider? = null
+
+    fun getRepositoryprovider(): RepositoryProvider {
+        return repositoryProvider?.let {
+            repositoryProvider
+        } ?: getNewRepoProvider().apply {
+            repositoryProvider = this
+        }
+    }
+
+    open fun getNewRepoProvider() = DiscoveryRepoProvider()
 
 }

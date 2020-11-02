@@ -131,11 +131,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     override fun initInjector() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((context?.applicationContext
-                        as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        with(context) {
+            if(this is DiscoveryActivity) {
+                this.discoveryComponent
+                        .inject(this@DiscoveryFragment)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
