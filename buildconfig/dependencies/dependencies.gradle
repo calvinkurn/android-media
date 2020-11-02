@@ -52,7 +52,7 @@ ext {
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
     playServiceAnalytics = '16.0.6'
-    playServiceFirebaseMessaging = '17.3.4'
+    playServiceFirebaseMessaging = '20.2.3'
     playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
     playServiceAuth = '17.0.0'
