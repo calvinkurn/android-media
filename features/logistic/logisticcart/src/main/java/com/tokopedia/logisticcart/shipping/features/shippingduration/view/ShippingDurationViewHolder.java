@@ -128,6 +128,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
             tvMvc.setVisibility(View.VISIBLE);
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            tvMvcError.setVisibility(View.GONE);
         } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
             imgMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
@@ -135,10 +136,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
             ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
             tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
+            tvMvcError.setVisibility(View.VISIBLE);
             tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
         } else {
             imgMvc.setVisibility(View.GONE);
             tvMvc.setVisibility(View.GONE);
+            tvMvcError.setVisibility(View.GONE);
         }
 
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);

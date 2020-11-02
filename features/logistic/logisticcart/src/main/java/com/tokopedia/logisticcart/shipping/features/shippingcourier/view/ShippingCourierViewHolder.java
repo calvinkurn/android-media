@@ -88,6 +88,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             imgMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
             tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(R.string.tv_mvc_text);
         } else {
             imgMvc.setVisibility(View.GONE);
             tvMvc.setVisibility(View.GONE);
