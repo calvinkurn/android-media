@@ -9,28 +9,43 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner_item.view.*
 
-class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSections.Item>)
-    : RecyclerView.Adapter<RechargeCustomBannerProductCardAdapter.ViewHolder>() {
+class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSections.Item>,
+                                             val listener: RechargeHomepageItemListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.bind(items[position])
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+        if (position > 0) (viewHolder as ViewHolder).bind(items[position - 1])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_recharge_home_product_card_custom_banner_item, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == EMPTY_LAYOUT) {
+            val view = LayoutInflater.from(parent.context).inflate(EMPTY_LAYOUT, parent, false)
+            EmptyViewHolder(view)
+        }
+        else {
+            val view = LayoutInflater.from(parent.context).inflate(PRODUCT_CARD_LAYOUT, parent, false)
+            ViewHolder(view, listener)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) EMPTY_LAYOUT else PRODUCT_CARD_LAYOUT
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return items.size + 1
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class EmptyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+
+    class ViewHolder(itemView: View, val listener: RechargeHomepageItemListener)
+        : RecyclerView.ViewHolder(itemView) {
         fun bind(element: RechargeHomepageSections.Item) {
             with(itemView) {
                 tv_recharge_product_title.text = element.title
@@ -51,9 +66,15 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
                 }
 
                 setOnClickListener {
+                    listener.onRechargeSectionItemClicked(element)
                     RouteManager.route(context, element.applink)
                 }
             }
         }
+    }
+
+    companion object {
+        val EMPTY_LAYOUT = R.layout.home_banner_item_empty_carousel
+        val PRODUCT_CARD_LAYOUT = R.layout.view_recharge_home_product_card_custom_banner_item
     }
 }

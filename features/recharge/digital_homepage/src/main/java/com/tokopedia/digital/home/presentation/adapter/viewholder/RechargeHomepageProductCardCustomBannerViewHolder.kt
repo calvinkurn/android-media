@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -7,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -15,6 +15,7 @@ import com.tokopedia.digital.home.presentation.adapter.RechargeCustomBannerProdu
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner.view.*
 import kotlin.math.abs
 
@@ -40,10 +41,19 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
             showItemView()
             setUpBackground(section)
             setUpList(section)
+            setSnapEffect()
+            itemView.addOnImpressionListener(section) {
+                listener.onRechargeSectionItemImpression(section)
+            }
         } else {
             hideItemView()
             listener.loadRechargeSectionData(element.visitableId())
         }
+    }
+
+    private fun setSnapEffect() {
+        val snapHelper: SnapHelper = GravitySnapHelper(Gravity.START)
+        snapHelper.attachToRecyclerView(itemView.rv_recharge_product)
     }
 
     private fun hideItemView() {
@@ -59,8 +69,8 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
     }
 
     private fun setUpBackground(section: RechargeHomepageSections.Section) {
-        itemView.parallax_image.loadImage(section.items.firstOrNull()?.mediaUrl ?: "")
-        itemView.parallax_background.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Red_R200))
+        itemView.parallax_image.loadImage(section.mediaUrl)
+        itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
     }
 
     private fun setUpList(section: RechargeHomepageSections.Section) {
@@ -69,7 +79,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
             rv_recharge_product.resetLayout()
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             rv_recharge_product.layoutManager = layoutManager
-            rv_recharge_product.adapter = RechargeCustomBannerProductCardAdapter(section.items)
+            rv_recharge_product.adapter = RechargeCustomBannerProductCardAdapter(section.items, listener)
 
             rv_recharge_product.addOnScrollListener(getParallaxEffect())
         }
@@ -90,6 +100,8 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
                             val itemSize = it.width.toFloat()
                             val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
                             itemView.parallax_image.alpha = 1 - alpha
+                        } else {
+                            itemView.parallax_image.alpha = 1f
                         }
                     }
                 }
@@ -102,6 +114,5 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
         this.layoutParams = carouselLayoutParams
     }
-
 
 }

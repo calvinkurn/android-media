@@ -49,7 +49,6 @@ class RechargeHomepageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections.toMutableList()
 
-
             //NEED TO BE DELETEEEEE
             data.add(RechargeHomepageSectionSkeleton.Item(id = 64, template = "PRODUCT_CARD_CUSTOM_BANNER"))
 
