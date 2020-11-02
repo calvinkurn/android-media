@@ -1,4 +1,4 @@
-package com.tokopedia.play.widget.view
+package com.tokopedia.play_common.view
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
