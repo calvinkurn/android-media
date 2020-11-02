@@ -6,17 +6,25 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
+import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
@@ -27,8 +35,13 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
         findViewById<ConstraintLayout?>(R.id.cl_current_role_container)
     }
 
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupInjector()
         setContentView(R.layout.activity_inbox)
         setupConfig()
         setupSwitcher()
@@ -40,6 +53,13 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
 
         // TODO: remove later
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, 99)
+    }
+
+    private fun setupInjector() {
+        DaggerInboxComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun onDestroy() {
