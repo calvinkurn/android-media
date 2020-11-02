@@ -221,7 +221,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                if(position >= 0 && adapter.data.size > position) {
+                if(position >= 0 && adapter.data.size > position && adapter.data[position] is RecommendationItemDataModel) {
                     (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
