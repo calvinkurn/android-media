@@ -83,6 +83,7 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
                     data.priceInt,
                     data.departmentId,
                     data.rating,
+                    data.ratingAverage,
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",
