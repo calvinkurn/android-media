@@ -48,6 +48,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
+    private Typography tvMvcError;
     private Label labelCodAvailable;
 
     private int cartPosition;
@@ -68,6 +69,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
         imgMvc = itemView.findViewById(R.id.img_mvc);
         tvMvc = itemView.findViewById(R.id.tv_mvc_text);
+        tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -133,6 +135,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
             ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
             tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
+            tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
         } else {
             imgMvc.setVisibility(View.GONE);
             tvMvc.setVisibility(View.GONE);

@@ -1773,7 +1773,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         ));
     }
 
-    /*here*/
     @Override
     public String generateRatesMvcParam() {
         String mvc = "";

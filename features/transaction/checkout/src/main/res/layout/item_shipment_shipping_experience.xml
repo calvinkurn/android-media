@@ -122,8 +122,8 @@
 
                 <ImageView
                     android:id="@+id/img_mvc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_14"
+                    android:layout_height="@dimen/dp_14"
                     app:srcCompat="@drawable/ic_kebab"
                     android:layout_marginTop="@dimen/dp_13"
                     app:layout_constraintStart_toStartOf="parent"
