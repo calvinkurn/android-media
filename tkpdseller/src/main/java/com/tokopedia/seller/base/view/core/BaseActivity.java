@@ -57,11 +57,8 @@ public class BaseActivity extends AppCompatActivity implements
 
     protected UserSessionInterface userSessionInterface;
 
-    protected GCMHandler gcmHandler;
-
     private Boolean isPause = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    protected GlobalCacheManager globalCacheManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +69,7 @@ public class BaseActivity extends AppCompatActivity implements
         }
 
         userSessionInterface = new UserSession(getBaseContext());
-        gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        globalCacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -117,8 +112,6 @@ public class BaseActivity extends AppCompatActivity implements
                 screenName = this.getClass().getSimpleName();
             }
         }
-        gcmHandler = null;
-        globalCacheManager = null;
     }
 
     @Override
