@@ -9,7 +9,7 @@
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
         android:id="@+id/expandable_title_chevron"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_value"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:autoLink="all"
         android:longClickable="true"
-        android:paddingTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
         app:typographyType="body_2" />
 
@@ -41,7 +41,7 @@
         android:id="@+id/expandable_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         android:background="@color/Neutral_N75"
         app:layout_constraintTop_toBottomOf="@+id/loader_detail_item_title_1" />
 

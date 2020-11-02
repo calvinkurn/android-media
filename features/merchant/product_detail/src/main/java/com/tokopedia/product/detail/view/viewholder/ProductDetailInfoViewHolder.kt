@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import kotlinx.android.synthetic.main.item_dynamic_product_detail_info.view.*
@@ -62,15 +60,11 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         if (descFormatted.isNotEmpty()) {
             product_detail_info_description.text = if (descFormatted.length > DESCRIPTION_LIMIT) {
                 val subDescr = descFormatted.toString().substring(0, DESCRIPTION_LIMIT)
-                MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "<br />") + "....")
+                MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "") + "....")
             } else descFormatted
         } else {
             product_detail_info_description?.hide()
         }
-
-        product_detail_info_description?.autoLinkMask = 0
-        Linkify.addLinks(product_detail_info_description, Linkify.WEB_URLS)
-        product_detail_info_description?.movementMethod = ProductCustomMovementMethod(::onBranchClicked)
     }
 
     private fun onBranchClicked(url: String) = with(view) {

@@ -87,7 +87,7 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
                 val toggle = bundle.getBoolean("toggle")
                 if (toggle) {
                     view.product_detail_value?.setTextIsSelectable(true)
-                    ExpandableAnimation.expand(view.product_detail_value) {
+                    ExpandableAnimation.expand(view.product_detail_value, customParentWidth = view.width) {
                         view.horizontal_scroll_container.showWithCondition(toggle)
                     }
                 } else {
