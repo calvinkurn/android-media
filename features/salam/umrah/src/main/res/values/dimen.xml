@@ -3,7 +3,10 @@
     <dimen name="dimen_dp_half">0.5dp</dimen>
     <dimen name="margin_top_umrah_search">10dp</dimen>
     <dimen name="margin_right_umrah_banner">40dp</dimen>
+    <dimen name="dimen_dp_72">72dp</dimen>
     <dimen name="dimen_dp_140">140dp</dimen>
     <dimen name="dimen_dp_160">160dp</dimen>
+    <dimen name="dimen_dp_200">200dp</dimen>
+    <dimen name="dimen_dp_250">250dp</dimen>
     <dimen name="dimen_dp_260">260dp</dimen>
 </resources>
