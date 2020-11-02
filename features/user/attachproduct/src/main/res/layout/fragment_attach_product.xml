@@ -13,7 +13,7 @@
         android:id="@+id/search_input_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/Unify_N50"
+        android:background="@color/Unify_N50"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3">

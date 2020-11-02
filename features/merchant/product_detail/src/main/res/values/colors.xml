@@ -10,4 +10,10 @@
     <color name="pink_discount">#FFEAEF</color>
     <color name="pdp_inactive_page_control">#AD6C727C</color>
     <color name="gray_text_color">#f531353b</color>
+
+    <color name="merchant_product_detail_dark_mode_support_shadow_color_1">#00CCCCCC</color>
+    <color name="merchant_product_detail_dark_mode_support_shadow_color_2">#10CCCCCC</color>
+    <color name="merchant_product_detail_dark_mode_support_shadow_color_3">#15CCCCCC</color>
+    <color name="merchant_product_detail_dark_mode_support_shadow_color_4">#20CCCCCC</color>
+    <color name="merchant_product_detail_dark_mode_support_shadow_color_5">#25CCCCCC</color>
 </resources>
