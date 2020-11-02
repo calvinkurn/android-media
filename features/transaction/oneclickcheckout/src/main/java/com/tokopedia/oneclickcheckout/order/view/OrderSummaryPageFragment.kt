@@ -518,9 +518,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (orderPreference.onboarding.isShowOnboardingTicker) {
             lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
             lblOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
-            ivOnboarding?.let {
-                ImageHandler.LoadImage(it, orderPreference.onboarding.onboardingTicker.image)
-            }
+            ivOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
             if (orderPreference.onboarding.onboardingTicker.showActionButton) {
                 btnOnboardingAction?.text = orderPreference.onboarding.onboardingTicker.actionText
                 btnOnboardingAction?.setOnClickListener {
