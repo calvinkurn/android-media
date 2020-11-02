@@ -32,6 +32,7 @@ import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
@@ -208,7 +209,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     departureDate,
                     minMaxDate.second,
                     getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
-                    TAG_DEPARTURE_CALENDAR
+                    TAG_DEPARTURE_CALENDAR,
+                    departureAirport,
+                    arrivalAirport,
+                    flightClassId
             )
         } else {
             val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
@@ -234,13 +238,17 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         }
     }
 
-    override fun onReturnDateClicked(departureDate: Date, returnDate: Date) {
+    override fun onReturnDateClicked(departureDate: Date, returnDate: Date,
+                                     departureAirport: String, arrivalAirport: String, flightClassId: Int) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
         setCalendarDatePicker(null,
                 minMaxDate.first,
                 minMaxDate.second,
                 getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
-                TAG_RETURN_CALENDAR
+                TAG_RETURN_CALENDAR,
+                departureAirport,
+                arrivalAirport,
+                flightClassId
         )
     }
 
@@ -394,18 +402,26 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         }
     }
 
-    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String) {
+    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String,
+                                      departureCode: String, arrivalCode: String,
+                                      classFlight: Int) {
         val minDateStr = FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_FORMAT)
+        val maxDateStr = FlightDateUtil.dateToString(maxDate, FlightDateUtil.DEFAULT_FORMAT)
+
         val selectedDateStr = if (selectedDate != null) FlightDateUtil.dateToString(selectedDate, FlightDateUtil.DEFAULT_FORMAT) else null
 
-        val flightCalendarDialog = SelectionRangeCalendarWidget.getInstance(
+        val flightCalendarDialog = FlightCalendarRoundTripWidget.getInstance(
                 minDateStr, selectedDateStr,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
                 getString(R.string.flight_min_date_label),
                 getString(R.string.flight_max_date_label),
                 SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
-                true
+                true,
+                departureCode,
+                arrivalCode,
+                classFlight,
+                maxDateStr
         )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
