@@ -52,7 +52,7 @@ class ShopSettingsEtalaseAddEditPresenterTest: ShopSettingsEtalaseTestFixture() 
     }
 
     @Test
-    fun `get etalase list should be successful`() {
+    fun `get etalase list with filled view and should be successful`() {
         val view: ShopSettingsEtalaseAddEditView? = ShopSettingsEtalaseAddEditImplViewTest()
         shopSettingsEtalaseAddEditPresenter.attachView(view)
 
@@ -71,6 +71,31 @@ class ShopSettingsEtalaseAddEditPresenterTest: ShopSettingsEtalaseTestFixture() 
         verify {
             getShopEtalaseUseCase.execute(any(), any())
             view?.showLoading()
+        }
+
+        Assert.assertTrue(shopSettingsEtalaseAddEditPresenter.listEtalaseModel == arrayListOf(ShopEtalaseModel(name = "toko")))
+        Assert.assertTrue(shopSettingsEtalaseAddEditPresenter.isEtalaseDuplicate("toko"))
+        Assert.assertFalse(shopSettingsEtalaseAddEditPresenter.isEtalaseDuplicate("shop"))
+    }
+
+    @Test
+    fun `get etalase list with null view should be successful`() {
+        shopSettingsEtalaseAddEditPresenter.attachView(null)
+
+        every {
+            getShopEtalaseUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<ArrayList<ShopEtalaseModel>>>().onCompleted()
+            secondArg<Subscriber<ArrayList<ShopEtalaseModel>>>().onError(Throwable())
+            secondArg<Subscriber<ArrayList<ShopEtalaseModel>>>().onNext(arrayListOf(ShopEtalaseModel(name = "toko")))
+        }
+
+        Assert.assertFalse(shopSettingsEtalaseAddEditPresenter.isEtalaseDuplicate("toko"))
+
+        shopSettingsEtalaseAddEditPresenter.getEtalaseList()
+
+        verify {
+            getShopEtalaseUseCase.execute(any(), any())
         }
 
         Assert.assertTrue(shopSettingsEtalaseAddEditPresenter.listEtalaseModel == arrayListOf(ShopEtalaseModel(name = "toko")))
