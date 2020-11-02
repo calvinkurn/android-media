@@ -330,6 +330,7 @@ class HomeUseCaseModule {
             "              imageUrl\n" +
             "              applinks\n" +
             "              bu_identifier\n" +
+            "              campaignCode\n" +
             "            }\n" +
             "          }\n" +
             "          homeFlag{\n" +

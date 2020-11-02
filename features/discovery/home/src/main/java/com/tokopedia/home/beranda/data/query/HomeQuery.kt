@@ -51,6 +51,7 @@ object HomeQuery{
               imageUrl
               applinks
               bu_identifier
+              campaignCode
             }
           }
           homeFlag{
