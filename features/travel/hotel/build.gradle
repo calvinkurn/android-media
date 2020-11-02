@@ -117,6 +117,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 
+    implementation project(rootProject.ext.libraries.linker)
+
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

@@ -11,6 +11,7 @@ import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
@@ -28,6 +29,7 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetProductCountUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
+        GetLocalSearchRecommendationUseCaseModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
         AdvertisingLocalCacheHandlerModule.class,
