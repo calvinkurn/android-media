@@ -24,13 +24,14 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
                                                         private val executorDispatchers: ExecutorDispatchers) {
 
-    suspend fun atcOcc(productId: String): OccGlobalEvent {
+    suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
                 val response = atcOccExternalUseCase.get().createObservable(
                         RequestParams().apply {
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userId)
                         }).toBlocking().single()
                 if (response.isDataError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()

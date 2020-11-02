@@ -89,7 +89,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun atcOcc(productId: String) {
         launch(executorDispatchers.main) {
             globalEvent.value = OccGlobalEvent.Loading
-            globalEvent.value = cartProcessor.atcOcc(productId)
+            globalEvent.value = cartProcessor.atcOcc(productId, userSession.userId)
         }
     }
 
