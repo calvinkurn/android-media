@@ -120,7 +120,7 @@ public class InboxGtmTracker {
                     "screenName", "/inbox - talk",
                     "currentSite", "tokopediamarketplace",
                     "userId", userId,
-                    "'businessUnit", "physical goods"
+                    "businessUnit", "physical goods"
             );
             tracker.sendGeneralEvent(map);
         }
