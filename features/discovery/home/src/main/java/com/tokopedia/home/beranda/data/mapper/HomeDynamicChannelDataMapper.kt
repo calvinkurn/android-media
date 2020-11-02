@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitabl
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDynamicChannelDataMapper(

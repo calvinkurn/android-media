@@ -128,7 +128,8 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
         val channelStatus = ChannelType.getChannelType(
                 config.activeLiveChannel,
                 config.pausedChannel,
-                config.draftChannel
+                config.draftChannel,
+                config.completeDraft
         )
 
         val maxDuration = config.maxDuration * 1000

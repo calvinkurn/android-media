@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion

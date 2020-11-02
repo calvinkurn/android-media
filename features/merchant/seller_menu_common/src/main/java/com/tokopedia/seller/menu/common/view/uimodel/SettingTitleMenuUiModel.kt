@@ -5,7 +5,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 class SettingTitleMenuUiModel(val settingTitle: String,
-                              val settingDrawable: Int?) : SettingUiModel {
+                              val iconUnify: Int? = null) : SettingUiModel {
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)

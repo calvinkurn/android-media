@@ -43,10 +43,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm: LiveData<Result<ProductRevGetForm>>
-            get() = reputationDataForm
+        get() = reputationDataForm
 
-    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
-    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>> = _incentiveOvo
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>?>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>?> = _incentiveOvo
 
     private val _reviewDetails = MutableLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
@@ -94,13 +94,14 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getImageList(imagePickerResult: ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
+    fun getAfterEditImageList(imagePickerResult: ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, edited: ArrayList<Boolean>): MutableList<BaseImageReviewUiModel> {
         val pictureList = originalImages.filter {
             originalImageUrl.contains(it)
         }.filterIndexed { index, _ -> !edited[index] }
 
         val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] } ?: urlOrPath
+            if (edited[index]) urlOrPath else pictureList.find { it == originalImageUrl[index] }
+                    ?: urlOrPath
         }.toMutableList()
 
         when (imagePickerResult.size) {
@@ -138,18 +139,22 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun removeImage(image: BaseImageReviewUiModel, isEditMode: Boolean = false): MutableList<BaseImageReviewUiModel> {
         imageData.remove(image)
-        if(isEditMode) {
+        if (isEditMode) {
             val imageToRemove = image as? ImageReviewUiModel
             imageToRemove?.let {
-                if(originalImages.contains(it.fullImageUrl)) {
+                if (originalImages.contains(it.fullImageUrl)) {
                     originalImages.remove(it.fullImageUrl)
                 }
             }
         }
-        if(imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
+        if (imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
             imageData.add(DefaultImageReviewUiModel())
         }
         return imageData
+    }
+
+    fun isImageNotEmpty(): Boolean {
+        return imageData.isNotEmpty()
     }
 
     fun clearImageData() {
@@ -159,12 +164,12 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
         imageData.forEach {
-            val imageUrl = if((it as? ImageReviewUiModel)?.fullImageUrl?.isNotBlank() == true) {
+            val imageUrl = if ((it as? ImageReviewUiModel)?.fullImageUrl?.isNotBlank() == true) {
                 (it as? ImageReviewUiModel)?.fullImageUrl
             } else {
                 (it as? ImageReviewUiModel)?.imageUrl
             }
-            if(imageUrl?.isNotEmpty() == true) {
+            if (imageUrl?.isNotEmpty() == true) {
                 result.add(imageUrl)
             }
         }
@@ -182,12 +187,17 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getProductIncentiveOvo() {
+    fun getProductIncentiveOvo(productId: Int = 0, reputationId: Int = 0) {
         launchCatchError(block = {
             val data = withContext(coroutineDispatcherProvider.io()) {
-                getProductIncentiveOvo.getIncentiveOvo()
+                getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
             }
-            _incentiveOvo.postValue(CoroutineSuccess(data))
+            if (data == null) {
+                _incentiveOvo.postValue(null)
+            } else {
+                _incentiveOvo.postValue(CoroutineSuccess(data))
+            }
+
         }) {
             _incentiveOvo.postValue(CoroutineFail(it))
         }
@@ -197,6 +207,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return userSessionInterface.name
     }
 
+    fun isUserEligible(): Boolean {
+        return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
+    }
+
     private fun sendReviewWithoutImage(reputationId: Int, productId: Int, shopId: Int, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean) {
         launchCatchError(block = {
@@ -204,8 +218,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
                 submitReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSuccessIndicator != null) {
-                if(response.productrevSuccessIndicator.success) {
+            if (response.productrevSuccessIndicator != null) {
+                if (response.productrevSuccessIndicator.success) {
                     _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
@@ -223,7 +237,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             val response = withContext(coroutineDispatcherProvider.io()) {
                 repeat(listOfImages.size) {
                     val imageId = uploadImageAndGetId(listOfImages[it])
-                    if(imageId.isEmpty()) {
+                    if (imageId.isEmpty()) {
                         _submitReviewResult.postValue(Fail(Throwable()))
                         this@launchCatchError.cancel()
                     }
@@ -232,8 +246,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList)
                 submitReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSuccessIndicator != null) {
-                if(response.productrevSuccessIndicator.success) {
+            if (response.productrevSuccessIndicator != null) {
+                if (response.productrevSuccessIndicator.success) {
                     _submitReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _submitReviewResult.postValue(Fail(Throwable()))
@@ -251,8 +265,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
                 editReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSuccessIndicator != null) {
-                if(response.productrevSuccessIndicator.success) {
+            if (response.productrevSuccessIndicator != null) {
+                if (response.productrevSuccessIndicator.success) {
                     _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _editReviewResult.postValue(Fail(Throwable()))
@@ -269,9 +283,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io()) {
                 repeat(listOfImages.size) {
-                    if(!originalImages.contains(listOfImages[it])) {
+                    if (!originalImages.contains(listOfImages[it])) {
                         val imageId = uploadImageAndGetId(listOfImages[it])
-                        if(imageId.isEmpty()) {
+                        if (imageId.isEmpty()) {
                             _submitReviewResult.postValue(Fail(Throwable()))
                             this@launchCatchError.cancel()
                         }
@@ -281,8 +295,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, originalImages, uploadIdList)
                 editReviewUseCase.executeOnBackground()
             }
-            if(response.productrevSuccessIndicator != null) {
-                if(response.productrevSuccessIndicator.success) {
+            if (response.productrevSuccessIndicator != null) {
+                if (response.productrevSuccessIndicator.success) {
                     _editReviewResult.postValue(Success(response.productrevSuccessIndicator.success))
                 } else {
                     _editReviewResult.postValue(Fail(Throwable()))

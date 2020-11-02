@@ -110,6 +110,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
@@ -395,7 +396,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
-        partialActionButton.text = getString(R.string.next)
+        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
         partialActionButton.setOnClickListener {
             showLoadingLogin()
             analytics.trackClickOnNext(emailPhoneEditText.text.toString())
@@ -491,7 +492,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        partialActionButton.text = getString(R.string.next)
+        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
         partialActionButton.setOnClickListener { registerCheck(emailPhoneEditText.text.toString()) }
         partialRegisterInputView.showDefaultView()
     }
@@ -626,10 +627,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun showLoading(isLoading: Boolean) {
-        val shortAnimTime = resources.getInteger(
+        val shortAnimTime = context?.resources?.getInteger(
                 android.R.integer.config_shortAnimTime)
 
-        progress_bar.animate().setDuration(shortAnimTime.toLong())
+        shortAnimTime?.toLong()?.let {
+            progress_bar.animate().setDuration(it)
                 .alpha((if (isLoading) 1 else 0).toFloat())
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
@@ -639,17 +641,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     }
                 })
 
-        container.animate().setDuration(shortAnimTime.toLong())
-                .alpha((if (isLoading) 0 else 1).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        if (container != null) {
-                            container.visibility = if (isLoading) View.GONE else View.VISIBLE
+            container.animate().setDuration(it)
+                    .alpha((if (isLoading) 0 else 1).toFloat())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            if (container != null) {
+                                container.visibility = if (isLoading) View.GONE else View.VISIBLE
+                            }
                         }
-                    }
-                })
+                    })
+        }
         emailExtension?.hide()
-
     }
 
     private fun goToRegisterInitial(source: String) {

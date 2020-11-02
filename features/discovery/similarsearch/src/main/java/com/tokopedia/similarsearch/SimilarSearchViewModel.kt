@@ -313,7 +313,8 @@ internal class SimilarSearchViewModel(
                 quantity = originalProduct.minOrder,
                 productName = originalProduct.name,
                 category = originalProduct.categoryName,
-                price = originalProduct.price
+                price = originalProduct.price,
+                userId = userSession.userId
         )
     }
 

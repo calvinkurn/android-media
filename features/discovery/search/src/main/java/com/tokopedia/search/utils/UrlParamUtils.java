@@ -89,4 +89,25 @@ public final class UrlParamUtils {
 
         return sb.toString();
     }
+
+    public static String removeKeysFromQueryParams(String queryParams, List<String> keysToRemove) {
+        if (queryParams == null) return "";
+        if (keysToRemove == null || keysToRemove.size() == 0) return queryParams;
+
+        Map<String, String> queryParamsMap = getParamMap(queryParams);
+
+        for (String key: keysToRemove) queryParamsMap.remove(key);
+
+        return generateUrlParamString(queryParamsMap);
+    }
+
+    public static String getQueryParams(String url) {
+        if (url == null) return "";
+
+        String[] splitUrl = url.split("\\?");
+
+        if (splitUrl.length < 2) return "";
+
+        return splitUrl[1];
+    }
 }
