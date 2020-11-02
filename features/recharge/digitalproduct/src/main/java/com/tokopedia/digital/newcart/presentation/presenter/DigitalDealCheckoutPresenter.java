@@ -2,21 +2,21 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalGetCartUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         implements DigitalDealCheckoutContract.Presenter {
     private static final long AUTO_COLLAPSE_ANIMATION_DELAY = 2500;
     private DigitalAnalytics digitalAnalytics;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
@@ -41,7 +41,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                                         DigitalAnalytics digitalAnalytics,
                                         RechargeAnalytics rechargeAnalytics,
                                         ICartDigitalInteractor cartDigitalInteractor,
-                                        UserSession userSession,
+                                        UserSessionInterface userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalGetCartUseCase,

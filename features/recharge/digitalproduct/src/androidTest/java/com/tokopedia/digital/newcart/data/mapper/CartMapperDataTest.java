@@ -7,13 +7,10 @@ import junit.framework.TestCase;
  */
 public class CartMapperDataTest extends TestCase {
 
-    private CartMapperData cartMapperData;
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        cartMapperData = new CartMapperData();
     }
 
 }

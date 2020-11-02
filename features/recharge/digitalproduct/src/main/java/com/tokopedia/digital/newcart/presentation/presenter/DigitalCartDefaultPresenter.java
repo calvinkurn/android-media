@@ -1,16 +1,16 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.newcart.constant.DigitalCartCrossSellingType;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalGetCartUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -22,7 +22,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        DigitalAnalytics digitalAnalytics,
                                        RechargeAnalytics rechargeAnalytics,
                                        ICartDigitalInteractor cartDigitalInteractor,
-                                       UserSession userSession,
+                                       UserSessionInterface userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalGetCartUseCase,

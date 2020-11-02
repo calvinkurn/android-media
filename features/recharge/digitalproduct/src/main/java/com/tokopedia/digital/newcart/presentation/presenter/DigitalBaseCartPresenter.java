@@ -7,38 +7,39 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Cart;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Data;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relationships;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.newcart.data.entity.requestbody.atc.Attributes;
+import com.tokopedia.digital.newcart.data.entity.requestbody.atc.Field;
+import com.tokopedia.digital.newcart.data.entity.requestbody.atc.RequestBodyAtcDigital;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.Cart;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.Data;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.Relationships;
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCartData;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
+import com.tokopedia.digital.newcart.domain.mapper.CartMapperData;
+import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.domain.model.VoucherAttributeDigital;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAutoApplyVoucher;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalGetCartUseCase;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.data.model.response.DataResponse;
@@ -47,7 +48,7 @@ import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.net.ConnectException;
@@ -68,7 +69,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalAnalytics digitalAnalytics;
     private RechargeAnalytics rechargeAnalytics;
     private ICartDigitalInteractor cartDigitalInteractor;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalGetCartUseCase digitalGetCartUseCase;
@@ -81,7 +82,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,
                                     ICartDigitalInteractor cartDigitalInteractor,
-                                    UserSession userSession,
+                                    UserSessionInterface userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalGetCartUseCase = digitalGetCartUseCase;
@@ -219,7 +220,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
                 ResponseCartData responseCartData = (ResponseCartData) data.getData();
-                CartMapperData cartMapperData = new CartMapperData();
+                ICartMapperData cartMapperData = new CartMapperData();
                 CartDigitalInfoData cartDigitalInfoData = cartMapperData.transformCartInfoData(responseCartData);
 
                 getView().setCartDigitalInfo(cartDigitalInfoData);
@@ -490,8 +491,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     protected RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
         RequestBodyCheckout requestBodyCheckout = new RequestBodyCheckout();
         requestBodyCheckout.setType("checkout");
-        com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes attributes =
-                new com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes();
+        com.tokopedia.digital.newcart.data.entity.requestbody.checkout.Attributes attributes =
+                new com.tokopedia.digital.newcart.data.entity.requestbody.checkout.Attributes();
         attributes.setVoucherCode(checkoutData.getVoucherCode());
         attributes.setTransactionAmount(checkoutData.getTransactionAmount());
         attributes.setIpAddress(checkoutData.getIpAddress());
