@@ -23,6 +23,7 @@ import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -73,6 +74,7 @@ class ProductSheetViewComponent(
             layoutManager = LinearLayoutManager(rvProductList.context, RecyclerView.VERTICAL, false)
             adapter = productLineAdapter
             addItemDecoration(ProductLineItemDecoration(rvProductList.context))
+            addOnScrollListener(StopFlingScrollListener())
         }
 
         rvVoucherList.apply {

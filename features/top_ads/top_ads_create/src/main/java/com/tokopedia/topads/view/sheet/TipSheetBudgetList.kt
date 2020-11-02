@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_sheet_tip.view.*
@@ -23,9 +22,9 @@ class TipSheetBudgetList : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.imageView2.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
-        view.imageView3.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
-        view.imageView4.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
+        view.imageView2.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
+        view.imageView3.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
+        view.imageView4.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
     }
 
     companion object {

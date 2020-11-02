@@ -137,8 +137,8 @@
 
         <ImageView
             android:id="@+id/iv_payment"
-            android:layout_width="@dimen/dp_45"
-            android:layout_height="@dimen/dp_45"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
@@ -167,7 +167,7 @@
             android:id="@+id/tv_payment_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_16"
             android:ellipsize="end"
             android:lines="1"
@@ -179,6 +179,13 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="iv_payment,tv_payment_detail" />
+
         <View
             android:id="@+id/divider_bottom"
             android:layout_width="wrap_content"
@@ -188,7 +195,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_payment" />
+            app:layout_constraintTop_toBottomOf="@+id/barrier_payment" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/cb_main_preference"

@@ -1,0 +1,25 @@
+{
+  "accountsGetAccountsList": {
+    "key": "key",
+    "msisdn_view": "msisdn_view",
+    "msisdn": "msisdn",
+    "users_details": [
+      {
+        "user_id": "user_id",
+        "fullname": "fullname",
+        "email": "email",
+        "msisdn_verified": true,
+        "challenge_2fa": false,
+        "user_id_enc": "user_id_enc",
+        "image": "image",
+        "shop_detail": {
+          "id": 1,
+          "name": "name",
+          "domain": "domain"
+        }
+      }
+    ],
+    "users_count": 1,
+    "errors": []
+  }
+}

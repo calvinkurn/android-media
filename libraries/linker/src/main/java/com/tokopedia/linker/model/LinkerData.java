@@ -18,6 +18,7 @@ public class LinkerData implements Parcelable {
     public static final String HOTLIST_TYPE = "Hotlist";
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
+    public static final String HOTEL_TYPE = "Hotel";
 
     public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
@@ -58,6 +59,7 @@ public class LinkerData implements Parcelable {
     private String journeyId;
     private String invoiceId;
     private String paymentId;
+    private boolean throwOnError;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -99,6 +101,7 @@ public class LinkerData implements Parcelable {
         journeyId = in.readString();
         invoiceId = in.readString();
         paymentId = in.readString();
+        throwOnError = in.readBoolean();
     }
 
     @Override
@@ -131,6 +134,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(journeyId);
         dest.writeString(invoiceId);
         dest.writeString(paymentId);
+        dest.writeBoolean(throwOnError);
     }
 
     @Override
@@ -430,6 +434,15 @@ public class LinkerData implements Parcelable {
         this.paymentId = paymentId;
     }
 
+
+    public boolean isThrowOnError() {
+        return throwOnError;
+    }
+
+    public void setThrowOnError(boolean throwOnError) {
+        this.throwOnError = throwOnError;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -460,6 +473,7 @@ public class LinkerData implements Parcelable {
         private String journeyId;
         private String invoiceId;
         private String paymentId;
+        private boolean throwOnError;
 
         private Builder() {
         }
@@ -612,6 +626,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setThrowOnError(boolean throwOnError){
+            this.throwOnError = throwOnError;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -641,11 +660,12 @@ public class LinkerData implements Parcelable {
             linkerData.setCatLvl1(catLvl1);
             linkerData.setUserId(userId);
             linkerData.setQuantity(quantity);
-            linkerData.setQuantity(productCategory);
-            linkerData.setQuantity(productName);
-            linkerData.setQuantity(journeyId);
-            linkerData.setQuantity(invoiceId);
-            linkerData.setQuantity(paymentId);
+            linkerData.setProductCategory(productCategory);
+            linkerData.setProductName(productName);
+            linkerData.setJourneyId(journeyId);
+            linkerData.setInvoiceId(invoiceId);
+            linkerData.setPaymentId(paymentId);
+            linkerData.setThrowOnError(throwOnError);
             return linkerData;
         }
 

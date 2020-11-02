@@ -34,7 +34,8 @@ class YouTubeViewComponent(
     private var mStartMillis: Int = 0
     private var mShouldPlayOnReady = true
 
-    private var isFullscreen = false
+    private var mIsFullscreen = false
+    private var mIsInternalOrientationChanged = false
 
     private val playerStateChangedListener = object : YouTubePlayer.PlayerStateChangeListener {
         override fun onAdStarted() {
@@ -83,6 +84,8 @@ class YouTubeViewComponent(
 
     private val onFullscreenListener = object : YouTubePlayer.OnFullscreenListener {
         override fun onFullscreen(isFullscreen: Boolean) {
+            mIsInternalOrientationChanged = true
+
             if (isFullscreen) listener.onEnterFullscreen(this@YouTubeViewComponent)
             else listener.onExitFullscreen(this@YouTubeViewComponent)
         }
@@ -110,9 +113,13 @@ class YouTubeViewComponent(
         youTubePlayer = null
     }
 
-    fun setFullScreenButton(isFullscreen: Boolean) {
-        this.isFullscreen = isFullscreen
-        youTubePlayer?.doSafe { setFullscreen(isFullscreen) }
+    fun setIsFullScreen(isFullscreen: Boolean) {
+        this.mIsFullscreen = isFullscreen
+
+        if (!mIsInternalOrientationChanged) {
+            youTubePlayer?.doSafe { setFullscreen(isFullscreen) }
+        }
+        mIsInternalOrientationChanged = false
     }
 
     fun play() {
@@ -148,7 +155,7 @@ class YouTubeViewComponent(
         player.setPlayerStateChangeListener(playerStateChangedListener)
         player.setPlaybackEventListener(playbackEventListener)
         player.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT
-        player.setFullscreen(isFullscreen)
+        player.setFullscreen(mIsFullscreen)
         return player
     }
 

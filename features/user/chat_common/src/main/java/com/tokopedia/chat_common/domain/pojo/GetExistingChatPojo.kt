@@ -159,8 +159,15 @@ data class Reply(
         @SerializedName("source")
         val source: String = ""
 ) {
-    fun isMultipleProductAttachment(nextItem: Reply): Boolean {
-        return isProductAttachment() && nextItem.isProductAttachment()
+
+    val attachmentType: Int get(): Int = attachment?.type ?: 0
+
+    fun isAlsoProductAttachment(nextItem: Reply?): Boolean {
+        return nextItem != null && isProductAttachment() && nextItem.isProductAttachment()
+    }
+
+    fun isAlsoTheSameBroadcast(nextItem: Reply?): Boolean {
+        return nextItem != null && isBroadCast() && nextItem.isBroadCast() && blastId == nextItem.blastId
     }
 
     fun isProductAttachment(): Boolean {
@@ -168,7 +175,7 @@ data class Reply(
     }
 
     fun isBroadCast(): Boolean {
-        return blastId == 0
+        return blastId > 0
     }
 
 }

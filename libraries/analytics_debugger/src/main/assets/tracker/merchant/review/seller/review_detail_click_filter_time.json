@@ -1,0 +1,26 @@
+{
+  "readme": "Review Detail - click filter time",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - time filter",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "review detail page"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "review detail page",
+      "eventAction" : "click - apply time filter",
+      "eventLabel" : "{{filterBy:.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "productId" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "review detail page"
+    }
+  ]
+}

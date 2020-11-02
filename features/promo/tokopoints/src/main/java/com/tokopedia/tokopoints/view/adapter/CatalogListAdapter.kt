@@ -29,6 +29,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ImageUtil
 import rx.Subscriber
 import java.util.*
+import kotlin.collections.HashMap
 
 class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresenter, private val mContext: Context?, callback: AdapterCallback?, private val categoryId: Int, private val subCategoryId: Int, private val pointsRange: Int, private val mIsLimitEnable: Boolean) : BaseAdapter<CatalogsValueEntity?>(callback) {
 
@@ -233,9 +234,9 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
                 item["creative"] = data.title
                 item["creative_url"] = data.imageUrlMobile
                 item["promo_code"] = data.baseCode
-                val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
+                val promotions: HashMap<String, List<Map<String, String>>> = HashMap()
                 promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-                val promoView: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+                val promoView: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
                 promoView["promoView"] = promotions
                 AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
@@ -255,9 +256,9 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         item["creative"] = data.title
         item["creative_url"] = data.imageUrlMobile
         item["promo_code"] = data.baseCode
-        val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
+        val promotions: HashMap<String, List<Map<String, String>>> = HashMap()
         promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-        val promoClick: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
         promoClick["promoClick"] = promotions
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,

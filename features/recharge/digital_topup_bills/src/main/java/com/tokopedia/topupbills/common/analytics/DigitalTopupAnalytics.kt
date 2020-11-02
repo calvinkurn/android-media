@@ -232,7 +232,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
-            putStringArrayList(DigitalTopupEventTracking.Additional.VALUE_ITEM_LIST, productListName)
+            putString(DigitalTopupEventTracking.Additional.VALUE_ITEM_LIST, productListName.toString())
             putParcelableArrayList(DigitalTopupEventTracking.Additional.VALUE_ITEMS, productTelcoList)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.VIEW_ITEM_LIST, eventDataLayer)

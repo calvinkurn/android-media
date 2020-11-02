@@ -1,40 +1,23 @@
 package com.tokopedia.play_common.lifecycle
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 /**
  * Created by jegul on 09/09/20
  */
-class LifecycleBoundDelegate<LO: LifecycleOwner, T: Any>(
-        private val creator: (LO) -> T,
-        private val onDestroy: (T) -> Unit
-) : ReadOnlyProperty<LO, T> {
+class LifecycleBoundDelegate<LO: LifecycleOwner, T: Any> internal constructor(
+        creator: (LO) -> T,
+        onLifecycle: DefaultOnLifecycle<T>? = null
+) : AbstractLifecycleBoundDelegate<LO, T>(creator, onLifecycle) {
 
-    private var mInstance: T? = null
+    override val lock: Any = this
 
-    override fun getValue(thisRef: LO, property: KProperty<*>): T {
-        mInstance?.let { return it }
+    override fun getValidLifecycleOwner(thisRef: LO): LifecycleOwner {
+        return thisRef
+    }
 
-        thisRef.lifecycle.addObserver(object : LifecycleObserver {
-
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy(owner: LifecycleOwner) {
-                mInstance?.let { onDestroy(it) }
-                mInstance = null
-            }
-        })
-
-        if (!thisRef.lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            throw IllegalStateException("${property.name} has not been initialized")
-        }
-
-        return creator(thisRef).also {
-            mInstance = it
-        }
+    override fun addObserver(owner: LO, observer: LifecycleObserver) {
+        owner.lifecycle.addObserver(observer)
     }
 }

@@ -31,6 +31,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -180,6 +181,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     } else { // Else, show error message in affected items
                         smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
 
+                        checkout_loading_view.hide()
                         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
                         for (errorItem in it.data.attributes.errors) {
@@ -191,13 +193,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                                     getString(R.string.smart_bills_item_default_error)
                                 }
                                 adapter.data[errorItem.index] = bill
-                                adapter.notifyItemChanged(errorItem.index)
+                                adapter.updateListByCheck(false, errorItem.index)
                             }
                         }
                     }
                 }
                 is Fail -> {
                     smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
+
+                    checkout_loading_view.hide()
                     var throwable = it.throwable
                     if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
@@ -273,6 +277,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 loadInitialData()
             }
         }
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     override fun onDestroyView() {
@@ -426,7 +434,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun onClickNextBuyButton() {
-        if (adapter.checkedDataList.isNotEmpty()) {
+        // Prevent multiple checkout calls when one is already underway
+        if (adapter.checkedDataList.isNotEmpty() && !checkout_loading_view.isVisible) {
             // Reset error in bill items
             for ((index, bill) in adapter.data.withIndex()) {
                 if (bill.errorMessage.isNotEmpty()) {
@@ -436,10 +445,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
             }
 
+            checkout_loading_view.show()
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (checkout_loading_view.isVisible) checkout_loading_view.hide()
     }
 
     override fun onDestroy() {

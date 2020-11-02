@@ -34,6 +34,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val qtyEditorProduct by lazy { view.findViewById<QuantityEditorUnify>(R.id.qty_editor_product) }
     private val tvShopLocation by lazy { view.findViewById<Typography>(R.id.tv_shop_location) }
     private val tvShopName by lazy { view.findViewById<Typography>(R.id.tv_shop_name) }
+    private val ivShop by lazy { view.findViewById<ImageUnify>(R.id.iv_shop) }
     private val tvProductPrice by lazy { view.findViewById<Typography>(R.id.tv_product_price) }
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
@@ -175,6 +176,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     fun setShop(orderShop: OrderShop) {
         tvShopName?.text = orderShop.shopName
+        if (orderShop.shopBadge.isNotEmpty()) {
+            ivShop?.setImageUrl(orderShop.shopBadge)
+            ivShop?.visible()
+        } else {
+            ivShop?.gone()
+        }
         tvShopLocation?.text = orderShop.cityName
         val error = orderShop.errors.firstOrNull()
         if (error?.isNotEmpty() == true) {

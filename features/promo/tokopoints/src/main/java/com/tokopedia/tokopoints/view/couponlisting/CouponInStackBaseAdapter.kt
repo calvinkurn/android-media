@@ -31,8 +31,9 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 import java.util.*
+import kotlin.collections.HashMap
 
-class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPromosEntity) : BaseAdapter<CouponValueEntity>(callback) {
+class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPromosEntity) : BaseAdapter<CouponValueEntity>(callback) {
 
 
     inner class ViewHolder(view: View) : BaseVH(view) {
@@ -44,6 +45,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         internal var imgLabel: ImageView
         internal var ivMinTxn: ImageView
         var isVisited = false
+
         /*This section is exclusively for handling timer*/
         var timer: CountDownTimer? = null
         var progressTimer: ProgressBar
@@ -98,12 +100,15 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
                 val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
                 promoView["promoView"] = promotions
 
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.value.context,
+                var eventLabel = ""
+                if (data.title != null && data.title.isNotEmpty()) {
+                    eventLabel = data.title
+                }
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.itemView.context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
                         AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        data.title, promoView)
-
+                        eventLabel, promoView)
                 holder.isVisited = true
             }
         }
@@ -121,14 +126,18 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         val promotions = HashMap<String, List<Map<String, String?>>>()
         promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
 
-        val promoClick = HashMap<String, Map<String, List<Map<String, String?>>>>()
-        promoClick["promoView"] = promotions
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
+        promoClick["promoClick"] = promotions
 
+        var eventLabel = ""
+        if (data.title != null && data.title.isNotEmpty()) {
+            eventLabel = data.title
+        }
         AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.title, promoClick)
+                eventLabel, promoClick)
     }
 
     override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {
@@ -204,7 +213,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
             holder.cvShadow2.hide()
             layoutParamsCv1.setMargins(0, 0, 0, 0)
             layoutParamsCvData.setMargins(0, 0, 0, 0)
-            holder.cvData.setPadding(0,0,0,0)
+            holder.cvData.setPadding(0, 0, 0, 0)
             holder.cvShadow1.layoutParams = layoutParamsCv1
             holder.cvData.layoutParams = layoutParamsCvData
         }
@@ -254,7 +263,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
         }
 
         if (holder.itemView != null) {
-            holder.itemView.setOnClickListener{ v ->
+            holder.itemView.setOnClickListener { v ->
                 val bundle = Bundle()
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.code)
                 (holder.imgBanner.context as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_IN_ADAPTER)
