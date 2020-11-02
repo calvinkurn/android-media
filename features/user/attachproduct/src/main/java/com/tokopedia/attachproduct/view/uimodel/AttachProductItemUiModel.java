@@ -1,4 +1,4 @@
-package com.tokopedia.attachproduct.view.viewmodel;
+package com.tokopedia.attachproduct.view.uimodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductItemViewModel implements Parcelable, Visitable<AttachProductListAdapterTypeFactory>  {
+public class AttachProductItemUiModel implements Parcelable, Visitable<AttachProductListAdapterTypeFactory>  {
     protected String productUrl;
     protected String productName;
     protected int productId;
@@ -19,9 +19,9 @@ public class AttachProductItemViewModel implements Parcelable, Visitable<AttachP
     protected String productPrice;
     protected String shopName;
 
-    public AttachProductItemViewModel(String productUrl, String productName, int productId,
-                                      String productImageFull, String productImage,
-                                      String productPrice, String shopName) {
+    public AttachProductItemUiModel(String productUrl, String productName, int productId,
+                                    String productImageFull, String productImage,
+                                    String productPrice, String shopName) {
         this.productUrl = productUrl;
         this.productName = productName;
         this.productId = productId;
@@ -78,7 +78,7 @@ public class AttachProductItemViewModel implements Parcelable, Visitable<AttachP
         dest.writeString(this.shopName);
     }
 
-    protected AttachProductItemViewModel(Parcel in) {
+    protected AttachProductItemUiModel(Parcel in) {
         this.productUrl = in.readString();
         this.productName = in.readString();
         this.productId = in.readInt();
@@ -88,12 +88,12 @@ public class AttachProductItemViewModel implements Parcelable, Visitable<AttachP
         this.shopName = in.readString();
     }
 
-    public static final Creator<AttachProductItemViewModel> CREATOR = new
-            Creator<AttachProductItemViewModel>() {
+    public static final Creator<AttachProductItemUiModel> CREATOR = new
+            Creator<AttachProductItemUiModel>() {
         @Override
-        public AttachProductItemViewModel createFromParcel(Parcel source) {return new AttachProductItemViewModel(source);}
+        public AttachProductItemUiModel createFromParcel(Parcel source) {return new AttachProductItemUiModel(source);}
 
         @Override
-        public AttachProductItemViewModel[] newArray(int size) {return new AttachProductItemViewModel[size];}
+        public AttachProductItemUiModel[] newArray(int size) {return new AttachProductItemUiModel[size];}
     };
 }
