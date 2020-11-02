@@ -1,8 +1,6 @@
 package com.tokopedia.updateinactivephone.revamp.domain.api
 
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
-import com.tokopedia.updateinactivephone.data.model.request.UploadHostResponse
-import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.UploadHostDataModel
 import okhttp3.RequestBody
