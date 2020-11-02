@@ -69,17 +69,8 @@
     {
       "event": "clickOrderList",
       "eventCategory": "order list",
-      "eventAction": "click terapkan on filter chips",
+      "eventAction": "click terapkan on category filter chips",
       "eventLabel": "{{.*}}",
-      "currentSite": "tokopediamarketplace",
-      "userId": "{{\\d+}}",
-      "sessionIris": "{{.*}}",
-      "businessUnit": "order management"
-    },
-    {
-      "event": "clickOrderList",
-      "eventCategory": "order list",
-      "eventAction": "click x chips to clear filter",
       "currentSite": "tokopediamarketplace",
       "userId": "{{\\d+}}",
       "sessionIris": "{{.*}}",
