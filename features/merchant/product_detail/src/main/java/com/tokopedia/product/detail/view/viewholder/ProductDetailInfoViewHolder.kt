@@ -5,9 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -64,15 +61,6 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
             } else descFormatted
         } else {
             product_detail_info_description?.hide()
-        }
-    }
-
-    private fun onBranchClicked(url: String) = with(view) {
-        if (!GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(view.context, ApplinkConst.CONSUMER_SPLASH_SCREEN)
-            intent.putExtra(RouteManager.BRANCH, url)
-            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
-            context.startActivity(intent)
         }
     }
 

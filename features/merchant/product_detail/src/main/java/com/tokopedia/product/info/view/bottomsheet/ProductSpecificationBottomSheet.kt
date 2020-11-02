@@ -51,7 +51,7 @@ class ProductSpecificationBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        setTitle(getString(R.string.label_spec))
+        setTitle(getString(R.string.merchant_product_detail_label_specification_product))
         val childView = View.inflate(requireContext(), R.layout.bs_product_specification, null)
         setupRecyclerView(childView)
         setChild(childView)

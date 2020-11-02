@@ -9,15 +9,16 @@
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
         android:id="@+id/expandable_title_chevron"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_detail_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
         android:autoLink="all"
         android:longClickable="true"
-        android:layout_marginTop="@dimen/dp_12"
+        android:textColorLink="@color/Unify_G500"
         android:visibility="gone"
         app:typographyType="body_2" />
 

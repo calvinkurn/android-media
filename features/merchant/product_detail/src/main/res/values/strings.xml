@@ -44,6 +44,7 @@
     <string name="label_category">Kategori</string>
     <string name="label_desc">Deskripsi</string>
     <string name="label_spec">Spesifikasi</string>
+    <string name="merchant_product_detail_label_specification_product">Spesifikasi Produk</string>
     <string name="label_report_type">Jenis Laporan</string>
     <string name="label_report_product">Laporkan Produk</string>
 
