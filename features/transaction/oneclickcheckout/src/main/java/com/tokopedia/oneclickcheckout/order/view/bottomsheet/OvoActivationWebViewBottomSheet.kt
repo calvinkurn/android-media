@@ -163,6 +163,20 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
         }
     }
 
+    private fun onMoveBack() {
+        if (!isDone) {
+            context?.let {
+                try {
+                    isDone = true
+                    bottomSheetUnify?.dismiss()
+                } catch (t: Throwable) {
+                    // ignore
+                    Timber.d(t)
+                }
+            }
+        }
+    }
+
     inner class OvoActivationWebViewClient : WebViewClient() {
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
@@ -178,6 +192,8 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 val uri = Uri.parse(url)
                 val isSuccessResult = uri.getQueryParameter("is_success") == "1"
                 onActivationResult(isSuccessResult)
+            } else if (url == "tokopedia://back") {
+                onMoveBack()
             } else if (url != null && !URLUtil.isNetworkUrl(url)) {
                 onMoveToIntent(url)
             }

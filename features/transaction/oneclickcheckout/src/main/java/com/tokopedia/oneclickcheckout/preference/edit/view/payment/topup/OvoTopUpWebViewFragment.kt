@@ -202,7 +202,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             // Check if url is redirect_url
-            if (url == getRedirectUrl()) {
+            if (url == getRedirectUrl() || url == "tokopedia://back") {
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
             }
