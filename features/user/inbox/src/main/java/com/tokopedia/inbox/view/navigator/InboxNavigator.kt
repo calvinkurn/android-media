@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
-import com.tokopedia.inboxcommon.InboxCommonFragment
+import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.RoleType
 
 class InboxNavigator constructor(
@@ -69,7 +69,7 @@ class InboxNavigator constructor(
 
     fun notifyRoleChanged(@RoleType role: Int) {
         pages.keys.forEach {
-            if (it is InboxCommonFragment) {
+            if (it is InboxFragment) {
                 it.onRoleChanged(role)
             }
         }

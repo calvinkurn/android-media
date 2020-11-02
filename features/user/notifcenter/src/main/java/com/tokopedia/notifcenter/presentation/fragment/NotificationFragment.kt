@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.inboxcommon.InboxCommonFragment
+import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
