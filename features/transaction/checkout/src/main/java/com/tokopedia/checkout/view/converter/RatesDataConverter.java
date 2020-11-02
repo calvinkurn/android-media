@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
-import com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress;
+import com.tokopedia.logisticdata.data.entity.address.UserAddress;
 
 import java.util.ArrayList;
 import java.util.List;

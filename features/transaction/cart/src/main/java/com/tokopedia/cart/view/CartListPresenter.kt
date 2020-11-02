@@ -77,6 +77,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                             private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                            private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -626,8 +627,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         view?.let {
-            it.showProgressLoading()
-
             val addCartToWishlistRequest = AddCartToWishlistRequest()
             addCartToWishlistRequest.cartIds = listOf(cartId)
 
@@ -635,7 +634,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
 
             compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
-                    ?.subscribe(AddCartToWishlistSubscriber(it, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
+                    ?.subscribe(AddCartToWishlistSubscriber(it, this, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
         }
     }
 
@@ -1390,5 +1389,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun setLastApplyValid() {
         isLastApplyResponseStillValid = true
+    }
+
+    override fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>) {
+        val requestParams = setCartlistCheckboxStateUseCase.buildRequestParams(cartItemDataList)
+        compositeSubscription.add(
+                setCartlistCheckboxStateUseCase.createObservable(requestParams)
+                        .subscribe(SetCartlistCheckboxStateSubscriber())
+        )
     }
 }

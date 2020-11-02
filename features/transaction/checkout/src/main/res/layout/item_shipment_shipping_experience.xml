@@ -30,6 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--Shipping: Trade In Pickup-->
+            <include
+                layout="@layout/item_shipment_trade_in_pickup"
+                tools:visibility="gone" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_state_no_selected_shipping"
                 android:layout_width="match_parent"
@@ -41,7 +46,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/icon_shipping_logo"
@@ -193,7 +198,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="0dp"
