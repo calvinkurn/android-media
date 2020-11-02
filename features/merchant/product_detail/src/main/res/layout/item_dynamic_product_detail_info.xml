@@ -25,20 +25,13 @@
         app:typographyWeight="bold"
         tools:text="Detail Produk" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/product_detail_info_rv"
+    <LinearLayout
+        android:id="@+id/product_detail_info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <LinearLayout
-        android:id="@+id/product_detail_info_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical" />
 
     <com.tokopedia.unifyprinciples.Typography
