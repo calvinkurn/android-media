@@ -35,7 +35,7 @@
                     android:layout_height="@dimen/dp_8"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    android:background="@drawable/ic_record"/>
+                    android:background="@drawable/image_picker_ic_record"/>
 
                 <TextView
                     android:id="@+id/txtDuration"
