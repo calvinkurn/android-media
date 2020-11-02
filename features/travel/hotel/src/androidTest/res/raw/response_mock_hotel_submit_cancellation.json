@@ -1,0 +1,41 @@
+[
+  {
+    "data": {
+      "hotelSubmitCancelRequest": {
+        "data": {
+          "success": true,
+          "title": "Pembatalan berhasil",
+          "desc": "Berhasil melakukan pembatalan.",
+          "actionButton": [
+            {
+              "label": "Cari hotel lainnya",
+              "buttonType": "buy",
+              "URI": "",
+              "URIWeb": ""
+            },
+            {
+              "label": "Lihat daftar transaksi",
+              "buttonType": "primary",
+              "URI": "",
+              "URIWeb": ""
+            },
+            {
+              "label": "Beli lagi",
+              "buttonType": "secondary",
+              "URI": "",
+              "URIWeb": ""
+            }
+          ]
+        },
+        "meta": {
+          "cancelCartID": "123r5gkjwechfmr1cy2",
+          "selectedReason": {
+            "id": "1",
+            "title": "tidak membutuhkan tempat menginap lagi",
+            "freeText": false
+          }
+        }
+      }
+    }
+  }
+]

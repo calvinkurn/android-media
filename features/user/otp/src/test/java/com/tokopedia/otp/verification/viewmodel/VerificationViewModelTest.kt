@@ -187,7 +187,7 @@ class VerificationViewModelTest {
         val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
         assert(result.data == successOtpValidationResponse.data)
     }
-    
+
     @Test
     fun `Failed validate otp method`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)

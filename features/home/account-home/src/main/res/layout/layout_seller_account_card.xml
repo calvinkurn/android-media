@@ -13,10 +13,10 @@
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/iconContainer"
             android:layout_width="@dimen/account_home_seller_shop_bg_width"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:background="@drawable/ic_open_shop_ellipse">
+            android:layout_marginEnd="@dimen/spacing_lvl3">
 
             <ImageView
                 android:layout_width="@dimen/account_home_ic_seller_shop_size"

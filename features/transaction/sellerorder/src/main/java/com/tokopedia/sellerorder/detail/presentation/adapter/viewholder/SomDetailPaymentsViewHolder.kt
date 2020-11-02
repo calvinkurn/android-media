@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailPayments
@@ -36,6 +38,44 @@ class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHol
             } else {
                 itemView.additional_price_label.visibility = View.GONE
                 itemView.additional_price_value.visibility = View.GONE
+            }
+
+            if (item.dataObject.totalPurchaseProtectionFee > 0) {
+                itemView.tvPurchaseProtectionFeeLabel.apply {
+                    text = context.getString(R.string.purchase_protection_fee_label, item.dataObject.totalPurchaseProtectionQuantity)
+                    show()
+                }
+                itemView.tvPurchaseProtectionFeeValue.apply {
+                    text = item.dataObject.totalPurchaseProtectionFeeText
+                    show()
+                }
+            } else {
+                itemView.tvPurchaseProtectionFeeLabel.gone()
+                itemView.tvPurchaseProtectionFeeValue.gone()
+            }
+
+            if (item.dataObject.totalReadinessInsuranceFee > 0) {
+                itemView.tvReadinessInsuranceFeeLabel.apply {
+                    text = context.getString(R.string.readiness_insurance_fee_label, item.dataObject.totalReadinessInsuranceQuantity)
+                    show()
+                }
+                itemView.tvReadinessInsuranceFeeValue.apply {
+                    text = item.dataObject.totalReadinessInsuranceFeeText
+                    show()
+                }
+            } else {
+                itemView.tvReadinessInsuranceFeeLabel.gone()
+                itemView.tvReadinessInsuranceFeeValue.gone()
+            }
+
+            if (item.dataObject.codFee > 0) {
+                itemView.tvCodFeeValue.apply {
+                    text = item.dataObject.codFeeText
+                    show()
+                }
+            } else {
+                itemView.tvCodFeeLabel.gone()
+                itemView.tvCodFeeValue.gone()
             }
 
             itemView.total_price_value.text = item.dataObject.totalPriceText

@@ -2,10 +2,10 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -33,7 +33,7 @@ public interface LoginRegisterComponent {
 
     Retrofit.Builder getRetrofitBuilder();
 
-    CacheManager globalCacheManager();
+    CacheManager provideCacheManager();
 
     @Named(SessionModule.SESSION_MODULE)
     UserSessionInterface provideUserSession();

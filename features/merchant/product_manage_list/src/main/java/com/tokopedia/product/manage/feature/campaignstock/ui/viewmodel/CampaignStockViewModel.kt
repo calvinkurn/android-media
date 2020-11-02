@@ -26,7 +26,6 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class CampaignStockViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val editStockUseCase: EditStockUseCase,
         private val editProductVariantUseCase: EditProductVariantUseCase,
-        dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
+        private val dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
     private val mIsStockVariant = MutableLiveData<Boolean>().apply {
         value = false
@@ -66,7 +65,7 @@ class CampaignStockViewModel @Inject constructor(
             val shopId: String = mShopIdLiveData.value.orEmpty()
             launchCatchError(
                     block = {
-                        value = Success(withContext(Dispatchers.IO) {
+                        value = Success(withContext(dispatchers.io) {
                             campaignStockAllocationUseCase.params = CampaignStockAllocationUseCase.createRequestParam(productIds, shopId)
                             val stockAllocationData = campaignStockAllocationUseCase.executeOnBackground()
                             mCampaignProductNameLiveData.postValue(stockAllocationData.summary.productName)
@@ -115,7 +114,7 @@ class CampaignStockViewModel @Inject constructor(
                 it.productId == productId
             }
             updatedVariantIndex?.let { index ->
-                value?.get(index)?.copy(stock = stockCount)?.let { variant ->
+                value?.getOrNull(index)?.copy(stock = stockCount)?.let { variant ->
                     value = value?.toMutableList()?.apply {
                         set(index, variant)
                     }?.toList()
@@ -130,7 +129,7 @@ class CampaignStockViewModel @Inject constructor(
                 it.productId == productId
             }
             updatedVariantIndex?.let { index ->
-                value?.get(index)?.copy(status = status)?.let { variant ->
+                value?.getOrNull(index)?.copy(status = status)?.let { variant ->
                     value = value?.toMutableList()?.apply {
                         set(index, variant)
                     }?.toList()
@@ -156,7 +155,7 @@ class CampaignStockViewModel @Inject constructor(
                     mNonVariantIsActiveLiveData.value?.let { isActive ->
                         launchCatchError(
                                 block = {
-                                    mProductUpdateResponseLiveData.value = Success(withContext(Dispatchers.IO) {
+                                    mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
                                         val status =
                                                 if (isActive) {
                                                     ProductStatus.ACTIVE
@@ -192,7 +191,7 @@ class CampaignStockViewModel @Inject constructor(
                 mShopIdLiveData.value?.let { shopId ->
                     launchCatchError(
                             block = {
-                                mProductUpdateResponseLiveData.value = Success(withContext(Dispatchers.IO) {
+                                mProductUpdateResponseLiveData.value = Success(withContext(dispatchers.io) {
                                     val updateVariantParam = getUpdateVariantParam(editVariantResult, editVariantCampaignParam, shopId)
                                     val editProductVariantParam = EditProductVariantUseCase.createRequestParams(updateVariantParam)
                                     val editStockResponse = editProductVariantUseCase.execute(editProductVariantParam)

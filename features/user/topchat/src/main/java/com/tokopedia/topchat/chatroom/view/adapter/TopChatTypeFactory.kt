@@ -7,6 +7,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -43,5 +44,7 @@ interface TopChatTypeFactory {
     fun type(stickerUiModel: StickerUiModel): Int
 
     fun type(broadcastSpamHandlerUiModel: BroadcastSpamHandlerUiModel): Int
+
+    fun type(broadCastUiModel: BroadCastUiModel): Int
 
 }

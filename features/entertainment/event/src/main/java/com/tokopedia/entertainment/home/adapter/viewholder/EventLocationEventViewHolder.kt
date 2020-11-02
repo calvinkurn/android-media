@@ -11,9 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adaper_item.view.*
@@ -21,12 +21,13 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLocationModel>(itemView) {
+class EventLocationEventViewHolder(itemView: View,
+                                   val locationListener: TrackingListener) : HomeEventViewHolder<EventLocationModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter()
+    var itemAdapter = InnerItemAdapter(locationListener)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_location.apply {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = itemAdapter
         }
@@ -43,7 +44,7 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
         val TAG = EventLocationEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
+    class InnerItemAdapter(val locationListener: TrackingListener) : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemLocationModel>
 
@@ -59,14 +60,14 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
             holder.view.txt_title.text = item.title
             holder.view.txt_subtitle.text = item.tagline
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionLocationEvent(item, items,
+                locationListener.impressionLocationEvent(item, items,
                         position + 1)
             })
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context,
-                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, item.title)
-                EventHomePageTracking.getInstance().clickLocationEvent(item, items,
+                locationListener.clickLocationEvent(item, items,
                         position + 1)
+                RouteManager.route(holder.view.context,
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY, "", item.id, item.title)
             }
         }
 

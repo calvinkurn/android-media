@@ -10,7 +10,7 @@
 
     <include layout="@layout/item_property_search_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/hotel_180dp"
         android:layout_marginTop="@dimen/hotel_12dp"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"

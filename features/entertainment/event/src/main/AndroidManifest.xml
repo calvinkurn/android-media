@@ -1,7 +1,9 @@
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.entertainment">
 
     <application
+        tools:replace="android:allowBackup"
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity android:name=".home.activity.HomeEventActivity"
@@ -142,6 +144,23 @@
                 <data
                     android:host="@string/host_event"
                     android:pathPattern="@string/path_event_form"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".pdp.activity.EventRedeemActivity"
+            android:label="@string/ent_redeem_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_event"
+                    android:path="@string/path_event_redeem"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

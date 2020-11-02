@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderErrorNetworkUiModel
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -37,14 +36,5 @@ class WaitingPaymentOrderAdapter(
         diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(items)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun toggleCollapse(position: Int, isExpanded: Boolean) {
-        val newItems = (visitables.toMutableList() as ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>)
-        (newItems.getOrNull(position) as? WaitingPaymentOrderUiModel)?.copy(isExpanded = isExpanded)?.let { it ->
-            newItems[position] = it
-            updateProducts(newItems)
-        }
     }
 }

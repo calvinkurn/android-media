@@ -1,9 +1,9 @@
 package com.tokopedia.seller.manageitem.domain.usecase;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.common.usecase.UseCase;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.ThreadExecutor;
 import com.tokopedia.seller.manageitem.data.cloud.model.product.ProductVariantByCatModel;
 import com.tokopedia.seller.manageitem.domain.repository.ProductVariantRepository;
 

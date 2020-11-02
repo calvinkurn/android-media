@@ -24,7 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.circularViewPager)
 

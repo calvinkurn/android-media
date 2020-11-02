@@ -25,6 +25,11 @@ class EventPDPTicketActivity: BaseSimpleActivity(), HasComponent<EventPDPCompone
             endDate = uri.getQueryParameter("endDate") ?: ""
         }else if(savedInstanceState != null){
             urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
+        } else if(intent.extras!=null){
+            urlPDP = intent.getStringExtra(EXTRA_URL_PDP)
+            startDate = intent.getStringExtra(START_DATE)
+            selectedDate = intent.getStringExtra(SELECTED_DATE)
+            endDate = intent.getStringExtra(END_DATE)
         }
         super.onCreate(savedInstanceState)
         supportActionBar?.setDisplayShowTitleEnabled(false)

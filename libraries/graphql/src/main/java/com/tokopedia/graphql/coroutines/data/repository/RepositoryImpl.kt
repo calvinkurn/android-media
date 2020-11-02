@@ -20,6 +20,7 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 import kotlin.Exception
 
+@Deprecated("Dont use it, will be deleted after Interactor not being used")
 open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                                               private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
