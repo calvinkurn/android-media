@@ -11,6 +11,7 @@ import android.view.View
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
@@ -61,9 +62,9 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 }
                 setChild(child)
                 // DEBUG
-//                setCloseClickListener {
-//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-//                }
+                setCloseClickListener {
+                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
+                }
 //                setShowListener {
 //                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 //                        override fun onStateChanged(p0: View, p1: Int) {
@@ -102,13 +103,13 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
         // DEBUG
-//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
-//            webView?.loadUrl("https://www.bing.com")
-//        }
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+            webView?.loadUrl("https://www.bing.com")
+        }
 
         // DEBUG
-        webView?.loadAuthUrl(generateUrl(userSession), userSession)
+//        webView?.loadAuthUrl(generateUrl(userSession), userSession)
 //        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
 //            override fun onTopReached() {
 //                isTopReached = true
@@ -132,7 +133,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     }
 
     private fun generateRedirectUrl(): String {
-        return "https://www.google.com"
+        return callbackUrl
     }
 
     private fun onActivationResult(isSuccess: Boolean) {
