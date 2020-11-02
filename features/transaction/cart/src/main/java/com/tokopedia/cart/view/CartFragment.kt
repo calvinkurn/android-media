@@ -218,6 +218,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var recommendationPage = 1
     private var accordionCollapseState = true
     private var refreshCartAfterBackFromPdp = true
+    private var hasCalledOnSaveInstanceState = false
 
     companion object {
 
@@ -400,6 +401,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        hasCalledOnSaveInstanceState = false
+    }
+
     fun onBackPressed() {
         sendAnalyticsOnClickBackArrow()
         if (isAtcExternalFlow()) {
@@ -523,7 +529,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showBottomSheetSummaryTransaction() {
-        if (cartListData != null && fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && cartListData != null && fragmentManager != null && context != null) {
             showSummaryTransactionBottomsheet(cartListData!!, fragmentManager!!, context!!)
         }
     }
@@ -886,6 +892,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        hasCalledOnSaveInstanceState = true
         saveInstanceCacheManager?.onSave(outState)
         saveInstanceCacheManager?.put(CartListData::class.java.simpleName, cartListData)
         wishLists.let {
@@ -1476,6 +1483,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onWishlistCheckChanged(productId: String, cartId: Int) {
+        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
         val isLastItem = cartAdapter.allCartItemData.size == 1
         dPresenter.processAddCartToWishlist(productId, cartId.toString(), isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
     }
@@ -1706,7 +1714,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.desc = ""
         promoCheckoutBtn.setOnClickListener {
@@ -1718,7 +1726,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
         promoCheckoutBtn.setOnClickListener {
@@ -1731,7 +1739,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val isApplied: Boolean
 
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
         val title: String = when {
             lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
@@ -1793,7 +1801,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderPromoCheckoutLoading() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.setOnClickListener { }
     }
 
@@ -2364,7 +2372,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnButtonCheckoutClickedFailed()
         sendAnalyticsOnGoToShipmentFailed(message)
 
-        if (fragmentManager != null && context != null) {
+        if (!hasCalledOnSaveInstanceState && fragmentManager != null && context != null) {
             showGlobalErrorBottomsheet(fragmentManager!!, context!!, ::retryGoToShipment)
         }
     }
@@ -2626,15 +2634,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
         showToastMessageGreen(message, false)
 
-        when (source) {
-            WISHLIST_SOURCE_AVAILABLE_ITEM -> {
-                cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
-            }
-            WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
-                cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
-            }
-        }
-
         if (isLastItem) {
             resetRecentViewList()
             dPresenter.processInitialGetCartData(getCartId(), false, false)
@@ -2733,6 +2732,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromRequestCodeCartShipment(resultCode: Int, data: Intent?) {
+        FLAG_BEGIN_SHIPMENT_PROCESS = false
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
@@ -3265,7 +3265,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showPromoCheckoutStickyButtonInactive() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.INACTIVE
-        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_checkout_inactive_label)
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {

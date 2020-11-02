@@ -74,8 +74,14 @@ data class ProductCardModel (
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
-            val type: String = ""
-    ):Parcelable
+            val type: String = "",
+            val imageUrl: String = ""
+    ):Parcelable {
+
+        fun isShowLabelCampaign(): Boolean {
+            return imageUrl.isNotEmpty() && title.isNotEmpty()
+        }
+    }
 
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
@@ -101,6 +107,10 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_SHIPPING)
     }
 
+    fun getLabelCampaign(): LabelGroup? {
+        return findLabelGroup(LABEL_CAMPAIGN)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
     }
@@ -116,4 +126,6 @@ data class ProductCardModel (
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
 
     fun isShowShopRating() = shopRating.isNotEmpty()
+
+    fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
 }

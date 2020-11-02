@@ -12,9 +12,13 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 
 object CommonActions {
+
+    const val UNDER_TEST_TAG = "UNDER_TEST_TAG"
+
     /**
      * Click on each item recyclerview actions.
      *
@@ -22,7 +26,7 @@ object CommonActions {
      * You need to access all recyclerview children and you're dealing with multiple nested
      * horizontal recyclerview which causing Espresso AmbiguousViewMatcherException.
      *
-     * This actions will only triggered the firstView of recyclerview inside on viewport to prevent
+     * This actions will only triggered the target recyclerview to prevent
      * Espresso AmbiguousViewMatcherException
      *
      * @param view view object in your espresso test
@@ -31,18 +35,23 @@ object CommonActions {
      */
     fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
         val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
+
+        val tempStoreDesc = childRecyclerView.contentDescription
+        childRecyclerView.contentDescription = UNDER_TEST_TAG
+
         var childItemCount = childRecyclerView.adapter!!.itemCount
         if (fixedItemPositionLimit > 0) {
             childItemCount = fixedItemPositionLimit
         }
         for (i in 0 until childItemCount) {
             try {
-                Espresso.onView(CommonMatcher.firstView(ViewMatchers.withId(recyclerViewId)))
+                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.withContentDescription(UNDER_TEST_TAG)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             } catch (e: PerformException) {
                 e.printStackTrace()
             }
         }
+        childRecyclerView.contentDescription = tempStoreDesc
     }
 
     /**

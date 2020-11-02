@@ -37,7 +37,7 @@ interface InboxDetailContract {
         fun showNoTicketView(messageError: List<String?>?)
     }
 
-    interface InboxDetailPresenter : InboxBasePresenter {
+    interface Presenter : InboxBasePresenter {
         fun getSearchListener(): CustomEditText.Listener
         fun onImageSelect(image: ImageUpload)
         fun watcher(): TextWatcher

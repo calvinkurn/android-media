@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -18,15 +17,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.isNotEmpty
-import kotlin.collections.isNullOrEmpty
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 import kotlin.coroutines.CoroutineContext
 
@@ -49,7 +40,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     init {
         initDaggerInject()
-        for (item in components.data?.get(0)?.filter ?: ArrayList()) {
+        addFilterOptions()
+    }
+
+    private fun addFilterOptions() {
+        for (item in components.data?.firstOrNull()?.filter ?: ArrayList()) {
             if (!item.options.isNullOrEmpty()) {
                 quickFilterOptionList.addAll(item.options)
             }

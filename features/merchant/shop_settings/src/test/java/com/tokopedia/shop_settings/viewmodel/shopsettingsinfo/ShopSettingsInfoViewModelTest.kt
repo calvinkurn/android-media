@@ -1,21 +1,20 @@
 package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
+import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
+import com.tokopedia.shop_settings.common.util.LiveDataUtil.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import rx.Observable
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
+@ExperimentalCoroutinesApi
 class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
     @Test
@@ -38,7 +37,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
             val expectedValue = Success(CheckShopIsOfficialModel())
             assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value is Success)
-            shopSettingsInfoViewModel.checkOsMerchantTypeData.verifyValueEquals(expectedValue)
+            shopSettingsInfoViewModel.checkOsMerchantTypeData.verifySuccessEquals(expectedValue)
         }
     }
 
@@ -53,16 +52,16 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val shopBasicData = ShopBasicDataModel()
             val goldGetPmOsStatus = GoldGetPmOsStatus()
 
-            val expectedResult_shopBasicData = Success(shopBasicData)
-            val expectedResult_goldGetPmOsStatus = Success(goldGetPmOsStatus)
+            val expectedResultShopBasicData = Success(shopBasicData)
+            val expectedResultGoldGetPmOsStatus = Success(goldGetPmOsStatus)
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
             shopSettingsInfoViewModel.shopBasicData
-                    .verifySuccessEquals(expectedResult_shopBasicData)
+                    .verifySuccessEquals(expectedResultShopBasicData)
 
             assertTrue(shopSettingsInfoViewModel.shopStatusData.value is Success)
             shopSettingsInfoViewModel.shopStatusData
-                    .verifySuccessEquals(expectedResult_goldGetPmOsStatus)
+                    .verifySuccessEquals(expectedResultGoldGetPmOsStatus)
         }
     }
 
@@ -83,18 +82,6 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         val isSuccessSubscribe = shopSettingsInfoViewModel.updateScheduleResult.observeAwaitValue()
 
         assertTrue(isSuccessSubscribe is Success)
-    }
-
-    private fun <T> LiveData<T>.observeAwaitValue(): T? {
-        var value: T? = null
-        val latch = CountDownLatch(1)
-        val observer = Observer<T> { t ->
-            value = t
-            latch.countDown()
-        }
-        observeForever(observer)
-        latch.await(2, TimeUnit.SECONDS)
-        return value
     }
 
 }
