@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.RemoteConfig.abUrlBuilder
 import com.tokopedia.media.loader.utils.mediaSignature
 import androidx.appcompat.content.res.AppCompatResources.getDrawable as getDrawable
 
@@ -68,7 +69,7 @@ internal fun ImageView.call(url: Any?, properties: Properties) {
                 return
             }
 
-            val glideUrl = Loader.glideUrl(url)
+            val glideUrl = abUrlBuilder(url)
             glideBuilder(imageView, glideUrl, this, signature.mediaSignature(glideUrl))
         } else {
             glideBuilder(imageView, url, this, null)

@@ -11,10 +11,10 @@ object UrlBuilder {
 
     fun urlBuilder(
             networkState: String,
-            settings: MediaSettingPreferences,
+            qualitySettings: Int,
             url: String?
     ): GlideUrl {
-        val connectionType = when(settings.qualitySettings()) {
+        val connectionType = when(qualitySettings) {
             1 -> LOW_QUALITY // (2g / 3g)
             2 -> HIGH_QUALITY // (4g / wifi)
             else -> networkState
