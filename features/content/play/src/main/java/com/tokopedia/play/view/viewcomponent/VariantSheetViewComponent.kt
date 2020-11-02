@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -55,6 +56,7 @@ class VariantSheetViewComponent(
     private val tvCurrentPrice: TextView = findViewById(R.id.tv_current_price)
     private val ivFreeShipping: ImageView = findViewById(R.id.iv_free_shipping)
 
+    private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
 
     private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
@@ -270,13 +272,13 @@ class VariantSheetViewComponent(
                 btnAction.show()
             }
 
-            globalError.hide()
+            globalErrorContainer.hide()
         } else {
             clProductVariant.hide()
             phProductVariant.hide()
             btnContainer.hide()
 
-            globalError.show()
+            globalErrorContainer.show()
         }
     }
 

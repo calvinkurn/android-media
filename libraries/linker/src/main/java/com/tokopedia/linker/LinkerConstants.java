@@ -3,6 +3,7 @@ package com.tokopedia.linker;
 public interface LinkerConstants {
     String PRODUCTTYPE_DIGITAL = "digital";
     String PRODUCTTYPE_MARKETPLACE = "marketplace";
+    String FEATURE_TYPE_HOTEL = "hotelShareURL";
     String BRANCH_PROMOCODE_KEY = "branch_promo";
     String REFERRAL_ADVOCATE_PROMO_CODE = "";
     String ANDROID_DESKTOP_URL_KEY = "$android_url";
@@ -78,6 +79,10 @@ public interface LinkerConstants {
     // Recharge Events
     String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";
     String EVENT_DIGITAL_CATEGORY_LAUNCHED = "digital_category_screen_launched";
+
+    String HOTEL_LABEL = "hotel";
+    String PDP_LABEL = "pdp";
+    String SHARE_LABEL = "Share";
 
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
