@@ -17,8 +17,8 @@ import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
+import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
@@ -36,7 +36,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
     }
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
