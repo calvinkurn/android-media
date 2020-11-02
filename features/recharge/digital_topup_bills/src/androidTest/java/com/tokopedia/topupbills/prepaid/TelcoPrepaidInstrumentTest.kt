@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -47,6 +48,7 @@ class TelcoPrepaidInstrumentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
     var mRuntimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
@@ -57,6 +59,7 @@ class TelcoPrepaidInstrumentTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_MENU_DETAIL_LOGIN),
@@ -130,14 +133,14 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(4000)
 //        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
 //        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
-            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_previous)).perform(click())
-            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
-            onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
-            onView(withId(R.id.text_next)).perform(click())
+        onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+        onView(withId(R.id.text_next)).perform(click())
+        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+        onView(withId(R.id.text_previous)).perform(click())
+        onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+        onView(withId(R.id.text_next)).perform(click())
+        onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
+        onView(withId(R.id.text_next)).perform(click())
 //        }
     }
 

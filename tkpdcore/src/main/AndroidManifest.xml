@@ -57,9 +57,6 @@
         <!-- META DATA REGISTRY -->
         <!-- ======================================================= -->
         <meta-data
-            android:name="com.tkpd.library.utils.TkpdGlideModule"
-            android:value="GlideModule" />
-        <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
         <meta-data

@@ -106,6 +106,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopId: String? = null
     private var shopRef: String = ""
     private var keyword: String = ""
+    private var productListName: String = ""
     private var sortId
         get() = shopProductFilterParameter?.getSortId().orEmpty()
         set(value) {
@@ -429,6 +430,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     renderProductList(productList, hasNextPage, totalProductData)
                     loadShopRestrictionInfo()
                     isNeedToReloadData = false
+                    productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -806,6 +808,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
+                    shopPageTracking?.clickEtalaseChip(
+                            isMyShop,
+                            getSelectedEtalaseChip(),
+                            CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
+                    )
+
                     shopPageTracking?.clickMoreMenuChip(
                             isMyShop,
                             getSelectedEtalaseChip(),
@@ -1033,11 +1041,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onEtalaseFilterClicked() {
-        shopPageTracking?.clickEtalaseChip(
-                isMyShop,
-                getSelectedEtalaseChip(),
-                CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-        )
         redirectToEtalasePicker()
     }
 
@@ -1069,6 +1072,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun setSortFilterMeasureHeight(measureHeight: Int) { }
     override fun onFilterClicked() {
+        shopPageTracking?.clickFilterChips(productListName, customDimensionShopPage)
         showBottomSheetFilter()
     }
 
@@ -1108,6 +1112,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         ))
         shopProductAdapter.refreshSticky()
         loadInitialData()
+        applySortFilterTracking(sortName, applySortFilterModel.selectedFilterMapParameter)
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -1164,4 +1169,17 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
         changeProductListGridView(gridType)
     }
+
+    private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
+        if (selectedSortName.isNotBlank()) {
+            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
+        }
+        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
+        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
+            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+        }
+    }
+
 }
