@@ -1037,9 +1037,9 @@ object DynamicProductDetailTracking {
     }
 
     object Branch {
-        fun eventBranchItemView(productInfo: DynamicProductInfoP1?, userId: String?, description: String) {
+        fun eventBranchItemView(productInfo: DynamicProductInfoP1?, userId: String?) {
             if (productInfo != null) {
-                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerData(productInfo, userId, description)))
+                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerDataForViewItem(productInfo, userId)))
             }
         }
 

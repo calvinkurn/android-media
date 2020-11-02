@@ -1231,7 +1231,7 @@ open class HomeViewModel @Inject constructor(
     fun getSearchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
-            getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall)
+            getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall, userSession.get().deviceId, userSession.get().userId)
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
@@ -1308,7 +1308,8 @@ open class HomeViewModel @Inject constructor(
                 shopId = grid.shopId,
                 warehouseId = grid.warehouseId,
                 productName = grid.name,
-                price = grid.price
+                price = grid.price,
+                userId = getUserId()
         ))
         getAtcUseCase.get().createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
@@ -1424,11 +1425,20 @@ open class HomeViewModel @Inject constructor(
     }
 
     override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
+        var addedPosition = position
+
         val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
-        if(position == -1 || position > newList.size) newList.add(visitable)
-        else newList.add(position, visitable)
+
+        //prevent widget becomes the last instead of recom
+        val listLastIndex = newList.lastIndex
+        if (addedPosition == listLastIndex && visitable !is HomeRecommendationFeedDataModel) {
+            addedPosition -= 1
+        }
+
+        if((addedPosition == -1 || addedPosition > newList.size)) newList.add(visitable)
+        else newList.add(addedPosition, visitable)
         withContext(homeDispatcher.get().ui()) {
             _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
         }

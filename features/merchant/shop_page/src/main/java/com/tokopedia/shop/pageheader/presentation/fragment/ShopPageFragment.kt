@@ -107,6 +107,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import java.io.File
 import javax.inject.Inject
 
@@ -502,13 +503,17 @@ class ShopPageFragment :
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
             shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
-            initViews(view)
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
             startPltNetworkPerformanceMonitoring()
             getInitialData()
+            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            if (!swipeToRefresh.isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+            initViews(view)
         }
     }
 
@@ -568,8 +573,6 @@ class ShopPageFragment :
 
     private fun getInitialData() {
         isFirstLoading = true
-        if (!swipeToRefresh.isRefreshing)
-            setViewState(VIEW_LOADING)
         startMonitoringNetworkPltShopPage()
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
@@ -1046,6 +1049,8 @@ class ShopPageFragment :
             errorButton.setOnClickListener {
                 isRefresh = true
                 getInitialData()
+                if (!swipeToRefresh.isRefreshing)
+                    setViewState(VIEW_LOADING)
             }
             swipeToRefresh.isRefreshing = false
         }
@@ -1128,6 +1133,8 @@ class ShopPageFragment :
         }
         isRefresh = true
         getInitialData()
+        if (!swipeToRefresh.isRefreshing)
+            setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
     }
 

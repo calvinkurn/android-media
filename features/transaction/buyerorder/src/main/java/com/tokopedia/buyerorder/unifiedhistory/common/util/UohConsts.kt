@@ -126,4 +126,9 @@ object UohConsts {
     const val QUANTITY = "quantity"
     const val NOTES = "notes"
     const val SHOP_ID = "shop_id"
+    const val PRODUCT_PRICE = "product_price"
+    const val PRODUCT_NAME = "product_name"
+    const val CATEGORY = "category"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
 }
