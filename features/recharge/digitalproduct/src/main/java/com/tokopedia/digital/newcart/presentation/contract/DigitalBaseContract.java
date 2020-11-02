@@ -8,13 +8,13 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.HashMap;
