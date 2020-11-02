@@ -22,7 +22,7 @@
         </shape>
     </item>
     <item
-        android:left="@dimen/spacing_lvl4"
+        android:left="@dimen/spacing_lvl5"
         android:width="@dimen/spacing_lvl2"
         tools:targetApi="m"
         tools:ignore="UnusedAttribute">
