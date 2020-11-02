@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import javax.inject.Inject
 
@@ -21,7 +20,8 @@ const val GET_ETALASE_LIST_QUERY: String = """query getEtalaseList(${'$'}shopId:
 }
 """
 
-@GqlQuery("GetEtalaseListQuery", GROUP_VALIDATE_NAME_QUERY)
+private const val SHOP_ID = "shopId"
+@GqlQuery("GetEtalaseListQuery", GET_ETALASE_LIST_QUERY)
 class GetEtalaseListUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<ResponseEtalase.Data>(graphqlRepository) {
 
@@ -31,9 +31,9 @@ class GetEtalaseListUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         setGraphqlQuery(GetEtalaseListQuery.GQL_QUERY)
     }
 
-    fun setParams(shopId: Int) {
+    fun setParams(shopId: String) {
         val params = mutableMapOf(
-                ParamObject.SHOP_ID to shopId
+                SHOP_ID to shopId
         )
         setRequestParams(params)
     }

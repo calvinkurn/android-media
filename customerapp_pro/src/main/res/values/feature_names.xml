@@ -110,6 +110,7 @@
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="title_top_ads_dashboard_type_selection">Tambah Iklan</string>
 
     <!--TopAds Create Ads-->
     <string name="create_group">Buat Group Iklan</string>

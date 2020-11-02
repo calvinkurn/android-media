@@ -16,4 +16,7 @@
     <string name="topads_headline_promotional_message_summary">Pesan promosimu sempurna!</string>
     <string name="topads_headline_ad_preview_text">Preview Iklan Toko</string>
     <string name="topads_headline_ad_disclaimer">Iklan Toko akan menampilkan 2-3 produkmu secara bergantian sesuai dengan kata kunci yang dicari.</string>
+    <string name="topads_headline_product_list_heading">Pilih Produk</string>
+    <string name="topads_headline_cari_produk">Cari Produk</string>
+    <string name="topads_headline_recommendasi">Rekomendasi</string>
 </resources>

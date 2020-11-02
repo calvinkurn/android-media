@@ -3,6 +3,7 @@ package com.tokopedia.top_ads_headline.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
 import com.tokopedia.top_ads_headline.view.fragment.AdDetailsFragment
+import com.tokopedia.top_ads_headline.view.fragment.TopAdsProductListFragment
 import dagger.Component
 
 @HeadlineAdsScope
@@ -10,4 +11,5 @@ import dagger.Component
 interface HeadlineAdsComponent {
     fun inject(adDetailsFragment: AdDetailsFragment)
     fun inject(adContentFragment: AdContentFragment)
+    fun inject(topAdsProductListFragment: TopAdsProductListFragment)
 }

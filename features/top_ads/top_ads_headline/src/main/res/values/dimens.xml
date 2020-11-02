@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="item_product_card_width">328dp</dimen>
+    <dimen name="item_product_card_height">88dp</dimen>
+
+</resources>

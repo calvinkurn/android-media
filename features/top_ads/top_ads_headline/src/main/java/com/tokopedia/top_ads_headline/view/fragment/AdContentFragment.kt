@@ -1,5 +1,6 @@
 package com.tokopedia.top_ads_headline.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,9 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
+import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
 import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ad_content_fragment.*
 import javax.inject.Inject
 
@@ -22,6 +25,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: AdContentViewModel
 
@@ -60,5 +66,13 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     override fun populateView() {
         contentSelectedText.text = getString(R.string.topads_headline_product_selected, "0")
+        text1.setOnClickListener {
+            val intent = Intent(activity, TopAdsProductListActivity::class.java)
+            startActivity(intent)
+        }
+        btn_submit.setOnClickListener {
+
+        }
     }
+
 }
