@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.buyerorder.common.view.DoubleTextView
+import com.tokopedia.utils.view.DoubleTextView
 import com.tokopedia.tradein.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
