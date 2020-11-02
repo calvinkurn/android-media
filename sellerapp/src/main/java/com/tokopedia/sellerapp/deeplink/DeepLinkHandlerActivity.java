@@ -15,8 +15,6 @@ import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.gm.applink.GMApplinkModule;
-import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
@@ -50,7 +48,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @DeepLinkHandler({
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        GMApplinkModule.class,
         SellerappAplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -71,7 +68,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return new DeepLinkDelegate(
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

@@ -42,6 +42,7 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleView
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -708,6 +709,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState().showDividerViewOnConnection(connectionDividerViewModel)
         getViewState().showLiveChatQuickReply(quickReplyList)
     }
+
+    override fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>) {
+        getViewState().showLiveChatSeprator(chatSepratorViewModel)
+        getViewState().showLiveChatQuickReply(quickReplyList)    }
 
     override fun isBackAllowed(isBackAllowed: Boolean) {
         this.isBackAllowed = isBackAllowed

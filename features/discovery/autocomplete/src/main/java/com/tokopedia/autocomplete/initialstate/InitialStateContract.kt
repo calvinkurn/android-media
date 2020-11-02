@@ -35,6 +35,8 @@ interface InitialStateContract {
         fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
 
         fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String)
+
+        fun refreshViewWithPosition(position: Int)
     }
 
     interface Presenter : CustomerPresenter<View> {

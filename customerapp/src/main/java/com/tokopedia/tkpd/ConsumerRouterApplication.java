@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -31,9 +30,8 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
-import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -45,7 +43,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -55,7 +52,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -91,7 +87,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -106,6 +101,7 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
@@ -154,7 +150,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
-        UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
         CMRouter,
@@ -172,7 +167,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
 
-    private CacheManager cacheManager;
+    protected CacheManager cacheManager;
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
@@ -410,11 +405,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return OrderHistoryActivity.createInstance(context, orderId, 1);
-    }
-
-    @Override
     public void onLogout(AppComponent appComponent) {
 
         forceLogout();
@@ -431,7 +421,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getHomeIntent(Context context) {
-        return MainParentActivity.start(context);
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override
@@ -519,14 +509,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         accessTokenRefresh.refreshToken();
     }
 
-    /**
-     * User PersistentCacheManager Library directly
-     */
-    @Deprecated
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         if (cacheManager == null) {
-            cacheManager = new GlobalCacheManager();
+            cacheManager = new PersistentCacheManager(this);
         }
         return cacheManager;
     }
@@ -665,11 +651,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
     }
 
     @Override
