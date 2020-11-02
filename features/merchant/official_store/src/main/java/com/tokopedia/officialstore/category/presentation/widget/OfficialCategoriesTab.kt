@@ -131,7 +131,7 @@ class OfficialCategoriesTab(context: Context,
                     requestLayout()
                 }
             }
-        if(animationExpand?.isStarted != true && !isExpand) {
+        if(this.measuredHeight == 32.dp) {
             animationExpand?.start()
             isExpand = true
             for (i in 0 until tabCount) {
@@ -164,7 +164,7 @@ class OfficialCategoriesTab(context: Context,
                     requestLayout()
                 }
             }
-        if(animationCollapse?.isStarted != true && isExpand) {
+        if(this.measuredHeight == 64.dp) {
             animationCollapse?.start()
             isExpand = false
             for (i in 0 until tabCount) {
