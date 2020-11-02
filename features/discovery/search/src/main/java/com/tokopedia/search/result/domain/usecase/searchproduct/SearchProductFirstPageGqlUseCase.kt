@@ -151,64 +151,64 @@ class SearchProductFirstPageGqlUseCase(
                         redirect
                         ad_click_url
                         headline{
-                            template_id
+                        template_id
+                        name
+                        image {
+                            full_url
+                            full_ecs
+                        }
+                        shop {
+                            id
                             name
-                            image {
-                                full_url
-                                full_ecs
-                            }
-                            shop {
+                            domain
+                            tagline
+                            slogan
+                            location
+                            city
+                            gold_shop
+                            gold_shop_badge
+                            shop_is_official
+                            product {
                                 id
                                 name
-                                domain
-                                tagline
-                                slogan
-                                location
-                                city
-                                gold_shop
-                                gold_shop_badge
-                                shop_is_official
-                                product {
-                                    id
-                                    name
-                                    price_format
-                                    applinks
-                                    product_rating
-                                    product_cashback
-                                    product_cashback_rate
-                                    product_new_label
-                                    count_review_format
-                                    image_product{
-                                        product_id
-                                        product_name
-                                        image_url
-                                        image_click_url
-                                    }
-                                    campaign {
-                                        original_price
-                                        discount_percentage
-                                    }
+                                price_format
+                                applinks
+                                product_rating
+                                product_cashback
+                                product_cashback_rate
+                                product_new_label
+                                count_review_format
+                                image_product{
+                                    product_id
+                                    product_name
+                                    image_url
+                                    image_click_url
                                 }
-                                image_shop {
-                                    cover
-                                    s_url
-                                    xs_url
-                                    cover_ecs
-                                    s_ecs
-                                    xs_ecs
+                                campaign {
+                                    original_price
+                                    discount_percentage
                                 }
                             }
-                            badges{
-                                image_url
-                                show
-                                title
+                            image_shop {
+                                cover
+                                s_url
+                                xs_url
+                                cover_ecs
+                                s_ecs
+                                xs_ecs
                             }
-                            button_text
-                            promoted_text
-                            description
-                            uri
-                            layout
-                            position
+                        }
+                        badges{
+                        image_url
+                        show
+                        title
+                        }
+                        button_text
+                        promoted_text
+                        description
+                        uri
+                        layout
+                        position
                         }
                         applinks
                     }
