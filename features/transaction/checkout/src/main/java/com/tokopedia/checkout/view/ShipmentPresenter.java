@@ -1796,7 +1796,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             mvc = gson.toJson(tmpMvcShippingBenefitUiModel);
         }
 
-        return mvc.replace("\n", "").replace(" ", "").replace("benefitAmount", "benefit_amount").replace("spId", "sp_id");
+        return mvc.replace("\n", "").replace(" ", "");
     }
 
     @NonNull
