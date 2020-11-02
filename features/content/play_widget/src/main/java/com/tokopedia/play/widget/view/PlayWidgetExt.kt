@@ -13,10 +13,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
-
-/**
- * Created by mzennis on 02/11/20.
- */
 fun ImageView.loadImage(url: String, listener: ImageHandler.ImageLoaderStateListener? = null){
     Glide.with(context)
             .load(url)
