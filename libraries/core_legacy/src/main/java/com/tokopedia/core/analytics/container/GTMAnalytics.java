@@ -84,7 +84,10 @@ public class GTMAnalytics extends ContextAnalytics {
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
-    private final int GTM_SIZE_THRESHOLD = 400;
+
+    private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
+    private static long gtmSizeThresholdLog = 0;
 
     private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
 
@@ -876,9 +879,17 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    private long getGTMSizeLogThreshold(){
+        if (gtmSizeThresholdLog == 0){
+            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY,
+                    GTM_SIZE_LOG_THRESHOLD_DEFAULT);
+        }
+        return gtmSizeThresholdLog;
+    }
+
     private void logEventSize(String eventName, Map<String, Object> values) {
         int size = values.toString().length();
-        if (size < GTM_SIZE_THRESHOLD) {
+        if (size < getGTMSizeLogThreshold()) {
             return;
         }
         String eventCategory = (String) values.get("eventCategory");
