@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.helper.glide
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import android.widget.ImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
@@ -34,7 +34,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: Loader
     this.loadImage(url) {
         cacheStrategy = MediaCacheStrategy.RESOURCE
         loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
+            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
                 listener?.successLoad(resource, dataSource)
             }
@@ -56,7 +56,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
         cacheStrategy = MediaCacheStrategy.RESOURCE
         transform = FitCenter()
         loaderListener = object : LoaderStateListener {
-            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
+            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
 
@@ -77,7 +77,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
         loaderListener = object : LoaderStateListener {
             override fun failedLoad(error: MediaException?) {}
 
-            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
+            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
         }
@@ -95,7 +95,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
                 listener?.failedLoad(error)
             }
 
-            override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
+            override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
                 listener?.successLoad(resource, dataSource)
                 handleOnResourceReady(dataSource, resource, performanceMonitoring)
             }
@@ -142,7 +142,7 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     return performanceMonitoring
 }
 
-fun handleOnResourceReady(dataSource: MediaDataSource?, resource: Drawable?, performanceMonitoring: PerformanceMonitoring?) {
+fun handleOnResourceReady(dataSource: MediaDataSource?, resource: Bitmap?, performanceMonitoring: PerformanceMonitoring?) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
     }

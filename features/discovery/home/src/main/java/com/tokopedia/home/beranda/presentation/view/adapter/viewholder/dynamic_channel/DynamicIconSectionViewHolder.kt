@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Point
-import android.graphics.drawable.Drawable
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -106,7 +106,7 @@ class DynamicIconSectionViewHolder(val view: View,
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
             holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : LoaderStateListener {
-                override fun successLoad(resource: Drawable?, dataSource: MediaDataSource?) {
+                override fun successLoad(resource: Bitmap?, dataSource: MediaDataSource?) {
                     holder.shimmeringIcon.hide()
                 }
 

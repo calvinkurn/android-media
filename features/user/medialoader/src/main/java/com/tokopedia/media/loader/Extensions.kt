@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
+import com.bumptech.glide.load.Key
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
@@ -68,42 +69,31 @@ internal fun ImageView.call(url: Any?, properties: Properties) {
             }
 
             val glideUrl = Loader.glideUrl(url)
-
-            GlideBuilder.loadImage(
-                    signatureKey = signature.mediaSignature(glideUrl),
-                    stateListener = loaderListener,
-                    cacheStrategy = cacheStrategy,
-                    thumbnailUrl = thumbnailUrl,
-                    overrideSize = overrideSize,
-                    decodeFormat = decodeFormat,
-                    placeHolder = placeHolder,
-                    isCircular = isCircular,
-                    transforms = transforms,
-                    radius = roundedRadius,
-                    isAnimate = isAnimate,
-                    transform = transform,
-                    imageView = imageView,
-                    resOnError = error,
-                    url = glideUrl
-            )
+            glideBuilder(imageView, glideUrl, this, signature.mediaSignature(glideUrl))
         } else {
-            GlideBuilder.loadImage(
-                    stateListener = loaderListener,
-                    cacheStrategy = cacheStrategy,
-                    thumbnailUrl = thumbnailUrl,
-                    overrideSize = overrideSize,
-                    decodeFormat = decodeFormat,
-                    placeHolder = placeHolder,
-                    signatureKey = signature,
-                    isCircular = isCircular,
-                    transforms = transforms,
-                    radius = roundedRadius,
-                    isAnimate = isAnimate,
-                    transform = transform,
-                    imageView = imageView,
-                    resOnError = error,
-                    url = url
-            )
+            glideBuilder(imageView, url, this, null)
         }
+    }
+}
+
+internal fun glideBuilder(imageView: ImageView, url: Any?, properties: Properties, signature: Key?) {
+    with(properties) {
+        GlideBuilder.loadImage(
+                signatureKey = signature,
+                stateListener = loaderListener,
+                cacheStrategy = cacheStrategy,
+                thumbnailUrl = thumbnailUrl,
+                overrideSize = overrideSize,
+                decodeFormat = decodeFormat,
+                placeHolder = placeHolder,
+                isCircular = isCircular,
+                transforms = transforms,
+                radius = roundedRadius,
+                isAnimate = isAnimate,
+                transform = transform,
+                imageView = imageView,
+                resOnError = error,
+                url = url
+        )
     }
 }

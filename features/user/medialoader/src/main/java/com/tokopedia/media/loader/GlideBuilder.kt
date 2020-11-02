@@ -23,6 +23,7 @@ import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
@@ -41,6 +42,12 @@ object GlideBuilder {
             "A2N+X[~qv]IU",
             "ABP?2U~X5J^~"
     )
+
+    private fun glideRequest(context: Context): GlideRequest<Bitmap> {
+        return GlideApp
+                .with(context)
+                .asBitmap()
+    }
 
     private fun glideListener(
             listener: LoaderStateListener?
@@ -62,7 +69,7 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
-            //listener?.successLoad(resource, mapToDataSource(dataSource))
+            listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
     }
@@ -86,6 +93,7 @@ object GlideBuilder {
             transforms: List<Transformation<Bitmap>>? = null
     ) {
         val localTransform = mutableListOf<Transformation<Bitmap>>()
+        val context = imageView.context
 
         val drawableError = if (resOnError != 0) {
             getDrawable(imageView.context, resOnError)
@@ -96,7 +104,7 @@ object GlideBuilder {
         if (url == null) {
             imageView.setImageDrawable(drawableError)
         } else {
-            GlideApp.with(imageView.context).asBitmap().apply {
+            glideRequest(context).apply {
 
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()
@@ -105,7 +113,7 @@ object GlideBuilder {
                     else -> {}
                 }
 
-                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(imageView.context, thumbnailUrl))
+                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
                 if (overrideSize != null) override(overrideSize.width, overrideSize.height)
                 if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
                 if (radius != 0f) transform(RoundedCorners(radius.toInt()))
@@ -127,7 +135,7 @@ object GlideBuilder {
                 } else {
                     if (!isCircular) {
                         blurHashFromUrl(url) { hash ->
-                            placeholder(BitmapDrawable(imageView.context.resources, blurring(imageView, hash)))
+                            placeholder(BitmapDrawable(context.resources, blurring(hash)))
                         }
                     } else {
                         placeholder(R.drawable.ic_media_default_placeholder)
@@ -151,7 +159,7 @@ object GlideBuilder {
         }
     }
 
-    private fun blurring(imageView: ImageView, blurHash: String?): Bitmap? {
+    private fun blurring(blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
                 width = 80,
@@ -161,8 +169,7 @@ object GlideBuilder {
     }
 
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
-        return GlideApp.with(context)
-                .asBitmap()
+        return glideRequest(context)
                 .load(resource)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
