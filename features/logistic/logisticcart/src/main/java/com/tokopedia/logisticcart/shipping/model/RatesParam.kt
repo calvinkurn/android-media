@@ -37,7 +37,9 @@ data class RatesParam(
         var is_express_checkout: Int? = null,
         var val_rates: String? = null,
         var used_otdg: Int? = null,
-        var occ: String = "0"
+        var occ: String = "0",
+        var po_time: Int = 0,
+        var is_fulfillment: Boolean = false
 ) {
 
     private constructor(builder: Builder) : this(
@@ -88,7 +90,9 @@ data class RatesParam(
             "psl_code" to psl_code,
             "products" to products,
             "unique_id" to unique_id,
-            "occ" to occ
+            "occ" to occ,
+            "po_time" to po_time,
+            "is_fulfillment" to is_fulfillment
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
