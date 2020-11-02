@@ -21,12 +21,13 @@ import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
+class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -40,6 +41,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
     }
+
+    override val role: Int get() = InboxConfig.role
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

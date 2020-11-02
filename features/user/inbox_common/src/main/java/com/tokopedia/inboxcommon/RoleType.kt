@@ -10,7 +10,7 @@ import androidx.annotation.IntDef
 ])
 annotation class RoleType {
     companion object {
-        const val BUYER: Int = 0
-        const val SELLER: Int = 1
+        const val BUYER: Int = 1
+        const val SELLER: Int = 2
     }
 }

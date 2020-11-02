@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
@@ -25,8 +26,13 @@ class NotificationViewModel @Inject constructor(
     val notificationItems: LiveData<Result<List<Visitable<NotificationTypeFactory>>>>
         get() = _mutateNotificationItems
 
-    fun loadNotification(page: Int) {
-        notifcenterDetailUseCase.getNotifications(page, filter,
+    fun loadNotification(
+            page: Int,
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        notifcenterDetailUseCase.getNotifications(page, filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
                 },

@@ -1,10 +1,10 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -26,7 +27,8 @@ import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(), InboxCommonFragment {
+class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
+        InboxFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -34,6 +36,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private var rv: VerticalRecyclerView? = null
     private var rvAdapter: NotificationAdapter? = null
     private var filter: NotificationFilterView? = null
+    private var containerListener: InboxFragmentContainer? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -46,8 +49,14 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl()
     override fun onItemClicked(t: Visitable<*>?) {}
 
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
+    }
+
     override fun loadData(page: Int) {
-        viewModel.loadNotification(page)
+        viewModel.loadNotification(page, containerListener?.role)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,7 +102,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onRoleChanged(role: Int) {
-        Toast.makeText(context, "Role Changed, $role", Toast.LENGTH_SHORT).show()
+        loadInitialData()
     }
 
     override fun initInjector() {

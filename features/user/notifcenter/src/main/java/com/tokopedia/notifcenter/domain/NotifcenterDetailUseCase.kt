@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
@@ -31,13 +32,15 @@ class NotifcenterDetailUseCase @Inject constructor(
             page: Int,
             @NotificationFilterType
             filter: Int,
+            @RoleType
+            role: Int,
             onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(
                 dispatchers.io(),
                 {
-                    val params = generateParam(page, filter)
+                    val params = generateParam(page, filter, role)
                     val response = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
                         setRequestParams(params)
@@ -59,12 +62,15 @@ class NotifcenterDetailUseCase @Inject constructor(
     private fun generateParam(
             page: Int,
             @NotificationFilterType
-            filter: Int
+            filter: Int,
+            @RoleType
+            role: Int
     ): Map<String, Any?> {
         // TODO: refactor fot account switcher
+
         return mapOf(
                 PARAM_PAGE to page,
-                PARAM_TYPE_ID to 1,
+                PARAM_TYPE_ID to role,
                 PARAM_TAG_ID to filter,
                 PARAM_TIMEZONE to timeZone,
                 PARAM_LAST_NOTIF_ID to lastNotifId,
