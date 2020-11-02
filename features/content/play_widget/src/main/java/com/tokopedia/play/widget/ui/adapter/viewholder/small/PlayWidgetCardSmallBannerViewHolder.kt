@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallBannerUiModel
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
+import com.tokopedia.play.widget.view.loadImage
 
 /**
  * Created by jegul on 07/10/20

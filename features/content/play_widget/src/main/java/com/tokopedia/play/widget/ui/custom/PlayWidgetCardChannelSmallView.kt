@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -17,7 +16,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
+import com.tokopedia.play.widget.view.loadImage
 
 /**
  * Created by jegul on 06/10/20

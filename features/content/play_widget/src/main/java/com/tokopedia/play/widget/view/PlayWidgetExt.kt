@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.widget.playBannerCarousel.extension
+package com.tokopedia.play.widget.view
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -14,10 +14,9 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
 
-fun View.showOrHideView(isShow: Boolean){
-    this.visibility = if(isShow) View.VISIBLE else View.GONE
-}
-
+/**
+ * Created by mzennis on 02/11/20.
+ */
 fun ImageView.loadImage(url: String, listener: ImageHandler.ImageLoaderStateListener? = null){
     Glide.with(context)
             .load(url)
