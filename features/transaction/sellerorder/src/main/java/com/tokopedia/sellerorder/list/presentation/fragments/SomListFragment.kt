@@ -123,12 +123,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         context?.let { CoachMark2(it) }
     }
 
+    private var wkwk = false
 
-    private var selectedOrderId: String = ""
     private var isRefreshingSelectedOrder: Boolean = false
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
     private var isJustRestored: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
+    private var coachMarkIndexToShow: Int = 0
+    private var selectedOrderId: String = ""
     private var fromWidget: Boolean = false
     private var filterStatusId: Int = 0
     private var tabActive: String = ""
@@ -468,20 +470,26 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                             // scroll to the order item if user press "Balik" until new order coachmark
                             if (currentIndex == 0) {
-                                coachMark?.hideCoachMark()
+                                shouldShowCoachMark = true
+                                coachMarkIndexToShow = 0
+                                coachMark?.isDismissed = true
                                 (rvSomList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(itemIndex, 0)
-                                coachMark?.showCoachMark(ArrayList(coachMarkItems.orEmpty()), index = 0)
+                                rvSomList.postDelayed({
+                                    adapter.notifyItemChanged(itemIndex)
+                                }, 250L)
                             } else {
                                 // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
                                 // auto deselect new order to show all order
                                 val targetStatusFilter = if (currentIndex == 3 && tabActive != SomConsts.STATUS_NEW_ORDER) {
+                                    coachMarkIndexToShow = 3
                                     SomConsts.STATUS_NEW_ORDER
                                 } else if (currentIndex == 2 && tabActive != SomConsts.STATUS_ALL_ORDER) {
+                                    coachMarkIndexToShow = 2
                                     SomConsts.STATUS_ALL_ORDER
                                 } else ""
                                 if (targetStatusFilter.isNotBlank()) {
                                     shouldShowCoachMark = true
-                                    coachMark?.hideCoachMark()
+                                    coachMark?.isDismissed = true
                                     viewModel.filterResult.value?.let {
                                         if (it is Success) {
                                             it.data.statusList.find { it.key == targetStatusFilter }?.let {
@@ -497,10 +505,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     })
                 }
                 coachMark?.showCoachMark(ArrayList(coachMarkItems.orEmpty()))
-            } else if (shouldShowCoachMark) { // for later use (after unify done checking)
+            } else if (shouldShowCoachMark) {
                 coachMarkItems = createCoachMarkItems(view)
                 shouldShowCoachMark = false
-                coachMark?.showCoachMark(ArrayList(coachMarkItems.orEmpty()))
+                coachMark?.isDismissed = false
+                coachMark?.showCoachMark(ArrayList(coachMarkItems.orEmpty()), index = coachMarkIndexToShow)
             }
             return@let
         }
@@ -1127,7 +1136,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             multiEditViews.gone()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText) {
             if (isLoadingInitialData) {
-                (adapter as SomListOrderAdapter).updateOrders(data)
+                // when using diffutil and there is no changes, onBind is not called, onBind needed
+                // to trigger show coachmark
+                if (shouldShowCoachMark) {
+                    adapter.setElements(data)
+                } else {
+                    (adapter as SomListOrderAdapter).updateOrders(data)
+                }
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
                 toggleBulkActionCheckboxVisibility()
