@@ -20,6 +20,7 @@ class OrderListMapper @Inject constructor() {
                     orderStatusId = it.orderStatusId,
                     status = it.status,
                     statusColor = it.statusColor,
+                    statusIndicatorColor = it.statusIndicatorColor,
                     destinationProvince = it.destinationProvince,
                     courierName = it.courierName.replace("Kurir", "", false).replace(Regex("\\s{2,}"), " "),
                     tickerInfo = it.tickerInfo,

@@ -79,7 +79,7 @@ class SomListOrderViewHolder(
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !multiEditEnabled) {
                 btnQuickAction.text = firstButton.displayName
-                btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_SECONDARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+                btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction.setOnClickListener { onQuickActionButtonClicked(element) }
                 btnQuickAction.show()
             } else {
@@ -199,7 +199,7 @@ class SomListOrderViewHolder(
             if (multiEditEnabled) {
                 somOrderListIndicator.gone()
             } else {
-                somOrderListIndicator.background = getColoredIndicator(context, element.statusColor)
+                somOrderListIndicator.background = getColoredIndicator(context, element.statusIndicatorColor)
                 somOrderListIndicator.show()
             }
         }

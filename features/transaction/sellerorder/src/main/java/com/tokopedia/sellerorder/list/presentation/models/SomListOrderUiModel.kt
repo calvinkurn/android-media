@@ -19,6 +19,7 @@ data class SomListOrderUiModel(
         val orderStatusId: Int = 0,
         val status: String = "",
         val statusColor: String = "#FFFFFF",
+        val statusIndicatorColor: String = "#FFFFFF",
         val destinationProvince: String = "",
         val courierName: String = "",
         val tickerInfo: TickerInfo = TickerInfo(),
