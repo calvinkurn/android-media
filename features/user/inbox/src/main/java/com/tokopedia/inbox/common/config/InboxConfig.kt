@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.common.config
 
+import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inboxcommon.RoleType
 
 object InboxConfig {
@@ -7,6 +8,7 @@ object InboxConfig {
     @RoleType
     var role: Int = RoleType.BUYER
         private set
+    var inboxCounter: InboxCounter = InboxCounter()
 
     interface ConfigListener {
         fun onRoleChanged(@RoleType role: Int)

@@ -64,6 +64,7 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
         initSellerMenuItem()
         initCheckMark()
         initClickListener()
+        initBadgeCounter()
     }
 
     private fun initBuyerMenuItem() {
@@ -103,6 +104,11 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
             InboxConfig.setRole(buyerItem?.role)
             dismiss()
         }
+    }
+
+    private fun initBadgeCounter() {
+        sellerItem?.bindBadgeCounter(InboxConfig.inboxCounter)
+        buyerItem?.bindBadgeCounter(InboxConfig.inboxCounter)
     }
 
     private fun bindItemName(item: AccountSwitcherMenuItem?, value: String) {

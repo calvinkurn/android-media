@@ -7,6 +7,8 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.domain.data.notification.InboxCounter
+import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -64,5 +66,10 @@ abstract class AccountSwitcherMenuItem : ConstraintLayout {
         smallIcon = view.findViewById(R.id.iv_small_icon)
         unreadCounter = view.findViewById(R.id.unread_counter)
         checkMark = view.findViewById(R.id.iv_checkmark)
+    }
+
+    fun bindBadgeCounter(inboxCounter: InboxCounter) {
+        val roleInboxCounter = inboxCounter.getByRole(role)
+        BadgeCounterBinder.bindBadgeCounter(unreadCounter, roleInboxCounter?.totalInt)
     }
 }
