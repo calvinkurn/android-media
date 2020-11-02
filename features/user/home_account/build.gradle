@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.searchbar)
 
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.libraries.adapterDelegate)
