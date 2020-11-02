@@ -11,24 +11,24 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.deals.DealsDummyResponseString
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING
 import com.tokopedia.deals.R
 import com.tokopedia.deals.home.ui.activity.mock.DealsHomeMockResponse
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
+import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.BaseMatcher
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.junit.*
-import java.lang.Exception
+import org.junit.After
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 28/09/20
@@ -57,15 +57,15 @@ class DealsHomeActivityTest {
         }
     }
 
-    @Before
-    fun setUp() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
     @Test
     fun testHomeLayout() {
+        changeLocation()
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         impressionOnLayout()
         clickOnSearchBar()
+        clickOnOrderList()
         clickOnOrderList()
         clickOnHomepageBanner()
         actionOnCategoryViewHolder()
@@ -73,17 +73,20 @@ class DealsHomeActivityTest {
         actionOnProductViewHolder()
         actionOnPopularLandmarkViewHolder()
         actionOnFavouriteCategoryViewHolder()
-        changeLocation()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_HOMEPAGE),
                 hasAllSuccess())
     }
 
     private fun changeLocation() {
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
         Thread.sleep(2000)
-        activityRule.activity.setCurrentLocation(Location(name = DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING,
-        id = activityRule.activity.currentLoc.id++))
+        onView(firstView(withText(DUMMY_LOCATION_ONE_STRING))).perform(click())
+        Thread.sleep(2000)
 
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
+        Thread.sleep(2000)
+        onView(firstView(withText(DUMMY_LOCATION_TWO_STRING))).perform(click())
         Thread.sleep(2000)
     }
 
@@ -117,29 +120,10 @@ class DealsHomeActivityTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(FAVOURITE_CATEGORY_POSITION)
         viewHolder?.let {
-            onView(secondView(withId(R.id.lst_voucher_popular_place_card)))
+            onView(getElementFromMatchAtPosition(withId(R.id.lst_voucher_popular_place_card), 1))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         }
         Thread.sleep(2000)
-    }
-
-    private fun <T> secondView(matcher: Matcher<T>): Matcher<T> {
-        return object : BaseMatcher<T>() {
-            var counter = 0
-            override fun matches(item: Any): Boolean {
-                if (matcher.matches(item)) {
-                    if (counter == 1) return true
-                    else counter++
-
-                    return false
-                }
-                return false
-            }
-
-            override fun describeTo(description: Description) {
-                description.appendText("should return second matching item")
-            }
-        }
     }
 
     private fun actionOnProductViewHolder() {
@@ -214,7 +198,8 @@ class DealsHomeActivityTest {
         Thread.sleep(3000)
         try {
             onView(withId(R.id.btn_ok_dialog)).perform(click())
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
     }
 
     private fun clickOnOrderList() {

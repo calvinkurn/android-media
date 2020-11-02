@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_TWO
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_FIRST_CATEGORY_TITLE
@@ -24,13 +25,15 @@ import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGO
 import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 08/10/20
@@ -59,16 +62,14 @@ class DealsCategoryActivityTest {
         }
     }
 
-    @Before
-    fun setUp() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
     @Test
     fun testCategoryPageFlow() {
+        onChangeLocation()
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         clickOnRelaksasiTab()
         swipeUpOnCategoryTab()
-        onChangeLocation()
         clickOnSearchBar()
         actionOnBrandViewHolder()
         filterProducts()
@@ -110,9 +111,14 @@ class DealsCategoryActivityTest {
     }
 
     private fun onChangeLocation() {
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
         Thread.sleep(2000)
-        val id = activityRule.activity.currentLoc.id++
-        activityRule.activity.setCurrentLocation(Location(id))
+        onView(CommonMatcher.firstView(withText(DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING))).perform(click())
+        Thread.sleep(2000)
+
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
+        Thread.sleep(2000)
+        onView(CommonMatcher.firstView(withText(DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING))).perform(click())
         Thread.sleep(2000)
     }
 

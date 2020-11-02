@@ -14,16 +14,16 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -45,16 +45,13 @@ class DealsBrandsActivityTest {
         }
     }
 
-    @Before
-    fun setUp() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
     @Test
     fun testBrandLayout() {
+        changeLocationBrandPage()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         actionOnDealsBrandViewHolder()
         clickOnRelaksasiTab()
-        changeLocationBrandPage()
 
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRANDPAGE),
                 hasAllSuccess())
@@ -74,9 +71,14 @@ class DealsBrandsActivityTest {
     }
 
     private fun changeLocationBrandPage() {
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
         Thread.sleep(2000)
-        val id = activityRule.activity.currentLoc.id++
-        activityRule.activity.setCurrentLocation(Location(id))
+        onView(CommonMatcher.firstView(withText(DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING))).perform(click())
+        Thread.sleep(2000)
+
+        onView(withId(R.id.txtDealsBaseLocationTitle)).perform(click())
+        Thread.sleep(2000)
+        onView(CommonMatcher.firstView(withText(DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING))).perform(click())
         Thread.sleep(2000)
     }
 
