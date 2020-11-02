@@ -11,6 +11,8 @@ import androidx.slice.builders.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.seller.action.R
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
+import com.tokopedia.seller.action.order.const.SellerActionOrderIconUrl
 
 class SellerNotLoginSlice(context: Context,
                           sliceUri: Uri,
@@ -23,7 +25,7 @@ class SellerNotLoginSlice(context: Context,
                     title = titleText.orEmpty()
                 }
                 row {
-                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_no_login), ListBuilder.LARGE_IMAGE)
+                    setTitleItem(IconCompat.createWithBitmap(SellerActionOrderIconUrl.NotLogin.getBitmap(context)), ListBuilder.SMALL_IMAGE)
                     title = context.getString(R.string.seller_action_not_login_title)
                     subtitle = context.getString(R.string.seller_action_order_not_login_desc_short)
                     primaryAction = createLoginAction()

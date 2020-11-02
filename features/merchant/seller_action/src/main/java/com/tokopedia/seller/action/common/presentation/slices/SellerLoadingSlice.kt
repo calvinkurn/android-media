@@ -11,6 +11,8 @@ import androidx.slice.builders.header
 import androidx.slice.builders.list
 import androidx.slice.builders.row
 import com.tokopedia.seller.action.R
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
+import com.tokopedia.seller.action.order.const.SellerActionOrderIconUrl
 
 class SellerLoadingSlice(context: Context,
                          sliceUri: Uri,
@@ -23,7 +25,7 @@ class SellerLoadingSlice(context: Context,
                     title = titleText.orEmpty()
                 }
                 row {
-                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_loading), ListBuilder.LARGE_IMAGE)
+                    setTitleItem(IconCompat.createWithBitmap(SellerActionOrderIconUrl.Loading.getBitmap(context)), ListBuilder.SMALL_IMAGE)
                     title = context.getString(R.string.seller_action_loading_title)
                     subtitle = context.getString(R.string.seller_action_order_loading_desc_short)
                     primaryAction = createActivityAction()

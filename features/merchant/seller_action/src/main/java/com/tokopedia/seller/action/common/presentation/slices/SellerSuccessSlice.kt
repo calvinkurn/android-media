@@ -12,6 +12,8 @@ import androidx.slice.builders.list
 import androidx.slice.builders.row
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.common.presentation.model.SellerSuccessItem
+import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
+import com.tokopedia.seller.action.order.const.SellerActionOrderIconUrl
 
 abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: List<T>,
                                                          context: Context,
@@ -37,7 +39,7 @@ abstract class SellerSuccessSlice<T : SellerSuccessItem>(private val itemList: L
                 title = titleText.orEmpty()
             }
             row {
-                setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_seller_action_empty), ListBuilder.LARGE_IMAGE)
+                setTitleItem(IconCompat.createWithBitmap(SellerActionOrderIconUrl.Empty.getBitmap(context)), ListBuilder.SMALL_IMAGE)
                 title = context.getString(R.string.seller_action_order_empty_title)
                 subtitle = context.getString(R.string.seller_action_order_empty_desc_short)
                 primaryAction = createActivityAction()
