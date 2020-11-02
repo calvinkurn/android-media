@@ -136,13 +136,14 @@ class CustomSearchView : FrameLayout {
             }
         }
         textManage?.setOnClickListener {
-            val text = (it as Typography).text
-            if (text == context.resources.getString(R.string.label_manage)) {
-                setTextManageWording(context.resources.getString(R.string.label_cancel))
-                listener?.onManageDeleteWishlistClicked()
-            } else {
-                setTextManageWording(context.resources.getString(R.string.label_manage))
-                listener?.onCancelDeleteWishlistClicked()
+            (it as? Typography)?.text?.let { text ->
+                if (text == context.resources.getString(R.string.label_manage)) {
+                    setTextManageWording(context.resources.getString(R.string.label_cancel))
+                    listener?.onManageDeleteWishlistClicked()
+                } else {
+                    setTextManageWording(context.resources.getString(R.string.label_manage))
+                    listener?.onCancelDeleteWishlistClicked()
+                }
             }
         }
     }
