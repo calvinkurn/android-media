@@ -10,6 +10,13 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/new_navigation_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -22,7 +29,9 @@
         app:contentInsetStartWithNavigation="0dp"
         app:elevation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance">
+        app:titleTextAppearance="?titleTextAppearance"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -51,7 +51,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -575,6 +578,37 @@ class ShopPageFragment :
     }
 
     private fun initToolbar() {
+        if(isMyShop){
+            initOldToolbar()
+        }
+        else{
+            val EXP_NAME = "Navigation Revamp"
+            val VARIANT_OLD = "existing navigation"
+            val VARIANT_REVAMP = "navigation revamp"
+            val navType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    EXP_NAME, VARIANT_OLD
+            )
+//            if(navType == VARIANT_REVAMP){
+                initNewToolbar()
+//            }else{
+//                initOldToolbar()
+//            }
+        }
+    }
+
+    private fun initNewToolbar() {
+        new_navigation_toolbar?.apply {
+            show()
+            setIcon(IconBuilder()
+                    .addIcon(IconList.ID_SHARE){}
+                    .addIcon(IconList.ID_CART){}
+                    .addIcon(IconList.ID_NAV_GLOBAL){}
+            )
+        }
+    }
+
+    private fun initOldToolbar() {
+        toolbar?.show()
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 setSupportActionBar(toolbar)
