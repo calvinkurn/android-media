@@ -46,7 +46,7 @@ class PictureScrollingView @JvmOverloads constructor(
                 override fun onPageSelected(position: Int) {
                     imageSliderPageControl?.setCurrentIndicator(position)
                     pagerAdapter.media[position].run {
-                        if(position != lastPosition) {
+                        if (position != lastPosition) {
                             onSwipePictureListener.invoke(type, urlOriginal, position, componentTrackData)
                         }
                     }

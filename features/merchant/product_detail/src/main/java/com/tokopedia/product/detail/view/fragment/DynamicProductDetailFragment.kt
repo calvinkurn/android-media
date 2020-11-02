@@ -313,7 +313,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onPause()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
-            if(alreadyHitSwipeTracker != null) {
+            if (alreadyHitSwipeTracker != null) {
                 alreadyHitSwipeTracker = DynamicProductDetailAlreadyHit
             }
         }
@@ -855,8 +855,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductSnapshotViewHolder
      */
     override fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
-        if(alreadyHitSwipeTracker != DynamicProductDetailAlreadyHit) {
-            DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1,componentTrackDataModel
+        if (alreadyHitSwipeTracker != DynamicProductDetailAlreadyHit) {
+            DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), trackingQueue, type, url, position)
             alreadyHitSwipeTracker = DynamicProductDetailAlreadySwipe
         }
