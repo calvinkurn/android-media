@@ -123,8 +123,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         context?.let { CoachMark2(it) }
     }
 
-    private var wkwk = false
-
     private var isRefreshingSelectedOrder: Boolean = false
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
@@ -192,10 +190,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun Throwable.showErrorToaster() {
-        if (this is UnknownHostException || this is SocketTimeoutException) {
-            showNoInternetConnectionToaster()
-        } else {
-            showServerErrorToaster()
+        if (globalErrorSomList.isVisible) {
+            if (this is UnknownHostException || this is SocketTimeoutException) {
+                showNoInternetConnectionToaster()
+            } else {
+                showServerErrorToaster()
+            }
         }
     }
 
@@ -1102,6 +1102,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         somListLoading.gone()
         rvSomList.gone()
         multiEditViews.gone()
+        btnBulkAction.gone()
         getSwipeRefreshLayout(view)?.apply {
             isRefreshing = false
             isEnabled = false
@@ -1112,6 +1113,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         globalErrorSomList.setType(errorType)
         globalErrorSomList.show()
+        errorToaster?.dismiss()
     }
 
     private fun renderTickers(data: List<TickerData>) {
