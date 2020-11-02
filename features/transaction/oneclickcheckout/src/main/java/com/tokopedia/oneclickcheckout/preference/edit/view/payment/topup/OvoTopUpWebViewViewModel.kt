@@ -2,13 +2,11 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.ext.encodeOnce
 import javax.inject.Inject
 
 class OvoTopUpWebViewViewModel @Inject constructor(private val getOvoTopUpUrlUseCase: GetOvoTopUpUrlUseCase,
@@ -25,9 +23,10 @@ class OvoTopUpWebViewViewModel @Inject constructor(private val getOvoTopUpUrlUse
     }
 
     private fun generateUrl(url: String, userSession: UserSessionInterface): String {
-        return URLGenerator.generateURLSessionLogin(
-                url.encodeOnce(),
-                userSession.deviceId,
-                userSession.userId)
+        return url
+//        return URLGenerator.generateURLSessionLogin(
+//                url.encodeOnce(),
+//                userSession.deviceId,
+//                userSession.userId)
     }
 }

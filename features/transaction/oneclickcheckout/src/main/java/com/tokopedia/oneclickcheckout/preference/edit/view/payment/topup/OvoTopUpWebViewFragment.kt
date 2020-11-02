@@ -136,7 +136,8 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(url: String) {
-        webView?.loadAuthUrl(url, userSession)
+//        webView?.loadAuthUrl(url, userSession)
+        webView?.loadUrl(url)
         webView?.visible()
         globalError?.gone()
     }
