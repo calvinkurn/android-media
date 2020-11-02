@@ -1,11 +1,11 @@
 package com.tokopedia.autocomplete.suggestion.di
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.interceptor.DebugInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import dagger.Module
 import dagger.Provides

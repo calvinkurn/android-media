@@ -144,7 +144,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         addInStackedObserverList()
     }
 
-    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(this, Observer {
+    private fun addInStackedObserverList() = presenter.inStackedAdapter.observe(viewLifecycleOwner, Observer {
         it?.let {
             showCouponInStackBottomSheet(it)
         }
@@ -208,6 +208,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
             container.displayedChild = CONTAINER_ERROR
+            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(appContext))
         }
         swipe_refresh_layout.isRefreshing = false
     }

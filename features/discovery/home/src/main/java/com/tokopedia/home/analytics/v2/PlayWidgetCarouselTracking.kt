@@ -18,7 +18,7 @@ object PlayWidgetCarouselTracking : BaseTracking() {
     private const val PROMO_CHANNEL_NAME = "/ - p%s - play sgc channel - %s"
     private const val EVENT_LABEL_BANNER_PLAY = "click on banner play - %s - %s"
     private const val EVENT_LABEL_CONTENT_PLAY = "click channel - %s - %s - %s - %s - %s"
-    private const val EVENT_LABEL_CLICK_VIEW_ALL = "0 - Tokopedia Play"
+    private const val EVENT_LABEL_CLICK_VIEW_ALL = "0 - Tokopedia Play - %s"
     private const val SGC_BANNER = "play sgc banner"
     private const val SGC_CHANNEL = "play sgc channel"
 
@@ -136,24 +136,29 @@ object PlayWidgetCarouselTracking : BaseTracking() {
 
     fun getClickSeeOtherContent(
             creativeName: String,
+            foldPosition: String,
             userId: String
     ): HashMap<String, Any>{
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, HOMEPAGE_CMP,
                 Action.KEY, CLICK_OTHER_CONTENT,
-                Label.KEY, creativeName,
-                UserId.KEY, userId
+                Label.KEY, "$creativeName - $foldPosition",
+                UserId.KEY, userId,
+                BusinessUnit.KEY, BusinessUnit.ADS_SOLUTION,
+                CurrentSite.KEY, CurrentSite.DEFAULT
         ) as HashMap<String, Any>
     }
 
-    fun getClickSeeAll(userId: String): HashMap<String, Any>{
+    fun getClickSeeAll(userId: String, foldPosition: String): HashMap<String, Any>{
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, HOMEPAGE_CMP,
                 Action.KEY, CLICK_VIEW_ALL,
-                Label.KEY, EVENT_LABEL_CLICK_VIEW_ALL,
-                UserId.KEY, userId
+                Label.KEY, String.format(EVENT_LABEL_CLICK_VIEW_ALL, foldPosition),
+                UserId.KEY, userId,
+                BusinessUnit.KEY, BusinessUnit.ADS_SOLUTION,
+                CurrentSite.KEY, CurrentSite.DEFAULT
         ) as HashMap<String, Any>
     }
 

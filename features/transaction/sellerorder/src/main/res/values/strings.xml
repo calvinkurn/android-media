@@ -74,10 +74,13 @@
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="informasi_pembayaran">Informasi Pembayaran</string>
-    <string name="product_price_label">Harga</string>
+    <string name="product_price_label">Total Harga</string>
     <string name="shipping_price_label">Total Ongkos Kirim</string>
-    <string name="insurance_price_label">Asuransi</string>
+    <string name="insurance_price_label">Biaya Asuransi</string>
     <string name="additional_price_label">Biaya Tambahan Penjual</string>
+    <string name="purchase_protection_fee_label">Biaya Proteksi Produk (%1$d Barang)</string>
+    <string name="readiness_insurance_fee_label">Jaminan Ready Stock (%1$d Barang)</string>
+    <string name="cod_fee_label">Biaya Bayar Ditempat</string>
     <string name="total_price_label">Total Pembayaran</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="tolak_pesanan">Tolak Pesanan</string>

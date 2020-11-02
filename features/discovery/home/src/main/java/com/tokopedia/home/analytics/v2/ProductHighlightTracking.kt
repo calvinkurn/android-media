@@ -1,6 +1,5 @@
 package com.tokopedia.home.analytics.v2
 
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -9,7 +8,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO = "impression on product dynamic channel hero"
     private const val EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO = "click on product dynamic channel hero"
 
-    private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero"
+    private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero - product"
 
     fun sendRecommendationListClick(
             channelId: String,
@@ -23,7 +22,8 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridFreeOngkirIsActive: Boolean,
             position: Int,
             isTopAds: Boolean,
-            recommendationType: String) {
+            recommendationType: String,
+            pageName: String) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
                 channelId,
                 headerName,
@@ -36,6 +36,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 gridFreeOngkirIsActive,
                 isTopAds,
                 recommendationType,
+                pageName,
                 position))
     }
 
@@ -48,7 +49,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
                 eventLabel = Label.NONE,
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, channel.channelHeader.name
+                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
                 ),
                 products = channel.channelGrids.mapIndexed { index, grid ->
                     Product(
@@ -66,11 +67,15 @@ object ProductHighlightTracking : BaseTrackerConst() {
                             isTopAds = grid.isTopads,
                             isCarousel = false,
                             headerName = channel.channelHeader.name,
-                            recommendationType = grid.recommendationType
+                            recommendationType = grid.recommendationType,
+                            pageName = channel.pageName
                     )
                 })
                 .appendChannelId(channel.id)
                 .appendUserId(userId)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 
@@ -86,6 +91,7 @@ object ProductHighlightTracking : BaseTrackerConst() {
             gridFreeOngkirIsActive: Boolean,
             isTopAds: Boolean,
             recommendationType: String,
+            pageName: String,
             position: Int) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(
@@ -109,14 +115,18 @@ object ProductHighlightTracking : BaseTrackerConst() {
                                 isTopAds = isTopAds,
                                 isCarousel = false,
                                 headerName = headerName,
-                                recommendationType = recommendationType
+                                recommendationType = recommendationType,
+                                pageName = pageName
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, headerName
+                        Value.LIST, "1", PRODUCT_DYNAMIC_CHANNEL_HERO
                 ))
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 

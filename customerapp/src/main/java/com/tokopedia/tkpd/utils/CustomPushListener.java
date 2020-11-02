@@ -4,10 +4,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;

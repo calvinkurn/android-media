@@ -68,7 +68,6 @@ fun createHomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
-            getDynamicChannelsUseCase = Lazy{getDynamicChannelsUseCase},
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
             getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},

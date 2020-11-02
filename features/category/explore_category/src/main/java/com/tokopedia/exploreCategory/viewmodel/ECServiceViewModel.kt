@@ -73,7 +73,6 @@ class ECServiceViewModel @Inject constructor(
         }
         notifyAdapter.value = categoryIndex
 
-        ECAnalytics.trackEventClickFeature(newCurrentCG, categoryIndex)
     }
 
 

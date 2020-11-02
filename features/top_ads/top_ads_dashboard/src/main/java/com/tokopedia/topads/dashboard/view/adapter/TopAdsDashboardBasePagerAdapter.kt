@@ -23,6 +23,8 @@ class TopAdsDashboardBasePagerAdapter(fm: FragmentManager, behavior: Int) : Frag
         return itemTabList[position].title
     }
 
+    fun getList(): MutableList<FragmentTabItem> = itemTabList
+
     fun setList(item: List<FragmentTabItem>) {
         item.let {
             itemTabList.clear()

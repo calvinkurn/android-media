@@ -129,14 +129,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun checkUserPushStatus(position: Int) {
-        launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
-            if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
-                pushBannerSubscription.value = position
-            }
-        }, onError = {
-            it.printStackTrace()
-        })
+        if (isUserLoggedIn()) {
+            launchCatchError(block = {
+                val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
+                if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
+                    pushBannerSubscription.value = position
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getCampaignId(position: Int): Int {

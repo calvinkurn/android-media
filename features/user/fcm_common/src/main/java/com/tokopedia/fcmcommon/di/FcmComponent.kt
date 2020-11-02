@@ -5,9 +5,8 @@ import com.tokopedia.fcmcommon.service.SyncFcmTokenService
 import dagger.Component
 
 @FcmScope
-@Component(modules = [FcmModule::class, FcmQueryModule::class])
+@Component(modules = [FcmModule::class])
 interface FcmComponent {
     fun firebaseMessagingManager(): FirebaseMessagingManager
-
     fun inject(syncFcmTokenService: SyncFcmTokenService)
 }

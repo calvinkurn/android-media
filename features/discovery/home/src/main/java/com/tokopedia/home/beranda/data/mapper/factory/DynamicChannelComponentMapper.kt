@@ -13,6 +13,7 @@ object DynamicChannelComponentMapper {
                 verticalPosition = verticalPosition,
                 contextualInfo = channel.contextualInfo,
                 widgetParam = channel.widgetParam,
+                pageName = channel.pageName,
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,
@@ -97,13 +98,15 @@ object DynamicChannelComponentMapper {
                             },
                             hasBuyButton = it.hasBuyButton,
                             rating = it.rating,
+                            ratingFloat = it.ratingFloat,
                             countReview = it.countReview,
                             backColor = it.backColor,
                             benefit = ChannelBenefit(
                                     it.benefit.type,
                                     it.benefit.value
                             ),
-                            textColor = it.textColor
+                            textColor = it.textColor,
+                            recommendationType = it.recommendationType
                     )
                 }
         )

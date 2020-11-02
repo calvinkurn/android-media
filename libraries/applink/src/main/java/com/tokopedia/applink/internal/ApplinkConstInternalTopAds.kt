@@ -22,12 +22,6 @@ object ApplinkConstInternalTopAds {
     @JvmField
     val TOPADS_DASHBOARD_INTERNAL = "${INTERNAL_TOPADS}/dashboard"
     @JvmField
-    val TOPADS_KEYWORD_LIST = "${INTERNAL_TOPADS}/keyword-list"
-    @JvmField
-    val TOPADS_ADD_PROMO_OPTION = "${INTERNAL_TOPADS}/add-promo-option"
-    @JvmField
-    val TOPADS_PRODUCT_ADS_LIST = "${INTERNAL_TOPADS}/product-ads-list"
-    @JvmField
     val TOPADS_GROUP_ADS_LIST = "${INTERNAL_TOPADS}/group-ads-list"
     @JvmField
     val TOPADS_GROUP_NEW_PROMO = "${INTERNAL_TOPADS}/group-new-promo"
@@ -43,8 +37,6 @@ object ApplinkConstInternalTopAds {
     val TOPADS_CREATION_ONBOARD = "${INTERNAL_TOPADS}/creation-onboard"
     @JvmField
     val TOPADS_HISTORY_CREDIT = "${INTERNAL_TOPADS}/history-credit"
-    @JvmField
-    val TOPADS_AUTOADS = "${DeeplinkConstant.SCHEME_SELLERAPP}://${HOST_TOPADS}/autoads"
     @JvmField
     val TOPADS_AUTOADS_CREATE = "${INTERNAL_TOPADS}/create-autoads"
     @JvmField

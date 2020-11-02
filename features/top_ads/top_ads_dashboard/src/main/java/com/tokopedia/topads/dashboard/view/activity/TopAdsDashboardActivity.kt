@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -49,10 +50,11 @@ import javax.inject.Inject
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight, TopAdsProductIklanFragment.AdInfo {
 
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 2
+    private var adType = "-1"
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -63,6 +65,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         setContentView(R.layout.topads_dash_activity_base_layout)
         renderTabAndViewPager()
@@ -233,6 +236,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         return false
     }
 
+    fun getAdInfo(): String? = adType
+
     private fun openCreateForm() {
         if (AppUtil.isSellerInstalled(this)) {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
@@ -253,5 +258,18 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     override fun gotToInsights() {
         view_pager?.currentItem = INSIGHT_PAGE
+    }
+
+    override fun adInfo(adInfo: String) {
+        adType = adInfo
+        val fragments = (view_pager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+        for (frag in fragments) {
+            when (frag.fragment) {
+                is BerandaTabFragment -> {
+                    (frag.fragment as BerandaTabFragment).loadStatisticsData()
+                }
+            }
+        }
+
     }
 }

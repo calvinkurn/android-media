@@ -75,7 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"
-                    android:text="@string/iklan_otomatis"
+                    android:text="@string/topads_common_iklan_otomatis"
                     android:textColor="@color/black"
                     app:typographyType="heading_3"
                     app:layout_constraintEnd_toEndOf="parent"

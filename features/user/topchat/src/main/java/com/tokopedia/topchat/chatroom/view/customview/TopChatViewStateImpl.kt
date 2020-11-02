@@ -259,7 +259,15 @@ class TopChatViewStateImpl constructor(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
+        initListPadding(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel.blockedStatus)
+    }
+
+    private fun initListPadding(viewModel: ChatroomViewModel) {
+        if (!viewModel.replyable) {
+            val bottomPadding = recyclerView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            recyclerView.setPadding(0, 0, 0, bottomPadding.toInt())
+        }
     }
 
     private fun updateBlockStatus(viewModel: ChatroomViewModel) {

@@ -25,7 +25,7 @@ data class DataItem(
         val value: String? = "",
 
         @SerializedName("target_component_id")
-        val targetComponentId: String? = "",
+        var targetComponentId: String? = "",
 
         @SerializedName("background_image")
         val backgroundImage: String? = "",
@@ -38,6 +38,9 @@ data class DataItem(
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
+
+        @SerializedName("filter")
+        val filterKey: String? = "",
 
         @SerializedName("isSelected")
         var isSelected: Boolean = false,

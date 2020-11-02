@@ -37,7 +37,7 @@ interface InboxDetailContract {
         fun showNoTicketView(messageError: List<String?>?)
     }
 
-    interface InboxDetailPresenter : InboxBasePresenter {
+    interface Presenter : InboxBasePresenter {
         fun getSearchListener(): CustomEditText.Listener
         fun onImageSelect(image: ImageUpload)
         fun watcher(): TextWatcher
@@ -54,6 +54,7 @@ interface InboxDetailContract {
         fun getTicketStatus(): String
         fun getTicketDetails(ticketId: String?)
         fun getTicketId(): String?
+        fun getUserId():String
 
     }
 }
