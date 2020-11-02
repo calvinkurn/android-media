@@ -43,7 +43,7 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
 
     init {
         val view = View.inflate(context, R.layout.widget_umrah_seekbar_range, this)
-        seekBarThumbSize = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30)
+        seekBarThumbSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6)
         if (seekBarWidth == 0F) {
             view.afterMeasured {
                 seekBarLeftOffset = this@UmrahSeekbarRangeWidget.dbs_background.x
@@ -83,7 +83,7 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
 
     private fun initSeekbarNumbersAdapter() {
         filterSeekbarRangeWidgetAdapter.items = seekbarNumbers
-        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, RecyclerView.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, RecyclerView.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
         rv_umrah_seekbar_range.layoutManager = spanningLinearLayoutManager
     }
 
