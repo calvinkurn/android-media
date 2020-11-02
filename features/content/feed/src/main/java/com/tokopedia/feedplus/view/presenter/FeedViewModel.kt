@@ -523,7 +523,8 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             val data = AtcViewModel()
             data.applink = postTagItem.applink
             if (postTagItem.shop.isNotEmpty()) {
-                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId, productName = postTagItem.text, price = postTagItem.price)
+                val params = AddToCartUseCase.getMinimumParams(postTagItem.id, postTagItem.shop[0].shopId,
+                        productName = postTagItem.text, price = postTagItem.price, userId = userId)
                 val result = atcUseCase.createObservable(params).toBlocking().single()
                 data.isSuccess = result.data.success == 0
             }

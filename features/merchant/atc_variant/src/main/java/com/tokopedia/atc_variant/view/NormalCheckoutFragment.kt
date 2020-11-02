@@ -71,6 +71,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMEND
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
 import javax.inject.Inject
 
@@ -88,6 +89,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
     var irisSession = ""
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(activity)
+    }
 
     var loadingProgressDialog: AlertDialog? = null
     val fragmentViewModel: FragmentViewModel by lazy {
@@ -1099,6 +1103,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartOcsRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
             addToCartOcsRequestParams.category = selectedProductInfo?.category?.name ?: ""
             addToCartOcsRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
+            addToCartOcsRequestParams.userId = userSession.userId
 
             viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         } else {
@@ -1118,6 +1123,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
             addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
             addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
+            addToCartRequestParams.userId = userSession.userId
 
             viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         }

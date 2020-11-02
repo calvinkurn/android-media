@@ -68,8 +68,4 @@ class ReviewHistoryViewModel @Inject constructor(
     private fun resetPage() {
         updatePage(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE)
     }
-
-    private fun <T> MutableLiveData<T>.notifyObserver() {
-        this.value = this.value
-    }
 }

@@ -263,7 +263,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 quantity = product.minOrder.toString(),
                 productName = product.productName,
                 category = product.category,
-                price = product.priceInt.toString()
+                price = product.priceInt.toString(),
+                userId = session.userId
         )
         presenter.addToCart(addToCartOccRequestParams, {
             analytics.trackClickOccProduct(

@@ -16,6 +16,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -23,7 +25,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.track.TrackApp;
@@ -61,7 +62,7 @@ public class BaseActivity extends AppCompatActivity implements
 
     private Boolean isPause = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    protected GlobalCacheManager globalCacheManager;
+    protected CacheManager cacheManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class BaseActivity extends AppCompatActivity implements
         userSessionInterface = new UserSession(getBaseContext());
         gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        globalCacheManager = new GlobalCacheManager();
+        cacheManager = PersistentCacheManager.instance;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class BaseActivity extends AppCompatActivity implements
             }
         }
         gcmHandler = null;
-        globalCacheManager = null;
+        cacheManager = null;
     }
 
     @Override

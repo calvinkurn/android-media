@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.dummy.FARE_CALENDAR_DATA
 import com.tokopedia.flight.homepage.presentation.model.FlightFareData
+import com.tokopedia.flight.homepage.usecase.GetFlightFareUseCase
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -29,9 +30,12 @@ class FlightFareCalendarViewModelTest {
 
     private lateinit var viewModel: FlightFareCalendarViewModel
 
+
+    private val getFlightFareUseCase = mockk<GetFlightFareUseCase>()
+
     @Before
     fun setUp() {
-        viewModel = FlightFareCalendarViewModel(dispatcherProvider, gqlRepository)
+        viewModel = FlightFareCalendarViewModel(dispatcherProvider, getFlightFareUseCase)
     }
 
     @Test
@@ -40,7 +44,7 @@ class FlightFareCalendarViewModelTest {
         coEvery { gqlRepository.getReseponse(any()) } coAnswers { throw Throwable("Failed") }
 
         // when
-        viewModel.getFareFlightCalendar("", hashMapOf(), Date(), Date())
+        viewModel.getFareFlightCalendar(hashMapOf(), Date(), Date())
 
         // then
         viewModel.fareFlightCalendarData.value?.size shouldBe 0
@@ -57,7 +61,7 @@ class FlightFareCalendarViewModelTest {
         coEvery { gqlRepository.getReseponse(any()) } returns gqlResponse
 
         // when
-        viewModel.getFareFlightCalendar("", hashMapOf(), Date(), Date())
+        viewModel.getFareFlightCalendar(hashMapOf(), Date(), Date())
 
         // then
         viewModel.fareFlightCalendarData.value?.size shouldBe 0

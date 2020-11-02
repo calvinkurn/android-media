@@ -7,6 +7,7 @@
     <dimen name="product_card_list_image_size">96dp</dimen>
     <dimen name="product_card_carousel_list_image_size">80dp</dimen>
 
+    <dimen name="product_card_content_margin_top">4dp</dimen>
     <dimen name="product_card_content_margin">8dp</dimen>
 
     <dimen name="product_card_text_view_gimmick_height">18dp</dimen>
@@ -88,5 +89,7 @@
 
     <dimen name="product_card_flashsale_label_height">16dp</dimen>
     <dimen name="product_card_flashsale_label_margintop">2dp</dimen>
+
+    <dimen name="product_card_label_campaign_height">20dp</dimen>
 
 </resources>

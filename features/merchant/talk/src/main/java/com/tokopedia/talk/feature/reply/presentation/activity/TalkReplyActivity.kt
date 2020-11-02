@@ -24,6 +24,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var questionId = ""
     private var shopId = ""
     private var source = ""
+    private var inboxType = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var talkReplyFragment: TalkReplyFragment? = null
 
@@ -40,7 +41,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        talkReplyFragment = TalkReplyFragment.createNewInstance(questionId, shopId, source)
+        talkReplyFragment = TalkReplyFragment.createNewInstance(questionId, shopId, source, inboxType)
         return talkReplyFragment
     }
 
@@ -66,6 +67,10 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         val source = uri.getQueryParameter(TalkConstants.PARAM_SOURCE) ?: ""
         if (source.isNotEmpty()) {
             this.source = source
+        }
+        val inboxType = uri.getQueryParameter(TalkConstants.PARAM_TYPE) ?: ""
+        if (inboxType.isNotEmpty()) {
+            this.inboxType = inboxType
         }
     }
 
