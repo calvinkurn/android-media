@@ -1,0 +1,10 @@
+[{
+  "data": {
+    "checkCampaignNotifyMe": {
+      "campaign_id": 15934,
+      "success": true,
+      "message": "Yay, kamu akan diingatkan sebelum campaign dimulai",
+      "error_message": ""
+    }
+  }
+}]

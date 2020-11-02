@@ -156,7 +156,7 @@ class SmartBillsAnalytics {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
-                Action.CLICK_BAYAR,
+                Action.CLICK_BAYAR_FAILED,
                 "${Label.GAGAL} - $totalBillsCount - $selectedBillsCount")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_DETAIL

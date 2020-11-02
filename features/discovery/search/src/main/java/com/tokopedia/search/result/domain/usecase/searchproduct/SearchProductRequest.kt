@@ -131,6 +131,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         title
                         position
                         type
+                        url
                     }
                     badges {
                         title

@@ -404,7 +404,7 @@ class ShopHomeViewModel @Inject constructor(
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
         val requestParams = AddToCartUseCase.getMinimumParams(product.id
                 ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
-                ?: "")
+                ?: "", userId = userId)
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 

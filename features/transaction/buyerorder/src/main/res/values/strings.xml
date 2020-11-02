@@ -39,8 +39,6 @@
     <string name="label_shop_title">Toko: </string>
     <string name="contact_us_applink">https://www.tokopedia.com/help</string>
     <string name="help_text">disini</string>
-    <color name="subtitle_gray_color">#ae31353b</color>
-    <color name="title_gray_color">#f531353b</color>
     <string name="text_redeem_voucher">Redeem Voucher</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
     <string name="event_voucher_code_copied">Detail pembelian sudah dikirim ulang ke e-mail yang terdaftar di akun ini.</string>
