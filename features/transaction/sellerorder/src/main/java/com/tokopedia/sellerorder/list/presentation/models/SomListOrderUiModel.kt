@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.models
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 
 data class SomListOrderUiModel(
@@ -39,6 +40,7 @@ data class SomListOrderUiModel(
             val key: String = "",
             val displayName: String = "",
             val type: String = "",
-            val url: String = ""
+            val url: String = "",
+            val popUp: PopUp = PopUp()
     )
 }

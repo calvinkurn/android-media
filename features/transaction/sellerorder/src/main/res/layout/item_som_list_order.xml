@@ -101,8 +101,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivSomListProduct"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
+            android:layout_width="@dimen/som_list_product_image_size"
+            android:layout_height="@dimen/som_list_product_image_size"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="13dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -152,6 +152,7 @@
             android:id="@+id/tvSomListCourierValue"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListCourierLabel"
@@ -176,6 +177,7 @@
             android:id="@+id/tvSomListDestinationValue"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListDestinationLabel"

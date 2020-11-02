@@ -72,9 +72,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            tools:text="2 Pesanan"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="2 Pesanan" />
 
     </LinearLayout>
 
@@ -115,6 +115,7 @@
             android:id="@+id/rvSomList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="20"
@@ -139,7 +140,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:text="@string/som_list_bulk_action_button" />
+            android:text="@string/som_list_bulk_accept_order_button" />
 
     </androidx.cardview.widget.CardView>
 
@@ -157,6 +158,16 @@
         tools:visibility="visible" />
 
     <!--  start shimmer views  -->
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/somListLoading"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        app:layout_constraintBottom_toTopOf="@id/containerBtnBulkAction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerMultiSelect"
+        app:loader_type="circular" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/sortFilterShimmer1"

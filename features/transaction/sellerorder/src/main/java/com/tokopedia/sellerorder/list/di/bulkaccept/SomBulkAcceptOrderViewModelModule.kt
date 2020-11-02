@@ -1,25 +1,24 @@
-package com.tokopedia.sellerorder.list.di
+package com.tokopedia.sellerorder.list.di.bulkaccept
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListBulkAcceptOrderViewModel
-import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@SomListScope
-abstract class SomListViewModelModule {
+@SomBulkAcceptOrderScope
+abstract class SomBulkAcceptOrderViewModelModule {
 
-    @SomListScope
+    @SomBulkAcceptOrderScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(SomListViewModel::class)
-    internal abstract fun somListViewModel(viewModel: SomListViewModel): ViewModel
+    @ViewModelKey(SomListBulkAcceptOrderViewModel::class)
+    internal abstract fun somListBulkAcceptOrderViewModel(viewModel: SomListBulkAcceptOrderViewModel): ViewModel
 }

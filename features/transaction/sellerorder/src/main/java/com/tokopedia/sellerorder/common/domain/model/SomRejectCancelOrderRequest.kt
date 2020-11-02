@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.data.model
+package com.tokopedia.sellerorder.common.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
