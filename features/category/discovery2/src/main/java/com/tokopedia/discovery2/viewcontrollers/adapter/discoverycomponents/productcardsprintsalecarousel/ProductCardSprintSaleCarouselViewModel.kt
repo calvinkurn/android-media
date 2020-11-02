@@ -27,9 +27,6 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    init {
-        initDaggerInject()
-    }
 
 
     override fun onAttachToViewHolder() {
@@ -41,12 +38,6 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         fetchProductCarouselData()
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
 
     fun getProductCarouselItemsListData() = productCarouselList

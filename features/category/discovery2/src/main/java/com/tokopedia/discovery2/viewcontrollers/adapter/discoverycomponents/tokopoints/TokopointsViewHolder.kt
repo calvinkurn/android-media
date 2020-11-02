@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -33,6 +34,7 @@ class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mTokopointsComponentViewModel = discoveryBaseViewModel as TokopointsViewModel
+        getSubComponent().inject(mTokopointsComponentViewModel)
         init()
     }
 

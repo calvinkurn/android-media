@@ -26,11 +26,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     lateinit var dynamicTabsUseCase: DynamicTabsUseCase
 
 
-    init {
-        initDaggerInject()
-    }
-
-    override fun onAttachToViewHolder() {
+   override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         fetchDynamicTabData()
         updateTabItems()
@@ -91,10 +87,4 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         this.syncData.value = true
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 }

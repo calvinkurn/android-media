@@ -34,9 +34,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
-        initDaggerInject()
-    }
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -57,12 +54,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
 
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun sendTopAdsTrackingClick(url: String?, productId: String, productName: String, imageUrl: String) {
         if (url != null) {

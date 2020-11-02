@@ -27,9 +27,6 @@ class TokopointsItemViewModel(val application: Application, val components: Comp
 
     fun getDataItemValue(): LiveData<DataItem> = dataItem
 
-    override fun initDaggerInject() {
-
-    }
 
     fun onTokopointsItemClicked(context: Context) {
         dataItem.value?.slug?.let {

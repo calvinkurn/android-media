@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -21,6 +22,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
+        getSubComponent().inject(mProductRevampComponentViewModel)
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

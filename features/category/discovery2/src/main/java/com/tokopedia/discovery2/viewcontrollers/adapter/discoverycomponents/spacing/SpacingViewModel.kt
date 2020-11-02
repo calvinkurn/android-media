@@ -17,8 +17,6 @@ class SpacingViewModel(val application: Application, private val components: Com
         spacingComponentData.value = components
     }
 
-    override fun initDaggerInject() {
-    }
 
     fun getComponentData(): LiveData<ComponentsItem> = spacingComponentData
     fun getViewHeight(): LiveData<Int> = viewHeight

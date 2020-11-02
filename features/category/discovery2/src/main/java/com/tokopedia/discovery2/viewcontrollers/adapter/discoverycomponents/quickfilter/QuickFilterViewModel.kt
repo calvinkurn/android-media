@@ -39,7 +39,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
-        initDaggerInject()
         addFilterOptions()
     }
 
@@ -51,12 +50,6 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         }
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getTargetComponent(): ComponentsItem? {
         return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
