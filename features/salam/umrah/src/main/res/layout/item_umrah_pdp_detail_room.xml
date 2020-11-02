@@ -8,7 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl2"
+    android:padding="@dimen/spacing_lvl1"
     tools:targetApi="m"
     tools:ignore="UnusedAttribute">
 
