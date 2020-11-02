@@ -27,6 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
@@ -151,7 +152,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
+        Intent intent = RouteManager.getIntent(context, LANDING_SHOP_CREATION);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
