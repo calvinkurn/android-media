@@ -33,9 +33,9 @@ class InboxBottomNavigationView : BottomNavigationView {
         initBadgeLayout()
     }
 
-    fun setBadgeCount(@InboxFragmentType typePosition: Int, badgeCount: Int) {
+    fun setBadgeCount(@InboxFragmentType typePosition: Int, badgeCount: Int?) {
         val badge = getBadgeAt(typePosition)
-        if (badgeCount <= 0) {
+        if (badgeCount == null || badgeCount <= 0) {
             badge?.hide()
         } else {
             badge?.show()

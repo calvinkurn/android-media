@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -13,12 +14,15 @@ import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
+import com.tokopedia.inbox.domain.data.notification.BaseNotification
+import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
@@ -49,10 +53,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
         setupBackground()
         setupNotificationBar()
         setupBottomNav()
+        setupObserver()
         setupInitialPage()
-
-        // TODO: remove later
-        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, 99)
     }
 
     private fun setupInjector() {
@@ -98,6 +100,25 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
         }
     }
 
+    private fun setupObserver() {
+        viewModel.notifications.observe(this, Observer { result ->
+            if (result is Success) {
+                updateNotificationCounter(result.data)
+            }
+        })
+    }
+
+    private fun updateNotificationCounter(notification: InboxCounter) {
+        val notificationRole: BaseNotification? = when (InboxConfig.role) {
+            RoleType.BUYER -> notification.buyer
+            RoleType.SELLER -> notification.seller
+            else -> null
+        }
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole?.notifcenterInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole?.chatInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole?.talkInt)
+    }
+
     private fun setupBottomNav() {
         bottomNav?.apply {
             setBackgroundColor(Color.TRANSPARENT)
@@ -122,6 +143,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener {
     private fun setupInitialPage() {
         navigator?.start(InboxFragmentType.NOTIFICATION)
         bottomNav?.setSelectedPage(InboxFragmentType.NOTIFICATION)
+        viewModel.getNotifications()
     }
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.inbox.viewmodel.InboxViewModel
-import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,7 +19,7 @@ abstract class InboxViewModelModule {
     @Binds
     @IntoMap
     @InboxScope
-    @ViewModelKey(NotificationTransactionViewModel::class)
+    @ViewModelKey(InboxViewModel::class)
     internal abstract fun notificationInboxViewModel(viewModel: InboxViewModel): ViewModel
 
 }
