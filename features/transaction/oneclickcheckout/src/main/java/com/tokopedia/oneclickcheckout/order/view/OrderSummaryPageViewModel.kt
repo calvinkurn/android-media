@@ -138,6 +138,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 atcOccExternalUseCase.createObservable(
                         RequestParams().apply {
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userSessionInterface.userId)
                         })
                         .subscribeOn(executorSchedulers.io)
                         .observeOn(executorSchedulers.main)

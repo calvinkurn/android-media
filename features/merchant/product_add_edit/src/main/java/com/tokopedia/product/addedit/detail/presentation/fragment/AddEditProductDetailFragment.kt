@@ -223,21 +223,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             // set detail and variant input model
             cacheManagerId.run {
-                viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
-                        ?: ProductInputModel()
+                viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
                 var pictureIndex = 0
                 viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                     if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
                     else urlOrPath
                 }.toMutableList()
-                viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java)
-                        ?: false
-                viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
-                        ?: false
-                viewModel.isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
-                        ?: false
-                viewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java)
-                        ?: false
+                viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java) ?: false
+                viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java) ?: false
+                viewModel.isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
+                viewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
             }
         }
         userSession = UserSession(requireContext())
@@ -338,10 +333,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         if (it == 1) {
                             productWholeSaleSwitch?.isChecked = false
                         }
-                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1, deletePosition
-                                ?: -1)
+                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1,  deletePosition ?: -1)
                         // to avoid enable button submit when we delete the last of whole sale
-                        if (deletePosition == it - 1) {
+                        if(deletePosition == it - 1) {
                             viewModel.isTheLastOfWholeSale.value = false
                         }
                     }
@@ -585,6 +579,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         })
 
+        // product minimum order text change listener
+        productSkuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(p0: Editable?) {}
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val skuInput = charSequence?.toString()
+                skuInput?.let { viewModel.validateProductSkuInput(it) }
+            }
+        })
+
         // product showcase refresh button
         productShowCasesReloadButton?.setOnClickListener {
             // prevent rapid reloading with isReloadingShowCase flag in view model
@@ -627,6 +634,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToOrderQuantityInputStatus()
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
+        subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
         subscribeToInputStatus()
 
@@ -767,6 +775,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.value?.run {
             if (this && !requestedFocus) {
                 preOrderDurationField?.requestFocus()
+                requestedFocus = true
+            }
+        }
+
+        // product sku validation
+        val productSkuInput = productSkuField?.getEditableValue().toString()
+        viewModel.validateProductSkuInput(productSkuInput)
+        viewModel.isProductSkuInputError.value?.run {
+            if (this && !requestedFocus) {
+                productSkuField?.requestFocus()
                 requestedFocus = true
             }
         }
@@ -981,7 +999,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale: Boolean = false) {
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?, itemCount: Int?, specialIndex: Int = -1, isAddingWholeSale : Boolean = false) {
         itemCount?.let {
             var wholeSaleErrorCounter = 0
             for (index in 0 until it) {
@@ -1219,6 +1237,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, Observer {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
+        })
+    }
+
+    private fun subscribeToProductSkuInputStatus() {
+        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, Observer {
+            productSkuField?.setError(it)
+            productSkuField?.setMessage(viewModel.productSkuMessage)
         })
     }
 
@@ -1634,8 +1659,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun getValidationCurrentWholeSalePrice(price: String, position: Int): String {
         val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "")
-                ?: ""
+        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position - 1)?.replace(".", "") ?: ""
         val validation = viewModel.validateProductWholeSalePriceInput(price, productPriceInput, previousPrice)
         viewModel.isTheLastOfWholeSale.value = validation.isNotEmpty()
         return validation

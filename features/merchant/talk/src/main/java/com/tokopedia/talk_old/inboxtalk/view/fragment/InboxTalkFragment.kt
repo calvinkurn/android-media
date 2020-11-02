@@ -25,6 +25,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk_old.common.adapter.viewholder.CommentTalkViewHolder
@@ -78,6 +79,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private lateinit var filter: String
     private lateinit var bottomMenu: Menus
     private lateinit var filterMenuList: ArrayList<Menus.ItemMenus>
+    private var inboxType = ""
 
     @Inject
     lateinit var talkDialog: TalkDialog
@@ -125,16 +127,15 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var nav: String = ""
         savedInstanceState?.run {
-            nav = savedInstanceState.getString(InboxTalkActivity.NAVIGATION, "")
+            inboxType = savedInstanceState.getString(InboxTalkActivity.NAVIGATION, "")
         } ?: arguments?.run {
-            nav = getString(InboxTalkActivity.NAVIGATION, "")
+            inboxType = getString(InboxTalkActivity.NAVIGATION, "")
         } ?: activity?.run {
             finish()
         }
 
-        viewModel = InboxTalkViewModel(nav)
+        viewModel = InboxTalkViewModel(inboxType)
 
         setupView()
         initData()
@@ -673,6 +674,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
                                 .buildUpon()
                                 .appendQueryParameter(PARAM_SHOP_ID, shopId)
                                 .appendQueryParameter(TalkConstants.PARAM_SOURCE, SOURCE_INBOX)
+                                .appendQueryParameter(TalkConstants.PARAM_TYPE, if(inboxType == InboxTalkActivity.MY_PRODUCT) TalkInboxTab.SHOP_TAB else TalkInboxTab.BUYER_TAB)
                                 .build().toString()
                 )
                 this@InboxTalkFragment.startActivityForResult(

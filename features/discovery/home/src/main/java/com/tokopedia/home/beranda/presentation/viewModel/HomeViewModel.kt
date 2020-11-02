@@ -1231,7 +1231,7 @@ open class HomeViewModel @Inject constructor(
     fun getSearchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
-            getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall)
+            getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall, userSession.get().deviceId, userSession.get().userId)
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
@@ -1308,7 +1308,8 @@ open class HomeViewModel @Inject constructor(
                 shopId = grid.shopId,
                 warehouseId = grid.warehouseId,
                 productName = grid.name,
-                price = grid.price
+                price = grid.price,
+                userId = getUserId()
         ))
         getAtcUseCase.get().createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
