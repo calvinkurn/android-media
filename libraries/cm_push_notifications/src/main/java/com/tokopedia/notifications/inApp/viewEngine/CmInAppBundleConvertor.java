@@ -77,10 +77,14 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
                 String screenName = cmInApp.getScreen();
                 String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
-                if (TextUtils.isEmpty(screenName)) {
-                    finalScreenName = screenName + finalScreenName;
+                if(!TextUtils.isEmpty(finalScreenName)){
+                    StringBuilder sb = new StringBuilder(finalScreenName);
+                    if (!TextUtils.isEmpty(screenName)) {
+                        sb.append(",");
+                        sb.append(screenName);
+                    }
+                    cmInApp.setScreen(sb.toString());
                 }
-                cmInApp.setScreen(finalScreenName);
             }
 
             if(TextUtils.isEmpty(cmInApp.getScreen()))

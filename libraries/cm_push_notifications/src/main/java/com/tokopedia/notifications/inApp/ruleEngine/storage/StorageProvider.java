@@ -73,7 +73,7 @@ public class StorageProvider implements InterfaceDataStore {
                 if (!TextUtils.isEmpty(screenNames)) {
                     String[] screenNamesArray = screenNames.split(",");
                     for (String screenName : screenNamesArray) {
-                        if (key.equals(screenName)) {
+                        if (key.equals(screenName) || screenName.equals("*")) {
                             finalList.add(cmInApp);
                             break;
                         }
