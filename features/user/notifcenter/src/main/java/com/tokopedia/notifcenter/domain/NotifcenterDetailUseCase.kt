@@ -21,7 +21,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         private var dispatchers: DispatcherProvider
 ) : CoroutineScope {
 
-    var timeZone = TimeZone.getDefault()
+    var timeZone = TimeZone.getDefault().id
     var lastNotifId = ""
         private set
 
