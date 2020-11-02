@@ -763,6 +763,17 @@ class AddEditProductDetailViewModelTest {
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
     }
 
+    @Test
+    fun `disable productNameField when product has transaction`() {
+        // positive case
+        viewModel.productInputModel.itemSold = 199
+        Assert.assertTrue(viewModel.hasTransaction)
+
+        // negative case
+        viewModel.productInputModel.itemSold = 0
+        Assert.assertFalse(viewModel.hasTransaction)
+    }
+
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
                 PictureInputModel(picID = "1", urlOriginal = "url 1", urlThumbnail = "thumb 1", url300 = "300 1"),

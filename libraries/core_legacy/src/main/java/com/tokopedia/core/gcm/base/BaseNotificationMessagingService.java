@@ -36,10 +36,8 @@ import timber.log.Timber;
 
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
 
-    UserSessionInterface userSession;
-
-    @Inject
-    FirebaseMessagingManager fcmManager;
+    @Inject FirebaseMessagingManager fcmManager;
+    private UserSessionInterface userSession;
 
     @Override
     public void onCreate() {
@@ -52,7 +50,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 .build()
                 .inject(this);
     }
-
 
     public BaseNotificationMessagingService() {
         initUseSession();
@@ -100,7 +97,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     @Override
     public void onDestroy() {
         super.onDestroy();
-        fcmManager.clear();
     }
 
     private void updateApsFlyerToken(String refreshedToken) {

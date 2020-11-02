@@ -47,6 +47,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.utils.SchedulersProvider;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
@@ -83,7 +84,11 @@ import dagger.Lazy;
 import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
@@ -107,6 +112,7 @@ final class ProductListPresenter
     private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("0", "4", "5");
     private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final List<String> showSuggestionResponseCodeList = Arrays.asList("3", "6", "7");
+    private static final List<String> showInspirationCarouselLayout = Arrays.asList(LAYOUT_INSPIRATION_CAROUSEL_INFO, LAYOUT_INSPIRATION_CAROUSEL_LIST);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -122,6 +128,8 @@ final class ProductListPresenter
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
+    private SchedulersProvider schedulersProvider;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private boolean enableGlobalNavWidget = true;
     private String additionalParams = "";
@@ -161,6 +169,7 @@ final class ProductListPresenter
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
             Lazy<UseCase<String>> getProductCountUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
+            SchedulersProvider schedulersProvider,
             Lazy<RemoteConfig> remoteConfig
     ) {
         this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
@@ -173,6 +182,7 @@ final class ProductListPresenter
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
+        this.schedulersProvider = schedulersProvider;
     }
 
     @Override
@@ -711,7 +721,7 @@ final class ProductListPresenter
         setSuggestionViewModel(productViewModel.getSuggestionModel());
         setRelatedViewModel(productViewModel.getRelatedViewModel());
 
-        sendTrackingNoSearchResult(productViewModel);
+        doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
@@ -821,23 +831,8 @@ final class ProductListPresenter
 
         if (relatedViewModel != null) {
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
-            trackBroadMatchImpression();
 
             relatedViewModel = null;
-        }
-    }
-
-    private void trackBroadMatchImpression() {
-        for (BroadMatchViewModel broadMatchViewModel: relatedViewModel.getBroadMatchViewModelList()) {
-            List<Object> broadMatchItemAsImpressionObjectDataLayer = new ArrayList<>();
-
-            for(BroadMatchItemViewModel broadMatchItemViewModel: broadMatchViewModel.getBroadMatchItemViewModelList())
-                broadMatchItemAsImpressionObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
-
-            getView().trackBroadMatchImpression(
-                    broadMatchViewModel.getKeyword(),
-                    broadMatchItemAsImpressionObjectDataLayer
-            );
         }
     }
 
@@ -899,8 +894,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        boolean isGlobalNavWidgetAvailable
-                = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+        boolean isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
 
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
@@ -957,6 +951,13 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean getIsGlobalNavWidgetAvailable(ProductViewModel productViewModel) {
+        return productViewModel.getGlobalNavViewModel() != null
+                && enableGlobalNavWidget
+                && !getView().isAnyFilterActive()
+                && !getView().isAnySortActive();
     }
 
     private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
@@ -1045,11 +1046,10 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= productList.size()) {
+                if (data.getPosition() <= productList.size() && shouldShowInspirationCarousel(data.getLayout())) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
-                        impressedInspirationCarousel(data);
                         inspirationCarouselViewModelIterator.remove();
                     }
                     catch (Exception exception) {
@@ -1059,6 +1059,10 @@ final class ProductListPresenter
                 }
             }
         }
+    }
+
+    private boolean shouldShowInspirationCarousel(String layout) {
+        return showInspirationCarouselLayout.contains(layout);
     }
 
     private void processBroadMatch(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
@@ -1111,14 +1115,6 @@ final class ProductListPresenter
         int broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1;
 
         list.addAll(broadMatchIndex, broadMatchVisitableList);
-    }
-
-    private void impressedInspirationCarousel(InspirationCarouselViewModel data) {
-        if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_LIST)) {
-            getView().sendImpressionInspirationCarouselList(data);
-        } else if (data.getLayout().equals(LAYOUT_INSPIRATION_CAROUSEL_INFO)) {
-            getView().sendImpressionInspirationCarouselInfo(data);
-        }
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
@@ -1203,6 +1199,21 @@ final class ProductListPresenter
     private void getViewToSendTrackingSearchAttempt(ProductViewModel productViewModel) {
         if (getView() == null) return;
 
+        isFirstTimeLoad = false;
+
+        doInBackground(productViewModel, this::sendGeneralSearchTracking);
+    }
+
+    private <T> void doInBackground(T observable, final Action1<? super T> onNext) {
+        Subscription subscription =
+                Observable.just(observable)
+                        .subscribeOn(schedulersProvider.computation())
+                        .subscribe(onNext, Throwable::printStackTrace);
+
+        compositeSubscription.add(subscription);
+    }
+
+    private void sendGeneralSearchTracking(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
         Set<String> categoryIdMapping = new HashSet<>();
@@ -1226,8 +1237,6 @@ final class ProductListPresenter
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
         getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
-
-        isFirstTimeLoad = false;
     }
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
@@ -1682,8 +1691,14 @@ final class ProductListPresenter
 
     @Override
     public void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        if (getView() == null || !broadMatchItemViewModel.isOrganicAds()) return;
+        if (getView() == null) return;
 
+        if (broadMatchItemViewModel.isOrganicAds()) getViewToImpressBroadMatchAdsItem(broadMatchItemViewModel);
+
+        getView().trackBroadMatchImpression(broadMatchItemViewModel);
+    }
+
+    private void getViewToImpressBroadMatchAdsItem(BroadMatchItemViewModel broadMatchItemViewModel) {
         topAdsUrlHitter.hitImpressionUrl(
                 getView().getClassName(),
                 broadMatchItemViewModel.getTopAdsViewUrl(),
@@ -1720,5 +1735,11 @@ final class ProductListPresenter
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) unsubscribeCompositeSubscription();
+    }
+
+    private void unsubscribeCompositeSubscription() {
+        compositeSubscription.unsubscribe();
+        compositeSubscription = null;
     }
 }

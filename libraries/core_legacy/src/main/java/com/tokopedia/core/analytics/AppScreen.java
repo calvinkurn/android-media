@@ -10,9 +10,6 @@ import com.appsflyer.AFInAppEventType;
 public final class AppScreen {
 
     public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
-    public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
-    public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
-    public static final String IDENTIFIER_CATEGORY_FRAGMENT = "FragmentIndexCategory";
 
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
@@ -54,14 +51,6 @@ public final class AppScreen {
     public static String convertAFActivityEvent(String tag) {
         if (tag.equals(IDENTIFIER_HOME_ACTIVITY)) {
             return AFInAppEventType.LOGIN;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
-
-    public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;
         }

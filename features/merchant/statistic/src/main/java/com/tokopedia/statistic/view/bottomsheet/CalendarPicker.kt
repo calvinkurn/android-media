@@ -46,7 +46,6 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
         val child = inflater.inflate(R.layout.bottomsheet_stc_calendar_picker, container, false)
-        child.calendarPickerStc.calendarPickerView
         setChild(child)
         calendarView = child.calendarPickerStc.calendarPickerView
     }
@@ -56,6 +55,7 @@ class CalendarPicker : BottomSheetUnify() {
 
         setupView()
         setDefaultSelectedDate()
+        dismissBottomSheet()
     }
 
     fun setMode(mode: CalendarPickerView.SelectionMode): CalendarPicker {
@@ -193,6 +193,14 @@ class CalendarPicker : BottomSheetUnify() {
                 } else {
                     DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
                 }
+            }
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        view?.post {
+            if (selectedDates.isNullOrEmpty() && isVisible) {
+                dismiss()
             }
         }
     }

@@ -295,5 +295,23 @@
     <string name="content_desc_tv_done">button selesai</string>
     <string name="content_desc_tv_start_add_edit_product_detail">button ubah detail produk</string>
     <string name="content_desc_tv_start_add_edit_product_description">button ubah deskripsi produk</string>
-    <string name="content_desc_btn_submit">button lanjut</string>
+    <string name="content_desc_switch_preorder">button switch preorder</string>
+    <string name="content_desc_tvEditVariant">text ubah varian</string>
+    <string name="content_desc_tvAddVariant">text tambah varian</string>
+    <string name="content_desc_chipsVariantTypeName">text tipe varian</string>
+    <string name="content_desc_linkAddVariantValueLevel1">text tambah tipe varian 1</string>
+    <string name="content_desc_linkAddVariantValueLevel2">text tambah tipe varian 2</string>
+    <string name="content_desc_tv_start_add_edit_product_variant">text tambah varian</string>
+    <string name="content_desc_su_wholesale">button switch grosir</string>
+    <string name="content_desc_tfu_wholesale_quantity">input jumlah minimal</string>
+    <string name="content_desc_tfu_wholesale_price">input harga grosir</string>
+    <string name="content_desc_iv_delete_button">button hapus grosir</string>
+    <string name="content_desc_tfu_duration_unit">dropdown durasi</string>
+    <string name="content_desc_tfu_duration">input jumlah durasi</string>
+    <string name="content_desc_textViewAddVideo">text tambah video</string>
+    <string name="content_desc_buttonSave">button simpan</string>
+    <string name="content_desc_textFieldUnifyCustomValue">input tambah varian</string>
+    <string name="content_desc_textFieldUnifyVariantUnit">dropdown ukuran</string>
+
+
 </resources>

@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
+import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
@@ -105,8 +106,8 @@ class PopularKeywordViewHolder (val view: View,
                     channelTitle?.text = element.channel.header.name
                     channelTitle?.visibility = View.VISIBLE
                     channelTitle?.setTextColor(
-                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor)
-                            else ContextCompat.getColor(view.context, R.color.Neutral_N700)
+                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
+                            else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
                     )
                 } else {
                     it.visibility = View.GONE

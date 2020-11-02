@@ -63,7 +63,6 @@ abstract class BaseWidgetUiTest{
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
             getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
             getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
             getKeywordSearchUseCase = getKeywordSearchUseCase,
