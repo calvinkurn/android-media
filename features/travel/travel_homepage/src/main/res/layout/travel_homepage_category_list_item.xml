@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/category_image"
         android:layout_width="32dp"
         android:layout_height="32dp"
