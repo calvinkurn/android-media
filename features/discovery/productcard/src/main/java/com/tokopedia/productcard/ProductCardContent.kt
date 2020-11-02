@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {

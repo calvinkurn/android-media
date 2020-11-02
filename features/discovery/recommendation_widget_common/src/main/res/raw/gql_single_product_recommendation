@@ -59,6 +59,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                 imageUrl
               }
               rating
+              ratingAverage
               countReview
               recommendationType
               stock

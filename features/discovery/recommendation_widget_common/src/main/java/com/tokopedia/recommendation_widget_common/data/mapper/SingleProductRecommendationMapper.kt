@@ -35,6 +35,7 @@ object SingleProductRecommendationMapper {
                     data.priceInt,
                     data.departmentId,
                     data.rating,
+                    data.ratingAverage,
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",
