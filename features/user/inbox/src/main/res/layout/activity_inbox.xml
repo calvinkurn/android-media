@@ -60,20 +60,15 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/unread_counter"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
+                style="@style/BadgeCounter"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:background="@drawable/bg_inbox_red_dot"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:text="1"
-                android:textColor="@color/Neutral_N0"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_user_name"
                 app:layout_constraintStart_toEndOf="@+id/iv_dropdown"
                 app:layout_constraintTop_toTopOf="@+id/txt_user_name"
                 app:typographyType="small"
                 app:typographyWeight="bold"
+                tools:text="1"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

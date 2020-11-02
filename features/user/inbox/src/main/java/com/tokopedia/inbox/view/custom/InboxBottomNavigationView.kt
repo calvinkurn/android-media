@@ -11,8 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.InboxFragmentType
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
@@ -35,20 +34,7 @@ class InboxBottomNavigationView : BottomNavigationView {
 
     fun setBadgeCount(@InboxFragmentType typePosition: Int, badgeCount: Int?) {
         val badge = getBadgeAt(typePosition)
-        if (badgeCount == null || badgeCount <= 0) {
-            badge?.hide()
-        } else {
-            badge?.show()
-            badge?.text = getFormattedBadgeCounter(badgeCount)
-        }
-    }
-
-    private fun getFormattedBadgeCounter(badgeCount: Int): CharSequence {
-        return if (badgeCount > 99) {
-            "99+"
-        } else {
-            badgeCount.toString()
-        }
+        BadgeCounterBinder.bindBadgeCounter(badge, badgeCount)
     }
 
     fun setSelectedPage(@InboxFragmentType page: Int) {

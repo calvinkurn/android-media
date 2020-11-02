@@ -11,4 +11,6 @@ abstract class BaseNotification(
         val talkInt: Int = 0,
         @SerializedName("total_int")
         val totalInt: Int = 0
-)
+) {
+
+}
