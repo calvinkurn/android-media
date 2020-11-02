@@ -50,6 +50,7 @@ private fun createCarouselProductCardGrid(): List<ProductCardModel> {
 private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
     productCardNameSuffix += 1
 
+    val labelCampaign = ProductCardModel.LabelGroup(position = "campaign", title = "WIB", imageUrl = "https://ecs7.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png")
     val labelProductStatus = ProductCardModel.LabelGroup(position = "status", title = "Preorder", type = "darkGrey")
     val labelPrice = ProductCardModel.LabelGroup(position = "price", title = "Grosir", type = "lightGreen")
     val labelGimmick = ProductCardModel.LabelGroup(position = "gimmick", title = "Best Seller", type = "#FF8B00")
@@ -68,6 +69,7 @@ private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
             isTopAds = true,
             hasThreeDots = true,
             labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelCampaign)
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelGimmick)
                 labelGroups.add(labelPrice)
