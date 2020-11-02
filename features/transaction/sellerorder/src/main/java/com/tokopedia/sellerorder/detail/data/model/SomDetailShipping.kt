@@ -5,7 +5,6 @@ package com.tokopedia.sellerorder.detail.data.model
  */
 data class SomDetailShipping (
         val shippingName: String = "",
-        val shippingPrice: String = "",
         val receiverName: String = "",
         val receiverPhone: String = "",
         val receiverStreet: String = "",

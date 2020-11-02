@@ -98,10 +98,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }?.somFilterData?.getOrNull(position)?.isSelected = true
         }
         val somFilterVisitable = mutableListOf<BaseSomFilter>()
+        somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
         somFilterDate?.date = date
         somFilterVisitable.addAll(somFilterUiModel)
         somFilterDate?.let { somFilterVisitable.add(it) }
-        _updateFilterSelected.postValue(somFilterUiModel)
+        _updateFilterSelected.postValue(somFilterVisitable)
     }
 
     fun updateFilterManySelected(idFilter: String, chipType: String, position: Int, date: String) {
@@ -115,10 +116,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
         }
         val somFilterVisitable = mutableListOf<BaseSomFilter>()
+        somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
         somFilterDate?.date = date
         somFilterVisitable.addAll(somFilterUiModel)
         somFilterDate?.let { somFilterVisitable.add(it) }
-        _updateFilterSelected.postValue(somFilterUiModel)
+        _updateFilterSelected.postValue(somFilterVisitable)
     }
 
     fun updateSomFilterSeeAll(idFilter: String,
@@ -137,7 +139,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             it.nameFilter == idFilter
         }?.somFilterData?.find { it.isSelected }?.id
 
-        val idManySelect = somFilterUiModel.firstOrNull { it.nameFilter == idFilter }
+        val idManySelect = somFilterUiModel.find { it.nameFilter == idFilter }
                 ?.somFilterData?.filter { it.isSelected }?.map { it.id } ?: listOf()
 
         when (idFilter) {
@@ -167,6 +169,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         }
         somListGetOrderListParam = SomListGetOrderListParam()
         val somFilterVisitable = mutableListOf<BaseSomFilter>()
+        somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
         somFilterVisitable.addAll(somFilterUiModel)
         somFilterDate?.let { somFilterVisitable.add(it) }
         _updateFilterSelected.postValue(somFilterVisitable)

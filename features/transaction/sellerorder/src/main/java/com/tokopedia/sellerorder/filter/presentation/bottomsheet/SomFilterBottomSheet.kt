@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -23,10 +25,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
+import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
+import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity.Companion.KEY_SOM_ORDER_PARAM_CACHE
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
-import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterActivity
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
@@ -92,7 +95,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     override fun onFilterChipsClicked(somFilterData: SomFilterChipsUiModel, idFilter: String,
                                       position: Int, chipType: String, orderStatus: String) {
-        this.orderStatus = orderStatus
         when (idFilter) {
             FILTER_SORT, FILTER_LABEL, FILTER_DEADLINE, FILTER_STATUS_ORDER -> {
                 somFilterViewModel.updateFilterSelected(idFilter, position, chipType, filterDate)
@@ -108,16 +110,35 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onSeeAllFilter(somFilterData: SomFilterUiModel, position: Int, idFilter: String) {
         val somFilterChipsList = somFilterViewModel.getSomFilterUiModel()
                 .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
-
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
         val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
-                somFilterViewModel.getSomListGetOrderListParam(),
                 filterDate,
                 idFilter,
-                somFilterChipsList
+                somFilterChipsList,
+                cacheManager?.id ?: ""
         )
         val somSubFilterActivity = SomSubFilterActivity()
         somSubFilterActivity.setupFilterListener(this)
-        startActivity(intentSomSubFilter)
+        startActivityForResult(intentSomSubFilter, REQUEST_CODE_FILTER_SEE_ALL)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, data?.getStringExtra(KEY_CACHE_MANAGER_ID)) }
+        when(requestCode) {
+            REQUEST_CODE_FILTER_SEE_ALL -> {
+                if(resultCode == RESULT_CODE_FILTER_SEE_ALL) {
+                    this.somListOrderParam = cacheManager?.get(KEY_SOM_ORDER_PARAM_CACHE, SomListGetOrderListParam::class.java)
+                    somFilterViewModel.setSomListGetOrderListParam(somListOrderParam ?: SomListGetOrderListParam())
+                    val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
+                    val filterDate = data?.getStringExtra(SomSubFilterActivity.KEY_FILTER_DATE) ?: ""
+                    val somSubFilterList =
+                            data?.getParcelableArrayListExtra<SomFilterChipsUiModel>(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS)?.toList() ?: listOf()
+                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList, filterDate)
+                }
+            }
+        }
     }
 
     override fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -139,9 +160,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onSaveSubFilter(somListGetOrderListParam: SomListGetOrderListParam,
                                  filterDate: String, idFilter: String,
                                  somSubFilterList: List<SomFilterChipsUiModel>) {
-        this.somListOrderParam = somListGetOrderListParam
-        somFilterViewModel.setSomListGetOrderListParam(somListGetOrderListParam)
-        somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList, filterDate)
+
     }
 
     override fun getComponent(): SomFilterComponent? {
@@ -286,6 +305,10 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val KEY_ORDER_STATUS = "key_order_status"
         const val KEY_SOM_FILTER_LIST = "key_som_filter_list"
         const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
+        const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
+        const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
+        const val REQUEST_CODE_FILTER_SEE_ALL = 901
+        const val RESULT_CODE_FILTER_SEE_ALL = 801
 
         fun createInstance(orderStatus: String,
                            orderStatusIdList: List<Int>,

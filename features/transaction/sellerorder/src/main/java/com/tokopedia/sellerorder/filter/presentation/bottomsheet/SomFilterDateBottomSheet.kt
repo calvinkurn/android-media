@@ -54,6 +54,8 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     private var startDateEditText = ""
     private var endDateEditText = ""
 
+    private var minDate: Date? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChild(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -95,13 +97,15 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         btnSaveCalendar = view.findViewById(R.id.btnSaveCalendar)
         cvSaveCalendar = view.findViewById(R.id.cvSaveCalendar)
         calendarView = calendarViewFilter?.calendarPickerView
+        tfStartDate?.textFieldInput?.isClickable = false
+        tfEndDate?.textFieldInput?.isClickable = false
     }
 
     private fun toggleBtnShowOrder() {
         val isShowStartDate = tfStartDate?.textFieldInput?.text?.trim().toString().isNotBlank()
         val isShowEndDate = tfEndDate?.textFieldInput?.text?.trim().toString().isNotBlank()
 
-        if(isShowStartDate || isShowEndDate) {
+        if (isShowStartDate || isShowEndDate) {
             cvSaveCalendar?.show()
         } else {
             cvSaveCalendar?.hide()
@@ -143,33 +147,25 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     private fun CalendarPickerView.selectDateClickListener() {
+        setOnFocusChangeListener { _, _ ->
+            if (tfStartDate?.textFieldInput?.isFocused == true) tfEndDate?.textFieldInput?.requestFocus()
+            else if (tfEndDate?.isFocused == true) tfStartDate?.requestFocus()
+        }
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
-            var dateIn: Date? = null
             override fun onDateSelected(date: Date) {
-                if (tfEndDate?.textFieldInput?.isFocused == false && tfStartDate?.textFieldInput?.isFocused == false) {
-                    when (mode) {
-                        CalendarPickerView.SelectionMode.RANGE -> {
-                            if (dateIn != null && date.after(dateIn)) {
-                                selectEndDate(date)
-                            } else {
-                                dateIn = date
-                                selectStartDate(date)
-                            }
-                            this@SomFilterDateBottomSheet.selectedDates = selectedDates
-                            toggleBtnShowOrder()
+                when (mode) {
+                    CalendarPickerView.SelectionMode.RANGE -> {
+                        if (minDate != null && date.after(minDate)) {
+                            selectEndDate(date)
+                        } else {
+                            minDate = date
+                            selectStartDate(date)
                         }
-                        else -> {
-                        }
+                        this@SomFilterDateBottomSheet.selectedDates = selectedDates
+                        toggleBtnShowOrder()
                     }
-                } else {
-                    if (dateIn != null && tfEndDate?.textFieldInput?.isFocused == true && date.after(dateIn)) {
-                        selectEndDate(date)
-                    } else if (tfStartDate?.textFieldInput?.isFocused == true) {
-                        dateIn = date
-                        selectStartDate(date)
+                    else -> {
                     }
-                    this@SomFilterDateBottomSheet.selectedDates = selectedDates
-                    toggleBtnShowOrder()
                 }
             }
 
@@ -181,16 +177,12 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length ?: 0)
-        tfEndDate?.textFieldInput?.requestFocus()
     }
 
     private fun selectStartDate(date: Date) {
         startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length ?: 0)
-        tfStartDate?.textFieldInput?.requestFocus()
     }
 
     private fun getSelectedDate(date: Date, patternDate: String): String {

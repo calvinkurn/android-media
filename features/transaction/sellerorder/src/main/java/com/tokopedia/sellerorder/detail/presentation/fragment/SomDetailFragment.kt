@@ -187,6 +187,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
+    private var dynamicPriceResponse = SomDynamicPriceResponse()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
     private var successEditAwbResponse = SomEditAwbResponse.Data()
@@ -266,7 +267,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusCode.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
-            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, detailResponse.paymentSummary.totalPriceText)
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, dynamicPriceResponse.getSomDynamicPrice.paymentData.value)
         }
         startActivity(intent)
     }
@@ -377,7 +378,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    detailResponse = it.data
+                    detailResponse = it.data.getSomDetail as SomDetailOrder.Data.GetSomDetail
+                    dynamicPriceResponse = it.data.somDynamicPriceResponse as SomDynamicPriceResponse
                     renderDetail()
                 }
                 is Fail -> {
@@ -598,7 +600,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         // shipping
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
-                detailResponse.paymentSummary.shippingPriceText,
                 detailResponse.receiver.name,
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
@@ -626,16 +627,23 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun renderPayment() {
-        val dataPayments = SomDetailPayments(
-                detailResponse.paymentSummary.productsPriceText,
-                detailResponse.paymentSummary.totalItem,
-                detailResponse.paymentSummary.totalWeightText,
-                detailResponse.paymentSummary.shippingPriceText,
-                detailResponse.paymentSummary.insurancePrice,
-                detailResponse.paymentSummary.insurancePriceText,
-                detailResponse.paymentSummary.additionalPrice,
-                detailResponse.paymentSummary.additionalPriceText,
-                detailResponse.paymentSummary.totalPriceText)
+        val paymentData = SomDetailPayments.PaymentDataUiModel(
+                label = dynamicPriceResponse.getSomDynamicPrice.paymentData.label,
+                value = dynamicPriceResponse.getSomDynamicPrice.paymentData.value,
+                textColor = dynamicPriceResponse.getSomDynamicPrice.paymentData.textColor)
+
+        val paymentMethodList = mutableListOf<SomDetailPayments.PaymentMethodUiModel>()
+        dynamicPriceResponse.getSomDynamicPrice.paymentMethod.map {
+            paymentMethodList.add(SomDetailPayments.PaymentMethodUiModel(label = it.label, value = it.value))
+        }
+
+        val pricingList = mutableListOf<SomDetailPayments.PricingData>()
+        dynamicPriceResponse.getSomDynamicPrice.pricingData.map {
+            pricingList.add(SomDetailPayments.PricingData(label = it.label, value = it.value))
+        }
+
+        val dataPayments = SomDetailPayments(paymentDataUiModel = paymentData,
+                paymentMethodUiModel = paymentMethodList, pricingData = pricingList)
 
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
     }
@@ -673,8 +681,8 @@ class SomDetailFragment : BaseDaggerFragment(),
                     detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                         mapKey[btn.key] = btn.displayName
                     }
-                    somBottomSheetRejectOrderAdapter?.mapKey = mapKey
-                    somBottomSheetRejectOrderAdapter?.notifyDataSetChanged()
+                    somBottomSheetRejectOrderAdapter.mapKey = mapKey
+                    somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
                 }
             } else {
                 btn_secondary?.visibility = View.GONE

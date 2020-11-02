@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -13,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
@@ -77,18 +79,18 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                         header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
                     }
 
-                    due_response_label?.apply {
-                        show()
-                        text = item.dataObject.deadlineText
-                        //need improvement
-                    }
+                    label_due_response_day_count?.text = item.dataObject.deadlineText
+                    ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
+                    itemView.ic_time?.setColorFilter(Color.WHITE)
 
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
-//                        due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
+                        itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                     }
+
+
                 } else {
                     header_deadline_label?.visibility = View.GONE
-                    due_response_label?.visibility = View.GONE
+                    due_label?.visibility = View.GONE
                 }
 
                 header_invoice?.text = item.dataObject.invoice

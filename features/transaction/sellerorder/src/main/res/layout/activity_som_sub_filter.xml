@@ -20,17 +20,26 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_below="@+id/som_sub_filter_toolbar"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnSaveSubFilter"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvSaveSubFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:text="@string/simpan"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main" />
+        app:cardCornerRadius="@dimen/layout_lvl0"
+        app:cardElevation="@dimen/spacing_lvl2"
+        android:layout_alignParentBottom="true">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSaveSubFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/simpan"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

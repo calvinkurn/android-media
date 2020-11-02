@@ -29,8 +29,8 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                                              private val getUserRoleUseCase: SomGetUserRoleUseCase,
                                              private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase) : BaseViewModel(dispatcher.ui()) {
 
-    private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
-    val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
+    private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
+    val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
         get() = _orderDetailResult
 
     private val _acceptOrderResult = MutableLiveData<Result<SomAcceptOrder.Data>>()
@@ -62,7 +62,9 @@ class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         get() = _rejectCancelOrderResult
 
     fun loadDetailOrder(orderId: String) {
+        val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toIntOrNull() ?: 0)
         launchCatchError(block = {
+            somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(orderId))
         }, onError = {
             _orderDetailResult.postValue(Fail(it))

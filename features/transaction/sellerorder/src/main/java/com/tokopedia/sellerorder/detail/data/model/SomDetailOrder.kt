@@ -100,14 +100,6 @@ data class SomDetailOrder(
                 @Expose
                 val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
 
-                @SerializedName("payment_method")
-                @Expose
-                val paymentMethod: List<PaymentMethod> = listOf(),
-
-                @SerializedName("payment_summary")
-                @Expose
-                val paymentSummary: PaymentSummary = PaymentSummary(),
-
                 @SerializedName("logistic_info")
                 @Expose
                 val logisticInfo: LogisticInfo = LogisticInfo(),
@@ -384,56 +376,6 @@ data class SomDetailOrder(
                     @SerializedName("is_free_shipping_campaign")
                     @Expose
                     val flagFreeShipping: Boolean = false)
-
-            data class PaymentMethod(
-                    @SerializedName("gateway_id")
-                    @Expose
-                    val gatewayId: Int = 0,
-
-                    @SerializedName("gateway_name")
-                    @Expose
-                    val gatewayName: String = "",
-
-                    @SerializedName("gateway_url")
-                    @Expose
-                    val gatewayUrl: String = "")
-
-            data class PaymentSummary(
-                    @SerializedName("products_price_text")
-                    @Expose
-                    val productsPriceText: String = "",
-
-                    @SerializedName("shipping_price_text")
-                    @Expose
-                    val shippingPriceText: String = "",
-
-                    @SerializedName("insurance_price")
-                    @Expose
-                    val insurancePrice: Int = 0,
-
-                    @SerializedName("insurance_price_text")
-                    @Expose
-                    val insurancePriceText: String = "",
-
-                    @SerializedName("additional_price")
-                    @Expose
-                    val additionalPrice: Int = 0,
-
-                    @SerializedName("additional_price_text")
-                    @Expose
-                    val additionalPriceText: String = "",
-
-                    @SerializedName("total_item")
-                    @Expose
-                    val totalItem: Int = 0,
-
-                    @SerializedName("total_weight_text")
-                    @Expose
-                    val totalWeightText: String = "",
-
-                    @SerializedName("total_price_text")
-                    @Expose
-                    val totalPriceText: String = "")
 
             data class LogisticInfo(
                     @SerializedName("all")

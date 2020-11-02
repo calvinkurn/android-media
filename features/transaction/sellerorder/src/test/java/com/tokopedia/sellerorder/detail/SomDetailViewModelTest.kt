@@ -83,14 +83,14 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(123))
+        } returns Success(GetSomDetailResponse())
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.orderId == 123)
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123)
     }
 
     @Test
@@ -112,14 +112,15 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
+        } returns Success(GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.Data.GetSomDetail(listProduct = listProducts)))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.listProduct.isNotEmpty())
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.listProduct?.isNotEmpty() ?: false)
     }
 
     // accept_order
