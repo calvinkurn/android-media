@@ -52,6 +52,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepreview.ImagePreviewUtils
 import com.tokopedia.screenshot_observer.ScreenshotData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -64,6 +65,7 @@ import okhttp3.RequestBody
 import rx.subscriptions.CompositeSubscription
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 
@@ -177,6 +179,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+        var imageSize: Long = 0
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
             var initCountImage = imageCount
@@ -184,7 +187,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                 initCountImage++
                 val originalFile = File(image)
                 val imageType = originalFile.absolutePath
-                val imageSize = originalFile.length()/1000
+                imageSize = originalFile.length()/1000
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
                     resizeImage(image)
@@ -202,6 +205,14 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
 
     }
+
+   /* private fun checkResizeImageResult(image: String, imageSize: Long): Boolean {
+        resizeImage(image)
+        val resizedData = resizedUriImage?.let { handleItem(it) }
+        val resizedFile = File(resizedData?.path)
+        val imageSizedResult = resizedFile.length()/1000
+        return imageSizedResult > 250
+    }*/
 
     override fun goToTicketCreatedActivity(issueUrl: String?) {
         activity?.finish()
@@ -496,16 +507,16 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         val b = BitmapFactory.decodeFile(data)
         val origWidth = b.width
         val origHeight = b.height
-        val destHeight = 2480
+        val destHeight = 1920
         val destWidth = origWidth / (origHeight.toDouble() / destHeight)
         val b2 = Bitmap.createScaledBitmap(b, destWidth.toInt(), destHeight, false)
-        resizedUriImage = context?.let { getImageUri(it, b2) }
+        resizedUriImage = Uri.parse(ImagePreviewUtils.saveImageFromBitmap(requireActivity(), b2, ImagePreviewUtils.processPictureName(Math.random().toInt())))
     }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "IMG_" + System.currentTimeMillis(), null)
+        val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "IMG_" + Calendar.getInstance().time, null)
         return Uri.parse(path)
     }
 
