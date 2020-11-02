@@ -65,7 +65,7 @@ import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
-import com.tokopedia.sellerapp.utils.constants.ConstantsKt;
+import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -152,9 +152,9 @@ public abstract class SellerRouterApplication extends MainApplication
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         List<String> excludeScreenList = new ArrayList<>();
-        excludeScreenList.add(ConstantsKt.SPLASH);
-        excludeScreenList.add(ConstantsKt.DEEPLINK_ACTIVITY);
-        excludeScreenList.add(ConstantsKt.DEEPLINK_HANDLER_ACTIVITY);
+        excludeScreenList.add(Constants.SPLASH);
+        excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
     }
