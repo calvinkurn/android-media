@@ -1,25 +1,14 @@
-package com.tokopedia.atc_common.domain
+package com.tokopedia.atc_common.domain.analytics
 
 import android.os.Bundle
-import com.appsflyer.AFInAppEventParameterName
-import com.appsflyer.AFInAppEventType
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalDataModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import org.json.JSONArray
-import org.json.JSONObject
 import javax.inject.Inject
 
 class AddToCartExternalAnalytics @Inject constructor() {
 
     companion object {
-        // Apsflyer constants
-        private const val AF_PARAM_CATEGORY = "category"
-        private const val AF_PARAM_CONTENT_ID = "id"
-        private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
-        private const val AF_VALUE_CONTENT_TYPE = "product"
-        private const val AF_VALUE_CURRENCY = "IDR"
-
         // Enhanced Ecommerce constants
         private const val EE_PARAM_ITEM_ID = "item_id"
         private const val EE_PARAM_ITEM_NAME = "item_name"
@@ -87,23 +76,5 @@ class AddToCartExternalAnalytics @Inject constructor() {
             return EE_VALUE_NONE_OTHER
         }
         return value
-    }
-
-    fun sendAppsFlyerTracking(data: AddToCartExternalDataModel) {
-        val jsonArrayAfContent = JSONArray()
-                .put(JSONObject()
-                        .put(AF_PARAM_CONTENT_ID, data.productId.toString())
-                        .put(AF_PARAM_CONTENT_QUANTITY, data.quantity));
-        TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
-                mutableMapOf<String, Any>(
-                        AFInAppEventParameterName.CONTENT_ID to data.productId.toString(),
-                        AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
-                        AFInAppEventParameterName.DESCRIPTION to data.productName,
-                        AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
-                        AFInAppEventParameterName.QUANTITY to data.quantity,
-                        AFInAppEventParameterName.PRICE to data.price,
-                        AF_PARAM_CATEGORY to data.category,
-                        AFInAppEventParameterName.CONTENT to jsonArrayAfContent.toString())
-        )
     }
 }

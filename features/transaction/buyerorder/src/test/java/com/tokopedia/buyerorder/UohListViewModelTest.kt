@@ -2,6 +2,8 @@ package com.tokopedia.buyerorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.JsonArray
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
@@ -49,7 +51,7 @@ class UohListViewModelTest {
     lateinit var uohFinishOrderUseCase: UohFinishOrderUseCase
 
     @RelaxedMockK
-    lateinit var atcMultiProductsUseCase: AtcMultiProductsUseCase
+    lateinit var atcMultiProductsUseCase: AddToCartMultiUseCase
 
     @RelaxedMockK
     lateinit var lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase
@@ -237,11 +239,11 @@ class UohListViewModelTest {
     fun atc_shouldReturnSuccess() {
         //given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any())
+            atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtc("", JsonArray())
+        uohListViewModel.doAtc("", "", JsonArray())
 
         //then
         assert(uohListViewModel.atcResult.value is Success)
@@ -252,11 +254,11 @@ class UohListViewModelTest {
     fun atc_shouldReturnFail() {
         //given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any())
+            atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doAtc("", JsonArray())
+        uohListViewModel.doAtc("", "", JsonArray())
 
         //then
         assert(uohListViewModel.atcResult.value is Fail)
@@ -266,11 +268,11 @@ class UohListViewModelTest {
     fun atc_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            atcMultiProductsUseCase.execute(any(), any())
+            atcMultiProductsUseCase.execute(any(), any(), any())
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         //when
-        uohListViewModel.doAtc("", JsonArray())
+        uohListViewModel.doAtc("", "", JsonArray())
 
         //then
         assert(uohListViewModel.atcResult.value is Success)
