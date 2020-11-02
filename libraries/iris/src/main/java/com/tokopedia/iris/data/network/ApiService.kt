@@ -24,7 +24,9 @@ class ApiService(private val context: Context) {
 
     private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
-    private val DEFAULT_TIMEOUT = 30000L
+    private val DEFAULT_CONNECTION_TIMEOUT = 30000L
+    private val DEFAULT_READ_TIMEOUT = 10000L
+    private val DEFAULT_WRITE_TIMEOUT = 10000L
     lateinit var firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
 
     init {
@@ -77,8 +79,8 @@ class ApiService(private val context: Context) {
                 }
                 .connectionSpecs(Collections.singletonList(spec))
                 .connectTimeout(irisTimeout(), TimeUnit.MILLISECONDS)
-                .writeTimeout(10000, TimeUnit.MILLISECONDS)
-                .readTimeout(10000, TimeUnit.MILLISECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.MILLISECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.MILLISECONDS)
         addFringerInterceptor(builder)
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(ChuckerInterceptor(context))
@@ -88,9 +90,9 @@ class ApiService(private val context: Context) {
 
     private fun irisTimeout(): Long {
         try {
-            return firebaseRemoteConfigImpl.getLong(IRIS_CUSTOM_TIMEOUT, DEFAULT_TIMEOUT)
+            return firebaseRemoteConfigImpl.getLong(IRIS_CUSTOM_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT)
         } catch (e: Exception){
-            return DEFAULT_TIMEOUT
+            return DEFAULT_CONNECTION_TIMEOUT
         }
     }
 
