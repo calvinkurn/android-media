@@ -1,17 +1,13 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherOwner
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
@@ -24,11 +20,10 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
-import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -37,8 +32,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -46,17 +39,11 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import net.bytebuddy.implementation.bytecode.Throw
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 import rx.Observable
-import java.lang.IllegalArgumentException
-import java.lang.reflect.Field
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import javax.inject.Provider
 
 @ExperimentalCoroutinesApi
@@ -77,14 +64,13 @@ class ShopHomeViewModelTest {
     private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
-    private val getPlayWidgetUseCase: GetPlayWidgetUseCase = mockk(relaxed = true)
-    private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true)
     private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase = mockk(relaxed = true)
     private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase = mockk(relaxed = true)
     private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase = mockk(relaxed = true)
     private val gqlGetShopSortUseCase: GqlGetShopSortUseCase = mockk(relaxed = true)
     private val shopProductSortMapper: ShopProductSortMapper = mockk(relaxed = true)
     private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase = mockk(relaxed = true)
+    private val playWidgetTools: PlayWidgetTools = mockk(relaxed = true)
 
     @RelaxedMockK
     lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
@@ -114,8 +100,6 @@ class ShopHomeViewModelTest {
                 getShopProductUseCase,
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
-                getPlayWidgetUseCase,
-                playToggleChannelReminderUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
@@ -124,7 +108,8 @@ class ShopHomeViewModelTest {
                 getShopFilterProductCountUseCase,
                 gqlGetShopSortUseCase,
                 shopProductSortMapper,
-                getMerchantVoucherListUseCase
+                getMerchantVoucherListUseCase,
+                playWidgetTools
         )
     }
 
@@ -191,12 +176,8 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check get data from play usecase`() {
-        coEvery { getPlayWidgetUseCase.executeOnBackground() } returns PlayBannerCarouselDataModel(
-                channelList = listOf(
-                        PlayBannerCarouselItemDataModel(),
-                        PlayBannerCarouselItemDataModel()
-                )
-        )
+        coEvery { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.ShopPage("")) } returns PlayWidget()
+
         coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
                 listWidget = listOf(
                         ShopLayoutWidget.Widget(
@@ -214,44 +195,7 @@ class ShopHomeViewModelTest {
         }
 
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
-        assertTrue((viewModel.shopHomeLayoutData.value as? Success)!!.data.listWidget.filterIsInstance<ShopHomePlayCarouselUiModel>().isNotEmpty())
-    }
-
-    @Test
-    fun `check refresh data from play usecase`() {
-        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-                listWidget = listOf(
-                        ShopLayoutWidget.Widget(
-                                type = WidgetType.DYNAMIC,
-                                name = WidgetName.PLAY_CAROUSEL_WIDGET
-                        )
-                )
-        )
-
-        coEvery { getPlayWidgetUseCase.executeOnBackground() } returns PlayBannerCarouselDataModel(
-                channelList = listOf(
-                        PlayBannerCarouselItemDataModel(),
-                        PlayBannerCarouselItemDataModel()
-                )
-        )
-
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, true)
-
-        val shopHomeLayoutData = viewModel.shopHomeLayoutData.observeAwaitValue()
-
-        shopHomeLayoutData?.let {
-            viewModel.onRefreshPlayBanner(mockShopId)
-        }
-
-        coVerify {
-            getShopPageHomeLayoutUseCase.executeOnBackground()
-        }
-
-        coVerify {
-            getPlayWidgetUseCase.executeOnBackground()
-        }
-
-        assertTrue(viewModel.shopHomeLayoutData.value is Success && (viewModel.shopHomeLayoutData.value as Success).data.listWidget.filterIsInstance<ShopHomePlayCarouselUiModel>().isNotEmpty())
+        assertTrue((viewModel.shopHomeLayoutData.value as? Success)!!.data.listWidget.filterIsInstance<CarouselPlayWidgetUiModel>().isNotEmpty())
     }
 
     @Test
@@ -270,13 +214,6 @@ class ShopHomeViewModelTest {
                                 name = WidgetName.PLAY_CAROUSEL_WIDGET,
                                 data = listOf(ShopLayoutWidget.Widget.Data())
                         )
-                )
-        )
-
-        coEvery { getPlayWidgetUseCase.executeOnBackground() } returns PlayBannerCarouselDataModel(
-                channelList = listOf(
-                        PlayBannerCarouselItemDataModel(),
-                        PlayBannerCarouselItemDataModel()
                 )
         )
 
@@ -300,10 +237,6 @@ class ShopHomeViewModelTest {
 
         coVerify {
             getShopPageHomeLayoutUseCase.executeOnBackground()
-        }
-
-        coVerify {
-            getPlayWidgetUseCase.executeOnBackground()
         }
 
         coVerify {

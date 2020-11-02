@@ -18,7 +18,9 @@ class ProgressWidgetUiModel(
         override val ctaText: String,
         override var data: ProgressDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

@@ -788,6 +788,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaNumeric(getPassportNumber())) {
                 til_passport_no.error = getString(R.string.flight_booking_passport_number_alphanumeric_error)
                 false
+            } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaAndNumeric(getPassportNumber())) {
+                til_passport_no.error = getString(R.string.flight_booking_passport_number_not_valid)
+                false
+            } else if (isNeedPassport && getPassportNumber().length > 10) {
+                til_passport_no.error = getString(R.string.flight_booking_passport_number_not_valid)
+                false
             } else {
                 true
             }
