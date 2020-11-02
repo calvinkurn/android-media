@@ -42,6 +42,11 @@ class MainNavViewModel @Inject constructor(
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
         private val getResolutionNotification: Lazy<GetResolutionNotification>
 ): BaseViewModel(baseDispatcher.get().io()) {
+
+    companion object {
+        private const val INDEX_MODEL_ACCOUNT = 0
+    }
+
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
@@ -181,17 +186,19 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getUserSection(){
-        launch {
+        launchCatchError(coroutineContext, block = {
             val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
             mainNavigationDataModel?.dataList?.find { it is AccountHeaderViewModel }?.let {
-                val accountHeader = (it as AccountHeaderViewModel).copy()
-                if (accountHeader.loginState.equals(AccountHeaderViewModel.LOGIN_STATE_LOGIN)) {
+                val accountHeader = (it as? AccountHeaderViewModel ?: AccountHeaderViewModel()).copy()
+                if (accountHeader.loginState == AccountHeaderViewModel.LOGIN_STATE_LOGIN) {
                     getUserBadgeImage(accountHeader)
                     getOvoData(accountHeader)
                     getSaldoData(accountHeader)
                     getShopData(accountHeader.shopId.toInt(), accountHeader)
                 }
             }
+        }) {
+
         }
     }
 
@@ -202,7 +209,7 @@ class MainNavViewModel @Inject constructor(
                 getShopInfoUseCase.get().executeOnBackground()
             }
             accountData.shopName = result.shopCore.name
-            updateWidget(accountData.copy(), 0)
+            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
         }){
             _shopResultListener.postValue(Fail(it))
         }
@@ -214,7 +221,7 @@ class MainNavViewModel @Inject constructor(
                 getUserMembershipUseCase.get().executeOnBackground()
             }
             accountData.badge = result.tokopoints.status.tier.eggImageURL
-            updateWidget(accountData.copy(), 0)
+            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
         }){
             _membershipResultListener.postValue(Fail(it))
         }
@@ -235,7 +242,7 @@ class MainNavViewModel @Inject constructor(
                     ovoSaldo = AccountHeaderViewModel.ERROR_TEXT,
                     ovoPoint = AccountHeaderViewModel.ERROR_TEXT
             )
-            updateWidget(newAccountData, 0)
+            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
         }
     }
 
@@ -250,7 +257,7 @@ class MainNavViewModel @Inject constructor(
             val newAccountData = accountData.copy(
                     saldo = AccountHeaderViewModel.ERROR_TEXT
             )
-            updateWidget(newAccountData, 0)
+            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
         }
     }
 
