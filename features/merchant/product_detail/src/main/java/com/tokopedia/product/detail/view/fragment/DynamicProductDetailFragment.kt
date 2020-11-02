@@ -1551,9 +1551,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
-                content.row == "bottom"
-            }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
@@ -2452,6 +2450,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
+                        userId = viewModel.userId
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -2471,6 +2470,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
+                        userId = viewModel.userId
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -2486,6 +2486,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productName = data.getProductName
             category = data.basic.category.name
             price = data.finalPrice.toString()
+            userId = viewModel.userId
         }
         viewModel.addToCart(addToCartOccRequestParams)
     }

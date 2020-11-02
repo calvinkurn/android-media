@@ -1308,7 +1308,8 @@ open class HomeViewModel @Inject constructor(
                 shopId = grid.shopId,
                 warehouseId = grid.warehouseId,
                 productName = grid.name,
-                price = grid.price
+                price = grid.price,
+                userId = getUserId()
         ))
         getAtcUseCase.get().createObservable(requestParams)
                 .subscribeOn(Schedulers.io())

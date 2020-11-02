@@ -87,20 +87,22 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
 
     @Test
     fun `Click add to cart success should return success result`() {
+        val userId = "12345"
+
         `Given Product Card Options View Model with ATC enabled`()
-        `Given user is logged in`()
+        `Given user is logged in`(userId)
         `Given add to cart API will successs`()
 
         `When click add to cart`()
 
-        `Then verify add to cart use case is executed with correct input`()
+        `Then verify add to cart use case is executed with correct input`(userId)
         `Then should post add to cart event`()
         `Then verify add to cart result success`()
     }
 
-    private fun `Given user is logged in`() {
+    private fun `Given user is logged in`(userId: String) {
         every { userSession.isLoggedIn }.returns(true)
-        every { userSession.userId } returns "12345"
+        every { userSession.userId } returns userId
     }
 
     private fun `Given add to cart API will successs`() {
@@ -109,7 +111,7 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
         }
     }
 
-    private fun `Then verify add to cart use case is executed with correct input`() {
+    private fun `Then verify add to cart use case is executed with correct input`(userId: String) {
         val requestParams = addToCartRequestParamsSlot.captured
         val addToCartRequestParams = requestParams.parameters[REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST] as AddToCartRequestParams
 
@@ -119,6 +121,7 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
         addToCartRequestParams.productName shouldBe productCardOptionsModelATC.productName
         addToCartRequestParams.category shouldBe productCardOptionsModelATC.categoryName
         addToCartRequestParams.price shouldBe productCardOptionsModelATC.formattedPrice
+        addToCartRequestParams.userId shouldBe userId
     }
 
     private fun `Then verify add to cart result success`() {
@@ -132,13 +135,15 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
 
     @Test
     fun `Click add to cart with status fail should return error result with given error message`() {
+        val userId = "12345"
+
         `Given Product Card Options View Model with ATC enabled`()
-        `Given user is logged in`()
+        `Given user is logged in`(userId)
         `Given add to cart API will return failed status`()
 
         `When click add to cart`()
 
-        `Then verify add to cart use case is executed with correct input`()
+        `Then verify add to cart use case is executed with correct input`(userId)
         `Then should post add to cart event`()
         `Then verify add to cart result failed with error message`(addToCartFailedModel.getAtcErrorMessage())
     }
@@ -159,13 +164,15 @@ internal class AddToCartTest: ProductCardOptionsViewModelTestFixtures() {
 
     @Test
     fun `Click add to cart error should return error result with default error message`() {
+        val userId = "12345"
+
         `Given Product Card Options View Model with ATC enabled`()
-        `Given user is logged in`()
+        `Given user is logged in`(userId)
         `Given add to cart API will give error`()
 
         `When click add to cart`()
 
-        `Then verify add to cart use case is executed with correct input`()
+        `Then verify add to cart use case is executed with correct input`(userId)
         `Then should post add to cart event`()
         `Then verify add to cart result failed with error message`(ATC_DEFAULT_ERROR_MESSAGE)
     }
