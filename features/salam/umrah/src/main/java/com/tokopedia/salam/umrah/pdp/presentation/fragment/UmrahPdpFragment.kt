@@ -37,6 +37,7 @@ import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentWidgetModel
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.salam.umrah.common.util.UmrahPriceUtil.getSlashedPrice
 import com.tokopedia.salam.umrah.common.util.UmrahQuery
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
@@ -104,7 +105,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahPdpViewModel.pdpData.observe(this, Observer {
+        umrahPdpViewModel.pdpData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError()
@@ -270,7 +271,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         (activity as UmrahPdpActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = umrah_pdp_toolbar.navigationIcon
-        context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
         (activity as UmrahPdpActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         umrah_pdp_collapsing_toolbar.title = ""
@@ -284,11 +285,11 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                 }
                 if (scrollRange + verticalOffset == 0) {
                     umrah_pdp_collapsing_toolbar.title = umrahProduct.title
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.black) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
                     isShow = true
                 } else if (isShow) {
                     umrah_pdp_collapsing_toolbar.title = ""
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let { navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP) }
                     isShow = false
                 }
             }
@@ -420,7 +421,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             }
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
                     RecyclerView.VERTICAL))
         }
     }
@@ -432,7 +433,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             adapter = umrahPdpAirlineAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
                     RecyclerView.HORIZONTAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -479,7 +480,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             adapter = umrahPdpFeaturedFacilityAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                     RecyclerView.HORIZONTAL))
         }
         tg_umrah_pdp_featured_facilities_see_all.setOnClickListener {
@@ -532,7 +533,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
             adapter = umrahPdpFaqAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), RecyclerView.HORIZONTAL))
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), RecyclerView.HORIZONTAL))
             addItemDecoration(UmrahPdpFaqIndicator())
             onFlingListener = null
             PagerSnapHelper().attachToRecyclerView(this)
