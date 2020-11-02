@@ -17,7 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
+import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -33,12 +33,13 @@ class MultiLineGraphViewHolder(
         val RES_LAYOUT = R.layout.shc_multi_line_graph_widget
 
         @LayoutRes
-        private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_chart_tooltip
+        private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_multi_line_chart_tooltip
     }
 
     private val metricsAdapter by lazy { MultiLineMetricsAdapter(this) }
     private var element: MultiLineGraphWidgetUiModel? = null
     private var lastSelectedMetric: MultiLineMetricUiModel? = null
+    private val metricMap: MutableMap<MultiLineMetricUiModel, LineChartData> = mutableMapOf()
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
         this.element = element
@@ -52,16 +53,70 @@ class MultiLineGraphViewHolder(
     }
 
     override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
-        if (lastSelectedMetric == metric || lastSelectedMetric?.type == metric.type) {
-            lastSelectedMetric = metric
-            return
-        }
-        lastSelectedMetric = metric
-
         itemView.rvShcGraphMetrics.post {
             itemView.rvShcGraphMetrics.layoutManager?.scrollToPosition(position)
         }
-        showLineGraph(metric)
+
+        setOnMetricStateChanged(metric)
+    }
+
+    private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
+        val otherSelectedMetric = metricsAdapter.items.find { it.isSelected && it != metric }
+        val isAnyOtherSelected = otherSelectedMetric != null
+        if (this.lastSelectedMetric == metric) {
+            if (isAnyOtherSelected) {
+                if (lastSelectedMetric?.type == metric.type) {
+                    metric.isSelected = false
+                    this.lastSelectedMetric = otherSelectedMetric
+                    removeMetric(metric)
+                } else {
+                    otherSelectedMetric?.let {
+                        it.isSelected = false
+                        removeMetric(it)
+                    }
+                    metric.isSelected = true
+                    this.lastSelectedMetric = metric
+                    addMetric(metric)
+                }
+            } else {
+                metricsAdapter.notifyDataSetChanged()
+                return
+            }
+        } else {
+            if (lastSelectedMetric?.type == metric.type) {
+                if (metric.isSelected) {
+                    metric.isSelected = false
+                    this.lastSelectedMetric = otherSelectedMetric
+                    removeMetric(metric)
+                } else {
+                    metric.isSelected = true
+                    this.lastSelectedMetric = metric
+                    addMetric(metric)
+                }
+            } else {
+                metricsAdapter.items.forEach {
+                    if (it != metric) {
+                        it.isSelected = false
+                    }
+                }
+                metric.isSelected = true
+                lastSelectedMetric = metric
+                addMetric(metric)
+            }
+        }
+
+        metricsAdapter.notifyDataSetChanged()
+        initLineGraph(metric)
+    }
+
+    private fun addMetric(metric: MultiLineMetricUiModel) {
+        if (metricMap[metric] == null) {
+            metricMap[metric] = getLineChartData(metric)
+        }
+    }
+
+    private fun removeMetric(metric: MultiLineMetricUiModel) {
+
     }
 
     private fun setOnLoadingState(element: MultiLineGraphWidgetUiModel) {
@@ -73,8 +128,9 @@ class MultiLineGraphViewHolder(
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
-        val metric = element.data?.metrics?.getOrNull(0)
-        lastSelectedMetric = metric
+        val metricItems = element.data?.metrics.orEmpty()
+        val metric = metricItems.getOrNull(0)
+        metric?.isSelected = true
 
         with(itemView) {
             tvShcMultiLineGraphTitle.text = element.title
@@ -84,10 +140,11 @@ class MultiLineGraphViewHolder(
             btnShcMultiLineCta.visibility = ctaVisibility
             btnShcMultiLineCta.text = element.ctaText
 
-            setupMetrics(element.data?.metrics.orEmpty())
+            setupMetrics(metricItems)
 
             if (metric != null) {
-                showLineGraph(metric)
+                lastSelectedMetric = metric
+                initLineGraph(metric)
             }
         }
     }
@@ -104,25 +161,18 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    private fun showLineGraph(metric: MultiLineMetricUiModel) {
+    private fun initLineGraph(metric: MultiLineMetricUiModel) {
         //set metrics selected status if have same type
-        element?.data?.metrics?.forEachIndexed { i, item ->
-            item.isSelected = (item.type == metric.type)
-            metricsAdapter.notifyItemChanged(i)
-        }
 
         with(itemView.chartViewShcMultiLine) {
-            val lineChartDataSets = getLineChartData(metric.type)
+            val lineChartDataSets = getLineChartData(metric)
             init(getLineGraphConfig(lineChartDataSets))
-            setDataSets(*lineChartDataSets.toTypedArray())
+            setDataSets(lineChartDataSets)
             invalidateChart()
         }
     }
 
-    private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
-
-        val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
-
+    private fun getLineGraphConfig(lineChartData: LineChartData): LineChartConfigModel {
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
@@ -130,7 +180,7 @@ class MultiLineGraphViewHolder(
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
-                val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
+                val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
@@ -139,7 +189,7 @@ class MultiLineGraphViewHolder(
             }
 
             yAxis {
-                val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
+                val yAxisLabels = lineChartData.yAxisLabel
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
@@ -170,42 +220,38 @@ class MultiLineGraphViewHolder(
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
-                    (data as? LineChartEntry)?.let {
-                        view.tvShcTooltipTitle.text = it.xLabel
-                        view.tvShcTooltipValue.text = it.yLabel
+                    data?.let {
+                        with(view) {
+                            tvShcTooltipTitle1st.text = it.xLabel
+                            tvShcTooltipValue1st.text = it.yLabel
+                        }
                     }
                 }
     }
 
-    private fun getLineChartData(metricType: String): List<LineChartData> {
+    private fun getLineChartData(metric: MultiLineMetricUiModel): LineChartData {
+        val hexColor = metric.summary.lineColor
+        val lineHexColor = if (hexColor.isNotBlank()) {
+            hexColor
+        } else {
+            ChartColor.DEFAULT_LINE_COLOR
+        }
 
-        return element?.data?.metrics.orEmpty()
-                .filter { it.type == metricType }
-                .map { met ->
+        val chartEntry: List<LineChartEntry> = metric.linePeriod.currentPeriod.map {
+            LineChartEntry(it.yVal, it.yLabel, it.xLabel)
+        }
 
-                    val hexColor = met.summary.lineColor
-                    val lineHexColor = if (hexColor.isNotBlank()) {
-                        hexColor
-                    } else {
-                        ChartColor.DEFAULT_LINE_COLOR
-                    }
+        val yAxisLabel = getYAxisLabel(metric)
 
-                    val chartEntry: List<LineChartEntry> = met.linePeriod.currentPeriod.map {
-                        LineChartEntry(it.yVal, it.yLabel, it.xLabel)
-                    }
-
-                    val yAxisLabel = getYAxisLabel(met)
-
-                    return@map LineChartData(
-                            chartEntry = chartEntry,
-                            yAxisLabel = yAxisLabel,
-                            config = LineChartEntryConfigModel(
-                                    lineWidth = 1.8f,
-                                    drawFillEnabled = false,
-                                    lineColor = Color.parseColor(lineHexColor)
-                            )
-                    )
-                }
+        return LineChartData(
+                chartEntry = chartEntry,
+                yAxisLabel = yAxisLabel,
+                config = LineChartEntryConfigModel(
+                        lineWidth = 1.8f,
+                        drawFillEnabled = false,
+                        lineColor = Color.parseColor(lineHexColor)
+                )
+        )
     }
 
     private fun getYAxisLabel(metric: MultiLineMetricUiModel): List<AxisLabel> {

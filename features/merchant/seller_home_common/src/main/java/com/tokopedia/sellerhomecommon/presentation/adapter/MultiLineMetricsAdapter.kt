@@ -19,7 +19,8 @@ class MultiLineMetricsAdapter(
         private val listener: MetricsListener
 ) : RecyclerView.Adapter<MultiLineMetricsAdapter.ViewHolder>() {
 
-    private var items: List<MultiLineMetricUiModel> = emptyList()
+    var items: List<MultiLineMetricUiModel> = emptyList()
+        private set
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -56,7 +57,6 @@ class MultiLineMetricsAdapter(
                 }
 
                 setOnClickListener {
-                    item.isSelected = true
                     listener.onItemClickListener(item, adapterPosition)
                 }
             }
