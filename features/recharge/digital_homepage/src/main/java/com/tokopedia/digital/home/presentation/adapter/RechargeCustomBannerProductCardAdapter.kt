@@ -74,7 +74,7 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
     }
 
     companion object {
-        val EMPTY_LAYOUT = R.layout.home_banner_item_empty_carousel
+        val EMPTY_LAYOUT = com.tokopedia.home_component.R.layout.home_banner_item_empty_carousel
         val PRODUCT_CARD_LAYOUT = R.layout.view_recharge_home_product_card_custom_banner_item
     }
 }
