@@ -56,6 +56,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testShopRatingYellow())
     it.add(testHasRatingSales())
     it.add(testNoLabelIntegrityAndHasRatingFloat())
+    it.add(testPriorityRatingAverage())
     it.add(testLabelCampaign())
 }
 
@@ -1037,6 +1038,29 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testPriorityRatingAverage(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val productCardModel = ProductCardModel(
+            productName = "Product prio ratingAverage",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            countSoldRating = "4.6",
+            reviewCount = 4,
+            ratingCount = 30,
+            labelGroupList = listOf(labelIntegrity),
+            isTopAds = true,
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewIntegrity] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
