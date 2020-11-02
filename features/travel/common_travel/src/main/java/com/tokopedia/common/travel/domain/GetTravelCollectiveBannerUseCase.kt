@@ -78,7 +78,10 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
         const val PARAM_PRODUCT_FLIGHT = "FLIGHT"
         const val PARAM_PRODUCT_HOTEL = "HOTEL"
         const val PARAM_PRODUCT_SUB_HOMEPAGE = "SUBHOMEPAGE"
+        const val PARAM_PRODUCT_FLIGHT_VIDEO_BANNER = "FLIGHTPROMOTIONAL"
+        const val PARAM_PRODUCT_HOTEL_VIDEO_BANNER = "HOTELPROMOTIONAL"
         const val PARAM_PRODUCT_ALL = "ALL"
+
     }
 
 }
