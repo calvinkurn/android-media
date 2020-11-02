@@ -7,13 +7,10 @@ import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.*
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.model.event.*
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by Lukas 25/05/2019
  *
- * A main class of Recommendation Page is [WishlistTracking]
+ * A main class of Wishlist Page is [WishlistTracking]
  * this class handling a whole tracking data
  * don't delete this!
  */
@@ -89,6 +89,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_ADD_WISHLIST = "click add wishlist on product recommendation"
     private const val EVENT_ACTION_IMPRESSION_BANNER_ADS = "impression - banner ads"
     private const val EVENT_ACTION_CLICK_BANNER_ADS = "click - banner ads"
+    private const val EVENT_ACTION_CLICK_CART_ICON = "click cart icon in wishlist page"
 
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression on product recommendation"
     private const val EVENT_ACTION_IMPRESSION_WISHLIST = "product impressions"
@@ -98,6 +99,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_BUY = "click - beli on wishlist"
     private const val VALUE_SCREEN_NAME = "/wishlist"
     private const val VALUE_BUSINESS_UNIT = "home & browse"
+    private const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
@@ -465,6 +467,20 @@ object WishlistTracking {
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_LABEL, String.format(EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
                         EVENT_ACTION, if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
+                )
+        )
+    }
+
+    fun clickCartIcon(userId: String) {
+        getTracker().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, "",
+                        EVENT_ACTION, EVENT_ACTION_CLICK_CART_ICON,
+                        USER_ID, userId,
+                        BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
+                        CURRENT_SITE, VALUE_CURRENT_SITE
                 )
         )
     }

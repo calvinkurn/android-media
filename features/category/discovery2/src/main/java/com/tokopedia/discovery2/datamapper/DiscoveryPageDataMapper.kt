@@ -201,7 +201,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
+            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
+                component.showVerticalLoader = false
                 listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
             } else if (component.getComponentsItem()?.size == 0) {
                 listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))

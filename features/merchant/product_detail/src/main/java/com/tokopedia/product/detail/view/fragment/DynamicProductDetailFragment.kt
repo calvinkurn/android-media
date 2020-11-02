@@ -27,10 +27,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -242,6 +242,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private val irisSessionId by lazy {
         context?.let { IrisSession(it).getSessionId() } ?: ""
+    }
+
+    private val shareProductInstance by lazy {
+        activity?.let {
+            ProductShare(it, ProductShare.MODE_TEXT)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -1308,11 +1314,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.OCC_BUTTON -> {
                 sendTrackingATC(cartId)
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-                    goToOneClickCheckout()
-                } else {
-                    goToCartCheckout(cartId)
-                }
+                goToOneClickCheckout()
             }
             ProductDetailConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)
@@ -1719,7 +1721,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun shareProduct() {
         activity?.let {
-            showProgressDialog()
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
@@ -1740,13 +1741,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun checkAndExecuteReferralAction(productData: ProductData) {
-        val userSession = UserSession(activity)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-
         val fireBaseRemoteMsgGuest = remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
 
-        if (userSession.isLoggedIn && userSession.isMsisdnVerified) {
+        if (viewModel.userSessionInterface.isLoggedIn && viewModel.userSessionInterface.isMsisdnVerified) {
             val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
                 doReferralShareAction(productData, fireBaseRemoteMsg)
@@ -1786,9 +1784,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun executeProductShare(productData: ProductData) {
         activity?.let {
-            val productShare = ProductShare(it, ProductShare.MODE_TEXT)
-            productShare.share(productData, {
-                showProgressDialog()
+            shareProductInstance?.share(productData, {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
             }, {
                 hideProgressDialog()
             })
@@ -2418,32 +2417,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun addToCartOcc(data: DynamicProductInfoP1, selectedWarehouseId: Int) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-            val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-                warehouseId = selectedWarehouseId.toString()
-                attribution = trackerAttributionPdp ?: ""
-                listTracker = trackerListNamePdp ?: ""
-                productName = data.getProductName
-                category = data.basic.category.name
-                price = data.finalPrice.toString()
-            }
-            viewModel.addToCart(addToCartOccRequestParams)
-        } else {
-            val addToCartRequestParams = AddToCartRequestParams().apply {
-                productId = data.basic.productID.toLongOrNull() ?: 0
-                shopId = data.basic.shopID.toIntOrZero()
-                quantity = data.basic.minOrder
-                notes = ""
-                attribution = trackerAttributionPdp ?: ""
-                listTracker = trackerListNamePdp ?: ""
-                warehouseId = selectedWarehouseId
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
-                productName = data.getProductName
-                category = data.basic.category.name
-                price = data.finalPrice.toString()
-            }
-            viewModel.addToCart(addToCartRequestParams)
+        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
+            warehouseId = selectedWarehouseId.toString()
+            attribution = trackerAttributionPdp ?: ""
+            listTracker = trackerListNamePdp ?: ""
+            productName = data.getProductName
+            category = data.basic.category.name
+            price = data.finalPrice.toString()
         }
+        viewModel.addToCart(addToCartOccRequestParams)
     }
 
     private fun goToLeasing() {

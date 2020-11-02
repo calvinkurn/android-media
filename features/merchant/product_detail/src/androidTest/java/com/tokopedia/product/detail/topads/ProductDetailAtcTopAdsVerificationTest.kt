@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActi
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
+import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.unifycomponents.UnifyButton
@@ -89,22 +90,6 @@ class ProductDetailAtcTopAdsVerificationTest {
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
-    }
-
-    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
-        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
-        var childItemCount = childRecyclerView.adapter!!.itemCount
-        if (fixedItemPositionLimit > 0) {
-            childItemCount = fixedItemPositionLimit
-        }
-        for (i in 0 until childItemCount) {
-            try {
-                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isCompletelyDisplayed()))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
-            } catch (e: PerformException) {
-                e.printStackTrace()
-            }
-        }
     }
 
     private fun getRecyclerView(): RecyclerView? {

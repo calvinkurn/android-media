@@ -27,6 +27,9 @@ fun getSensorData() = CYFMonitor.getSensorData()
 val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
+        "OTPValidate" to "otp",
+        "OTPRequest" to "otp",
+        "richieSubmitWithdrawal" to "ttwdl",
         "pdpGetLayout" to "pdpGetLayout",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",

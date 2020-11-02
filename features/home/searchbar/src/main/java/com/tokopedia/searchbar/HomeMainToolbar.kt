@@ -153,7 +153,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             }
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
