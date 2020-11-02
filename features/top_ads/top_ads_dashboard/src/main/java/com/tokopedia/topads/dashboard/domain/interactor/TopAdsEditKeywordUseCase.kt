@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject.DATA
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.internal.ParamObject.INSIGHT_SOURCE
@@ -39,15 +40,11 @@ class TopAdsEditKeywordUseCase @Inject constructor(val userSession: UserSessionI
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = "https://gql.tokopedia.com/graphql/ta"
         val token = object : TypeToken<DataResponse<StatsData>>() {}.type
 
         var request: GraphqlRequest = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
-        val headers = HashMap<String, String>()
-        headers.put("Content-Type", "application/json")
-        val restReferralRequest = RestRequest.Builder(url, token)
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
-                .setHeaders(headers)
                 .setRequestType(RequestType.POST)
                 .build()
         tempRequest.add(restReferralRequest)

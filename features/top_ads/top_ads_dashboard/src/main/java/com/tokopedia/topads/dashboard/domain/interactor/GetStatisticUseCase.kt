@@ -28,15 +28,11 @@ constructor(): RestRequestUseCase() {
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = "https://gql.tokopedia.com/graphql/ta"
         val token = object : TypeToken<DataResponse<StatsData>>() {}.type
 
         var request: GraphqlRequest = GraphqlRequest(query, StatsData::class.java, requestParams?.parameters)
-        val headers = HashMap<String, String>()
-        headers.put("Content-Type", "application/json")
-        val restReferralRequest = RestRequest.Builder(url, token)
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
-                .setHeaders(headers)
                 .setRequestType(RequestType.POST)
                 .build()
         tempRequest.add(restReferralRequest)

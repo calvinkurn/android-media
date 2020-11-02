@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.PRICE_BID
@@ -57,11 +58,10 @@ class TopAdsGroupActionUseCase @Inject constructor(val userSession: UserSessionI
 
     override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
         val tempRequest = java.util.ArrayList<RestRequest>()
-        val url = "https://gql.tokopedia.com/graphql/ta"
         val token = object : TypeToken<DataResponse<GroupActionResponse>>() {}.type
 
         var request: GraphqlRequest = GraphqlRequest(query, GroupActionResponse::class.java, requestParams?.parameters)
-        val restReferralRequest = RestRequest.Builder(url, token)
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
                 .setRequestType(RequestType.POST)
                 .build()
