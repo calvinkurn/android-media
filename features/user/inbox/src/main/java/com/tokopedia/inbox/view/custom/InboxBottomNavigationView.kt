@@ -39,7 +39,15 @@ class InboxBottomNavigationView : BottomNavigationView {
             badge?.hide()
         } else {
             badge?.show()
-            badge?.text = badgeCount.toString()
+            badge?.text = getFormattedBadgeCounter(badgeCount)
+        }
+    }
+
+    private fun getFormattedBadgeCounter(badgeCount: Int): CharSequence {
+        return if (badgeCount > 99) {
+            "99+"
+        } else {
+            badgeCount.toString()
         }
     }
 
