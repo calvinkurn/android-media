@@ -1052,15 +1052,15 @@ private fun testPriorityRatingAverage(): ProductCardModelMatcher {
             countSoldRating = "4.6",
             reviewCount = 4,
             ratingCount = 30,
-            labelGroupList = listOf(labelIntegrity),
-            isTopAds = true,
-            hasThreeDots = true,
-            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
+            labelGroupList = listOf(labelIntegrity)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewIntegrity] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.salesRatingFloat] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
