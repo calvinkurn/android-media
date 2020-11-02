@@ -920,6 +920,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         hideShopFollowersView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // check RE for showcase type campaign eligibility
+        loadShopRestrictionInfo()
+    }
+
     override fun initInjector() {
         DaggerShopProductComponent
                 .builder()
