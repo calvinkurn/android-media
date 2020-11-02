@@ -1,5 +1,6 @@
 package com.tokopedia.seller.action.common.presentation.presenter
 
+import android.content.Context
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
@@ -28,6 +29,9 @@ open class SellerActionPresenterTestFixture {
     @RelaxedMockK
     lateinit var sliceUri: Uri
 
+    @RelaxedMockK
+    lateinit var context: Context
+
     open lateinit var presenter: SellerActionPresenter
 
     @Before
@@ -54,6 +58,12 @@ open class SellerActionPresenterTestFixture {
 
     protected fun verifySliceMainOrderListUseCaseCalled() {
         coVerify {
+            sliceMainOrderListUseCase.executeOnBackground()
+        }
+    }
+
+    protected fun verifySliceMainOrderListUseCaseNotCalled() {
+        coVerify(exactly = 0) {
             sliceMainOrderListUseCase.executeOnBackground()
         }
     }
