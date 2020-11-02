@@ -122,6 +122,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
                     }
 
                     override fun onError(e: Throwable?) {
+                        view.hideLoadingDialog()
                         if (e != null) {
                             view.showError(e)
                         }

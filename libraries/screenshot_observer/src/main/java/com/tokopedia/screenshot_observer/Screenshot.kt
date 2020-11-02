@@ -93,7 +93,6 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         if (!GlobalConfig.isSellerApp()) {
             unregister()
             currentActivity = null
-            className = ""
         }
     }
 
