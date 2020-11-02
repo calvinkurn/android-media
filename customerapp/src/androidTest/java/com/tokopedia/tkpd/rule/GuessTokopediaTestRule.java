@@ -6,8 +6,8 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.network.SessionUrl;
@@ -75,7 +75,7 @@ public class GuessTokopediaTestRule<T extends Activity> extends BaseTokopediaTes
 
             ConsumerMainApplication application = (ConsumerMainApplication) InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-            new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
 
             new UserSession(application).logoutSession();
 
@@ -103,7 +103,7 @@ public class GuessTokopediaTestRule<T extends Activity> extends BaseTokopediaTes
 
             mBase.evaluate();
 
-            new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
 
             SessionHandler.clearUserData(application);
         }
