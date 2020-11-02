@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 /**
  * @author ricoharisin .
  */
@@ -120,6 +122,7 @@ public abstract class BaseNotificationFactory {
     protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
         PendingIntent resultPendingIntent;
         Intent intent = new Intent();
+
         // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
         // because we need tracking UTM for those notification applink
         if (URLUtil.isNetworkUrl(appLinks)) {
@@ -127,6 +130,12 @@ public abstract class BaseNotificationFactory {
         } else {
             intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
         }
+
+        // to preventing DeadSystemException crash
+        // we must adding this flag on Intent
+        // source: https://stackoverflow.com/questions/14654414
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
