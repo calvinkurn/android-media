@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view
+package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData

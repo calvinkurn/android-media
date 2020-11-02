@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.adapter
+package com.tokopedia.cart.view.adapter.recentview
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
