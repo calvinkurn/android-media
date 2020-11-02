@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
@@ -37,6 +38,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -65,7 +68,8 @@ open class WishlistViewModel @Inject constructor(
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase
 ) : ViewModel(), CoroutineScope{
 
     private val masterJob = SupervisorJob()
@@ -96,6 +100,7 @@ open class WishlistViewModel @Inject constructor(
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
+    val updateCartCounterActionData = SingleObserverLiveEvent<Event<Int>>()
     val productClickActionData = SingleObserverLiveEvent<Event<ProductClickActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
     val bulkRemoveWishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
@@ -270,6 +275,7 @@ open class WishlistViewModel @Inject constructor(
                             cartId = addToCartResult.data.cartId
                             message = addToCartResult.data.message[0]
                             productId = addToCartResult.data.productId
+                            updateCartCounter()
                         } else {
                             isSuccess = false
                             message = addToCartResult?.errorMessage?.get(0)?:""
@@ -310,6 +316,20 @@ open class WishlistViewModel @Inject constructor(
                 })
             }
         }
+    }
+
+    private fun updateCartCounter(){
+        updateCartCounterUseCase.createObservable(RequestParams.create())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {}
+                    override fun onError(e: Throwable) {}
+                    override fun onNext(count: Int) {
+                        updateCartCounterActionData.value = Event(count)
+                    }
+                })
     }
 
     /**

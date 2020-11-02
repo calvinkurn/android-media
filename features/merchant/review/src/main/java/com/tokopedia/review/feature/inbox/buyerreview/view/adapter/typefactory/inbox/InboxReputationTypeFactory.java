@@ -5,7 +5,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationOvoIncentiveViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.SellerMigrationReviewModel;
 
 /**
@@ -17,8 +16,6 @@ public interface InboxReputationTypeFactory {
     int type(InboxReputationItemViewModel viewModel);
 
     int type(EmptySearchModel viewModel);
-
-    int type(InboxReputationOvoIncentiveViewModel viewModel);
 
     int type(SellerMigrationReviewModel model);
 

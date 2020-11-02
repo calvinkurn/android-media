@@ -63,6 +63,7 @@ import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -81,6 +82,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -138,7 +140,8 @@ public class ProductListFragment
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
-        SortFilterBottomSheet.Callback {
+        SortFilterBottomSheet.Callback,
+        SearchInTokopediaListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -312,7 +315,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
-                this, this, this, topAdsConfig);
+                this, this, this, this,
+                topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -539,6 +543,7 @@ public class ProductListFragment
     public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
         String searchRef = getSearchRef();
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
@@ -548,15 +553,19 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel,
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel, "");
         }
     }
 
     private String getSearchRef() {
         return searchParameter.get(SearchApiConst.SEARCH_REF);
+    }
+
+    private String getSearchProductTrackingEventLabel(ProductItemViewModel item) {
+        return TextUtils.isEmpty(item.getPageTitle()) ? getQueryKey() : item.getPageTitle();
     }
 
     @Override
@@ -758,6 +767,7 @@ public class ProductListFragment
 
     @Override
     public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
@@ -765,7 +775,7 @@ public class ProductListFragment
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                 item.isOrganicAds(),
-                getQueryKey(),
+                eventLabel,
                 filterSortParams
         );
     }
@@ -1017,6 +1027,13 @@ public class ProductListFragment
         return getOptionListFromFilterController();
     }
 
+    @Override
+    public void onEmptySearchToGlobalSearchClicked(String applink) {
+        if (redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+    }
+
     private List<Option> getOptionListFromFilterController() {
         if (filterController == null) return new ArrayList<>();
 
@@ -1049,16 +1066,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
-        adapter.setGlobalNavViewModel(globalNavViewModel);
-        presenter.clearData();
-        adapter.showEmptyState(getActivity(), isFilterActive());
-    }
-
-    private boolean isFilterActive() {
-        if (filterController == null) return false;
-
-        return filterController.isFilterActive();
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
+        adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
     }
 
     private void setSortFilterIndicatorCounter() {
@@ -1207,7 +1216,9 @@ public class ProductListFragment
 
     @Override
     public boolean isAnyFilterActive() {
-        return isFilterActive();
+        if (filterController == null) return false;
+
+        return filterController.isFilterActive();
     }
 
     @Override
@@ -1765,5 +1776,17 @@ public class ProductListFragment
     public void configure(boolean shouldRemove) {
         if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
         else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
+    }
+
+    @Override
+    public void onSearchInTokopediaClick(@NotNull String applink) {
+        if (getActivity() == null) return;
+
+        RouteManager.route(getActivity(), applink);
+    }
+
+    @Override
+    public void addLocalSearchRecommendation(List<Visitable> visitableList) {
+        adapter.appendItems(visitableList);
     }
 }

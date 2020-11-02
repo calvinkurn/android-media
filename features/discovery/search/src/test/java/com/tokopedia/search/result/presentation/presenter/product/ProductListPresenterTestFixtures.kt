@@ -38,6 +38,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val seamlessLoginUseCase = mockk<SeamlessLoginUsecase>(relaxed = true)
+    protected val getLocalSearchRecommendationUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
@@ -64,6 +65,7 @@ internal open class ProductListPresenterTestFixtures {
                 searchOnBoardingLocalCache,
                 dagger.Lazy { getDynamicFilterUseCase },
                 dagger.Lazy { getProductCountUseCase },
+                dagger.Lazy { getLocalSearchRecommendationUseCase },
                 topAdsUrlHitter,
                 testSchedulersProvider,
                 dagger.Lazy { remoteConfig }
@@ -128,7 +130,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.position shouldBe position
     }
 
-    private fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
+    protected fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
         val productItem = this as ProductItemViewModel
 
         productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
