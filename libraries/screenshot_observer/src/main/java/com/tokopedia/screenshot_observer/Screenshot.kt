@@ -71,10 +71,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         }
 
        bottomSheetFeedback.apply {
-            setChild(viewBottomSheet)
-            setOnDismissListener {
-                dismiss()
-            }
+           setChild(viewBottomSheet)
         }
 
         val fm = (activity as AppCompatActivity).supportFragmentManager

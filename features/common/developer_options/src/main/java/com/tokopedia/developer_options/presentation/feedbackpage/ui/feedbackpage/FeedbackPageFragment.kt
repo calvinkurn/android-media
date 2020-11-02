@@ -243,6 +243,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun onRemoveImageClick(item: BaseImageFeedbackUiModel) {
         imageAdapter.setImageFeedbackData(feedbackPagePresenter.removeImage(item))
+        selectedImage = feedbackPagePresenter.getSelectedImageUrl()
     }
 
     override fun onImageClick(data: ImageFeedbackUiModel, position: Int) {
