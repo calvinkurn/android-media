@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_toEndOf="@+id/tv_price_or_duration"
+        android:layout_toEndOf="@+id/tv_courier"
         android:layout_alignBottom="@id/tv_courier"
         android:layout_alignTop="@id/tv_courier"
         android:text="@string/tersedia_bayar_di_tempat"
