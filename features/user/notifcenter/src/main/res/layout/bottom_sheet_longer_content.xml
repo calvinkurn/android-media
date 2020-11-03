@@ -48,9 +48,10 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/cta_button"
+        android:id="@+id/btn_longer_content_cta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/notif_dp_8" />
+        android:layout_marginBottom="@dimen/notif_dp_8"
+        android:text="@string/title_notifcenter_click_here" />
 
 </LinearLayout>
