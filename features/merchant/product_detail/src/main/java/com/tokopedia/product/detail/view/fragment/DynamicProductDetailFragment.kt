@@ -811,6 +811,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
+        goToRecommendation()
+    }
+
     /**
      * ProductMerchantVoucherViewHolder
      */
@@ -1515,7 +1520,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         pdpUiUpdater?.updateDataP2(context, it, viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "")
+                ?: "", viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
+                ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
+                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
         dynamicAdapter.notifyDataSetChanged()
     }
@@ -2978,6 +2985,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
             enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
+    }
+
+    private fun goToRecommendation() {
+        val uri = UriUtil.buildUri(ProductDetailConstant.RECOM_URL, viewModel.getDynamicProductInfoP1?.basic?.productID).toString()
+        RouteManager.route(context, uri)
     }
 
     override fun refreshPage() {

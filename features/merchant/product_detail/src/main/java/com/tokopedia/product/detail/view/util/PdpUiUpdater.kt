@@ -235,7 +235,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String) {
+    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
         p2Data.let {
 
             shopInfoMap?.run {
@@ -252,6 +252,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             tickerInfoMap?.run {
                 statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo else null
                 closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo else null
+                this.isProductWarehouse = isProductWarehouse
+                this.isProductInCampaign = isProductInCampaign
+                this.isOutOfStock = isOutOfStock
             }
 
             shopCredibility?.run {

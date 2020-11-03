@@ -172,4 +172,6 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
 }

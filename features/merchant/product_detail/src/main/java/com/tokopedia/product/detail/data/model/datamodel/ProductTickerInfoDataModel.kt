@@ -14,7 +14,10 @@ data class ProductTickerInfoDataModel(
         val name: String = "",
         var generalTickerInfo: List<StickyLoginTickerPojo.TickerDetail>? = null,
         var statusInfo: ShopInfo.StatusInfo? = null,
-        var closedInfo: ShopInfo.ClosedInfo? = ShopInfo.ClosedInfo()
+        var closedInfo: ShopInfo.ClosedInfo? = ShopInfo.ClosedInfo(),
+        var isProductWarehouse: Boolean = false,
+        var isProductInCampaign: Boolean = false,
+        var isOutOfStock: Boolean = false
 
 ) : DynamicPdpDataModel {
 
@@ -27,6 +30,7 @@ data class ProductTickerInfoDataModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
+    // Update this logic
     fun shouldRemoveComponent(): Boolean {
         return generalTickerInfo?.isNullOrEmpty() == true && (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true))
     }

@@ -80,6 +80,9 @@ data class BasicInfo(
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
     }
+    fun isWarehouse(): Boolean {
+        return status == ProductStatusTypeDef.WAREHOUSE
+    }
 
     fun statusMessage(context: Context): String {
         return when (status) {

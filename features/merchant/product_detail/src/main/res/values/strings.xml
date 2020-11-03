@@ -259,4 +259,8 @@
 
     <string name="double_string_builder">%1s %2s</string>
 
+    <string name="ticker_out_of_stock_description">Wishlist barang ini untuk bisa diingatkan saat stok kembali tersedia atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
+    <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>
+    <string name="ticker_product_inactive_description">Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
+
 </resources>

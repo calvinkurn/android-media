@@ -46,6 +46,10 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             setupShopInfoTicker(element.statusInfo, element.closedInfo)
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
             setupShopInfoTicker(element.statusInfo, element.closedInfo)
+        } else if (element.isProductWarehouse) {
+            renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title))
+        } else if (element.isOutOfStock && !element.isProductInCampaign) {
+            renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis))
         } else if (element.generalTickerInfo?.isNotEmpty() == true) {
             setupGeneralTicker(element.generalTickerInfo ?: listOf())
         } else {
@@ -81,6 +85,21 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage
                         ?: "", null)
             }
+        }
+    }
+
+    private fun renderOutOfStockTicker(tickerDescription: String, tickerTitle: String) {
+        itemView.shop_ticker_info.apply {
+            setHtmlDescription(tickerDescription)
+            this.tickerTitle = tickerTitle
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    listener.onTickerGoToRecomClicked(shop_ticker_info.tickerTitle.toString(), shop_ticker_info.tickerType, componentTrackDataModel)
+                }
+
+                override fun onDismiss() {}
+            })
+            show()
         }
     }
 
