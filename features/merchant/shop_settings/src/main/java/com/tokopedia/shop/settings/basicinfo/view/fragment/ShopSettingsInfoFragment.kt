@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -335,9 +334,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_manage_shop_info)
-
         val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
         tvSave?.hide()
     }

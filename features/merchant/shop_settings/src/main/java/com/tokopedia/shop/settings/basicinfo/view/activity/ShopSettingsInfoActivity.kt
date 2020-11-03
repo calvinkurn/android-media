@@ -52,6 +52,7 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
         findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
             supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
+            it.title = getString(R.string.shop_settings_info)
         }
     }
 

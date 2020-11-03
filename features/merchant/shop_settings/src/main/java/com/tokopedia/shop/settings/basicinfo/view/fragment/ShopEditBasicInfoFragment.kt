@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -61,7 +60,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
-        private const val MIN_INPUT_LENGTH = 3
     }
 
     @Inject
@@ -154,9 +152,6 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupToolbar() {
-        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.shop_settings_basic_info)
-
         tvSave = activity?.findViewById(R.id.tvSave)
         tvSave?.show()
     }
