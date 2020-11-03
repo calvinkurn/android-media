@@ -42,7 +42,8 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
                         if (rounded != 0) {
                             transform(RoundedCorners(rounded))
                         }
-                    }.override(properties.width, properties.height)
+                    }
+                    .override(properties.width, properties.height)
                     .submit(properties.width, properties.height)
                     .get(properties.seconds, TimeUnit.SECONDS)
         } catch (e: Exception) {

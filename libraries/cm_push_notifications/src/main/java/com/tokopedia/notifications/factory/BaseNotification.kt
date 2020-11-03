@@ -289,6 +289,24 @@ abstract class BaseNotification internal constructor(
         }
     }
 
+    internal fun getBitmap(url: String?, width: Int, height: Int): Bitmap {
+        return try {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .into(width, height)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
+        } catch (e: InterruptedException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: ExecutionException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: TimeoutException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: IllegalArgumentException) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        }
+    }
+
     override fun loadResourceAsBitmap(resId: Int, result: (Bitmap) -> Unit) {
         Glide.with(context)
                 .asBitmap()

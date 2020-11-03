@@ -3,11 +3,13 @@ package com.tokopedia.notifications.factory
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.app.NotificationCompat
 import android.text.TextUtils
-
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.common.CMNotificationUtils
+import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.model.BaseNotificationModel
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @author lalit.singh
@@ -35,8 +37,11 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
     }
 
     private fun setBigPictureNotification(builder: NotificationCompat.Builder, baseNotificationModel: BaseNotificationModel) {
-        val bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality) ?: getBitmap(baseNotificationModel.media?.mediumQuality)
+        var bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality)
+                ?: getBitmap(baseNotificationModel.media?.mediumQuality)
         if (null != bitmap) {
+            val ratio = getRatio(bitmap)
+            bitmap = getBitmap(baseNotificationModel.media?.mediumQuality, ratio.first, ratio.second)
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
                     .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
@@ -48,6 +53,32 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
             }
             builder.setStyle(bigPictureStyle)
         }
+    }
+
+    private fun getRatio(bitmap: Bitmap): Pair<Int, Int> {
+        var height = bitmap.height
+        var width = bitmap.width
+        if (height > ImageSizeAndTimeout.BIG_IMAGE.height) {
+            val gcd = findGCD(height, width)
+            width = (width / gcd) / (height / gcd) * ImageSizeAndTimeout.BIG_IMAGE.height
+            height = ImageSizeAndTimeout.BIG_IMAGE.height
+        }
+        return Pair(width, height)
+    }
+
+    fun findGCD(x: Int, y: Int): Int {
+        var r = 0
+        var a: Int
+        var b: Int
+        a = max(x, y) // a is greater number
+        b = min(x, y) // b is smaller number
+        r = b
+        while (a % b != 0) {
+            r = a % b
+            a = b
+            b = r
+        }
+        return r
     }
 
 }
