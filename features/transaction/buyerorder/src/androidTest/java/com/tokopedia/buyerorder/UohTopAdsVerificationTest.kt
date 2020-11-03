@@ -44,12 +44,6 @@ class UohTopAdsVerificationTest {
         }
     }
 
-    @Before
-    fun setTopAdsAssertion() {
-        login()
-        waitForData()
-    }
-
     @After
     fun deleteDatabase() {
         topAdsAssertion.after()
