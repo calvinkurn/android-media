@@ -16,9 +16,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
-    @JvmField
-    val QUERY_KEY_MY_REVIEW = "is_my_review"
-
     // StoreSettingActivity
     @JvmField
     val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
@@ -104,7 +101,6 @@ object ApplinkConstInternalMarketplace {
 
     // InboxReputationActivity
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
-    val INBOX_REPUTATION_MY_REVIEW = "$INBOX_REPUTATION?$QUERY_KEY_MY_REVIEW=true"
 
     //ReviewDetailActivity
     val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
