@@ -7,7 +7,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseF
 /**
  * Created by hendry on 20/08/18.
  */
-class ShopEtalaseTitleViewModel : BaseShopEtalaseViewModel {
+class ShopEtalaseTitleDataModel : BaseShopEtalaseDataModel {
     constructor(nameTo: String) : super() {
         name = nameTo
     }
@@ -18,12 +18,12 @@ class ShopEtalaseTitleViewModel : BaseShopEtalaseViewModel {
         return typeFactory.type(this)
     }
 
-    companion object CREATOR : Parcelable.Creator<BaseShopEtalaseViewModel> {
-        override fun createFromParcel(source: Parcel): BaseShopEtalaseViewModel {
-            return ShopEtalaseTitleViewModel(source)
+    companion object CREATOR : Parcelable.Creator<BaseShopEtalaseDataModel> {
+        override fun createFromParcel(source: Parcel): BaseShopEtalaseDataModel {
+            return ShopEtalaseTitleDataModel(source)
         }
 
-        override fun newArray(size: Int): Array<BaseShopEtalaseViewModel?> {
+        override fun newArray(size: Int): Array<BaseShopEtalaseDataModel?> {
             return arrayOfNulls(size)
         }
     }

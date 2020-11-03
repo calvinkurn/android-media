@@ -19,7 +19,7 @@ import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
@@ -33,7 +33,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
     private var isEdit: Boolean = false
-    private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
+    private var etalase: ShopEtalaseDataModel = ShopEtalaseDataModel()
 
     private var isValid = true
 
@@ -45,7 +45,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         const val MAXIMUN_ETALASE_COUNT = 10
 
         @JvmStatic
-        fun createInstance(isEdit: Boolean, etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
+        fun createInstance(isEdit: Boolean, etalase: ShopEtalaseDataModel = ShopEtalaseDataModel()) =
                 ShopSettingsEtalaseAddEditFragment().apply {
                     arguments = Bundle().apply {
                         putParcelable(PARAM_SHOP_ETALASE, etalase)
@@ -69,7 +69,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
-            etalase = it.getParcelable(PARAM_SHOP_ETALASE) ?: ShopEtalaseViewModel()
+            etalase = it.getParcelable(PARAM_SHOP_ETALASE) ?: ShopEtalaseDataModel()
         }
 
         if (isEdit) {

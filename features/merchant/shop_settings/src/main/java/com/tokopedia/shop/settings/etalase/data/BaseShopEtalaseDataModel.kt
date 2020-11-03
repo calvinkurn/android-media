@@ -11,7 +11,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseF
 /**
  * Created by hendry on 23/08/18.
  */
-abstract class BaseShopEtalaseViewModel() : Parcelable, Visitable<BaseShopEtalaseFactory> {
+abstract class BaseShopEtalaseDataModel() : Parcelable, Visitable<BaseShopEtalaseFactory> {
     var id: String = ""
         protected set
     var name: String = ""

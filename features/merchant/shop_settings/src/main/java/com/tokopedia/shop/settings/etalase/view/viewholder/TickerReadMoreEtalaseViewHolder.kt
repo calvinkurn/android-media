@@ -1,6 +1,5 @@
 package com.tokopedia.shop.settings.etalase.view.viewholder
 
-import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -12,13 +11,13 @@ import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreDataModel
 
 
 class TickerReadMoreEtalaseViewHolder(
         itemView: View,
         private val tickerReadMoreListener: TickerReadMoreListener?
-) : AbstractViewHolder<TickerReadMoreViewModel>(itemView) {
+) : AbstractViewHolder<TickerReadMoreDataModel>(itemView) {
 
     private val textViewTitle: TextView
     private val textViewDescription: TextView
@@ -32,12 +31,12 @@ class TickerReadMoreEtalaseViewHolder(
         fun onReadMoreClicked()
     }
 
-    override fun bind(tickerReadMoreViewModel: TickerReadMoreViewModel) {
-        textViewTitle.text = tickerReadMoreViewModel.tickerTitle
+    override fun bind(tickerReadMoreDataModel: TickerReadMoreDataModel) {
+        textViewTitle.text = tickerReadMoreDataModel.tickerTitle
         textViewDescription.movementMethod = LinkMovementMethod.getInstance()
         textViewDescription.text = createDescriptionWithSpannable(
-                tickerReadMoreViewModel.tickerDescription,
-                tickerReadMoreViewModel.readMoreString
+                tickerReadMoreDataModel.tickerDescription,
+                tickerReadMoreDataModel.readMoreString
         )
     }
 

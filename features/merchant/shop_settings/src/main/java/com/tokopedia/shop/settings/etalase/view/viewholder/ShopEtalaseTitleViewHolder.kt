@@ -4,12 +4,12 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleDataModel
 
 /**
  * Created by hendry on 16/08/18.
  */
-class ShopEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopEtalaseTitleViewModel>(itemView) {
+class ShopEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopEtalaseTitleDataModel>(itemView) {
 
     private val tvEtalaseTitle: TextView
 
@@ -17,7 +17,7 @@ class ShopEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopEtalas
         tvEtalaseTitle = itemView.findViewById(R.id.tvEtalaseTitle)
     }
 
-    override fun bind(shopEtalaseTitleViewModel: ShopEtalaseTitleViewModel) {
+    override fun bind(shopEtalaseTitleViewModel: ShopEtalaseTitleDataModel) {
         tvEtalaseTitle.text = shopEtalaseTitleViewModel.name
     }
 

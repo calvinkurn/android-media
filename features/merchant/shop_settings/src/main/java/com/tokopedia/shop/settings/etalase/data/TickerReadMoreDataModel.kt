@@ -3,7 +3,7 @@ package com.tokopedia.shop.settings.etalase.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseFactory
 
-data class TickerReadMoreViewModel(
+data class TickerReadMoreDataModel(
         val tickerTitle: String,
         val tickerDescription: String,
         val readMoreString: String

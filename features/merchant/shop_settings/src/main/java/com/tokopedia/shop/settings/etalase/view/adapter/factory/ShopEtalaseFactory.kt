@@ -3,9 +3,9 @@ package com.tokopedia.shop.settings.etalase.view.adapter.factory
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleViewModel
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreDataModel
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseTitleViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
@@ -17,15 +17,15 @@ class ShopEtalaseFactory(
         private val onShopEtalaseViewHolderListener: ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
         private val tickerReadMoreListener: TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
 ) : BaseShopEtalaseFactory() {
-    override fun type(model: TickerReadMoreViewModel): Int {
+    override fun type(model: TickerReadMoreDataModel): Int {
         return TickerReadMoreEtalaseViewHolder.LAYOUT
     }
 
-    override fun type(model: ShopEtalaseViewModel): Int {
+    override fun type(model: ShopEtalaseDataModel): Int {
         return ShopEtalaseViewHolder.LAYOUT
     }
 
-    override fun type(model: ShopEtalaseTitleViewModel): Int {
+    override fun type(model: ShopEtalaseTitleDataModel): Int {
         return ShopEtalaseTitleViewHolder.LAYOUT
     }
 
