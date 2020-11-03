@@ -538,6 +538,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/account-home-old"
 
+    // HomeAccountUserActivity
+    // tokopedia-android-internal://global/new-home-account
+    @JvmField
+    val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
+
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
