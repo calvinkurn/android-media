@@ -1,8 +1,10 @@
 package com.tokopedia.entertainment.pdp.adapter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
 import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
@@ -45,20 +47,31 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         }
     }
 
-    fun getError(): Pair<String, Int> {
-        formData.forEach {
+    fun getError(resources: Resources): List<Pair<String, Int>> {
+        val listError = mutableListOf<Pair<String, Int>>()
+        formData.forEachIndexed {index, it ->
             if (it.required == 1) {
-                if ((it.value.isBlank() && it.elementType.equals(ELEMENT_TEXT)) ||
+                if (((it.value.isBlank() || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)))
+                                && it.elementType.equals(ELEMENT_TEXT)) ||
                         (it.valuePosition.equals(BLANK_LIST) && it.elementType.equals(ELEMENT_LIST))) {
-                    return Pair(it.title, EMPTY_TYPE)
+                    listError.add(Pair(it.title, EMPTY_TYPE))
+                    it.isError = true
+                    it.errorType = EMPTY_TYPE
+                    notifyItemChanged(index, it)
+                } else if (!validateRegex(it.value, it.validatorRegex)) {
+                    listError.add(Pair(it.title, EMPTY_TYPE))
+                    it.isError = true
+                    it.errorType = REGEX_TYPE
+                    notifyItemChanged(index, it)
                 } else {
-                    if (!validateRegex(it.value, it.validatorRegex)) return Pair(it.title, REGEX_TYPE)
+                    it.isError = false
                 }
             }
         }
 
-        return Pair("", 0)
+        return listError
     }
+
 
     private fun validateRegex(string: String, pattern: String): Boolean {
         try {

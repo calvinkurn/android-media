@@ -24,6 +24,11 @@
         counter
         counterStr
       }
+      counterTotal {
+        isShowCounter
+        counter
+        counterStr
+      }
       iconImageURL
       iconImageURLScrolled
     }

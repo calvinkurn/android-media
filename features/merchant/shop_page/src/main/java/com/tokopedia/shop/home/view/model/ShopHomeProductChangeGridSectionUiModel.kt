@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
  */
 
 data class ShopHomeProductChangeGridSectionUiModel(
-        val totalProduct: Int = 0,
+        var totalProduct: Int = 0,
         var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 ) : Visitable<ShopHomeAdapterTypeFactory> {
 

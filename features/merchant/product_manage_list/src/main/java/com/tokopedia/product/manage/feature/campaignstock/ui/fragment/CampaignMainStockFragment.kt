@@ -117,6 +117,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_campaign_stock
 
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
+
     override fun onDestroyView() {
         mViewModel.shouldDisplayVariantStockWarningLiveData.removeObservers(viewLifecycleOwner)
         super.onDestroyView()

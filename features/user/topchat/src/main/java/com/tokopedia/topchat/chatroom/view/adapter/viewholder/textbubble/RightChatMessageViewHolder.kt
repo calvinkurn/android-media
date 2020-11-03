@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,7 +40,7 @@ open class RightChatMessageViewHolder constructor(
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)
-        bindChatReadStatus(message)
+        ChatMessageViewHolderBinder.bindChatReadStatus(message, fxChat)
         bindHeader(message)
         bindBackground(message)
     }

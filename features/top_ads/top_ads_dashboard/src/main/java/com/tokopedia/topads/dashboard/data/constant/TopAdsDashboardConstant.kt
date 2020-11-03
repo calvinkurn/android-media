@@ -2,12 +2,15 @@ package com.tokopedia.topads.dashboard.data.constant
 
 object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
-    const val PARAM_START_DATE = "start_date"
-    const val PARAM_END_DATE = "end_date"
+    const val PARAM_START_DATE = "startDate"
+    const val PARAM_END_DATE = "endDate"
 
-    const val PATH_DASHBOARD_TOTAL_AD = "/v1.1/dashboard/total_ad"
+    const val GROUP_PARAM_START_DATE = "start_date"
+    const val GROUP_PARAM_END_DATE = "end_date"
+
+    const val SOURCE = "source"
+
     const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
-    const val PATH_DASHBOARD_CREDIT = "/v1/tkpd_products"
 
     const val SHOP_ID = "shopId"
     const val OFFSCREEN_PAGE_LIMIT = 3
@@ -17,6 +20,9 @@ object TopAdsDashboardConstant {
 
     const val URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo"
     const val AUTO_TOPUP_INACTIVE: Int = 0
+    const val REQUEST_CODE_ADD_CREDIT = 99
+    const val ACTIVE_STATUS = "1"
+
 
     const val ACTIVE = "Aktif"
     const val TIDAK_TAMPIL = "Tidak Tampil"
@@ -78,6 +84,6 @@ object TopAdsDashboardConstant {
     const val REQUEST_FROM_NEG = "Negative"
     const val REQUEST_FROM_BID = "Bid"
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
-    const val SELLER_EDIT_FORM_PATH = "com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
     const val SELLER_CREATE_FORM_PATH = "com.tokopedia.topads.view.activity.AdCreationChooserActivity"
+    const val SELLER_ONBOARDING_PATH = " com.tokopedia.topads.auto.view.acctivity.AutoAdsOnboardingActivity"
 }

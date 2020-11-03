@@ -31,7 +31,6 @@ android {
 
     testOptions {
         unitTests {
-            includeAndroidResources = true
             returnDefaultValues = true
         }
     }
@@ -60,4 +59,6 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
     }
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

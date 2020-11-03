@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
 
 import java.io.File;
@@ -21,12 +20,9 @@ import rx.Subscriber;
 
 public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPresenter {
     public static final int MIN_IMG_RESOLUTION = 300;
-    private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
     private SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase;
 
-    public ProductDraftSaveBulkPresenterImpl(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
-                                             SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
-        this.saveBulkDraftProductUseCase = saveBulkDraftProductUseCase;
+    public ProductDraftSaveBulkPresenterImpl(SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
         this.saveInstagramToProductDraftUseCase = saveInstagramToProductDraftUseCase;
     }
 
@@ -58,18 +54,10 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             return;
         }
 
-        //TODO milhamj remove comment
-//        if(GlobalConfig.isSellerApp()) {
         saveInstagramToProductDraftUseCase.execute(
                 SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
                         correctResolutionLocalPathList, correctResolutionInstagramDescList),
                 getSaveInstagramToProductDraftSubscriber());
-//        } else {
-//            saveBulkDraftProductUseCase.execute(
-//                    SaveBulkDraftProductUseCase.generateUploadProductParam(
-//                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
-//                    getSaveInstagramToDraftSubscriber());
-//        }
     }
 
     private boolean isResolutionCorrect(String localPath){
@@ -133,7 +121,6 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
     @Override
     public void detachView() {
         super.detachView();
-        saveBulkDraftProductUseCase.unsubscribe();
         saveInstagramToProductDraftUseCase.unsubscribe();
     }
 

@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Debug
 import android.os.Trace
 import android.util.Log
+import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
 
@@ -21,6 +22,7 @@ open class PageLoadTimePerformanceCallback(
     var isNetworkDone = false
     var isRenderDone = false
     var traceName = ""
+    var attributionValue: HashMap<String, String> = hashMapOf()
 
     override fun getPltPerformanceData(): PltPerformanceData {
         return PltPerformanceData(
@@ -28,15 +30,18 @@ open class PageLoadTimePerformanceCallback(
                 networkRequestDuration = requestNetworkDuration,
                 renderPageDuration = renderDuration,
                 overallDuration = overallDuration,
-                isSuccess = (isNetworkDone && isRenderDone)
+                isSuccess = (isNetworkDone && isRenderDone),
+                attribution = attributionValue
         )
     }
 
     override fun addAttribution(attribution: String, value: String) {
+        attributionValue[attribution] = value
         performanceMonitoring?.putCustomAttribute(attribution, value)
     }
 
     override fun startMonitoring(traceName: String) {
+        PerformanceAnalyticsUtil.increment()
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
@@ -49,9 +54,12 @@ open class PageLoadTimePerformanceCallback(
         if (!isRenderDone) renderDuration = 0
         if (!isNetworkDone) requestNetworkDuration = 0
 
-        performanceMonitoring?.stopTrace()
-        overallDuration = System.currentTimeMillis() - overallDuration
-        stopMethodTracing(traceName);
+        performanceMonitoring?.let {
+            performanceMonitoring?.stopTrace()
+            overallDuration = System.currentTimeMillis() - overallDuration
+            stopMethodTracing(traceName)
+        }
+        invalidate()
     }
 
     override fun startPreparePagePerformanceMonitoring() {
@@ -133,6 +141,7 @@ open class PageLoadTimePerformanceCallback(
         isPrepareDone = true
         isNetworkDone = true
         isRenderDone = true
+        PerformanceAnalyticsUtil.decrement()
     }
 
     private fun beginSystraceSection(sectionName: String) {

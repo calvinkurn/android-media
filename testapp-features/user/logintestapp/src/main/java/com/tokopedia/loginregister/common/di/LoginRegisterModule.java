@@ -14,7 +14,7 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 
 import dagger.Module;

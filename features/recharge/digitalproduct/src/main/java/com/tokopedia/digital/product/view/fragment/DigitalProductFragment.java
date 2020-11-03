@@ -81,7 +81,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;

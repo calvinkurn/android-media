@@ -11,7 +11,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.user.session.UserSession

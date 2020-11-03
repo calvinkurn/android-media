@@ -206,6 +206,7 @@ public class ShipmentDataRequestConverter {
                 .isFulfillment(cartItem.getAnalyticsProductCheckoutData().getIsFulfillment())
                 .setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice())
                 .isFreeShipping(cartItem.isFreeShipping())
+                .campaignId(cartItem.getAnalyticsProductCheckoutData().getCampaignId())
                 .build();
     }
 

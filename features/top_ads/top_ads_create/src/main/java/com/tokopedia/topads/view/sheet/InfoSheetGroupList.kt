@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.getResDrawable
+import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_create_fragment_group_sheet_info.view.*
@@ -22,9 +22,9 @@ class InfoSheetGroupList : BottomSheetUnify() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.ic1.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
-        view.ic2.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
-        view.ic3.setImageDrawable(view.context.getResDrawable(R.drawable.topads_create_ic_checklist))
+        view.ic1.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
+        view.ic2.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
+        view.ic3.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_create_ic_checklist))
     }
 
     companion object {

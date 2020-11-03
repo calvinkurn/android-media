@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -45,19 +44,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     String upstream = null;
 
 
-    @DeepLink({ApplinkConst.Transaction.ORDER_DETAIL,
-            ApplinkConst.Transaction.ORDER_OMS_DETAIL,
-            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL,
-            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE,
-            ApplinkConst.Transaction.ORDER_OMS_DETAIL_UPSTREAM
-    })
-    public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, OrderListDetailActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
     @Override
     protected Fragment getNewFragment() {
         if (category != null) {
@@ -67,7 +53,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
             } else if (category.contains(OrderCategory.MARKETPLACE)) {
                 return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE, paymentId, cartString);
-            } else if(category.contains("")) {
+            } else {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream);
             }
         }
@@ -78,20 +64,26 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected void onCreate(Bundle arg) {
-        if (getIntent().getExtras() != null) {
-            orderId = getIntent().getStringExtra(ORDER_ID);
-            paymentId = getIntent().getStringExtra(PAYMENT_ID);
-            cartString = getIntent().getStringExtra(CART_STRING);
+
+        if (getIntent() != null && getIntent().getData() != null) {
+            category = String.valueOf(getIntent().getData());
+
+            if (getIntent().getExtras() != null) {
+                orderId = getIntent().getStringExtra(ORDER_ID);
+                paymentId = getIntent().getStringExtra(PAYMENT_ID);
+                cartString = getIntent().getStringExtra(CART_STRING);
+            }
+
             Uri uri = getIntent().getData();
             if (uri != null) {
                 fromPayment = uri.getQueryParameter(FROM_PAYMENT);
             }
         }
+
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            category = getIntent().getStringExtra((DeepLink.URI));
             if (getIntent().getData() != null)
                 upstream = getIntent().getData().getQueryParameter(UPSTREAM);
         }
@@ -121,20 +113,21 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                category = getIntent().getStringExtra((DeepLink.URI));
-                if (getIntent().getData() != null)
+                if (getIntent() != null && getIntent().getData() != null) {
+                    category = String.valueOf(getIntent().getData());
                     upstream = getIntent().getData().getQueryParameter(UPSTREAM);
+                }
 
                 if (category != null) {
                     category = category.toUpperCase();
 
                     if (category.contains(OrderCategory.DIGITAL)) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
+                                .add(com.tokopedia.design.R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
 
                     } else if (category.contains("")) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)).commit();
+                                .add(com.tokopedia.design.R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)).commit();
                     }
                 }
             } else {

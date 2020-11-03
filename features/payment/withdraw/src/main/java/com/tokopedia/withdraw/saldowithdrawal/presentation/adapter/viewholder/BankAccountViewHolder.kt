@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
 
@@ -38,7 +37,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 bankAccount.accountName)
 
         if (bankAccount.adminFee > 0) {
-            val bankAdminFeeStr: String = CurrencyFormatHelper.convertToRupiah(bankAdminFee.toString())
+            val bankAdminFeeStr: String = CurrencyFormatHelper.convertToRupiah(bankAccount.adminFee.toString())
             bankAdminFee.text = context.getString(R.string.swd_admin_fee, bankAdminFeeStr)
             bankAdminFee.visible()
         } else {

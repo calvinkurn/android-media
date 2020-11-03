@@ -3,40 +3,26 @@ package com.tokopedia.campaign.shake.landing.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Vibrator;
-import android.text.TextUtils;
 
 import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.campaign.shake.landing.R;
-import com.tokopedia.campaign.shake.landing.analytics.CampaignTracking;
-import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
-import com.tokopedia.campaign.shake.landing.data.entity.CampaignResponseEntity;
-import com.tokopedia.campaign.shake.landing.data.entity.ValidCampaignPojo;
-import com.tokopedia.campaign.shake.landing.data.model.CampaignException;
 import com.tokopedia.campaign.shake.landing.domain.GetCampaignUseCase;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.campaign.shake.landing.view.subscriber.SecondShakeSubscriber;
+import com.tokopedia.campaign.shake.landing.view.subscriber.ShakeCampaignSubscriber;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -64,7 +50,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public static final String SHAKE_SHAKE_ERROR = "Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
     public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
-    Subscription subscription = null;
+    public Subscription subscription = null;
     private PermissionCheckerHelper permissionCheckerHelper;
     private UserSessionInterface userSession;
 
@@ -91,31 +77,42 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     }
 
-    volatile boolean secondShakeHappen = false;
+    public volatile boolean secondShakeHappen = false;
 
     @Override
     public void onShakeDetect() {
         if (getView().isLongShakeTriggered()) {
-            getView().setInvisibleCounter();
-            getView().showDisableShakeShakeVisible();
-            vibrate();
+            onShakeDetectLongShakeTriggered();
             return;
         } else if (!isFirstShake && isDoubleShakeShakeEnable()) {
-            isFirstShake = true;
-            waitForSecondShake();
-            vibrate();
-
+            onShakeDetectDoubleShakeShake();
         } else {
-            if (getCampaignUseCase != null)
-                getCampaignUseCase.unsubscribe();
-            if (isFirstShake) {
-                isFirstShake = false;
-                secondShakeHappen = true;
-            }
-            getView().setInvisibleCounter();
-            getView().setCancelButtonVisible();
-            addLocationParameterBeforeRequest(getView().getCurrentActivity());
+            onShakeDetectNormalShake();
         }
+    }
+
+    private void onShakeDetectLongShakeTriggered() {
+        getView().setInvisibleCounter();
+        getView().showDisableShakeShakeVisible();
+        vibrate();
+    }
+
+    private void onShakeDetectDoubleShakeShake() {
+        isFirstShake = true;
+        waitForSecondShake();
+        vibrate();
+    }
+
+    private void onShakeDetectNormalShake() {
+        if (getCampaignUseCase != null)
+            getCampaignUseCase.unsubscribe();
+        if (isFirstShake) {
+            isFirstShake = false;
+            secondShakeHappen = true;
+        }
+        getView().setInvisibleCounter();
+        getView().setCancelButtonVisible();
+        addLocationParameterBeforeRequest(getView().getCurrentActivity());
     }
 
     private void getCampaign(Double latitude, Double longitude) {
@@ -125,130 +122,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 latitude,
                 longitude,
                 false),
-                new Subscriber<GraphqlResponse>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().finish();
-                    }
+                new ShakeCampaignSubscriber(getView(), context));
 
-                    @Override
-                    public void onError(Throwable e) {
-                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-
-                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                        } else if (e instanceof SocketTimeoutException) {
-                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        } else if (e instanceof CampaignException) {
-                            if (((CampaignException) e).isMissingAuthorizationCredentials()) {
-                                redirectToLoginPage();
-                            } else {
-                                getView().showErrorGetInfo();
-                                return;
-                            }
-
-                        } else if (e instanceof ResponseDataNullException) {
-                            getView().showErrorNetwork(e.getMessage());
-                        } else if (e instanceof HttpErrorException) {
-                            getView().showErrorNetwork(e.getMessage());
-                        } else if (e instanceof ServerErrorException) {
-                            getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
-                        } else {
-                            getView().showErrorGetInfo();
-                            return;
-                        }
-
-                        getView().finish();
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse graphqlResponse) {
-
-                        if (graphqlResponse.getError(CampaignGqlResponse.class) != null
-                                && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
-                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                            getView().showMessage(graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() != null ?
-                                    graphqlResponse.getError(CampaignGqlResponse.class).get(0).getMessage() : "");
-                            return;
-                        }
-
-                        CampaignGqlResponse response =
-                                graphqlResponse.getData(CampaignGqlResponse.class);
-
-                        if (response != null && response.getCampaignResponseEntity() != null) {
-                            CampaignResponseEntity s = response.getCampaignResponseEntity();
-                            if (s.getValidCampaignPojos().size() > 0) {
-                                ValidCampaignPojo campaign = s.getValidCampaignPojos().get(0);
-
-                                if (!campaign.isValid()) {
-                                    CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
-                                    return;
-                                }
-
-                                if ((campaign.getErrorMessage()) != null
-                                        && !campaign.getErrorMessage().isEmpty()
-                                        && campaign.getUrl() != null && campaign.getUrl().isEmpty()) {
-                                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                                    getView().showMessage(campaign.getErrorMessage());
-                                    return;
-                                }
-
-                                Intent intentFromRouter = RouteManager.getIntentNoFallback(context, campaign.getUrl());
-                                if(intentFromRouter == null){
-                                    getView().showErrorNetwork(context.getString(R.string.shake_landing_shake_shake_wrong_deeplink));
-                                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                                    return;
-                                }
-
-                                // Vibrate for 500 milliseconds
-                                if (campaign.getVibrate() == 1)
-                                    vibrate();
-
-                                redirectToCampaignUrl(campaign.getUrl());
-
-                                CampaignTracking.eventShakeShake("success",
-                                        ShakeDetectManager.sTopActivity, "", campaign.getUrl());
-
-                                //Open next activity based upon the result from server
-
-                            }
-                        } else {
-                            CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                            getView().showErrorGetInfo();
-                        }
-                    }
-                });
-
-    }
-
-    private void redirectToCampaignUrl(String url) {
-
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-
-        final Intent intent = RouteManager.getIntent(context, url);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-
-            }
-        }, 500);
-    }
-
-    private void redirectToLoginPage() {
-        final Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        }, 500);
     }
 
     @Override
@@ -256,7 +131,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         this.permissionCheckerHelper = permissionCheckerHelper;
     }
 
-    private void addLocationParameterBeforeRequest(Activity activity) {
+    public void addLocationParameterBeforeRequest(Activity activity) {
 
         LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
                 permissionCheckerHelper,
@@ -279,30 +154,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
     private void waitForSecondShake() {
         subscription = Observable.interval(0, 1, TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Long l) {
-                        if (l == SHAKE_SHAKE_WAIT_TIME_SEC && !secondShakeHappen) {
-                            finishShake();
-                            return;
-                        }
-
-
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new SecondShakeSubscriber(this));
     }
 
-    void finishShake() {
+    public void finishShake() {
         if (subscription != null)
             subscription.unsubscribe();
         getView().setInvisibleCounter();
@@ -343,5 +198,22 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     @Override
     public void onCancelClick() {
         finishShake();
+    }
+
+    @TestOnly
+    public boolean getFirstShake() {
+        return isFirstShake;
+    }
+
+    @TestOnly
+    public void onShakeDetectTest(boolean isLongShake, boolean isFirstShake, boolean isDoubleShake) {
+        if (isLongShake) {
+            onShakeDetectLongShakeTriggered();
+            return;
+        } else if (!isFirstShake && isDoubleShake) {
+            onShakeDetectDoubleShakeShake();
+        } else {
+            onShakeDetectNormalShake();
+        }
     }
 }

@@ -90,8 +90,13 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_payment_list, container, false);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         return view;
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 
     @Override

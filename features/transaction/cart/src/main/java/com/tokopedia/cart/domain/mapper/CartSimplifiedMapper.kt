@@ -172,6 +172,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
             it.freeShippingBadgeUrl = if (availableGroup.shipmentInformation.freeShipping.eligible) availableGroup.shipmentInformation.freeShipping.badgeUrl else ""
             it.incidentInfo = availableGroup.shop.shopAlertMessage
+            it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it
         }
     }
@@ -215,11 +216,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
-                    isSelected = if (cartItemData.isError) {
-                        false
-                    } else {
-                        cartItemData.originData?.isCheckboxState ?: true
-                    },
+                    isSelected = cartItemData.originData?.isCheckboxState ?: true,
                     actionsData = actionsData,
                     errorType = errorType
             )
@@ -274,10 +271,12 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder ?: 0
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.maxOrder
+                        ?: 0
             }
             cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData?.originData?.minOrder ?: 0 -> {
-                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder ?: 0
+                cartItemHolderData.cartItemData?.updatedData?.quantity = cartItemHolderData.cartItemData?.originData?.minOrder
+                        ?: 0
             }
         }
     }
@@ -361,6 +360,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.slashPriceLabel = cartDetail.product.slashPriceLabel
             it.initialPriceBeforeDrop = cartDetail.product.initialPrice
             it.productAlertMessage = cartDetail.product.productAlertMessage
+            it.campaignId = cartDetail.product.campaignId
 
             when (shopData) {
                 is AvailableGroup -> mapShopInfoCartItemData(it, shopData)

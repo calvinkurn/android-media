@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -95,15 +94,7 @@ class PopularSearchViewHolder(
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
-                    AutocompleteTracking.eventClickPopularSearch(
-                            String.format(
-                                    "value: %s - po: %s - applink: %s",
-                                    item.title,
-                                    (adapterPosition + 1).toString(),
-                                    item.applink
-                            )
-                    )
-                    clickListener.onItemClicked(item.applink, item.url)
+                    clickListener.onDynamicSectionItemClicked(item, adapterPosition)
                 }
             }
         }

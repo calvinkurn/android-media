@@ -40,6 +40,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
+            presenter?.processUpdateCartCounter()
             presenter?.setCartListData(cartListData)
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartListData)

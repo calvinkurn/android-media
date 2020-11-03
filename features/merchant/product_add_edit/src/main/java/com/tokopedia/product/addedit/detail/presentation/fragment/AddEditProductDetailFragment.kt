@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.detail.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -242,6 +243,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // set bg color programatically, to reduce overdraw
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -547,6 +551,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         })
 
+        // product minimum order text change listener
+        productSkuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(p0: Editable?) {}
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                val skuInput = charSequence?.toString()
+                skuInput?.let { viewModel.validateProductSkuInput(it) }
+            }
+        })
+
         // Continue to add product description
         submitButton?.setOnClickListener {
             submitTextView?.hide()
@@ -567,6 +584,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
+        enableProductNameField()
         onFragmentResult()
         setupBackPressed()
 
@@ -579,11 +597,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToOrderQuantityInputStatus()
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
+        subscribeToProductSkuInputStatus()
         subscribeToInputStatus()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
+    }
+
+    private fun enableProductNameField() {
+        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun onDestroyView() {
@@ -714,6 +737,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.value?.run {
             if (this && !requestedFocus) {
                 preOrderDurationField?.requestFocus()
+                requestedFocus = true
+            }
+        }
+
+        // product sku validation
+        val productSkuInput = productSkuField?.getEditableValue().toString()
+        viewModel.validateProductSkuInput(productSkuInput)
+        viewModel.isProductSkuInputError.value?.run {
+            if (this && !requestedFocus) {
+                productSkuField?.requestFocus()
                 requestedFocus = true
             }
         }
@@ -1017,7 +1050,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productCategoryLayout?.show()
             productCategoryRecListView?.show()
             val selectedCategory = ArrayList<ListItemUnify>()
-            selectedCategory.add(ListItemUnify(detailInputModel.categoryName, ""))
+            val listItemUnify = ListItemUnify(detailInputModel.categoryName, "")
+            listItemUnify.isBold = false
+            selectedCategory.add(listItemUnify)
             productCategoryRecListView?.setData(selectedCategory)
         }
 
@@ -1149,6 +1184,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, Observer {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
+        })
+    }
+
+    private fun subscribeToProductSkuInputStatus() {
+        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, Observer {
+            productSkuField?.setError(it)
+            productSkuField?.setMessage(viewModel.productSkuMessage)
         })
     }
 
@@ -1357,7 +1399,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             val destination = AddEditProductDetailFragmentDirections.actionAddEditProductDetailFragmentToAddEditProductDescriptionFragment()
             destination.cacheManagerId = cacheManagerId
-            findNavController().navigate(destination)
+            NavigationController.navigate(this@AddEditProductDetailFragment, destination)
         }
     }
 

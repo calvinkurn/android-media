@@ -600,6 +600,10 @@ internal class ShopListFragment:
         searchShopViewModel?.onViewRemoveSelectedFilterAfterEmptySearch(uniqueId)
     }
 
+    override fun onEmptySearchToGlobalSearchClicked(applink: String?) {
+        // No implementation here
+    }
+
     override fun getRegistrationId(): String {
         return searchShopViewModel?.getRegistrationId() ?: ""
     }
