@@ -294,11 +294,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
-    }
-
-    @Override
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
