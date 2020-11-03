@@ -127,7 +127,6 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -303,20 +302,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) {
-            setDefaultDate()
-        }
         paramUohOrder.page = 1
         arrayFilterDate = resources.getStringArray(R.array.filter_date)
-    }
-
-    private fun setDefaultDate() {
-        defaultStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
-        defaultStartDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
-        defaultEndDate = Date().toFormattedString("yyyy-MM-dd")
-        defaultEndDateStr = Date().toFormattedString("dd MMM yyyy")
-        paramUohOrder.createTimeStart = defaultStartDate
-        paramUohOrder.createTimeEnd = defaultEndDate
     }
 
     private fun observingData() {
@@ -351,7 +338,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         resetFilter()
                     }
 
-                    view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
                     paramUohOrder.searchableText = s.toString()
                     refreshHandler?.startRefresh()
                     userSession?.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
@@ -365,6 +351,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
         })
+
+        search_bar?.searchBarIcon?.setOnClickListener {
+            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+            search_bar?.searchBarTextField?.text?.clear()
+        }
+
         addEndlessScrollListener()
     }
 
@@ -600,11 +592,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || (paramUohOrder.createTimeStart.isEmpty() && paramUohOrder.createTimeEnd.isEmpty())) {
+        val typeDate = if (isReset || isFirstLoad) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -613,9 +606,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
         filter1?.listener = {
             onClickFilterDate()
-        }
-        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-            filter1?.title = arrayFilterDate[2]
         }
         filter1?.let {
             chips.add(it)
@@ -694,6 +684,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val outputFormat = SimpleDateFormat("d MMM yyyy")
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
+            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             val resetMsg = resources.getString(R.string.uoh_reset_filter_msg).replace(UohConsts.DATE_LIMIT, limitDateStr)
             showToaster(resetMsg, Toaster.TYPE_NORMAL)
             resetFilter()
@@ -723,15 +714,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-        if ((filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) || filterStatus.equals(PARAM_MARKETPLACE, true)) && !isReset) {
-            if (tempFilterDateKey == "0" && isFirstLoad) {
-                uohBottomSheetOptionAdapter.selectedKey = "2"
-            } else {
-                uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-            }
-        } else {
-            uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-        }
+        uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
     }
@@ -867,7 +850,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 searchBarIsNotEmpty -> {
                     emptyStatus = context?.let { context ->
-                        view?.let { UohUtils.hideKeyBoard(context, it) }
+
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
                             UohEmptyState(drawable,
                                     resources.getString(R.string.uoh_search_empty),
@@ -931,6 +914,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
 
             btn_apply?.setOnClickListener {
+                isFilterClicked = true
                 isReset = false
                 currFilterType = tempFilterType
                 when (currFilterType) {
@@ -942,11 +926,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         } else {
                             filter1?.type = ChipsUnify.TYPE_NORMAL
                         }
-                        var dateOption = ""
-                        var labelTrackingDate = ""
-                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey.toInt() == 3) {
+                        val dateOption: String
+                        val labelTrackingDate: String
+                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey == "3") {
                             if (paramUohOrder.createTimeStart.isEmpty()) {
-                                paramUohOrder.createTimeStart = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                                paramUohOrder.createTimeStart = orderList.dateLimit
                             }
                             if (paramUohOrder.createTimeEnd.isEmpty()) {
                                 paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
@@ -958,40 +942,47 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
-                            labelTrackingDate = dateOption
 
                             if (currFilterDateKey == "0") {
                                 filter1?.title = ALL_DATE
+                                labelTrackingDate = ALL_DATE
                             } else {
                                 filter1?.title = currFilterDateLabel
+                                labelTrackingDate = dateOption
                             }
                         }
 
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
                     }
                     UohConsts.TYPE_FILTER_STATUS -> {
+                        val labelTrackingStatus: String
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
                         if (tempFilterStatusKey != SEMUA_TRANSAKSI) {
                             filter2?.type = ChipsUnify.TYPE_SELECTED
                             filter2?.title = currFilterStatusLabel
+                            labelTrackingStatus = currFilterStatusLabel
                         } else {
                             filter2?.type = ChipsUnify.TYPE_NORMAL
                             filter2?.title = ALL_STATUS
+                            labelTrackingStatus = ALL_STATUS
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(currFilterStatusLabel, it1) }
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
                         if (tempFilterCategoryKey != ALL_CATEGORIES) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
                             filter3?.title = currFilterCategoryLabel
+                            labelTrackingCategory = currFilterCategoryLabel
                         } else {
                             filter3?.type = ChipsUnify.TYPE_NORMAL
                             filter3?.title = ALL_CATEGORIES
+                            labelTrackingCategory = ALL_CATEGORIES
                         }
-                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(currFilterCategoryLabel, it1) }
+                        userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
                     }
                 }
                 bottomSheetOption?.dismiss()
@@ -1144,6 +1135,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetResendEmail?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    @SuppressLint("SimpleDateFormat")
     override fun onOptionItemClick(option: String, label: String, filterType: Int) {
         isFilterClicked = true
         tempFilterType = filterType
@@ -1176,14 +1169,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
-                            paramUohOrder.createTimeStart = startDate
+                            paramUohOrder.createTimeStart = orderList.dateLimit
                             paramUohOrder.createTimeEnd = endDate
 
                         }
                         option.toInt() == 3 -> {
-                            val startDateStr = getCalculatedFormattedDate("dd MMM yyyy", -90)
+                            val inputFormat = SimpleDateFormat("yyyy-MM-dd")
+                            val outputFormat = SimpleDateFormat("d MMM yyyy")
+                            val startDateStrInput = inputFormat.parse(orderList.dateLimit)
+                            val startDateStr = outputFormat.format(startDateStrInput)
                             val endDateStr = Date().toFormattedString("dd MMM yyyy")
                             bottomSheetOption?.apply {
                                 cl_choose_date?.visible()
@@ -1263,7 +1258,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (paramUohOrder.createTimeStart.isNotEmpty()) {
                     paramUohOrder.createTimeStart.split('-')
                 } else {
-                    val chooseStartDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
+                    val chooseStartDate = orderList.dateLimit
                     chooseStartDate.split('-')
                 }
             } else {
@@ -1364,7 +1359,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (orderData.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1450,7 +1445,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (order.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArray)
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1605,8 +1600,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
         atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
         atcJsonObject.addProperty(UohConsts.NOTES, "")
+        atcJsonObject.addProperty(UohConsts.CATEGORY, recommendationItem.categoryBreadcrumbs)
+        atcJsonObject.addProperty(UohConsts.PRODUCT_NAME, recommendationItem.name)
+        atcJsonObject.addProperty(UohConsts.PRODUCT_PRICE, recommendationItem.priceInt)
         jsonArrayAtc.add(atcJsonObject)
-        uohListViewModel.doAtc(GraphqlHelper.loadRawString(resources, R.raw.buy_again), jsonArrayAtc)
+        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArrayAtc)
 
         // analytics
         trackAtcRecommendationItem(recommendationItem)
