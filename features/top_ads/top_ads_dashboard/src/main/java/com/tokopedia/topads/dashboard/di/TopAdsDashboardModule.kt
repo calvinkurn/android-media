@@ -13,12 +13,7 @@ import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.dashboard.data.repository.TopAdsDashboardRepositoryImpl
-import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource
-import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud
-import com.tokopedia.topads.dashboard.data.source.cloud.serviceapi.TopAdsDashboardApi
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
-import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
@@ -70,30 +65,6 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     fun provideShopCommonDataSource(shopInfoCloudDataSource: ShopCommonCloudDataSource): ShopCommonDataSource {
         return ShopCommonDataSource(shopInfoCloudDataSource)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboadrApi(@TopAdsDashboardQualifier retrofit: Retrofit): TopAdsDashboardApi {
-        return retrofit.create(TopAdsDashboardApi::class.java)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardDataSourceCloud(topAdsDashboardApi: TopAdsDashboardApi): TopAdsDashboardDataSourceCloud {
-        return TopAdsDashboardDataSourceCloud(topAdsDashboardApi)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardDataSource(topAdsDashboardDataSourceCloud: TopAdsDashboardDataSourceCloud): TopAdsDashboardDataSource {
-        return TopAdsDashboardDataSource(topAdsDashboardDataSourceCloud)
-    }
-
-    @Provides
-    @TopAdsDashboardScope
-    fun provideTopAdsDashboardRepository(topAdsDashboardDataSource: TopAdsDashboardDataSource): TopAdsDashboardRepository {
-        return TopAdsDashboardRepositoryImpl(topAdsDashboardDataSource)
     }
 
     @TopAdsDashboardScope
