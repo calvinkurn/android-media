@@ -59,7 +59,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         this.accountImagePath = imagePath
     }
 
-    // #2
     fun requestChangePhoneNumber(email: String, phone: String, userId: String) {
         if (!TextUtils.isEmpty(photoIdImagePath) && !TextUtils.isEmpty(accountImagePath)) {
             launchCatchError(block = {
@@ -73,7 +72,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    // #1
     fun validateUserData(email: String, phone: String, userId: String) {
         getValidationUserDataUsecase.getValidationUserData(onSuccessValidateUserData(), onErrorValidateUserData(), phone, email, userId)
     }
@@ -139,7 +137,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         return params
     }
 
-    // #7
     private fun getUploadBookBankImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
 
