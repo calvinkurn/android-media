@@ -30,14 +30,11 @@ class CustomToast {
             val leftPadding = dpToPx(activityContext, 16).toInt()
             val topPadding = dpToPx(activityContext, 8).toInt()
             val topPaddingSingleLine = dpToPx(activityContext, 12).toInt()
+            val bottomPaddingSingleLine = dpToPx(activityContext, 2).toInt()
             val textView = Typography(activityContext)
             textView.text = text
             textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
-            textView.doOnPreDraw {
-                if(textView.lineCount == 1){
-                    textView.setPadding(leftPadding, topPaddingSingleLine, leftPadding, topPaddingSingleLine)
-                }
-            }
+
             textView.setTextColor(ContextCompat.getColor(activityContext, R.color.t_promo_toastColor))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3
@@ -46,10 +43,18 @@ class CustomToast {
             val lp = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             lp.setMargins(leftPadding, 0, leftPadding, 0)
             textView.layoutParams = lp
+
             val toast = Toast(activityContext)
             toast.duration = duration
             toast.view = fm
             toast.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, leftPadding)
+            textView.doOnPreDraw {
+                if(textView.lineCount == 1){
+                    textView.setPadding(leftPadding, topPaddingSingleLine, leftPadding, topPaddingSingleLine)
+                    lp.setMargins(leftPadding, 0, leftPadding, bottomPaddingSingleLine)
+                    textView.layoutParams = lp
+                }
+            }
             toast.show()
         }
     }
