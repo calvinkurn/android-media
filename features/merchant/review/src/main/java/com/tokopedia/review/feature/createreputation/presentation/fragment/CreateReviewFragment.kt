@@ -1020,7 +1020,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     activity?.finish()
                 }
                 show()
-                CreateReviewTracking.eventViewBackDialog(defaultTitle)
+                CreateReviewTracking.eventViewDialog(defaultTitle)
             }
         }
     }
