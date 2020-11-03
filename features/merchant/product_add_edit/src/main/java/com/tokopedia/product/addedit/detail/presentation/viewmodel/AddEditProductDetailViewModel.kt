@@ -40,7 +40,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase
+        private val validateProductUseCase: ValidateProductUseCase,
         private val validateProductNameExistUseCase: ValidateProductNameExistUseCase,
         private val getShopShowCasesUseCase: GetShopShowCasesUseCase
 ) : BaseViewModel(dispatcher) {
