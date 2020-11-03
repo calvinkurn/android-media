@@ -55,6 +55,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     private var endDateEditText = ""
 
     private var minDate: Date? = null
+    private var maxDate: Date? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChild(inflater, container)
@@ -154,17 +155,22 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 when (mode) {
+                    //if date < aft
                     CalendarPickerView.SelectionMode.RANGE -> {
-                        if (minDate != null && date.after(minDate)) {
+                        if ((minDate != null && maxDate == null) && (date.after(minDate) || !date.before(minDate))) {
+                            maxDate = date
                             selectEndDate(date)
-                        } else {
+                        } else if ((minDate == null || maxDate != null) || (maxDate == null && date.before(minDate))) {
                             minDate = date
+                            maxDate = null
                             selectStartDate(date)
                         }
                         this@SomFilterDateBottomSheet.selectedDates = selectedDates
                         toggleBtnShowOrder()
                     }
-                    else -> { }
+                    else -> {
+                    }
+
                 }
             }
 
