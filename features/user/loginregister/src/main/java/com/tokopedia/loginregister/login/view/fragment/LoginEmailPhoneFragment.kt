@@ -20,11 +20,8 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.annotation.Nullable
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -35,6 +32,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -62,7 +60,6 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -71,15 +68,11 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
-import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -97,7 +90,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -695,6 +687,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
                 loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
                 loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
+            dismissLoadingLogin()
             showPopupError(
                     loginTokenPojo.loginToken.popupError.header,
                     loginTokenPojo.loginToken.popupError.body,
@@ -712,6 +705,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
                 loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
                 loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
+            dismissLoadingLogin()
             showPopupError(
                     loginTokenPojo.loginToken.popupError.header,
                     loginTokenPojo.loginToken.popupError.body,
@@ -984,10 +978,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (isEmailNotActive(it, email)) {
                 onGoToActivationPage(email)
             } else if (it is AkamaiErrorException) {
+                dismissLoadingLogin()
                 showPopupError(
-                        "Permintaanmu gagal diproses",
-                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
-                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                        getString(R.string.popup_error_title),
+                        getString(R.string.popup_error_desc),
+                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
                 )
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
                 onErrorLogin(it.errorDescription)
@@ -1069,12 +1064,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-
             if (it is AkamaiErrorException) {
                 showPopupError(
-                        "Permintaanmu gagal diproses",
-                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
-                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                        getString(R.string.popup_error_title),
+                        getString(R.string.popup_error_desc),
+                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
                 )
             } else {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
@@ -1092,9 +1086,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dismissLoadingLogin()
             if (it is AkamaiErrorException) {
                 showPopupError(
-                        "Permintaanmu gagal diproses",
-                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
-                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                        getString(R.string.popup_error_title),
+                        getString(R.string.popup_error_desc),
+                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
                 )
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))
@@ -1117,9 +1111,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dismissLoadingLogin()
             if (it is AkamaiErrorException) {
                 showPopupError(
-                        "Permintaanmu gagal diproses",
-                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
-                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                        getString(R.string.popup_error_title),
+                        getString(R.string.popup_error_desc),
+                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
                 )
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))
@@ -1131,10 +1125,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return {
             logoutGoogleAccountIfExist()
             if (it is AkamaiErrorException) {
+                dismissLoadingLogin()
                 showPopupError(
-                        "Permintaanmu gagal diproses",
-                        "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
-                        TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+                        getString(R.string.popup_error_title),
+                        getString(R.string.popup_error_desc),
+                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
                 )
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))

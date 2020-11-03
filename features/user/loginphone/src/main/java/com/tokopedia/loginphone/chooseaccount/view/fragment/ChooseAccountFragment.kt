@@ -341,6 +341,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         if(loginToken.popupError.header.isNotEmpty() &&
                 loginToken.popupError.body.isNotEmpty() &&
                 loginToken.popupError.action.isNotEmpty()) {
+            dismissLoadingProgress()
             showPopupError(
                     loginToken.popupError.header,
                     loginToken.popupError.body,
@@ -354,8 +355,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private fun onErrorLoginToken(throwable: Throwable) {
         if (throwable is AkamaiErrorException) {
             showPopupError(
-                    "Permintaanmu gagal diproses",
-                    "Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.",
+                    getString(R.string.popup_error_title),
+                    getString(R.string.popup_error_desc),
                     TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
             )
         } else {
