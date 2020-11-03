@@ -62,14 +62,14 @@ class GyroView @JvmOverloads constructor(
                                  position: Int) {
         if (::analytics.isInitialized || ::thanksPageData.isInitialized)
             analytics.onGyroRecommendationListView(gyroRecommendationListItem,
-                    thanksPageData, position)
+                    thanksPageData, position + 1)
     }
 
     override fun onItemClicked(gyroRecommendationListItem: GyroRecommendationListItem,
                                position: Int) {
         if (::analytics.isInitialized || ::thanksPageData.isInitialized)
             analytics.onGyroRecommendationListClick(gyroRecommendationListItem,
-                    thanksPageData, position)
+                    thanksPageData, position + 1)
     }
 
     override fun openAppLink(appLink: String) {

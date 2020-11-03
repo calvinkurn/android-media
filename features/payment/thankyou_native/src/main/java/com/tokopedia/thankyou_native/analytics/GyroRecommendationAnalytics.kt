@@ -21,7 +21,6 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VALUE_ORDER_COMP
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.VIEW_GYRO_RECOM
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.track.TrackApp
@@ -50,16 +49,15 @@ class GyroRecommendationAnalytics @Inject constructor(
         analyticTracker.sendEnhanceEcommerceEvent(data)
     }
 
-    private fun getEnhancedECommerceNode(key: String, item: GyroRecommendationListItem, position: Int): MutableMap<String, Any> {
+    private fun getEnhancedECommerceNode(key: String, item: GyroRecommendationListItem, position: Int): Map<String, Any> {
         val promotionsMap = mapOf(PROMO_KEY_ID to "${item.id}",
                 PROMO_KEY_NAME to item.title,
                 PROMO_KEY_CREATIVE to item.title,
-                PROMO_KEY_CREATIVE_URL to {item.urlApp ?: item.url ?: ""},
+                PROMO_KEY_CREATIVE_URL to item.image,
                 PROMO_KEY_POSITION to position,
                 PROMO_KEY_CATEGORY to ""
         )
-        val promoViewItem =  mutableListOf(PROMO_KEY_PROMOTIONS to arrayListOf(promotionsMap))
-        return mutableMapOf(key to promoViewItem)
+        return mapOf(key to mapOf(PROMO_KEY_PROMOTIONS to arrayListOf(promotionsMap)))
     }
 
 
