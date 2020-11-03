@@ -1,17 +1,14 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.os.Bundle
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialHomeVisitable
 
 class DynamicChannelViewModel(
         val dynamicChannelData: Channel
-) : Visitable<OfficialHomeAdapterTypeFactory> {
-
-    override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
-        return adapterTypeFactory.type(this)
-    }
+) : OfficialHomeVisitable {
 
     fun getLayoutType() = when(dynamicChannelData.layout) {
         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO -> DynamicChannelSprintSaleViewHolder.LAYOUT
@@ -20,4 +17,12 @@ class DynamicChannelViewModel(
         DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> DynamicChannelMixTopViewHolder.LAYOUT
         else -> DynamicChannelLegoViewHolder.LAYOUT
     }
+
+    override fun visitableId(): String? = dynamicChannelData.id
+
+    override fun equalsWith(b: Any?): Boolean = b is DynamicChannelViewModel && b.dynamicChannelData == dynamicChannelData
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? = null
+
+    override fun type(typeFactory: OfficialHomeTypeFactory): Int = typeFactory.type(this)
 }
