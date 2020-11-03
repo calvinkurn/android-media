@@ -16,6 +16,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import timber.log.Timber
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -130,13 +131,23 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData[index] = UohTypeData("", TYPE_LOADER)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData("", TYPE_LOADER)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.tag(this::class.java.simpleName).e(ex)
+        }
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
-        notifyItemChanged(index)
+        try {
+            // e: index = 11, length = 5
+            // e: index = 5, length = 5
+            listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.tag(this::class.java.simpleName).e(ex)
+        }
     }
 
     fun addList(list: List<UohTypeData>) {
