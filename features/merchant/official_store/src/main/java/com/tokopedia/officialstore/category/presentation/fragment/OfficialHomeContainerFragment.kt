@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
-import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -35,7 +34,9 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.searchbar.MainToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_official_home.*
@@ -57,7 +58,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
     private var statusBar: View? = null
-    private var mainToolbar: MainToolbar? = null
+    private var mainToolbar: NavToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
@@ -125,8 +126,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
         mainToolbar?.run {
-            setNotificationNumber(notificationCount)
-            setInboxNumber(inboxCount)
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
         }
         badgeNumberNotification = notificationCount
         badgeNumberInbox = inboxCount
@@ -246,8 +247,18 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun configMainToolbar(view: View) {
         mainToolbar = view.findViewById(R.id.maintoolbar)
-        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
-        mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
+        maintoolbar?.run {
+            viewLifecycleOwner.lifecycle.addObserver(this)
+            setIcon(
+                IconBuilder()
+                        .addIcon(IconList.ID_MESSAGE) {}
+                        .addIcon(IconList.ID_NOTIFICATION) {}
+                        .addIcon(IconList.ID_CART) {}
+                        .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+        }
+//        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
+//        mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }
 
