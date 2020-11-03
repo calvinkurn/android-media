@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="merchant_product_detail_dark_mode_support_white">@color/Unify_N700</color>
+    <color name="merchant_product_detail_dark_mode_support_page_control">@color/Unify_N75</color>
+</resources>
