@@ -1185,7 +1185,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun scrollToFirstNewOrderToPrepareCoachMark() {
         context?.let { context ->
             if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK)) {
-                val firstNewOrderItem = adapter.data.indexOfFirst { it is SomListOrderUiModel && it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED }
+                val firstNewOrderItem = adapter.data.indexOfFirst {
+                    it is SomListOrderUiModel && it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty()
+                }
                 if (firstNewOrderItem != -1) {
                     val layoutManager = rvSomList.layoutManager as LinearLayoutManager
                     layoutManager.scrollToPositionWithOffset(firstNewOrderItem, 0)
