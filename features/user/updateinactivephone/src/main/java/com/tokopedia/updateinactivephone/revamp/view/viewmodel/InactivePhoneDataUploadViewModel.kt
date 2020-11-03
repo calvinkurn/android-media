@@ -107,7 +107,7 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         })
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         submitDataUseCase.cancelJob()
         phoneValidationUseCase.cancelJob()

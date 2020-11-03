@@ -46,7 +46,7 @@ class InactivePhoneOnboardingViewModel @Inject constructor(
         })
     }
 
-    private fun isValidPhoneNumber(phone: String): Boolean {
+    fun isValidPhoneNumber(phone: String): Boolean {
         val isValid = phone.matches(PHONE_MATCHER)
         if (phone.isEmpty()) {
             _phoneValidation.postValue(Fail(Throwable(ERROR_EMPTY_PHONE)))
@@ -65,7 +65,7 @@ class InactivePhoneOnboardingViewModel @Inject constructor(
         return true
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         phoneValidationUseCase.cancelJob()
     }

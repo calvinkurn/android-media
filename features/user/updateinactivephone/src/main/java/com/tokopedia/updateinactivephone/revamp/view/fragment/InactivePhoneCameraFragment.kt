@@ -156,6 +156,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
         val file = File(filePath())
+        if (file.exists()) {
+            file.delete()
+        }
+
         pictureResult.toFile(file) {
             if (it != null) {
                 showPreview(it)

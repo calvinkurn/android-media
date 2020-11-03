@@ -38,7 +38,7 @@ class InactivePhoneAccountListViewModel @Inject constructor(
         })
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         useCase.cancelJobs()
     }
