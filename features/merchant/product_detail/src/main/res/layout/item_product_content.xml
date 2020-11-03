@@ -214,7 +214,7 @@
             android:paddingTop="@dimen/dp_3"
             android:paddingRight="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_3"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_G500"
             android:visibility="gone"
             app:typographyType="small"
             app:typographyWeight="bold"
