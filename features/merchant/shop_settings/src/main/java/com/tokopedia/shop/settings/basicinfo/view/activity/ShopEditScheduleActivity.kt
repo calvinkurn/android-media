@@ -173,6 +173,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         window.decorView.setBackgroundColor(Color.WHITE)
         findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(this, android.R.color.transparent))
             it.title = getString(R.string.shop_settings_shop_status)
         }
