@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -54,7 +53,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val tvShippingChangeDuration by lazy { view.findViewById<Typography>(R.id.tv_shipping_change_duration) }
     private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_shipping_promo_description) }
     private val tickerAction by lazy { view.findViewById<Typography>(R.id.ticker_action) }
-    private val paymentLayoutContainer by lazy { view.findViewById<ConstraintLayout>(R.id.layout_order_preference_payment) }
     private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_payment_detail) }
@@ -66,8 +64,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_installment_detail) }
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_installment_error_action) }
-
-    private var paymentLayoutConstraintSet: ConstraintSet? = null
 
     private var bottomPaymentIv = -1
 
@@ -256,7 +252,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
     private fun showPayment() {
         val paymentModel = preference.preference.payment
-        var newBottomPaymentIv = bottomPaymentIv
 
         ivPayment?.let {
             ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
@@ -266,10 +261,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (description.isNotBlank()) {
             tvPaymentDetail?.text = description.replace('*', '\u2022')
             tvPaymentDetail?.visible()
-            newBottomPaymentIv = R.id.tv_payment_detail
         } else {
             tvPaymentDetail?.gone()
-            newBottomPaymentIv = R.id.tv_payment_name
         }
         if (paymentModel.tickerMessage.isNotBlank()) {
             tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
@@ -319,11 +312,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     if (payment.ovoErrorData.message.isNotBlank()) {
                         tvPaymentErrorMessage?.text = payment.ovoErrorData.message
                         tvPaymentErrorMessage?.visible()
-                        newBottomPaymentIv = R.id.tv_payment_error_message
                         (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_error_message
                     } else {
                         tvPaymentErrorMessage?.gone()
-                        newBottomPaymentIv = R.id.tv_payment_ovo_error_action
                         (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_ovo_error_action
                     }
                     tvPaymentDetail?.gone()
@@ -355,16 +346,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 tvInstallmentErrorAction?.gone()
             }
         }
-
-//        if (newBottomPaymentIv != bottomPaymentIv) {
-//            bottomPaymentIv = newBottomPaymentIv
-//            if (paymentLayoutConstraintSet == null) {
-//                paymentLayoutConstraintSet = ConstraintSet()
-//                paymentLayoutConstraintSet?.clone(paymentLayoutContainer)
-//            }
-//            paymentLayoutConstraintSet?.connect(R.id.iv_payment, ConstraintSet.BOTTOM, newBottomPaymentIv, ConstraintSet.BOTTOM)
-//            paymentLayoutConstraintSet?.applyTo(paymentLayoutContainer)
-//        }
     }
 
     private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
