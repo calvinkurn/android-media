@@ -9,7 +9,6 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
 open class Properties(
-        var target: Target? = null,
         var data: Any? = null,
         var thumbnailUrl: String = "",
         var isAnimate: Boolean = false,
@@ -26,15 +25,9 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
-    val size = overrideSize
-    val decode = decodeFormat
-    val singleTransform = transform
-    val customSignature = signature
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
-                target == other.target &&
                 data == other.data &&
                 thumbnailUrl == other.thumbnailUrl &&
                 isAnimate == other.isAnimate &&
@@ -52,8 +45,7 @@ open class Properties(
     }
 
     override fun hashCode(): Int {
-        var result = target.hashCode()
-        result = 31 * result + data.hashCode()
+        var result = data.hashCode()
         result = 31 * result + thumbnailUrl.hashCode()
         result = 31 * result + isAnimate.hashCode()
         result = 31 * result + isCircular.hashCode()

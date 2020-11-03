@@ -43,12 +43,6 @@ object GlideBuilder {
             "ABP?2U~X5J^~"
     )
 
-    private fun glideRequest(context: Context): GlideRequest<Bitmap> {
-        return GlideApp
-                .with(context)
-                .asBitmap()
-    }
-
     private fun glideListener(
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
@@ -72,6 +66,12 @@ object GlideBuilder {
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
+    }
+
+    private fun glideRequest(context: Context): GlideRequest<Bitmap> {
+        return GlideApp
+                .with(context)
+                .asBitmap()
     }
 
     @JvmOverloads
