@@ -348,4 +348,24 @@ public class CartShipmentAddressFormData implements Parcelable {
         }
         return false;
     }
+
+    public boolean isFulfillment() {
+        for (GroupAddress address : groupAddress) {
+            for (GroupShop groupShop : address.getGroupShop()) {
+                return groupShop != null && groupShop.isFulfillment();
+            }
+        }
+        return false;
+    }
+
+    public int getPreOrderDay() {
+        for (GroupAddress address : groupAddress) {
+            for (GroupShop groupShop : address.getGroupShop()) {
+                for (Product product : groupShop.getProducts()) {
+                    return product.getPreOrderDurationDay();
+                }
+            }
+        }
+        return 0;
+    }
 }

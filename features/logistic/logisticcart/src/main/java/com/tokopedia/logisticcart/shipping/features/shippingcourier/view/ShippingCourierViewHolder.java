@@ -80,7 +80,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         /*shipperName*/
         if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null) {
-            String shipperNameEta = shippingCourierUiModel.getProductData().getShipperName() + shippingCourierUiModel.getProductData().getPrice();
+            String shipperNameEta = shippingCourierUiModel.getProductData().getShipperName() + " " + "(" + shippingCourierUiModel.getProductData().getPrice().getFormattedPrice() + ")";
             TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shipperNameEta, tvCourier.getContext().getString(R.string.content_desc_tv_courier));
         } else {
             TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));

@@ -176,6 +176,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutData checkoutData;
     private boolean partialCheckout;
     private boolean couponStateChanged;
+    private boolean isFulfillment;
+    private int preOrderDuration;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
@@ -655,6 +657,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (shipmentButtonPaymentModel != null) {
             shipmentButtonPaymentModel.setAbTestButton(abTestButton);
         }
+
+        preOrderDuration = cartShipmentAddressFormData.getPreOrderDay();
+        isFulfillment = cartShipmentAddressFormData.isFulfillment();
     }
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
@@ -1742,12 +1747,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
+        boolean isFulfillmentData = isFulfillment;
+        int preOrder = preOrderDuration;
 
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
                 .codHistory(counter)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
+                .isFulfillment(isFulfillmentData)
+                .getPreOrderDuration(preOrder)
                 .build();
 
         Observable<ShippingRecommendationData> observable;
@@ -1982,6 +1991,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
+    }
+
+    @Override
+    public int getPerOrderDuration() {
+        return preOrderDuration;
     }
 
     @Override

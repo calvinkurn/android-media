@@ -63,7 +63,9 @@ data class RatesParam(
             vehicle_leasing = builder.vehicle_leasing,
             psl_code = builder.psl_code,
             products = builder.products,
-            unique_id = builder.unique_id)
+            unique_id = builder.unique_id,
+            is_fulfillment = builder.is_fulfillment,
+            po_time = builder.po_time)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
@@ -139,6 +141,10 @@ data class RatesParam(
             private set
         var unique_id: String = shipping.uniqueId
             private set
+        var is_fulfillment: Boolean = false
+            private set
+        var po_time: Int = 0
+            private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -149,6 +155,10 @@ data class RatesParam(
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
 
         fun build() = RatesParam(this)
+
+        fun isFulfillment(fulfillment: Boolean) = apply { this.is_fulfillment = fulfillment }
+
+        fun getPreOrderDuration(preorder: Int) = apply { this.po_time = preorder }
 
     }
 

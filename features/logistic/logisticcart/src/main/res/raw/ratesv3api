@@ -27,7 +27,7 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
           text_etd
           text_notes
           text_service_desc
-          text_eta_summarized
+          text_eta_summarize
         }
         order_priority {
           is_now

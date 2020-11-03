@@ -15,8 +15,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -102,9 +104,14 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
             /*put eta here*/
             if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
+                String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + "-" +
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
+                String shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
                 tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
                 tvPriceOrDuration.setVisibility(View.VISIBLE);
             } else {
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
                 tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
                 tvPriceOrDuration.setVisibility(View.VISIBLE);
             }
@@ -121,7 +128,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         }
         /*tv duration and contentdesctiption*/
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
