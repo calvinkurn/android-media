@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.tokopedia.promotionstarget.R
+import com.tokopedia.promotionstarget.doOnPreDraw
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -28,9 +29,15 @@ class CustomToast {
 
             val leftPadding = dpToPx(activityContext, 16).toInt()
             val topPadding = dpToPx(activityContext, 8).toInt()
+            val topPaddingSingleLine = dpToPx(activityContext, 12).toInt()
             val textView = Typography(activityContext)
             textView.text = text
             textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
+            textView.doOnPreDraw {
+                if(textView.lineCount == 1){
+                    textView.setPadding(leftPadding, topPaddingSingleLine, leftPadding, topPaddingSingleLine)
+                }
+            }
             textView.setTextColor(ContextCompat.getColor(activityContext, R.color.t_promo_toastColor))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3

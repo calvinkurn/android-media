@@ -9,6 +9,8 @@ object CouponGratificationParams {
 object UpdataGratifNotificationParams {
     const val NOTIFICATION_ID = "notificationID"
     const val NOTIFICATION_ENTRY_TYPE = "notificationEntryType"
+    const val POP_UP_TYPE = "popUpType"
+    const val SCREEN_NAME = "screenName"
 }
 
 object GratifParams {

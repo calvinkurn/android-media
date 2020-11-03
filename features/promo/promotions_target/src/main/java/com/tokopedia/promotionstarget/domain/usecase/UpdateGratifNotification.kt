@@ -14,7 +14,16 @@ class UpdateGratifNotification @Inject constructor(@Named(UPDATE_GRATIF) val que
         return gqlWrapper.getResponse(UpdateGratificationNotificationResponse::class.java, queryString, map)
     }
 
-    fun getQueryParams(notificationId: Int, notificationEntryType:Int): HashMap<String, Any> {
+    fun getQueryParams(notificationId: Int, notificationEntryType:Int, popType:Int, screenName:String): HashMap<String, Any> {
+        val variables = HashMap<String, Any>()
+        variables[PARAMS.NOTIFICATION_ID] = notificationId
+        variables[PARAMS.NOTIFICATION_ENTRY_TYPE] = notificationEntryType
+        variables[PARAMS.POP_UP_TYPE] = popType
+        variables[PARAMS.SCREEN_NAME] = screenName
+        return variables
+    }
+
+    fun getQueryParamsForTest(notificationId: Int, notificationEntryType:Int): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         variables[PARAMS.NOTIFICATION_ID] = notificationId
         variables[PARAMS.NOTIFICATION_ENTRY_TYPE] = notificationEntryType

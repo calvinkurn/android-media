@@ -1,7 +1,6 @@
 package com.tokopedia.promotionstarget.presentation.ui.dialog
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
@@ -32,9 +31,7 @@ import com.tokopedia.promotionstarget.data.coupon.CouponUiData
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationComponent
 import com.tokopedia.promotionstarget.data.di.modules.AppModule
-import com.tokopedia.promotionstarget.data.notification.GratifNotification
-import com.tokopedia.promotionstarget.data.notification.HachikoButtonType
-import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
+import com.tokopedia.promotionstarget.data.notification.*
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
@@ -44,7 +41,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class CmGratificationDialog {
@@ -314,7 +310,7 @@ class CmGratificationDialog {
         }
     }
 
-    private fun sendGreenButtonClickEventForNoAutoApply(){
+    private fun sendGreenButtonClickEventForNoAutoApply() {
         val userId = UserSession(btnAction.context).userId
         GratificationAnalyticsHelper.handleMainCtaClick(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName, null)
     }
@@ -332,9 +328,27 @@ class CmGratificationDialog {
     private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int) {
         view.post {
             if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
-                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType)
+                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType, getPopupType(), screenName)
             }
         }
+    }
+
+    @PopupType
+    fun getPopupType(): Int {
+        gratifNotification?.notificationStatus?.let {
+            if (it == NotificationStatusType.SEEN) {
+                return PopupType.SEEN
+            }
+        }
+        couponDetailResponse?.coupon?.couponStatus?.let {
+            when (it) {
+                CouponStatusType.ACTIVE -> PopupType.ACTIVE
+                CouponStatusType.EXPIRED -> PopupType.EXPIRED
+                CouponStatusType.USED -> PopupType.USED
+                else -> PopupType.UNKNOWN
+            }
+        }
+        return PopupType.UNKNOWN
     }
 
     private fun expandBottomSheet() {

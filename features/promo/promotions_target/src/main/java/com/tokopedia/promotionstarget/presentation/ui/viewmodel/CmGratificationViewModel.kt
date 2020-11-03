@@ -2,7 +2,6 @@ package com.tokopedia.promotionstarget.presentation.ui.viewmodel
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.di.IO
@@ -43,18 +42,22 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
         })
     }
 
-    fun updateGratification(notificationID: String?, notificationEntryType: Int) {
+    fun updateGratification(notificationID: String?, notificationEntryType: Int, popupType: Int, screenName: String) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 if (!notificationID.isNullOrEmpty()) {
                     Locks.notificationMutex.withLock {
                         val excludeParams = sharedPreferences.getBoolean("exclude_params", false)
-                        if (excludeParams) {
-                            updateGratifNotificationUsecase.getResponse(HashMap())
+                        val map = if (excludeParams) {
+                            updateGratifNotificationUsecase.getQueryParamsForTest(notificationID.toInt(),
+                                    notificationEntryType)
                         } else {
-                            val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(), notificationEntryType)
-                            updateGratifNotificationUsecase.getResponse(map)
+                            updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(),
+                                    notificationEntryType,
+                                    popupType,
+                                    screenName)
                         }
+                        updateGratifNotificationUsecase.getResponse(map)
                     }
                 }
             }

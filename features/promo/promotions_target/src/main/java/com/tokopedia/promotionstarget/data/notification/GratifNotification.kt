@@ -17,6 +17,10 @@ import com.tokopedia.promotionstarget.data.notification.NotificationStatusType.C
 import com.tokopedia.promotionstarget.data.notification.NotificationStatusType.Companion.ACTIVE_PUSH_NOTIF
 import com.tokopedia.promotionstarget.data.notification.NotificationStatusType.Companion.INACTIVE
 import com.tokopedia.promotionstarget.data.notification.NotificationStatusType.Companion.SEEN
+import com.tokopedia.promotionstarget.data.notification.PopupType.Companion.ACTIVE
+import com.tokopedia.promotionstarget.data.notification.PopupType.Companion.EXPIRED
+import com.tokopedia.promotionstarget.data.notification.PopupType.Companion.UNKNOWN
+import com.tokopedia.promotionstarget.data.notification.PopupType.Companion.USED
 
 data class GratifNotificationResponse(
         @SerializedName("getNotification") val response: GratifNotification? = null
@@ -72,6 +76,18 @@ annotation class NotificationStatusType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
+@IntDef(ACTIVE, SEEN, USED, EXPIRED, UNKNOWN)
+annotation class PopupType {
+    companion object {
+        const val ACTIVE = 1
+        const val SEEN = 2
+        const val USED = 3
+        const val EXPIRED = 4
+        const val UNKNOWN = 5
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
 @IntDef(ORGANIC, PUSH)
 annotation class NotificationEntryType {
     companion object {
@@ -81,7 +97,7 @@ annotation class NotificationEntryType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(SUCCESS, NOT_ELIGIBLE,DATA_ERROR,GENERAL_ERROR,AUTH_ERROR, INVALID_REQ_PARAM_ERROR)
+@StringDef(SUCCESS, NOT_ELIGIBLE, DATA_ERROR, GENERAL_ERROR, AUTH_ERROR, INVALID_REQ_PARAM_ERROR)
 annotation class GratifResultStatus {
     companion object {
         const val SUCCESS = "200000"
