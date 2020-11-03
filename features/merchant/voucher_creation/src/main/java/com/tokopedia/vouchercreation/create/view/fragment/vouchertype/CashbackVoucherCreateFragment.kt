@@ -43,16 +43,16 @@ import javax.inject.Inject
 class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {@JvmStatic
-        fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
+        fun createInstance(onNextStep: ((VoucherImageType, Int, Int) -> Unit)?,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context,
-                           getVoucherReviewUiModel: () -> VoucherReviewUiModel?) = CashbackVoucherCreateFragment().apply {
+                           getVoucherReviewUiModel: (() -> VoucherReviewUiModel?)?) = CashbackVoucherCreateFragment().apply {
             this.onNextStep = onNextStep
             this.onShouldChangeBannerValue = onShouldChangeBannerValue
             viewContext = context
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
 
-            getVoucherReviewUiModel()?.run {
+            getVoucherReviewUiModel?.invoke()?.run {
                 voucherImageType = voucherType
                 activeCashbackType =
                         when(voucherType) {
@@ -70,10 +70,10 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         private const val ERROR_MESSAGE = "Error validate cashback voucher"
     }
 
-    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
+    private var onNextStep: ((VoucherImageType, Int, Int) -> Unit)? = { _,_,_ -> }
     private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = { _ -> }
     private var viewContext = context
-    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel? = { null }
+    private var getVoucherReviewUiModel: (() -> VoucherReviewUiModel?)? = { null }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -132,7 +132,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val rupiahMaximumDiscountTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getCashbackMaximumDiscountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Rupiah.MaximumDiscount).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Rupiah) {
                     currentValue = data.voucherType.value
                 }
@@ -142,7 +142,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val rupiahMinimumPurchaseTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getMinimumPurchaseTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Rupiah.MinimumPurchase).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Rupiah) {
                     currentValue = data.minPurchase
                 }
@@ -152,7 +152,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val rupiahVoucherQuotaTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getVoucherQuotaTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Rupiah.VoucherQuota).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Rupiah) {
                     currentValue = data.voucherQuota
                 }
@@ -162,7 +162,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val discountAmountTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getCashbackPercentageDiscountAmountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 (data.voucherType as? VoucherImageType.Percentage)?.percentage?.let {
                     currentValue = it
                 }
@@ -172,7 +172,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val percentageMaximumDiscountTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getCashbackMaximumDiscountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Percentage.MaximumDiscount).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Percentage) {
                     currentValue = data.voucherType.value
                 }
@@ -182,7 +182,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val percentageMinimumPurchaseTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getMinimumPurchaseTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Percentage.MinimumPurchase).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Percentage) {
                     currentValue = data.minPurchase
                 }
@@ -192,7 +192,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val percentageVoucherQuotaTextFieldModel by lazy {
         PromotionTypeUiListStaticDataSource.getVoucherQuotaTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.Cashback.Percentage.VoucherQuota).apply {
-            getVoucherReviewUiModel()?.let { data ->
+            getVoucherReviewUiModel?.invoke()?.let { data ->
                 if (data.voucherType is VoucherImageType.Percentage) {
                     currentValue = data.voucherQuota
                 }
@@ -386,7 +386,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                 activity?.run {
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
-                                onNextStep(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
+                                onNextStep?.invoke(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
                             } else {
                                 validation.run {
                                     benefitMaxError.setRupiahTextFieldError(rupiahMaximumDiscountTextFieldModel)
@@ -427,7 +427,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                                 activity?.run {
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
-                                onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
+                                onNextStep?.invoke(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
                             } else {
                                 validation.run {
                                     benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)

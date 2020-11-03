@@ -48,6 +48,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.interfaces.ReviewVoucherListener
 import com.tokopedia.vouchercreation.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
@@ -67,25 +68,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     companion object {
         @JvmStatic
-        fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
-                           getToken: () -> String,
-                           getPostBaseUiModel: () -> PostBaseUiModel,
-                           onReturnToStep: (Int) -> Unit,
-                           getBannerBitmap: () -> Bitmap?,
-                           getVoucherId: () -> Int?,
-                           getPromoCodePrefix: () -> String,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           getVoucherBanner: () -> BannerVoucherUiModel,
+        fun createInstance(listener: ReviewVoucherListener,
                            isEdit: Boolean): ReviewVoucherFragment = ReviewVoucherFragment().apply {
-            this.getVoucherReviewUiModel = getVoucherReviewUiModel
-            this.getToken = getToken
-            this.getPostBaseUiModel = getPostBaseUiModel
-            this.onReturnToStep = onReturnToStep
-            this.getBannerBitmap = getBannerBitmap
-            this.getVoucherId = getVoucherId
-            this.getPromoCodePrefix = getPromoCodePrefix
-            this.getBannerBaseUiModel = getBannerBaseUiModel
-            this.getVoucherBanner = getVoucherBanner
+            this.getBannerBitmap = listener::getBannerBitmap
             this.isEdit = isEdit
         }
 
@@ -103,34 +88,17 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         private const val ERROR_DRAW = "Error drawing voucher"
     }
 
-    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
-    private var getToken: () -> String = { "" }
-    private var getPostBaseUiModel: () -> PostBaseUiModel = {
-        PostBaseUiModel(
-                CreateMerchantVoucherStepsActivity.POST_IMAGE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
-        )}
-    private var onReturnToStep: (Int) -> Unit = { _ -> }
+    private var defaultPostBaseUiModel =
+            PostBaseUiModel(
+                    CreateMerchantVoucherStepsActivity.POST_IMAGE_URL,
+                    CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
+                    CreateMerchantVoucherStepsActivity.CASHBACK_URL,
+                    CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+            )
     private var getBannerBitmap: () -> Bitmap? = { null }
-    private var getVoucherId: () -> Int? = { null }
-    private var getPromoCodePrefix: () -> String = { "" }
-    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
-        BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
-        )}
-    private var getVoucherBanner: () -> BannerVoucherUiModel = {
-        BannerVoucherUiModel(
-                VoucherImageType.FreeDelivery(0),
-                "",
-                "",
-                "")
-    }
     private var isEdit: Boolean = false
+
+    private var listener: ReviewVoucherListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -241,7 +209,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     override fun onResume() {
         super.onResume()
-        renderReviewInformation(getVoucherReviewUiModel())
+        listener?.getVoucherReviewUiModel()?.let {
+            renderReviewInformation(it)
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -298,7 +268,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             PROMO_CODE_KEY -> VoucherCreationStep.TARGET
             else -> VoucherCreationStep.REVIEW
         }
-        onReturnToStep(step)
+        listener?.onReturnToStep(step)
     }
 
     override fun onFooterCtaTextClickListener() {
@@ -328,7 +298,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 userId = userSession.userId,
                 isDuplicate = isDuplicate
         )
-        if (getVoucherReviewUiModel().startDate.isBlank()) {
+        if (listener?.getVoucherReviewUiModel()?.startDate.isNullOrBlank()) {
             view?.run {
                 Toaster.make(this,
                         context?.getString(R.string.mvc_period_alert).toBlankOrString(),
@@ -477,7 +447,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     when {
                         targetType == VoucherTargetType.PUBLIC -> ""
                         promoCode.isBlank() -> promoCode
-                        else -> getPromoCodePrefix() + promoCode
+                        else -> listener?.getPromoCodePrefix() + promoCode
                     }
 
             voucherInfoSection = getVoucherInfoSection(targetType, voucherName, displayedPromoCode, true)
@@ -538,20 +508,22 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 shopName,
                 promoCodeString,
                 promoPeriod,
-                getPostBaseUiModel())
+                listener?.getPostBaseUiModel() ?: defaultPostBaseUiModel)
     }
 
     private fun getPublicVoucherDisplay() = VoucherTargetCardType.PUBLIC
 
     private fun createVoucher() {
-        getBannerBitmap()?.let startCheck@ { bannerBitmap ->
+        getBannerBitmap()?.let { bannerBitmap ->
             getSquareVoucherBitmap { squareBitmap ->
-                viewModel.createVoucher(
-                        bannerBitmap,
-                        squareBitmap,
-                        CreateVoucherParam.mapToParam(
-                                getVoucherReviewUiModel(), getToken()
-                        ))
+                listener?.getVoucherReviewUiModel()?.let { voucherReview ->
+                    viewModel.createVoucher(
+                            bannerBitmap,
+                            squareBitmap,
+                            CreateVoucherParam.mapToParam(
+                                    voucherReview, listener?.getToken().orEmpty()
+                            ))
+                }
             }
         }
     }
@@ -561,15 +533,17 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             drawNullBanner()
         } else {
             getBannerBitmap()?.let { bannerBitmap ->
-                getVoucherId()?.let { voucherId ->
+                listener?.getVoucherId()?.let { voucherId ->
                     getSquareVoucherBitmap { squareBitmap ->
-                        viewModel.updateVoucher(
-                                bannerBitmap,
-                                squareBitmap,
-                                getVoucherReviewUiModel(),
-                                getToken(),
-                                voucherId
-                        )
+                        listener?.getVoucherReviewUiModel()?.let { voucherReview ->
+                            viewModel.updateVoucher(
+                                    bannerBitmap,
+                                    squareBitmap,
+                                    voucherReview,
+                                    listener?.getToken().orEmpty(),
+                                    voucherId
+                            )
+                        }
                     }
                 }
             }
@@ -604,7 +578,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 action = VoucherCreationAnalyticConstant.EventAction.Click.ERROR_CREATION_EDIT_PROMO_CODE,
                 userId = userSession.userId
         )
-        onReturnToStep(VoucherCreationStep.TARGET)
+        listener?.onReturnToStep(VoucherCreationStep.TARGET)
     }
 
     private fun onPromoCodeErrorBack() {
@@ -626,7 +600,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         context?.run {
             Glide.with(this)
                     .asDrawable()
-                    .load(getBannerBaseUiModel().bannerBaseUrl)
+                    .load(listener?.getBannerBaseUiModel()?.bannerBaseUrl.orEmpty())
                     .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -642,9 +616,13 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             activity?.runOnUiThread {
-                                val bitmap = resource.toBitmap()
-                                val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetUpdateBitmap, getBannerBaseUiModel())
-                                painter.drawFull(getVoucherBanner(), bitmap)
+                                listener?.getBannerBaseUiModel()?.let { bannerBase ->
+                                    listener?.getBannerVoucherUiModel()?.let { bannerVoucherUiModel ->
+                                        val bitmap = resource.toBitmap()
+                                        val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetUpdateBitmap, bannerBase)
+                                        painter.drawFull(bannerVoucherUiModel, bitmap)
+                                    }
+                                }
                             }
                             return false
                         }
@@ -674,7 +652,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         context?.run {
             Glide.with(this)
                     .asDrawable()
-                    .load(getPostBaseUiModel().postBaseUrl)
+                    .load(listener?.getPostBaseUiModel()?.postBaseUrl.orEmpty())
                     .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

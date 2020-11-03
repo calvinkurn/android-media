@@ -31,13 +31,11 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
+import com.tokopedia.vouchercreation.create.view.interfaces.PromotionBudgetAndTypeListener
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
-import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTypeViewModel
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
@@ -49,39 +47,16 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
         private const val ERROR_MESSAGE = "Error validate voucher type"
 
         @JvmStatic
-        fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
-                           getVoucherUiModel: () -> BannerVoucherUiModel,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           onSetShopInfo: (String, String) -> Unit,
-                           getVoucherReviewData: () -> VoucherReviewUiModel,
+        fun createInstance(listener: PromotionBudgetAndTypeListener,
                            isCreateNew: Boolean) = PromotionBudgetAndTypeFragment().apply {
-            this.onNextStep = onNext
-            this.getVoucherUiModel = getVoucherUiModel
-            this.getBannerBaseUiModel = getBannerBaseUiModel
-            this.onSetShopInfo = onSetShopInfo
-            this.getVoucherReviewData = getVoucherReviewData
+            this.listener = listener
             this.isCreateNew = isCreateNew
         }
     }
 
-    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  }
-    private var getVoucherUiModel: () -> BannerVoucherUiModel = {
-        BannerVoucherUiModel(
-                VoucherImageType.FreeDelivery(0),
-                "",
-                "",
-                "")
-    }
-    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
-        BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
-        )}
-    private var onSetShopInfo: (String, String) -> Unit = { _,_ -> }
-    private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
     private var isCreateNew: Boolean = true
+
+    private var listener: PromotionBudgetAndTypeListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -100,7 +75,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     private val promotionTypeInputWidget by lazy {
         PromotionTypeInputUiModel().apply {
             if (!isCreateNew) {
-                getVoucherReviewData()?.run {
+                listener?.getVoucherReviewUiModel()?.run {
                     isChecked = when(voucherType) {
                         is VoucherImageType.FreeDelivery -> false
                         is VoucherImageType.Rupiah -> true
@@ -112,12 +87,18 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
+        context?.let {
+            CashbackVoucherCreateFragment.createInstance(
+                    listener?.run { ::onSetVoucherBenefit },
+                    ::onShouldChangeBannerValue,
+                    it,
+                    listener?.run { ::getVoucherReviewUiModel })
+        }
     }
 
     private val impressHolder = ImpressHolder()
 
-    private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherUiModel()
+    private var bannerVoucherUiModel: BannerVoucherUiModel? = listener?.getBannerVoucherUiModel()
 
     private var painter: VoucherPreviewPainter? = null
 
@@ -129,8 +110,8 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     private var tempVoucherType: VoucherImageType = VoucherImageType.Rupiah(0)
 
     override fun onResume() {
-        bannerVoucherUiModel = getVoucherUiModel()
-        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
+        bannerVoucherUiModel = listener?.getBannerVoucherUiModel()
+        bannerInfo?.setPromoName(bannerVoucherUiModel?.promoName.orEmpty())
         super.onResume()
     }
 
@@ -176,9 +157,9 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                     when(result) {
                         is Success -> {
                             with(result.data) {
-                                onSetShopInfo(shopName, shopAvatar)
+                                listener?.onSetShopInfo(shopName, shopAvatar)
                             }
-                            bannerVoucherUiModel = getVoucherUiModel()
+                            bannerVoucherUiModel = listener?.getBannerVoucherUiModel()
                             drawInitialVoucherPreview()
                         }
                         is Fail -> {
@@ -201,11 +182,11 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private fun drawInitialVoucherPreview() {
-        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
+        bannerInfo?.setPromoName(bannerVoucherUiModel?.promoName.orEmpty())
         bannerImage?.run {
             Glide.with(context)
                     .asDrawable()
-                    .load(getBannerBaseUiModel().bannerBaseUrl)
+                    .load(listener?.getBannerBaseUiModel()?.bannerBaseUrl)
                     .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -215,11 +196,13 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             val bitmap = resource.toBitmap()
                             voucherPreviewBitmap = bitmap
-                            if (painter == null) {
-                                painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner, getBannerBaseUiModel())
+                            listener?.getBannerBaseUiModel()?.let { bannerBase ->
+                                if (painter == null) {
+                                    painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner, bannerBase)
+                                }
                             }
                             activity?.runOnUiThread {
-                                bannerVoucherUiModel.let {
+                                bannerVoucherUiModel?.let {
                                     painter?.drawInitial(it)
                                 }
                             }
@@ -233,12 +216,12 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
         if (isReadyToDraw) {
             val labelUrl = when(voucherImageType) {
-                is VoucherImageType.FreeDelivery -> getBannerBaseUiModel().freeDeliveryLabelUrl
-                else -> getBannerBaseUiModel().cashbackLabelUrl
+                is VoucherImageType.FreeDelivery -> listener?.getBannerBaseUiModel()?.freeDeliveryLabelUrl.orEmpty()
+                else -> listener?.getBannerBaseUiModel()?.cashbackLabelUrl.orEmpty()
             }
             Handler().post {
                 if (voucherImageType is VoucherImageType.Percentage) {
-                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, getBannerBaseUiModel().cashbackUntilLabelUrl)
+                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, listener?.getBannerBaseUiModel()?.cashbackUntilLabelUrl.orEmpty())
                 } else {
                     bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
                 }

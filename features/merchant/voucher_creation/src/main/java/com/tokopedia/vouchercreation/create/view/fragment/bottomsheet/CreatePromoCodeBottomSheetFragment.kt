@@ -47,7 +47,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
                            getPromoCode: () -> String = {""},
-                           getPromoCodePrefix: () -> String) : CreatePromoCodeBottomSheetFragment {
+                           getPromoCodePrefix: (() -> String)?) : CreatePromoCodeBottomSheetFragment {
             return CreatePromoCodeBottomSheetFragment().apply {
                 context?.run {
                     val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
@@ -84,7 +84,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
     private var bottomSheetContext: Context? = context
     private var onNextClick: (String) -> Unit = {}
     private var getPromoCode: () -> String = { "" }
-    private var getPromoCodePrefix: () -> String = { "" }
+    private var getPromoCodePrefix: (() -> String)? = { "" }
 
     private val alertMinimumMessage by lazy {
         bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
@@ -156,7 +156,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
     private fun setupView() {
         createPromoCodeTextField?.run {
-            getPromoCodePrefix().run {
+            getPromoCodePrefix?.invoke()?.run {
                 promoCodePrefix = if (isNotBlank()) {
                     this
                 } else {

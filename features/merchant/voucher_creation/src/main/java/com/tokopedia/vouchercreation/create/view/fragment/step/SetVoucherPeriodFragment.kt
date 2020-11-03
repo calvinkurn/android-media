@@ -41,13 +41,11 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.interfaces.SetVoucherPeriodListener
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
-import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
@@ -57,23 +55,13 @@ class SetVoucherPeriodFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNext: (String, String, String, String) -> Unit,
-                           getVoucherBanner: () -> BannerVoucherUiModel,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           onSuccessGetBannerBitmap: (Bitmap) -> Unit,
-                           getVoucherReviewData: () -> VoucherReviewUiModel,
+        fun createInstance(listener: SetVoucherPeriodListener,
                            isCreateNew: Boolean,
                            isEdit: Boolean) = SetVoucherPeriodFragment().apply {
-            this.onNext = onNext
-            this.getVoucherBanner = getVoucherBanner
-            this.getBannerBaseUiModel = getBannerBaseUiModel
-            this.onSuccessGetBannerBitmap = onSuccessGetBannerBitmap
-            this.getVoucherReviewData = getVoucherReviewData
+            this.listener = listener
             this.isCreateNew = isCreateNew
             this.isEdit = isEdit
         }
-
-        private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
 
         private const val START_DATE_TIME_PICKER_TAG = "startDateTimePicker"
         private const val END_DATE_TIME_PICKER_TAG = "endDateTimePicker"
@@ -91,25 +79,10 @@ class SetVoucherPeriodFragment : Fragment() {
         private const val ERROR_MESSAGE = "Error validate voucher period"
     }
 
-    private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
-    private var getVoucherBanner: () -> BannerVoucherUiModel = {
-        BannerVoucherUiModel(
-                VoucherImageType.FreeDelivery(0),
-                "",
-                "",
-                "")
-    }
-    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
-        BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
-        )}
-    private var onSuccessGetBannerBitmap: (Bitmap) -> Unit = { _ -> }
-    private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
     private var isCreateNew: Boolean = true
     private var isEdit: Boolean = false
+
+    private var listener: SetVoucherPeriodListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -131,7 +104,12 @@ class SetVoucherPeriodFragment : Fragment() {
 
     private val impressHolder = ImpressHolder()
 
-    private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherBanner()
+    private var bannerVoucherUiModel: BannerVoucherUiModel =
+            BannerVoucherUiModel(
+                    VoucherImageType.FreeDelivery(0),
+                    "",
+                    "",
+                    "")
 
     private var bannerBitmap: Bitmap? = null
 
@@ -150,7 +128,9 @@ class SetVoucherPeriodFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        bannerVoucherUiModel = getVoucherBanner()
+        listener?.getBannerVoucherUiModel()?.let {
+            bannerVoucherUiModel = it
+        }
         drawBanner()
     }
 
@@ -233,7 +213,7 @@ class SetVoucherPeriodFragment : Fragment() {
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
             periodBannerImage?.setImageBitmap(bitmap)
-            onSuccessGetBannerBitmap(bitmap)
+            listener?.onSuccessGetBannerBitmap(bitmap)
         }
     }
 
@@ -250,7 +230,7 @@ class SetVoucherPeriodFragment : Fragment() {
                                 activity?.run {
                                     KeyboardHandler.hideSoftKeyboard(this)
                                 }
-                                onNext(startDate, endDate, startHour, endHour)
+                                listener?.onSetVoucherPeriod(startDate, endDate, startHour, endHour)
                             } else {
                                 if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {
                                     startDateTextField?.run {
@@ -330,7 +310,7 @@ class SetVoucherPeriodFragment : Fragment() {
                 endDateString = initialTime
                 viewModel.setEndDateCalendar(calendar)
             }
-            getVoucherReviewData()?.let { uiModel ->
+            listener?.getVoucherReviewUiModel()?.let { uiModel ->
                 if (!isCreateNew) {
                     if (uiModel.startDate.isNotEmpty() && uiModel.endDate.isNotEmpty()) {
                         val startTime = "${uiModel.startDate} ${uiModel.startHour}"
@@ -360,7 +340,7 @@ class SetVoucherPeriodFragment : Fragment() {
             context?.run {
                 Glide.with(this)
                         .asDrawable()
-                        .load(getBannerBaseUiModel().bannerBaseUrl)
+                        .load(listener?.getBannerBaseUiModel()?.bannerBaseUrl.orEmpty())
                         .signature(ObjectKey(System.currentTimeMillis().toString()))
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -369,9 +349,11 @@ class SetVoucherPeriodFragment : Fragment() {
 
                             override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                 activity?.runOnUiThread {
-                                    val bitmap = resource.toBitmap()
-                                    val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap, getBannerBaseUiModel())
-                                    painter.drawFull(bannerVoucherUiModel, bitmap)
+                                    listener?.getBannerBaseUiModel()?.let { bannerBase ->
+                                        val bitmap = resource.toBitmap()
+                                        val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap, bannerBase)
+                                        painter.drawFull(bannerVoucherUiModel, bitmap)
+                                    }
                                 }
                                 return false
                             }
