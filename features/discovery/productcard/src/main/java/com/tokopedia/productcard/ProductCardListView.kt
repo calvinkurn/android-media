@@ -136,12 +136,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
     }
-
-
-
 
     /**
      * Special cases for specific pages
