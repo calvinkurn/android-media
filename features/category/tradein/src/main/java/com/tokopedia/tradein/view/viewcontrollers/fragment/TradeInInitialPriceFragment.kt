@@ -192,6 +192,8 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         btn_continue.isEnabled = false
         phone_valid_ticker.show()
         phone_valid_ticker.setTextDescription(notEligibleText)
+        tv_info_prize.hide()
+        iv_info_price.hide()
     }
 
     private fun setMaxPrice(maxPrice: String) {
