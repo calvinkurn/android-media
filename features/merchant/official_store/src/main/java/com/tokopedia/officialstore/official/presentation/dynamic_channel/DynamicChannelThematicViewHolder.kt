@@ -159,7 +159,7 @@ class DynamicChannelThematicViewHolder(
                 slashedPrice = it?.slashedPrice ?: "",
                 discountPercentage = it?.discount ?: ""
             )
-        } ?: listOf()
+        }
     }
 
     companion object {

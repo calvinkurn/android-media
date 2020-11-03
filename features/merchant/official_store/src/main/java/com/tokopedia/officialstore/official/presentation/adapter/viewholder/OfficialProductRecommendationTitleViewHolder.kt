@@ -14,8 +14,8 @@ class OfficialProductRecommendationTitleViewHolder(view: View): AbstractViewHold
         textView = view?.findViewById(R.id.txt_title_product_recom)
     }
 
-    override fun bind(element: ProductRecommendationTitleViewModel?) {
-        textView?.text = element?.title
+    override fun bind(element: ProductRecommendationTitleViewModel) {
+        textView?.text = element.title
     }
 
     companion object {

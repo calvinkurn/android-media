@@ -1,6 +1,8 @@
 package com.tokopedia.officialstore.official.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
@@ -14,6 +16,10 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         @Named(GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL) val gqlQuery: String
 ) : UseCase<DynamicChannel>() {
     private val paramChannelType = "type"
+
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+    }
 
     var requestParams: MutableMap<String, Any> = mutableMapOf()
         private set

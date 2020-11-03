@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -38,7 +38,7 @@ class DynamicChannelMixLeftViewHolder(
 
     private val masterJob = SupervisorJob()
 
-    override val coroutineContext = masterJob + Dispatchers.Main
+    override val coroutineContext = masterJob + Dispatchers.IO
 
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -106,7 +106,7 @@ class DynamicChannelMixLeftViewHolder(
     private fun setupBackground(channel: Channel) {
         channel.banner?.let{ banner ->
             setGradientBackground(bannerBackground, banner.gradientColor)
-            image.loadImage(banner.imageUrl)
+            image.loadImageWithoutPlaceholder(banner.imageUrl)
             image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(channel, 1) }
         }
     }
@@ -118,10 +118,13 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, this, channel)
         val productDataList = convertDataToProductData(channel)
-        adapter = MixWidgetAdapter(typeFactoryImpl)
+        if(adapter == null){
+            adapter = MixWidgetAdapter(typeFactoryImpl)
+            recyclerViewProductList.adapter = adapter
+        }
+        adapter?.clearAllElements()
         adapter?.addElement(EmptyModel())
         adapter?.addElement(productDataList)
-        recyclerViewProductList.adapter = adapter
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
         launch {
             try {
@@ -148,7 +151,7 @@ class DynamicChannelMixLeftViewHolder(
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
             val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
-            return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+            return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.IO, productCardWidth)
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {
