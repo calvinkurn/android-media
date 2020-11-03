@@ -68,9 +68,9 @@ class InboxNavigator constructor(
     }
 
     fun notifyRoleChanged(@RoleType role: Int) {
-        pages.keys.forEach {
-            if (it is InboxFragment) {
-                it.onRoleChanged(role)
+        pages.keys.forEach { fragment ->
+            if (fragment is InboxFragment) {
+                fragment.onRoleChanged(role)
             }
         }
     }
