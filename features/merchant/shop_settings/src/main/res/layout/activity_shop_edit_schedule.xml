@@ -43,6 +43,12 @@
             tools:visibility="visible" />
     </androidx.appcompat.widget.Toolbar>
 
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/bg_shadow" />
+
     <com.tokopedia.shop.settings.common.widget.ImageLabelView
         android:id="@+id/labelStartClose"
         android:layout_width="match_parent"
