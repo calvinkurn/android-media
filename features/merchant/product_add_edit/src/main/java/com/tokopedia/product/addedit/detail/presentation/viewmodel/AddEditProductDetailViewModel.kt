@@ -12,7 +12,6 @@ import com.tokopedia.product.addedit.detail.data.model.ShowcaseItem
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductNameExistUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetShopShowCasesUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
@@ -41,7 +40,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
         private val validateProductUseCase: ValidateProductUseCase,
-        private val validateProductNameExistUseCase: ValidateProductNameExistUseCase,
         private val getShopShowCasesUseCase: GetShopShowCasesUseCase
 ) : BaseViewModel(dispatcher) {
 
