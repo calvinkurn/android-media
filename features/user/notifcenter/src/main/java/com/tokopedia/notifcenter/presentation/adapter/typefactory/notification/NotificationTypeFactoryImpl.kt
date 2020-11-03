@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.presentation.adapter.typefactory.notification
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -25,12 +26,29 @@ class NotificationTypeFactoryImpl : BaseAdapterTypeFactory(), NotificationTypeFa
         return NormalNotificationViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    @LayoutRes
+    override fun getItemViewType(
+            visitables: List<Visitable<*>>,
+            position: Int,
+            default: Int
+    ): Int {
+        val item = visitables.getOrNull(position)
+        if (item is NotificationUiModel) {
+            return when (item.typeLink) {
+                NotificationUiModel.TYPE_DEFAULT -> NormalNotificationViewHolder.LAYOUT
+                else -> NormalNotificationViewHolder.LAYOUT
+            }
+        }
+        return default
+    }
+
+
+    override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(parent)
-            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(parent)
-            NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+            SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
+            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
+            NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(view)
+            else -> super.createViewHolder(view, type)
         }
     }
 

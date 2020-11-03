@@ -83,4 +83,11 @@ data class NotificationUiModel(
         return readStatus == 2
     }
 
+    companion object {
+        const val TYPE_DEFAULT = 0
+        const val TYPE_BANNER = 4
+        const val TYPE_BUY = 5
+        const val TYPE_ATC = 3
+        const val TYPE_RECOM = 2
+    }
 }
