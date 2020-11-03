@@ -6,12 +6,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
@@ -33,11 +31,13 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     private var bottomSheetUnify: BottomSheetUnify? = null
     private var webView: TkpdWebView? = null
     private var progressBar: LoaderUnify? = null
-    private var isTopReached = true
     private var isDone = false
 
     companion object {
-        private const val REDIRECT_URL_ENDPOINT = "occ"
+        private const val BACK_APPLINK = "tokopedia://back"
+
+        private const val IS_SUCCESS_QUERY = "is_success"
+        private const val SUCCESS_QUERY_VALUE = "1"
     }
 
     fun show(fragment: OrderSummaryPageFragment, userSessionInterface: UserSessionInterface) {
@@ -62,23 +62,8 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 }
                 setChild(child)
                 // DEBUG
-                setCloseClickListener {
-                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-                }
-//                setShowListener {
-//                    this.bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-//                        override fun onStateChanged(p0: View, p1: Int) {
-//                            if (p1 == BottomSheetBehavior.STATE_DRAGGING && !isTopReached) {
-//                                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-//                            } else if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
-//                                dismiss()
-//                            }
-//                        }
-//
-//                        override fun onSlide(p0: View, p1: Float) {
-//
-//                        }
-//                    })
+//                setCloseClickListener {
+//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
 //                }
                 show(it, null)
             }
@@ -103,26 +88,13 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
         // DEBUG
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
-            webView?.loadUrl("https://www.bing.com")
-        }
+//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            WebView.setWebContentsDebuggingEnabled(true)
+//            webView?.loadUrl("https://www.bing.com")
+//        }
 
         // DEBUG
-//        webView?.loadAuthUrl(generateUrl(userSession), userSession)
-//        webView?.setWebViewScrollListener(object : TkpdWebView.WebviewScrollListener {
-//            override fun onTopReached() {
-//                isTopReached = true
-//            }
-//
-//            override fun onEndReached() {
-//
-//            }
-//
-//            override fun onHasScrolled() {
-//                isTopReached = false
-//            }
-//        })
+        webView?.loadAuthUrl(generateUrl(userSession), userSession)
     }
 
     private fun generateUrl(userSession: UserSessionInterface): String {
@@ -186,13 +158,12 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            Log.i("qwertyuiop", "start url ${url ?: "none"}")
             // moved here because it is "GET" operation
-            if (url != null && (url.startsWith(callbackUrl, true) || url.startsWith(generateRedirectUrl(), true))) {
+            if (url != null && url.startsWith(generateRedirectUrl(), true)) {
                 val uri = Uri.parse(url)
-                val isSuccessResult = uri.getQueryParameter("is_success") == "1"
+                val isSuccessResult = uri.getQueryParameter(IS_SUCCESS_QUERY) == SUCCESS_QUERY_VALUE
                 onActivationResult(isSuccessResult)
-            } else if (url == "tokopedia://back") {
+            } else if (url == BACK_APPLINK) {
                 onMoveBack()
             } else if (url != null && !URLUtil.isNetworkUrl(url)) {
                 onMoveToIntent(url)
@@ -203,18 +174,6 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             progressBar?.gone()
-        }
-
-        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            Log.i("qwertyuiop", "intercept url ${url ?: "none"}")
-//            if (url != null && (url.contains(callbackUrl, true) || url.contains(generateRedirectUrl(), true))) {
-//                val uri = Uri.parse(url)
-//                val isSuccessResult = uri.getQueryParameter("is_success") == "1"
-//                onActivationResult(isSuccessResult)
-//            } else if (url != null && !URLUtil.isNetworkUrl(url)) {
-//                onMoveToIntent(url)
-//            }
-            return super.shouldInterceptRequest(view, url)
         }
     }
 

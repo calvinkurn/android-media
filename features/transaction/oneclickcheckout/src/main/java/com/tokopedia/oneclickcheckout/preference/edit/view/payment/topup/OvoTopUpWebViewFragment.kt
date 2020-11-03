@@ -10,13 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.SslErrorHandler
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -80,7 +78,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         observeOvoTopUpUrl()
 
         // DEBUG
-//        viewModel.getOvoTopUpUrl(getRedirectUrl())
+        viewModel.getOvoTopUpUrl(getRedirectUrl())
     }
 
     private fun initViews(view: View) {
@@ -89,9 +87,9 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         globalError = view.findViewById(R.id.global_error)
 
         // DEBUG
-        progressBar?.setOnClickListener {
-            viewModel.getOvoTopUpUrl(getRedirectUrl())
-        }
+//        progressBar?.setOnClickListener {
+//            viewModel.getOvoTopUpUrl(getRedirectUrl())
+//        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -110,10 +108,10 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
         // DEBUG
-        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
-            webView?.loadUrl("https://www.google.com")
-        }
+//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            WebView.setWebContentsDebuggingEnabled(true)
+//            webView?.loadUrl("https://www.google.com")
+//        }
     }
 
     private fun observeOvoTopUpUrl() {
@@ -191,26 +189,24 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
+            // Check if url is redirect_url
+            if (url == BACK_APPLINK || url == getRedirectUrl()) {
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
             progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             // DEBUG
-//            progressBar?.gone()
-        }
-
-        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
-            // Check if url is redirect_url
-            if (url == getRedirectUrl() || url == "tokopedia://back") {
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
-            }
-            return super.shouldInterceptRequest(view, url)
+            progressBar?.gone()
         }
     }
 
     companion object {
+        private const val BACK_APPLINK = "tokopedia://back"
+
         const val EXTRA_REDIRECT_URL = "redirect_url"
 
         fun createInstance(redirectUrl: String): OvoTopUpWebViewFragment {

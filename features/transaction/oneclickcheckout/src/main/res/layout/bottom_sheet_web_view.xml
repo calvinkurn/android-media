@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="640dp"-->
-<!--        android:layout_marginTop="@dimen/layout_lvl9"-->
-<!--        android:layout_marginBottom="@dimen/layout_lvl9" />-->
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_6"
+        android:layout_height="@dimen/dp_8"
         app:loader_type="line" />
 
     <com.tokopedia.webview.TkpdWebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
