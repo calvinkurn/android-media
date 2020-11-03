@@ -35,9 +35,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
 
-    // TODO: remove later
-    implementation project(rootProject.ext.libraries.tkpddesign)
-
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.notifCenter)
 }
