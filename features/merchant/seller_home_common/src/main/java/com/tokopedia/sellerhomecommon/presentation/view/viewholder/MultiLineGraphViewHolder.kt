@@ -68,15 +68,10 @@ class MultiLineGraphViewHolder(
                 if (lastSelectedMetric?.type == metric.type) {
                     metric.isSelected = false
                     this.lastSelectedMetric = otherSelectedMetric
-                    removeMetric(metric)
                 } else {
-                    otherSelectedMetric?.let {
-                        it.isSelected = false
-                        removeMetric(it)
-                    }
+                    otherSelectedMetric?.isSelected = false
                     metric.isSelected = true
                     this.lastSelectedMetric = metric
-                    addMetric(metric)
                 }
             } else {
                 metricsAdapter.notifyDataSetChanged()
@@ -87,11 +82,9 @@ class MultiLineGraphViewHolder(
                 if (metric.isSelected) {
                     metric.isSelected = false
                     this.lastSelectedMetric = otherSelectedMetric
-                    removeMetric(metric)
                 } else {
                     metric.isSelected = true
                     this.lastSelectedMetric = metric
-                    addMetric(metric)
                 }
             } else {
                 metricsAdapter.items.forEach {
@@ -99,24 +92,15 @@ class MultiLineGraphViewHolder(
                         it.isSelected = false
                     }
                 }
+                lastSelectedMetric?.isSelected = false
                 metric.isSelected = true
                 lastSelectedMetric = metric
-                addMetric(metric)
             }
         }
 
         metricsAdapter.notifyDataSetChanged()
-        initLineGraph(metric)
-    }
-
-    private fun addMetric(metric: MultiLineMetricUiModel) {
-        if (metricMap[metric] == null) {
-            metricMap[metric] = getLineChartData(metric)
-        }
-    }
-
-    private fun removeMetric(metric: MultiLineMetricUiModel) {
-
+        val selectedMetrics = metricsAdapter.items.filter { it.isSelected }
+        showLineGraph(selectedMetrics)
     }
 
     private fun setOnLoadingState(element: MultiLineGraphWidgetUiModel) {
@@ -144,7 +128,7 @@ class MultiLineGraphViewHolder(
 
             if (metric != null) {
                 lastSelectedMetric = metric
-                initLineGraph(metric)
+                showLineGraph(listOf(metric))
             }
         }
     }
@@ -161,18 +145,19 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    private fun initLineGraph(metric: MultiLineMetricUiModel) {
-        //set metrics selected status if have same type
-
+    private fun showLineGraph(metrics: List<MultiLineMetricUiModel>) {
         with(itemView.chartViewShcMultiLine) {
-            val lineChartDataSets = getLineChartData(metric)
+            val lineChartDataSets = getLineChartData(metrics)
             init(getLineGraphConfig(lineChartDataSets))
-            setDataSets(lineChartDataSets)
+            setDataSets(*lineChartDataSets.toTypedArray())
             invalidateChart()
         }
     }
 
-    private fun getLineGraphConfig(lineChartData: LineChartData): LineChartConfigModel {
+    private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
+
+        val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
+
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
@@ -180,7 +165,7 @@ class MultiLineGraphViewHolder(
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
-                val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
+                val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
@@ -189,7 +174,7 @@ class MultiLineGraphViewHolder(
             }
 
             yAxis {
-                val yAxisLabels = lineChartData.yAxisLabel
+                val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
                 textColor { itemView.context.getResColor(R.color.Neutral_N700_96) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
@@ -229,29 +214,32 @@ class MultiLineGraphViewHolder(
                 }
     }
 
-    private fun getLineChartData(metric: MultiLineMetricUiModel): LineChartData {
-        val hexColor = metric.summary.lineColor
-        val lineHexColor = if (hexColor.isNotBlank()) {
-            hexColor
-        } else {
-            ChartColor.DEFAULT_LINE_COLOR
-        }
+    private fun getLineChartData(metrics: List<MultiLineMetricUiModel>): List<LineChartData> {
 
-        val chartEntry: List<LineChartEntry> = metric.linePeriod.currentPeriod.map {
-            LineChartEntry(it.yVal, it.yLabel, it.xLabel)
-        }
+        return metrics.map { met ->
+                    val hexColor = met.summary.lineColor
+                    val lineHexColor = if (hexColor.isNotBlank()) {
+                        hexColor
+                    } else {
+                        ChartColor.DEFAULT_LINE_COLOR
+                    }
 
-        val yAxisLabel = getYAxisLabel(metric)
+                    val chartEntry: List<LineChartEntry> = met.linePeriod.currentPeriod.map {
+                        LineChartEntry(it.yVal, it.yLabel, it.xLabel)
+                    }
 
-        return LineChartData(
-                chartEntry = chartEntry,
-                yAxisLabel = yAxisLabel,
-                config = LineChartEntryConfigModel(
-                        lineWidth = 1.8f,
-                        drawFillEnabled = false,
-                        lineColor = Color.parseColor(lineHexColor)
-                )
-        )
+                    val yAxisLabel = getYAxisLabel(met)
+
+                    return@map LineChartData(
+                            chartEntry = chartEntry,
+                            yAxisLabel = yAxisLabel,
+                            config = LineChartEntryConfigModel(
+                                    lineWidth = 1.8f,
+                                    drawFillEnabled = false,
+                                    lineColor = Color.parseColor(lineHexColor)
+                            )
+                    )
+                }
     }
 
     private fun getYAxisLabel(metric: MultiLineMetricUiModel): List<AxisLabel> {
