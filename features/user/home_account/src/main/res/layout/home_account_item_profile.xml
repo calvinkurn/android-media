@@ -19,13 +19,15 @@
         android:translationY="-13dp"
         app:layout_constraintBottom_toBottomOf="@+id/home_account_profile_member_section"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_account_backdrop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="66dp"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
