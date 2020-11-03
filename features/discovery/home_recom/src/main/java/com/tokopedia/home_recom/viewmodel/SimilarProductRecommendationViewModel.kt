@@ -59,7 +59,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
                 val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
                 if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
-                _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data ?: emptyList(), recommendationItems)))
+                _recommendationItem.postValue(Response.success(recommendationItems))
 
             } catch (e: Exception){
                 if(page == 1) _filterChips.postValue(Response.error(e))
