@@ -1276,8 +1276,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-        getTokopointJob = if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
-            launchCatchError(coroutineContext, block = {
+//        getTokopointJob = if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
+        getTokopointJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
                         tokopointsDrawer = data.tokopointsDrawerList.drawerList.firstOrNull() { it.type.equals(DRAWER_TYPE_REWARD)},
@@ -1290,21 +1290,21 @@ open class HomeViewModel @Inject constructor(
                         isTokoPointDataError = true
                 )
             }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        }
+//        } else {
+//            launchCatchError(coroutineContext, block = {
+//                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
+//                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = data.tokopointsDrawer,
+//                        isTokoPointDataError = false
+//                )
+//            }) {
+//                updateHeaderViewModel(
+//                        tokopointsDrawer = null,
+//                        isTokoPointDataError = true
+//                )
+//            }
+//        }
     }
 
     private fun getTokopointListData(){
