@@ -50,11 +50,7 @@ class TestSimilarProductRecommendationViewModel {
         val slot = slot<Subscriber<List<RecommendationItem>>>()
         coEvery { getRecommendationFilterChips.executeOnBackground() } returns listOf()
         every { getSingleRecommendationUseCase.getRecomParams(any(), any(), any()) } returns RequestParams()
-        every { getSingleRecommendationUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onNext(listOf(
-                    RecommendationItem()
-            ))
-        }
+        every { getSingleRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(RecommendationItem())
         viewModel.getSimilarProductRecommendation(1, "", "")
         Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isSuccess())
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.topads
 
+import android.Manifest
 import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,12 +12,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.presentation.InstrumentTestProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
+import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.unifycomponents.UnifyButton
@@ -28,7 +31,11 @@ import org.junit.Test
 
 class ProductDetailAtcTopAdsVerificationTest {
 
-    private var topAdsAssertion: TopAdsAssertion? = null
+    @get:Rule
+    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { activityRule.activity.getTopAdsCount() })
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentTestProductDetailActivity>(InstrumentTestProductDetailActivity::class.java) {
@@ -42,17 +49,9 @@ class ProductDetailAtcTopAdsVerificationTest {
         }
     }
 
-    @Before
-    fun doBeforeRun() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
-    }
-
     @After
     fun deleteDatabase() {
-        topAdsAssertion?.after()
+        topAdsAssertion.after()
     }
 
     @Test
@@ -66,7 +65,7 @@ class ProductDetailAtcTopAdsVerificationTest {
                 scrollRecyclerViewToPosition(it, i)
                 checkTopAdsOnProductRecommendationViewHolder(it, i)
             }
-            topAdsAssertion?.assert()
+            topAdsAssertion.assert()
         }
     }
 
@@ -89,22 +88,6 @@ class ProductDetailAtcTopAdsVerificationTest {
 
     private fun login() {
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
-    }
-
-    private fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
-        val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
-        var childItemCount = childRecyclerView.adapter!!.itemCount
-        if (fixedItemPositionLimit > 0) {
-            childItemCount = fixedItemPositionLimit
-        }
-        for (i in 0 until childItemCount) {
-            try {
-                Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.isCompletelyDisplayed()))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
-            } catch (e: PerformException) {
-                e.printStackTrace()
-            }
-        }
     }
 
     private fun getRecyclerView(): RecyclerView? {

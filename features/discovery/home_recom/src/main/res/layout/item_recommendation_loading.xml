@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/image_shimmering"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:corners="@integer/corner_radius_shimmering"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/text1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:corners="@integer/corner_radius_shimmering"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_shimmering"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text2" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/text2"
+            android:layout_width="150dp"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_8"
+            app:corners="@integer/corner_radius_shimmering"
+            app:layout_constraintStart_toEndOf="@+id/image_shimmering"
+            app:layout_constraintTop_toBottomOf="@+id/text1"
+            app:layout_constraintBottom_toTopOf="@+id/text3"
+            app:width_weight="0.6" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/text3"
+            android:layout_width="120dp"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_8"
+            app:corners="@integer/corner_radius_shimmering"
+            app:layout_constraintStart_toEndOf="@+id/image_shimmering"
+            app:layout_constraintTop_toBottomOf="@+id/text2"
+            app:layout_constraintBottom_toTopOf="@+id/text4"
+            app:width_weight="0.6" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text4"
+        android:layout_width="140dp"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_8"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintBottom_toBottomOf="@+id/image_shimmering"
+        app:layout_constraintStart_toEndOf="@+id/image_shimmering"
+        app:layout_constraintTop_toBottomOf="@+id/text3"
+        app:width_weight="0.6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/partial_shimmering_grid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

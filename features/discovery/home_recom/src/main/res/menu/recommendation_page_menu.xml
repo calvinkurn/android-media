@@ -2,9 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:id="@+id/action_share"
-            android:icon="@drawable/recom_ic_product_share_dark"
-            android:orderInCategory="100"
-            android:title="@string/label_share"
-            app:showAsAction="ifRoom" />
+        android:id="@+id/action_share"
+        android:icon="@drawable/recom_ic_product_share_dark"
+        android:orderInCategory="100"
+        android:iconTint="@color/Unify_N700"
+        android:title="@string/label_share"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
 </menu>

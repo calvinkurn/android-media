@@ -25,7 +25,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPTY_SEARCH_VIEW
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_EDIT_FORM_PATH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -105,7 +104,6 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                 putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
-                component = ComponentName(SELLER_PACKAGENAME, SELLER_EDIT_FORM_PATH)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
 
@@ -267,7 +265,10 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
         totalCount = response.meta.page.total
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        totalPage = if (totalCount % response.meta.page.perPage == 0) {
+            totalCount / response.meta.page.perPage
+        } else
+            (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         response.data.forEach {

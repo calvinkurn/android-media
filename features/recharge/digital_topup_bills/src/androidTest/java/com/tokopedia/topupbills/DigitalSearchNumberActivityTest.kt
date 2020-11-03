@@ -59,9 +59,9 @@ class DigitalSearchNumberActivityTest {
 
     @Test
     fun click_clear_on_search_number_view() {
-        Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
-        Espresso.onView(ViewMatchers.withId(R.id.image_button_close)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_text_search)).check(matches(ViewMatchers.withText("")))
+        Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
+        Espresso.onView(ViewMatchers.withId(R.id.searchbar_icon)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).check(matches(ViewMatchers.withText("")))
     }
 
     companion object {

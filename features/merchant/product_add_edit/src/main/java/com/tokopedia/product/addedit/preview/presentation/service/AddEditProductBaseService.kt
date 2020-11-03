@@ -69,6 +69,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     companion object {
         const val JOB_ID = 13131314
         const val REQUEST_ENCODE = "UTF-8"
+        const val ERROR_IMAGE_ID_IS_EMPTY = "Error upload image because imageId is empty"
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
@@ -108,6 +109,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 if (imageId.isNotEmpty()) {
                     notificationManager?.onAddProgress()
                     uploadIdList.add(imageId)
+                } else {
+                    throw Exception(ERROR_IMAGE_ID_IS_EMPTY)
                 }
             }
 
@@ -122,7 +125,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 setUploadProductDataError(message)
             }
         }, onError = { throwable ->
-            setUploadProductDataError(throwable.localizedMessage ?: "")
+            setUploadProductDataError(UploaderUseCase.NETWORK_ERROR)
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
     }
@@ -153,17 +156,16 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     protected fun logError(title: String, throwable: Throwable) {
-        val message = throwable.message ?: ""
         val errorMessage = String.format(
                 "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
                 title,
                 userSession.userId,
                 userSession.email,
-                message)
+                throwable.message ?: "")
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-        Timber.w("P2#PRODUCT_UPLOAD#%s", message)
+        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
     }
 
     private fun initInjector() {
@@ -239,10 +241,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
+                errorMessages.add(result.message)
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
                 onUploadProductImagesFailed(result.message)
-                setUploadProductDataError(result.message)
                 ""
             }
         }

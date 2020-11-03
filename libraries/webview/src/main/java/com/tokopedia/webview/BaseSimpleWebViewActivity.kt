@@ -27,6 +27,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     protected lateinit var url: String
     var showTitleBar = true
+    var pullToRefresh = false
     private set
     protected var allowOverride = true
     protected var needLogin = false
@@ -53,6 +54,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
+            pullToRefresh = getBoolean(KEY_PULL_TO_REFRESH, false)
             webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
 
@@ -71,6 +73,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
             isLoginRequire?.let { needLogin = it.toBoolean() }
+
+            val isPullToRefreshEnabled = getQueryParameter(KEY_PULL_TO_REFRESH)
+            isPullToRefreshEnabled?.let { pullToRefresh = it.toBoolean() }
 
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { webViewTitle = it }
@@ -104,7 +109,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     protected open fun createFragmentInstance(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride, pullToRefresh)
     }
 
     override fun onResume() {
