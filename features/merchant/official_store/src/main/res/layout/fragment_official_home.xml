@@ -18,13 +18,13 @@
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/maintoolbar"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="wrap_content"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
+        app:toolbarInitialTheme="light"
         app:toolbarAlwaysShowShadow="false"/>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

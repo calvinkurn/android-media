@@ -125,10 +125,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-//        mainToolbar?.run {
-//            setNotificationNumber(notificationCount)
-//            setInboxNumber(inboxCount)
-//        }
+        mainToolbar?.run {
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+        }
         badgeNumberNotification = notificationCount
         badgeNumberInbox = inboxCount
     }
