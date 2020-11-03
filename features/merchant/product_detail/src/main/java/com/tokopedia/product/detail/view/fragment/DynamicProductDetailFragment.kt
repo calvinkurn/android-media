@@ -261,6 +261,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         initToolbar()
         stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
         renderInitialAffiliate()
+
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
