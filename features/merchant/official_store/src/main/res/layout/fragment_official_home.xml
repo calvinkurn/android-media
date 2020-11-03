@@ -16,13 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl5"/>
 
-    <com.tokopedia.searchbar.MainToolbar
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/maintoolbar"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp" />
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="none"
+        app:toolbarAlwaysShowShadow="false"/>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout_fragment_os"
