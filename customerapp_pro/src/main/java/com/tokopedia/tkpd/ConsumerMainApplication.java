@@ -117,6 +117,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
+    private static final String ENABLE_SEQ_AB_TESTING_ASYNC = "android_exec_seq_ab_testing_async";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -145,6 +146,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
+        createAndCallPostSeqAbTesting();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
@@ -208,6 +210,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
+
+    private void createAndCallPostSeqAbTesting() {
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequenceAbTesting();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
+    }
+
 
     private void createAndCallFontLoad() {
         //don't convert to lambda does not work in kit kat
@@ -298,10 +313,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
 
-        initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
+        return true;
+    }
+
+    @NotNull
+    private Boolean executePostCreateSequenceAbTesting() {
+        initializeAbTestVariant();
         return true;
     }
 
