@@ -298,7 +298,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
-        const val KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT = "postpone_activity_result"
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
