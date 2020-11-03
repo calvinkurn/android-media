@@ -1111,6 +1111,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
         pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
+        pdpUiUpdater?.updateTickerData(viewModel.p2Data.value?.shopInfo, viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
+                ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
+                viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
         /*
             If the p2 data is empty, dont update the button
@@ -1135,6 +1138,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
         dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
         dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, null)
+        dynamicAdapter.notifyTicker(pdpUiUpdater?.tickerInfoMap)
     }
 
     private fun updateButtonState() {
@@ -2315,6 +2319,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (viewModel.buttonActionType == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
                 showToasterError(getString(R.string.tradein_error_label))
+                return@let
+            }
+
+            if (viewModel.buttonActionType == ProductDetailConstant.ADD_WISHLIST_BUTTON) {
+                viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
                 return@let
             }
 

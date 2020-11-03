@@ -45,6 +45,7 @@ object ProductDetailConstant {
     const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
+    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
@@ -158,6 +159,7 @@ object ProductDetailConstant {
     const val LEASING_BUTTON = 5
     const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
+    const val ADD_WISHLIST_BUTTON = 8
 
     const val REQUEST_CODE_CHECKOUT = 12382
 
