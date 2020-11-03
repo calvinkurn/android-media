@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,13 +27,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -45,6 +51,9 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
@@ -66,6 +75,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
+
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -116,6 +127,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             )
         })
 
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
+            hideLoadMoreLoading()
+            when(it) {
+                is Success -> addRecommendationItem(it.data)
+                is Fail -> Log.d("FAIL-RECOM", it.throwable.toString())
+            }
+        })
+
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -133,6 +152,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
         })
+    }
+
+    private fun addRecommendationItem(list: List<RecommendationItem>) {
+        for(item in list) {
+            adapter?.addItem(item)
+        }
+        adapter?.notifyDataSetChanged()
     }
 
     fun showLoading() {
@@ -206,6 +232,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         setupObserver()
         adapter = HomeAccountUserAdapter(this)
         setupList()
+        setLoadMore()
 
         viewModel.getBuyerData()
     }
@@ -291,7 +318,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupList() {
-        home_account_user_fragment_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+//        home_account_user_fragment_rv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
     }
@@ -331,7 +359,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
     }
-
 
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
@@ -479,11 +506,82 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    private fun setLoadMore() {
+        if (endlessRecyclerViewScrollListener == null) {
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(home_account_user_fragment_rv?.layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    adapter?.showLoadMore()
+                    viewModel.getRecommendation(page)
+                }
+            }
+        }
+        endlessRecyclerViewScrollListener?.let {
+            home_account_user_fragment_rv?.addOnScrollListener(it)
+        }
+    }
+
+    private fun hideLoadMoreLoading() {
+        adapter?.hideLoadMore()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {
+        //tracking
+        activity?.let {
+            if (item.isTopAds) {
+                TopAdsUrlHitter(it)
+                        .hitImpressionUrl(it::class.qualifiedName,
+                                item.trackerImageUrl,
+                                item.productId.toString(),
+                                item.name,
+                                item.imageUrl,
+                                COMPONENT_NAME_TOP_ADS)
+            }
+        }
+    }
+
+    override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {
+        //tracking
+        activity?.let {
+            if (item.isTopAds) {
+                TopAdsUrlHitter(it).hitClickUrl(it::class.qualifiedName,
+                        item.clickUrl,
+                        item.productId.toString(),
+                        item.name,
+                        item.imageUrl,
+                        COMPONENT_NAME_TOP_ADS)
+            }
+        }
+
+        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
+    }
+
+    override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = item.isWishlist,
+                        productId = item.productId.toString(),
+                        isTopAds = item.isTopAds,
+                        topAdsWishlistUrl = item.wishlistUrl,
+                        productPosition = position
+                )
+        )
+    }
+
     companion object {
 
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
+
+        private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
+        private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val REQUEST_FROM_PDP = 394
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

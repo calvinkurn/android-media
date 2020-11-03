@@ -8,13 +8,17 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
-
-@Module
+@Module(includes = [TopAdsWishlistModule::class])
 class HomeAccountUserUsecaseModules {
 
     @HomeAccountUserScope
@@ -48,4 +52,20 @@ class HomeAccountUserUsecaseModules {
         return HomeAccountWalletBalanceUseCase(getWalletBalanceUseCase, getPendingCasbackUseCase)
     }
 
+    @Provides
+    fun provideGetRecomendationUseCase(@Named("recommendationQuery") recomQuery: String,
+                                       graphqlUseCase: GraphqlUseCase,
+                                       userSession: UserSessionInterface): GetRecommendationUseCase {
+        return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
+    }
+
+    @Provides
+    fun provideAddWishlistUseCase(@HomeAccountUserContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @Provides
+    fun provideRemoveWishlistUseCase(@HomeAccountUserContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
 }

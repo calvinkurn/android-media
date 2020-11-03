@@ -19,27 +19,36 @@ import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
-            private val userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val accountPref: AccountPreference,
         private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
         private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
         private val getBuyerWalletBalanceUseCase: HomeAccountWalletBalanceUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val walletPref: WalletPref,
         private val permissionChecker: PermissionChecker,
-        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
@@ -64,6 +73,18 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _memberData = MutableLiveData<MemberDataView>()
     val memberData: LiveData<MemberDataView>
         get() = _memberData
+
+    private val _recommendationData = MutableLiveData<Result<List<RecommendationItem>>>()
+    val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
+        get() = _recommendationData
+
+    private val _addWishList = MutableLiveData<Result<String>>()
+    val addWishList : LiveData<Result<String>>
+        get() = _addWishList
+
+    private val _removeWishList = MutableLiveData<Result<String>>()
+    val removeWishList : LiveData<Result<String>>
+        get() = _removeWishList
 
     fun getBuyer2(){
         getHomeAccountUserUseCase.executeUseCase({
@@ -165,12 +186,85 @@ class HomeAccountUserViewModel @Inject constructor(
                 , showArrowDown = true)
     }
 
+    fun getRecommendation(page: Int) {
+        launchCatchError(Dispatchers.IO, block = {
+            val recommendationList = getRecommendationList(page).recommendationItemList
+            _recommendationData.postValue(Success(recommendationList))
+        }, onError = {
+            _recommendationData.postValue(Fail(it))
+        })
+
+    }
+
+    private fun getRecommendationList(page: Int): RecommendationWidget {
+        val params = getRecommendationUseCase.getRecomParams(
+                page,
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
+                AKUN_PAGE,
+                emptyList()
+        )
+        return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
+    }
+
+    fun addWishList(item: RecommendationItem) {
+        launchCatchError(block = {
+            if (item.isTopAds) {
+                addWishlistTopAds(item)
+            } else {
+                addWishlistNonTopAds(item)
+            }
+        }, onError = {
+            _addWishList.postValue(Fail(Throwable(it)))
+        })
+
+    }
+
+    private fun addWishlistTopAds(item: RecommendationItem) {
+        val params = RequestParams.create()
+        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, item.wishlistUrl)
+        val result = topAdsWishlishedUseCase.createObservable(params).toBlocking().single()
+        if (result.data.isSuccess) {
+            _addWishList.postValue(Success(MSG_SUCCESS_ADD_WISHLIST))
+        } else {
+            _addWishList.postValue(Fail(Throwable(MSG_FAILED_ADD_WISHLIST)))
+        }
+    }
+
+    private fun addWishlistNonTopAds(item: RecommendationItem) {
+        addWishListUseCase.createObservable(item.productId.toString(), userSession.userId, wishListListener())
+    }
+
+    fun removeWishList(item: RecommendationItem) {
+        removeWishListUseCase.createObservable(item.productId.toString(), userSession.userId, wishListListener())
+    }
+
+    private fun wishListListener(): WishListActionListener {
+        return object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                _addWishList.postValue(Fail(Throwable(errorMessage)))
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                _removeWishList.postValue(Fail(Throwable(errorMessage)))
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                _addWishList.postValue(Success(MSG_SUCCESS_ADD_WISHLIST))
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                _removeWishList.postValue(Success(MSG_SUCCESS_REMOVE_WISHLIST))
+            }
+        }
+    }
+
     fun getInitialData() {
         getProfileData()
 //        getMemberData()
         getSettingData()
         getSettingApp()
         getAboutTokopediaData()
+        getRecommendation(0)
     }
 
     private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
@@ -208,6 +302,13 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {
         userSession.setIsAffiliateStatus(accountDataModel.isAffiliate)
+    }
+
+    companion object {
+        private const val MSG_SUCCESS_ADD_WISHLIST = "Berhasil menambahkan ke Wishlist"
+        private const val MSG_FAILED_ADD_WISHLIST = "Gagal menambahkan ke Wishlist"
+        private const val MSG_SUCCESS_REMOVE_WISHLIST = "Berhasil menghapus dari Wishlist"
+        private const val AKUN_PAGE = "account"
     }
 
 }

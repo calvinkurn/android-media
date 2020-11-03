@@ -25,7 +25,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
-import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_expandable_layout.*
 import kotlinx.android.synthetic.main.home_account_item_profile.*
@@ -81,6 +81,9 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
             override fun onMemberItemClicked(applink: String) {}
             override fun onSettingItemClicked(item: CommonDataView) {}
             override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
+            override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {}
         }, CommonViewHolder.LAYOUT_FINANCIAL)
 
         adapter.list = profile.financial.items
@@ -102,6 +105,9 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
             }
             override fun onSettingItemClicked(item: CommonDataView) {}
             override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
+            override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {}
         })
         adapter.list = profile.members.items
         home_account_member_layout_rv?.adapter = adapter
@@ -129,7 +135,6 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
                 .homeAccountUserModules(HomeAccountUserModules(this))
                 .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
                 .homeAccountUserQueryModules(HomeAccountUserQueryModules())
-                .sessionModule(SessionModule())
                 .build()
     }
 
