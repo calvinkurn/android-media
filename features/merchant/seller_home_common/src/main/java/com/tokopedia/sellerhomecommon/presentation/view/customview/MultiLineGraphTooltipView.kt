@@ -31,7 +31,7 @@ class MultiLineGraphTooltipView : LinearLayout {
     }
 
     fun showDot(color: Int, isDashed: Boolean = false) {
-        imgShcTooltipDot.setColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY)
+        imgShcTooltipDot.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
         val dot = if (isDashed) {
             context.getResDrawable(R.drawable.ic_shc_tooltip_chart_dot_dashed)
         } else {

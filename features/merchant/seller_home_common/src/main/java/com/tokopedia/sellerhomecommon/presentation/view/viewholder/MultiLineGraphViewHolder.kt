@@ -230,14 +230,46 @@ class MultiLineGraphViewHolder(
                         if (isMetricComparableByPeriodSelected) {
                             showComparablePeriodMetricTooltip(view, it, x.toInt())
                         } else {
-                            showComparedMetricsTooltip(view, it)
+                            showComparedMetricsTooltip(view, it, x.toInt())
                         }
                     }
                 }
     }
 
-    private fun showComparedMetricsTooltip(view: View, entry: LineChartEntry) {
+    private fun showComparedMetricsTooltip(view: View, entry: LineChartEntry, axisIndex: Int) {
+        val selectedMetrics = metricsAdapter.items.filter { it.isSelected }
+        with(view) {
+            ttvShcMlgTooltip1.showDot(Color.TRANSPARENT)
+            ttvShcMlgTooltip1.setContent(entry.xLabel, entry.yLabel)
+            tvShcTooltipHeader.visibility = View.VISIBLE
+            tvShcTooltipHeader.text = entry.xLabel
 
+            //show first metric tooltip
+            try {
+                selectedMetrics[0].let { metric ->
+                    val hexColor = getLineHexColor(metric.summary.lineColor)
+                    val value = getTooltipValue(metric, axisIndex)
+                    ttvShcMlgTooltip1.setContent(metric.summary.title, value)
+                    ttvShcMlgTooltip1.showDot(Color.parseColor(hexColor))
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.i(e)
+            }
+
+            //show second metric tooltip
+            try {
+                selectedMetrics[1].let { metric ->
+                    val hexColor = getLineHexColor(metric.summary.lineColor)
+                    val value = getTooltipValue(metric, axisIndex)
+                    ttvShcMlgTooltip2.visibility = View.VISIBLE
+                    ttvShcMlgTooltip2.setContent(metric.summary.title, value)
+                    ttvShcMlgTooltip2.showDot(Color.parseColor(hexColor))
+                }
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.i(e)
+                ttvShcMlgTooltip2.visibility = View.GONE
+            }
+        }
     }
 
     private fun showComparablePeriodMetricTooltip(view: View, entry: LineChartEntry, axisIndex: Int) {
@@ -269,6 +301,14 @@ class MultiLineGraphViewHolder(
                     Timber.i(e)
                 }
             }
+        }
+    }
+
+    private fun getTooltipValue(metric: MultiLineMetricUiModel, axisIndex: Int): String {
+        return try {
+            metric.linePeriod.currentPeriod[axisIndex].yLabel
+        } catch (e: IndexOutOfBoundsException) {
+            ""
         }
     }
 
