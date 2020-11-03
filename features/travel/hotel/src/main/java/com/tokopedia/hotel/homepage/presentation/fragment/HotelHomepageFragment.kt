@@ -30,6 +30,7 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
+import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
@@ -43,14 +44,17 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
@@ -138,6 +142,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         initView()
         hidePromoContainer()
         loadPromoData()
+        loadPopularCitiesData()
         if (hotelHomepageModel.locName.isEmpty()) {
             homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
         }
@@ -185,6 +190,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     if (it.data) {
                         loadRecentSearchData()
                     }
+                }
+            }
+        })
+
+        homepageViewModel.popularCitiesLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderPopularCities(it.data)
+                }
+                is Fail -> {
+                    showPopularCitiesWidget(false)
                 }
             }
         })
@@ -287,6 +303,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_night_count.text = hotelHomepageModel.nightCounter.toString()
         tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
+    }
+
+    private fun renderPopularCities(popularCities: List<PopularSearch>) {
+        if (popularCities.isNotEmpty()) {
+            widget_hotel_homepage_popular_cities.addPopularCities(popularCities)
+            showPopularCitiesWidget(true)
+        } else {
+            showPopularCitiesWidget(false)
+        }
+    }
+
+    private fun showPopularCitiesWidget(show: Boolean) {
+        if (show) widget_hotel_homepage_popular_cities.show()
+        else widget_hotel_homepage_popular_cities.hide()
     }
 
     private fun onDestinationChangeClicked() {
@@ -443,6 +473,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner))
+    }
+
+    private fun loadPopularCitiesData() {
+        homepageViewModel.getPopularCitiesData()
     }
 
     private fun loadRecentSearchData() {

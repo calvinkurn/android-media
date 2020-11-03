@@ -291,5 +291,12 @@
 
         </LinearLayout>
 
+        <com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
+            android:id="@+id/widget_hotel_homepage_popular_cities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

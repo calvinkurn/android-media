@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginBottom="@dimen/unify_space_12"
+    android:paddingLeft="@dimen/spacing_lvl2"
+    android:paddingRight="@dimen/spacing_lvl2"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_hotel_popular_city"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hotel_140dp"
+        android:background="@drawable/bg_hotel_rounded_image_view"
+        android:scaleType="centerCrop"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_popular_city_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        tools:text="Jakarta"
+        app:typographyType="heading_5"
+        android:textColor="@color/Neutral_N700_96"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_popular_city_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="1.000+ properti"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="small"/>
+</LinearLayout>
