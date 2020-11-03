@@ -8,10 +8,11 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/play_unify_loading_size"
         android:layout_height="@dimen/play_unify_loading_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular_white"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

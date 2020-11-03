@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
-import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -18,7 +18,9 @@ class CarouselWidgetUiModel(
         override val ctaText: String,
         override var data: CarouselDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<CarouselDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

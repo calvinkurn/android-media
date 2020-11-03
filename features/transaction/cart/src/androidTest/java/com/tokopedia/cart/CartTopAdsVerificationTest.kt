@@ -1,6 +1,7 @@
 package com.tokopedia.cart
 
 import android.Manifest
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -23,12 +24,15 @@ import org.junit.Test
 class CartTopAdsVerificationTest {
 
     private var topAdsAssertion: TopAdsAssertion? = null
+    private var topAdsCount = 0
 
     @get:Rule
     var activityRule = object : ActivityTestRule<InstrumentTestCartActivity>(InstrumentTestCartActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
+            // Should do login before activity launched to prevent racing condition with get cart
+            login()
         }
     }
 
@@ -41,12 +45,10 @@ class CartTopAdsVerificationTest {
 
     @Before
     fun setTopAdsAssertion() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
+        // reset top ads count
+        topAdsCount = 0
+        topAdsAssertion = TopAdsAssertion(activityRule.activity, TopAdsVerificatorInterface { topAdsCount })
 
-        login()
         waitForData()
     }
 
@@ -77,8 +79,11 @@ class CartTopAdsVerificationTest {
     }
 
     private fun checkItemType(cartRecyclerView: RecyclerView, i: Int) {
-        when (cartRecyclerView.findViewHolderForAdapterPosition(i)) {
+        when (val viewHolder = cartRecyclerView.findViewHolderForAdapterPosition(i)) {
             is CartRecommendationViewHolder -> {
+                if (viewHolder.isTopAds) {
+                    topAdsCount++
+                }
                 clickProductRecommendationItem(cartRecyclerView, i)
             }
         }

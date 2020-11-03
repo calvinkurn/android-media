@@ -67,6 +67,8 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselListProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselViewModelOption: InspirationCarouselViewModel.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
     }
 }
 
@@ -102,6 +104,7 @@ internal fun createEmptyStateListener(): EmptyStateListener {
         override fun getUserId(): String { return "" }
         override fun getSelectedFilterAsOptionList(): MutableList<Option> { return mutableListOf() }
         override fun onSelectedFilterRemoved(uniqueId: String?) {}
+        override fun onEmptySearchToGlobalSearchClicked(applink: String?) {}
         override fun getRegistrationId(): String { return "" }
         override fun onEmptyButtonClicked() {}
     }
