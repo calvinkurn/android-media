@@ -165,20 +165,25 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     }
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
-                        val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
-                        if (tokenResponse?.cmAddToken != null && tokenResponse.cmAddToken.error.isNullOrEmpty()) {
-                            CMNotificationUtils.saveToken(mContext, token)
-                            CMNotificationUtils.saveUserId(mContext, userId)
-                            CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
-                            CMNotificationUtils.saveAppVersion(mContext, appVersionName)
+                        val gqlError = gqlResponse.getError(TokenResponse::class.java);
+                        if (gqlError.isNullOrEmpty()) {
+                            val errorStr = gqlError[0].message
+                            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='cm_gql_error_thrown';data='${errorStr.take(CMConstant.TimberTags.MAX_LIMIT)}'")
                         } else {
-                            if (tokenResponse == null){
-                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data=''")
+                            val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
+                            if (tokenResponse?.cmAddToken != null && tokenResponse.cmAddToken.error.isNullOrEmpty()) {
+                                CMNotificationUtils.saveToken(mContext, token)
+                                CMNotificationUtils.saveUserId(mContext, userId)
+                                CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
+                                CMNotificationUtils.saveAppVersion(mContext, appVersionName)
                             } else {
-                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${tokenResponse.toString().
-                                take(CMConstant.TimberTags.MAX_LIMIT)}'")
-                            }
+                                if (tokenResponse == null) {
+                                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_response_cm_add_token';data=''")
+                                } else {
+                                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_response_cm_add_token';data='${tokenResponse.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                                }
 
+                            }
                         }
                     }
                 })
