@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -50,6 +51,12 @@ class HomeAccountUserUsecaseModules {
     fun provideBuyerWalletBalance(getWalletBalanceUseCase: GetWalletBalanceUseCase,
                                   getPendingCasbackUseCase: GetPendingCasbackUseCase): HomeAccountWalletBalanceUseCase {
         return HomeAccountWalletBalanceUseCase(getWalletBalanceUseCase, getPendingCasbackUseCase)
+    }
+
+    @Provides
+    fun provideSafeSettingUseCase(@HomeAccountUserContext context: Context,
+                                  graphqlRepository: GraphqlRepository): SafeSettingProfileUseCase {
+        return SafeSettingProfileUseCase(context, graphqlRepository)
     }
 
     @Provides

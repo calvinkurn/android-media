@@ -3,6 +3,7 @@ package com.tokopedia.home_account.di
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.home_account.PermissionChecker
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.navigation_common.model.WalletPref
@@ -68,4 +69,8 @@ class HomeAccountUserModules(val context: Context) {
         return AccountPreference(context)
     }
 
+    @Provides
+    fun provideHomeAccountAnalytics(@HomeAccountUserContext context: Context, userSession: UserSessionInterface): HomeAccountAnalytics {
+        return HomeAccountAnalytics(context, userSession)
+    }
 }

@@ -8,7 +8,6 @@
     <string name="label_user_tokopoint">TokoPoints</string>
     <string name="label_user_voucher">Kupon Saya</string>
     <string name="label_user_tokomember">TokoMember</string>
-    <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
     <string name="title_tkpd_template_setting">Template Pembelian</string>
@@ -44,6 +43,8 @@
     <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
     <string name="title_debit_instant_setting">Debit Instan</string>
     <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
+    <string name="title_account_setting">Atur Pembayaran</string>
+
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>

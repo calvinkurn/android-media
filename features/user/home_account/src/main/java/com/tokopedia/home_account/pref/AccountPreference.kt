@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.Preference
 import android.preference.PreferenceManager
+import com.tokopedia.home_account.AccountConstants
 import javax.inject.Inject
 
 /**
@@ -28,4 +29,7 @@ class AccountPreference @Inject constructor(val context: Context) {
         editor?.apply()
     }
 
+    fun getSafeMode(): Boolean {
+        return preference?.getBoolean(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false) ?: false
+    }
 }

@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -42,6 +43,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.coach_mark
+
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.graphql)

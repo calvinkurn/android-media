@@ -69,7 +69,7 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
         setupFinancialAdapter(profile)
         setupMemberAdapter(profile)
         val params: ViewGroup.LayoutParams = account_user_item_profile_backdrop.layoutParams
-        params.height = params.height - (include2.height/2)
+        params.height = params.height - (home_account_member_card.height/2)
         account_user_item_profile_backdrop.layoutParams = params
     }
 
