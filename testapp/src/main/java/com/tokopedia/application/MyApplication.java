@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -82,6 +83,7 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
         upgradeSecurityProvider();
+        initializeSdk();
 
         GraphqlClient.init(this);
         NetworkClient.init(this);
@@ -114,7 +116,13 @@ public class MyApplication extends BaseMainApplication
         IrisAnalytics.Companion.getInstance(this).initialize();
     }
 
+    private void initializeSdk() {
+        try {
+            FirebaseApp.initializeApp(this);
+        } catch (Exception e) {
 
+        }
+    }
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
