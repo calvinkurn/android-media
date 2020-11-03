@@ -78,5 +78,6 @@ object Constants {
     const val GROUPID = "group_id"
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
+    const val IS_DATA_CHANGE = "dataChange"
 
 }
