@@ -16,15 +16,6 @@
             app:exitAnim="@anim/shopsettings_fade_out"
             app:popEnterAnim="@anim/shopsettings_fade_in"
             app:popExitAnim="@anim/shopsettings_fade_out" />
-        <action
-            android:id="@+id/action_shopSettingsInfoFragment_to_shopEditScheduleFragment"
-            app:destination="@id/shopEditScheduleFragment"
-            app:enterAnim="@anim/shopsettings_slide_in_right"
-            app:exitAnim="@anim/shopsettings_slide_out_left"
-            app:popEnterAnim="@anim/shopsettings_fade_in"
-            app:popExitAnim="@anim/shopsettings_fade_out" />
-        <deepLink
-            app:uri="tokopedia-android-internal://marketplace/shop-settings-info" />
     </fragment>
 
     <fragment
@@ -35,16 +26,5 @@
             android:name="cacheManagerId"
             app:argType="string"
             android:defaultValue='"0"' />
-    </fragment>
-    <fragment
-        android:id="@+id/shopEditScheduleFragment"
-        android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditScheduleFragment"
-        tools:layout="@layout/fragment_shop_edit_schedule">
-        <argument
-            android:name="cacheManagerId"
-            app:argType="string"
-            android:defaultValue='"0"' />
-        <deepLink
-            app:uri="tokopedia-android-internal://marketplace/shop-settings-edit-schedule"/>
     </fragment>
 </navigation>

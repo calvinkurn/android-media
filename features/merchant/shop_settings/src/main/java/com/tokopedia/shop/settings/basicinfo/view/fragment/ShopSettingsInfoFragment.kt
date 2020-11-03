@@ -4,6 +4,7 @@ package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.*
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
@@ -51,8 +53,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         const val EXTRA_MESSAGE = "extra_message"
         const val EXTRA_IS_CLOSED_NOW = "extra_is_closed_now"
         const val EXTRA_SHOP_BASIC_DATA_MODEL = "extra_shop_basic_data_model"
+        const val EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID = "extra_save_instance_cache_manager_id"
         const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
-        const val REQUEST_EDIT_SCHEDULE = "request_edit_schedule"
+        const val REQUEST_EDIT_SCHEDULE = 782
     }
 
     @Inject
@@ -199,6 +202,23 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         dismissToaster()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
+                needReload = true
+                if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
+                    val message: String? = data.getStringExtra(EXTRA_MESSAGE)
+                    if (!message.isNullOrBlank()) {
+                        view?.let {
+                            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun dismissToaster() {
         snackbar?.dismiss()
     }
@@ -217,9 +237,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
             put(EXTRA_IS_CLOSED_NOW, isClosedNow)
         }
-        val destination = ShopSettingsInfoFragmentDirections.actionShopSettingsInfoFragmentToShopEditScheduleFragment()
-        destination.cacheManagerId = cacheManager.id ?: "0"
-        findNavController().navigate(destination)
+        val intent = ShopEditScheduleActivity.createIntent(requireContext(), cacheManager.id ?: "0")
+        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
     }
 
     private fun observeUpdateScheduleData() {
@@ -353,20 +372,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 }
             }
             removeNavigationResult(REQUEST_EDIT_BASIC_INFO)
-        })
-        getNavigationResult(REQUEST_EDIT_SCHEDULE)?.observe(viewLifecycleOwner, Observer { bundle ->
-            bundle?.let { data ->
-                needReload = true
-                data.getString(EXTRA_MESSAGE)?.apply {
-                    if (this.isNotBlank()) {
-                        view?.let {
-                            snackbar = Toaster.build(it, this, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                            snackbar?.show()
-                        }
-                    }
-                }
-            }
-            removeNavigationResult(REQUEST_EDIT_SCHEDULE)
         })
     }
 

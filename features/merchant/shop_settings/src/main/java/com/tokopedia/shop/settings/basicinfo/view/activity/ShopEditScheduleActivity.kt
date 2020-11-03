@@ -1,21 +1,21 @@
-package com.tokopedia.shop.settings.basicinfo.view.fragment
+package com.tokopedia.shop.settings.basicinfo.view.activity
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -26,23 +26,30 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_IS_CLOSED_NOW
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_MESSAGE
+import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SHOP_BASIC_DATA_MODEL
-import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.REQUEST_EDIT_SCHEDULE
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_shop_edit_schedule.*
+import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleFragment : Fragment() {
+class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     companion object {
         private const val SAVED_SELECTED_START_DATE = "svd_selected_start_date"
         private const val SAVED_SELECTED_END_DATE = "svd_selected_end_date"
+
+        @JvmStatic
+        fun createIntent(context: Context, draftId: String): Intent {
+            return Intent(context, ShopEditScheduleActivity::class.java).apply {
+                putExtra(EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID, draftId)
+            }
+        }
     }
 
     @Inject
@@ -56,7 +63,6 @@ class ShopEditScheduleFragment : Fragment() {
     private var selectedEndCloseUnixTimeMs: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         super.onCreate(savedInstanceState)
         setupToolbar()
         if (savedInstanceState != null) {
@@ -64,20 +70,17 @@ class ShopEditScheduleFragment : Fragment() {
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
         }
 
-        arguments?.let {
-            val cacheManagerId = ShopEditBasicInfoFragmentArgs.fromBundle(it).cacheManagerId
-            val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+        intent.getStringExtra(EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID).let {
+            val saveInstanceCacheManager = SaveInstanceCacheManager(this, it)
             shopBasicDataModel = saveInstanceCacheManager.get(EXTRA_SHOP_BASIC_DATA_MODEL, ShopBasicDataModel::class.java)
             isClosedNow = saveInstanceCacheManager.get(EXTRA_IS_CLOSED_NOW, Boolean::class.java) ?: false
         }
-    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_edit_schedule, container, false)
-    }
+        DaggerShopSettingsComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         if (shopBasicDataModel != null) {
             setupView(shopBasicDataModel)
         } else {
@@ -87,6 +90,14 @@ class ShopEditScheduleFragment : Fragment() {
         }
 
         observeLiveData()
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_shop_edit_schedule
     }
 
     override fun onDestroy() {
@@ -107,15 +118,6 @@ class ShopEditScheduleFragment : Fragment() {
 
     private fun dismissToaster() {
         snackbar?.dismiss()
-    }
-
-    private fun initInjector() {
-        (activity?.application as? BaseMainApplication)?.baseAppComponent?.let { baseAppComponent ->
-            DaggerShopSettingsComponent.builder()
-                    .baseAppComponent(baseAppComponent)
-                    .build()
-                    .inject(this)
-        }
     }
 
     private fun setupView(shopBasicDataModel: ShopBasicDataModel?) {
@@ -167,14 +169,14 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        val toolbar: Toolbar? = activity?.findViewById(R.id.toolbar)
+        val toolbar: Toolbar? = findViewById(R.id.toolbar)
         toolbar?.title = getString(R.string.shop_settings_shop_status)
 
-        val tvSave: TextView? = activity?.findViewById(R.id.tvSave)
+        val tvSave: TextView? = findViewById(R.id.tvSave)
         tvSave?.apply {
             visibility = View.VISIBLE
             isEnabled = true
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.merchant_green))
+            setTextColor(ContextCompat.getColor(context, R.color.merchant_green))
             setOnClickListener { onSaveButtonClicked() }
         }
     }
@@ -219,12 +221,8 @@ class ShopEditScheduleFragment : Fragment() {
 
     private fun onSuccessUpdateShopSchedule(message: String) {
         hideSubmitLoading()
-
-        val bundle = Bundle().apply {
-            putString(EXTRA_MESSAGE, message)
-        }
-        setNavigationResult(bundle, REQUEST_EDIT_SCHEDULE)
-        findNavController().navigateUp()
+        setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, message) })
+        finish()
     }
 
     private fun onFailUpdateShopSchedule(throwable: Throwable) {
@@ -235,7 +233,7 @@ class ShopEditScheduleFragment : Fragment() {
     private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             setStartCloseDate(toDate(year, month, dayOfMonth))
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
@@ -246,7 +244,7 @@ class ShopEditScheduleFragment : Fragment() {
     private fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             setEndCloseDate(toDate(year, month, dayOfMonth))
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
@@ -292,16 +290,16 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        val view = activity?.currentFocus
+        val view = currentFocus
         view?.let { v ->
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(v.windowToken, 0)
         }
     }
 
     private fun showSubmitLoading(message: String) {
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(requireContext())
+            progressDialog = ProgressDialog(this)
         }
         if (progressDialog?.isShowing == false) {
             progressDialog?.setMessage(message)
@@ -335,7 +333,7 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
+        val message = ErrorHandler.getErrorMessage(this, throwable.cause)
         snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
             onSaveButtonClicked()
         })
@@ -343,7 +341,7 @@ class ShopEditScheduleFragment : Fragment() {
     }
 
     private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
-        val message = ErrorHandler.getErrorMessage(requireContext(), throwable.cause)
+        val message = ErrorHandler.getErrorMessage(this, throwable.cause)
         snackbar = Toaster.build(layout, message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler)
         snackbar?.show()
     }
