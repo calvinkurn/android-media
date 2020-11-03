@@ -130,6 +130,7 @@ public class ShopPageTrackingConstant {
     public static final String BUSINESS_UNIT = "businessUnit";
     public static final String PHYSICAL_GOODS = "physical goods";
     public static final String CURRENT_SITE = "currentSite";
+    public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
