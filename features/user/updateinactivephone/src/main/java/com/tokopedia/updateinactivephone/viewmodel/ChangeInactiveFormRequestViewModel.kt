@@ -140,26 +140,31 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
     private fun getUploadBookBankImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
 
-        params.putString(UpdateInactivePhoneConstants.Constants.USERID, requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID, userSessionInterface.temporaryUserId))
-        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD, requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))
+        params.putString(UpdateInactivePhoneConstants.Constants.USERID,
+                requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
+                        userSessionInterface.temporaryUserId))
+        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
+                requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))
         if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         }
         return params
     }
 
-    // #5
+
     private fun getUploadIdImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
         userSessionInterface.deviceId
-        params.putString(UpdateInactivePhoneConstants.Constants.USERID, requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID, userSessionInterface.temporaryUserId))
-        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD, requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, ""))
+        params.putString(UpdateInactivePhoneConstants.Constants.USERID,
+                requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
+                        userSessionInterface.temporaryUserId))
+        params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
+                requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, ""))
         if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost) }
         return params
     }
 
-    // #9
     private fun getSubmitImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
         params.putString(UpdateInactivePhoneConstants.QueryConstants.ID_CARD_IMAGE, changePhoneNumberRequestModel.uploadIdImageModel?.uploadImageData?.picObj)
@@ -174,7 +179,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         return params
     }
 
-    // #3
     private suspend fun getUploadHost(email: String, phone: String, userId: String) {
         requestParams = getUploadChangePhoneNumberRequestParam(email, phone, userId)
         val uploadHostModel = getUploadHostUseCase.getUploadHost(getUploadHostParam())
@@ -187,7 +191,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    // #4
     private suspend fun uploadIdImage(){
         val uploadImageModel = requestParams?.let {
             getUploadIdImageParam(it)
@@ -203,7 +206,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    // #6
     private suspend fun uploadBankBookImage(){
         val uploadImageAccountModel = requestParams?.let {
             getUploadBookBankImageParam(it)
@@ -219,7 +221,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    // #8
     private fun submitImage(){
         val submitImageParams = requestParams?.let { getSubmitImageParam(it) }
         submitImageParams?.let {
@@ -245,7 +246,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    // #10
     private fun onSuccessSubmitImage(): (GqlUpdatePhoneStatusResponse) -> Unit {
         return { mutableSubmitImage.value = Success(it) }
     }
