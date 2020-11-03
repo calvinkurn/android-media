@@ -16,19 +16,22 @@ import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
-        InboxFragment {
+        InboxFragment, NotificationItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,7 +49,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "Notification"
-    override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl()
+    override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl(this)
     override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun onAttachActivity(context: Context?) {
@@ -111,5 +114,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 .commonModule(context?.let { CommonModule(it) })
                 .build()
                 .inject(this)
+    }
+
+    override fun showLongerContent(element: NotificationUiModel) {
+        BottomSheetFactory.showLongerContent(childFragmentManager, element)
     }
 }

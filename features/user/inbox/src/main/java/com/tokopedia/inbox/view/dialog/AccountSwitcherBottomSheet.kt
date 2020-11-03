@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.inbox.R
-import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.view.custom.AccountSwitcherMenuItem
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -41,7 +41,9 @@ class AccountSwitcherBottomSheet : BottomSheetUnify() {
         setTitle("Ganti akun")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         initContentView()
         initViewConfig()
         return super.onCreateView(inflater, container, savedInstanceState)?.also {

@@ -8,13 +8,16 @@ import androidx.core.widget.ImageViewCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.inboxcommon.time.TimeHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifyprinciples.Typography
 
-class NormalNotificationViewHolder(
-        itemView: View?
+class NormalNotificationViewHolder constructor(
+        itemView: View?,
+        private val listener: NotificationItemListener?
 ) : AbstractViewHolder<NotificationUiModel>(itemView) {
 
     private val container: ConstraintLayout? = itemView?.findViewById(R.id.notification_container)
@@ -38,6 +41,7 @@ class NormalNotificationViewHolder(
         bindNotificationType(element)
         bindIcon(element)
         bindTime(element)
+        bindClick(element)
     }
 
     private fun bindContainer(element: NotificationUiModel) {
@@ -73,6 +77,16 @@ class NormalNotificationViewHolder(
 
     private fun bindTime(element: NotificationUiModel) {
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
+    }
+
+    private fun bindClick(element: NotificationUiModel) {
+        container?.setOnClickListener {
+            if (element.isLongerContent) {
+                listener?.showLongerContent(element)
+            } else {
+                RouteManager.route(itemView.context, element.dataNotification.appLink)
+            }
+        }
     }
 
     companion object {

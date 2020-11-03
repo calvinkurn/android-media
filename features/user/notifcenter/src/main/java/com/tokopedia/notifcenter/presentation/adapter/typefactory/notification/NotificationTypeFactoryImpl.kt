@@ -8,11 +8,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
+import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BigDividerViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 
-class NotificationTypeFactoryImpl : BaseAdapterTypeFactory(), NotificationTypeFactory {
+class NotificationTypeFactoryImpl constructor(
+        viewListener: Any
+) : BaseAdapterTypeFactory(), NotificationTypeFactory {
+
+    private val notificationListener = viewListener as? NotificationItemListener
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SectionTitleViewHolder.LAYOUT
@@ -47,7 +52,9 @@ class NotificationTypeFactoryImpl : BaseAdapterTypeFactory(), NotificationTypeFa
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
-            NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(view)
+            NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(
+                    view, notificationListener
+            )
             else -> super.createViewHolder(view, type)
         }
     }
