@@ -3,7 +3,7 @@ package com.tokopedia.shop.settings.address.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase
-import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
+import com.tokopedia.shop.settings.address.data.ShopLocationDataModel
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -19,15 +19,15 @@ class ShopSettingAddressAddEditPresenter @Inject constructor(private val addShop
         updateShopLocationUseCase.unsubscribe()
     }
 
-    fun saveAddress(shopLocationViewModel: ShopLocationViewModel, isNew: Boolean){
+    fun saveAddress(shopLocationDataModel: ShopLocationDataModel, isNew: Boolean){
         val useCase: UseCase<String> = if (isNew) addShopLocationUseCase else updateShopLocationUseCase
-        val requestParam = AddShopLocationUseCase.createRequestParams(shopLocationViewModel.name,
-                shopLocationViewModel.address, shopLocationViewModel.districtId, shopLocationViewModel.cityId,
-                shopLocationViewModel.stateId, shopLocationViewModel.postalCode, shopLocationViewModel.email,
-                shopLocationViewModel.phone, shopLocationViewModel.fax)
+        val requestParam = AddShopLocationUseCase.createRequestParams(shopLocationDataModel.name,
+                shopLocationDataModel.address, shopLocationDataModel.districtId, shopLocationDataModel.cityId,
+                shopLocationDataModel.stateId, shopLocationDataModel.postalCode, shopLocationDataModel.email,
+                shopLocationDataModel.phone, shopLocationDataModel.fax)
 
         if (!isNew)
-            requestParam.putString(ID, shopLocationViewModel.id)
+            requestParam.putString(ID, shopLocationDataModel.id)
 
         useCase.execute(requestParam, object : Subscriber<String>() {
             override fun onNext(string: String?) {
