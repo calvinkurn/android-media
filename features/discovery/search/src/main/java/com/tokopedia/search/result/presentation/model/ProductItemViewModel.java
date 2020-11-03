@@ -63,6 +63,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopOfficialStore = false;
     private boolean isShopPowerMerchant = false;
     private String productUrl = "";
+    private String pageTitle;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -412,6 +413,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.productUrl;
     }
 
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -436,7 +445,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", searchRef,
+                "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()

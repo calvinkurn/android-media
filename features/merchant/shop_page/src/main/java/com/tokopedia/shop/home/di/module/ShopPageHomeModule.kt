@@ -2,16 +2,18 @@ package com.tokopedia.shop.home.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
+import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
+import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
@@ -38,7 +40,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 
 @ShopPageHomeScope
-@Module(includes = [ShopPageHomeViewModelModule::class])
+@Module(includes = [ShopPageHomeViewModelModule::class, PlayWidgetModule::class])
 class ShopPageHomeModule {
 
     @ShopPageHomeScope
@@ -328,19 +330,6 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideGetPlayWidgetUseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        return GetPlayWidgetUseCase(graphqlRepository)
-    }
-
-    @ShopPageHomeScope
-    @Provides
-    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase{
-        val graphQlUseCase = GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
-        return PlayToggleChannelReminderUseCase(graphQlUseCase)
-    }
-
-    @ShopPageHomeScope
-    @Provides
     fun provideGetYoutubeVideoUseCase(restRepository: RestRepository): GetYoutubeVideoDetailUseCase {
         return GetYoutubeVideoDetailUseCase(restRepository)
     }
@@ -353,13 +342,37 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    fun provideShopPageHomeTracking(@ShopPageContext context: Context): ShopPageHomeTracking {
-        return ShopPageHomeTracking(TrackingQueue(context))
+    fun provideTrackingQueue(@ShopPageContext context: Context) = TrackingQueue(context)
+
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideShopPageHomeTracking(trackingQueue: TrackingQueue): ShopPageHomeTracking {
+        return ShopPageHomeTracking(trackingQueue)
     }
 
     @ShopPageHomeScope
     @Provides
     fun provideShopProductSortMapper(): ShopProductSortMapper {
         return ShopProductSortMapper()
+    }
+
+    /**
+     * Play Widget
+     */
+    @ShopPageHomeScope
+    @Provides
+    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+    }
+
+
+    @ShopPageHomeScope
+    @Provides
+    fun providePlayWidgetTracking(trackingQueue: TrackingQueue,
+                                  userSession: UserSessionInterface): ShopPlayWidgetAnalyticListener {
+        return ShopPlayWidgetAnalyticListener(trackingQueue, userSession)
     }
 }

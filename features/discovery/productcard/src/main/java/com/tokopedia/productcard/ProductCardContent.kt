@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
@@ -42,7 +42,10 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
 
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    if (productCardModel.isShowLabelGimmick())
+        textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
+    else
+        textViewGimmick?.initLabelGroup(null)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
@@ -174,16 +177,17 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     }
 }
 
-private fun View.renderSalesAndRating(productCardModel: ProductCardModel){
-    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
+    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()) {
         textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
     }
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowSalesAndRating()){
-        val ssb = SpannableStringBuilder("( ${productCardModel.countSoldRating})")
+
+    salesRatingFloat.shouldShowWithAction(productCardModel.willShowRating()) {
+        val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
         val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
         drawableStar?.let {
-            drawableStar.setBounds(0, 0, 25, 25)
-            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 1, 2, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            drawableStar.setBounds(0, 0, 20, 20)
+            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
         salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
