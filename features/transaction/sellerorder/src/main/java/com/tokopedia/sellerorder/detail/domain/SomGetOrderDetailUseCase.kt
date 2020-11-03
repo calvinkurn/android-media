@@ -51,7 +51,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
             }
 
             if (gqlResponse.getError(SomDynamicPriceResponse::class.java)?.isNotEmpty() != true) {
-                getSomDetailResponse.somDynamicPriceResponse = gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java)
+                getSomDetailResponse.somDynamicPriceResponse = gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice
             } else {
                 getSomDetailResponse.somDynamicPriceResponse = null
             }
@@ -266,24 +266,24 @@ class SomGetOrderDetailUseCase @Inject constructor(
         """.trimIndent()
 
         val QUERY_DYNAMIC_PRICE = """
-            query GetSOMDynamicPrice(${'$'}input: SOMDynamicPriceRequest!) {
-              get_som_dynamic_price(input:${'$'}){
-                payment_method{
-                  label,
+        query GetSOMDynamicPrice(${'$'}input: SOMDynamicPriceRequest!) {
+              get_som_dynamic_price(input: ${'$'}input) {
+                payment_method {
+                  label
                   value
-                },
-                payment_data{
-                  label,
-                  value,
-                  text_color
-                },
-                pricing_data{
-                  label,
-                  value,
+                }
+                payment_data {
+                  label
+                  value
                   text_color
                 }
-              }
+                pricing_data{
+                  label
+                  value
+                  text_color
+                }
             }
+        }
         """.trimIndent()
     }
 }

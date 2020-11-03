@@ -83,7 +83,7 @@ object GetSomFilterMapper {
                         idList.add(id)
                     }
                     childStatusUiModel.add(SomFilterChipsUiModel.ChildStatusUiModel(idList, childStatus.key.orEmpty(),
-                            childStatus.text.orEmpty(), childStatus.isChecked))
+                            childStatus.text.orEmpty(), true))
                 }
                 add(SomFilterChipsUiModel(idListStatus, key = it.key, name = it.orderStatus, amount = it.orderStatusAmount,
                         isSelected = false, childStatus = childStatusUiModel, idFilter = FILTER_STATUS_ORDER))

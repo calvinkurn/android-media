@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_radio"
+        android:id="@+id/label_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,36 +16,25 @@
         android:text="@string/same_day"
         app:typographyWeight="bold"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700"/>
+        android:textColor="@color/Neutral_N700_96"/>
 
-    <RadioButton
-        android:id="@+id/rb_filter"
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="@dimen/dp_18"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_18"/>
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_14"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/rbDivider"
+        android:id="@+id/cbDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/label_radio" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvChildFilterStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="@id/rb_filter"
-        app:layout_constraintTop_toBottomOf="@id/rbDivider"
-        tools:listitem="@layout/filter_child_checkbox_item"/>
+        app:layout_constraintTop_toBottomOf="@id/label_checkbox" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

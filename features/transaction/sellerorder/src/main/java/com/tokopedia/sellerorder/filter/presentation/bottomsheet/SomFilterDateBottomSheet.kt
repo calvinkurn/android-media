@@ -164,8 +164,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
                         this@SomFilterDateBottomSheet.selectedDates = selectedDates
                         toggleBtnShowOrder()
                     }
-                    else -> {
-                    }
+                    else -> { }
                 }
             }
 
@@ -177,12 +176,16 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length ?: 0)
+        tfEndDate?.textFieldInput?.requestFocus()
     }
 
     private fun selectStartDate(date: Date) {
         startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
         tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length ?: 0)
+        tfStartDate?.textFieldInput?.requestFocus()
     }
 
     private fun getSelectedDate(date: Date, patternDate: String): String {

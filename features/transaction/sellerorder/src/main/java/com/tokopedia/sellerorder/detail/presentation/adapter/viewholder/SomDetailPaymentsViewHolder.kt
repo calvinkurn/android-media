@@ -27,8 +27,12 @@ class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHol
                 }
 
                 total_price_value.text = somDetailPayments.paymentDataUiModel.value
-                val colorTotalPayment = somDetailPayments.paymentDataUiModel.textColor.replace("#", "")
-                total_price_value.setTextColor(Color.parseColor("#$colorTotalPayment"))
+                if(somDetailPayments.paymentDataUiModel.textColor.isNotBlank()) {
+                    val colorTotalPayment = somDetailPayments.paymentDataUiModel.textColor.replace("#", "")
+                    total_price_label.text = somDetailPayments.paymentDataUiModel.label
+                    total_price_label.setTextColor(Color.parseColor("#$colorTotalPayment"))
+                    total_price_value.setTextColor(Color.parseColor("#$colorTotalPayment"))
+                }
             }
         }
     }

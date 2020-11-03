@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.view.ViewParent
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -51,22 +50,6 @@ class SomListSortFilterTab(
         sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
         changeTabSortFilterText()
-    }
-
-    fun updateTabFromFilter(statusList: List<SomListFilterUiModel.Status>) {
-        sortFilter.chipItems.clear()
-        sortFilter.indicatorCounter = 0
-        filterItems = ArrayList(statusList.map { filterItem ->
-            filterItems.find { it.title.contains(filterItem.status) }.let { statusItem ->
-                val amount = if(filterItem.amount.toZeroIfNull() > 0) "(${filterItem.amount})" else ""
-                SortFilterItem("${filterItem.status} $amount").apply {
-                    listener = { statusItem?.let { onTabClicked(this, filterItem) } }
-                    type = if (filterItem.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                }
-        }})
-        sortFilter.addItem(filterItems)
-        changeTabSortFilterText()
-        sortFilter.show()
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
@@ -174,7 +157,6 @@ class SomListSortFilterTab(
     fun getSomListFilterUiModel() = somListFilterUiModel
 
     interface SomListSortFilterTabClickListener {
-        fun onTabClicked(status: SomListFilterUiModel.Status)
         fun onParentSortFilterClicked()
         fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean)
     }
