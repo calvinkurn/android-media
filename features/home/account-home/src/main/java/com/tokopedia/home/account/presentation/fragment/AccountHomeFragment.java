@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -136,7 +137,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         menuInbox.setOnClickListener(v -> {
 //            accountAnalytics.eventTrackingInbox();
 //            RouteManager.route(getActivity(), ApplinkConst.INBOX);
-            startActivity(new Intent(getActivity(), HomeAccountUserActivity.class));
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT);
         });
 
         if (getActivity() instanceof AppCompatActivity) {
