@@ -44,7 +44,7 @@ import kotlinx.coroutines.Dispatchers;
  * @author by nisie on 8/11/17.
  */
 
-@Module(includes = {ReputationRawModule.class})
+@Module
 public class ReputationModule {
 
     @ReputationScope
