@@ -588,23 +588,35 @@ class ShopPageFragment :
             val navType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     EXP_NAME, VARIANT_OLD
             )
-//            if(navType == VARIANT_REVAMP){
+            if (navType == VARIANT_REVAMP) {
                 initNewToolbar()
-//            }else{
-//                initOldToolbar()
-//            }
+            } else {
+                initOldToolbar()
+            }
         }
     }
 
     private fun initNewToolbar() {
         new_navigation_toolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             show()
-            setIcon(IconBuilder()
-                    .addIcon(IconList.ID_SHARE){}
-                    .addIcon(IconList.ID_CART){}
-                    .addIcon(IconList.ID_NAV_GLOBAL){}
-            )
+            val iconBuilder = IconBuilder()
+            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
+            if(isCartShownInNewNavToolbar())
+                iconBuilder.addIcon(IconList.ID_CART) {}
+            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) { clickShopShare() }
+            setIcon(iconBuilder)
+            if(shopViewModel.isUserSessionActive)
+                setBadgeCounter(IconList.ID_CART, getCartCounter())
         }
+    }
+
+    private fun getCartCounter(): Int {
+        return cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
+    }
+
+    private fun isCartShownInNewNavToolbar(): Boolean {
+        return !GlobalConfig.isSellerApp() && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)
     }
 
     private fun initOldToolbar() {
