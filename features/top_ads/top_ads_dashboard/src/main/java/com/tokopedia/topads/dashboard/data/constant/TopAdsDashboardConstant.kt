@@ -1,6 +1,14 @@
 package com.tokopedia.topads.dashboard.data.constant
 
 object TopAdsDashboardConstant {
+    const val PARAM_TYPE = "type"
+    const val PARAM_START_DATE = "startDate"
+    const val PARAM_END_DATE = "endDate"
+
+    const val GROUP_PARAM_START_DATE = "start_date"
+    const val GROUP_PARAM_END_DATE = "end_date"
+
+    const val SOURCE = "source"
 
     const val PATH_DASHBOARD_STATISTIC = "/v1.1/dashboard/statistics"
 
@@ -26,7 +34,7 @@ object TopAdsDashboardConstant {
     const val ACTION_ACTIVATE = "toggle_on"
     const val ACTION_DEACTIVATE = "toggle_off"
     const val ACTION_DELETE = "delete"
-    const val SOURCE_DASH = "dashboard_app"
+    const val SOURCE_DASH = "dashboard"
     const val ACTION_MOVE = "move_group"
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
