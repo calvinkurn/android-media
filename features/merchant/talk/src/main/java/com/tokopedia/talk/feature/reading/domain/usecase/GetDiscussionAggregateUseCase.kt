@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
@@ -11,12 +12,11 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_SHOP_ID = "shopID"
-        private val query by lazy {
-            val productID = "\$productID"
-            val shopID = "\$shopID"
-            """
-            query discussionAggregateByProductID($productID: String!, $shopID: String) {
-                discussionAggregateByProductID(productID: $productID, shopID: $shopID) {
+        private const val TALK_DISCUSSION_AGGREGATE_QUERY_CLASS_NAME = "TalkDiscussionAggregate"
+        private const val query =
+        """
+            query discussionAggregateByProductID(${'$'}productID: String!, ${'$'}shopID: String) {
+                discussionAggregateByProductID(productID: ${'$'}productID, shopID: ${'$'}shopID) {
                     productName
                     thumbnail
                     url
@@ -27,12 +27,16 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
                     }
                 }
             }
-        """.trimIndent()
-        }
+        """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_DISCUSSION_AGGREGATE_QUERY_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkDiscussionAggregate.GQL_QUERY)
         setTypeClass(DiscussionAggregateResponse::class.java)
     }
 

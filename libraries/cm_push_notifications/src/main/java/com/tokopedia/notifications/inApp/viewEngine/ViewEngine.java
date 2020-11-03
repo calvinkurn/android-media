@@ -539,7 +539,7 @@ public class ViewEngine {
         constraintSet.clear(resCmImage);
         constraintSet.clear(resCmMessage);
 
-        if (!TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (!TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
             constraintSet.constrainHeight(resCmImage, (int) getPXtoDP(80));
             constraintSet.constrainWidth(resCmImage, (int) getPXtoDP(80));
             if (isCLoseButtonVisible)
@@ -590,7 +590,7 @@ public class ViewEngine {
                 ConstraintSet.PARENT_ID, ConstraintSet.END);
 
 
-        if (TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+        if (TextUtils.isEmpty(cmInApp.cmLayout.getImg())) {
 
             /*title*/
             constraintSet.connect(resCmTitle, ConstraintSet.START,

@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class LineGraphMapper @Inject constructor() {
 
-    fun mapRemoteDataModelToUiDataModel(items: List<LineGraphDataModel>): List<LineGraphDataUiModel> {
+    fun mapRemoteDataModelToUiDataModel(items: List<LineGraphDataModel>, isFromCache: Boolean): List<LineGraphDataUiModel> {
         return items.map {
             LineGraphDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
@@ -32,7 +32,8 @@ class LineGraphMapper @Inject constructor() {
                                 yLabel = xyModel.yLabel.orEmpty(),
                                 yVal = xyModel.yVal.orZero()
                         )
-                    }
+                    },
+                    isFromCache = isFromCache
             )
         }
     }

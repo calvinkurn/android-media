@@ -92,10 +92,10 @@ class FlightHomepageViewModel @Inject constructor(
             val extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_")
 
             dashboardCache.putDepartureAirport(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP])
-            dashboardCache.putDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP])
+            dashboardCache.putDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP].replace("%20", " "))
             dashboardCache.putDepartureCityCode("")
             dashboardCache.putArrivalAirport(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])
-            dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP])
+            dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP].replace("%20", " "))
             dashboardCache.putRoundTrip(false)
             if (extrasTripDeparture[INDEX_DATE_TRIP].isNotEmpty()) {
                 dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])

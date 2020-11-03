@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,22 +15,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.review.R;
-import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
-import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoResponse;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
-import com.tokopedia.unifycomponents.BottomSheetUnify;
-import com.tokopedia.unifycomponents.ticker.Ticker;
-import com.tokopedia.unifycomponents.ticker.TickerCallback;
-
-import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -46,7 +35,6 @@ public class InboxReputationDetailHeaderViewHolder extends
     public static final int SMILEY_NEUTRAL = 1;
     public static final int SMILEY_GOOD = 2;
     private final ReputationAdapter.ReputationListener reputationListener;
-    private final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain;
 
     ImageView userAvatar;
     TextView name;
@@ -67,21 +55,15 @@ public class InboxReputationDetailHeaderViewHolder extends
     GridLayoutManager gridLayout;
     LinearLayoutManager linearLayoutManager;
     Context context;
-    Ticker ovoTicker;
-    FragmentManager fragmentManager;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
 
     public InboxReputationDetailHeaderViewHolder(View itemView,
-                                                 final ReputationAdapter.ReputationListener reputationListener,
-                                                 final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain,
-                                                 final FragmentManager fragmentManager) {
+                                                 final ReputationAdapter.ReputationListener reputationListener) {
         super(itemView);
         this.reputationListener = reputationListener;
-        this.productRevIncentiveOvoDomain = productRevIncentiveOvoDomain;
         this.context = itemView.getContext();
-        this.fragmentManager = fragmentManager;
         userAvatar = itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         userReputationView =  itemView.findViewById(R.id.user_reputation);
@@ -104,7 +86,6 @@ public class InboxReputationDetailHeaderViewHolder extends
                 .HORIZONTAL, false);
         smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
-        ovoTicker = itemView.findViewById(R.id.ovoPointsTicker);
     }
 
     @Override
@@ -123,7 +104,6 @@ public class InboxReputationDetailHeaderViewHolder extends
                 goToInfoPage(element);
             }
         });
-        showIncentiveOvo();
 
         setReputation(element);
 
@@ -294,38 +274,6 @@ public class InboxReputationDetailHeaderViewHolder extends
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
                     String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
 
-        }
-    }
-
-    public void showIncentiveOvo() {
-        if (productRevIncentiveOvoDomain != null) {
-            ProductRevIncentiveOvoResponse productRevIncentiveOvo = productRevIncentiveOvoDomain.getProductrevIncentiveOvo();
-            if (productRevIncentiveOvo == null) {
-                ovoTicker.setVisibility(View.GONE);
-            } else {
-                ReputationTracking reputationTracking = new ReputationTracking();
-                String title = productRevIncentiveOvo.getTicker().getTitle();
-                String subtitle = productRevIncentiveOvo.getTicker().getSubtitle();
-                ovoTicker.setVisibility(View.VISIBLE);
-                ovoTicker.setTickerTitle(title);
-                ovoTicker.setHtmlDescription(subtitle);
-                ovoTicker.setDescriptionClickEvent(new TickerCallback() {
-                    @Override
-                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                        BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
-                        if(fragmentManager != null) {
-                            bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
-                        }
-                        reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
-                    }
-
-                    @Override
-                    public void onDismiss() {
-                        reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
-                    }
-                });
-                reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
-            }
         }
     }
 }
