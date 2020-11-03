@@ -185,6 +185,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
     public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
     public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_SEQ_AB_TESTING_ASYNC = "android_exec_seq_ab_testing_async";
     public static final String ENABLE_ASYNC_REMOTECONF_FETCH = "android_async_remoteconf_fetch";
     public static final String ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH = "android_async_deffered_deeplink_fetch";
     public static final String ENABLE_ASYNC_MOVETOHOME = "android_async_movetohome";
