@@ -256,7 +256,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                         .addIcon(IconList.ID_CART) {}
                         .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
-            activity?.let { setupToolbarWithStatusBar(it) }
         }
 //        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
 //        mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
