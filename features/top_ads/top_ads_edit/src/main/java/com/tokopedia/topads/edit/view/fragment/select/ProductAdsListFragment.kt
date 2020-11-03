@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.data.util.Utils
@@ -39,6 +40,10 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.topads_edit_fragment_product_list.*
 import javax.inject.Inject
 
+private const val CLICK_BELUM_DIIKLANKAN = "click - belum diiklankan"
+private const val CLICK_SUDAH_DIIKLANKAN = "click - sudah diiklankan"
+private const val CLICK_SORT = "click - sort"
+private const val CLICK_FILTER = "click - filter"
 class ProductAdsListFragment : BaseDaggerFragment() {
 
     private lateinit var sortProductList: ProductSortSheetList
@@ -206,9 +211,11 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             activity?.finish()
         }
         btn_sort.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_SORT, "")
             sortProductList.show(childFragmentManager, "")
         }
         btn_filter.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_FILTER, "")
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
             } else {
@@ -219,11 +226,13 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
         not_promoted.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_BELUM_DIIKLANKAN, "")
             not_promoted.chipType = ChipsUnify.TYPE_SELECTED
             promoted.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
         promoted.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_SUDAH_DIIKLANKAN, "")
             promoted.chipType = ChipsUnify.TYPE_SELECTED
             not_promoted.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()

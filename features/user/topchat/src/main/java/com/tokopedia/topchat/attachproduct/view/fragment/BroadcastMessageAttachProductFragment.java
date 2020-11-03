@@ -14,7 +14,7 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter;
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 
@@ -27,7 +27,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
     private final static int MAX_CHECKED = 3;
     private Button chooseButton;
     private HashSet<Integer> productIds = new HashSet<>();
-    private ArrayList<AttachProductItemViewModel> checkedList = new ArrayList<>();
+    private ArrayList<AttachProductItemUiModel> checkedList = new ArrayList<>();
 
     public static BroadcastMessageAttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
         Bundle args = new Bundle();
@@ -52,7 +52,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
                 productIds.addAll(ids);
                 updateButtonBasedOnChecked(productIds.size());
                 for (HashMap<String, String> product : products) {
-                    checkedList.add(new AttachProductItemViewModel(
+                    checkedList.add(new AttachProductItemUiModel(
                             product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_URL),
                             product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_NAME),
                             Integer.parseInt(product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_ID)),
@@ -75,7 +75,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
 
     @NonNull
     @Override
-    protected BaseListAdapter<AttachProductItemViewModel, AttachProductListAdapterTypeFactory> createAdapterInstance() {
+    protected BaseListAdapter<AttachProductItemUiModel, AttachProductListAdapterTypeFactory> createAdapterInstance() {
         adapter = new AttachProductListAdapter(getAdapterTypeFactory(), productIds, checkedList);
         return adapter;
     }
