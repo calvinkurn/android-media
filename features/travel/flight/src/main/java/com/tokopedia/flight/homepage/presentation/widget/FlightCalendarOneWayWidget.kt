@@ -10,7 +10,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.SubTitle
@@ -18,6 +17,7 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
+import com.tokopedia.flight.homepage.data.cache.FlightCalendarQuery
 import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightFareCalendarViewModel
@@ -60,11 +60,9 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         initInjector()
 
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
+        fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
 
         arguments?.run {
             this.getString(ARG_MIN_DATE)?.let {
@@ -117,7 +115,7 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
+        holidayCalendarViewModel.holidayCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
                 if (isFirstTime) {
@@ -126,8 +124,6 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
                 }
             }
         })
-
-
 
         btnClose.setOnClickListener { dismissAllowingStateLoss() }
     }
@@ -149,14 +145,12 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             mapFareParam[PARAM_ARRIVAL_CODE] = arrivalCode
             mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
+
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
-                        GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
-                        mapFareParam, minDate, maxDate)
+                fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minDate, maxDate)
             }
 
-
-            fareCalendarViewModel.fareFlightCalendarData.observe(this, androidx.lifecycle.Observer {
+            fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 it?.let {
                     calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
                 }

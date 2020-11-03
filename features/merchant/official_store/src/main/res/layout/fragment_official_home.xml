@@ -73,6 +73,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+        <include layout="@layout/viewmodel_official_loading_content"
+            android:id="@+id/view_content_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_64"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

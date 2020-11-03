@@ -21,7 +21,10 @@
         "item_variant": "{{.*}}",
         "item_category": "{{.*}}"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/"
     },
     {
       "eventCategory": "homepage",
@@ -44,7 +47,10 @@
       }],
       "eventLabel": "{{.*}}",
       "channelId": "{{.*}}",
-      "campaignCode": "{{.*}}"
+      "campaignCode": "{{.*}}",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "screenName": "/"
     },
     {
       "businessUnit": "home & browse",

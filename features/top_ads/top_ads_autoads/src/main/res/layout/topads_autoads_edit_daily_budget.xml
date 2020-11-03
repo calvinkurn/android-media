@@ -24,7 +24,7 @@
         app:srcCompat="@drawable/card_auto_ads_create"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+    <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
         android:id="@+id/autoads_edit_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
         android:textAllCaps="false"
         android:visibility="visible"
         app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"

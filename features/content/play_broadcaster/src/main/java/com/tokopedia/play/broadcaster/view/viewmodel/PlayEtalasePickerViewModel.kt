@@ -10,7 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.EventException
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
@@ -40,7 +40,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
 
     private val channelId: String
@@ -297,7 +298,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }.executeOnBackground()
 
             NetworkResult.Success(Pair(
-                    PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                    playBroadcastMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                     productList.meta.totalHits
             ))
         } catch (e: Throwable) {
@@ -308,7 +309,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private suspend fun getEtalaseList() = withContext(dispatcher.io) {
         val etalaseList = getSelfEtalaseListUseCase.executeOnBackground()
-        return@withContext PlayBroadcastUiMapper.mapEtalaseList(etalaseList)
+        return@withContext playBroadcastMapper.mapEtalaseList(etalaseList)
     }
 
     private suspend fun getProductsByKeyword(keyword: String, page: Int) = withContext(dispatcher.io) {
@@ -322,7 +323,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                playBroadcastMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.meta.totalHits
         )
     }
