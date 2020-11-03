@@ -77,7 +77,6 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
-    private boolean goToMyReview = false;
     private boolean goToBuyerReview;
     private boolean canFireTracking;
     private ReputationTracking reputationTracking;
