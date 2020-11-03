@@ -10,7 +10,6 @@ import androidx.slice.builders.ListBuilder
 import androidx.slice.builders.header
 import androidx.slice.builders.list
 import androidx.slice.builders.row
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.common.utils.SellerActionUtils.getBitmap
 import com.tokopedia.seller.action.order.const.SellerActionOrderIconUrl
@@ -27,8 +26,8 @@ class SellerFailureSlice(context: Context,
                 }
                 row {
                     setTitleItem(IconCompat.createWithBitmap(SellerActionOrderIconUrl.Error.getBitmap(context)), ListBuilder.SMALL_IMAGE)
-                    title = context.getString(R.string.seller_action_error_title).parseAsHtml()
-                    subtitle = context.getString(R.string.seller_action_error_desc_short).parseAsHtml()
+                    title = context.getString(R.string.seller_action_error_title)
+                    subtitle = context.getString(R.string.seller_action_error_desc_short)
                     primaryAction = createActivityAction()
                 }
                 setIsError(true)

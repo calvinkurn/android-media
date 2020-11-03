@@ -10,6 +10,7 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
 import com.tokopedia.seller.action.common.const.SellerActionFeatureName
@@ -26,8 +27,8 @@ class SellerOrderSlice(context: Context,
     : SellerSuccessSlice<Order>(orderList, context, sliceUri, date.convertToOrderDateTitle(context)) {
 
     companion object {
-        private const val MAX_PRODUCT_NAME_LENGTH = 15
-        private const val TRUNCATED_PRODUCT_NAME_LENGTH = 12
+        private const val MAX_PRODUCT_NAME_LENGTH = 25
+        private const val TRUNCATED_PRODUCT_NAME_LENGTH = 22
         private const val MAX_ORDER_LIST_SIZE = 3
     }
 
@@ -65,7 +66,7 @@ class SellerOrderSlice(context: Context,
                                             } else {
                                                 displayedName
                                             }
-                                    context.getString(R.string.seller_action_order_success_item_multiple_title, truncatedName, productList.size - 1)
+                                    context.getString(R.string.seller_action_order_success_item_multiple_title, truncatedName, productList.size - 1).parseAsHtml()
                                 }
                             }
                         }

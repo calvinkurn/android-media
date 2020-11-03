@@ -17,7 +17,7 @@
     <string name="seller_action_order_loading_desc_short">Toped sedang mencari pesananmu.</string>
     <string name="seller_action_order_success_title_today">Pesanan hari ini</string>
     <string name="seller_action_order_success_title_specific_date">Pesanan %s</string>
-    <string name="seller_action_order_success_item_multiple_title">%s +%1d Produk</string>
+    <string name="seller_action_order_success_item_multiple_title">%s <![CDATA[<font color=#7031353B>+%1d Produk</font>]]></string>
     <string name="seller_action_order_success_item_desc">%s | Batas Respons %s</string>
     <string name="seller_action_order_status_new_order">Pesanan Baru</string>
     <string name="seller_action_order_status_ready_to_ship">Siap Dikirim</string>
