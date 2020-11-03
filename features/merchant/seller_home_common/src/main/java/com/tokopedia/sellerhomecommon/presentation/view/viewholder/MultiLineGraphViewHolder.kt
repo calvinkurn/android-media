@@ -14,6 +14,7 @@ import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
@@ -123,6 +124,7 @@ class MultiLineGraphViewHolder(
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcMultiLineCta.visibility = ctaVisibility
             btnShcMultiLineCta.text = element.ctaText
+            hideLegendView()
 
             setupMetrics(metricItems)
 
@@ -130,6 +132,24 @@ class MultiLineGraphViewHolder(
                 lastSelectedMetric = metric
                 showLineGraph(listOf(metric))
             }
+        }
+    }
+
+    private fun showLegendView() {
+        with(itemView) {
+            lvShcCurrentPeriod.setText(context.getString(R.string.shc_current_period))
+            lvShcCurrentPeriod.visibility = View.VISIBLE
+            lvShcCurrentPeriod.showLine()
+            lvShcLastPeriod.setText(context.getString(R.string.shc_last_period))
+            lvShcLastPeriod.visibility = View.VISIBLE
+            lvShcLastPeriod.showDashLine()
+        }
+    }
+
+    private fun hideLegendView() {
+        with(itemView) {
+            lvShcCurrentPeriod.visibility = View.INVISIBLE
+            lvShcLastPeriod.visibility = View.INVISIBLE
         }
     }
 
@@ -214,32 +234,77 @@ class MultiLineGraphViewHolder(
                 }
     }
 
+    /**
+     * mapping the given single/multiple metrics to become list of LineChartData.
+     * return the list of LineChartData from `current` and `lastPeriod` if given single metric
+     * and the lastPeriod is available. Else, will return the list of LineChartData
+     * from current period of each metric.
+     * */
     private fun getLineChartData(metrics: List<MultiLineMetricUiModel>): List<LineChartData> {
+        val isSingleMetric = metrics.size == 1
 
-        return metrics.map { met ->
-                    val hexColor = met.summary.lineColor
-                    val lineHexColor = if (hexColor.isNotBlank()) {
-                        hexColor
-                    } else {
-                        ChartColor.DEFAULT_LINE_COLOR
-                    }
+        //map the `current` and `lastPeriod`
+        if (isSingleMetric) {
+            val metric = metrics[0]
+            val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
+            if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
+                showLegendView()
+                return getLineChartDataByPeriod(metric)
+            }
+        }
 
-                    val chartEntry: List<LineChartEntry> = met.linePeriod.currentPeriod.map {
-                        LineChartEntry(it.yVal, it.yLabel, it.xLabel)
-                    }
+        hideLegendView()
 
-                    val yAxisLabel = getYAxisLabel(met)
+        return metrics.map { metric ->
+            val hexColor = getLineHexColor(metric.summary.lineColor)
+            val chartEntry: List<LineChartEntry> = getLineChartEntry(metric.linePeriod.currentPeriod)
+            val yAxisLabel = getYAxisLabel(metric)
 
-                    return@map LineChartData(
-                            chartEntry = chartEntry,
-                            yAxisLabel = yAxisLabel,
-                            config = LineChartEntryConfigModel(
-                                    lineWidth = 1.8f,
-                                    drawFillEnabled = false,
-                                    lineColor = Color.parseColor(lineHexColor)
-                            )
+            return@map LineChartData(
+                    chartEntry = chartEntry,
+                    yAxisLabel = yAxisLabel,
+                    config = LineChartEntryConfigModel(
+                            lineWidth = 1.8f,
+                            drawFillEnabled = false,
+                            lineColor = Color.parseColor(hexColor)
                     )
-                }
+            )
+        }
+    }
+
+    private fun getLineChartDataByPeriod(metric: MultiLineMetricUiModel): List<LineChartData> {
+        val currentPeriod: List<LineChartEntry> = getLineChartEntry(metric.linePeriod.currentPeriod)
+        val lastPeriod: List<LineChartEntry> = getLineChartEntry(metric.linePeriod.lastPeriod)
+        val hexColor = getLineHexColor(metric.summary.lineColor)
+        val yAxisLabel = getYAxisLabel(metric)
+
+        return listOf(currentPeriod, lastPeriod).map {
+            val isLastPeriod = it == lastPeriod
+            LineChartData(
+                    chartEntry = it,
+                    yAxisLabel = yAxisLabel,
+                    config = LineChartEntryConfigModel(
+                            lineWidth = if (isLastPeriod) 1.2f else 1.8f,
+                            drawFillEnabled = false,
+                            lineColor = Color.parseColor(hexColor),
+                            isLineDashed = isLastPeriod
+                    )
+            )
+        }
+    }
+
+    private fun getLineChartEntry(periodAxis: List<XYAxisUiModel>): List<LineChartEntry> {
+        return periodAxis.map {
+            LineChartEntry(it.yVal, it.yLabel, it.xLabel)
+        }
+    }
+
+    private fun getLineHexColor(hexColor: String): String {
+        return if (hexColor.isNotBlank()) {
+            hexColor
+        } else {
+            ChartColor.DEFAULT_LINE_COLOR
+        }
     }
 
     private fun getYAxisLabel(metric: MultiLineMetricUiModel): List<AxisLabel> {
