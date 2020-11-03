@@ -116,9 +116,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
     fun cancelRunnable() {
         try {
             handler.removeCallbacks(runnable)
-            graphQlUseCase?.let {
-                it.unsubscribe()
-            }
+            if (::graphQlUseCase.isInitialized)
+                graphQlUseCase.unsubscribe()
         } catch (e: Exception) {
             Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
                     .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
@@ -167,11 +166,19 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
                         val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
-                        if (tokenResponse?.cmAddToken != null) {
+                        if (tokenResponse?.cmAddToken != null && tokenResponse.cmAddToken.error.isNullOrEmpty()) {
                             CMNotificationUtils.saveToken(mContext, token)
                             CMNotificationUtils.saveUserId(mContext, userId)
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
                             CMNotificationUtils.saveAppVersion(mContext, appVersionName)
+                        } else {
+                            if (tokenResponse == null){
+                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data=''")
+                            } else {
+                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${tokenResponse.toString().
+                                take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                            }
+
                         }
                     }
                 })
