@@ -51,6 +51,8 @@ class UohTopAdsVerificationTest {
 
     @Test
     fun testTopAdsUoh() {
+        waitForData()
+
         // search for abnormal order ("zzzzz") to create empty order list
         // so recommendation items will show
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("zzzzz"))
