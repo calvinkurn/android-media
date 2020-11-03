@@ -300,6 +300,8 @@ data class DynamicHomeChannel(
             this.position = position
         }
 
+        fun getPosition() = position
+
         companion object {
             const val LAYOUT_HERO: String = "hero_4_image"
             const val LAYOUT_3_IMAGE: String = "3_image"

@@ -1038,6 +1038,7 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

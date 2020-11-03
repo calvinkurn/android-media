@@ -25,6 +25,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         private set
 
     override suspend fun executeOnBackground(): DynamicChannel {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         val responseType: Type = DynamicChannel.Response::class.java
         val requestInstance = GraphqlRequest(gqlQuery, responseType, requestParams)
 

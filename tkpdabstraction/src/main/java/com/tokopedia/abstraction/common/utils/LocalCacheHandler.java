@@ -137,4 +137,8 @@ public class LocalCacheHandler {
         editor.clear().apply();
     }
 
+    public void remove(String key) {
+        editor.remove(key);
+    }
+
 }
