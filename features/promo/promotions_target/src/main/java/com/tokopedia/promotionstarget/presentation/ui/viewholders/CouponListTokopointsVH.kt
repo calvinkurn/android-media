@@ -35,7 +35,7 @@ class CouponListTokopointsVH(itemView: View) : CouponListVH(itemView) {
 
         imageView.loadImageGlide(data.imageUrl)
         tvTitle.text = data.usage?.dateKey
-        tvSubTitle.text = data.usage?.dateValue
+        tvSubTitle.text = data.usage?.dateValue?.trim()
 
         tvTitleRight.text = data.minimumUsageLabel
         tvSubTitleRight.text = data.minimumUsage
