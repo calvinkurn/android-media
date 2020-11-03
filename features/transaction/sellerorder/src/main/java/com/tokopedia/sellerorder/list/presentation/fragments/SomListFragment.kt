@@ -341,18 +341,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         } else {
             getSwipeRefreshLayout(view)?.isRefreshing = true
         }
+        SomAnalytics.eventSubmitSearch(text.orEmpty())
     }
 
-    override fun onSearchReset() {
-        viewModel.setSearchParam("")
-        shouldScrollToTop = true
-        loadFilters(false)
-        if (shouldReloadOrderListImmediately()) {
-            refreshOrderList()
-        } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
-        }
-    }
+    override fun onSearchReset() {/* no op, handled in onSearchTextChanged */}
 
     override fun onSearchTextChanged(text: String?) {
         textChangeJob?.cancel()
@@ -367,6 +359,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 } else {
                     getSwipeRefreshLayout(view)?.isRefreshing = true
                 }
+                SomAnalytics.eventSubmitSearch(text.orEmpty())
             }
         }, onError = {
             // TODO: Log to crashlytics
@@ -1041,9 +1034,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun checkAllOrder() {
-        adapter.data.onEach {
-            if (it is SomListOrderUiModel && it.cancelRequest == 0) it.isChecked = true
-        }
+        adapter.data.onEach { if (it is SomListOrderUiModel && it.cancelRequest == 0) it.isChecked = true }
         adapter.notifyDataSetChanged()
     }
 
