@@ -172,7 +172,11 @@ object DeeplinkMapperUohOrder {
                         .build()
                         .toString()
             }
-            else -> ""
+            else -> {
+                if (deepLink.startsWith(MARKETPLACE_ORDER)) {
+                    MARKETPLACE_ORDER
+                } else ""
+            }
         }
     }
 
