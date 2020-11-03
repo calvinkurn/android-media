@@ -1279,11 +1279,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeToggleFavourite() {
         viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
+            nplFollowersButton?.stopLoading()
             data.doSuccessOrFail({
                 onSuccessFavoriteShop(it.data.first, it.data.second)
                 setupShopFavoriteToaster(it.data.second)
             }, {
-                nplFollowersButton?.stopLoading()
                 onFailFavoriteShop(it)
             })
         }
