@@ -3,11 +3,11 @@ package com.tokopedia.media.loader
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.Priority
+import androidx.core.graphics.BitmapCompat
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.Key
@@ -44,6 +44,7 @@ object GlideBuilder {
     )
 
     private fun glideListener(
+            imageUrl: Any,
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
@@ -63,6 +64,13 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
+            if (imageUrl is GlideUrl) {
+                Log.d("MEDIALOADER", "${imageUrl.toStringUrl()} - ${BitmapCompat.getAllocationByteCount(resource!!)}")
+            } else if (imageUrl is String) {
+                Log.d("MEDIALOADER", "$imageUrl - ${BitmapCompat.getAllocationByteCount(resource!!)}")
+            } else {
+                Log.d("MEDIALOADER", "Unknown - ${BitmapCompat.getAllocationByteCount(resource!!)}")
+            }
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
@@ -142,7 +150,7 @@ object GlideBuilder {
                     }
                 }
 
-                listener(glideListener(stateListener))
+                listener(glideListener(url, stateListener))
 
             }.load(url).into(imageView)
         }
