@@ -19,6 +19,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 27/10/20
@@ -40,7 +41,7 @@ class MultiLineGraphViewHolder(
     private val metricsAdapter by lazy { MultiLineMetricsAdapter(this) }
     private var element: MultiLineGraphWidgetUiModel? = null
     private var lastSelectedMetric: MultiLineMetricUiModel? = null
-    private val metricMap: MutableMap<MultiLineMetricUiModel, LineChartData> = mutableMapOf()
+    private var isMetricComparableByPeriodSelected: Boolean = false
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
         this.element = element
@@ -226,12 +227,49 @@ class MultiLineGraphViewHolder(
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
                 .setOnDisplayContent { view, data, x, y ->
                     data?.let {
-                        with(view) {
-                            tvShcTooltipTitle1st.text = it.xLabel
-                            tvShcTooltipValue1st.text = it.yLabel
+                        if (isMetricComparableByPeriodSelected) {
+                            showComparablePeriodMetricTooltip(view, it, x.toInt())
+                        } else {
+                            showComparedMetricsTooltip(view, it)
                         }
                     }
                 }
+    }
+
+    private fun showComparedMetricsTooltip(view: View, entry: LineChartEntry) {
+
+    }
+
+    private fun showComparablePeriodMetricTooltip(view: View, entry: LineChartEntry, axisIndex: Int) {
+        with(view) {
+            lastSelectedMetric?.let { metric ->
+                val hexColor = getLineHexColor(metric.summary.lineColor)
+                ttvShcMlgTooltip1.showDot(Color.parseColor(hexColor))
+                ttvShcMlgTooltip1.setContent(entry.xLabel, entry.yLabel)
+
+                //show current period tooltip
+                try {
+                    metric.linePeriod.currentPeriod[axisIndex].let {
+                        ttvShcMlgTooltip1.showDot(Color.parseColor(hexColor))
+                        ttvShcMlgTooltip1.setContent(it.xLabel, it.yLabel)
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                    Timber.i(e)
+                }
+
+                //show last period tooltip
+                try {
+                    metric.linePeriod.lastPeriod[axisIndex].let {
+                        ttvShcMlgTooltip2.visibility = View.VISIBLE
+                        ttvShcMlgTooltip2.showDot(Color.parseColor(hexColor), true)
+                        ttvShcMlgTooltip2.setContent(it.xLabel, it.yLabel)
+                    }
+                } catch (e: IndexOutOfBoundsException) {
+                    ttvShcMlgTooltip2.visibility = View.GONE
+                    Timber.i(e)
+                }
+            }
+        }
     }
 
     /**
@@ -248,11 +286,13 @@ class MultiLineGraphViewHolder(
             val metric = metrics[0]
             val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
             if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
+                isMetricComparableByPeriodSelected = true
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
             }
         }
 
+        isMetricComparableByPeriodSelected = false
         hideLegendView()
 
         return metrics.map { metric ->
@@ -280,7 +320,7 @@ class MultiLineGraphViewHolder(
 
         return listOf(currentPeriod, lastPeriod).map {
             val isLastPeriod = it == lastPeriod
-            LineChartData(
+            return@map LineChartData(
                     chartEntry = it,
                     yAxisLabel = yAxisLabel,
                     config = LineChartEntryConfigModel(

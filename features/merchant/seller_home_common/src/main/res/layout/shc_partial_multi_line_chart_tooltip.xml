@@ -9,7 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/layout_lvl1">
+        android:paddingStart="@dimen/shc_dimen_12dp"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/shc_dimen_12dp"
+        android:paddingBottom="@dimen/layout_lvl1">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcTooltipHeader"
@@ -23,80 +26,20 @@
             tools:text="Senin, 2 des"
             tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/imgShcTooltipDot1st"
-            android:layout_width="@dimen/layout_lvl1"
-            android:layout_height="@dimen/layout_lvl1"
-            app:layout_constraintBottom_toBottomOf="@+id/tvShcTooltipTitle1st"
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphTooltipView
+            android:id="@+id/ttvShcMlgTooltip1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle1st" />
+            app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipHeader" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvShcTooltipTitle1st"
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.MultiLineGraphTooltipView
+            android:id="@+id/ttvShcMlgTooltip2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:maxLines="1"
-            android:textColor="@color/Neutral_N700_68"
-            android:textSize="@dimen/fontSize_lvl1"
-            app:layout_constraintStart_toEndOf="@+id/imgShcTooltipDot1st"
-            app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipHeader"
-            app:typographyType="small"
-            tools:text="2 Jan" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvShcTooltipValue1st"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/fontSize_lvl2"
-            app:layout_constraintStart_toStartOf="@+id/tvShcTooltipTitle1st"
-            app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipTitle1st"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="15.000.000.000 rb" />
-
-        <ImageView
-            android:id="@+id/imgShcTooltipDot2nd"
-            android:layout_width="@dimen/layout_lvl1"
-            android:layout_height="@dimen/layout_lvl1"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/tvShcTooltipTitle2nd"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvShcTooltipTitle2nd"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvShcTooltipTitle2nd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:maxLines="1"
-            android:textColor="@color/Neutral_N700_68"
-            android:textSize="@dimen/fontSize_lvl1"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/imgShcTooltipDot2nd"
-            app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipValue1st"
-            app:typographyType="small"
-            tools:text="2 Jan"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvShcTooltipValue2nd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
-            android:textSize="@dimen/fontSize_lvl2"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/tvShcTooltipTitle2nd"
-            app:layout_constraintTop_toBottomOf="@+id/tvShcTooltipTitle2nd"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="15.000.000.000 rb"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/ttvShcMlgTooltip1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
