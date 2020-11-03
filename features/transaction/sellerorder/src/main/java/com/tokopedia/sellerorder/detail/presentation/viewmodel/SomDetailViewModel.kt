@@ -22,13 +22,13 @@ class SomDetailViewModel @Inject constructor(
         dispatcher: SomDispatcherProvider,
         userSession: UserSessionInterface,
         private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
-        private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
+        somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val somReasonRejectUseCase: SomReasonRejectUseCase,
-        private val somRejectOrderUseCase: SomRejectOrderUseCase,
-        private val somEditRefNumUseCase: SomEditRefNumUseCase,
+        somRejectOrderUseCase: SomRejectOrderUseCase,
+        somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
-        private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
+        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
 ) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
