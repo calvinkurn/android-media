@@ -87,7 +87,12 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
 
         fun bind(data: ServicesItemModel) {
             itemShippingText.text = data.servicesName
-            itemShippingPrice.text = data.texts?.textRangePrice
+            if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                itemShippingPrice.text = data.texts?.textRangePrice
+                itemShippingPrice.visible()
+            } else {
+                itemShippingPrice.gone()
+            }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
                     itemShippingDesc.visible()
