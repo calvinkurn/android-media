@@ -65,8 +65,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_installment_error_action) }
 
-    private var bottomPaymentIv = -1
-
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
         showPreference()
