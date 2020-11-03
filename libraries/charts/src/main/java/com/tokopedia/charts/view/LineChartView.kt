@@ -10,6 +10,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.LineChartConfig
@@ -49,9 +51,18 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             setupXAxis()
             setupYAxis()
 
-            setDrawMarkers(config.isTooltipEnabled)
+            setDrawMarkers(false)
             setScaleEnabled(config.isScaleXEnabled)
             setPinchZoom(config.isPitchZoomEnabled)
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onNothingSelected() {
+
+                }
+
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    this@with.setDrawMarkers(config.isTooltipEnabled)
+                }
+            })
         }
 
         setChartAnimation()
@@ -86,6 +97,9 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             //setup chart line
             lineWidth = data.config.lineWidth
             color = data.config.lineColor
+            if (data.config.isLineDashed) {
+                enableDashedLine(20f, 10f, 0f)
+            }
 
             //setup chart fill color
             setDrawFilled(data.config.drawFillEnabled)
