@@ -35,6 +35,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollanceConst
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.util.*
@@ -50,6 +51,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -85,6 +87,7 @@ open class HomeViewModel @Inject constructor(
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
         private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
         private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
+        private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
         private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
         private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
         private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
@@ -111,11 +114,14 @@ open class HomeViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
+        const val DRAWER_TYPE_REWARD = "reward"
+        const val DRAWER_TYPE_BBO = "BBO"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
+    var navRollanceType: String = ""
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
@@ -237,6 +243,9 @@ open class HomeViewModel @Inject constructor(
     private var homeToken = ""
 
     init {
+        navRollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                HomeRollanceConst.Navigation.EXP_NAME, HomeRollanceConst.Navigation.VARIANT_OLD
+        )
         _isViewModelInitialized.value = Event(true)
         initFlow()
     }
@@ -298,6 +307,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
+                                      tokopointsBBODrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
                                       cashBackData: CashBackData? = null,
                                       isPendingTokocashChecked: Boolean? = null,
@@ -312,6 +322,9 @@ open class HomeViewModel @Inject constructor(
         headerDataModel?.let {
             tokopointsDrawer?.let {
                 headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
+            }
+            tokopointsBBODrawer?.let {
+                headerDataModel = headerDataModel?.copy(tokopointsDrawerBBOHomeData = it)
             }
             homeHeaderWalletAction?.let {
                 headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
@@ -563,6 +576,7 @@ open class HomeViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         updateHeaderViewModel(
                 tokopointsDrawer = null,
+                tokopointsBBODrawer = null,
                 isTokoPointDataError = false
         )
         getTokopoint()
@@ -1262,20 +1276,39 @@ open class HomeViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-
-        getTokopointJob = launchCatchError(coroutineContext, block = {
-            getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-            val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-            updateHeaderViewModel(
-                    tokopointsDrawer = data.tokopointsDrawer,
-                    isTokoPointDataError = false
-            )
-        }){
-            updateHeaderViewModel(
-                    tokopointsDrawer = null,
-                    isTokoPointDataError = true
-            )
+        getTokopointJob = if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
+            launchCatchError(coroutineContext, block = {
+                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+                updateHeaderViewModel(
+                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.firstOrNull() { it.type.equals(DRAWER_TYPE_REWARD)},
+                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.firstOrNull() { it.type.equals(DRAWER_TYPE_BBO)},
+                        isTokoPointDataError = false
+                )
+            }){
+                updateHeaderViewModel(
+                        tokopointsDrawer = null,
+                        isTokoPointDataError = true
+                )
+            }
+        } else {
+            launchCatchError(coroutineContext, block = {
+                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
+                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
+                updateHeaderViewModel(
+                        tokopointsDrawer = data.tokopointsDrawer,
+                        isTokoPointDataError = false
+                )
+            }) {
+                updateHeaderViewModel(
+                        tokopointsDrawer = null,
+                        isTokoPointDataError = true
+                )
+            }
         }
+    }
+
+    private fun getTokopointListData(){
+
     }
 
     fun injectCouponTimeBased() {

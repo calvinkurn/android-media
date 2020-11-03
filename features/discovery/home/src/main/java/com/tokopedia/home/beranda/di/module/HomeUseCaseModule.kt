@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
@@ -142,6 +143,29 @@ class HomeUseCaseModule {
             "                text\n" +
             "                backgroundColor\n" +
             "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}"
+
+    val tokopointsListQuery: String = "query{\n" +
+            "    tokopointsDrawerList{\n" +
+            "        offFlag\n" +
+            "        drawerList{" +
+            "           iconImageURL\n" +
+            "           redirectURL\n" +
+            "           redirectAppLink\n" +
+            "           sectionContent{\n" +
+            "               type\n" +
+            "               textAttributes{\n" +
+            "                    text\n" +
+            "                 color\n" +
+            "                 isBold\n" +
+            "               }\n" +
+            "               tagAttributes{\n" +
+            "                   text\n" +
+            "                   backgroundColor\n" +
+            "               }\n" +
+            "           }\n" +
             "        }\n" +
             "    }\n" +
             "}"
@@ -446,6 +470,14 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerHomeData>(graphqlRepository)
         useCase.setGraphqlQuery(tokopointsQuery)
         return GetHomeTokopointsDataUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(tokopointsQuery)
+        return GetHomeTokopointsListDataUseCase(useCase)
     }
 
     @Provides

@@ -16,6 +16,7 @@ data class HeaderDataModel(
       val homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
       val tokoPointDrawerData: TokopointHomeDrawerData? = null,
       val tokopointsDrawerHomeData: TokopointsDrawer? = null,
+      val tokopointsDrawerBBOHomeData: TokopointsDrawer? = null,
       val cashBackData: CashBackData? = null,
       var isPendingTokocashChecked: Boolean = false,
       val isWalletDataError: Boolean = false,
