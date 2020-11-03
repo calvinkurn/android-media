@@ -198,7 +198,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
     private fun goToReviewDetails(reputationId: Int, feedbackId: Int) {
         RouteManager.route(context,
                 Uri.parse(
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, reputationId.toString()))
+                        UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, reputationId.toString()))
                         .buildUpon()
                         .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId.toString()).toString()
         )
