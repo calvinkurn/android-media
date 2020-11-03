@@ -25,15 +25,19 @@ import java.lang.ref.WeakReference
 internal open class BannerView(activity: Activity) {
 
     private val mActivity = WeakReference<Activity>(activity)
-    private val alertDialog = AlertDialog.Builder(mActivity.get())
+    private val listener by lazy { CMInAppManager.getCmInAppListener() }
+    private val analytics by lazy { InAppAnalytics }
 
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
 
-    private val listener by lazy { CMInAppManager.getCmInAppListener() }
+    private val alertDialog = AlertDialog.Builder(
+            mActivity.get(),
+            R.style.InterstitialDialogStyle
+    )
+
     private val dialog by lazy { alertDialog.create() }
-    private val analytics by lazy { InAppAnalytics }
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
