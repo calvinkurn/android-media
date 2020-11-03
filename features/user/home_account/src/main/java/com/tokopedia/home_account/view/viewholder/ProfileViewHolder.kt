@@ -1,8 +1,6 @@
 package com.tokopedia.home_account.view.viewholder
 
-import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -28,7 +26,6 @@ import kotlinx.android.synthetic.main.home_account_member.view.*
 
 class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
 
-
     fun bind(profile: ProfileDataView) {
         with(itemView) {
             account_user_item_profile_name?.text = profile.name
@@ -36,17 +33,12 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
 
-            if(profile.backdrop.isNotEmpty()){
-//                ImageHandler.loadBackgroundImage(account_user_item_profile_backdrop, profile.backdrop)
-            }
             loadImage(account_user_item_profile_avatar, profile.avatar)
 
             setupMemberAdapter(itemView, profile)
             setupFinancialAdapter(itemView, profile)
 
-//            val params: ViewGroup.LayoutParams = account_user_item_profile_backdrop.layoutParams
-//            params.height = params.height - (home_account_member_card.height/2)
-//            account_user_item_profile_backdrop.layoutParams = params
+            listener.onItemViewBinded(adapterPosition, itemView)
         }
     }
 
@@ -87,9 +79,4 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     companion object {
         val LAYOUT = R.layout.home_account_item_profile
     }
-
-    interface CardRuntimeHeightListener {
-        fun setCardLayoutHeight(height: Int)
-    }
-
 }
