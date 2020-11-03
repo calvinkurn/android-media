@@ -259,9 +259,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         initRecyclerView(view)
         initBtnAction()
         initToolbar()
-        stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
+        initStickyLogin(view)
         renderInitialAffiliate()
-
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
@@ -2107,7 +2106,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
     }
 
-    private fun initStickyLogin() {
+    private fun initStickyLogin(view: View) {
+        stickyLoginView = view.findViewById(R.id.sticky_login_pdp)
         updateStickyState()
         updateActionButtonShadow()
         stickyLoginView?.setOnClickListener {
@@ -2166,7 +2166,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             stickyLoginView?.hide()
         } else {
             this.tickerDetail = stickyData
-            initStickyLogin()
+            updateStickyState()
+            updateActionButtonShadow()
         }
     }
 
