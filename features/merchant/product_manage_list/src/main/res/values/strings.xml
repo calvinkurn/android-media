@@ -123,7 +123,6 @@
     <string name="product_manage_variant">Varian</string>
     <string name="product_manage_banned">Pelanggaran</string>
     <string name="product_manage_draft">Draf</string>
-    <string name="product_manage_inactive">Nonaktif</string>
     <string name="product_manage_campaign">Campaign</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
@@ -211,7 +210,6 @@
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
     <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
     <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
-    <string name="product_manage_save">Simpan</string>
     <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
@@ -232,8 +230,6 @@
     <string name="product_manage_close">>Tutup</string>
     <string name="product_manage_more_menu">Lainnya</string>
     <string name="product_manage_shop_showcase_more_menu_text">Etalase Toko</string>
-    <string name="power_merchant_variant_stock_description">Varian ini tidak bisa dilihat calon pembeli karena stok 0.</string>
-    <string name="power_merchant_stock_warning_ticker_description">Produk ini tidak bisa dilihat calon pembeli karena stok 0.</string>
 
     <string name="product_manage_campaign_stock_total_stock">Total Stok: &#160;</string>
     <string name="product_manage_campaign_stock_allocation">Alokasi Stok</string>
@@ -290,9 +286,6 @@
     <string name="content_desc_textMultipleSelect">text pilih sekaligus</string>
     <string name="content_desc_quickEditPriceTextField">input harga</string>
     <string name="content_desc_quickEditPriceSaveButton">button simpan harga</string>
-    <string name="content_desc_quickEditStockActivateSwitch">button switch status produk</string>
-    <string name="content_desc_quickEditStockQuantityEditor">input stok</string>
-    <string name="content_desc_quickEditStockSaveButton">button simpan stok</string>
     <string name="content_desc_checkBoxSelect">checkbox produk</string>
     <string name="content_desc_btnMultiEdit">button atur sekaligus</string>
 </resources>
