@@ -20,7 +20,7 @@ import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteDataModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
@@ -29,12 +29,12 @@ import java.util.*
 import javax.inject.Inject
 
 
-class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, ShopNoteReorderFactory>(), ShopSettingNoteListReorderPresenter.View, OnStartDragListener {
+class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteDataModel, ShopNoteReorderFactory>(), ShopSettingNoteListReorderPresenter.View, OnStartDragListener {
 
     @Inject
     lateinit var shopSettingNoteListReorderPresenter: ShopSettingNoteListReorderPresenter
-    private var shopNoteModels: ArrayList<ShopNoteViewModel>? = null
-    private var shopNoteModelsWithoutTerms: List<ShopNoteViewModel>? = null
+    private var shopNoteModels: ArrayList<ShopNoteDataModel>? = null
+    private var shopNoteModelsWithoutTerms: List<ShopNoteDataModel>? = null
     private var progressDialog: ProgressDialog? = null
     private var recyclerView: RecyclerView? = null
     private var recyclerViewTerms: RecyclerView? = null
@@ -56,7 +56,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         shopSettingNoteListReorderPresenter.attachView(this)
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<ShopNoteViewModel, ShopNoteReorderFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<ShopNoteDataModel, ShopNoteReorderFactory> {
         adapter = ShopNoteReorderAdapter(adapterTypeFactory)
         return adapter as ShopNoteReorderAdapter
     }
@@ -92,7 +92,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
     }
 
     override fun loadData(page: Int) {
-        val shopNoteModelsTerms = ArrayList<ShopNoteViewModel>()
+        val shopNoteModelsTerms = ArrayList<ShopNoteDataModel>()
         if (shopNoteModels != null && shopNoteModels!!.size > 0) {
             if (shopNoteModels!![0].terms) {
                 shopNoteModelsWithoutTerms = shopNoteModels!!.subList(1, shopNoteModels!!.size)
@@ -170,7 +170,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         shopSettingNoteListReorderPresenter.detachView()
     }
 
-    override fun onItemClicked(shopNoteViewModel: ShopNoteViewModel) {
+    override fun onItemClicked(shopNoteDataModel: ShopNoteDataModel) {
         // no-op
     }
 
@@ -189,10 +189,10 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
         val EXTRA_NOTE_LIST = "note_list"
 
         @JvmStatic
-        fun newInstance(shopNoteViewModels: ArrayList<ShopNoteViewModel>): ShopSettingsNotesReorderFragment {
+        fun newInstance(shopNoteDataModels: ArrayList<ShopNoteDataModel>): ShopSettingsNotesReorderFragment {
 
             val args = Bundle()
-            args.putParcelableArrayList(EXTRA_NOTE_LIST, shopNoteViewModels)
+            args.putParcelableArrayList(EXTRA_NOTE_LIST, shopNoteDataModels)
             val fragment = ShopSettingsNotesReorderFragment()
             fragment.arguments = args
             return fragment

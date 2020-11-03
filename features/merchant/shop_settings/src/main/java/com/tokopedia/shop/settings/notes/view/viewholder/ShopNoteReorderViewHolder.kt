@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteDataModel
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopNoteReorderViewHolder(itemView: View,
-                                private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteViewModel>(itemView) {
+                                private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteDataModel>(itemView) {
 
     private val tvNoteName: TextView
     private val tvLastUpdate: TextView
@@ -27,11 +27,11 @@ class ShopNoteReorderViewHolder(itemView: View,
         handler = itemView.findViewById(R.id.ivReorder)
     }
 
-    override fun bind(shopNoteViewModel: ShopNoteViewModel) {
-        tvNoteName.text = shopNoteViewModel.title
-        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTimeUTC)
+    override fun bind(shopNoteDataModel: ShopNoteDataModel) {
+        tvNoteName.text = shopNoteDataModel.title
+        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteDataModel.updateTimeUTC)
 
-        if (shopNoteViewModel.terms) {
+        if (shopNoteDataModel.terms) {
             handler.visibility = View.GONE
         } else {
             handler.setOnTouchListener { _, event ->

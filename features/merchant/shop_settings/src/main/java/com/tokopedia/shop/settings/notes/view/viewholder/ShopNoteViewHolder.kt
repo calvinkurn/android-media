@@ -8,13 +8,13 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteDataModel
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopNoteViewHolder(itemView: View,
-                         private val onOnShopNoteViewHolderListener: OnShopNoteViewHolderListener?) : AbstractViewHolder<ShopNoteViewModel>(itemView) {
+                         private val onOnShopNoteViewHolderListener: OnShopNoteViewHolderListener?) : AbstractViewHolder<ShopNoteDataModel>(itemView) {
 
     private val ivMenuMore: View
     private val tvNoteName: TextView
@@ -29,14 +29,14 @@ class ShopNoteViewHolder(itemView: View,
     }
 
     interface OnShopNoteViewHolderListener {
-        fun onIconMoreClicked(shopNoteViewModel: ShopNoteViewModel)
+        fun onIconMoreClicked(shopNoteDataModel: ShopNoteDataModel)
     }
 
-    override fun bind(shopNoteViewModel: ShopNoteViewModel) {
-        tvNoteName.text = shopNoteViewModel.title!!
-        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTimeUTC)
+    override fun bind(shopNoteDataModel: ShopNoteDataModel) {
+        tvNoteName.text = shopNoteDataModel.title!!
+        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteDataModel.updateTimeUTC)
         ivMenuMore.setOnClickListener {
-            onOnShopNoteViewHolderListener?.onIconMoreClicked(shopNoteViewModel)
+            onOnShopNoteViewHolderListener?.onIconMoreClicked(shopNoteDataModel)
         }
     }
 
