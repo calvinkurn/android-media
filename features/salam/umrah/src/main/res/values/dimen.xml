@@ -10,7 +10,9 @@
     <dimen name="dimen_dp_180">180dp</dimen>
     <dimen name="dimen_dp_160">160dp</dimen>
     <dimen name="dimen_dp_200">200dp</dimen>
+    <dimen name="dimen_dp_220">220dp</dimen>
     <dimen name="dimen_dp_250">250dp</dimen>
     <dimen name="dimen_dp_260">260dp</dimen>
     <dimen name="dimen_dp_270">270dp</dimen>
+    <dimen name="dimen_dp_300">300dp</dimen>
 </resources>
