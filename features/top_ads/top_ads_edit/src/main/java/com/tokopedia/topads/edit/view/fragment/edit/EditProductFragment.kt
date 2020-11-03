@@ -7,10 +7,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
@@ -34,9 +38,12 @@ import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
 import javax.inject.Inject
 
+private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
+
 class EditProductFragment : BaseDaggerFragment() {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditProductListAdapter
@@ -44,6 +51,12 @@ class EditProductFragment : BaseDaggerFragment() {
     private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var btnState = true
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var totalCount = 0
+    private var totalPage = 0
+    private var currentPageNum = 1
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -72,7 +85,34 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit), container, false)
+
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit), container, false)
+        recyclerView = view.findViewById(R.id.product_list)
+        setAdapter()
+        return view
+    }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (currentPageNum < totalPage) {
+                    currentPageNum++
+                    fetchNextPage(currentPageNum)
+                }
+            }
+        }
+    }
+
+    private fun fetchNextPage(page: Int) {
+        viewModel.getAds(page, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,11 +122,20 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val groupId = arguments?.getString(GROUP_ID)
-        viewModel.getAds(groupId?.toInt(), this::onSuccessGetAds)
+        fetchData()
     }
 
-    private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>) {
+    private fun fetchData() {
+        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
+    }
+
+    private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) {
+        totalCount = total
+        totalPage = if (totalCount % perPage == 0) {
+            totalCount / perPage
+        } else
+            (totalCount / perPage) + 1
+        recyclerviewScrollListener.updateStateAfterGetData()
         if (data.isEmpty()) {
             onEmptyAds()
         } else {
@@ -99,7 +148,6 @@ class EditProductFragment : BaseDaggerFragment() {
             updateItemCount()
             sharedViewModel.setProductIds(getProductIds())
         }
-
     }
 
     private fun getProductIds(): MutableList<String> {
@@ -120,19 +168,20 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
         add_product.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
             intent.putIntegerArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
             startActivityForResult(intent, 1)
         }
-        product_list.adapter = adapter
-        product_list.layoutManager = LinearLayoutManager(context)
     }
 
     private fun onProductListDeleted(pos: Int) {
         deletedProducts.add((adapter.items[pos] as EditProductItemViewModel).data)
         adapter.items.removeAt(pos)
         adapter.notifyDataSetChanged()
+        totalCount -= 1
         updateItemCount()
         if (adapter.items.isEmpty()) {
             adapter.items.add(EditProductEmptyViewModel())
@@ -145,16 +194,15 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        product_count.text = String.format(getString(R.string.product_count), adapter.items.size)
-
+        product_count.text = String.format(getString(R.string.product_count), totalCount)
     }
 
     private fun setVisibilityOperation(visiblity: Int) {
         btnState = visiblity == View.VISIBLE
         buttonStateCallback?.setButtonState()
-            product_count.visibility = visiblity
-            add_product.visibility = visiblity
-            add_image.visibility = visiblity
+        product_count.visibility = visiblity
+        add_product.visibility = visiblity
+        add_image.visibility = visiblity
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,7 +211,6 @@ class EditProductFragment : BaseDaggerFragment() {
             if (resultCode == Activity.RESULT_OK) {
                 createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getIntegerArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
                 sharedViewModel.setProductIds(getProductIds())
-
             }
         }
     }
@@ -171,7 +218,7 @@ class EditProductFragment : BaseDaggerFragment() {
     private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
         if (adapter.items.isNotEmpty() && adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
-        product?.forEachIndexed {ind,it ->
+        product?.forEachIndexed { ind, it ->
             val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
             adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
             if (!existsOriginal(it)) {
@@ -179,15 +226,14 @@ class EditProductFragment : BaseDaggerFragment() {
             }
         }
         adapter.notifyDataSetChanged()
+        totalCount += product?.size ?: 0
         updateItemCount()
         btnState = true
         buttonStateCallback?.setButtonState()
-
     }
 
     private fun existsOriginal(id: Int): Boolean {
         return originalIdList.find { id == it } != null
-
     }
 
     fun getButtonState(): Boolean {
@@ -216,7 +262,7 @@ class EditProductFragment : BaseDaggerFragment() {
     private fun filterAddedProducts() {
         /// for the products which are added and removed
         val iterator = addedProducts.iterator()
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             val key = iterator.next()
             deletedProducts.forEach { deleted ->
                 if (key.itemID == deleted.itemID) {

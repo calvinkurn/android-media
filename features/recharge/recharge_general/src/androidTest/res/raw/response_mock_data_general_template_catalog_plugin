@@ -1,0 +1,26 @@
+[
+  {
+    "data": {
+      "rechargeCatalogPlugin": {
+        "add_to_mybills": {
+          "is_enabled": false,
+          "attributes": {
+            "client_numbers": []
+          }
+        },
+        "instant_checkout": {
+          "is_enabled": true,
+          "attributes": {
+            "text": ""
+          }
+        },
+        "buy_button": {
+          "is_enabled": true,
+          "attributes": {
+            "text": "Bayar"
+          }
+        }
+      }
+    }
+  }
+]

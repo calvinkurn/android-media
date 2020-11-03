@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -106,7 +106,7 @@ class DynamicChannelMixLeftViewHolder(
     private fun setupBackground(channel: Channel) {
         channel.banner?.let{ banner ->
             setGradientBackground(bannerBackground, banner.gradientColor)
-            image.loadImage(banner.imageUrl)
+            image.loadImageWithoutPlaceholder(banner.imageUrl)
             image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(channel, 1) }
         }
     }

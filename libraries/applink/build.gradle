@@ -30,8 +30,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.devMonitoringTools)
 
     testImplementation rootProject.ext.testDependencies.mockk
-
-    implementation (rootProject.ext.serviceDependencies.crashlytics)
+    testImplementation rootProject.ext.testDependencies.robolectric
+    testImplementation rootProject.ext.testDependencies.testCore
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

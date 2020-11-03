@@ -85,7 +85,6 @@ object ViewUtil {
             paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
             shape = RoundRectShape(outerRadius, null, null)
         }
-        view.setLayerType(LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
         val drawableLayer = arrayListOf<Drawable>(shapeDrawable)
         if (strokeColorValue != null && strokeWidthValue != null) {
             val strokeDrawable = ShapeDrawable().apply {

@@ -72,7 +72,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(com.tokopedia.baselist.R.id.swipe_refresh_layout);
+        return view.findViewById(R.id.swipe_refresh_layout);
     }
 
     @Override
