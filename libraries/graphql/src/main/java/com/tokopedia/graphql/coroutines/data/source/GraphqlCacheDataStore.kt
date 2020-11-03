@@ -12,27 +12,25 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GraphqlCacheDataStore @Inject constructor(private val mCacheManager: GraphqlCacheManager,
-                                                private val mFingerprintManager: FingerprintManager): GraphqlDataStore {
+                                                private val mFingerprintManager: FingerprintManager) : GraphqlDataStore {
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
-        return withContext(Dispatchers.IO){
-            if(cacheStrategy.type == CacheType.CACHE_FIRST) {
-                val indexOfEmptyCached = ArrayList<Int>()
-                val listOfCached = ArrayList<String>()
-                requests.forEachIndexed { index, graphqlRequest ->
-                    val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(graphqlRequest.toString(),
-                            cacheStrategy.isSessionIncluded))
-                    if (rawJson.isNullOrEmpty()) {
-                        indexOfEmptyCached.add(index)
-                    } else {
-                        listOfCached.add(rawJson)
-                    }
-                }
-                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, indexOfEmptyCached)
-            }else{
-                val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(),
+        return withContext(Dispatchers.IO) {
+            val indexOfEmptyCached = ArrayList<Int>()
+            val listOfCached = ArrayList<String>()
+            requests.forEachIndexed { index, graphqlRequest ->
+                val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(graphqlRequest.toString(),
                         cacheStrategy.isSessionIncluded))
-                GraphqlResponseInternal(JsonParser().parse(rawJson).asJsonArray, true)
+                if (rawJson.isNullOrEmpty()) {
+                    indexOfEmptyCached.add(index)
+                } else {
+                    listOfCached.add(rawJson)
+                }
+            }
+            if (cacheStrategy.type == CacheType.CACHE_FIRST) {
+                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, indexOfEmptyCached)
+            } else {
+                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, true)
             }
         }
     }

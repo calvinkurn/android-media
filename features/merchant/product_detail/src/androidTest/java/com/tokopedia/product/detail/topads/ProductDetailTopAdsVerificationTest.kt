@@ -40,7 +40,7 @@ class ProductDetailTopAdsVerificationTest {
 
         override fun getActivityIntent(): Intent {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            return ProductDetailActivity.createIntent(context, "220891000")
+            return ProductDetailActivity.createIntent(context, "1061061424")
         }
     }
 
@@ -87,7 +87,7 @@ class ProductDetailTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(7000)
+        Thread.sleep(15000)
     }
 
     private fun login() {
