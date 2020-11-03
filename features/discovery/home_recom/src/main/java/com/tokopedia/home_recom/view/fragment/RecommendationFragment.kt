@@ -158,6 +158,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         this.menu = menu
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
