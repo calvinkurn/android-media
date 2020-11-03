@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifcenter.R
@@ -82,6 +83,12 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
     private fun initViewConfig() {
         clearContentPadding = true
+        isHideable = true
+        isDragable = true
+        setShowListener {
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet.skipCollapsed = true
+        }
     }
 
     companion object {
