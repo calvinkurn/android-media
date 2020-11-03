@@ -47,6 +47,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     override fun getLayoutRes(): Int = com.tokopedia.home_recom.R.layout.recommendation_activity
 
+    override fun getToolbarResourceID(): Int = com.tokopedia.home_recom.R.id.recom_toolbar
+
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
      * @return default fragment it will shown at activity
