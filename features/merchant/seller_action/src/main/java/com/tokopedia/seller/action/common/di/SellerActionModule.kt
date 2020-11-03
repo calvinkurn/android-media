@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.seller.action.common.analytics.SellerActionAnalytics
+import com.tokopedia.seller.action.common.analytics.SellerActionAnalyticsImpl
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcher
 import com.tokopedia.seller.action.common.dispatcher.SellerActionDispatcherProvider
 import com.tokopedia.seller.action.common.presentation.presenter.SellerActionPresenter
@@ -35,6 +37,10 @@ class SellerActionModule {
     @SellerActionScope
     @Provides
     fun provideFirebaseRemoteConfigImpl(@ApplicationContext context: Context): FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(context)
+
+    @SellerActionScope
+    @Provides
+    fun provideSellerActionAnalytics(userSession: UserSessionInterface): SellerActionAnalytics = SellerActionAnalyticsImpl(userSession)
 
     @SellerActionScope
     @Provides

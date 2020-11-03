@@ -1,6 +1,7 @@
 package com.tokopedia.seller.action.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.seller.action.SellerActionActivity
 import com.tokopedia.seller.action.SellerActionSliceProvider
 import dagger.Component
 
@@ -11,5 +12,6 @@ import dagger.Component
 interface SellerActionComponent {
 
     fun inject(sellerActionSliceProvider: SellerActionSliceProvider)
+    fun inject(sellerActionActivity: SellerActionActivity)
 
 }

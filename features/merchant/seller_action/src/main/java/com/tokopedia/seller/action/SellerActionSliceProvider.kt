@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.action.common.analytics.SellerActionAnalytics
 import com.tokopedia.seller.action.common.const.SellerActionConst
 import com.tokopedia.seller.action.common.di.DaggerSellerActionComponent
 import com.tokopedia.seller.action.common.interfaces.SellerActionContract
@@ -36,6 +37,9 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
 
     @Inject
     lateinit var presenter: SellerActionPresenter
+
+    @Inject
+    lateinit var analytics: SellerActionAnalytics
 
     private var mainOrderStatus: SellerActionStatus? = null
     private var isLoading: Boolean = false
@@ -83,6 +87,7 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
                 }
             } else {
                 mainOrderStatus = SellerActionStatus.NotLogin
+                sendTrackingByStatus()
             }
             return createNewSlice(sliceUri, isLoading)?.getSlice()
         } else {
@@ -117,8 +122,10 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
                 val date = sliceUri.getDateFromOrderUri()
                 SellerOrderMapper(notNullContext, sliceUri, date).run {
                     if (isLoading) {
+                        analytics.sendSellerActionImpression(SellerActionStatus.Loading)
                         mainOrderStatus = SellerActionStatus.Loading
                     }
+                    sendTrackingByStatus()
                     getSlice(mainOrderStatus).also {
                         if (mainOrderStatus is SellerActionStatus.Success || mainOrderStatus is SellerActionStatus.Fail) {
                             mainOrderStatus = null
@@ -128,6 +135,7 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
                 }
             }
             else -> {
+                sendTrackingByStatus()
                 mainOrderStatus = null
                 SellerFailureSlice(notNullContext, sliceUri).also {
                     sliceHashMap[sliceUri] = it
@@ -145,6 +153,12 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
             orderDate?.split(SellerActionConst.DATE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }.let { delimitedDate ->
                 return delimitedDate?.split(SellerActionConst.DATE_RANGE_DELIMITER)?.first()?.takeIf { it.isNotEmpty() }
             }
+        }
+    }
+
+    private fun sendTrackingByStatus() {
+        mainOrderStatus?.let { status ->
+            analytics.sendSellerActionImpression(status)
         }
     }
 
