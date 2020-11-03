@@ -24,6 +24,9 @@ public class ServiceTextData implements Parcelable {
     @SerializedName("text_eta_summarize")
     @Expose
     private String textEtaSummarize;
+    @SerializedName("error_code")
+    @Expose
+    private int errorCode;
 
     public ServiceTextData() {
     }
@@ -88,5 +91,13 @@ public class ServiceTextData implements Parcelable {
 
     public void setTextEtaSummarize(String textEtaSummarize) {
         this.textEtaSummarize = textEtaSummarize;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
     }
 }

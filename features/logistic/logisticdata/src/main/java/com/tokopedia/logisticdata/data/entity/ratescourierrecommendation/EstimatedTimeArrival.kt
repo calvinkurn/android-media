@@ -4,5 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class EstimatedTimeArrival(
         @SerializedName("text_eta")
-        val textEta: String = ""
+        val textEta: String = "",
+        @SerializedName("error_code")
+        val errorCode: Int = -1
 )

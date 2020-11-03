@@ -1,5 +1,5 @@
-query RatesV3Api($param: OngkirRatesV3Input!) {
-  ratesV3Api(input: $param) {
+query RatesV3($param: OngkirRatesV3Input!) {
+  ratesV3(input: $param) {
     ratesv3 {
       id
       rates_id
@@ -28,6 +28,7 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
           text_notes
           text_service_desc
           text_eta_summarize
+          error_code
         }
         order_priority {
           is_now
@@ -108,6 +109,7 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
           }
           eta {
             text_eta
+            error_code
           }
         }
       }

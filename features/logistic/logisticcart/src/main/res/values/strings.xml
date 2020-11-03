@@ -31,4 +31,5 @@
     <string name="content_img_check">image check</string>
     <string name="content_desc_tv_duration">text durasi</string>
     <string name="content_desc_tv_courier">text kurir</string>
+    <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
 </resources>

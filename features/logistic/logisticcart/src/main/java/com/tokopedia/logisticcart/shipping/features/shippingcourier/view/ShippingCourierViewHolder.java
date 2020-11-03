@@ -100,9 +100,12 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                 itemView.setOnClickListener(null);
             }
         } else {
-            if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null) {
+            if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0 && !shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
-            } else {
+            } else if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0 && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
+                tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
+            }
+            else {
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
             }
             tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));

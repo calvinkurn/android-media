@@ -194,7 +194,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelSelectedShippingDuration;
     private ImageView iconChevronChooseDuration;
     private Typography labelSelectedShippingCourier;
-    private Typography labelSelectedShippingPrice;
+    private Typography labelSelectedShippingPriceorDuration;
     private Typography labelDescCourier;
     private Typography labelDescCourierTnc;
     private ImageView iconChevronChooseCourier;
@@ -312,7 +312,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelSelectedShippingDuration = itemView.findViewById(R.id.label_selected_shipping_duration);
         iconChevronChooseDuration = itemView.findViewById(R.id.icon_chevron_choose_duration);
         labelSelectedShippingCourier = itemView.findViewById(R.id.label_selected_shipping_courier);
-        labelSelectedShippingPrice = itemView.findViewById(R.id.label_selected_shipping_price);
+        labelSelectedShippingPriceorDuration = itemView.findViewById(R.id.label_selected_shipping_price_or_duration);
         labelDescCourier = itemView.findViewById(R.id.label_description_courier);
         labelDescCourierTnc = itemView.findViewById(R.id.label_description_courier_tnc);
         iconChevronChooseCourier = itemView.findViewById(R.id.icon_chevron_choose_courier);
@@ -710,11 +710,26 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                 );
 
-                labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
-                labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShipperPrice(), false
-                )));
-                labelSelectedShippingPrice.setOnClickListener(
+                String courierName = selectedCourierItemData.getName() + " (" +
+                        Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                selectedCourierItemData.getShipperPrice(), false
+                        )) + ")";
+
+                if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
+                    labelSelectedShippingCourier.setText(courierName);
+                    labelSelectedShippingPriceorDuration.setText(selectedCourierItemData.getEtaText());
+                } else if (selectedCourierItemData.getEtaErrorCode() == 0 && selectedCourierItemData.getEtaText().isEmpty()) {
+                    labelSelectedShippingCourier.setText(courierName);
+                    labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
+                }
+                else {
+                    labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
+                    labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            selectedCourierItemData.getShipperPrice(), false
+                    )));
+                }
+
+                labelSelectedShippingPriceorDuration.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 labelSelectedShippingCourier.setOnClickListener(

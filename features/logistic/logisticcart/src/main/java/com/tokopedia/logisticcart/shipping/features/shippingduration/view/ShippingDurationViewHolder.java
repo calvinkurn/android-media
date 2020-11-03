@@ -103,12 +103,22 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
 
             /*put eta here*/
-            if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
-                String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + "-" +
-                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
-                String shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
+            if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
+                String shipperNameEta = "";
+                if (shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice() == shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice()) {
+                    shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" +
+                            Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + ")";;
+                } else {
+                    String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + " - " +
+                            Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
+                    shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
+                }
+                if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
+                    tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
+                } else {
+                    tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
+                }
                 TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
-                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
                 tvPriceOrDuration.setVisibility(View.VISIBLE);
             } else {
                 TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
