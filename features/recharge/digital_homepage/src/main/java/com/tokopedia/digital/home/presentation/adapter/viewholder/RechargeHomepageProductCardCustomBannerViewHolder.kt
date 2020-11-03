@@ -14,8 +14,8 @@ import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeCustomBannerProductCardAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner.view.*
 import kotlin.math.abs
 
@@ -38,10 +38,10 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
     override fun bind(element: RechargeProductCardCustomBannerModel) {
         val section = element.section
         if (section.items.isNotEmpty()) {
-            showItemView()
-            setUpBackground(section)
             setUpList(section)
+            setUpBackground(section)
             setSnapEffect()
+            showItemView()
             itemView.addOnImpressionListener(section) {
                 listener.onRechargeSectionItemImpression(section)
             }

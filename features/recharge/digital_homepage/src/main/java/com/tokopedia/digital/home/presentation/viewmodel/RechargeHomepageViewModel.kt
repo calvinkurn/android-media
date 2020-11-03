@@ -47,10 +47,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections.toMutableList()
-
-            //NEED TO BE DELETEEEEE
-            data.add(RechargeHomepageSectionSkeleton.Item(id = 64, template = "PRODUCT_CARD_CUSTOM_BANNER"))
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response.sections
 
             // Add initial section data
             localRechargeHomepageSections = RechargeHomepageSectionMapper.mapInitialHomepageSections(data)
