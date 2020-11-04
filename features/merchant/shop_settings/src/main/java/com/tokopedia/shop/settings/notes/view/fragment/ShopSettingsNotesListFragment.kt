@@ -22,7 +22,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.notes.data.ShopNoteDataModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
@@ -32,7 +32,7 @@ import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 
-class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
+class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
@@ -44,7 +44,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
 
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
-    private var shopNoteModels: ArrayList<ShopNoteDataModel>? = null
+    private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
     private var progressDialog: ProgressDialog? = null
     private var shopNoteIdToDelete: String? = null
@@ -53,7 +53,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
     private var onShopSettingsNoteFragmentListener: OnShopSettingsNoteFragmentListener? = null
 
     interface OnShopSettingsNoteFragmentListener {
-        fun goToReorderFragment(shopNoteDataModels: ArrayList<ShopNoteDataModel>)
+        fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>)
     }
 
     override fun initInjector() {
@@ -85,9 +85,9 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
         }
     }
 
-    private fun getNonTermsCount(shopNoteDataModels: List<ShopNoteDataModel>): Int {
+    private fun getNonTermsCount(shopNoteUiModels: List<ShopNoteUiModel>): Int {
         var count = 0
-        for (shopNoteViewModel in shopNoteDataModels) {
+        for (shopNoteViewModel in shopNoteUiModels) {
             if (!shopNoteViewModel.terms) {
                 count++
             }
@@ -146,18 +146,18 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
         shopSettingNoteListPresenter.getShopNotes()
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<ShopNoteDataModel, ShopNoteFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<ShopNoteUiModel, ShopNoteFactory> {
         shopNoteAdapter = ShopNoteAdapter(adapterTypeFactory, this)
         return shopNoteAdapter as ShopNoteAdapter
     }
 
-    override fun onItemClicked(shopNoteDataModel: ShopNoteDataModel) {
+    override fun onItemClicked(shopNoteUiModel: ShopNoteUiModel) {
         //no-op
     }
 
-    private fun goToEditNote(shopNoteDataModel: ShopNoteDataModel) {
+    private fun goToEditNote(shopNoteUiModel: ShopNoteUiModel) {
         val intent = ShopSettingNotesAddEditActivity.createIntent(context!!,
-                shopNoteDataModel.terms, true, shopNoteDataModel)
+                shopNoteUiModel.terms, true, shopNoteUiModel)
         startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE)
     }
 
@@ -178,7 +178,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
             }
         }
         val intent = ShopSettingNotesAddEditActivity.createIntent(context!!,
-                isTerms, false, ShopNoteDataModel())
+                isTerms, false, ShopNoteUiModel())
         startActivityForResult(intent, REQUEST_CODE_ADD_NOTE)
     }
 
@@ -186,23 +186,23 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
         return ShopNoteFactory(this)
     }
 
-    override fun onIconMoreClicked(shopNoteDataModel: ShopNoteDataModel) {
+    override fun onIconMoreClicked(shopNoteUiModel: ShopNoteUiModel) {
         val menus = Menus(context!!)
         menus.setItemMenuList(resources.getStringArray(R.array.shop_note_menu_more))
         menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { _, pos ->
             if (pos == 0) {
-                goToEditNote(shopNoteDataModel)
+                goToEditNote(shopNoteUiModel)
             } else {
                 activity?.let { it ->
                     Dialog(it, Dialog.Type.PROMINANCE).apply {
                         setTitle(getString(R.string.title_dialog_delete_shop_note))
-                        setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteDataModel.title))
+                        setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteUiModel.title))
                         setBtnOk(getString(R.string.action_delete))
                         setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
                         setOnOkClickListener {
-                            shopNoteIdToDelete = shopNoteDataModel.id
+                            shopNoteIdToDelete = shopNoteUiModel.id
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
                             dismiss()
@@ -217,7 +217,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteDataModel, ShopNo
         menus.show()
     }
 
-    override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteDataModel>) {
+    override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteUiModel>) {
         this.shopNoteModels = shopNoteModels
         renderList(shopNoteModels, false)
         activity!!.invalidateOptionsMenu()
