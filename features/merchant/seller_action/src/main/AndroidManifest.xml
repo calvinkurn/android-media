@@ -19,7 +19,7 @@
         </activity>
         <provider
             android:authorities="com.tokopedia.seller.util.slices"
-            android:name="com.tokopedia.seller.util.SellerActionSliceProvider"
+            android:name="com.tokopedia.seller.action.SellerActionSliceProvider"
             android:exported="true"
             android:grantUriPermissions="true">
             <intent-filter>
