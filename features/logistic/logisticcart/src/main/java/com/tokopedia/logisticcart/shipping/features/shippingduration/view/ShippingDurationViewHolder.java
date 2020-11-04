@@ -72,7 +72,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener,
                          boolean isDisableOrderPrioritas) {
-        if (shippingDurationUiModel.isShowShippingInformation()) {
+        if (shippingDurationUiModel.isShowShippingInformation() && shippingDurationUiModel.getShippingCourierViewModelList().get(0).getProductData().getEstimatedTimeArrival() == null) {
             tvShippingInformation.setVisibility(View.VISIBLE);
         } else {
             tvShippingInformation.setVisibility(View.GONE);

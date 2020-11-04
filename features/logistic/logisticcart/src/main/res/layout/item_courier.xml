@@ -55,6 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
         android:layout_marginTop="4dp"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="@string/tv_price" />
 
     <com.tokopedia.unifycomponents.Label
