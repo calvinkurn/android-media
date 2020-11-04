@@ -31,21 +31,7 @@ class ShopPlayWidgetAnalyticListener(
     private var widgetPosition = RecyclerView.NO_POSITION
 
     override fun onImpressPlayWidget(view: PlayWidgetView, widgetPositionInList: Int) {
-        widgetPosition = widgetPositionInList
-    }
-
-    override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_BUYER,
-                        EVENT_ACTION to "click view all play",
-                        EVENT_LABEL to "$shopId - Tokopedia Play - $pos",
-                        BUSINESS_UNIT to "ads solution",
-                        CURRENT_SITE to "tokopediamarketplace",
-                        USER_ID to userId
-                )
-        )
+        widgetPosition = if (widgetPositionInList <= 2) 0 else 1 // following the old implementation
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
@@ -122,20 +108,6 @@ class ShopPlayWidgetAnalyticListener(
         ).appendUserId(userId).build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
-    }
-
-    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) = withWidgetPosition { pos ->
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        EVENT to CLICK_SHOP_PAGE,
-                        EVENT_CATEGORY to SHOP_PAGE_BUYER,
-                        EVENT_ACTION to "click ${if (isRemindMe) "on remove" else ""} remind me",
-                        EVENT_LABEL to "$shopId - $pos",
-                        BUSINESS_UNIT to "ads solution",
-                        CURRENT_SITE to "tokopediamarketplace",
-                        USER_ID to userId
-                )
-        )
     }
 
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
