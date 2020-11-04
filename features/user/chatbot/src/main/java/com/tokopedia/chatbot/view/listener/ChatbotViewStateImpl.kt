@@ -25,6 +25,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
@@ -219,6 +220,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         } else {
             getAdapter().removeElement(connectionDividerViewModel)
         }
+    }
+
+
+    override fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel) {
+        getAdapter().addElement(0, chatSepratorViewModel)
     }
 
     override fun hideEmptyMessage(visitable: Visitable<*>) {

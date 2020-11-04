@@ -300,6 +300,8 @@ data class DynamicHomeChannel(
             this.position = position
         }
 
+        fun getPosition() = position
+
         companion object {
             const val LAYOUT_HERO: String = "hero_4_image"
             const val LAYOUT_3_IMAGE: String = "3_image"
@@ -434,6 +436,8 @@ data class DynamicHomeChannel(
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose

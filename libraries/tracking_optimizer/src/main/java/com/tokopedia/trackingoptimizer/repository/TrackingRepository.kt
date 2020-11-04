@@ -7,10 +7,10 @@ import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
-import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEFullDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingRegularDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingScreenNameDataSource
+import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
@@ -25,7 +25,6 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
     val trackingEEDataSource by lazy {
         TrackingEEDataSource(context)
     }
-
     val trackingEEFullDataSource by lazy {
         TrackingEEFullDataSource(context)
     }

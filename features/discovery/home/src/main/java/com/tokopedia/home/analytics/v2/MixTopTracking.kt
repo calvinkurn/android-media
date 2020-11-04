@@ -36,6 +36,9 @@ object MixTopTracking : BaseTrackerConst() {
                 eventLabel = Label.NONE,
                 list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
                 products = products)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 
@@ -49,6 +52,9 @@ object MixTopTracking : BaseTrackerConst() {
                 eventLabel = Label.NONE,
                 list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome),
                 products = products)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendChannelId(channelId)
                 .build()
     }
@@ -64,6 +70,9 @@ object MixTopTracking : BaseTrackerConst() {
                 products = products)
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
+                .appendScreen(Screen.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 
