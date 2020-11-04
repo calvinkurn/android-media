@@ -104,6 +104,7 @@ class OfficialStoreHomeViewModelTest {
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
             onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
             viewModel.loadFirstData(category)
@@ -357,6 +358,10 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
+    private fun onGetDynamicChannel_thenReturn(channel: DynamicChannel) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns channel
+    }
+
     private fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
         coEvery { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
         coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
@@ -375,6 +380,7 @@ class OfficialStoreHomeViewModelTest {
         onGetOfficialStoreBanners_thenReturn(error)
         onGetOfficialStoreBenefits_thenReturn(error)
         onGetOfficialStoreFeaturedShop_thenReturn(error)
+        onGetDynamicChannel_thenReturn(error)
     }
 
     private fun onGetOfficialStoreBanners_thenReturn(error: Throwable) {
@@ -387,6 +393,10 @@ class OfficialStoreHomeViewModelTest {
 
     private fun onGetOfficialStoreFeaturedShop_thenReturn(error: Throwable) {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } throws error
+    }
+
+    private fun onGetDynamicChannel_thenReturn(error: Throwable) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } throws error
     }
 
     private fun onSetupDynamicChannelParams_thenCompleteWith(channelType: String) {
@@ -423,8 +433,7 @@ class OfficialStoreHomeViewModelTest {
     private fun verifyOfficialStoreDynamicChannelEquals(
             expectedDynamicChannel: Success<DynamicChannel>
     ) {
-        val dynamicChannel = expectedDynamicChannel.data
-        verifyGetOfficialDynamicChannelCalled(dynamicChannel)
+        verifyGetOfficialDynamicChannelCalled()
 
         viewModel.officialStoreDynamicChannelResult
                 .assertSuccess(expectedDynamicChannel)
@@ -442,14 +451,10 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreFeaturedShopUseCase.executeOnBackground() }
     }
 
-    private fun verifyGetOfficialDynamicChannelCalled(dynamicChannel: DynamicChannel) {
-        val onSuccess = CapturingSlot<(DynamicChannel) -> Unit>()
-
+    private fun verifyGetOfficialDynamicChannelCalled() {
         coVerify {
-            getOfficialStoreDynamicChannelUseCase.execute(capture(onSuccess), any())
+            getOfficialStoreDynamicChannelUseCase.executeOnBackground()
         }
-
-        onSuccess.captured.invoke(dynamicChannel)
     }
 
     private fun verifyLiveDataValueError(expectedError: Fail) {
@@ -489,13 +494,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyGetOfficialDynamicChannelCalled(error: Throwable) {
-        val onError = CapturingSlot<(Throwable) -> Unit>()
-
-        coVerify {
-            getOfficialStoreDynamicChannelUseCase.execute(any(), capture(onError))
-        }
-
-        onError.captured.invoke(error)
+        coVerify { getOfficialStoreDynamicChannelUseCase.executeOnBackground() }
     }
 
     private fun verifyDynamicChannelParamsEquals(channelType: String) {

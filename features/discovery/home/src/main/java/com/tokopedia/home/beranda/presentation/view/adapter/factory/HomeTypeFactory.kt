@@ -44,7 +44,7 @@ interface HomeTypeFactory {
 
     fun type(playCard: PlayCardDataModel): Int
 
-    fun type(playCard: PlayCarouselCardDataModel): Int
+//    fun type(playCard: PlayCarouselCardDataModel): Int
 
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
@@ -57,4 +57,6 @@ interface HomeTypeFactory {
     fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
 
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
+
+    fun type(dataModel: CarouselPlayWidgetDataModel): Int
 }
