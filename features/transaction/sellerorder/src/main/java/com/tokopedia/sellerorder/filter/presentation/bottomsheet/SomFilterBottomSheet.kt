@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DEADLINE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
@@ -217,6 +218,21 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun clickShowOrder() {
         btnShowOrder?.setOnClickListener {
+            val filterTextList = mutableSetOf<String>()
+            somFilterViewModel.getSomFilterUiModel().forEach {
+                it.somFilterData.filter { somFilter -> somFilter.isSelected }.forEach { somFilterChips ->
+                    filterTextList.add(somFilterChips.key)
+                    if(somFilterChips.childStatus.isNotEmpty()) {
+                        somFilterChips.childStatus.filter { somFilterChips.isSelected }.forEach { childStatus ->
+                            filterTextList.add(childStatus.key)
+                        }
+                    }
+                }
+            }
+            val keyFilter = filterTextList.joinToString(separator = ",")
+            // need improve
+            SomAnalytics.eventClickTerapkanOnFilterPage(keyFilter)
+
             somListOrderParam?.let { somListParam ->
                 somFilterFinishListener?.onClickShowOrderFilter(somListParam,
                         somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus)
@@ -280,6 +296,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             bottomSheetAction.text = it.resources.getString(R.string.reset)
         }
         bottomSheetAction.setOnClickListener {
+            SomAnalytics.eventClickResetButtonOnFilterPage()
             somFilterViewModel.resetFilterSelected(orderStatus)
         }
     }

@@ -155,7 +155,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 when (mode) {
-                    //if date < aft
                     CalendarPickerView.SelectionMode.RANGE -> {
                         if ((minDate != null && maxDate == null) && (date.after(minDate) || !date.before(minDate))) {
                             maxDate = date

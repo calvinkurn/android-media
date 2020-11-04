@@ -96,8 +96,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_PELUANG_IN_EMPTY_STATE, statusOrder)
     }
 
-    fun eventClickTerapkanOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, orderCode)
+    fun eventClickTerapkanOnFilterPage(filterValue: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, filterValue)
     }
 
     fun eventViewTicker(tickerId: String) {
@@ -128,8 +128,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BACK_BUTTON_ON_FILTER_PAGE, orderCode)
     }
 
-    fun eventClickResetButtonOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, orderCode)
+    fun eventClickResetButtonOnFilterPage() {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, "")
     }
 
     fun eventClickTolakPesanan(statusOrderName: String, reason: String) {
