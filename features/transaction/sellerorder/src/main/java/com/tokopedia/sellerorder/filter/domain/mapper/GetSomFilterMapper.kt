@@ -49,23 +49,23 @@ object GetSomFilterMapper {
 
     private fun mapToFilterSortUiModel(): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_DESC, id = SORT_DESCENDING))
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_ASC, id = SORT_ASCENDING))
+            add(SomFilterChipsUiModel(name = CHIPS_SORT_DESC, key = CHIPS_SORT_DESC, id = SORT_DESCENDING))
+            add(SomFilterChipsUiModel(name = CHIPS_SORT_ASC, key = CHIPS_SORT_ASC, id = SORT_ASCENDING))
         }
     }
 
     private fun mapToFilterDeadlineUiModel(): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = TODAY_LABEL, id = TODAY))
-            add(SomFilterChipsUiModel(name = TOMORROW_LABEL, id = TOMORROW))
-            add(SomFilterChipsUiModel(name = TODAY_TOMORROW_LABEL, id = TODAY_TOMORROW))
+            add(SomFilterChipsUiModel(name = TODAY_LABEL, key = TODAY_LABEL, id = TODAY))
+            add(SomFilterChipsUiModel(name = TOMORROW_LABEL, key = TOMORROW_LABEL, id = TOMORROW))
+            add(SomFilterChipsUiModel(name = TODAY_TOMORROW_LABEL, key = TODAY_TOMORROW_LABEL, id = TODAY_TOMORROW))
         }
     }
 
     private fun mapToFilterLabelUiModel(): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = NOT_YET_PRINTED_LABEL, id = NOT_YET_PRINTED))
-            add(SomFilterChipsUiModel(name = ALREADY_PRINT_LABEL, id = ALREADY_PRINT))
+            add(SomFilterChipsUiModel(name = NOT_YET_PRINTED_LABEL, key = NOT_YET_PRINTED_LABEL, id = NOT_YET_PRINTED))
+            add(SomFilterChipsUiModel(name = ALREADY_PRINT_LABEL, key = ALREADY_PRINT_LABEL, id = ALREADY_PRINT))
         }
     }
 
@@ -94,7 +94,7 @@ object GetSomFilterMapper {
     private fun mapToFilterCourierUiModel(shippingList: List<SomFilterResponse.OrderFilterSom.Shipping>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             shippingList.map {
-                add(SomFilterChipsUiModel(id = it.shippingId, name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
+                add(SomFilterChipsUiModel(id = it.shippingId, key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
             }
         }
     }
@@ -102,7 +102,7 @@ object GetSomFilterMapper {
     private fun mapToFilterTypeUiModel(typeList: List<SomFilterResponse.OrderType>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
-                add(SomFilterChipsUiModel(id = it.id, name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
+                add(SomFilterChipsUiModel(id = it.id, key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
             }
         }
     }
