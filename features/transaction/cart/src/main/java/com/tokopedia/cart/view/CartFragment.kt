@@ -1002,14 +1002,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
@@ -1420,6 +1422,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         cartAdapter.checkForShipmentForm()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+
+        val params = generateParamValidateUsePromoRevamp(checked, -1, -1, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -3077,16 +3087,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
-        }
-    }
-
-    override fun onCartShopNameChecked(isAllChecked: Boolean) {
-        val params = generateParamValidateUsePromoRevamp(isAllChecked, -1, -1, false)
-        if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
-        } else {
-            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
     }
 
