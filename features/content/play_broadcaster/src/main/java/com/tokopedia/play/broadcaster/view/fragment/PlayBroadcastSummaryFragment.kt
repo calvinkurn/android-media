@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,12 +33,18 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
+
 /**
  * @author by jessica on 26/05/20
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic) : PlayBaseBroadcastFragment() {
+
+    companion object {
+        private const val KEY_RESULT_SAVE_VIDEO = "play_broadcaster_save_video"
+        private const val KEY_RESULT_DELETE_VIDEO = "play_broadcaster_delete_video"
+    }
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -196,8 +204,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Loading -> btnSaveVideo.isLoading = true
                 is NetworkResult.Success -> {
-                    // TODO: setResult("on progress saving the video")
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(KEY_RESULT_SAVE_VIDEO, "ok")
+                    })
                     activity?.finish()
+                    // TODO: show toaster on the shop page when these extras are not null / exist
                 }
                 is NetworkResult.Fail -> {
                     btnSaveVideo.isLoading = false
@@ -217,8 +228,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
                 is NetworkResult.Success -> {
-                    // TODO: setResult("complete delete the video")
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(KEY_RESULT_DELETE_VIDEO, "ok")
+                    })
                     activity?.finish()
+                    // TODO: show toaster on the shop page when these extras are not null / exist
                 }
                 is NetworkResult.Fail -> {
                     btnDeleteVideo.isLoading = false
