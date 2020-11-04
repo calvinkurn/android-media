@@ -35,7 +35,7 @@ const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 
-class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -191,6 +191,6 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         }
     }
 
-    open fun getNewRepoProvider() = DiscoveryRepoProvider()
+    open fun getNewRepoProvider() : RepositoryProvider = DiscoveryRepoProvider()
 
 }

@@ -14,7 +14,7 @@ data class DiscoveryResponse(
         var pageInfo: PageInfo,
 
         @SerializedName("title")
-        val title: String,
+        var title: String,
 
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo?

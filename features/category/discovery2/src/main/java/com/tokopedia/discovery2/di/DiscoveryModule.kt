@@ -39,6 +39,9 @@ import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUse
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -58,6 +61,13 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun providePushStatusGQLRepository(@ApplicationContext context: Context): PushStatusRepository {
         return PushStatusGQLRepository(provideGetStringMethod(context))
     }
+
+    //TODO Niranjan need better way to handle new injections
+    @Provides
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    fun provideGetRecommendationUseCase(coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(coroutineGqlRepository)
 
     @Provides
     fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
@@ -102,12 +112,12 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
-        return ProductCardsRestRepository()
+        return repoProvider.provideProductCardsRepository()
     }
 
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
-        return DiscoveryDataGQLRepository(provideGetStringMethod(context))
+        return repoProvider.provideDiscoveryPageRepository(provideGetStringMethod(context))
     }
 
     @Provides
@@ -151,10 +161,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @DiscoveryScope
     @Provides
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
-        return PageLoadTimePerformanceCallback(
-                DISCOVERY_PLT_PREPARE_METRICS,
-                DISCOVERY_PLT_NETWORK_METRICS,
-                DISCOVERY_PLT_RENDER_METRICS,0,0,0,0,null
-        )
+        return repoProvider.providePageLoadTimePerformanceMonitoring()
     }
 }
