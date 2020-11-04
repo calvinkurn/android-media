@@ -42,6 +42,8 @@ const val GQL_WIDGET_QUERY: String = """query widgetQuery(
         } 
         url
         urlPath
+        imageUrl
+        appUrl
         isTopads
         recommendationType 
         countReview

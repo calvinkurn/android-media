@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
@@ -18,13 +17,11 @@ import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
-import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
@@ -36,12 +33,6 @@ import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
-import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession

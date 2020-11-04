@@ -29,7 +29,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
                 RecommendationEntity::class.java,
                 createRequestParams(page, componentId)
         )
-        return mapRecommendationToDiscoveryResponse(RecommendationEntityMapper.mappingToRecommendationModel(recommendationData.productRecommendationWidget?.data ?: listOf()))
+        return mapRecommendationToDiscoveryResponse(recommendationData.productRecommendationWidget?.data ?: listOf())
     }
 
     private fun createRequestParams(page : String, componentId:String): HashMap<String, Any> {
@@ -43,25 +43,24 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         return request
     }
 
-    private fun mapRecommendationToDiscoveryResponse(recommendationData: List<RecommendationWidget>): ArrayList<ComponentsItem> {
+    private fun mapRecommendationToDiscoveryResponse(recommendationData: List<RecommendationEntity.RecomendationData>): ArrayList<ComponentsItem> {
         val components = arrayListOf<ComponentsItem>()
-        recommendationData[0].recommendationItemList.forEachIndexed { index, it ->
+        recommendationData[0].recommendation?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             componentsItem.position = index
             componentsItem.name = ComponentNames.ProductCardRevampItem.componentName
             val dataItems = mutableListOf<DataItem>()
             val dataItem = DataItem()
-            dataItem.id = it.productId.toString()
+            dataItem.id = it.id.toString()
             dataItem.name = it.name
             dataItem.price = it.price
             dataItem.rating = it.rating.toString()
             dataItem.imageUrlMobile = it.imageUrl
-            dataItem.isTopads = it.isTopAds
-            dataItem.shopId = it.shopId.toString()
-            dataItem.shopName = it.shopName
-            dataItem.shopLocation = it.location
-            dataItem.discountPercentage = it.discountPercentage
-            dataItem.applinks = it.clickUrl
+            dataItem.isTopads = it.isIsTopads
+            dataItem.shopId = it.shop?.id.toString()
+            dataItem.shopName = it.shop?.name
+            dataItem.shopLocation = it.shop?.city
+            dataItem.applinks = it.appUrl
             dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
             dataItems.add(dataItem)
             componentsItem.data = dataItems
