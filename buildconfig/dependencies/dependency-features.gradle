@@ -88,6 +88,7 @@ ext {
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
+            shopWidget                      : ":features:discovery:shopwidget",
 
             homecredit                      : ":features:fintech:home_credit",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
