@@ -194,6 +194,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
                 it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
                 it.switchToLightToolbar()
+                it.setContentInsetsAbsolute(0,0)
                 viewLifecycleOwner.lifecycle.addObserver(it)
                 it.setIcon(
                         IconBuilder()
