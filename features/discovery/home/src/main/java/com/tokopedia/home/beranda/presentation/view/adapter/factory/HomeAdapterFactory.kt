@@ -168,6 +168,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return ReminderWidgetViewHolder.LAYOUT
     }
 
+    override fun type(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel): Int {
+        return RechargeBUWidgetViewHolder.LAYOUT
+    }
+
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
         return MixLeftComponentViewHolder.LAYOUT
     }
@@ -312,6 +316,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
+//            RechargeBUWidgetViewHolder.LAYOUT -> viewHolder =
+//                    RechargeBUWidgetViewHolder(view, )
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)

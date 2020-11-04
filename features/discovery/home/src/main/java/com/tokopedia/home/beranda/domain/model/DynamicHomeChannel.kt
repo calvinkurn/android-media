@@ -330,6 +330,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
+            const val LAYOUT_RECHARGE_BU_WIDGET: String = "home_widget_2"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
