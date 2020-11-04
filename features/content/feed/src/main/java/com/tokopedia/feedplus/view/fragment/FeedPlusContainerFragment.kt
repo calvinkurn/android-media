@@ -48,6 +48,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -66,6 +67,10 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 25/07/18.
  */
+
+private const val EXP_NAME = "Navigation Revamp"
+private const val VARIANT_OLD = "existing navigation"
+private const val VARIANT_REVAMP = "navigation revamp"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
@@ -159,6 +164,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initToolbar() {
+        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         status_bar_bg.visibility = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
@@ -172,7 +178,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (showOldToolbar) {
             feed_background_frame.show()
             feedToolbar = context?.let { FeedMainToolbar(it) }
-            toolbarParent.addView(feedToolbar)
             setFeedBackgroundCrossfader()
             feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
@@ -185,11 +190,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             feed_background_frame.hide()
             feedToolbar = context?.let { NavToolbar(it) }
-            toolbarParent.addView(feedToolbar)
             (feedToolbar as? NavToolbar)?.let {
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                it.switchToLightToolbar()
                 it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+                it.switchToLightToolbar()
                 viewLifecycleOwner.lifecycle.addObserver(it)
                 it.setIcon(
                         IconBuilder()
@@ -201,6 +205,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
             }
         }
+        toolbarParent.addView(feedToolbar)
     }
 
     override fun onPause() {
