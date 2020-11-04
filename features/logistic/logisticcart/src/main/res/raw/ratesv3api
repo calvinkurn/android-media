@@ -143,6 +143,10 @@ query RatesV3($param: OngkirRatesV3Input!) {
               tnc_text
               tnc_link
             }
+        eta {
+              text_eta
+              error_code
+            }
       }
       info {
         blackbox_info {

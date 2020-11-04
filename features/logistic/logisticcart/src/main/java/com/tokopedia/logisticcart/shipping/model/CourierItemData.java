@@ -60,6 +60,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private CashOnDeliveryProduct codProductData;
     private String etaText;
     private int etaErrorCode;
+    private String shipperName;
 
     public CourierItemData() {
     }
@@ -560,4 +561,11 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.etaText = etaText;
     }
 
+    public String getShipperName() {
+        return shipperName;
+    }
+
+    public void setShipperName(String shipperName) {
+        this.shipperName = shipperName;
+    }
 }
