@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -26,6 +27,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.FragmentTransactIdlingResource
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -37,7 +39,10 @@ import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.track.TrackApp
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -103,7 +108,7 @@ class TopChatRoomActivityTest {
         idlingResource = SimpleIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
-//        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(TestCoroutineDispatcher())
         activity = mActivityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
@@ -165,13 +170,22 @@ class TopChatRoomActivityTest {
     @Test
     fun assess_occ_click() {
         // Given
+        val fragmentIdlingResource = FragmentTransactIdlingResource(
+                activity.supportFragmentManager,
+                "ChatToolbarActivity"
+        ).apply {
+            registerIdleTransitionCallback {
+                Log.i("ChatToolbarActivity", "transition to idle")
+            }
+        }
+
+        IdlingRegistry.getInstance().register(fragmentIdlingResource)
 
         // When
         setupActivityIntent(exMessageId)
         getChatUseCase.response = firstPageChat
         chatAttachmentUseCase.response = chatAttachmentResponse
         activity.setupTestFragment(getChatUseCase, chatAttachmentUseCase)
-        Thread.sleep(5000)
 
         // working click
         val viewInteraction = onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
@@ -191,6 +205,8 @@ class TopChatRoomActivityTest {
 
         val discomQuery = "tracker/user/topchat/topchat_room_occ_p0.json"
         assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, discomQuery), hasAllSuccess()) // use assertThat from Hamcrest is recommended
+
+        IdlingRegistry.getInstance().unregister(fragmentIdlingResource)
     }
 
     private fun setupActivityIntent(messageId: String = "") {
