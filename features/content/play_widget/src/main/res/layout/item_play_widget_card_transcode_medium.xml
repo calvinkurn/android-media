@@ -25,66 +25,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/play_widget_player_view"
+        <LinearLayout
+            android:id="@+id/ll_loading_container"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/Unify_N700_68"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/play_widget_info_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:resize_mode="zoom"
-            app:shutter_background_color="@color/transparent"
-            app:surface_type="texture_view"
-            app:use_artwork="false"
-            app:use_controller="false" />
+            >
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/play_widget_iv_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_reminder"
-            tools:visibility="gone"
-            />
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_loading"
+                android:layout_width="@dimen/play_widget_unify_loader_size"
+                android:layout_height="@dimen/play_widget_unify_loader_size"
+                app:loader_type="circular_white"
+                />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/play_widget_iv_action"
-            android:layout_width="@dimen/play_widget_more_action_size"
-            android:layout_height="@dimen/play_widget_more_action_size"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_more_white"
-            android:scaleType="centerInside"
-            tools:visibility="visible" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/play_widget_transcode_loading_text"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                />
 
-        <include
-            android:id="@+id/play_widget_badge_live"
-            layout="@layout/layout_live_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/play_widget_badge_height"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+        </LinearLayout>
 
         <include
             android:id="@+id/play_widget_badge_total_view"
             layout="@layout/layout_viewer_badge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/play_widget_badge_height"
-            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintStart_toEndOf="@+id/play_widget_badge_live"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/spacing_lvl3" />
 
@@ -106,19 +88,6 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/play_widget_channel_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Yellow_Y500"
-                android:visibility="visible"
-                android:textSize="@dimen/fontSize_lvl2"
-                tools:text="10 January 2020 - 17.00" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
