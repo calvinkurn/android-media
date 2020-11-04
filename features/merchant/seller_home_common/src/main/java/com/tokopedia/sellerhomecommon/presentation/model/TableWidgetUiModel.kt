@@ -18,7 +18,9 @@ data class TableWidgetUiModel(
         override val ctaText: String,
         override var data: TableDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
