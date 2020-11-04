@@ -42,6 +42,7 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSea
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
+import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
@@ -69,7 +70,8 @@ import kotlin.collections.ArrayList
 class HotelHomepageFragment : HotelBaseFragment(),
         HotelRoomAndGuestBottomSheets.HotelGuestListener,
         HotelLastSearchViewHolder.LastSearchListener,
-        TravelVideoBannerWidget.ActionListener {
+        TravelVideoBannerWidget.ActionListener,
+        HotelHomepagePopularCitiesWidget.ActionListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -331,6 +333,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun renderPopularCities(popularCities: List<PopularSearch>) {
         if (popularCities.isNotEmpty()) {
+            widget_hotel_homepage_popular_cities.setActionListener(this)
             widget_hotel_homepage_popular_cities.addPopularCities(popularCities)
             showPopularCitiesWidget(true)
         } else {
@@ -711,5 +714,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
         // do nothing for now, will use for tracking later
+    }
+
+    override fun onPopularCityClicked(popularSearch: PopularSearch) {
+        RouteManager.route(requireContext(), getString(R.string.hotel_search_result_applink_format,
+                popularSearch.type, popularSearch.searchId, popularSearch.name))
     }
 }

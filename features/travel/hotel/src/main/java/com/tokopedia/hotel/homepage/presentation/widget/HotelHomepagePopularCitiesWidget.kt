@@ -23,15 +23,20 @@ class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Contex
     :BaseCustomView(context, attrs, defStyleAttr){
 
     lateinit var adapter: HotelHomepagePopularCitiesAdapter
+    var listener: ActionListener? = null
 
     init {
         View.inflate(context, R.layout.layout_hotel_homepage_popular_city, this)
         hide()
     }
 
+    fun setActionListener(listener: ActionListener) {
+        this.listener = listener
+    }
+
     fun addPopularCities(popularCities: List<PopularSearch>) {
         rv_popular_cities.layoutManager = GridLayoutManager(context, 2)
-        adapter = HotelHomepagePopularCitiesAdapter(popularCities)
+        adapter = HotelHomepagePopularCitiesAdapter(popularCities, listener)
         rv_popular_cities.adapter = adapter
 
         //init recycler view
@@ -48,5 +53,9 @@ class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Contex
                 }
             }
         } else btn_homepage_popular_cities_see_more.hide()
+    }
+
+    interface ActionListener {
+        fun onPopularCityClicked(popularSearch: PopularSearch)
     }
 }
