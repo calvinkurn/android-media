@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view.card
 import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -20,8 +21,10 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): CoroutineScope {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -44,6 +47,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private var noteTextWatcher: TextWatcher? = null
 
     private var oldQtyValue: Int = 0
+
+    private var resetQuantityJob: Job? = null
 
     fun setProduct(product: OrderProduct) {
         this.product = product
@@ -99,12 +104,14 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 qtyEditorProduct?.editText?.removeTextChangedListener(quantityTextWatcher)
                 qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
             }
+            qtyEditorProduct?.autoHideKeyboard = true
             qtyEditorProduct?.minValue = product.quantity.minOrderQuantity
             qtyEditorProduct?.maxValue = product.quantity.maxOrderStock
             oldQtyValue = product.quantity.orderQuantity
             qtyEditorProduct?.setValue(product.quantity.orderQuantity)
             qtyEditorProduct?.setValueChangedListener { newValue, _, _ ->
                 // prevent multiple callback with same newValue
+                Log.i("qwertyuiop", "value change $newValue")
                 if (product.quantity.orderQuantity != newValue) {
                     product.quantity.orderQuantity = newValue
                     listener.onProductChange(product)
@@ -121,9 +128,21 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 override fun afterTextChanged(s: Editable?) {
                     // for automatic reload rates when typing
                     val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
-                    if (oldQtyValue != newValue) {
+                    Log.i("qwertyuiop", "text change $newValue")
+                    if (newValue > 0 && oldQtyValue != newValue) {
+                        Log.i("qwertyuiop", "text change update")
+                        resetQuantityJob?.cancel()
                         oldQtyValue = newValue
                         qtyEditorProduct?.setValue(newValue)
+                    } else if (newValue <= 0) {
+                        Log.i("qwertyuiop", "text change reset")
+                        resetQuantityJob?.cancel()
+                        resetQuantityJob = launch {
+                            delay(5000)
+                            qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                        }
+                    } else {
+                        Log.i("qwertyuiop", "text change other $newValue and $oldQtyValue")
                     }
                 }
 
@@ -201,5 +220,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     companion object {
         const val MAX_NOTES_LENGTH = 144
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main.immediate
+
+    fun clearJob() {
+        coroutineContext.cancel()
     }
 }

@@ -124,7 +124,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val imageEmptyProfile by lazy { view?.findViewById<ImageUnify>(R.id.image_empty_profile) }
     private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
 
-    private lateinit var orderProductCard: OrderProductCard
+    private var orderProductCard: OrderProductCard? = null
     private lateinit var orderPreferenceCard: OrderPreferenceCard
     private lateinit var orderInsuranceCard: OrderInsuranceCard
     private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
@@ -259,9 +259,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
-                        orderProductCard.setProduct(viewModel.orderProduct)
-                        orderProductCard.setShop(viewModel.orderShop)
-                        orderProductCard.initView()
+                        orderProductCard?.setProduct(viewModel.orderProduct)
+                        orderProductCard?.setShop(viewModel.orderShop)
+                        orderProductCard?.initView()
                         showMessage(it.data)
                         if (it.data.preference.profileId > 0 &&
                                 it.data.preference.address.addressId > 0 &&
@@ -280,10 +280,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
-                        if (!orderProductCard.isProductInitialized()) {
-                            orderProductCard.setProduct(viewModel.orderProduct)
-                            orderProductCard.setShop(viewModel.orderShop)
-                            orderProductCard.initView()
+                        if (orderProductCard?.isProductInitialized() == false) {
+                            orderProductCard?.setProduct(viewModel.orderProduct)
+                            orderProductCard?.setShop(viewModel.orderShop)
+                            orderProductCard?.initView()
                             showMessage(it.data)
                             if (it.data.preference.profileId > 0 &&
                                     it.data.preference.address.addressId > 0 &&
@@ -1078,6 +1078,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             progressDialog?.dismiss()
             viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
+        orderProductCard?.clearJob()
     }
 
     private fun setSourceFromPDP() {
