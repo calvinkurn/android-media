@@ -23,6 +23,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/video_banner_margin"
+        android:layout_marginRight="@dimen/video_banner_margin"
         android:elevation="@dimen/layout_lvl0"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardUseCompatPadding="true"
@@ -34,8 +36,7 @@
             android:id="@+id/ivTravelVideoBanner"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl9"
-            android:adjustViewBounds="true"
-            android:background="@drawable/bg_travel_video_banner_shimmering" />
+            android:adjustViewBounds="true" />
 
     </androidx.cardview.widget.CardView>
 
