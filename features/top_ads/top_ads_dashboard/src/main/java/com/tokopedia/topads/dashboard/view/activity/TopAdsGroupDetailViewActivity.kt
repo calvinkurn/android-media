@@ -174,25 +174,25 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
-        app_bar_layout_2.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, offset ->
+        app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
                 offset == 0 -> {
                     if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
-                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.EXPANDED);
+                        onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED;
+                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
                 }
-                abs(offset) >= app_bar_layout_2.totalScrollRange -> {
+                abs(offset) >= appBarLayout.totalScrollRange -> {
                     if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
-                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.COLLAPSED);
+                        onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED;
+                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
                 }
                 else -> {
                     if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
-                        onStateChanged(app_bar_layout_2, TopAdsProductIklanFragment.State.IDLE);
+                        onStateChanged(TopAdsProductIklanFragment.State.IDLE)
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.IDLE;
+                    mCurrentState = TopAdsProductIklanFragment.State.IDLE
                 }
             }
         })
@@ -234,7 +234,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         renderTabAndViewPager()
     }
 
-    private fun onStateChanged(appBarLayout: AppBarLayout?, state: TopAdsProductIklanFragment.State?) {
+    private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
         swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
     }
 
@@ -355,10 +355,10 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString())
     }
 
-    fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         swipe_refresh_layout.isRefreshing = false
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment

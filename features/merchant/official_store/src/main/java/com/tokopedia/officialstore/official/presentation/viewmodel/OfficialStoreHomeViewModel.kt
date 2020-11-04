@@ -95,7 +95,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
 
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
@@ -158,11 +157,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun getOfficialStoreDynamicChannel(channelType: String) {
-        getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
-        getOfficialStoreDynamicChannelUseCase.execute(
-                { dynamicChannel -> _officialStoreDynamicChannelResult.value = Success(dynamicChannel) },
-                { throwable -> _officialStoreDynamicChannelResult.value = Fail(throwable) }
-        )
+        launchCatchError(coroutineContext, block = {
+            getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+        }){
+            _officialStoreDynamicChannelResult.postValue(Fail(it))
+        }
     }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {

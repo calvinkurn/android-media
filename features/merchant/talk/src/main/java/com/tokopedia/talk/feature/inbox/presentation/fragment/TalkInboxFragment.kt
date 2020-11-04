@@ -35,9 +35,11 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxAdapterTyp
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
+import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
@@ -46,7 +48,7 @@ import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
-        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract {
+        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener {
 
     companion object {
         const val TAB_PARAM = "tab_param"
@@ -69,6 +71,9 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     @Inject
     lateinit var talkInboxTracking: TalkInboxTracking
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
     private var inboxType = ""
@@ -82,7 +87,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB)
+        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this)
     }
 
     override fun getScreenName(): String {
@@ -145,6 +150,17 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         }
     }
 
+    override fun onInboxItemImpressed(talkId: String, position: Int, isUnread: Boolean) {
+        talkInboxTracking.eventItemImpress(inboxType, talkId, viewModel.getUserId(), position, isUnread, trackingQueue)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
+    }
+
     override fun getRecyclerView(view: View?): RecyclerView {
         return talkInboxRecyclerView
     }
@@ -184,6 +200,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
                 .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                .appendQueryParameter(TalkConstants.PARAM_TYPE, inboxType)
                 .build().toString()
         )
         startActivityForResult(intent, REPLY_REQUEST_CODE)

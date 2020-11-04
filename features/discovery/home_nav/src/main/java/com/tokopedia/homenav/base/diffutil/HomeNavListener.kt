@@ -8,4 +8,5 @@ import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 interface HomeNavListener {
     fun onRefresh()
     fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel)
+    fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel)
 }

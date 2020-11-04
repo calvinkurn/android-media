@@ -272,6 +272,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        childFragmentManager.fragments
+                .filterIsInstance<FeedPlusFragment>()
+                .forEach { it.onParentFragmentHiddenChanged(hidden) }
+    }
+
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
@@ -529,7 +536,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
+        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) && !fab_feed.isOrWillBeHidden) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }

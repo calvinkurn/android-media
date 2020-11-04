@@ -31,6 +31,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAddVariant"
+        android:contentDescription="@string/content_desc_tvAddVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -42,6 +43,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvEditVariant"
+        android:contentDescription="@string/content_desc_tvEditVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_edit_variant"

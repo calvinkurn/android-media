@@ -24,7 +24,6 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
-            android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -268,7 +267,6 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewShopBadge"
-                android:contentDescription="@string/content_desc_imageShopBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_18"
                 android:paddingTop="@dimen/dp_1"
@@ -375,7 +373,6 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
-            android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"

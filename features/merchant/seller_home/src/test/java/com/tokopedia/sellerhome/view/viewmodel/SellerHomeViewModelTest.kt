@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
@@ -70,6 +71,9 @@ class SellerHomeViewModelTest {
     @RelaxedMockK
     lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
 
+    @RelaxedMockK
+    lateinit var remoteConfig: SellerHomeRemoteConfig
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -96,6 +100,7 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getTableDataUseCase },
                 dagger.Lazy { getPieChartDataUseCase },
                 dagger.Lazy { getBarChartDataUseCase },
+                remoteConfig,
                 testDispatcher
         )
 

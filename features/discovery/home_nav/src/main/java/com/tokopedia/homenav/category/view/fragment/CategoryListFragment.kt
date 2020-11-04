@@ -66,6 +66,10 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         }
     }
 
+    override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
+
+    }
+
     private fun initRecyclerView(view: View) {
         view.recycler_view?.adapter = adapter
     }

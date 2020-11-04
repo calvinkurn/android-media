@@ -18,7 +18,9 @@ data class BarChartWidgetUiModel(
         override val ctaText: String,
         override var data: BarChartDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<BarChartDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

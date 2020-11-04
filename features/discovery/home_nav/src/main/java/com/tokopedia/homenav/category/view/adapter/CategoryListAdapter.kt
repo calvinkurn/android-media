@@ -11,7 +11,7 @@ import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeF
  */
 class CategoryListAdapter (private val adapterTypeFactory: CategoryListTypeFactory): HomeNavAdapter<CategoryListTypeFactory>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
-        return adapterTypeFactory.createViewHolder(onCreateViewItem(parent, viewType), viewType)
+        return adapterTypeFactory.createViewHolder(onCreateViewItem(parent, viewType), viewType) as AbstractViewHolder<HomeNavVisitable>
     }
 
     override fun getItemViewType(position: Int): Int = currentList.getOrNull(position)?.type(adapterTypeFactory) ?: -1
