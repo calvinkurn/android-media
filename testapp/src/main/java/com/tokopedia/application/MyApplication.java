@@ -321,6 +321,11 @@ public class MyApplication extends BaseMainApplication
 
     }
 
+    @Override
+    public com.tokopedia.cachemanager.CacheManager getPersistentCacheManager() {
+        return null;
+    }
+
     /**
      * Use UserSession object from library usersession directly.
      */

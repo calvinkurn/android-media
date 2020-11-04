@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shop_widget_title">temukan “tas” di toko ini:</string>
+    <string name="shop_card_title">Toko 1</string>
+    <string name="shop_card_subtitle">Bandung</string>
+    <string name="shop_card_all">Lihat Toko Lainnya</string>
+</resources>
