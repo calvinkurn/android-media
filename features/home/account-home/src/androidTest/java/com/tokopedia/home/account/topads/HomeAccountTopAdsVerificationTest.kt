@@ -4,10 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -15,12 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.environment.InstrumentationHomeAccountTestActivity
-import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder
-import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -83,39 +81,22 @@ class HomeAccountTopAdsVerificationTest {
             onView(withId(it)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }
 
-        val visitableList = recyclerViewAccountHome?.getAccountHomeAdapter()?.list
-        visitableList?.forEachIndexed { index, visitable ->
-            scrollAndClickTopAds(index, visitable)
-        }
-    }
-
-    private fun scrollAndClickTopAds(index: Int, visitable: Visitable<*>) {
-        if (visitable is RecommendationProductViewModel && visitable.isTopAds()) {
-            recyclerViewAccountHome?.let {
-                when(it.findViewHolderForAdapterPosition(index)) {
-                    is RecommendationProductViewHolder -> {
-                        onView(withId(it.id)).perform(RecyclerViewActions.scrollToPosition<RecommendationProductViewHolder>(index))
-                        onView(withId(it.id)).perform(RecyclerViewActions.actionOnItemAtPosition<RecommendationProductViewHolder>(index, ViewActions.click()))
-                        topAdsCount++
-                    }
-
-                    else -> { }
+        recyclerViewAccountHome?.let {
+            val itemCount = it.adapter?.itemCount ?: 0
+            for (i in 0..itemCount) {
+                val viewHolder = it.findViewHolderForAdapterPosition(i)
+                if (viewHolder is RecommendationProductViewHolder) {
+                    onView(withId(it.id)).perform(actionOnItemAtPosition<RecommendationProductViewHolder>(i, ViewActions.click()))
+                    topAdsCount++
                 }
+                scrollHomeAccountRecyclerViewToPosition(it, i)
             }
         }
     }
 
-    private fun RecommendationProductViewModel.isTopAds(): Boolean = product.isTopAds
-
-    private fun RecyclerView?.getAccountHomeAdapter(): BuyerAccountAdapter {
-        val inboxAdapter = this?.adapter as? BuyerAccountAdapter
-
-        if (inboxAdapter == null) {
-            val detailMessage = "Adapter is not ${BuyerAccountAdapter::class.java.simpleName}"
-            throw AssertionError(detailMessage)
-        }
-
-        return inboxAdapter
+    private fun scrollHomeAccountRecyclerViewToPosition(buyerRecyclerView: RecyclerView, position: Int) {
+        val layoutManager = buyerRecyclerView.layoutManager as StaggeredGridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
     private fun login() {
