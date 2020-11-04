@@ -1445,7 +1445,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             btnToShipment.isEnabled = false
             vDisabledBtnToShipment.show()
             vDisabledBtnToShipment.setOnClickListener {
-                showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
+                    showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                }
             }
         }
     }
