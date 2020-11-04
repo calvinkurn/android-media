@@ -80,7 +80,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }
 
-        holder.categoryName.setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), holder.categoryName.context.getString(R.string.content_desc_category_name))
+        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), R.string.content_desc_category_name)}
     }
 
 

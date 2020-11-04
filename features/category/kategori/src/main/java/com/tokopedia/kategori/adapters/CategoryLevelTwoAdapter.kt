@@ -103,7 +103,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.square_shimmer)
-        productViewHolder.productName.setTextAndContentDescription(item.name, productViewHolder.productName.context.getString(R.string.content_desc_category_product_name))
+        with(productViewHolder.productName) {setTextAndContentDescription(item.name, R.string.content_desc_category_product_name)}
         productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
 
@@ -147,7 +147,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        productHeaderViewHolder.productHeaderName.setTextAndContentDescription(item.name, productHeaderViewHolder.productHeaderName.context.getString(R.string.content_desc_product_name))
+        with(productHeaderViewHolder.productHeaderName) {setTextAndContentDescription(item.name, R.string.content_desc_product_name)}
         item.hexColor?.let {
             if (it.isEmpty()) {
                 val shape = GradientDrawable()
@@ -177,7 +177,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         }
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
         ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.square_shimmer)
-        yangLagiHitsViewHolder.ylhProductName.setTextAndContentDescription(item.name, yangLagiHitsViewHolder.ylhProductName.context.getString(R.string.content_desc_item_name))
+        with(yangLagiHitsViewHolder.ylhProductName) {setTextAndContentDescription(item.name, R.string.content_desc_item_name)}
         yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
             categoryAnalytics.eventYangLagiHitClick(list[position], position)
@@ -186,7 +186,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initTextHeaderViewHolderLayout(textHeaderViewHolder: TextHeaderViewHolder, position: Int) {
         list[position].name?.let {
-            textHeaderViewHolder.headerTitle.setTextAndContentDescription(it, textHeaderViewHolder.headerTitle.context.getString(R.string.content_desc_header_title))
+            with(textHeaderViewHolder.headerTitle) {setTextAndContentDescription(it, R.string.content_desc_header_title)}
             if (it.toLowerCase().contains("sering kamu lihat")) {
                 textHeaderViewHolder.headerTitle.setMargin(0, convertDpToPx(textHeaderViewHolder.itemView.context, 20), 0, 0)
             }

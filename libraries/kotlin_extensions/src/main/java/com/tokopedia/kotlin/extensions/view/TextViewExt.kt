@@ -12,9 +12,10 @@ fun TextView.displayTextOrHide(text : String) {
     }
 }
 
-fun TextView.setTextAndContentDescription(text: String?, contentDescriptionTemplate: String) {
+fun TextView.setTextAndContentDescription(text: String?, contentDescriptionTemplate: Int) {
     this.text = text
     if (!text.isNullOrEmpty()) {
-        this.contentDescription = "$contentDescriptionTemplate $text"
+        val contentDescription =  this.context.getString(contentDescriptionTemplate)
+        this.contentDescription = "$contentDescription $text"
     }
 }
