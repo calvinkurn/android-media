@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.category.view.adapter.typefactory
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
@@ -43,7 +44,7 @@ class CategoryListTypeFactoryImpl(
         return HomeNavTickerViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<HomeNavVisitable> {
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<Visitable<*>> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, listener)
             HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view)
@@ -51,6 +52,6 @@ class CategoryListTypeFactoryImpl(
             CategoryListLoadingViewHolder.LAYOUT -> CategoryListLoadingViewHolder(view)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
-        } as AbstractViewHolder<HomeNavVisitable>
+        } as AbstractViewHolder<Visitable<*>>
     }
 }
