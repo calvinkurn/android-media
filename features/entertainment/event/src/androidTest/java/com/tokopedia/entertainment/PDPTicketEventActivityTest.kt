@@ -1,3 +1,5 @@
+package com.tokopedia.entertainment
+
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -8,14 +10,14 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.PDPTicketEventMockResponse
+import com.tokopedia.entertainment.mock.PDPTicketEventMockResponse
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,6 +25,7 @@ class PDPTicketEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     @get:Rule
     var activityRule: IntentsTestRule<EventPDPTicketActivity> =
@@ -42,6 +45,11 @@ class PDPTicketEventActivityTest {
                 override fun beforeActivityLaunched() {
                     super.beforeActivityLaunched()
                     gtmLogDBSource.deleteAll().subscribe()
+                    localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+                    localCacheHandler.apply {
+                        putBoolean(SHOW_COACH_MARK_KEY, false)
+                        applyEditor()
+                    }
                     setupGraphqlMockResponse(PDPTicketEventMockResponse())
                 }
 
@@ -82,6 +90,8 @@ class PDPTicketEventActivityTest {
 
     companion object {
         private const val ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY = "tracker/event/pdpticketeventcheck.json"
+        private const val PREFERENCES_NAME = "event_ticket_preferences"
+        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
     }
 
 }

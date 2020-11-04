@@ -1,8 +1,13 @@
+package com.tokopedia.entertainment
+
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -11,12 +16,11 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.activity.EventSearchActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.SearchEventMockResponse
+import com.tokopedia.entertainment.mock.SearchEventMockResponse
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,6 +41,7 @@ class SearchEventActivityTest {
     fun validateSearchTest(){
         Thread.sleep(5000)
         search_keyword()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         click_city()
         click_event()
 
@@ -55,13 +60,11 @@ class SearchEventActivityTest {
     fun click_city(){
         onView(withId(R.id.recycler_view_location)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchLocationListViewHolder>(0, click()))
         Thread.sleep(3000)
-        onView(ViewMatchers.isRoot()).perform(ViewActions.pressBack())
     }
 
     fun click_event(){
         onView(withId(R.id.recycler_view_kegiatan)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchEventListViewHolder>(0, click()))
         Thread.sleep(3000)
-        onView(ViewMatchers.isRoot()).perform(ViewActions.pressBack())
     }
 
     companion object {

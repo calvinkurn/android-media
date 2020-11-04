@@ -1,3 +1,5 @@
+package com.tokopedia.entertainment
+
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
@@ -11,7 +13,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.activity.HomeEventActivity
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
@@ -19,7 +20,7 @@ import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventVie
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.HomeEventMockResponse
+import com.tokopedia.entertainment.mock.HomeEventMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.Rule
 import org.junit.Test

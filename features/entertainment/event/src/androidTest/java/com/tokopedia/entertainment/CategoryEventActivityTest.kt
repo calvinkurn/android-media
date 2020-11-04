@@ -1,7 +1,13 @@
+package com.tokopedia.entertainment
+
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -10,12 +16,11 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.CategoryEventMockResponse
+import com.tokopedia.entertainment.mock.CategoryEventMockResponse
 import org.junit.Rule
 import org.junit.Test
 
@@ -47,6 +52,7 @@ class CategoryEventActivityTest {
         Thread.sleep(5000)
         clickCategory()
         impressionProduct()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         clickProduct()
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY), hasAllSuccess())
 
@@ -60,7 +66,6 @@ class CategoryEventActivityTest {
     fun clickProduct(){
         onView(withId(R.id.recycler_viewParent)).perform(RecyclerViewActions.actionOnItemAtPosition<EventGridAdapter.EventGridViewHolder>(0, ViewActions.click()))
         Thread.sleep(3000)
-        onView(ViewMatchers.isRoot()).perform(ViewActions.pressBack())
     }
 
     fun clickCategory(){

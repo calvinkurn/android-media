@@ -1,4 +1,4 @@
-package mock
+package com.tokopedia.entertainment.mock
 
 import android.content.Context
 import com.tokopedia.entertainment.test.R

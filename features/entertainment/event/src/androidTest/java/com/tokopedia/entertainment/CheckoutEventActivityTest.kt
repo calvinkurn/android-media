@@ -1,3 +1,5 @@
+package com.tokopedia.entertainment
+
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -11,13 +13,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import data.MockMetaData
-import mock.CheckoutEventMockResponse
+import com.tokopedia.entertainment.data.MockMetaData
+import com.tokopedia.entertainment.mock.CheckoutEventMockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

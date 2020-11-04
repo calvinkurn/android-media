@@ -1,3 +1,5 @@
+package com.tokopedia.entertainment
+
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
@@ -11,11 +13,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import mock.PDPEventMockResponse
+import com.tokopedia.entertainment.mock.PDPEventMockResponse
 import org.junit.Rule
 import org.junit.Test
 
