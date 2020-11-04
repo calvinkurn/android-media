@@ -118,6 +118,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 }
             }
 
+            val shippingDurationOrETA = if (shopOrder.logisticETA.isNullOrBlank()) {
+                if (shopOrder.logisticDuration.isNullOrBlank()) "" else shopOrder.logisticDuration
+            } else shopOrder.logisticETA
+
             val shopInvoice = ShopInvoice(
                     shopOrder.storeName,
                     orderedItemList,
@@ -127,7 +131,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                                 false)
                     else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
-                    shopOrder.logisticType,
+                    shopOrder.logisticType + "\n"+ shippingDurationOrETA,
                     logisticDiscountStr,
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     shopOrder.address)
