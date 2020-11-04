@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
@@ -16,7 +15,7 @@ import java.util.*
 
 class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private var timerWithBannerCounter: SaleCountDownTimer? = null
+    var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
     private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
@@ -133,7 +132,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
 
     fun getEndDate(): String {
         if (!components.data.isNullOrEmpty()) {
-            return components.data?.get(0)?.endDate ?: ""
+            return components.data?.firstOrNull()?.endDate ?: ""
         }
         return ""
     }
@@ -143,14 +142,9 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         super.onStop()
     }
 
-//    override fun onDestroy() {
-//        stopTimer()
-//        super.onDestroy()
-//    }
-
     override fun onResume() {
         super.onResume()
-        if(timerWithBannerCounter == null){
+        if (timerWithBannerCounter == null) {
             startTimer()
         }
     }
