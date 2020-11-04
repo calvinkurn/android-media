@@ -12,6 +12,8 @@ import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -23,6 +25,7 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
+import kotlinx.android.synthetic.main.shc_partial_multi_line_graph_loading_state.view.*
 import timber.log.Timber
 
 /**
@@ -52,7 +55,7 @@ class MultiLineGraphViewHolder(
 
         val data = element.data
         when {
-            data == null -> setOnLoadingState(element)
+            data == null -> setOnLoadingState()
             data.error.isNotBlank() -> setOnErrorState(element)
             else -> setOnSuccessState(element)
         }
@@ -122,8 +125,11 @@ class MultiLineGraphViewHolder(
         showLineGraph(selectedMetrics)
     }
 
-    private fun setOnLoadingState(element: MultiLineGraphWidgetUiModel) {
-
+    private fun setOnLoadingState() {
+        with(itemView) {
+            shcMlgSuccessState.gone()
+            shcMlgLoadingState.visible()
+        }
     }
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
@@ -142,6 +148,9 @@ class MultiLineGraphViewHolder(
         metric?.isSelected = true
 
         with(itemView) {
+            shcMlgSuccessState.visible()
+            shcMlgLoadingState.gone()
+
             tvShcMultiLineGraphTitle.text = element.title
 
             setupMetricCards(metricItems)
@@ -364,8 +373,8 @@ class MultiLineGraphViewHolder(
         if (isSingleMetric) {
             val metric = metrics[0]
             val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
+            isMetricComparableByPeriodSelected = isComparableByPeriod
             if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
-                isMetricComparableByPeriodSelected = true
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
             }
@@ -397,7 +406,7 @@ class MultiLineGraphViewHolder(
         val hexColor = getLineHexColor(metric.summary.lineColor)
         val yAxisLabel = getYAxisLabel(metric)
 
-        return listOf(currentPeriod, lastPeriod).map {
+        return listOf(lastPeriod, currentPeriod).map {
             val isLastPeriod = it == lastPeriod
             return@map LineChartData(
                     chartEntry = it,
