@@ -65,6 +65,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var mNoPermissionsView: View
     private lateinit var mStoreDetail: LocationDetailBottomSheet
 
+    private val storeBitmap: BitmapDescriptor? by lazy {
+        bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)
+    }
+
     @Inject
     lateinit var dropoffMapper: GetStoreMapper
 
@@ -370,7 +374,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(getLatLng(datum.latitude, datum.longitude))
-                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)))
+                    .icon(storeBitmap))
             marker?.let {
                 it.tag = datum
                 mMarkerList.add(it)
