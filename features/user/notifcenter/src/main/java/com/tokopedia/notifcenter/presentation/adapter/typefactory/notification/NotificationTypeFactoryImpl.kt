@@ -40,10 +40,9 @@ class NotificationTypeFactoryImpl constructor(
     ): Int {
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
-            return when (item.typeLink) {
-                NotificationUiModel.TYPE_DEFAULT -> NormalNotificationViewHolder.LAYOUT
-                NotificationUiModel.TYPE_ATC,
-                NotificationUiModel.TYPE_BUY -> SingleProductNotificationViewHolder.LAYOUT
+            return when {
+                item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
+                item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }

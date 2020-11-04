@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -7,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.Campaign
 import com.tokopedia.unifycomponents.Label
@@ -27,14 +29,15 @@ class CampaignRedView @JvmOverloads constructor(
         campaignPrice.paintFlags = campaignPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
+    @SuppressLint("SetTextI18n")
     fun setCampaign(campaign: Campaign?) {
-        if (campaign == null) return
-        if (campaign.discountPercentage == 0) {
+        if (campaign != null && campaign.discountPercentage != 0) {
+            show()
+            campaignPrice.text = campaign.originalPriceFormat
+            campaignDiscount.text = "${campaign.discountPercentage}%"
+        } else {
             hide()
-            return
         }
-        campaignPrice.text = campaign.originalPriceFormat
-        campaignDiscount.text = "${campaign.discountPercentage}%"
     }
 
 }

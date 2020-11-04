@@ -2,6 +2,8 @@ package com.tokopedia.notifcenter.data.entity.notification
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifcenter.data.entity.Campaign
+import com.tokopedia.notifcenter.data.entity.Variant
 
 data class ProductData(
     @SerializedName("campaign")

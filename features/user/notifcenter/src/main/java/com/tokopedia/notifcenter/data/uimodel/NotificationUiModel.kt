@@ -71,6 +71,8 @@ data class NotificationUiModel(
         val userId: Long = 0
 ) : Visitable<NotificationTypeFactory> {
 
+    val product: ProductData? get() = productData.getOrNull(0)
+
     override fun type(typeFactory: NotificationTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -81,6 +83,14 @@ data class NotificationUiModel(
      */
     fun isRead(): Boolean {
         return readStatus == 2
+    }
+
+    fun isTypeDefault(): Boolean {
+        return typeLink == TYPE_DEFAULT
+    }
+
+    fun isTypeSingleProduct(): Boolean {
+        return (typeLink == TYPE_ATC || typeLink == TYPE_BUY) && productData.size == 1
     }
 
     companion object {

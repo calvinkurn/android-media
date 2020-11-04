@@ -58,7 +58,7 @@ class MultipleProductCardViewHolder(
     }
 
     private fun impressionTracker(element: MultipleProductCardViewBean) {
-        when(sourceView) {
+        when (sourceView) {
             is SourceMultipleProductView.NotificationCenter -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
@@ -89,7 +89,7 @@ class MultipleProductCardViewHolder(
         val notification = Mapper.map(element)
         productContainer.setOnClickListener {
             listener.itemClicked(notification, adapterPosition)
-            when(sourceView) {
+            when (sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
                     listener.getAnalytic().trackMultiProductCheckoutCardClick(
                             notification = element
@@ -117,7 +117,7 @@ class MultipleProductCardViewHolder(
                 // goto cart page
                 routeCartPage()
 
-                when(sourceView) {
+                when (sourceView) {
                     is SourceMultipleProductView.NotificationCenter -> {
                         listener.getAnalytic().trackAtcOnMultiProductClick(
                                 notification = element,
@@ -171,7 +171,8 @@ class MultipleProductCardViewHolder(
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.item_notification_product_card
+        @LayoutRes
+        val LAYOUT = R.layout.item_notification_product_card
     }
 
 }
