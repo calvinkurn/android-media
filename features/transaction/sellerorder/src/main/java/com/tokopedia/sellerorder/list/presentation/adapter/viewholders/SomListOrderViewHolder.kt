@@ -35,17 +35,15 @@ class SomListOrderViewHolder(
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
-
-        var multiEditEnabled = false
     }
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
             itemView.setOnClickListener {
-                if (!multiEditEnabled) listener.onOrderClicked(element)
+                if (!listener.isMultiSelectEnabled()) listener.onOrderClicked(element)
                 else touchCheckBox(element)
             }
-            itemView.alpha = if (multiEditEnabled && element.cancelRequest != 0) 0.5f else 1f
+            itemView.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)
             setupCheckBox(element)
@@ -77,7 +75,7 @@ class SomListOrderViewHolder(
     private fun setupQuickActionButton(element: SomListOrderUiModel) {
         with(itemView) {
             val firstButton = element.buttons.firstOrNull()
-            if (firstButton != null && !multiEditEnabled) {
+            if (firstButton != null && !listener.isMultiSelectEnabled()) {
                 btnQuickAction.text = firstButton.displayName
                 btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction.setOnClickListener { onQuickActionButtonClicked(element) }
@@ -175,7 +173,7 @@ class SomListOrderViewHolder(
 
     private fun setupCheckBox(element: SomListOrderUiModel) {
         with(itemView) {
-            checkBoxSomListMultiSelect.showWithCondition(multiEditEnabled)
+            checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
             checkBoxSomListMultiSelect.isChecked = element.isChecked
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -196,7 +194,7 @@ class SomListOrderViewHolder(
 
     private fun setupStatusIndicator(element: SomListOrderUiModel) {
         with(itemView) {
-            if (multiEditEnabled) {
+            if (listener.isMultiSelectEnabled()) {
                 somOrderListIndicator.gone()
             } else {
                 somOrderListIndicator.background = getColoredIndicator(context, element.statusIndicatorColor)
@@ -240,5 +238,6 @@ class SomListOrderViewHolder(
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)
         fun onFinishBindNewOrder(view: View, itemIndex: Int)
+        fun isMultiSelectEnabled(): Boolean
     }
 }

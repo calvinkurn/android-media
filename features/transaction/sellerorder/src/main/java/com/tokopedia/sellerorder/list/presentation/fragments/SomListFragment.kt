@@ -265,7 +265,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        SomListOrderViewHolder.multiEditEnabled = false
         outState.putString(KEY_LAST_ACTIVE_FILTER, tabActive)
         outState.putString(KEY_LAST_SELECTED_ORDER_ID, selectedOrderId)
         super.onSaveInstanceState(outState)
@@ -283,7 +282,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun loadInitialData() {
-        SomListOrderViewHolder.multiEditEnabled = false
+        viewModel.isMultiSelectEnabled = false
         resetOrderSelectedStatus()
         isLoadingInitialData = true
         loadUserRoles()
@@ -324,8 +323,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             SomAnalytics.eventClickStatusFilter(SomConsts.STATUS_ALL_ORDER, SomConsts.STATUS_NAME_ALL_ORDER)
             ""
         }
-        if (SomListOrderViewHolder.multiEditEnabled) {
-            SomListOrderViewHolder.multiEditEnabled = false
+        if (viewModel.isMultiSelectEnabled) {
+            viewModel.isMultiSelectEnabled = false
             resetOrderSelectedStatus()
             toggleBulkActionButtonVisibility()
             toggleBulkActionCheckboxVisibility()
@@ -531,6 +530,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             return@let
         }
     }
+
+    override fun isMultiSelectEnabled(): Boolean = viewModel.isMultiSelectEnabled
 
     private fun createCoachMarkItems(firstNewOrderView: View): ArrayList<CoachMark2Item> {
         return arrayListOf<CoachMark2Item>().apply {
@@ -981,7 +982,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun updateOrderCounter() {
-        val text = if (SomListOrderViewHolder.multiEditEnabled) {
+        val text = if (viewModel.isMultiSelectEnabled) {
             val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
             getString(R.string.som_list_order_counter_multi_select_enabled, checkedCount)
         } else {
@@ -1055,7 +1056,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun toggleBulkAction() {
-        SomListOrderViewHolder.multiEditEnabled = !SomListOrderViewHolder.multiEditEnabled
+        viewModel.isMultiSelectEnabled = !viewModel.isMultiSelectEnabled
     }
 
     private fun resetOrderSelectedStatus() {
@@ -1070,11 +1071,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun toggleBulkActionButtonVisibility() {
         val isAnyCheckedOrder = adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.isChecked } != null
-        containerBtnBulkAction.showWithCondition(SomListOrderViewHolder.multiEditEnabled && isAnyCheckedOrder)
+        containerBtnBulkAction.showWithCondition(viewModel.isMultiSelectEnabled && isAnyCheckedOrder)
     }
 
     private fun toggleBulkActionCheckboxVisibility() {
-        checkBoxBulkAction.showWithCondition(SomListOrderViewHolder.multiEditEnabled)
+        checkBoxBulkAction.showWithCondition(viewModel.isMultiSelectEnabled)
     }
 
     private fun updateBulkActionCheckboxStatus() {

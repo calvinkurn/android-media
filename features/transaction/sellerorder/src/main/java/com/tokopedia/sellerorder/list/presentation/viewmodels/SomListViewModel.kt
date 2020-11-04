@@ -124,6 +124,8 @@ class SomListViewModel @Inject constructor(
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
 
+    var isMultiSelectEnabled: Boolean = false
+
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
