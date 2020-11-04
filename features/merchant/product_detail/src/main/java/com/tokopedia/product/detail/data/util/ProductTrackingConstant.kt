@@ -34,6 +34,7 @@ object ProductTrackingConstant {
         const val KEY_TICKER_TYPE = "tickerType"
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
+        const val KEY_CATEGORY_ID = "categoryId"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -76,6 +77,7 @@ object ProductTrackingConstant {
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val KEY_DISCUSSION_USER_ID = "userId"
+        const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
