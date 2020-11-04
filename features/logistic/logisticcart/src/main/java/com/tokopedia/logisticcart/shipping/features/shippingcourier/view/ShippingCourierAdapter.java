@@ -1,3 +1,4 @@
+/*
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import androidx.annotation.NonNull;
@@ -11,9 +12,11 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 
 import java.util.List;
 
+*/
 /**
  * Created by Irfan Khoirul on 08/08/18.
- */
+ *//*
+
 
 public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -57,3 +60,4 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 }
+*/
