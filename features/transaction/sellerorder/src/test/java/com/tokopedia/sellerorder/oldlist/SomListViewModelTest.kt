@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.oldlist.data.model.*
 import com.tokopedia.sellerorder.oldlist.domain.list.*

@@ -195,7 +195,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:background="@drawable/bg_due_response"
         app:cardCornerRadius="3dp"
         app:cardElevation="@dimen/dp_0"
@@ -215,7 +214,6 @@
                 android:layout_height="@dimen/dp_12"
                 android:layout_gravity="start"
                 android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
                 app:srcCompat="@drawable/ic_label_due_time"
                 tools:ignore="ContentDescription" />
 
@@ -224,7 +222,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/ic_time"
-                android:layout_toRightOf="@id/ic_time"
                 android:textColor="@color/white"
                 app:typographyType="small"
                 app:typographyWeight="bold"

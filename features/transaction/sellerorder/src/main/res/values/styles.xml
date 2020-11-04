@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White" />
+
+    <style name="SomFilterDateDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">stateHidden</item>
+    </style>
 </resources>

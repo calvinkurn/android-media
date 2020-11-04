@@ -42,7 +42,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
+import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
@@ -83,6 +87,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         TickerCallback, TickerPagerCallback, SearchInputView.Listener, SearchInputView.ResetListener,
         SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
         SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener,
+        SomFilterBottomSheet.SomFilterFinishListener,
         SomListOrderEmptyViewHolder.SomListEmptyStateListener {
 
     companion object {
@@ -338,6 +343,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         } else {
             getSwipeRefreshLayout(view)?.isRefreshing = true
         }
+    }
+
+    override fun onParentSortFilterClicked() {
+        val bottomSheetFilter = SomFilterBottomSheet.createInstance(
+                somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
+                viewModel.getDataOrderListParams().statusList,
+                viewModel.getSomFilterUi(),
+                this.activity
+        )
+        bottomSheetFilter.setSomFilterFinishListener(this)
+        bottomSheetFilter.show()
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -1333,4 +1349,21 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
+
+    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String) {
+        viewModel.updateGetOrderListParams(filterData)
+        val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
+                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
+        somListFilter.statusList.find { it.status == orderStatus }.let {
+            if (it != null) {
+                it.isChecked = true
+                somListSortFilterTab.selectTab(it)
+                refreshOrderList()
+            } else {
+                refreshOrderList()
+            }
+        }
+        viewModel.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
+    }
 }

@@ -42,7 +42,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickMainActionInOrderDetail
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickSecondaryActionInOrderDetail
 import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
@@ -182,6 +182,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
+    private var dynamicPriceResponse = SomDynamicPriceResponse.GetSomDynamicPrice()
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrderResponse.Data.RejectOrder()
     private var successEditAwbResponse = SomEditRefNumResponse.Data()
@@ -214,7 +215,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
     companion object {
-        private val TAG_COACHMARK_DETAIL = "coachmark"
+        private const val TAG_COACHMARK_DETAIL = "coachmark"
 
         private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
         private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
@@ -238,11 +239,11 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     fun doClickChat() {
-        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusCode.toString())
+        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusCode.toString(), detailResponse.statusText.toString())
         goToAskBuyer()
     }
 
-    fun goToAskBuyer() {
+    private fun goToAskBuyer() {
         val urlInvoice = detailResponse.invoiceUrl
         val invoiceUri = Uri.parse(urlInvoice)
         val invoiceId = invoiceUri.getQueryParameter(ATTRIBUTE_ID)
@@ -261,7 +262,7 @@ class SomDetailFragment : BaseDaggerFragment(),
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusCode.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
-            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, detailResponse.paymentSummary.totalPriceText)
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, dynamicPriceResponse.paymentData.value)
         }
         startActivity(intent)
     }
@@ -372,7 +373,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    detailResponse = it.data
+                    detailResponse = it.data.getSomDetail as SomDetailOrder.Data.GetSomDetail
+                    dynamicPriceResponse = it.data.somDynamicPriceResponse as SomDynamicPriceResponse.GetSomDynamicPrice
                     renderDetail()
                 }
                 is Fail -> {
@@ -593,7 +595,6 @@ class SomDetailFragment : BaseDaggerFragment(),
         // shipping
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
-                detailResponse.paymentSummary.shippingPriceText,
                 detailResponse.receiver.name,
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
@@ -621,16 +622,23 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun renderPayment() {
-        val dataPayments = SomDetailPayments(
-                detailResponse.paymentSummary.productsPriceText,
-                detailResponse.paymentSummary.totalItem,
-                detailResponse.paymentSummary.totalWeightText,
-                detailResponse.paymentSummary.shippingPriceText,
-                detailResponse.paymentSummary.insurancePrice,
-                detailResponse.paymentSummary.insurancePriceText,
-                detailResponse.paymentSummary.additionalPrice,
-                detailResponse.paymentSummary.additionalPriceText,
-                detailResponse.paymentSummary.totalPriceText)
+        val paymentData = SomDetailPayments.PaymentDataUiModel(
+                label = dynamicPriceResponse.paymentData.label,
+                value = dynamicPriceResponse.paymentData.value,
+                textColor = dynamicPriceResponse.paymentData.textColor)
+
+        val paymentMethodList = mutableListOf<SomDetailPayments.PaymentMethodUiModel>()
+        dynamicPriceResponse.paymentMethod.map {
+            paymentMethodList.add(SomDetailPayments.PaymentMethodUiModel(label = it.label, value = it.value))
+        }
+
+        val pricingList = mutableListOf<SomDetailPayments.PricingData>()
+        dynamicPriceResponse.pricingData.map {
+            pricingList.add(SomDetailPayments.PricingData(label = it.label, value = it.value))
+        }
+
+        val dataPayments = SomDetailPayments(paymentDataUiModel = paymentData,
+                paymentMethodUiModel = paymentMethodList, pricingData = pricingList)
 
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
     }
@@ -643,7 +651,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 btn_primary?.apply {
                     text = buttonResp.displayName
                     setOnClickListener {
-                        eventClickMainActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
+                        eventClickCtaActionInOrderDetail(buttonResp.displayName, detailResponse.statusText)
                         when {
                             buttonResp.key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(orderId)
                             buttonResp.key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(buttonResp)
@@ -832,7 +840,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     override fun onBottomSheetItemClick(key: String) {
         detailResponse.button.forEach {
             if (key.equals(it.key, true)) {
-                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusText)
+                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusCode.toString(), detailResponse.statusText)
                 secondaryBottomSheet?.dismiss()
                 when {
                     key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
@@ -905,7 +913,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
         bottomSheetPenalty.apply {
             setTitle(TITLE_BATALKAN_PESANAN_PENALTY)
-            setFullPage(true)
+            isFullpage = true
             setChild(viewBottomSheet)
             setCloseClickListener { dismiss() }
         }
@@ -1034,7 +1042,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSeeInvoice(url: String) {
-        SomAnalytics.eventClickViewInvoice(detailResponse.statusCode.toString())
+        SomAnalytics.eventClickViewInvoice(detailResponse.statusCode.toString(), detailResponse.statusText)
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
@@ -1318,7 +1326,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         }
 
         bottomSheetBuyerOtherReason.apply {
-            setFullPage(true)
+            isFullpage = true
             setOnDismissListener { dismiss() }
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetOtherReason)

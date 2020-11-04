@@ -27,6 +27,8 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickTerapkanOnFilterPage
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
+import com.tokopedia.sellerorder.common.presenter.model.SomSubFilter
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -38,8 +40,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
 import com.tokopedia.sellerorder.oldlist.data.model.SomListAllFilter
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
-import com.tokopedia.sellerorder.oldlist.data.model.SomSubFilter
 import com.tokopedia.sellerorder.oldlist.di.SomListComponent
 import com.tokopedia.sellerorder.oldlist.presentation.activity.SomSubFilterActivity
 import com.tokopedia.sellerorder.oldlist.presentation.viewmodel.SomFilterViewModel

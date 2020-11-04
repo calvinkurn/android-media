@@ -15,6 +15,7 @@
     <string name="seller_info">Seller Info</string>
     <string name="seller_filter">Filter</string>
     <string name="title_logistic_info">Informasi Terkait Kurir</string>
+    <string name="btn_show_order">Tampilkan Pesanan</string>
 
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>
@@ -43,6 +44,12 @@
     <string name="title_see_all">Lihat Semua</string>
     <string name="title_status">Status</string>
     <string name="title_filter">Filter</string>
+    <string name="title_sort">Urutkan</string>
+    <string name="title_status_order">Status Pesanan</string>
+    <string name="title_tipe_pesanan">Tipe Pesanan</string>
+    <string name="title_kurir">Kurir</string>
+    <string name="title_label">Label</string>
+    <string name="title_jatuh_tempo">Jatuh Tempo</string>
     <string name="subtitle_status">Pilih Status</string>
     <string name="mulai_dari">Mulai Dari</string>
     <string name="sampai">Sampai</string>
@@ -50,6 +57,9 @@
     <string name="reset">Reset</string>
     <string name="simpan">Simpan</string>
     <string name="cetak">Cetak</string>
+    <string name="select_date">Pilih tanggal</string>
+    <string name="start_date">Tanggal Mulai</string>
+    <string name="end_date">Tanggal Akhir</string>
 
     <!--DETAIL-->
     <string name="daftar_produk">Daftar Produk</string>

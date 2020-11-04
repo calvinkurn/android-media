@@ -49,6 +49,7 @@ import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
@@ -76,7 +77,6 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.oldlist.data.model.SomListFilter
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.oldlist.data.model.SomListTicker
 import com.tokopedia.sellerorder.oldlist.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.oldlist.presentation.activity.SomFilterActivity

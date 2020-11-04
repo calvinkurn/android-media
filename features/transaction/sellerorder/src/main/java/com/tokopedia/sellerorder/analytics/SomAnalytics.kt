@@ -18,6 +18,7 @@ object SomAnalytics {
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
     private const val CLICK_MAIN_ACTION_IN_ORDER_DETAIL = "click main action in order detail"
+    private const val CLICK_MAIN_CTA_IN_ORDER_DETAIL = "click main CTA"
     private const val CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL = "click secondary action in order detail"
     private const val CLICK_BUTTON_PELUANG_IN_EMPTY_STATE = "click button peluang in empty state"
     private const val CLICK_TERAPKAN_ON_FILTER_PAGE = "click terapkan on filter page"
@@ -78,16 +79,17 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, SUBMIT_SEARCH, keyword)
     }
 
-    fun eventClickChatOnHeaderDetail(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL, statusOrder)
+    fun eventClickChatOnHeaderDetail(statusOrderCode: String, statusOrderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL, "$statusOrderCode - $statusOrderName")
     }
 
-    fun eventClickMainActionInOrderDetail(labelBtn: String, statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_MAIN_ACTION_IN_ORDER_DETAIL $labelBtn", statusOrder)
+    fun eventClickCtaActionInOrderDetail(labelBtn: String, statusOrderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_MAIN_CTA_IN_ORDER_DETAIL - $statusOrderCode", "$statusOrderCode - $labelBtn")
     }
 
-    fun eventClickSecondaryActionInOrderDetail(labelBtn: String, statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL $labelBtn", statusOrder)
+    fun eventClickSecondaryActionInOrderDetail(labelBtn: String, statusOrderCode: String, orderStatusName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, "$CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL - $statusOrderCode",
+                "$statusOrderCode - $orderStatusName - $labelBtn")
     }
 
     fun eventClickButtonPeluangInEmptyState(statusOrder: String) {
@@ -114,8 +116,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderCode)
     }
 
-    fun eventClickViewInvoice(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE, statusOrder)
+    fun eventClickViewInvoice(statusOrderCode: String, orderStatusName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE, "$statusOrderCode - $orderStatusName")
     }
 
     fun eventViewEmptyState(statusOrderName: String) {
