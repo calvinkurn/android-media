@@ -38,7 +38,7 @@
         android:layout_marginEnd="3dp"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-        app:siv_search_hint="@string/som_list_search_bar_placeholder" />
+        app:siv_search_hint="@string/hint_search_product" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sortFilterSomList"
@@ -46,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/som_list_sort_filter_margin_top"
         android:paddingStart="@dimen/som_list_sort_filter_horizontal_padding"
+        android:paddingEnd="@dimen/layout_lvl0"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList"

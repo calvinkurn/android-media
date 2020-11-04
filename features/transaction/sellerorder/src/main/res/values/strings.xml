@@ -359,7 +359,6 @@
     <!--  new som list  -->
     <string name="som_list_empty_state_description_no_topads_no_filter">Tetap semangat, rejeki nggak akan pergi \nasal kamu pantang menyerah</string>
     <string name="som_list_error_some_information_cannot_be_loaded">Beberapa informasi gagal dimuat</string>
-    <string name="som_list_search_bar_placeholder">Cari produk atau nomor invoice</string>
     <string name="som_list_response_before_label">Respons sebelum</string>
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
