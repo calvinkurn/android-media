@@ -8,9 +8,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/category_image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="@dimen/travel_homepage_dp_12"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_margin="@dimen/unify_space_12"
         android:layout_gravity="center"/>
 
     <com.tokopedia.unifyprinciples.Typography
