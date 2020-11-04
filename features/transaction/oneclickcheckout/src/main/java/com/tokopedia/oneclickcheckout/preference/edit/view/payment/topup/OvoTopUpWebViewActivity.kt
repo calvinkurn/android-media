@@ -15,7 +15,7 @@ class OvoTopUpWebViewActivity: BaseSimpleActivity(), HasComponent<PreferenceEdit
 
     override fun getNewFragment(): Fragment? {
         val redirectUrl = intent.getStringExtra(OvoTopUpWebViewFragment.EXTRA_REDIRECT_URL)
-        val isHideDigital = intent.getIntExtra(OvoTopUpWebViewFragment.EXTRA_REDIRECT_URL, -1)
+        val isHideDigital = intent.getIntExtra(OvoTopUpWebViewFragment.EXTRA_IS_HIDE_DIGITAL, -1)
         val customerData = intent.getParcelableExtra<OrderPaymentOvoCustomerData>(OvoTopUpWebViewFragment.EXTRA_CUSTOMER_DATA)
         if (redirectUrl == null || isHideDigital == -1 || customerData == null) {
             finish()
