@@ -40,10 +40,8 @@ class UploaderUseCase @Inject constructor(
                 postMedia(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
-            Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${e.message}'")
             UploadResult.Error(TIMEOUT_ERROR)
         } catch (e: StreamResetException) {
-            Timber.w("P1#MEDIA_UPLOADER_ERROR#$sourceId;err='${e.errorCode}'")
             UploadResult.Error(TIMEOUT_ERROR)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
