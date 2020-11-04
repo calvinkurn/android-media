@@ -9,8 +9,6 @@ import com.tokopedia.productcard.ProductCardModel
 
 data class OfficialStoreChannel (
         val channel: Channel,
-        val productCardModels: List<ProductCardModel>,
-        val height: Int
-){
-
-}
+        val productCardModels: List<ProductCardModel> = listOf(),
+        val height: Int = 0
+)

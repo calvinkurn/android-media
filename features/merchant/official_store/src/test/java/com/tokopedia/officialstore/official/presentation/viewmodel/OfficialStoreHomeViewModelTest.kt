@@ -6,6 +6,7 @@ import com.tokopedia.officialstore.TestDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
@@ -17,7 +18,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -359,12 +359,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun onGetDynamicChannel_thenReturn(channel: DynamicChannel) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns channel
-    }
-
-    private fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
-        coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns channel.channels.map { OfficialStoreChannel(it) }
     }
 
     private fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
