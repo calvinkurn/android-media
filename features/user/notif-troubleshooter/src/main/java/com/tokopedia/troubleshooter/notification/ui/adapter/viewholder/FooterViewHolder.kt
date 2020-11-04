@@ -21,6 +21,7 @@ class FooterViewHolder(
     private val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
     private val txtMessage = view.findViewById<TextView>(R.id.txtMessage)
     private val txtStatus = view.findViewById<TextView>(R.id.txtStatus)
+    private val txtHelpCare = view.findViewById<TextView>(R.id.txtHelpCare)
 
     private val context by lazy { itemView.context }
 
