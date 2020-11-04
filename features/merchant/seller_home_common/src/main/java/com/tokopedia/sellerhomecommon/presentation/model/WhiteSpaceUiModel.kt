@@ -17,7 +17,7 @@ class WhiteSpaceUiModel(
         override val dataKey: String = "",
         override val ctaText: String = "",
         override var data: BaseDataUiModel? = null,
-        override val impressHolder: ImpressHolder = ImpressHolder(),
+        override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean = true
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
