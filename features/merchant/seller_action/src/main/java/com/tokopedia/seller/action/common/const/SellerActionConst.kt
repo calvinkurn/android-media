@@ -20,4 +20,6 @@ object SellerActionConst {
     internal const val SLICE_FULL_DATE_FORMAT = "dd MMM yyyy"
     internal const val REQUEST_DATE_FORMAT = "dd/MM/yyyy"
 
+    internal const val MAIN_REQUEST_CODE = 9230
+
 }

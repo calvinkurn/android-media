@@ -30,6 +30,9 @@ class SellerOrderSlice(context: Context,
         private const val MAX_PRODUCT_NAME_LENGTH = 25
         private const val TRUNCATED_PRODUCT_NAME_LENGTH = 22
         private const val MAX_ORDER_LIST_SIZE = 3
+
+        private const val DETAIL_REQUEST_CODE = 9232
+        private const val LIST_REQUEST_CODE = 9233
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -45,7 +48,7 @@ class SellerOrderSlice(context: Context,
                     }
                     row {
                         val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, orderId).let { intent ->
-                            PendingIntent.getActivity(context, 0, intent, 0)
+                            PendingIntent.getActivity(context, DETAIL_REQUEST_CODE, intent, 0)
                         }
                         pendingIntent?.let { intent ->
                             primaryAction = createOrderDetailPrimaryAction(
@@ -81,7 +84,7 @@ class SellerOrderSlice(context: Context,
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun createActivityAction(): SliceAction {
         SellerActionActivity.createActionIntent(context, SellerActionFeatureName.ALL_ORDER).let { intent ->
-            PendingIntent.getActivity(context, 0, intent, 0)
+            PendingIntent.getActivity(context, LIST_REQUEST_CODE, intent, 0)
         }.let { pendingIntent ->
             return SliceAction.create(
                     pendingIntent,

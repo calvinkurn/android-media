@@ -12,6 +12,7 @@ import androidx.slice.builders.SliceAction
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.seller.action.R
+import com.tokopedia.seller.action.common.const.SellerActionConst
 
 abstract class SellerSlice(protected val context: Context, protected val sliceUri: Uri) {
 
@@ -21,7 +22,7 @@ abstract class SellerSlice(protected val context: Context, protected val sliceUr
     open fun createActivityAction(): SliceAction {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
         return SliceAction.create(
-                PendingIntent.getActivity(context, 0, intent, 0),
+                PendingIntent.getActivity(context, SellerActionConst.MAIN_REQUEST_CODE, intent, 0),
                 IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
                 ListBuilder.SMALL_IMAGE,
                 context.getString(R.string.seller_action_open_app)

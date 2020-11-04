@@ -18,6 +18,10 @@ class SellerNotLoginSlice(context: Context,
                           sliceUri: Uri,
                           private val titleText: String? = null): SellerSlice(context, sliceUri) {
 
+    companion object {
+        private const val REQUEST_CODE = 9231
+    }
+
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun getSlice(): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
@@ -37,7 +41,7 @@ class SellerNotLoginSlice(context: Context,
     private fun createLoginAction(): SliceAction {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SEAMLESS_LOGIN)
         return SliceAction.create(
-                PendingIntent.getActivity(context, 0, intent, 0),
+                PendingIntent.getActivity(context, REQUEST_CODE, intent, 0),
                 IconCompat.createWithResource(context, R.drawable.ic_sellerapp_slice),
                 ListBuilder.SMALL_IMAGE,
                 context.getString(R.string.seller_action_open_app)
