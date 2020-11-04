@@ -114,8 +114,6 @@ open class HomeViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
-        const val DRAWER_TYPE_REWARD = "reward"
-        const val DRAWER_TYPE_BBO = "BBO"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
@@ -1280,8 +1278,8 @@ open class HomeViewModel @Inject constructor(
         getTokopointJob = launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.firstOrNull() { it.type.equals(DRAWER_TYPE_REWARD)},
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.firstOrNull() { it.type.equals(DRAWER_TYPE_BBO)},
+                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
+                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(1),
                         isTokoPointDataError = false
                 )
             }){
