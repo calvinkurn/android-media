@@ -50,14 +50,6 @@
 -keep class com.tokopedia.firebase.analytic.rules.** { *; }
 -keep class com.tokopedia.analyticparam.** { *; }
 
-#--------- Parecler exception
-#---- To configure Proguard, add the following lines to your proguard configuration file.
-#---- These will keep files related to the Parcels utilty class and the Parcelable CREATOR instance:
-# Parcel library
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
-
 # start retrofit
 # https://github.com/square/retrofit/blob/master/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro
 -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
@@ -84,13 +76,6 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
-# Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
-
--keep class com.activeandroid.**{ *; }
-
--keep class org.parceler.**{ *; }
-
 #GLIDE
 #https://github.com/bumptech/glide/blob/master/library/proguard-rules.txt
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -103,12 +88,14 @@
 }
 #END GLIDE
 
+#https://github.com/airbnb/DeepLinkDispatch/issues/44
 -keep class com.airbnb.deeplinkdispatch.** { *; }
 -keepclasseswithmembers class * {
      @com.airbnb.deeplinkdispatch.DeepLink <methods>;
 }
 
 # Parceler configuration
+# http://parceler.org/
 -keep interface org.parceler.Parcel
 -keep @org.parceler.Parcel class * { *; }
 -keep class **$$Parcelable { *; }
@@ -175,14 +162,12 @@
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
 # -- Unit Test
--keep class junit.framework.** { *; }
--keep class android.test.** { *; }
--keep class org.mockito.** { *; }
--keep class org.junit.** { *; }
--dontwarn junit.framework.**
+-dontnote junit.framework.**
+-dontnote junit.runner.**
+-dontwarn org.junit.**
 -dontwarn android.test.**
 -dontwarn org.mockito.**
--dontwarn org.junit.**
+-dontwarn org.hamcrest.**
 
 -keep public class com.google.android.material.bottomnavigation.** { *; }
 -keep class com.google.android.material.bottomsheet.BottomSheetBehavior { *** findScrollingChild(...); }
@@ -190,8 +175,6 @@
 -keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
     private <fields>;
 }
-
--keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
 
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
