@@ -11,3 +11,10 @@ fun TextView.displayTextOrHide(text : String) {
         this.visibility = View.GONE
     }
 }
+
+fun TextView.setTextAndContentDescription(text: String?, contentDescriptionTemplate: String) {
+    this.text = text
+    if (!text.isNullOrEmpty()) {
+        this.contentDescription = "$contentDescriptionTemplate $text"
+    }
+}
