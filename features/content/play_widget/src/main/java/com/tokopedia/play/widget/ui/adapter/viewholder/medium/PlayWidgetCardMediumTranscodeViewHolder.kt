@@ -37,7 +37,9 @@ class PlayWidgetCardMediumTranscodeViewHolder(
     private val tvAuthor: TextView = itemView.findViewById(R.id.play_widget_channel_name)
     private val tvTotalView: TextView = itemView.findViewById(R.id.viewer)
     private val llWidgetContainer: LinearLayout = itemView.findViewById(R.id.play_widget_info_container)
+    private val llLoadingContainer: LinearLayout = itemView.findViewById(R.id.ll_loading_container)
     private val loaderLoading: LoaderUnify = itemView.findViewById(R.id.loader_loading)
+    private val llError: LinearLayout = itemView.findViewById(R.id.ll_error)
 
     private val transcodingCoverTarget = object : CustomTarget<Bitmap>() {
         override fun onLoadCleared(placeholder: Drawable?) {
@@ -64,6 +66,11 @@ class PlayWidgetCardMediumTranscodeViewHolder(
     }
 
     fun bind(item: PlayWidgetMediumChannelUiModel) {
+        Glide.with(thumbnail.context)
+                .asBitmap()
+                .load(item.video.coverUrl)
+                .into(transcodingCoverTarget)
+
         when (item.channelType) {
             PlayWidgetChannelType.Transcoding -> setTranscodingModel(item)
             PlayWidgetChannelType.FailedTranscoding -> setFailedTranscodingModel(item)
@@ -72,11 +79,6 @@ class PlayWidgetCardMediumTranscodeViewHolder(
     }
 
     private fun setTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
-        Glide.with(thumbnail.context)
-                .asBitmap()
-                .load(model.video.coverUrl)
-                .into(transcodingCoverTarget)
-
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
 
@@ -88,15 +90,17 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         tvTotalView.text = model.totalView
 
         llWidgetContainer.visibility = View.VISIBLE
+        llLoadingContainer.visibility = View.VISIBLE
+        llError.visibility = View.GONE
     }
 
     private fun setFailedTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
-        thumbnail.loadImage(model.video.coverUrl)
-
         totalViewBadge.visibility = View.GONE
         promoBadge.visibility = View.GONE
 
         llWidgetContainer.visibility = View.GONE
+        llLoadingContainer.visibility = View.GONE
+        llError.visibility = View.VISIBLE
     }
 
     companion object {

@@ -3,6 +3,7 @@
     <dimen name="play_widget_dp_3">3dp</dimen>
     <dimen name="play_widget_dp_6">6dp</dimen>
     <dimen name="play_widget_dp_12">12dp</dimen>
+    <dimen name="play_widget_dp_14">14dp</dimen>
     <dimen name="play_widget_dp_18">18dp</dimen>
     <dimen name="play_widget_dp_20">20dp</dimen>
 
@@ -35,4 +36,5 @@
     <dimen name="play_widget_card_placeholder_detail_radius">8dp</dimen>
 
     <dimen name="play_widget_unify_loader_size">40dp</dimen>
+    <dimen name="play_widget_info_image_size">40dp</dimen>
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import javax.inject.Inject
+import kotlin.random.Random
 
 
 /**
@@ -72,7 +73,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         return PlayWidgetMediumChannelUiModel(
                 channelId = item.id,
                 title = item.title,
-                channelType = channelType,
+//                channelType = channelType,
+                channelType = if (Random.nextInt() % 2 == 0) PlayWidgetChannelType.Transcoding else PlayWidgetChannelType.FailedTranscoding,
                 appLink = item.appLink,
                 webLink = item.webLink,
                 startTime = item.startTime,
