@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonArray
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
@@ -85,7 +86,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         }
     }
 
-    fun doAtc(userId: String, atcMultiQuery: String, listParam: JsonArray) {
+    fun doAtc(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
         launch {
             _atcResult.postValue(atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
         }

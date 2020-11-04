@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -36,6 +37,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
@@ -47,6 +49,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CUSTOMER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
@@ -68,10 +71,16 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.NOTES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_ID
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_NAME
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_PRICE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUANTITY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
@@ -85,6 +94,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
@@ -131,6 +141,7 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -1365,7 +1376,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (orderData.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
+                        val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
+                        for (x in 0 until jsonArray.size()) {
+                            val objParam = jsonArray.get(x).asJsonObject
+                            listParamAtcMulti.add(AddToCartMultiParam(
+                                    productId = objParam.get(PRODUCT_ID).asInt,
+                                    productName = objParam.get(PRODUCT_NAME).asString,
+                                    productPrice = objParam.get(PRODUCT_PRICE).asInt,
+                                    qty = objParam.get(QUANTITY).asInt,
+                                    notes = objParam.get(NOTES).asString,
+                                    shopId = objParam.get(SHOP_ID).asInt,
+                                    custId = objParam.get(CUSTOMER_ID).asInt,
+                                    warehouseId = objParam.get(WAREHOUSE_ID).asInt
+                            ))
+                        }
+
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1451,7 +1477,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (order.metadata.listProducts.isNotEmpty()) {
                         val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
                         val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
-                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArray)
+                        val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
+                        for (x in 0 until jsonArray.size()) {
+                            val objParam = jsonArray.get(x).asJsonObject
+                            listParamAtcMulti.add(AddToCartMultiParam(
+                                    productId = objParam.get(PRODUCT_ID).asInt,
+                                    productName = objParam.get(PRODUCT_NAME).asString,
+                                    productPrice = objParam.get(PRODUCT_PRICE).asInt,
+                                    qty = objParam.get(QUANTITY).asInt,
+                                    notes = objParam.get(NOTES).asString,
+                                    shopId = objParam.get(SHOP_ID).asInt,
+                                    custId = objParam.get(CUSTOMER_ID).asInt,
+                                    warehouseId = objParam.get(WAREHOUSE_ID).asInt
+                            ))
+                        }
+                        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
                         // analytics
                         val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
@@ -1600,17 +1640,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
-        val jsonArrayAtc = JsonArray()
-        val atcJsonObject = JsonObject()
-        atcJsonObject.addProperty(UohConsts.PRODUCT_ID, recommendationItem.productId)
-        atcJsonObject.addProperty(UohConsts.SHOP_ID, recommendationItem.shopId)
-        atcJsonObject.addProperty(UohConsts.QUANTITY, recommendationItem.quantity)
-        atcJsonObject.addProperty(UohConsts.NOTES, "")
-        atcJsonObject.addProperty(UohConsts.CATEGORY, recommendationItem.categoryBreadcrumbs)
-        atcJsonObject.addProperty(UohConsts.PRODUCT_NAME, recommendationItem.name)
-        atcJsonObject.addProperty(UohConsts.PRODUCT_PRICE, recommendationItem.priceInt)
-        jsonArrayAtc.add(atcJsonObject)
-        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), jsonArrayAtc)
+        val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
+        listParamAtcMulti.add(AddToCartMultiParam(
+                productId = recommendationItem.productId,
+                productName = recommendationItem.name,
+                productPrice = recommendationItem.priceInt,
+                qty = recommendationItem.quantity,
+                notes = "",
+                shopId = recommendationItem.shopId,
+                category = recommendationItem.categoryBreadcrumbs))
+        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
         // analytics
         trackAtcRecommendationItem(recommendationItem)
