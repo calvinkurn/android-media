@@ -16,7 +16,9 @@ import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
@@ -50,7 +52,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.FlightSearchFormListener {
+class FlightHomepageFragment : BaseDaggerFragment(),
+        FlightSearchFormView.FlightSearchFormListener, TravelVideoBannerWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -105,6 +108,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
+            flightHomepageViewModel.fetchVideoBannerData()
         }
     }
 
@@ -121,6 +125,17 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 }
             }
             stopTrace()
+        })
+
+        flightHomepageViewModel.videoBanner.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderVideoBannerView(it.data)
+                }
+                is Fail -> {
+                    hideVideoBannerView()
+                }
+            }
         })
 
         flightHomepageViewModel.homepageData.observe(viewLifecycleOwner, Observer {
@@ -290,6 +305,25 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             flightHomepageSearchForm.init()
         }
 
+    }
+
+    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
+        // do nothing for now, will use for tracking later
+    }
+
+    private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
+        flightHomepageVideoBanner.listener = this
+        flightHomepageVideoBanner.customHeight = if (bannerWidthInPixels > 0) {
+            measureBannerHeightBasedOnRatio()
+        } else {
+            resources.getDimensionPixelSize(R.dimen.banner_height)
+        }
+        flightHomepageVideoBanner.setData(bannerData)
+        flightHomepageVideoBanner.build()
+    }
+
+    private fun hideVideoBannerView() {
+        flightHomepageVideoBanner.hideTravelVideoBanner()
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {

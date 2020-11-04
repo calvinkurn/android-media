@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.widget_travel_video_banner.view.*
 class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
 
+    var customHeight: Int = 0
     var listener: ActionListener? = null
     private lateinit var bannerModel: TravelVideoBannerModel
 
@@ -53,6 +54,9 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
                 ivTravelVideoBanner.setOnClickListener {
                     listener?.onVideoBannerClicked(bannerModel)
                     RouteManager.route(context, bannerModel.destinationLink)
+                }
+                if (customHeight > 0) {
+                    ivTravelVideoBanner.layoutParams.height = customHeight
                 }
                 showTravelVideoBanner()
             } else {
