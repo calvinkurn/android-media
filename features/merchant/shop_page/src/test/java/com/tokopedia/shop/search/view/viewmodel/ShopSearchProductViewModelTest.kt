@@ -44,7 +44,7 @@ class ShopSearchProductViewModelTest {
     }
 
     @Test
-    fun `when user search product should return successful`() {
+    fun `when user search product should return success`() {
         mockkObject(GetSearchShopProductUseCase)
         coEvery {
             getSearchShopProductUseCase.executeOnBackground()
