@@ -7,27 +7,18 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
 import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class OvoTopUpWebViewViewModel @Inject constructor(private val getOvoTopUpUrlUseCase: GetOvoTopUpUrlUseCase,
-                                                   private val userSession: UserSessionInterface) : ViewModel() {
+class OvoTopUpWebViewViewModel @Inject constructor(private val getOvoTopUpUrlUseCase: GetOvoTopUpUrlUseCase) : ViewModel() {
 
     private val _ovoTopUpUrl: OccMutableLiveData<OccState<String>> = OccMutableLiveData(OccState.Loading)
     val ovoTopUpUrl: LiveData<OccState<String>>
         get() = _ovoTopUpUrl
 
     fun getOvoTopUpUrl(redirectUrl: String, customerData: OrderPaymentOvoCustomerData) {
+        _ovoTopUpUrl.value = OccState.Loading
         getOvoTopUpUrlUseCase.execute(customerData.name, customerData.email, customerData.msisdn, redirectUrl,
-                { url -> _ovoTopUpUrl.value = OccState.Success(generateUrl(url, userSession)) },
+                { url -> _ovoTopUpUrl.value = OccState.Success(url) },
                 { throwable -> _ovoTopUpUrl.value = OccState.Failed(Failure(throwable)) })
-    }
-
-    private fun generateUrl(url: String, userSession: UserSessionInterface): String {
-        return url
-//        return URLGenerator.generateURLSessionLogin(
-//                url.encodeOnce(),
-//                userSession.deviceId,
-//                userSession.userId)
     }
 }

@@ -27,7 +27,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerDa
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -35,9 +34,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class OvoTopUpWebViewFragment : BaseDaggerFragment() {
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -145,7 +141,6 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(url: String) {
-//        webView?.loadAuthUrl(url, userSession)
         val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
         webView?.loadUrl(newUrl)
         webView?.visible()
