@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="merchant_product_detail_dark_mode_support_shadow_color_1">#00CCCCCC</color>
-    <color name="merchant_product_detail_dark_mode_support_shadow_color_2">#10CCCCCC</color>
-    <color name="merchant_product_detail_dark_mode_support_shadow_color_3">#15CCCCCC</color>
-    <color name="merchant_product_detail_dark_mode_support_shadow_color_4">#20CCCCCC</color>
-    <color name="merchant_product_detail_dark_mode_support_shadow_color_5">#25CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_1">#00CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_2">#10CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_3">#15CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_4">#20CCCCCC</color>
+    <color name="product_detail_dms_shadow_color_5">#25CCCCCC</color>
 
-    <color name="merchant_product_detail_dark_mode_support_white">@color/Unify_N0</color>
-    <color name="merchant_product_detail_dark_mode_support_page_control">@color/Unify_N700</color>
-    <color name="merchant_product_detail_dark_mode_support_cashback_green">@color/Unify_G200</color>
+    <color name="product_detail_dms_white">@color/Unify_N0</color>
+    <color name="product_detail_dms_page_control">@color/Unify_N700</color>
+    <color name="product_detail_dms_cashback_green">@color/Unify_G200</color>
 </resources>
