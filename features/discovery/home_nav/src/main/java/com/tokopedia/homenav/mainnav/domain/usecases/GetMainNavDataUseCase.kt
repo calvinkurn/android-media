@@ -1,8 +1,7 @@
-package com.tokopedia.homenav.mainnav.domain.interactor
+package com.tokopedia.homenav.mainnav.domain.usecases
 
 import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
-import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase

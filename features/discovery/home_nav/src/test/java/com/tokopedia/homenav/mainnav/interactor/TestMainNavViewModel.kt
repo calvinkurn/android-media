@@ -4,24 +4,24 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
-import com.tokopedia.homenav.mainnav.domain.interactor.*
+import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
+import com.tokopedia.homenav.mainnav.MainNavConst
+import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
+import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.homenav.rule.CoroutinesTestRule
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 
 @ExperimentalCoroutinesApi
 class TestMainNavViewModel {
@@ -50,97 +50,147 @@ class TestMainNavViewModel {
         MockKAnnotations.init(this, relaxUnitFun = true)
     }
 
+    //user menu section
     @Test
-    fun `test when viewmodel created and user has no shop then viewmodel create at least 9 user menu`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
-        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
+    fun `test when viewmodel created and user has no shop then viewmodel create at least 7 user menu`() {
+        val defaultUserMenuCount = 7
 
-        val userMenuMockId = 99
-        val defaultUserMenuCount = 9
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerViewModel() }
 
-        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
-        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(0) }
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
 
-        every { clientMenuGenerator.getMenu(anyInt()) }.answers { HomeNavMenuViewModel(id = userMenuMockId) }
-        every { userSession.hasShop() }.answers { false }
-
-        viewModel = createViewModel(
-                getUserInfoUseCase = getUserInfoUseCase,
-                getWalletBalanceUseCase = getWalletBalanceUseCase,
-                getUserMembershipUseCase = getUserMembershipUseCase,
-                getShopInfoUseCase = getShopInfoUseCase,
-                getMainNavDataUseCase = getMainNavDataUseCase,
-                clientMenuGenerator = clientMenuGenerator,
-                userSession = userSession,
-                getResolutionNotification = getResolutionNotification
-        )
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
-        visitableList.filter { it.id() == userMenuMockId }
-
-        Assert.assertEquals(defaultUserMenuCount, visitableList.size)
-    }
-
-    @Test
-    fun `test when viewmodel created and user has shop then viewmodel create at least 8 user menu`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
-        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
-        val userMenuMockId = 99
-        val defaultUserMenuCount = 8
-
-        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
-        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(9) }
-
-        every { clientMenuGenerator.getMenu(anyInt()) }.answers { HomeNavMenuViewModel(id = userMenuMockId) }
-        every { userSession.hasShop() }.answers { true }
-
-        viewModel = createViewModel(
-                getUserInfoUseCase = getUserInfoUseCase,
-                getWalletBalanceUseCase = getWalletBalanceUseCase,
-                getUserMembershipUseCase = getUserMembershipUseCase,
-                getShopInfoUseCase = getShopInfoUseCase,
-                getMainNavDataUseCase = getMainNavDataUseCase,
-                clientMenuGenerator = clientMenuGenerator,
-                userSession = userSession,
-                getResolutionNotification = getResolutionNotification
-        )
-
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
-        visitableList.filter { it.id() == userMenuMockId }
-
-        Assert.assertEquals(defaultUserMenuCount, visitableList.size)
-    }
-
-    @Test
-    fun `test when get complain notification then viewmodel update complain visitable with notification`() {
-        val clientMenuGenerator = mockk<ClientMenuGenerator>(relaxed = true)
-        val getResolutionNotification = mockk<GetResolutionNotification>(relaxed = true)
-        val mockUnreadCount = 800
-
-        coEvery { getMainNavDataUseCase.executeOnBackground() }.answers { MainNavigationDataModel() }
-        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(mockUnreadCount) }
-
-        every { clientMenuGenerator.getMenu(ClientMenuGenerator.ID_COMPLAIN) }.answers {
-            HomeNavMenuViewModel(id = ClientMenuGenerator.ID_COMPLAIN)
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            (it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.USER_MENU)
         }
 
+        Assert.assertEquals(defaultUserMenuCount, visitableList!!.size)
+    }
+
+    //user menu section
+    @Test
+    fun `test when viewmodel created and user does not have shop then viewmodel create open shop ticker user menu`() {
+        val testTickerTitle = "This is test ticker"
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val userSession = mockk<UserSession>()
+
+        every { userSession.hasShop() } returns false
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerViewModel(title = testTickerTitle) }
+
+        viewModel = createViewModel(userSession = userSession, clientMenuGenerator = clientMenuGenerator)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val shopTicker = visitableList.find { it is HomeNavTickerViewModel } as HomeNavTickerViewModel
+
+        Assert.assertNotNull(shopTicker)
+        Assert.assertEquals(shopTicker.title, testTickerTitle)
+    }
+
+    //user menu section
+    @Test
+    fun `test when get complain notification then viewmodel update complain visitable with notification`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val getResolutionNotification = mockk<GetResolutionNotification>()
+
+        val mockUnreadCount = 800
+
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerViewModel() }
+        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(mockUnreadCount) }
+
         viewModel = createViewModel(
-                getUserInfoUseCase = getUserInfoUseCase,
-                getWalletBalanceUseCase = getWalletBalanceUseCase,
-                getUserMembershipUseCase = getUserMembershipUseCase,
-                getShopInfoUseCase = getShopInfoUseCase,
-                getMainNavDataUseCase = getMainNavDataUseCase,
                 clientMenuGenerator = clientMenuGenerator,
-                userSession = userSession,
                 getResolutionNotification = getResolutionNotification
         )
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
-        val complainVisitable = visitableList.find { it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuViewModel
+        val complainVisitable = visitableList.find { it is HomeNavMenuViewModel && it.id() == ClientMenuGenerator.ID_COMPLAIN } as HomeNavMenuViewModel
 
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
     }
 
+    //transaction section
+    @Test
+    fun `test when viewmodel created and user does not ongoing order and payment transaction then only create transaction menu item`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+
+        viewModel = createViewModel(
+                getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+                getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase)
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
+        }?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemViewModel
+        }
+
+        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertNull(transactionDataModel)
+    }
+
+    //transaction section
+    @Test
+    fun `test when viewmodel created and user only have ongoing order then create transaction menu item`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf()
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
+
+        viewModel = createViewModel(
+                getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+                getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase)
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
+        }?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemViewModel
+        }
+
+        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertNotNull(transactionDataModel)
+    }
+
+    //transaction section
+    @Test
+    fun `test when viewmodel created and user only have payment transaction then create transaction menu item`() {
+        val getUohOrdersNavUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentOrdersNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
+
+        coEvery { getUohOrdersNavUseCase.executeOnBackground() } returns listOf(NavProductOrder())
+        coEvery { getPaymentOrdersNavUseCase.executeOnBackground() } returns listOf()
+
+        viewModel = createViewModel(
+                getUohOrdersNavUseCase = getUohOrdersNavUseCase,
+                getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCase)
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
+        }?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemViewModel
+        }
+
+        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertNotNull(transactionDataModel)
+    }
 //    @Test
 //    fun `test login state non login`(){
 //        rule.testDispatcher.runBlockingTest {
