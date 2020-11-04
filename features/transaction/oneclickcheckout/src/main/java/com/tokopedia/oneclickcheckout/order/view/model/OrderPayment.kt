@@ -94,17 +94,26 @@ data class OrderPaymentInstallmentTerm(
 data class OrderPaymentOvoAdditionalData(
         val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
         val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
-        val callbackUrl: String = ""
+        val callbackUrl: String = "",
+        val customerData: OrderPaymentOvoCustomerData = OrderPaymentOvoCustomerData()
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
 }
 
+@Parcelize
+data class OrderPaymentOvoCustomerData(
+        val name: String = "",
+        val email: String = "",
+        val msisdn: String = ""
+): Parcelable
+
 data class OrderPaymentOvoActionData(
         val isRequired: Boolean = false,
         val buttonTitle: String = "",
         val errorMessage: String = "",
-        val errorTicker: String = ""
+        val errorTicker: String = "",
+        val isHideDigital: Int = 0
 )
 
 data class OrderPaymentOvoErrorData(
@@ -112,7 +121,8 @@ data class OrderPaymentOvoErrorData(
         val message: String = "",
         val buttonTitle: String = "",
         val type: Int = 0,
-        val callbackUrl: String = ""
+        val callbackUrl: String = "",
+        val isHideDigital: Int = 0
 ) {
     companion object {
         const val TYPE_ACTIVATION = 1

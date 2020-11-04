@@ -801,9 +801,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
-        override fun onOvoTopUpClicked(callbackUrl: String) {
+        override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
             context?.let {
-                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Bitmap
+import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -65,6 +67,14 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         return redirectUrl!!
     }
 
+    private fun isHideDigital(): String {
+        return arguments?.getInt(EXTRA_IS_HIDE_DIGITAL, 0)?.toString() ?: "0"
+    }
+
+    private fun getCustomerData(): OrderPaymentOvoCustomerData {
+        return arguments?.getParcelable(EXTRA_CUSTOMER_DATA) ?: OrderPaymentOvoCustomerData()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_payment_web_view, container, false)
     }
@@ -78,7 +88,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         observeOvoTopUpUrl()
 
         // DEBUG
-        viewModel.getOvoTopUpUrl(getRedirectUrl())
+        viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
     }
 
     private fun initViews(view: View) {
@@ -136,7 +146,8 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
     private fun loadWebView(url: String) {
 //        webView?.loadAuthUrl(url, userSession)
-        webView?.loadUrl(url)
+        val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
+        webView?.loadUrl(newUrl)
         webView?.visible()
         globalError?.gone()
     }
@@ -172,7 +183,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getOvoTopUpUrl(getRedirectUrl())
+            viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
         }
         globalError?.visible()
         webView?.gone()
@@ -207,12 +218,18 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     companion object {
         private const val BACK_APPLINK = "tokopedia://back"
 
-        const val EXTRA_REDIRECT_URL = "redirect_url"
+        private const val QUERY_IS_HIDE_DIGITAL = "is_hide_digital"
 
-        fun createInstance(redirectUrl: String): OvoTopUpWebViewFragment {
+        const val EXTRA_REDIRECT_URL = "redirect_url"
+        const val EXTRA_IS_HIDE_DIGITAL = "is_hide_digital"
+        const val EXTRA_CUSTOMER_DATA = "customer_data"
+
+        fun createInstance(redirectUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData): OvoTopUpWebViewFragment {
             return OvoTopUpWebViewFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_REDIRECT_URL, redirectUrl)
+                    putInt(EXTRA_IS_HIDE_DIGITAL, isHideDigital)
+                    putParcelable(EXTRA_CUSTOMER_DATA, customerData)
                 }
             }
         }

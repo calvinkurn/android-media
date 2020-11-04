@@ -111,5 +111,7 @@ data class OvoActionData(
         @SerializedName("error_message")
         val errorMessage: String = "",
         @SerializedName("error_ticker")
-        val errorTicker: String = ""
+        val errorTicker: String = "",
+        @SerializedName("is_hide_digital")
+        val isHideDigital: Int = 0
 )

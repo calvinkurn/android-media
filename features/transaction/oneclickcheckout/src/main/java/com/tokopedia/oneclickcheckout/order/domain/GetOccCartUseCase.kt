@@ -341,6 +341,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 button_title
                 error_message
                 error_ticker
+                is_hide_digital
             }
           }
         }
