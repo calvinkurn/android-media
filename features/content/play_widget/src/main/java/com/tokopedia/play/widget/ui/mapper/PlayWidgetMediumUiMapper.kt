@@ -1,6 +1,5 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetReminder

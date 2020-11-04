@@ -5,4 +5,7 @@
     <string name="play_widget_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
     <string name="play_widget_transcode_loading_text">Menyimpan…</string>
+    <string name="play_widget_transcode_loading_failed">Gagal disimpan</string>
+
+    <string name="play_widget_transcode_delete">Hapus</string>
 </resources>

@@ -28,6 +28,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
@@ -81,7 +82,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                     channelPositionInList = position
             )
         }
-
     }
 
     private val channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener {
@@ -129,6 +129,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     }
 
     private val adapter = PlayWidgetCardMediumAdapter(
+            imageBlurUtil = ImageBlurUtil(context),
             overlayCardListener = overlayCardListener,
             channelCardListener = channelCardListener,
             bannerCardListener = bannerCardListener

@@ -1,4 +1,4 @@
-package com.tokopedia.play.util.blur
+package com.tokopedia.play_common.util.blur
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,7 +10,6 @@ import androidx.annotation.FloatRange
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.Closeable
-
 
 /**
  * Created by jegul on 09/09/20
