@@ -3,6 +3,7 @@ package com.tokopedia.common
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 
 interface RepositoryProvider {
     fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface

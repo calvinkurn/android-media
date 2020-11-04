@@ -193,7 +193,7 @@ data class DataItem(
         val dynamicComponentId: String? = "",
 
         @SerializedName("shop_id")
-        val shopId: String? = "",
+        var shopId: String? = "",
 
         @SerializedName("basecode")
         val basecode: String? = "",
@@ -262,7 +262,7 @@ data class DataItem(
         val cashback: String? = "",
 
         @SerializedName("is_topads")
-        val isTopads: Boolean? = false,
+        var isTopads: Boolean? = false,
 
         @SerializedName("discounted_price")
         val discountedPrice: String? = "",
@@ -271,16 +271,16 @@ data class DataItem(
         val goldMerchant: Boolean? = false,
 
         @SerializedName("price")
-        val price: String? = "",
+        var price: String? = "",
 
         @SerializedName("shop_name")
-        val shopName: String? = "",
+        var shopName: String? = "",
 
         @SerializedName("shop_location")
-        val shopLocation: String? = "",
+        var shopLocation: String? = "",
 
         @SerializedName("discount_percentage")
-        val discountPercentage: String? = "",
+        var discountPercentage: String? = "",
 
         @SerializedName("shop_applink")
         val shopApplink: String? = "",
@@ -298,7 +298,7 @@ data class DataItem(
         val productId: String? = "",
 
         @SerializedName("rating")
-        val rating: String? = "",
+        var rating: String? = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",

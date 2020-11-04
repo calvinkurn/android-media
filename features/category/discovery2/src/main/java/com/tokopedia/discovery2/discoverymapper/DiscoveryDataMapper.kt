@@ -190,9 +190,9 @@ class DiscoveryDataMapper {
 
     private fun getShopLocation(dataItem: DataItem): String {
         return if (!dataItem.shopLocation.isNullOrEmpty()) {
-            dataItem.shopLocation
+            dataItem.shopLocation!!
         } else if (!dataItem.shopName.isNullOrEmpty()) {
-            dataItem.shopName
+            dataItem.shopName!!
         } else {
             ""
         }

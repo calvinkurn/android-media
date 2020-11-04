@@ -62,13 +62,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return PushStatusGQLRepository(provideGetStringMethod(context))
     }
 
-    //TODO Niranjan need better way to handle new injections
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
-    fun provideGetRecommendationUseCase(coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(coroutineGqlRepository)
-
     @Provides
     fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository()
