@@ -519,7 +519,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         if ((activity as TopAdsDashboardActivity?)?.getAdInfo() == MANUAL_AD && tab_layout?.selectedTabPosition == 1)
             adType = SINGLE_AD
 
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
+        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, adType, ::onSuccesGetStatisticsInfo)
     }
 
     private fun handleDate(date1: Long, date2: Long, position: Int) {
