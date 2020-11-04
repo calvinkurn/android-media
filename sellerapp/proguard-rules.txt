@@ -139,8 +139,6 @@
 
 #---------- End of Localytics
 
--keepname class com.android.volley.*
-
 -keep class com.tokopedia.tkpd.analytics.** { *; }
 -keepclasseswithmembers class * {
     @com.tokopedia.tkpd.analytics.** *;
