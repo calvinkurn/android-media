@@ -50,7 +50,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_reminder"
-            tools:visibility="gone" />
+            tools:visibility="gone"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play_widget_iv_action"
+            android:layout_width="@dimen/play_widget_more_action_size"
+            android:layout_height="@dimen/play_widget_more_action_size"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_play_more_white"
+            android:scaleType="centerInside"
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/play_widget_badge_live"
@@ -93,7 +107,7 @@
             android:paddingTop="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +120,7 @@
                 android:textSize="@dimen/fontSize_lvl2"
                 tools:text="10 January 2020 - 17.00" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,7 +133,7 @@
                 android:textSize="@dimen/fontSize_lvl3"
                 tools:text="Google Assistant Google Assistant" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

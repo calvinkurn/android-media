@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -33,7 +34,10 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -46,6 +50,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -74,6 +79,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
@@ -198,6 +204,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+    private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPltMonitoring()
@@ -1560,6 +1567,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, channelType: PlayWidgetChannelType, position: Int) {
+        showPlayWidgetBottomSheet()
+    }
+
     private fun setupPlayWidget() {
         playWidgetCoordinator = PlayWidgetCoordinator().apply {
             setListener(this@ShopPageHomeFragment)
@@ -1613,5 +1624,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()
         }
+    }
+
+    private fun showPlayWidgetBottomSheet() {
+        getPlayWidgetActionBottomSheet().show(childFragmentManager)
+    }
+
+    private fun getPlayWidgetActionBottomSheet(): PlayWidgetSellerActionBottomSheet {
+        if (!::playWidgetActionBottomSheet.isInitialized) {
+            playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
+            playWidgetActionBottomSheet.setActionList(
+                    listOf(
+                            PlayWidgetSellerActionBottomSheet.Action(
+                                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                    "Salin link"
+                            ) { /*TODO("On Share Clicked")*/ },
+                            PlayWidgetSellerActionBottomSheet.Action(
+                                    com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                    "Hapus video"
+                            ) { /*TODO("On Delete Clicked")*/ }
+                    )
+            )
+        }
+        return playWidgetActionBottomSheet
     }
 }

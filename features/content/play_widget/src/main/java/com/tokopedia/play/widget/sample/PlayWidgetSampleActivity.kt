@@ -164,7 +164,9 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
             hasPromo = cardItemTypeRandom.nextBoolean(),
             activeReminder = cardItemTypeRandom.nextBoolean(),
             partner = PlayWidgetPartnerUiModel("123", "Google"),
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasAction = false,
+            isClickable = true
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

@@ -8,6 +8,8 @@ enum class PlayWidgetChannelType(val value: String) {
     Live("LIVE"),
     Vod("WATCH_AGAIN"),
     Upcoming("COMING_SOON"),
+    Transcoding("TRANSCODING"),
+    FailedTranscoding("TRANSCODING_FAILED"),
     Unknown("");
 
     companion object {

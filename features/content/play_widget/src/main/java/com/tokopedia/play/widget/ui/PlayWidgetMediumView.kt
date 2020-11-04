@@ -115,6 +115,10 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, remind)
             mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, remind, position)
         }
+
+        override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item.channelType, position)
+        }
     }
 
     private val bannerCardListener = object : PlayWidgetCardMediumBannerViewHolder.Listener {

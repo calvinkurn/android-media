@@ -30,6 +30,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val thumbnail: AppCompatImageView
     private val pvVideo: PlayerView
     private val reminderBadge: AppCompatImageView
+    private val ivAction: AppCompatImageView
     private val liveBadge: View
     private val totalViewBadge: View
     private val promoBadge: View
@@ -50,6 +51,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         pvVideo = view.findViewById(R.id.play_widget_player_view)
         reminderBadge = view.findViewById(R.id.play_widget_iv_reminder)
+        ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)
@@ -84,6 +86,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = if (model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
 
@@ -106,7 +109,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         }
 
         setOnClickListener {
-            mListener?.onChannelClicked(it, model)
+            if (model.isClickable) mListener?.onChannelClicked(it, model)
+        }
+
+        ivAction.setOnClickListener {
+            mListener?.onMenuActionButtonClicked(this, model)
         }
     }
 
@@ -154,6 +161,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
                 remind: Boolean
+        )
+
+        fun onMenuActionButtonClicked(
+                view: View,
+                item: PlayWidgetMediumChannelUiModel
         )
     }
 }

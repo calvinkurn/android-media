@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.mapper
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetReminder
@@ -65,18 +66,24 @@ class PlayWidgetMediumUiMapper @Inject constructor(
             partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name)
     )
 
-    private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel = PlayWidgetMediumChannelUiModel(
-            channelId = item.id,
-            title = item.title,
-            channelType = PlayWidgetChannelType.getByValue(item.widgetType),
-            appLink = item.appLink,
-            webLink = item.webLink,
-            startTime = item.startTime,
-            totalView = item.stats.view.formatted,
-            totalViewVisible = item.video.isShowTotalView,
-            hasPromo = item.config.hasPromo,
-            activeReminder = item.config.isReminderSet,
-            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
-            video = videoMapper.mapWidgetItemVideo(item.video)
-    )
+    private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
+        val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
+
+        return PlayWidgetMediumChannelUiModel(
+                channelId = item.id,
+                title = item.title,
+                channelType = channelType,
+                appLink = item.appLink,
+                webLink = item.webLink,
+                startTime = item.startTime,
+                totalView = item.stats.view.formatted,
+                totalViewVisible = item.video.isShowTotalView,
+                hasPromo = item.config.hasPromo,
+                activeReminder = item.config.isReminderSet,
+                partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+                video = videoMapper.mapWidgetItemVideo(item.video),
+                hasAction = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live,
+                isClickable = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live || channelType == PlayWidgetChannelType.Upcoming
+        )
+    }
 }
