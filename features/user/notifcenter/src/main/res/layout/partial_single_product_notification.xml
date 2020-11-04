@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/notif_dp_8"
+    app:cardElevation="@dimen/notif_dp_2"
+    tools:parentTag="com.tokopedia.unifycomponents.CardUnify">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/notif_dp_12">
+
+        <com.tokopedia.notifcenter.widget.RoundedImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/notif_dp_96"
+            android:layout_height="@dimen/notif_dp_96"
+            android:scaleType="fitCenter"
+            app:borderRadius="@dimen/notif_dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.notifcenter.widget.ProductVariantLayout
+            android:id="@+id/pvl_variant"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="@dimen/notif_dp_20"
+            android:layout_marginStart="@dimen/notif_dp_10"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_name"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/notif_dp_10"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
+            app:typographyType="body_3"
+            tools:text="This is really long product name that appear on the screen" />
+
+        <com.tokopedia.notifcenter.widget.CampaignRedView
+            android:id="@+id/cl_campaign"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/notif_dp_10"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_price"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/notif_dp_10"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/cl_campaign"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp 500.000" />
+
+        <ImageView
+            android:id="@+id/img_campaign"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/notif_dp_20"
+            android:layout_marginStart="@dimen/notif_dp_10"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_price"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_atc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/notif_dp_8"
+            android:text="@string/notifcenter_btn_atc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.49"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_checkout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/notif_dp_8"
+            android:text="@string/notifcenter_btn_buy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.49"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

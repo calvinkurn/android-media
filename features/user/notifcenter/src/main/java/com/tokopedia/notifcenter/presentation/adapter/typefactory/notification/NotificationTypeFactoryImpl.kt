@@ -12,6 +12,7 @@ import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BigDividerViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder
 
 class NotificationTypeFactoryImpl constructor(
         viewListener: Any
@@ -41,6 +42,8 @@ class NotificationTypeFactoryImpl constructor(
         if (item is NotificationUiModel) {
             return when (item.typeLink) {
                 NotificationUiModel.TYPE_DEFAULT -> NormalNotificationViewHolder.LAYOUT
+                NotificationUiModel.TYPE_ATC,
+                NotificationUiModel.TYPE_BUY -> SingleProductNotificationViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }
@@ -52,6 +55,9 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
+            SingleProductNotificationViewHolder.LAYOUT -> SingleProductNotificationViewHolder(
+                    view, notificationListener
+            )
             NormalNotificationViewHolder.LAYOUT -> NormalNotificationViewHolder(
                     view, notificationListener
             )

@@ -4,13 +4,12 @@
     <style name="BaseNotification_Container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingStart">@dimen/spacing_lvl4</item>
-        <item name="android:paddingEnd">@dimen/spacing_lvl4</item>
         <item name="android:paddingTop">@dimen/notif_dp_10</item>
         <item name="android:paddingBottom">@dimen/notif_dp_12</item>
     </style>
 
     <style name="BaseNotification_Icon">
+        <item name="android:layout_marginStart">@dimen/spacing_lvl4</item>
         <item name="android:layout_width">@dimen/layout_lvl3</item>
         <item name="android:layout_height">@dimen/layout_lvl3</item>
         <item name="android:scaleType">fitCenter</item>
@@ -27,6 +26,7 @@
     <style name="BaseNotification_Time">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
         <item name="android:textColor">@color/Neutral_N700_68</item>
         <item name="typographyType">body_3</item>
     </style>
@@ -35,6 +35,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
         <item name="android:textColor">@color/Neutral_N700_96</item>
         <item name="typographyType">body_2</item>
         <item name="typographyWeight">bold</item>
@@ -42,6 +43,7 @@
 
     <style name="BaseNotification_Desc">
         <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_lvl4</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
         <item name="android:layout_marginTop">@dimen/spacing_lvl1</item>

@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.Campaign
+import com.tokopedia.unifycomponents.Label
 
 class CampaignRedView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -16,7 +17,7 @@ class CampaignRedView @JvmOverloads constructor(
 
     private val campaignContainer: LinearLayout
     private val campaignPrice: TextView
-    private val campaignDiscount: TextView
+    private val campaignDiscount: Label
 
     init {
         View.inflate(getContext(), R.layout.widget_campaign_price_drop, this)
