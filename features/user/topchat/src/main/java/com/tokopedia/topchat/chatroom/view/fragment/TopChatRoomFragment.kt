@@ -107,8 +107,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
-import com.tokopedia.topchat.common.util.SimpleIdlingResource
-import com.tokopedia.topchat.common.util.SimpleIdlingResource.increment
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -274,11 +272,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     getViewState().chatRoomViewModel.shopName,
                     it.data.cartId
             )
-            SimpleIdlingResource.decrement()
             finishOccLoading(product, position)
             RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         }, {
-            SimpleIdlingResource.decrement()
             finishOccLoading(product, position)
             showSnackbarError(it)
         })
@@ -1266,7 +1262,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             analytics.eventSeenProductAttachment(requireContext(), element, session)
 
             // this for experimentation of DATA
-            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) ?: false) {
+            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) == true) {
                 analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
             }
         }

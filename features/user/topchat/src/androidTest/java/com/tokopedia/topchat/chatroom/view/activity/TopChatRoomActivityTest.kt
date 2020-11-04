@@ -2,13 +2,11 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -39,12 +37,7 @@ import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.track.TrackApp
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
-import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -110,7 +103,7 @@ class TopChatRoomActivityTest {
         idlingResource = SimpleIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
-        Dispatchers.setMain(TestCoroutineDispatcher())
+//        Dispatchers.setMain(TestCoroutineDispatcher())
         activity = mActivityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
         chatAttachmentUseCase = ChatAttachmentUseCaseStub()
@@ -156,7 +149,7 @@ class TopChatRoomActivityTest {
             super.sendEnhanceEcommerceEvent(eventName, value)
             map[eventName] = value
 
-            if(eventName.equals(AddToCartBundler.KEY))  {
+            if (eventName.equals(AddToCartBundler.KEY)) {
                 SimpleIdlingResource.decrement()
             }
         }
@@ -165,7 +158,7 @@ class TopChatRoomActivityTest {
     }
 
     @After
-    fun finish(){
+    fun finish() {
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
@@ -187,6 +180,10 @@ class TopChatRoomActivityTest {
         viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, ClickChildViewWithIdAction.clickChildViewWithId(idToClick)))
 
         // this is problematic
+        var enableIDle = false
+        if (enableIDle) Espresso.onIdle()
+
+        onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
 
         val testAnalytic = TrackApp.getInstance().gtm as TestAnalytic
         assertEquals("this ${AddToCartBundler.KEY} should not be null", true, testAnalytic.map.containsKey(AddToCartBundler.KEY))

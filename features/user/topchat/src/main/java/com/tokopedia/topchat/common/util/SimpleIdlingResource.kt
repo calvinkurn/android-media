@@ -19,7 +19,7 @@ object SimpleIdlingResource {
 
     @VisibleForTesting
     fun getIdlingResource(): IdlingResource {
-        idlingResource = CountingIdlingResource(RESOURCE)
+        idlingResource = CountingIdlingResource(RESOURCE, true)
         return idlingResource!!
     }
 }
