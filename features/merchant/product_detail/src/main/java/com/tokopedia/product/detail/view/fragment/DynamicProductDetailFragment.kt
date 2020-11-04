@@ -2322,7 +2322,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 return@let
             }
 
-            if (viewModel.buttonActionType == ProductDetailConstant.ADD_WISHLIST_BUTTON) {
+            if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
                 viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
                 return@let
             }
