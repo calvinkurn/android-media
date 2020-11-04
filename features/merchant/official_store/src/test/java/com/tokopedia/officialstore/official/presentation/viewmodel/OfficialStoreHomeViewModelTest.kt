@@ -8,7 +8,6 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -99,7 +98,7 @@ class OfficialStoreHomeViewModelTest {
             val osBanners = OfficialStoreBanners()
             val osBenefits = OfficialStoreBenefits()
             val osFeatured = OfficialStoreFeaturedShop()
-            val osDynamicChannel = DynamicChannel()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
 
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
@@ -358,8 +357,8 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
-    private fun onGetDynamicChannel_thenReturn(channel: DynamicChannel) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns channel.channels.map { OfficialStoreChannel(it) }
+    private fun onGetDynamicChannel_thenReturn(list: List<OfficialStoreChannel>) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns list
     }
 
     private fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
@@ -426,7 +425,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyOfficialStoreDynamicChannelEquals(
-            expectedDynamicChannel: Success<DynamicChannel>
+            expectedDynamicChannel: Success<List<OfficialStoreChannel>>
     ) {
         verifyGetOfficialDynamicChannelCalled()
 
