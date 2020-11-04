@@ -20,6 +20,7 @@ import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_FILLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_GHOST
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_TYPE_TEXT
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
@@ -60,7 +61,7 @@ class DynamicChannelMixTopViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            setupHeader(dynamicChannelData)
+            setupHeader(dynamicChannelData.channel)
             setupContent(dynamicChannelData)
         }
     }
@@ -100,9 +101,9 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private fun setupContent(channelData: Channel) {
-        setupBanner(channelData)
-        setupList(channelData)
+    private fun setupContent(dynamicChannelData: OfficialStoreChannel) {
+        setupBanner(dynamicChannelData.channel)
+        setupList(dynamicChannelData)
     }
 
     private fun setupBanner(channel: Channel) {
@@ -171,12 +172,13 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private fun setupList(channel: Channel) {
+    private fun setupList(dynamicChannelData: OfficialStoreChannel) {
+        val channel = dynamicChannelData.channel
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, null, channel)
-        val productDataList = convertDataToProductData(channel)
+        val productDataList = convertDataToProductData(dynamicChannelData)
         if(adapter == null){
             adapter = MixWidgetAdapter(typeFactoryImpl)
             recyclerViewProductList.adapter = adapter
@@ -185,7 +187,7 @@ class DynamicChannelMixTopViewHolder(
         adapter?.addElement(productDataList)
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(dynamicChannelData)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -193,10 +195,8 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>
-    ) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+    private fun View.setHeightBasedOnProductCardMaxHeight(officialStoreChannel: OfficialStoreChannel) {
+        val productCardHeight = officialStoreChannel.height
 
         val carouselLayoutParams = this.layoutParams
         carouselLayoutParams?.height = productCardHeight
@@ -208,35 +208,14 @@ class DynamicChannelMixTopViewHolder(
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.IO, productCardWidth)
     }
 
-    private fun convertDataToProductData(channel: Channel): List<ProductFlashSaleDataModel> {
-        return channel.grids?.let { listGridData ->
-            val list: MutableList<ProductFlashSaleDataModel> = mutableListOf()
-            listGridData.onEach { gridData ->
-                gridData?.let { grid ->
-                    list.add(ProductFlashSaleDataModel(
-                            ProductCardModel(
-                                    slashedPrice = grid.slashedPrice,
-                                    productName = grid.name,
-                                    formattedPrice = grid.price,
-                                    productImageUrl = grid.imageUrl,
-                                    discountPercentage = grid.discount,
-                                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive ?: false, grid.freeOngkir?.imageUrl ?: ""),
-                                    labelGroupList = grid.labelGroup.map {
-                                        ProductCardModel.LabelGroup(
-                                                position = it.position,
-                                                title = it.title,
-                                                type = it.type
-                                        )
-                                    },
-                                    hasThreeDots = false
-                            ),
-                            gridData,
-                            grid.applink
-                    ))
-                }
-            }
-            return list
-        } ?: mutableListOf()
+    private fun convertDataToProductData(officialStoreChannel: OfficialStoreChannel): List<ProductFlashSaleDataModel> {
+        return officialStoreChannel.productCardModels.withIndex().map {
+            ProductFlashSaleDataModel(
+                    it.value,
+                    officialStoreChannel.channel.grids[it.index],
+                    officialStoreChannel.channel.grids[it.index].applink
+            )
+        }
     }
 
     private fun RecyclerView.resetLayout() {

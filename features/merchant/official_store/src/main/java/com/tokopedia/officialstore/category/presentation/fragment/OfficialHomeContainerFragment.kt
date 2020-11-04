@@ -54,16 +54,13 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
-//    private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
-//    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var keyCategory = "0"
-    private var totalScrollUp = 0
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
@@ -121,14 +118,6 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         if(dy == 0) return;
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
-
-//        if(dy < 0){
-//            totalScrollUp -= dy;
-//        } else {
-//            totalScrollUp = 0
-//        }
-//        if(totalScrollUp in 0..10) tablayout_motion?.transitionToEnd()
-//        else tablayout_motion?.transitionToStart()
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -224,26 +213,12 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun init(view: View) {
-        configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
-    }
-
-    //status bar background compability
-    private fun configStatusBar(view: View) {
-//
-//        activity?.let {
-//            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
-//        }
-//        statusBar?.visibility = when {
-//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-//            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-//            else -> View.GONE
-//        }
     }
 
     private fun removeLoading() {

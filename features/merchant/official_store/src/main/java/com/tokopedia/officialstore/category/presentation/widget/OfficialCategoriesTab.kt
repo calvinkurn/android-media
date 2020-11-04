@@ -90,9 +90,7 @@ class OfficialCategoriesTab(context: Context,
             tab?.customView = getTabView(context, i)
         }
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//                startTabHeightExpandAnimation(appBarLayout)
-            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {}
 
