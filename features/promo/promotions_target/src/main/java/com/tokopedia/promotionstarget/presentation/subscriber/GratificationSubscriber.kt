@@ -9,16 +9,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.inApp.CmEventListenerManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastHandler
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastScreenNamesProvider
-import com.tokopedia.promotionstarget.cmGratification.dialog.GratificationDialogHandler
-import com.tokopedia.promotionstarget.cmGratification.lifecycle.ActivityProviderImpl
-import com.tokopedia.promotionstarget.cmGratification.lifecycle.CmActivityLifecycleCallbacks
-import com.tokopedia.promotionstarget.cmGratification.lifecycle.GratifFragmentLifeCycleCallback
-import com.tokopedia.promotionstarget.cmGratification.pushIntent.GratifCmPushHandler
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
@@ -27,9 +17,9 @@ import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetCompon
 import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.presenter.DialogManagerPresenter
-import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.promotionstarget.presentation.GratifCmInitializer
 import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
 import com.tokopedia.user.session.UserSession
 import dagger.Lazy
@@ -50,7 +40,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     @Inject
     lateinit var presenter: Lazy<DialogManagerPresenter>
-    lateinit var cmActivityLifecycleCallbacks: CmActivityLifecycleCallbacks
 
     @Inject
     lateinit var claimGratificationUseCase: Lazy<ClaimPopGratificationUseCase>
@@ -374,26 +363,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     private fun initActivityCallbacks(appContext: Context) {
         if (appContext is Application) {
-            val activityProvider = ActivityProviderImpl()
-            appContext.registerActivityLifecycleCallbacks(activityProvider)
-
-            val mapOfGratifJobs = ConcurrentHashMap<Int, Job>()
-            val mapOfPendingInApp = ConcurrentHashMap<Int, CMInApp>()
-
-            val gratificationPresenter = GratificationPresenter(appContext, CMInAppManager.getInstance().dialogIsShownMap)
-            val broadcastScreenNamesProvider = BroadcastScreenNamesProvider()
-
-
-            val dialogHandler = GratificationDialogHandler(gratificationPresenter, mapOfGratifJobs, mapOfPendingInApp, broadcastScreenNamesProvider.screenNames(), activityProvider)
-            val pushHandler = GratifCmPushHandler(dialogHandler)
-            val broadCastHandler = BroadcastHandler(pushHandler)
-
-            cmActivityLifecycleCallbacks = CmActivityLifecycleCallbacks(appContext, broadCastHandler, broadcastScreenNamesProvider, mapOfGratifJobs)
-            val fragmentLifecycleCallback = GratifFragmentLifeCycleCallback(cmActivityLifecycleCallbacks)
-
-            appContext.registerActivityLifecycleCallbacks(cmActivityLifecycleCallbacks)
-
-            CmEventListenerManager.register(pushHandler, fragmentLifecycleCallback, arrayListOf("gratification"), dialogHandler)
+            GratifCmInitializer.start(appContext)
         }
     }
 

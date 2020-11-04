@@ -14,6 +14,11 @@ class ActivityProviderImpl : BaseApplicationLifecycleCallbacks,ActivityProvider 
         weakActivity = WeakReference(activity)
     }
 
+    override fun onActivityStarted(activity: Activity) {
+        super.onActivityStarted(activity)
+        weakActivity = WeakReference(activity)
+    }
+
     override fun onActivityDestroyed(activity: Activity) {
         super.onActivityDestroyed(activity)
         clearCurrentActivity(activity)

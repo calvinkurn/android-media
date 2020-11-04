@@ -298,7 +298,7 @@ class CmGratificationDialog {
     private fun handleButtonAction(couponStatus: Int?) {
         if (couponStatus != null && couponStatus == CouponStatusType.ACTIVE) {
             val code = gratifNotification?.promoCode
-            if (!code.isNullOrEmpty()) {
+            if (!code.isNullOrEmpty() && couponDetailResponse?.coupon?.isApplicable == true) {
                 viewModel.autoApply(code)
             } else {
                 handleGreenBtnRedirection()

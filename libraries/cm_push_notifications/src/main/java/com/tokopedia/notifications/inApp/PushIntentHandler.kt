@@ -5,16 +5,34 @@ import android.os.Bundle
 
 class PushIntentHandler {
 
-    fun checkPushIntent(activity: Activity, bundle: Bundle?) {
+    var isHandledByPush = false
+
+    fun processPushIntent(activity: Activity, bundle: Bundle?):Boolean {
+        var isHandled = false
         for (pushHandler in getPushIntentHandlerList()) {
-            pushHandler.checkPushIntent(activity, bundle)
+            val tempIsHandled =  pushHandler.processPushIntent(activity, bundle)
+            if (tempIsHandled) {
+                isHandled = tempIsHandled
+            }
         }
+        return isHandled
     }
+
+//    fun isPushIntentHandled(bundle: Bundle?): Boolean {
+//        var isHandled = false
+//        for (pushHandler in getPushIntentHandlerList()) {
+//            val tempIsHandled = pushHandler.isPushIntentHandled(bundle)
+//            if (tempIsHandled) {
+//                isHandled = tempIsHandled
+//            }
+//        }
+//        return isHandled
+//    }
 
     private fun getPushIntentHandlerList() = CmEventListener.pushIntentContractList
 }
 
 interface PushIntentContract {
-    //todo Rahul should return boolean - will tell the cm whether to continue checkin for inapp or not
-    fun checkPushIntent(activity: Activity, bundle: Bundle?)
+    fun processPushIntent(activity: Activity, bundle: Bundle?): Boolean
+    fun isPushIntentHandled(bundle: Bundle?): Boolean
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
+import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
@@ -36,11 +37,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val context: Context, val dialogIsShownMap: WeakHashMap<Activity, Boolean>? = null) {
+class GratificationPresenter @Inject constructor(val context: Context) {
     val TAG = "GratifTag"
 
     @Inject
@@ -60,7 +60,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
     private var job: Job? = null
     private var scope: CoroutineScope? = null
     var exceptionCallback: ExceptionCallback? = null
-
+    var dialogVisibilityContract: CmDialogVisibilityContract? = null
 
     init {
         DaggerCmGratificationPresenterComponent.builder()
@@ -107,27 +107,27 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
 
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
         Timber.d("$TAG GRATIF ENGINE API START with=$map")
-        val notifResponse = notificationUseCase.getResponse(map)
-//        val notifResponse = notificationUseCase.getFakeResponse(map)
+//        val notifResponse = notificationUseCase.getResponse(map)
+        val notifResponse = notificationUseCase.getFakeResponse(map)
         Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
         //todo Rahul verify key later
         val reason = notifResponse.response?.resultStatus?.code
         if (reason == GratifResultStatus.SUCCESS) {
             //todo Rahul refactor later
-            val code = notifResponse.response.promoCode
-//            val code = "NUPLBDAY5D7RUU5M329"
+//            val code = notifResponse.response.promoCode
+            val code = "NUPLBDAY5D7RUU5M329"
 //                    val code = "UNDIANMITRA05D7RUC66K7ZJDG8JA"  //expired
 //                    val code = "UNDIANMITRA205D7RUC66K7ZJ9QUR9"  //used
             if (!code.isNullOrEmpty()) {
-                val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
-//                val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
+//                val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
+                val couponDetail = tpCouponDetailUseCase.getFakeResponse(tpCouponDetailUseCase.getQueryParams(code))
                 val couponStatus = couponDetail?.coupon?.realCode ?: ""
                 if (couponStatus.isNotEmpty()) {
                     withContext(uiWorker) {
                         weakActivity?.get()?.let { activity ->
                             if (notificationEntryType == NotificationEntryType.PUSH) {
                                 performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName)
-                            } else if (dialogIsShownMap?.get(activity) != null) {
+                            } else if (dialogVisibilityContract?.isDialogVisible(activity) == true) {
                                 Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                 gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                             } else {
@@ -168,16 +168,16 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                         gratifPopupCallback?.onShow(dialog)
                     }
                 }, screenName)
-        dialogIsShownMap?.set(activity, true)
+        dialogVisibilityContract?.onDialogShown(activity)
 
         dialog?.setOnDismissListener { dialogInterface ->
-            dialogIsShownMap?.remove(activity)
+            dialogVisibilityContract?.onDialogDismiss(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
             val userId = UserSession(activity).userId
             GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
         }
         dialog?.setOnCancelListener { dialogInterface ->
-            dialogIsShownMap?.remove(activity)
+            dialogVisibilityContract?.onDialogDismiss(activity)
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
     }
@@ -198,10 +198,14 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
                 initSafeScope()
             }
             weakActivity?.get()?.let { activity ->
-                if (dialogIsShownMap?.get(activity) != null && (notificationEntryType == NotificationEntryType.ORGANIC)) {
+                if (dialogVisibilityContract?.isDialogVisible(activity) == true && (notificationEntryType == NotificationEntryType.ORGANIC)) {
                     Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                     gratifPopupCallback.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                     return null
+                }
+                //special handle for push
+                else if (notificationEntryType == NotificationEntryType.PUSH) {
+                    dialogVisibilityContract?.onDialogShown(activity)
                 }
             }
             val tempGratifId = if (gratificationId.isNullOrEmpty()) 0 else gratificationId.toInt()
@@ -218,6 +222,14 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
             Timber.d("$TAG unexpected error for gratifId=$gratificationId")
             exceptionCallback?.onError(ex)
             ex.printStackTrace()
+
+            //special handle for push
+            weakActivity?.get()?.let { activity ->
+                if (notificationEntryType == NotificationEntryType.PUSH) {
+                    dialogVisibilityContract?.onDialogDismiss(activity)
+                }
+            }
+
         }
         return null
     }
@@ -283,7 +295,6 @@ class GratificationPresenter @Inject constructor(val context: Context, val dialo
     interface ExceptionCallback {
         fun onError(th: Throwable?)
     }
-
 }
 
 @Retention(AnnotationRetention.SOURCE)

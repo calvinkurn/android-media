@@ -1,8 +1,10 @@
 package com.tokopedia.notifications.inApp
 
 import androidx.fragment.app.Fragment
+
 //todo Rahul -discuss that two sources can show in app - ideally it should be one
-class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback) {
+class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback,
+                                 private val pushIntentHandler: PushIntentHandler) {
 
     fun onFragmentStart(fragment: Fragment) {
         getFragmentCallbacks().forEach { it.onFragmentStart(fragment) }
@@ -32,7 +34,7 @@ class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback) {
     }
 
     private fun showInApp(name: String, entityHashCode: Int) {
-        if (callback.canShowDialog()) {
+        if (!pushIntentHandler.isHandledByPush && callback.canShowDialog()) {
             callback.showInAppForScreen(name, entityHashCode)
         }
     }

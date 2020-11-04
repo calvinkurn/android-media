@@ -6,10 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.promotionstarget.cmGratification.pushIntent.GratifCmPushHandler
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.promotionstarget.cmGratification.dialog.GratificationDialogHandler
 import java.lang.ref.WeakReference
 
-class BroadcastHandler(val pushIntentHandler: GratifCmPushHandler) {
+const val DISCO_IS_NATIVE = "DISCO_IS_NATIVE"
+const val DISCO_INTENT_FILTER = "DISCO_ACTIVITY_SELECTION"
+
+class BroadcastHandler(val dialogHandler: GratificationDialogHandler) {
 
     private val broadcastReceiverMap = HashMap<WeakReference<Activity>, WeakReference<BroadcastReceiver>>()
 
@@ -18,19 +22,14 @@ class BroadcastHandler(val pushIntentHandler: GratifCmPushHandler) {
             override fun onReceive(context: Context, intent: Intent) {
                 val bundle = intent.extras
                 if (bundle != null) {
-                    val DISCO_IS_NATIVE = "DISCO_IS_NATIVE"
                     val isNative = bundle.getBoolean(DISCO_IS_NATIVE)
                     if (isNative) {
-                        val activityIntent: Intent = activity.intent
-                        if (activityIntent != null) {
-                            val activityBundle = activityIntent.extras
-                            pushIntentHandler.checkPushIntent(activity, activityBundle)
-                        }
+                        dialogHandler.executePendingInApp(activity, activity.javaClass.name)
                     }
                 }
             }
         }
-        val DISCO_INTENT_FILTER = "DISCO_ACTIVITY_SELECTION"
+
         LocalBroadcastManager.getInstance(activity).registerReceiver(receiver, IntentFilter(DISCO_INTENT_FILTER))
 
         broadcastReceiverMap[WeakReference(activity)] = WeakReference(receiver)
@@ -62,3 +61,5 @@ class BroadcastHandler(val pushIntentHandler: GratifCmPushHandler) {
         }
     }
 }
+
+data class PendingData(var isBroadcastCompleted: Boolean, val cmInApp: CMInApp?)

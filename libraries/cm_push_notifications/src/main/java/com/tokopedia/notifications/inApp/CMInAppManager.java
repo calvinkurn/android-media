@@ -44,22 +44,24 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract {
+        SendPushContract, CmDialogVisibilityContract {
 
     private static CMInAppManager inAppManager;
     private Application application;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
     private List<String> excludeScreenList;
+    private PushIntentHandler pushIntentHandler;
 
     //map  - which will tell whether this activity has pop-up or not
-    final WeakHashMap<Activity, Boolean> dialogIsShownMap = new WeakHashMap<>();
+    private final WeakHashMap<Activity, Boolean> dialogIsShownMap = new WeakHashMap<>();
     public CmActivityLifecycleHandler activityLifecycleHandler;
 
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
     String TEMP_TAG = "GratifTag";
+
     static {
         inAppManager = new CMInAppManager();
     }
@@ -79,11 +81,11 @@ public class CMInAppManager implements CmInAppListener,
         cmDataConsumer = new CmDataConsumer(this);
 
         cmDialogHandler = new CmDialogHandler();
-        PushIntentHandler pushIntentHandler = new PushIntentHandler();
+        pushIntentHandler = new PushIntentHandler();
         activityLifecycleHandler = new CmActivityLifecycleHandler(this,
                 pushIntentHandler,
                 this,
-                dialogIsShownMap);
+                this);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
@@ -97,7 +99,7 @@ public class CMInAppManager implements CmInAppListener,
     private void initInAppManager() {
 
         application.registerActivityLifecycleCallbacks(new CMActivityLifeCycle(activityLifecycleHandler));
-        CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this);
+        CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
         FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);
         FragmentLifecycleObserver.INSTANCE.registerCallback(fragmentObserver);
     }
@@ -123,7 +125,7 @@ public class CMInAppManager implements CmInAppListener,
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
-            }else{
+            } else {
                 Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
         }
@@ -167,7 +169,7 @@ public class CMInAppManager implements CmInAppListener,
         cmDialogHandler.interstitialDialog(currentActivity, data, new CmDialogHandler.CmDialogHandlerCallback() {
             @Override
             public void onShow(@NotNull Activity activity) {
-                dialogIsShownMap.put(activity, true);
+                onDialogShown(activity);
             }
 
             @Override
@@ -181,7 +183,7 @@ public class CMInAppManager implements CmInAppListener,
         cmDialogHandler.showLegacyDialog(currentActivity, data, new CmDialogHandler.AbstractCmDialogHandlerCallback() {
             @Override
             public void onShow(@NotNull Activity activity) {
-                dialogIsShownMap.put(activity, true);
+                onDialogShown(activity);
             }
         });
     }
@@ -287,10 +289,6 @@ public class CMInAppManager implements CmInAppListener,
         return application;
     }
 
-    public WeakHashMap<Activity, Boolean> getDialogIsShownMap(){
-        return dialogIsShownMap;
-    }
-
     @Override
     public void setApplication(@NotNull Application application) {
         this.application = application;
@@ -303,5 +301,20 @@ public class CMInAppManager implements CmInAppListener,
 
     public CmActivityLifecycleHandler getActivityLifecycleHandler() {
         return activityLifecycleHandler;
+    }
+
+    @Override
+    public void onDialogShown(@NotNull Activity activity) {
+        dialogIsShownMap.put(activity, true);
+    }
+
+    @Override
+    public void onDialogDismiss(@NotNull Activity activity) {
+        dialogIsShownMap.remove(activity);
+    }
+
+    @Override
+    public boolean isDialogVisible(@NotNull Activity activity) {
+        return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
     }
 }

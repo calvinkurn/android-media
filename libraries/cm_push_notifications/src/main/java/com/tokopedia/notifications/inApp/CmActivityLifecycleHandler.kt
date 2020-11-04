@@ -10,7 +10,7 @@ import java.util.*
 class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
                                  val pushIntentHandler: PushIntentHandler,
                                  val callback: ShowInAppCallback,
-                                 val weakHashMap: WeakHashMap<Activity, Boolean>) {//todo chane nanme
+                                 val dialogVisibilityContract: CmDialogVisibilityContract) {//todo chane nanme
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
@@ -19,7 +19,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
         checkApplication(activity)
         updateCurrentActivity(activity)
         if (intent != null && intent.extras != null) {
-            pushIntentHandler.checkPushIntent(activity, intent.extras)
+            pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
         }
     }
 
@@ -27,28 +27,30 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
         checkApplication(activity)
         updateCurrentActivity(activity)
 
+        //only push flow
         var finalBundle: Bundle? = null
         val intent = activity.intent
         if (intent != null) {
             finalBundle = intent.extras
         }
-
-        pushIntentHandler.checkPushIntent(activity, finalBundle)
+        pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
     }
 
     fun onActivityStartedInternal(activity: Activity) {
         checkApplication(activity)
         updateCurrentActivity(activity)
-        // todo check for whether push is handled or not
-        showInApp(activity.javaClass.name, activity.hashCode())
+        if (!pushIntentHandler.isHandledByPush) {
+            showInApp(activity.javaClass.name, activity.hashCode())
+        }
     }
 
     fun onActivityStopInternal(activity: Activity) {
         clearCurrentActivity(activity)
+        pushIntentHandler.isHandledByPush = false
     }
 
     fun onActivityDestroyedInternal(activity: Activity) {
-        weakHashMap.remove(activity)
+        dialogVisibilityContract.onDialogDismiss(activity)
     }
 
     private fun clearCurrentActivity(activity: Activity) {
