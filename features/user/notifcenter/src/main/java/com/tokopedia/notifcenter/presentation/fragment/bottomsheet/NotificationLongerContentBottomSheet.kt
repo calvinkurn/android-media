@@ -28,7 +28,6 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
             inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         initContentView()
-        initViewConfig()
         return super.onCreateView(inflater, container, savedInstanceState)?.also {
             initViewBinding(it)
         }
@@ -40,6 +39,7 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewConfig()
         initContentDesc()
         initCtaButton()
         initTitle()
