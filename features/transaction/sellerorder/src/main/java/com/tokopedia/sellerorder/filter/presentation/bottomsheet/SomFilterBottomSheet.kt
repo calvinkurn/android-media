@@ -230,9 +230,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 }
             }
             val keyFilter = filterTextList.joinToString(separator = ",")
-            // need improve
             SomAnalytics.eventClickTerapkanOnFilterPage(keyFilter)
-
             somListOrderParam?.let { somListParam ->
                 somFilterFinishListener?.onClickShowOrderFilter(somListParam,
                         somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus)
