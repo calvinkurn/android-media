@@ -36,7 +36,7 @@ object GetSomFilterMapper {
         }
     }
 
-    private fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
+    fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
         return mutableListOf<SomFilterUiModel>().apply {
             add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany =  false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))

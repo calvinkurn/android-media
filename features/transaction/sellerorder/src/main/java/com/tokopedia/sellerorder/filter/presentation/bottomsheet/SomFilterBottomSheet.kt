@@ -178,9 +178,9 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     override fun onDestroy() {
-        removeObservers(somFilterViewModel.somFilterUiModelData)
+        removeObservers(somFilterViewModel.filterResult)
         removeObservers(somFilterViewModel.updateFilterSelected)
-        removeObservers(somFilterViewModel.somFilterUiModelData)
+        removeObservers(somFilterViewModel.somFilterOrderListParam)
         super.onDestroy()
     }
 
@@ -248,11 +248,21 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             }
         }
         observe(somFilterViewModel.updateFilterSelected) {
-            showHideBottomSheetReset()
-            somFilterAdapter?.updateData(it)
+            when(it) {
+                is Success -> {
+                    showHideBottomSheetReset()
+                    somFilterAdapter?.updateData(it.data)
+                }
+                is Fail -> {}
+            }
         }
-        observe(somFilterViewModel.somFilterUiModelData) {
-            somListOrderParam = it
+        observe(somFilterViewModel.somFilterOrderListParam) {
+            when(it) {
+                is Success -> {
+                    somListOrderParam = it.data
+                }
+                is Fail -> {}
+            }
         }
     }
 
