@@ -30,9 +30,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    private val _observableTrafficMetrics = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
     val observableTrafficMetrics: LiveData<NetworkResult<List<TrafficMetricUiModel>>>
         get() = _observableTrafficMetrics
+    private val _observableTrafficMetrics = MutableLiveData<NetworkResult<List<TrafficMetricUiModel>>>()
+
+    val observableSaveVideo: LiveData<NetworkResult<Boolean>>
+        get() = _observableSaveVideo
+    private val _observableSaveVideo = MutableLiveData<NetworkResult<Boolean>>()
+
+    val observableDeleteVideo: LiveData<NetworkResult<Boolean>>
+        get() = _observableDeleteVideo
+    private val _observableDeleteVideo = MutableLiveData<NetworkResult<Boolean>>()
 
     fun fetchLiveTraffic() {
         _observableTrafficMetrics.value = NetworkResult.Loading
@@ -46,6 +54,32 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
             _observableTrafficMetrics.value = NetworkResult.Fail(it) { fetchLiveTraffic() }
         }
 
+    }
+
+    // TODO: ask PO last status this use case
+    fun saveVideo() {
+        _observableSaveVideo.value = NetworkResult.Loading
+        scope.launchCatchError(block = {
+            withContext(dispatcher.io) {
+                delay(2000)
+            }
+            _observableSaveVideo.value = NetworkResult.Success(true)
+        }) {
+            _observableSaveVideo.value = NetworkResult.Fail(it)
+        }
+    }
+
+    // TODO: call use case update channel status to delete the channel
+    fun deleteVideo() {
+        _observableDeleteVideo.value = NetworkResult.Loading
+        scope.launchCatchError(block = {
+            withContext(dispatcher.io) {
+                delay(2000)
+            }
+            _observableDeleteVideo.value = NetworkResult.Success(true)
+        }) {
+            _observableDeleteVideo.value = NetworkResult.Fail(it)
+        }
     }
 
     override fun onCleared() {

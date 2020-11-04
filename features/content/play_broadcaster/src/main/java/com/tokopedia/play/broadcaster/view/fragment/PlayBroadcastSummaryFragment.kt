@@ -60,6 +60,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         observeChannelInfo()
         observeLiveDuration()
         observeLiveTrafficMetrics()
+        observeSaveVideo()
+        observeDeleteVideo()
 
         parentViewModel.getReportDuration()
 
@@ -91,8 +93,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
         btnSaveVideo.setOnClickListener {
-            // TODO: setResult("on progress saving the video")
-            activity?.finish()
+            viewModel.saveVideo()
         }
         btnDeleteVideo.setOnClickListener { showConfirmDeleteVideoDialog() }
     }
@@ -127,6 +128,25 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun setLiveDuration(timeElapsed: String) {
         summaryInfoView.setLiveDuration(timeElapsed)
+    }
+
+    private fun showConfirmDeleteVideoDialog() {
+        if (!::deleteVideoDialog.isInitialized) {
+            deleteVideoDialog = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_summary_delete_dialog_title),
+                    desc = getString(R.string.play_summary_delete_dialog_message),
+                    primaryCta = getString(R.string.play_summary_delete_dialog_action_delete),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        viewModel.deleteVideo()
+                    },
+                    secondaryCta = getString(R.string.play_summary_delete_dialog_action_back),
+                    secondaryListener = { dialog -> dialog.dismiss() },
+                    cancelable = true
+            )
+        }
+        if (!deleteVideoDialog.isShowing) deleteVideoDialog.show()
     }
 
     /**
@@ -169,25 +189,35 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         parentViewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this::setLiveDuration))
     }
 
-    private fun showConfirmDeleteVideoDialog() {
-        if (!::deleteVideoDialog.isInitialized) {
-            deleteVideoDialog = requireContext().getDialog(
-                    actionType = DialogUnify.HORIZONTAL_ACTION,
-                    title = getString(R.string.play_summary_delete_dialog_title),
-                    desc = getString(R.string.play_summary_delete_dialog_message),
-                    primaryCta = getString(R.string.play_summary_delete_dialog_action_delete),
-                    primaryListener = { dialog ->
-                        dialog.dismiss()
-                        // TODO: change this button with loading button
-                        // TODO: call use case update channel status to delete
-                        // TODO: setResult("complete delete the video")
-                        activity?.finish()
-                    },
-                    secondaryCta = getString(R.string.play_summary_delete_dialog_action_back),
-                    secondaryListener = { dialog -> dialog.dismiss() },
-                    cancelable = true
-            )
-        }
-        if (!deleteVideoDialog.isShowing) deleteVideoDialog.show()
+    private fun observeSaveVideo() {
+        viewModel.observableSaveVideo.observe(viewLifecycleOwner, Observer{
+            when (it) {
+                is NetworkResult.Loading -> btnSaveVideo.isLoading = true
+                is NetworkResult.Success -> {
+                    // TODO: setResult("on progress saving the video")
+                    activity?.finish()
+                }
+                is NetworkResult.Fail -> {
+                    btnSaveVideo.isLoading = false
+                    // TODO("show toaster fail")
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteVideo() {
+        viewModel.observableDeleteVideo.observe(viewLifecycleOwner, Observer{
+            when (it) {
+                is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
+                is NetworkResult.Success -> {
+                    // TODO: setResult("complete delete the video")
+                    activity?.finish()
+                }
+                is NetworkResult.Fail -> {
+                    btnSaveVideo.isLoading = false
+                    // TODO("show toaster fail")
+                }
+            }
+        })
     }
 }
