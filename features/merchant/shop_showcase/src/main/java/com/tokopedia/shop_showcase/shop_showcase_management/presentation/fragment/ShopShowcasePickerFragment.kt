@@ -32,11 +32,11 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.model.ShowcaseItemPickerProduct
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
@@ -172,7 +172,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     @Inject
     lateinit var shopShowcasePickerViewModel: ShopShowcasePickerViewModel
     private var showcasePickerAdapter: ShopShowcasePickerAdapter? = null
-    private var showcaseList: List<ShowcaseItem> = listOf()
+    private var showcaseList: List<ShopEtalaseModel> = listOf()
     private var isMyShop = false
     private var shopId: String = ""
     private var shopType: String = ""
@@ -254,7 +254,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
         component?.inject(this)
     }
 
-    override fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int) {
+    override fun onPickerItemClicked(item: ShopEtalaseModel, totalCheckedItem: Int) {
         val itemPicker = ShowcaseItemPicker().apply {
             showcaseId = item.id
             showcaseName = item.name
