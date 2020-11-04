@@ -19,8 +19,8 @@ import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.*
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.product_name
 import kotlinx.android.synthetic.main.item_category_product_view.view.*
@@ -103,7 +103,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.square_shimmer)
-        item.name?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(productViewHolder.productName, it, productViewHolder.productName.context.getString(R.string.content_desc_category_product_name)) }
+        productViewHolder.productName.setTextAndContentDescription(item.name, productViewHolder.productName.context.getString(R.string.content_desc_category_product_name))
         productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
 
@@ -147,7 +147,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        item.name?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(productHeaderViewHolder.productHeaderName, it, productHeaderViewHolder.productHeaderName.context.getString(R.string.content_desc_product_name)) }
+        productHeaderViewHolder.productHeaderName.setTextAndContentDescription(item.name, productHeaderViewHolder.productHeaderName.context.getString(R.string.content_desc_product_name))
         item.hexColor?.let {
             if (it.isEmpty()) {
                 val shape = GradientDrawable()
@@ -177,7 +177,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         }
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
         ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.square_shimmer)
-        item.name?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(yangLagiHitsViewHolder.ylhProductName, it, yangLagiHitsViewHolder.ylhProductName.context.getString(R.string.content_desc_item_name)) }
+        yangLagiHitsViewHolder.ylhProductName.setTextAndContentDescription(item.name, yangLagiHitsViewHolder.ylhProductName.context.getString(R.string.content_desc_item_name))
         yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
             categoryAnalytics.eventYangLagiHitClick(list[position], position)
@@ -186,7 +186,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initTextHeaderViewHolderLayout(textHeaderViewHolder: TextHeaderViewHolder, position: Int) {
         list[position].name?.let {
-            TextAndContentDescriptionUtil.setTextAndContentDescription(textHeaderViewHolder.headerTitle, it, textHeaderViewHolder.headerTitle.context.getString(R.string.content_desc_header_title))
+            textHeaderViewHolder.headerTitle.setTextAndContentDescription(it, textHeaderViewHolder.headerTitle.context.getString(R.string.content_desc_header_title))
             if (it.toLowerCase().contains("sering kamu lihat")) {
                 textHeaderViewHolder.headerTitle.setMargin(0, convertDpToPx(textHeaderViewHolder.itemView.context, 20), 0, 0)
             }
