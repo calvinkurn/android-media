@@ -176,10 +176,6 @@ object MockSearchProductModel {
 
     fun getEmptySearchProductViewModel(): EmptySearchProductViewModel {
         val emptySearchProductViewModel = EmptySearchProductViewModel()
-        emptySearchProductViewModel.buttonText = "Ganti Kata Kunci"
-        emptySearchProductViewModel.content = "Coba kata kunci lain atau cek produk rekomendasi di bawah."
-        emptySearchProductViewModel.imageRes = com.tokopedia.resources.common.R.drawable.ic_product_search_not_found
-        emptySearchProductViewModel.title = "Oops, Produk Nggak Ditemukan"
         emptySearchProductViewModel.isBannerAdsAllowed = true
 
         return emptySearchProductViewModel

@@ -8,9 +8,9 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.manageitem.common.constant.ProductExtraConstant;
