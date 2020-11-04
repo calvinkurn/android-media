@@ -1,19 +1,16 @@
-package com.tokopedia.tkpd.fcm.appupdate;
+package com.tokopedia.navigation.appupdate;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
-/**
- * Created by okasurya on 7/25/17.
- */
 public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
     private static final String ANDROID_CUSTOMER_APP_UPDATE = "android_customer_app_update";
 
