@@ -34,6 +34,10 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(null)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initContentDesc()
