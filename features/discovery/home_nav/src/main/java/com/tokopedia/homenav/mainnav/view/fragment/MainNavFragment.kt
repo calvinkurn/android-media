@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
@@ -129,6 +130,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onRefresh() {
+    }
+
+    override fun onProfileSectionClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        startActivity(intent)
     }
 
     override fun onProfileLoginClicked() {

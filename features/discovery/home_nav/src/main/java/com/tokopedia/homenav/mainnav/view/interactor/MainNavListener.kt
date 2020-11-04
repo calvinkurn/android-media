@@ -9,6 +9,8 @@ interface MainNavListener : HomeNavListener{
 
     fun onProfileRegisterClicked()
 
+    fun onProfileSectionClicked()
+
     fun onErrorProfileNameClicked(element: AccountHeaderViewModel)
 
     fun onErrorProfileOVOClicked(element: AccountHeaderViewModel)

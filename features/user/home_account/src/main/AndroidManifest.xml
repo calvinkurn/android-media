@@ -18,7 +18,7 @@
 
                 <data
                     android:host="@string/host_global"
-                    android:pathPattern="@string/two_factor_register"
+                    android:pathPattern="@string/new_home_account"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
 

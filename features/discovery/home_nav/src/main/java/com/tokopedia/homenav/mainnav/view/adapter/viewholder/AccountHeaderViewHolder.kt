@@ -104,6 +104,10 @@ class AccountHeaderViewHolder(itemView: View,
         } else if (element.saldo.isNotEmpty()) {
             usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
         }
+
+        layoutLogin.setOnClickListener {
+            mainNavListener.onProfileSectionClicked()
+        }
     }
 
     private fun renderProfileLoginSection(text: Spanned, typography: Typography, clickListener : View.OnClickListener?) {

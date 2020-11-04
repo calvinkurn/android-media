@@ -536,7 +536,7 @@ object ApplinkConstInternalGlobal {
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     @JvmField
-    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/account-home-old"
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
 
     // HomeAccountUserActivity
     // tokopedia-android-internal://global/new-home-account
