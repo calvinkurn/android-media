@@ -1,7 +1,7 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsetalase
 
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +27,7 @@ class ShopSettingsEtalaseAddEditPresenterTest: ShopSettingsEtalaseTestFixture() 
             secondArg<Subscriber<String>>().onNext("success")
         }
 
-        shopSettingsEtalaseAddEditPresenter.saveEtalase(ShopEtalaseDataModel())
+        shopSettingsEtalaseAddEditPresenter.saveEtalase(ShopEtalaseUiModel())
 
         verify {
             addShopEtalaseUseCase.execute(any(), any())
@@ -44,7 +44,7 @@ class ShopSettingsEtalaseAddEditPresenterTest: ShopSettingsEtalaseTestFixture() 
             secondArg<Subscriber<String>>().onNext("success")
         }
 
-        shopSettingsEtalaseAddEditPresenter.saveEtalase(ShopEtalaseDataModel(), true)
+        shopSettingsEtalaseAddEditPresenter.saveEtalase(ShopEtalaseUiModel(), true)
 
         verify {
             updateShopEtalaseUseCase.execute(any(), any())

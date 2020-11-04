@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseViewHolder(itemView: View,
-                            private val onOnShopEtalaseViewHolderListener: OnShopEtalaseViewHolderListener?) : AbstractViewHolder<ShopEtalaseDataModel>(itemView) {
+                            private val onOnShopEtalaseViewHolderListener: OnShopEtalaseViewHolderListener?) : AbstractViewHolder<ShopEtalaseUiModel>(itemView) {
 
     private val ivMenuMore: View
     private val tvEtalaseName: TextView
@@ -31,10 +31,10 @@ class ShopEtalaseViewHolder(itemView: View,
 
     interface OnShopEtalaseViewHolderListener {
         val keyword: String
-        fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseDataModel)
+        fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseUiModel)
     }
 
-    override fun bind(shopEtalaseViewModel: ShopEtalaseDataModel) {
+    override fun bind(shopEtalaseViewModel: ShopEtalaseUiModel) {
         var keyword = ""
         if (onOnShopEtalaseViewHolderListener != null) {
             keyword = onOnShopEtalaseViewHolderListener.keyword

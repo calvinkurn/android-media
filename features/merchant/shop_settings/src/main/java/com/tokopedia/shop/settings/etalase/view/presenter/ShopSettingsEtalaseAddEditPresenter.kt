@@ -5,7 +5,7 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.AddShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.UpdateShopEtalaseUseCase
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.usecase.UseCase
@@ -28,7 +28,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
         updateShopEtalaseUseCase.unsubscribe()
     }
 
-    fun saveEtalase(etalaseModel: ShopEtalaseDataModel, isEdit: Boolean = false) {
+    fun saveEtalase(etalaseModel: ShopEtalaseUiModel, isEdit: Boolean = false) {
         val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
         val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
 

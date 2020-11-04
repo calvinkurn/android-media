@@ -23,8 +23,8 @@ import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreUiModel
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
@@ -35,7 +35,7 @@ import java.util.*
 import javax.inject.Inject
 
 class ShopSettingsEtalaseReorderFragment :
-        BaseListFragment<ShopEtalaseDataModel, ShopEtalaseReorderFactory>(),
+        BaseListFragment<ShopEtalaseUiModel, ShopEtalaseReorderFactory>(),
         ShopSettingEtalaseListReorderPresenter.View,
         OnStartDragListener,
         TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
@@ -44,8 +44,8 @@ class ShopSettingsEtalaseReorderFragment :
     lateinit var shopSettingEtalaseListReorderPresenter: ShopSettingEtalaseListReorderPresenter
     @Inject
     lateinit var userSession: UserSessionInterface
-    private var shopEtalaseModels: ArrayList<ShopEtalaseDataModel>? = null
-    private var shopEtalaseModelsDefault: ArrayList<ShopEtalaseDataModel>? = null
+    private var shopEtalaseModels: ArrayList<ShopEtalaseUiModel>? = null
+    private var shopEtalaseModelsDefault: ArrayList<ShopEtalaseUiModel>? = null
     private var progressDialog: ProgressDialog? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: ShopEtalaseReorderAdapter? = null
@@ -68,7 +68,7 @@ class ShopSettingsEtalaseReorderFragment :
         shopSettingEtalaseListReorderPresenter.attachView(this)
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<ShopEtalaseDataModel, ShopEtalaseReorderFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<ShopEtalaseUiModel, ShopEtalaseReorderFactory> {
         adapter = ShopEtalaseReorderAdapter(adapterTypeFactory)
         return adapter as ShopEtalaseReorderAdapter
     }
@@ -120,7 +120,7 @@ class ShopSettingsEtalaseReorderFragment :
     }
 
     private fun addIdlePowerMerchantTicker() {
-        val model = TickerReadMoreDataModel(
+        val model = TickerReadMoreUiModel(
                 getString(R.string.ticker_etalase_title),
                 getString(R.string.ticker_etalase_description),
                 getString(R.string.ticker_etalase_read_more)
@@ -190,7 +190,7 @@ class ShopSettingsEtalaseReorderFragment :
         shopSettingEtalaseListReorderPresenter.detachView()
     }
 
-    override fun onItemClicked(shopEtalaseViewModel: ShopEtalaseDataModel) {
+    override fun onItemClicked(shopEtalaseViewModel: ShopEtalaseUiModel) {
         // no-op
     }
 
@@ -214,8 +214,8 @@ class ShopSettingsEtalaseReorderFragment :
         val EXTRA_DEFAULT_ETALASE_LIST = "def_etalase_list"
 
         @JvmStatic
-        fun newInstance(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseDataModel>,
-                        shopEtalaseViewModels: ArrayList<ShopEtalaseDataModel>): ShopSettingsEtalaseReorderFragment {
+        fun newInstance(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseUiModel>,
+                        shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>): ShopSettingsEtalaseReorderFragment {
 
             val args = Bundle()
             args.putParcelableArrayList(EXTRA_DEFAULT_ETALASE_LIST, shopEtalaseViewModelsDefault)

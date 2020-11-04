@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseDataModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 
 class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit: Boolean = false
-    private var etalase: ShopEtalaseDataModel = ShopEtalaseDataModel()
+    private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
 
     private val saveTextView: TextView? by lazy {
         toolbar?.findViewById<TextView>(R.id.tvSave)
@@ -28,14 +28,14 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
 
         @JvmStatic
-        fun createIntent(context: Context, isEdit: Boolean, etalase: ShopEtalaseDataModel = ShopEtalaseDataModel()) =
+        fun createIntent(context: Context, isEdit: Boolean, etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()) =
                 Intent(context, ShopSettingsEtalaseAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_ETALASE, etalase)
                         .putExtra(PARAM_IS_EDIT, isEdit)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseDataModel()
+        etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseUiModel()
         isEdit = intent.getBooleanExtra(PARAM_IS_EDIT, false)
 
         super.onCreate(savedInstanceState)

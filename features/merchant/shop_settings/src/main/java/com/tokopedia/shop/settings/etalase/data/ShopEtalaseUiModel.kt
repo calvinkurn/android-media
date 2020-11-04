@@ -9,7 +9,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseF
 /**
  * Created by hendry on 20/08/18.
  */
-class ShopEtalaseDataModel : BaseShopEtalaseDataModel {
+class ShopEtalaseUiModel : BaseShopEtalaseUiModel {
     constructor() : super() {}
 
     constructor(shopEtalaseModel: ShopEtalaseModel, isPrimaryEtalase: Boolean) : super(shopEtalaseModel, isPrimaryEtalase) {}
@@ -20,12 +20,12 @@ class ShopEtalaseDataModel : BaseShopEtalaseDataModel {
 
     constructor(`in`: Parcel) : super(`in`) {}
 
-    companion object CREATOR : Parcelable.Creator<BaseShopEtalaseDataModel> {
-        override fun createFromParcel(source: Parcel): BaseShopEtalaseDataModel {
-            return ShopEtalaseDataModel(source)
+    companion object CREATOR : Parcelable.Creator<BaseShopEtalaseUiModel> {
+        override fun createFromParcel(source: Parcel): BaseShopEtalaseUiModel {
+            return ShopEtalaseUiModel(source)
         }
 
-        override fun newArray(size: Int): Array<BaseShopEtalaseDataModel?> {
+        override fun newArray(size: Int): Array<BaseShopEtalaseUiModel?> {
             return arrayOfNulls(size)
         }
     }

@@ -11,13 +11,13 @@ import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreDataModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreUiModel
 
 
 class TickerReadMoreEtalaseViewHolder(
         itemView: View,
         private val tickerReadMoreListener: TickerReadMoreListener?
-) : AbstractViewHolder<TickerReadMoreDataModel>(itemView) {
+) : AbstractViewHolder<TickerReadMoreUiModel>(itemView) {
 
     private val textViewTitle: TextView
     private val textViewDescription: TextView
@@ -31,12 +31,12 @@ class TickerReadMoreEtalaseViewHolder(
         fun onReadMoreClicked()
     }
 
-    override fun bind(tickerReadMoreDataModel: TickerReadMoreDataModel) {
-        textViewTitle.text = tickerReadMoreDataModel.tickerTitle
+    override fun bind(tickerReadMoreUiModel: TickerReadMoreUiModel) {
+        textViewTitle.text = tickerReadMoreUiModel.tickerTitle
         textViewDescription.movementMethod = LinkMovementMethod.getInstance()
         textViewDescription.text = createDescriptionWithSpannable(
-                tickerReadMoreDataModel.tickerDescription,
-                tickerReadMoreDataModel.readMoreString
+                tickerReadMoreUiModel.tickerDescription,
+                tickerReadMoreUiModel.readMoreString
         )
     }
 
