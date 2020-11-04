@@ -21,7 +21,11 @@ class HomePlayWidgetAnalyticListener(
     var widgetId: String = ""
     var widgetName: String = ""
 
-    var widgetPosition = RecyclerView.NO_POSITION
+    private var mWidgetPosition: Int = RecyclerView.NO_POSITION
+
+    fun setWidgetPosition(value: Int) {
+        this.mWidgetPosition = if (value <= 2) 0 else 1 // following the old implementation
+    }
 
     override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -152,7 +156,7 @@ class HomePlayWidgetAnalyticListener(
     }
 
     private fun withWidgetPosition(onTrack: (Int) -> Unit) {
-        if (widgetPosition == RecyclerView.NO_POSITION) return
-        onTrack(widgetPosition)
+        if (mWidgetPosition == RecyclerView.NO_POSITION) return
+        onTrack(mWidgetPosition)
     }
 }
