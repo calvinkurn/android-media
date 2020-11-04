@@ -1078,7 +1078,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             progressDialog?.dismiss()
             viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
+    }
+
+    override fun onDestroyView() {
         orderProductCard?.clearJob()
+        super.onDestroyView()
     }
 
     private fun setSourceFromPDP() {

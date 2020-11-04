@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view.card
 import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -111,7 +110,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             qtyEditorProduct?.setValue(product.quantity.orderQuantity)
             qtyEditorProduct?.setValueChangedListener { newValue, _, _ ->
                 // prevent multiple callback with same newValue
-                Log.i("qwertyuiop", "value change $newValue")
                 if (product.quantity.orderQuantity != newValue) {
                     product.quantity.orderQuantity = newValue
                     listener.onProductChange(product)
@@ -128,21 +126,18 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 override fun afterTextChanged(s: Editable?) {
                     // for automatic reload rates when typing
                     val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
-                    Log.i("qwertyuiop", "text change $newValue")
                     if (newValue > 0 && oldQtyValue != newValue) {
-                        Log.i("qwertyuiop", "text change update")
                         resetQuantityJob?.cancel()
                         oldQtyValue = newValue
                         qtyEditorProduct?.setValue(newValue)
                     } else if (newValue <= 0) {
-                        Log.i("qwertyuiop", "text change reset")
                         resetQuantityJob?.cancel()
                         resetQuantityJob = launch {
                             delay(5000)
-                            qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                            if (isActive) {
+                                qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                            }
                         }
-                    } else {
-                        Log.i("qwertyuiop", "text change other $newValue and $oldQtyValue")
                     }
                 }
 
@@ -226,6 +221,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         get() = SupervisorJob() + Dispatchers.Main.immediate
 
     fun clearJob() {
-        coroutineContext.cancel()
+        resetQuantityJob?.cancel()
     }
 }
