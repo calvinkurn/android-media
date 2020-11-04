@@ -10,13 +10,22 @@
     android:paddingRight="@dimen/spacing_lvl2"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_hotel_popular_city"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/hotel_140dp"
-        android:background="@drawable/bg_hotel_rounded_image_view"
-        android:scaleType="centerCrop"
-        />
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/layout_lvl0"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        >
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_hotel_popular_city"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hotel_140dp"
+            android:background="@drawable/bg_hotel_rounded_image_view"
+            android:scaleType="centerCrop"
+            />
+    </androidx.cardview.widget.CardView>
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_hotel_popular_city_title"

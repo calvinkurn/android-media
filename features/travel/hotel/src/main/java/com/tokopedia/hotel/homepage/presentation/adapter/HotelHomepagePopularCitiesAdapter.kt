@@ -1,11 +1,9 @@
 package com.tokopedia.hotel.homepage.presentation.adapter
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
@@ -46,9 +44,6 @@ class HotelHomepagePopularCitiesAdapter(private val popularCities: List<PopularS
     class ViewHolder(view: View, val listener: HotelHomepagePopularCitiesWidget.ActionListener?) : RecyclerView.ViewHolder(view) {
         fun bind(popularSearch: PopularSearch) {
             with(itemView) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    iv_hotel_popular_city.clipToOutline = true
-                }
                 iv_hotel_popular_city.loadImage(popularSearch.image)
                 tv_hotel_popular_city_title.text = popularSearch.name
                 tv_hotel_popular_city_subtitle.text = popularSearch.metaDescription
