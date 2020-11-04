@@ -11,30 +11,30 @@ import javax.inject.Inject
 
 class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) {
 
-    fun mapRemoteModelToUiModel(widgetList: List<WidgetModel>): List<BaseWidgetUiModel<out BaseDataUiModel>> {
+    fun mapRemoteModelToUiModel(widgetList: List<WidgetModel>, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
         val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
         widgetList.onEach {
             val widgetType = it.widgetType.orEmpty()
             if (WidgetType.isValidWidget(widgetType)) {
                 mappedList.add(when (widgetType) {
-                    WidgetType.CARD -> mapToCardWidget(it)
-                    WidgetType.CAROUSEL -> mapToCarouselWidget(it)
-                    WidgetType.DESCRIPTION -> mapToDescriptionWidget(it)
-                    WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it)
-                    WidgetType.POST_LIST -> mapToPostWidget(it)
-                    WidgetType.PROGRESS -> mapToProgressWidget(it)
-                    WidgetType.TABLE -> mapToTableWidget(it)
-                    WidgetType.PIE_CHART -> mapToPieChartWidget(it)
-                    WidgetType.BAR_CHART -> mapToBarChartWidget(it)
+                    WidgetType.CARD -> mapToCardWidget(it, isFromCache)
+                    WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
+                    WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
+                    WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
+                    WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
+                    WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
+                    WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
+                    WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
+                    WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
                     WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it)
-                    else -> mapToSectionWidget(it)
+                    else -> mapToSectionWidget(it, isFromCache)
                 })
             }
         }
         return mappedList
     }
 
-    private fun mapToCardWidget(widget: WidgetModel): CardWidgetUiModel {
+    private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
         return CardWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -45,11 +45,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToCarouselWidget(widget: WidgetModel): CarouselWidgetUiModel {
+    private fun mapToCarouselWidget(widget: WidgetModel, fromCache: Boolean): CarouselWidgetUiModel {
         return CarouselWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -60,11 +62,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToDescriptionWidget(widget: WidgetModel): DescriptionWidgetUiModel {
+    private fun mapToDescriptionWidget(widget: WidgetModel, fromCache: Boolean): DescriptionWidgetUiModel {
         return DescriptionWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -75,11 +79,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToLineGraphWidget(widget: WidgetModel): LineGraphWidgetUiModel {
+    private fun mapToLineGraphWidget(widget: WidgetModel, fromCache: Boolean): LineGraphWidgetUiModel {
         return LineGraphWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -90,11 +96,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToPostWidget(widget: WidgetModel): PostListWidgetUiModel {
+    private fun mapToPostWidget(widget: WidgetModel, fromCache: Boolean): PostListWidgetUiModel {
         return PostListWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -105,11 +113,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToProgressWidget(widget: WidgetModel): ProgressWidgetUiModel {
+    private fun mapToProgressWidget(widget: WidgetModel, fromCache: Boolean): ProgressWidgetUiModel {
         return ProgressWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -120,11 +130,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToTableWidget(widget: WidgetModel): TableWidgetUiModel {
+    private fun mapToTableWidget(widget: WidgetModel, fromCache: Boolean): TableWidgetUiModel {
         return TableWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -135,11 +147,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToSectionWidget(widget: WidgetModel): SectionWidgetUiModel {
+    private fun mapToSectionWidget(widget: WidgetModel, fromCache: Boolean): SectionWidgetUiModel {
         return SectionWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -150,11 +164,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToPieChartWidget(widget: WidgetModel): PieChartWidgetUiModel {
+    private fun mapToPieChartWidget(widget: WidgetModel, fromCache: Boolean): PieChartWidgetUiModel {
         return PieChartWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -165,11 +181,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 
-    private fun mapToBarChartWidget(widget: WidgetModel): BarChartWidgetUiModel {
+    private fun mapToBarChartWidget(widget: WidgetModel, fromCache: Boolean): BarChartWidgetUiModel {
         return BarChartWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -180,7 +198,9 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = fromCache
         )
     }
 

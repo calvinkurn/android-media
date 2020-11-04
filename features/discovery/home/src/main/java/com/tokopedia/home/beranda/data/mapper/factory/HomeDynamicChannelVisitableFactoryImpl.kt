@@ -6,13 +6,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
-import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
@@ -137,9 +135,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> { createTopAdsBannerModel(channel) }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createPlayCarouselWidget(channel, position) }
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> { createLego4AutoComponent(channel, position, isCache) }
                 DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> { createFeaturedShopComponent(channel, position, isCache) }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> { createCarouselPlayWidget(channel, position) }
             }
         }
 
@@ -170,13 +168,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = PlayCardDataModel(channel, null)
-            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-        }
-    }
-
-    private fun createPlayCarouselWidget(channel: DynamicHomeChannel.Channels, position: Int) {
-        if (!isCache) {
-            val playBanner = mappingPlayCarouselChannel(channel, position, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
@@ -395,17 +386,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingPlayCarouselChannel(channel: DynamicHomeChannel.Channels,
-                                           position: Int,
-                                           trackingData: MutableMap<String, Any>,
-                                           isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCarouselCardDataModel(channel = channel, position = position)
-        if (!isCache) {
-            playCardViewModel.setTrackingData(trackingData)
-        }
-        return playCardViewModel
-    }
-
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
@@ -418,6 +398,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
     }
 
-
     override fun build(): List<Visitable<*>> = visitableList
+
+    /**
+     * Play Widget
+     */
+    private fun createCarouselPlayWidget(dynamicHomeChannel: DynamicHomeChannel.Channels, position: Int) {
+        if (isCache) return
+        val dataModel = CarouselPlayWidgetDataModel(
+                dynamicHomeChannel.apply {
+                    setPosition(position)
+                }
+        )
+        if (!visitableList.contains(dataModel)) visitableList.add(dataModel)
+    }
 }
