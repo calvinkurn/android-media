@@ -66,7 +66,8 @@
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
     <string name="hotel_homepage_popular_city_section_subtitle">TUJUAN POPULER</string>
     <string name="hotel_homepage_popular_city_section_title">Kota menarik untuk dikunjungi</string>
-    <string name="hotel_homepage_popular_city_button">Lihat Selengkapnya</string>
+    <string name="hotel_homepage_popular_city_button_see_more">Lihat Selengkapnya</string>
+    <string name="hotel_homepage_popular_city_button_see_less">Sembunyikan</string>
 
     <string name="hotel_calendar_error_max_range">Maks. 30 malam. Coba ubah tanggal cek-in atau check-out</string>
 

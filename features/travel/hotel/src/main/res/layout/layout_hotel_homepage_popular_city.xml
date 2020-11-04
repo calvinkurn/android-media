@@ -42,7 +42,7 @@
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost"
         app:unifyButtonType="alternate"
-        android:text="@string/hotel_homepage_popular_city_button"
+        android:text="@string/hotel_homepage_popular_city_button_see_more"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"/>
 

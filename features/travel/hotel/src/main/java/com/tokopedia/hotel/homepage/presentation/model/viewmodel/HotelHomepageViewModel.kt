@@ -14,7 +14,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.destination.data.model.PopularSearch
-import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
@@ -55,6 +54,16 @@ class HotelHomepageViewModel @Inject constructor(
     val popularCitiesLiveData: LiveData<Result<List<PopularSearch>>>
         get() = mutablePopularCitiesLiveData
 
+    private val mutableVideoBannerLiveData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
+    val videoBannerLiveData: LiveData<Result<TravelCollectiveBannerModel>>
+        get() = mutableVideoBannerLiveData
+
+    fun fetchVideoBannerData() {
+        launch(dispatcher.ui()) {
+            val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, true)
+            mutableVideoBannerLiveData.postValue(bannerList)
+        }
+    }
 
     fun getHotelPromo() {
         launch {

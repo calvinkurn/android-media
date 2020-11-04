@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
@@ -65,7 +68,8 @@ import kotlin.collections.ArrayList
  */
 class HotelHomepageFragment : HotelBaseFragment(),
         HotelRoomAndGuestBottomSheets.HotelGuestListener,
-        HotelLastSearchViewHolder.LastSearchListener {
+        HotelLastSearchViewHolder.LastSearchListener,
+        TravelVideoBannerWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,10 +84,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private lateinit var remoteConfig: RemoteConfig
 
+    private var bannerWidthInPixels = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_HOMEPAGE)
+
+        measureBannerWidthInPixels()
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -142,6 +150,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hidePromoContainer()
         loadPromoData()
         loadPopularCitiesData()
+        fetchVideoBannerData()
         if (hotelHomepageModel.locName.isEmpty()) {
             homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
         }
@@ -203,6 +212,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 }
             }
         })
+
+        homepageViewModel.videoBannerLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> renderVideoBanner(it.data)
+                is Fail -> showHotelHomepageVideoBanner(false)
+            }
+        })
+
+
     }
 
     private fun renderHotelParam(hotelPropertyDefaultHome: HotelPropertyDefaultHome) {
@@ -236,6 +254,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun getScreenName(): String = ""
+
+    private fun measureBannerWidthInPixels() {
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+    }
 
     override fun onSaveGuest(room: Int, adult: Int) {
         trackingHotelUtil.hotelSelectRoomGuest(context, room, adult, HOMEPAGE_SCREEN_NAME)
@@ -313,9 +338,26 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
     }
 
+    private fun renderVideoBanner(videoBannerModel: TravelCollectiveBannerModel) {
+        showHotelHomepageVideoBanner(true)
+        hotel_homepage_video_banner.listener = this
+        hotel_homepage_video_banner.customHeight = if (bannerWidthInPixels > 0) {
+            (bannerWidthInPixels * BANNER_HEIGHT_RATIO).toInt()
+        } else {
+            resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
+        }
+        hotel_homepage_video_banner.setData(videoBannerModel)
+        hotel_homepage_video_banner.build()
+    }
+
     private fun showPopularCitiesWidget(show: Boolean) {
         if (show) widget_hotel_homepage_popular_cities.show()
         else widget_hotel_homepage_popular_cities.hide()
+    }
+
+    private fun showHotelHomepageVideoBanner(show: Boolean) {
+        if (show) hotel_homepage_video_banner.show()
+        else hotel_homepage_video_banner.hide()
     }
 
     private fun onDestinationChangeClicked() {
@@ -476,6 +518,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun loadPopularCitiesData() {
         homepageViewModel.getPopularCitiesData()
+    }
+
+    private fun fetchVideoBannerData() {
+        homepageViewModel.fetchVideoBannerData()
     }
 
     private fun loadRecentSearchData() {
@@ -661,5 +707,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         if (room != 0) putInt(EXTRA_ROOM, room)
                     }
                 }
+    }
+
+    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
+        // do nothing for now, will use for tracking later
     }
 }

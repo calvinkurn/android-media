@@ -38,8 +38,14 @@ class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Contex
         if (popularCities.size > HotelHomepagePopularCitiesAdapter.MIN_ITEM_SHOW) {
             btn_homepage_popular_cities_see_more.show()
             btn_homepage_popular_cities_see_more.setOnClickListener {
-                if (adapter.itemShowCount > HotelHomepagePopularCitiesAdapter.MIN_ITEM_SHOW) adapter.minimizeItems()
-                else adapter.maximizeItems()
+                if (adapter.itemShowCount > HotelHomepagePopularCitiesAdapter.MIN_ITEM_SHOW) {
+                    adapter.minimizeItems()
+                    btn_homepage_popular_cities_see_more.text = resources.getString(R.string.hotel_homepage_popular_city_button_see_less)
+                }
+                else {
+                    adapter.maximizeItems()
+                    btn_homepage_popular_cities_see_more.text = resources.getString(R.string.hotel_homepage_popular_city_button_see_less)
+                }
             }
         } else btn_homepage_popular_cities_see_more.hide()
     }
