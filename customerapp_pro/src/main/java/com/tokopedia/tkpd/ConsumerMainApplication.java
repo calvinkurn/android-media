@@ -121,6 +121,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         System.loadLibrary("native-lib");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
