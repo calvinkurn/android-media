@@ -136,7 +136,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData[index] = UohTypeData("", TYPE_LOADER)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.w("P2#ORDER_HISTORY#error;err='${Log.getStackTraceString(ex)}'")
+            Timber.w("P2#ORDER_HISTORY#error_show;err='${Log.getStackTraceString(ex)}'")
         }
     }
 
@@ -145,7 +145,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.w("P2#ORDER_HISTORY#error;err='${Log.getStackTraceString(ex)}'")
+            Timber.w("P2#ORDER_HISTORY#error_update;err='${Log.getStackTraceString(ex)}'")
         }
     }
 
