@@ -18,7 +18,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.navigation.R
-import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
 import com.tokopedia.navigation.domain.model.Recommendation
 import com.tokopedia.navigation.environment.InstrumentationInboxTestActivity
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter
@@ -127,5 +126,4 @@ class InboxTopAdsVerificationTest {
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
     }
-
 }
