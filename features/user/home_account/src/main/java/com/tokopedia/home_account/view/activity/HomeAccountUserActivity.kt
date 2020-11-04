@@ -25,7 +25,7 @@ import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_expandable_layout.*
 import kotlinx.android.synthetic.main.home_account_item_profile.*
@@ -37,96 +37,14 @@ import kotlinx.android.synthetic.main.home_account_member.*
  */
 class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
 
-//    override fun getLayoutRes(): Int = R.layout.home_account_user_activity
-//
-//    override fun getParentViewResourceID(): Int = R.id.home_account_activity_parent_view
-//
-//    override fun getToolbarResourceID(): Int = R.id.home_account_activity_toolbar
-
     override fun getNewFragment(): Fragment? {
         return HomeAccountUserFragment.newInstance(intent?.extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        home_account_activity_collapsing_toolbar?.setExpandedTitleColor(Color.TRANSPARENT)
         toolbar.visibility = View.GONE
         updateTitle(getString(R.string.home_account_title))
-    }
-
-    fun setupToolbarContent(profile: ProfileDataView) {
-        account_user_item_profile_name?.text = profile.name
-        account_user_item_profile_phone?.text = profile.phone
-        account_user_item_profile_email?.text = profile.email
-
-        account_user_item_profile_edit?.setOnClickListener {
-            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SETTING_PROFILE)
-            startActivity(i)
-        }
-
-        loadImage(account_user_item_profile_avatar, profile.avatar)
-
-        setupFinancialAdapter(profile)
-        setupMemberAdapter(profile)
-        val params: ViewGroup.LayoutParams = account_user_item_profile_backdrop.layoutParams
-        params.height = params.height - (home_account_member_card.height/2)
-        account_user_item_profile_backdrop.layoutParams = params
-    }
-
-    private fun setupFinancialAdapter(profile: ProfileDataView) {
-        home_account_expandable_layout_title?.text = profile.financial.title
-
-        val adapter = HomeAccountUserCommonAdapter(object: HomeAccountUserListener {
-            override fun onEditProfileClicked() {}
-            override fun onMemberItemClicked(applink: String) {}
-            override fun onSettingItemClicked(item: CommonDataView) {}
-            override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
-            override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {}
-            override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {}
-            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {}
-        }, CommonViewHolder.LAYOUT_FINANCIAL)
-
-        adapter.list = profile.financial.items
-        home_account_expandable_layout_rv?.adapter = adapter
-        home_account_expandable_layout_rv?.layoutManager = LinearLayoutManager(home_account_expandable_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
-    }
-
-    private fun setupMemberAdapter(profile: ProfileDataView) {
-        home_account_member_layout_title?.text = profile.members.title
-        ImageUtils.loadImageWithoutPlaceholderAndError(home_account_member_layout_member_icon, profile.members.icon)
-
-        val adapter = HomeAccountMemberAdapter(object: HomeAccountUserListener {
-            override fun onEditProfileClicked() {}
-            override fun onMemberItemClicked(applink: String) {
-                if(applink.isNotEmpty()) {
-                    val intent = RouteManager.getIntent(this@HomeAccountUserActivity, applink)
-                    startActivity(intent)
-                }
-            }
-            override fun onSettingItemClicked(item: CommonDataView) {}
-            override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
-            override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {}
-            override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {}
-            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {}
-        })
-        adapter.list = profile.members.items
-        home_account_member_layout_rv?.adapter = adapter
-        val layoutManager = SpanningLinearLayoutManager(home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
-
-        val verticalDivider = ContextCompat.getDrawable(this, R.drawable.vertical_divider)
-        val dividerItemDecoration = DividerItemDecoration(home_account_member_layout_rv.context,
-                layoutManager.orientation)
-
-        verticalDivider?.run {
-            dividerItemDecoration.setDrawable(this)
-        }
-
-        home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
-        home_account_member_layout_rv?.layoutManager = layoutManager
-    }
-
-    private fun loadImage(imageView: ImageView, imageUrl: String) {
-        ImageUtils.loadImageCircleWithPlaceHolder(imageView.context, imageView, imageUrl)
     }
 
     override fun getComponent(): HomeAccountUserComponents {
@@ -135,6 +53,7 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
                 .homeAccountUserModules(HomeAccountUserModules(this))
                 .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
                 .homeAccountUserQueryModules(HomeAccountUserQueryModules())
+                .sessionModule(SessionModule())
                 .build()
     }
 

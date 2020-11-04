@@ -32,7 +32,10 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.discoveryCommon)
+
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.libraries.adapterDelegate)
