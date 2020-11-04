@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -22,15 +24,16 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.core.analytics.container.GTMAnalytics
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.oneclickcheckout.common.utils.ResourceUtils.getJsonFromResource
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivityTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.common.util.SimpleIdlingResource
 import com.tokopedia.topchat.stub.chatroom.usecase.ChatAttachmentUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.usecase.GetChatUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
@@ -43,6 +46,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,6 +66,8 @@ class TopChatRoomActivityTest {
     private lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
 
     private lateinit var activity: TopChatRoomActivityStub
+
+    private var idlingResource: IdlingResource? = null
 
     private var firstPageChat: GetExistingChatPojo = AndroidFileUtil.parse(
             "success_get_chat_first_page.json",
@@ -92,7 +98,7 @@ class TopChatRoomActivityTest {
     private fun createMockModelConfig(): MockModelConfig {
         return object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
-                addMockResponse("add_to_cart_occ", getJsonFromResource("occ/occ_success.json"), FIND_BY_CONTAINS)
+                addMockResponse("add_to_cart_occ", AndroidFileUtil.getJsonFromResource("occ/occ_success.json"), FIND_BY_CONTAINS)
                 return this
             }
         }
@@ -101,6 +107,9 @@ class TopChatRoomActivityTest {
     @ExperimentalCoroutinesApi
     @Before
     fun before() {
+        idlingResource = SimpleIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
+
         Dispatchers.setMain(TestCoroutineDispatcher())
         activity = mActivityTestRule.activity
         getChatUseCase = GetChatUseCaseStub()
@@ -114,7 +123,7 @@ class TopChatRoomActivityTest {
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, TestAnalytic::class.java)
     }
 
-    class TestAnalytic(context: Context) : GTMAnalytics(context) {
+    private class TestAnalytic(context: Context) : GTMAnalytics(context) {
         val map = mutableMapOf<String?, Bundle?>()
         val seen = mutableSetOf<String>()
 
@@ -146,13 +155,22 @@ class TopChatRoomActivityTest {
         override fun sendEnhanceEcommerceEvent(eventName: String?, value: Bundle?) {
             super.sendEnhanceEcommerceEvent(eventName, value)
             map[eventName] = value
+
+            if(eventName.equals(AddToCartBundler.KEY))  {
+                SimpleIdlingResource.decrement()
+            }
         }
 
         fun isCalled(eventName: String?) = seen.contains(eventName) || map.containsKey(eventName)
     }
 
+    @After
+    fun finish(){
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
     @Test
-    fun size_2_chat_list() {
+    fun assess_occ_click() {
         // Given
 
         // When
@@ -166,39 +184,16 @@ class TopChatRoomActivityTest {
         val viewInteraction = onView(AllOf.allOf(isDisplayed(), withId(R.id.recycler_view))).check(matches(isDisplayed()))
         var position = 1
         var idToClick = R.id.tv_occ
-        viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, MyViewAction.clickChildViewWithId(idToClick)))
+        viewInteraction.perform(actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(position, ClickChildViewWithIdAction.clickChildViewWithId(idToClick)))
 
-        Thread.sleep(3000)
+        // this is problematic
 
         val testAnalytic = TrackApp.getInstance().gtm as TestAnalytic
         assertEquals("this ${AddToCartBundler.KEY} should not be null", true, testAnalytic.map.containsKey(AddToCartBundler.KEY))
         assertEquals("this ${AddToCartBundler.KEY} should not be null", true, testAnalytic.isCalled(AddToCartBundler.KEY))
 
-        Thread.sleep(3000)
         val discomQuery = "tracker/user/topchat/topchat_room_occ_p0.json"
         assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, discomQuery), hasAllSuccess()) // use assertThat from Hamcrest is recommended
-
-        // Then
-        assertTrue(true)
-    }
-
-    object MyViewAction {
-        fun clickChildViewWithId(id: Int): ViewAction {
-            return object : ViewAction {
-                override fun getConstraints(): Matcher<View>? {
-                    return null
-                }
-
-                override fun getDescription(): String {
-                    return "Click on a child view with specified id."
-                }
-
-                override fun perform(uiController: UiController?, view: View) {
-                    val v: View = view.findViewById(id)
-                    v.performClick()
-                }
-            }
-        }
     }
 
     private fun setupActivityIntent(messageId: String = "") {

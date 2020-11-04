@@ -40,7 +40,7 @@ data class ProductListImpression(
         val screenName: String?,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 
 )
 
@@ -86,5 +86,5 @@ data class ProductListImpressionProduct(
         val dimension88: String?,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 )

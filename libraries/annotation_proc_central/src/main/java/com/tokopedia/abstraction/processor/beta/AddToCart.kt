@@ -37,7 +37,7 @@ data class AddToCart(
         val screenName: String?,
         @CustomChecker(AddToCartChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 
 )
 
@@ -70,7 +70,7 @@ data class AddToCartProduct(
         val dimension45: String,
         @CustomChecker(AddToCartChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 )
 
 object AddToCartChecker {

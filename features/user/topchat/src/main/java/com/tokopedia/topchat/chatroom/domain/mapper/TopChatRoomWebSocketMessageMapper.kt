@@ -23,9 +23,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/12/18.
  */
-class TopChatRoomWebSocketMessageMapper @Inject constructor(
-
-) : WebsocketMessageMapper() {
+class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {

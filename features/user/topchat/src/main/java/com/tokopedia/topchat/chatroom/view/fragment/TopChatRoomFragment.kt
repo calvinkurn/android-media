@@ -107,6 +107,8 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.ToolTipStickerPopupWindow
+import com.tokopedia.topchat.common.util.SimpleIdlingResource
+import com.tokopedia.topchat.common.util.SimpleIdlingResource.increment
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -272,9 +274,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     getViewState().chatRoomViewModel.shopName,
                     it.data.cartId
             )
+            SimpleIdlingResource.decrement()
             finishOccLoading(product, position)
             RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         }, {
+            SimpleIdlingResource.decrement()
             finishOccLoading(product, position)
             showSnackbarError(it)
         })

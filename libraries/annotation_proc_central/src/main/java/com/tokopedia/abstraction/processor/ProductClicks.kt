@@ -74,5 +74,5 @@ data class ProductListClickProduct(
         val index: Long,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["checkMap"])
         @DefinedInCollections
-        val stringCollection: HashMap<String, String>
+        val stringCollection: Map<String, String>
 )

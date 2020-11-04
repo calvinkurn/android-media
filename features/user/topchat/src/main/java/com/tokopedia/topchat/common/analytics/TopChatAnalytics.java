@@ -4,6 +4,8 @@ package com.tokopedia.topchat.common.analytics;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.collection.ArrayMap;
+
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
@@ -302,7 +304,7 @@ public class TopChatAnalytics {
                 null,
                 getFrom(product),
                 PRODUCT_INDEX,
-                new HashMap<>()
+                new ArrayMap<>()
         );
         products.add(topChatProduct);
 
@@ -341,7 +343,7 @@ public class TopChatAnalytics {
                 getFrom(product),
                 null,
                 null,
-                new HashMap<>()
+                new ArrayMap<>()
         );
         products.add(product1);
 
@@ -354,7 +356,7 @@ public class TopChatAnalytics {
                 Action.VIEW_PRODUCT_PREVIEW,
                 null,
                 null,
-                new HashMap<>()
+                new ArrayMap<>()
         );
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle
@@ -639,6 +641,7 @@ public class TopChatAnalytics {
             @NotNull String shopName,
             @NotNull String cartId
     ) {
+
         List<AddToCartProduct> addToCartProducts
                 = new ArrayList<AddToCartProduct>() {{
             add(new AddToCartProduct(
@@ -668,7 +671,7 @@ public class TopChatAnalytics {
                         Category.CHAT_DETAIL,
                         null,
                         null,
-                        new HashMap<>()
+                        new ArrayMap<>()
                 )
         );
     }
