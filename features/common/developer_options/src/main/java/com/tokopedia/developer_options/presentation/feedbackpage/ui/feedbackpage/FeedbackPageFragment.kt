@@ -130,7 +130,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        //do more validation here
         if(grantResults.size == requiredPermissions.size) {
             initImageUri()
         }
@@ -155,7 +154,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
                     selectedImage = arrayListOf(newUri.toString())
-//                    selectedImage.add(arrayListOf(uriImage).toString())
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -191,7 +189,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
                 if (!imageType.contains(".mp4") && imageSize > 250) {
                     resizeImage(image)
-//                    val resizedData = resizedUriImage?.let { handleItem(it) }
                     val resizedFile = File(resizedUriImage?.path)
                     sendAttachmentImage(feedbackId, resizedFile, totalImage, initCountImage)
                 } else if (!imageType.contains(".mp4") && imageSize < 250) {
