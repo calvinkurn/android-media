@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.util.Patterns
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -908,7 +909,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
-        registerInitialViewModel.registerCheck(id)
+        if(Patterns.PHONE.matcher(id).matches()) {
+            registerInitialViewModel.registerCheck(removeSymbolPhone(id))
+        } else {
+            registerInitialViewModel.registerCheck(id)
+        }
     }
 
     private fun showLoadingDiscover() {
