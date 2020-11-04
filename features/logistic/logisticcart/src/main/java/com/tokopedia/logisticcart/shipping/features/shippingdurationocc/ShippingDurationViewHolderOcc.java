@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationViewHolder;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -148,10 +147,10 @@ public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
             }
         });
 
-        if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolder.class.getName()))
+        if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolderOcc.class.getName()))
             showCaseDialog.show(
                     (Activity) itemView.getContext(),
-                    ShippingDurationViewHolder.class.getName(),
+                    ShippingDurationViewHolderOcc.class.getName(),
                     showCaseObjectList
             );
     }
