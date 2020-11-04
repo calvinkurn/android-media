@@ -9,7 +9,8 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.data.get.OnboardingComponentResponse
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_occ_info.view.*
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class OccInfoBottomSheet {
 
@@ -29,13 +30,15 @@ class OccInfoBottomSheet {
     }
 
     private fun setupChild(child: View, body: OnboardingComponentResponse) {
-        ImageHandler.loadImageFitCenter(child.context, child.iv_body, body.bodyImage)
-        child.tv_body.text = MethodChecker.fromHtml(body.bodyMessage)
-        child.tv_action.text = body.infoComponent.text
-        child.tv_action.setOnClickListener {
-            RouteManager.route(child.context, ApplinkConstInternalGlobal.WEBVIEW, body.infoComponent.link)
+        ImageHandler.loadImageFitCenter(child.context, child.findViewById(R.id.iv_body), body.bodyImage)
+        child.findViewById<Typography>(R.id.tv_body).text = MethodChecker.fromHtml(body.bodyMessage)
+        child.findViewById<Typography>(R.id.tv_action).apply {
+            text = body.infoComponent.text
+            setOnClickListener {
+                RouteManager.route(child.context, ApplinkConstInternalGlobal.WEBVIEW, body.infoComponent.link)
+            }
         }
-        child.btn_action.setOnClickListener {
+        child.findViewById<UnifyButton>(R.id.btn_action).setOnClickListener {
             bottomSheetUnify?.dismiss()
         }
     }

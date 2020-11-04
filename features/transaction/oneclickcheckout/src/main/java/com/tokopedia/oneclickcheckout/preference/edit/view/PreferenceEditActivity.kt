@@ -23,7 +23,9 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFr
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
-import kotlinx.android.synthetic.main.activity_preference_edit.*
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
@@ -42,6 +44,13 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
     private var _fromFlow = FROM_FLOW_PREF
+
+    private var tvTitle: Typography? = null
+    private var tvSubtitle: Typography? = null
+    private var btnBack: UnifyImageButton? = null
+    private var btnAdd: UnifyImageButton? = null
+    private var btnDelete: UnifyImageButton? = null
+    private var stepper: ProgressBarUnify? = null
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -68,7 +77,14 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     private fun initViews() {
-        btn_back.setOnClickListener {
+        btnBack = findViewById(R.id.btn_back)
+        tvTitle = findViewById(R.id.tv_title)
+        tvSubtitle = findViewById(R.id.tv_subtitle)
+        btnAdd = findViewById(R.id.btn_add)
+        btnDelete = findViewById(R.id.btn_delete)
+        stepper = findViewById(R.id.stepper)
+
+        btnBack?.setOnClickListener {
             onBackPressed()
         }
 
@@ -181,11 +197,11 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     override fun setHeaderTitle(title: String) {
-        tv_title.text = title
+        tvTitle?.text = title
     }
 
     override fun setHeaderSubtitle(subtitle: String) {
-        tv_subtitle.text = subtitle
+        tvSubtitle?.text = subtitle
     }
 
     override fun addFragment(fragment: Fragment) {
@@ -221,47 +237,45 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     }
 
     override fun setStepperValue(value: Int) {
-        if (stepper != null) {
-            stepper.setValue(value, true)
-        }
+        stepper?.setValue(value, true)
     }
 
     override fun showStepper() {
-        tv_subtitle.visible()
-        stepper.visible()
+        tvSubtitle?.visible()
+        stepper?.visible()
     }
 
     override fun hideStepper() {
-        tv_subtitle.gone()
-        stepper.gone()
+        tvSubtitle?.gone()
+        stepper?.gone()
     }
 
     override fun showAddButton() {
         hideDeleteButton()
-        btn_add.visible()
+        btnAdd?.visible()
     }
 
     override fun hideAddButton() {
-        btn_add.gone()
+        btnAdd?.gone()
     }
 
     override fun showDeleteButton() {
         hideAddButton()
-        btn_delete.visible()
+        btnDelete?.visible()
     }
 
     override fun hideDeleteButton() {
-        btn_delete.gone()
+        btnDelete?.gone()
     }
 
     override fun setDeleteButtonOnClickListener(onClick: () -> Unit) {
-        btn_delete.setOnClickListener {
+        btnDelete?.setOnClickListener {
             onClick()
         }
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
-        btn_add.setOnClickListener {
+        btnAdd?.setOnClickListener {
             onClick()
         }
     }

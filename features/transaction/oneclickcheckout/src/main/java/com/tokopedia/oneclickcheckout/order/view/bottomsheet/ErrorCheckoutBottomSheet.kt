@@ -1,11 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.view.View
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_error_checkout.view.*
 
 class ErrorCheckoutBottomSheet {
 
@@ -27,7 +27,7 @@ class ErrorCheckoutBottomSheet {
     }
 
     private fun setupView(child: View, error: CheckoutOccErrorData) {
-        val esCheckout = child.es_checkout
+        val esCheckout = child.findViewById<EmptyStateUnify>(R.id.es_checkout)
         esCheckout.setImageUrl(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) IMAGE_PRODUCT_STOCK_EMPTY else IMAGE_SHOP_CLOSED)
         esCheckout.setDescription(error.message)
         esCheckout.setPrimaryCTAText(ACTION_MESSAGE)
