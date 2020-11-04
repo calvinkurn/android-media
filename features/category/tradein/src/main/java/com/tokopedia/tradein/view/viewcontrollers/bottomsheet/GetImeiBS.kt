@@ -53,7 +53,7 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
                     etWrapper?.textAreaMessage = "Kamu belum memasukkan no. IMEI"
                 }
 
-                etWrapper?.textAreaInput?.text.toString().length < 15 -> {
+                etWrapper?.textAreaInput?.text.toString().length != 15 -> {
                     etWrapper?.isError = true
                     etWrapper?.textAreaMessage = "No. IMEI kamu salah"
                 }
