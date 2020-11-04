@@ -144,7 +144,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
         this.loadImage(url) {
             cacheStrategy = MediaCacheStrategy.RESOURCE
             error = R.drawable.placeholder_grey
-            transforms = listOf(CenterCrop())
+            transform = CenterCrop()
             roundedRadius = getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat()
         }
     }
