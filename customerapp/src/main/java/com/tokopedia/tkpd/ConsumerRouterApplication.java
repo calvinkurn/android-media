@@ -617,6 +617,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        return remoteConfig.getBoolean(key, defaultValue);
+    }
+
+    @Override
     public String getAppsFlyerID() {
         return TrackingUtils.getAfUniqueId(this);
     }
