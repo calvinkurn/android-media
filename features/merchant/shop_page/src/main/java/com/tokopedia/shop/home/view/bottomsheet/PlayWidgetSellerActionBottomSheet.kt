@@ -106,7 +106,7 @@ class PlayWidgetSellerActionBottomSheet : BottomSheetUnify() {
         }
 
         companion object {
-            val layout = R.layout.item_play_action_list
+            val layout = R.layout.item_play_widget_seller_action_list
         }
     }
 

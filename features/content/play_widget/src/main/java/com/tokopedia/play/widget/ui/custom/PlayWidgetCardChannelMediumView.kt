@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.ui.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,6 +17,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.unifycomponents.LoaderUnify
 
 /**
  * Created by mzennis on 26/10/20.
@@ -38,6 +40,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val tvTitle: TextView
     private val tvAuthor: TextView
     private val tvTotalView: TextView
+    private val llWidgetInfoContainer: LinearLayout
+    private val llLoadingContainer: LinearLayout
+    private val loaderLoading: LoaderUnify
 
     private var originalReminderState = false
 
@@ -59,6 +64,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
         tvTotalView = view.findViewById(R.id.viewer)
+        llWidgetInfoContainer = view.findViewById(R.id.play_widget_info_container)
+        llLoadingContainer = view.findViewById(R.id.ll_loading_container)
+        loaderLoading = view.findViewById(R.id.loader_loading)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -84,11 +92,12 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         thumbnail.loadImage(model.video.coverUrl)
 
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
-        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
-        reminderBadge.visibility = if (model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
+        when (model.channelType) {
+            PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod -> setActiveModel(model)
+            PlayWidgetChannelType.Upcoming -> setUpcomingModel(model)
+            PlayWidgetChannelType.Transcoding -> setTranscodingModel(model)
+            PlayWidgetChannelType.FailedTranscoding -> setFailedTranscodingModel(model)
+        }
 
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
@@ -115,6 +124,50 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, model)
         }
+    }
+
+    private fun setActiveModel(model: PlayWidgetMediumChannelUiModel) {
+        ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
+        liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
+        reminderBadge.visibility = View.GONE
+        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
+        llWidgetInfoContainer.visibility = View.VISIBLE
+        llLoadingContainer.visibility = View.GONE
+        loaderLoading.visibility = View.GONE
+    }
+
+    private fun setUpcomingModel(model: PlayWidgetMediumChannelUiModel) {
+        ivAction.visibility = View.GONE
+        liveBadge.visibility = View.GONE
+        reminderBadge.visibility = View.VISIBLE
+        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
+        llWidgetInfoContainer.visibility = View.VISIBLE
+        llLoadingContainer.visibility = View.GONE
+        loaderLoading.visibility = View.GONE
+    }
+
+    private fun setTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
+        ivAction.visibility = View.GONE
+        liveBadge.visibility = View.GONE
+        reminderBadge.visibility = View.GONE
+        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
+        llWidgetInfoContainer.visibility = View.VISIBLE
+        llLoadingContainer.visibility = View.VISIBLE
+        loaderLoading.visibility = View.VISIBLE
+    }
+
+    private fun setFailedTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
+        ivAction.visibility = View.GONE
+        liveBadge.visibility = View.GONE
+        reminderBadge.visibility = View.GONE
+        totalViewBadge.visibility = View.GONE
+        promoBadge.visibility = View.GONE
+        llWidgetInfoContainer.visibility = View.GONE
+        llLoadingContainer.visibility = View.GONE
+        loaderLoading.visibility = View.GONE
     }
 
     private fun setIconToggleReminder(active: Boolean) {
@@ -149,6 +202,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         setPlayer(null)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        loaderLoading.visibility = if (mModel.channelType == PlayWidgetChannelType.Transcoding) View.VISIBLE else View.GONE
     }
 
     interface Listener {
