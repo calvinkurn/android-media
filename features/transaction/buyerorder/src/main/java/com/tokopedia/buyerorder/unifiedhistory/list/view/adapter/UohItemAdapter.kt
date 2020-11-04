@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -135,18 +136,16 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData[index] = UohTypeData("", TYPE_LOADER)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.tag(this::class.java.simpleName).e(ex)
+            Timber.w("P2#ORDER_HISTORY#error;err='${Log.getStackTraceString(ex)}'")
         }
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
         try {
-            // e: index = 11, length = 5
-            // e: index = 5, length = 5
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.tag(this::class.java.simpleName).e(ex)
+            Timber.w("P2#ORDER_HISTORY#error;err='${Log.getStackTraceString(ex)}'")
         }
     }
 

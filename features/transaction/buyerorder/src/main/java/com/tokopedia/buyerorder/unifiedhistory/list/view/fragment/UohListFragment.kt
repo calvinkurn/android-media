@@ -191,7 +191,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
     private var userSession: UserSessionInterface? = null
-    private var chosenOrder: UohListOrder.Data.UohOrders.Order? = null
     private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
@@ -408,7 +407,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun observingOrderHistory() {
         if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter.showLoader()
-        uohListViewModel.orderHistoryListResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -445,7 +444,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingRecommendationList() {
-        uohListViewModel.recommendationListResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.recommendationListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     currRecommendationListPage += 1
@@ -459,7 +458,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
@@ -484,7 +483,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -502,7 +501,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
@@ -527,7 +526,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val flightEmailResponse = it.data.flightResendEmailV2
@@ -551,7 +550,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
@@ -575,7 +574,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
@@ -1022,8 +1021,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 bottomSheetKebabMenu?.dismiss()
                 bottomSheetFinishOrder?.dismiss()
                 currIndexNeedUpdate = index
-                chosenOrder = uohItemAdapter.getDataAtIndex(currIndexNeedUpdate)
-                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                uohItemAdapter.showLoaderAtIndex(index)
 
                 var actionStatus = ""
                 if (status.isNotEmpty() && status.toIntOrZero() < 600) actionStatus = ACTION_FINISH_ORDER
@@ -1058,8 +1056,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         viewBottomSheet.btn_ls_finish_order?.setOnClickListener {
             bottomSheetLsFinishOrder?.dismiss()
             currIndexNeedUpdate = index
-            chosenOrder = uohItemAdapter.getDataAtIndex(currIndexNeedUpdate)
-            uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+            uohItemAdapter.showLoaderAtIndex(index)
             uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
         }
 
