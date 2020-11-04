@@ -60,7 +60,7 @@ class HotelHomepageViewModel @Inject constructor(
 
     fun fetchVideoBannerData() {
         launch(dispatcher.ui()) {
-            val bannerList = bannerUseCase.execute(TravelType.HOTEL, true)
+            val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, true)
             mutableVideoBannerLiveData.postValue(bannerList)
         }
     }
