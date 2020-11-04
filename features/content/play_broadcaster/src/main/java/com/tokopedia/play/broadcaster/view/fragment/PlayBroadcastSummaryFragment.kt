@@ -208,7 +208,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         putExtra(KEY_RESULT_SAVE_VIDEO, "ok")
                     })
                     activity?.finish()
-                    // TODO: show toaster on the shop page when these extras are not null / exist
                 }
                 is NetworkResult.Fail -> {
                     btnSaveVideo.isLoading = false
@@ -232,7 +231,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                         putExtra(KEY_RESULT_DELETE_VIDEO, "ok")
                     })
                     activity?.finish()
-                    // TODO: show toaster on the shop page when these extras are not null / exist
                 }
                 is NetworkResult.Fail -> {
                     btnDeleteVideo.isLoading = false

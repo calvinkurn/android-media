@@ -6,11 +6,8 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
@@ -95,7 +92,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         if(shopPageHeaderDataModel.broadcaster.streamAllowed) shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
         view.container_lottie?.setOnClickListener {
             shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-            RouteManager.route(view.context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+            listener.onStartLiveStreamingClicked()
         }
     }
 
@@ -272,6 +269,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         fun toggleFavorite(isFavourite: Boolean)
         fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
         fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
+        fun onStartLiveStreamingClicked()
     }
 
 

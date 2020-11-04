@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -48,7 +49,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -105,8 +105,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.shop_page_main.*
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
+import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
 import javax.inject.Inject
 
@@ -156,6 +157,10 @@ class ShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val DEFAULT_SORT_ID = 0
+
+        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
+        private const val KEY_RESULT_SAVE_VIDEO = "play_broadcaster_save_video"
+        private const val KEY_RESULT_DELETE_VIDEO = "play_broadcaster_delete_video"
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -1098,6 +1103,8 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
+        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
+            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1368,6 +1375,30 @@ class ShopPageFragment :
         if(isMyShop) {
             shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
             shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
+    }
+
+    /**
+     * Play Widget "Start Live Streaming"
+     */
+    override fun onStartLiveStreamingClicked() {
+        startActivityForResult(
+                RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER),
+                REQUEST_CODE_START_LIVE_STREAMING
+        )
+    }
+
+    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (data.hasExtra(KEY_RESULT_SAVE_VIDEO)) {
+                Toaster.make(requireView(),
+                        text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                        duration =  Toaster.LENGTH_LONG)
+            } else if (data.hasExtra(KEY_RESULT_DELETE_VIDEO)) {
+                Toaster.make(requireView(),
+                        text = getString(R.string.shop_page_play_widget_sgc_delete_video),
+                        duration =  Toaster.LENGTH_LONG)
+            }
         }
     }
 }
