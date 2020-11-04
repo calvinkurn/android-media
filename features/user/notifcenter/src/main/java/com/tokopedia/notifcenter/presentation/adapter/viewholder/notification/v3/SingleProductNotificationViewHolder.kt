@@ -11,7 +11,9 @@ class SingleProductNotificationViewHolder constructor(
         private val listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
-    private val productContainer: CardProductNotificationCardUnify? = itemView?.findViewById(R.id.pc_single)
+    private val productContainer: CardProductNotificationCardUnify? = itemView?.findViewById(
+            R.id.pc_single
+    )
 
     override fun bind(element: NotificationUiModel) {
         super.bind(element)

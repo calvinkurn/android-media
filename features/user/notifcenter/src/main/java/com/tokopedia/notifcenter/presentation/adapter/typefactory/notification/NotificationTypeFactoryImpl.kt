@@ -1,6 +1,8 @@
 package com.tokopedia.notifcenter.presentation.adapter.typefactory.notification
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -9,10 +11,8 @@ import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.BigDividerViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 
 class NotificationTypeFactoryImpl constructor(
         viewListener: Any
@@ -43,12 +43,31 @@ class NotificationTypeFactoryImpl constructor(
             return when {
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
+                item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }
         return default
     }
 
+    /**
+     * All ViewHolder that need adapter interface need to created from this
+     */
+    override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int,
+            adapterListener: Any
+    ): AbstractViewHolder<out Visitable<*>> {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return when (viewType) {
+            CarouselProductNotificationViewHolder.LAYOUT -> CarouselProductNotificationViewHolder(
+                    view, notificationListener,
+                    adapterListener as? CarouselProductNotificationViewHolder.Listener,
+                    adapterListener as? NotificationAdapterListener
+            )
+            else -> createViewHolder(view, viewType)
+        }
+    }
 
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {

@@ -93,6 +93,10 @@ data class NotificationUiModel(
         return (typeLink == TYPE_ATC || typeLink == TYPE_BUY) && productData.size == 1
     }
 
+    fun isCarouselProduct(): Boolean {
+        return (typeLink == TYPE_ATC || typeLink == TYPE_BUY) && productData.size > 1
+    }
+
     companion object {
         const val TYPE_DEFAULT = 0
         const val TYPE_BANNER = 4
