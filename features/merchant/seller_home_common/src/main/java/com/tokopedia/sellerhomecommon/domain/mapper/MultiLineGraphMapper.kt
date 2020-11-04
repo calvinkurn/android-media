@@ -12,13 +12,14 @@ import javax.inject.Inject
 
 class MultiLineGraphMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(items: List<MultiTrendlineWidgetDataModel>?): List<MultiLineGraphDataUiModel> {
+    fun mapRemoteModelToUiModel(items: List<MultiTrendlineWidgetDataModel>?, isFromCache: Boolean): List<MultiLineGraphDataUiModel> {
         return items.orEmpty()
                 .filter { !it.dataKey.isNullOrBlank() }
                 .map {
                     MultiLineGraphDataUiModel(
                             dataKey = it.dataKey.orEmpty(),
                             error = it.errorMsg.orEmpty(),
+                            isFromCache = isFromCache,
                             metrics = getMetrics(it.multiTrendlineData?.metrics.orEmpty())
                     )
                 }

@@ -18,7 +18,9 @@ data class MultiLineGraphWidgetUiModel(
         override val ctaText: String,
         override var data: MultiLineGraphDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

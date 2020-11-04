@@ -26,7 +26,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                     WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
                     WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
                     WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
-                    WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it)
+                    WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
                     else -> mapToSectionWidget(it, isFromCache)
                 })
             }
@@ -204,7 +204,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         )
     }
 
-    private fun mapToMultiLineGraphWidget(widget: WidgetModel): MultiLineGraphWidgetUiModel {
+    private fun mapToMultiLineGraphWidget(widget: WidgetModel, isFromCache: Boolean): MultiLineGraphWidgetUiModel {
         return MultiLineGraphWidgetUiModel(
                 widgetType = widget.widgetType.orEmpty(),
                 title = widget.title.orEmpty(),
@@ -215,7 +215,9 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
-                isLoaded = false
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = isFromCache
         )
     }
 }
