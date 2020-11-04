@@ -352,7 +352,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         showLoading()
         if (connectionMonitor?.isConnected == true) {
             activity?.let {
-                SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+                SomAnalytics.sendScreenName(SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
                 it.resources?.let { r ->
                     somDetailViewModel.loadDetailOrder(orderId)
                 }

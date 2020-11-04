@@ -45,6 +45,7 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
+import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderEmptyViewHolder
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
 import com.tokopedia.sellerorder.list.presentation.bottomsheets.SomListBulkAcceptOrderBottomSheet
 import com.tokopedia.sellerorder.list.presentation.dialogs.SomListBulkActionDialog
@@ -69,6 +70,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_som_list.*
 import kotlinx.coroutines.*
 import java.net.SocketTimeoutException
@@ -79,7 +81,9 @@ import kotlin.coroutines.CoroutineContext
 class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
         TickerCallback, TickerPagerCallback, SearchInputView.Listener, SearchInputView.ResetListener,
-        SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope, SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener {
+        SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
+        SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener,
+        SomListOrderEmptyViewHolder.SomListEmptyStateListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -108,6 +112,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val masterJob = SupervisorJob()
 
@@ -148,7 +155,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun getSwipeRefreshLayout(view: View?) = view?.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayoutSomList)
     override fun createAdapterInstance() = SomListOrderAdapter(adapterTypeFactory)
     override fun onItemClicked(t: Visitable<SomListAdapterTypeFactory>?) {}
-    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory() = SomListAdapterTypeFactory(this, this)
     override fun getRecyclerViewResourceId() = R.id.rvSomList
     override fun getScreenName(): String = ""
     override fun initInjector() = inject()
@@ -225,6 +232,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.waitingPaymentCounterResult.value !is Fail) {
             showWaitingPaymentOrderListMenu()
             goToWaitingPaymentOrderListPage()
+            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
+            if (waitingPaymentOrderCounterResult is Success) {
+                SomAnalytics.eventClickWaitingPaymentOrderCard(
+                        tabActive,
+                        waitingPaymentOrderCounterResult.data.amount,
+                        userSession.userId,
+                        userSession.shopId)
+            }
             return true
         }
 
@@ -233,8 +248,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden && !isUserRoleFetched()) viewModel.getUserRoles()
-        else if (hidden && isUserRoleFetched()) viewModel.clearUserRoles()
+        if (!hidden) {
+            SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
+            if (!isUserRoleFetched()) viewModel.getUserRoles()
+        } else if (isUserRoleFetched()) viewModel.clearUserRoles()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -344,7 +361,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomAnalytics.eventSubmitSearch(text.orEmpty())
     }
 
-    override fun onSearchReset() {/* no op, handled in onSearchTextChanged */}
+    override fun onSearchReset() {/* no op, handled in onSearchTextChanged */
+    }
 
     override fun onSearchTextChanged(text: String?) {
         textChangeJob?.cancel()
@@ -382,6 +400,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCheckBoxClickedWhenDisabled() {
         showCommonToaster(view, getString(R.string.som_list_order_cannot_be_selected), Toaster.TYPE_ERROR)
+    }
+
+    override fun onStartAdvertiseButtonClicked() {
+        SomAnalytics.eventClickStartAdvertise(
+                somListSortFilterTab.getSelectedFilterStatus(),
+                somListSortFilterTab.getSelectedFilterSatusName())
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
@@ -750,9 +774,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     bulkAcceptOrderDialog?.apply {
                         if (successCount > 0) {
                             if (failedCount == 0) {
-                                showSuccessAcceptAllOrderDialog(successCount)
+                                showSuccessAcceptAllOrderDialog(successCount) // first case
                             } else {
-                                showPartialSuccessAcceptAllOrderDialog(successCount, failedCount, result.data.data.shouldRecheck) // first and second case
+                                showPartialSuccessAcceptAllOrderDialog(successCount, failedCount, result.data.data.shouldRecheck) // second case
                             }
                         } else if (failedCount > 0) {
                             showFailedAcceptAllOrderDialog(orderCount, false) // third case
@@ -760,6 +784,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                             showFailedAcceptAllOrderDialog(orderCount, true) // fourth case
                         }
                     }
+                    SomAnalytics.eventBulkAcceptOrder(
+                            somListSortFilterTab.getSelectedFilterStatus(),
+                            somListSortFilterTab.getSelectedFilterSatusName(),
+                            successCount,
+                            userSession.userId,
+                            userSession.shopId)
                 }
             }
         })

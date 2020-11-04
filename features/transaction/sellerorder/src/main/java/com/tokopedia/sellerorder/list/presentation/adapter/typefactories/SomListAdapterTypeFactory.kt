@@ -9,12 +9,15 @@ import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOr
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
-class SomListAdapterTypeFactory(private val orderItemListener: SomListOrderViewHolder.SomListOrderItemListener) : BaseAdapterTypeFactory() {
+class SomListAdapterTypeFactory(
+        private val orderItemListener: SomListOrderViewHolder.SomListOrderItemListener,
+        private val emptyStateListener: SomListOrderEmptyViewHolder.SomListEmptyStateListener
+) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SomListOrderViewHolder.LAYOUT -> SomListOrderViewHolder(parent, orderItemListener)
-            SomListOrderEmptyViewHolder.LAYOUT -> SomListOrderEmptyViewHolder(parent)
+            SomListOrderEmptyViewHolder.LAYOUT -> SomListOrderEmptyViewHolder(parent, emptyStateListener)
             else -> super.createViewHolder(parent, type)
         }
     }

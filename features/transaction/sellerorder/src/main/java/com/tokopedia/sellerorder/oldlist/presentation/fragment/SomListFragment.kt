@@ -45,6 +45,8 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickWaitingPaymentOrderCard
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -71,8 +73,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ORDER_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
-import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
-import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.oldlist.data.model.SomListFilter
 import com.tokopedia.sellerorder.oldlist.data.model.SomListOrder
@@ -535,7 +535,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         loadFilterList()
         rl_search_filter.show()
         filterButton.show()
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        activity?.let { SomAnalytics.sendScreenName(LIST_ORDER_SCREEN_NAME) }
         isFromWidget?.let {
             if (it) SomAnalytics.eventClickWidgetNewOrder()
         }
@@ -934,7 +934,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
             }
         } else filter_action_button?.rightIconDrawable = null
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        activity?.let { SomAnalytics.sendScreenName(LIST_ORDER_SCREEN_NAME) }
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {

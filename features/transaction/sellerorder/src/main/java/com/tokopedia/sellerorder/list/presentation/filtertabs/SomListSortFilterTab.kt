@@ -134,6 +134,8 @@ class SomListSortFilterTab(
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
+    fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
+    fun getSelectedFilterSatusName(): String = selectedTab?.status.orEmpty()
 
     interface SomListSortFilterTabClickListener {
         fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean)

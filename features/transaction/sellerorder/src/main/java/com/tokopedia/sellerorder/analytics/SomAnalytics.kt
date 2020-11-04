@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.analytics
 
-import android.app.Activity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -52,7 +51,7 @@ object SomAnalytics {
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
@@ -214,5 +213,21 @@ object SomAnalytics {
 
     fun eventClickStatusFilter(orderStatus: String, orderStatusName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventClickStartAdvertise(orderStatus: String, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_START_ADVERTISE, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventBulkAcceptOrder(orderStatus: String, orderStatusName: String, acceptedOrderCount: Int, userId: String, shopId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to "click accept all",
+                TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderStatusName - $acceptedOrderCount",
+                CUSTOM_DIMENSION_USER_ID to userId,
+                CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }
