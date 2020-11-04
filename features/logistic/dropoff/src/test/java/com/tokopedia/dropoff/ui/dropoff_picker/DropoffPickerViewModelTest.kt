@@ -24,6 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
+@ExperimentalCoroutinesApi
 class DropoffPickerViewModelTest {
 
     @get: Rule
@@ -35,7 +36,7 @@ class DropoffPickerViewModelTest {
 
     private val storeObserver = mockk<Observer<Result<DropoffUiModel>>>(relaxed = true)
 
-    @ExperimentalCoroutinesApi
+
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
@@ -43,7 +44,6 @@ class DropoffPickerViewModelTest {
         viewModel.storeData.observeForever(storeObserver)
     }
 
-    @ExperimentalCoroutinesApi
     @After
     fun release() {
         Dispatchers.resetMain()
@@ -69,7 +69,10 @@ class DropoffPickerViewModelTest {
 
         viewModel.getStores("")
 
-        verify { storeObserver.onChanged(Fail(testError)) }
+        verify {
+            storeObserver.onChanged(Fail(testError))
+            mapper wasNot Called
+        }
     }
 
     @Test

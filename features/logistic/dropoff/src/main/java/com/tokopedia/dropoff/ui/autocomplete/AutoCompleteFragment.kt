@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -35,9 +36,10 @@ class AutoCompleteFragment : Fragment(),
     lateinit var tracker: DropOffAnalytics
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(AutoCompleteViewModel::class.java) }
+    lateinit var factory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, factory).get(AutoCompleteViewModel::class.java)
+    }
 
     private lateinit var searchTextView: SearchInputView
     private val adapter: AutoCompleteAdapter = AutoCompleteAdapter()
@@ -127,7 +129,7 @@ class AutoCompleteFragment : Fragment(),
     }
 
     private fun setObservers() {
-        viewModel.autoCompleteList.observe(this, Observer {
+        viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> adapter.setData(it.data)
                 is Fail -> when (it.throwable) {
@@ -135,12 +137,13 @@ class AutoCompleteFragment : Fragment(),
                 }
             }
         })
-        viewModel.validatedDistrict.observe(this, Observer {
+        viewModel.validatedDistrict.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> sendResult(it.data.latitude, it.data.longitude)
+                is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.savedAddress.observe(this, Observer {
+        viewModel.savedAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> adapter.setEmptyData(it.data)
                 is Fail -> when (it.throwable) {

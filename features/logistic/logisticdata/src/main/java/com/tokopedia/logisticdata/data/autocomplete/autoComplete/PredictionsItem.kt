@@ -1,4 +1,4 @@
-package com.tokopedia.dropoff.data.response.autoComplete
+package com.tokopedia.logisticdata.data.autocomplete.autoComplete
 
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName

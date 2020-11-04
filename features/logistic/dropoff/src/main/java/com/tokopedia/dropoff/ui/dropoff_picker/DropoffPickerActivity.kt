@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
@@ -38,10 +37,10 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.util.bitmapDescriptorFromVector
 import com.tokopedia.logisticdata.util.getLatLng
 import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -73,9 +72,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var tracker: DropOffAnalytics
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
+    lateinit var factory: ViewModelProvider.Factory
+    private val viewModel by lazy {
+        ViewModelProvider(this, factory).get(DropoffPickerViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
