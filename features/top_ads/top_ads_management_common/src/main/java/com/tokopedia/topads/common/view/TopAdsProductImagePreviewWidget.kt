@@ -13,6 +13,8 @@ class TopAdsProductImagePreviewWidget @JvmOverloads constructor(context: Context
     : FrameLayout(context, attrs, defStyleAttr) {
 
     private var recyclerView: RecyclerView
+    private var topAdsProductImagePreviewAdapter: TopAdsProductImagePreviewAdapter
+    private var topAdsImagePreviewClick: TopAdsImagePreviewClick? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.topads_widget_product_image_preview,
@@ -20,6 +22,25 @@ class TopAdsProductImagePreviewWidget @JvmOverloads constructor(context: Context
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = TopAdsProductImagePreviewAdapter()
+        topAdsProductImagePreviewAdapter = TopAdsProductImagePreviewAdapter()
+        recyclerView.adapter = topAdsProductImagePreviewAdapter
+    }
+
+    fun setSelectedProductList(imageList: ArrayList<String>) {
+        topAdsProductImagePreviewAdapter.setSelectedProductList(imageList)
+    }
+
+    private fun setAdapterTopAdsPreviewClick() {
+        topAdsProductImagePreviewAdapter.setAdapterTopAdsPreviewClick(topAdsImagePreviewClick)
+    }
+
+    fun setTopAdsImagePreviewClick(topAdsImagePreviewClick: TopAdsImagePreviewClick){
+        this.topAdsImagePreviewClick = topAdsImagePreviewClick
+        setAdapterTopAdsPreviewClick()
+    }
+
+    interface TopAdsImagePreviewClick {
+        fun onDeletePreview(position: Int)
+        fun onClickPreview(position: Int)
     }
 }

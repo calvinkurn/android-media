@@ -19,4 +19,6 @@
     <string name="topads_headline_product_list_heading">Pilih Produk</string>
     <string name="topads_headline_cari_produk">Cari Produk</string>
     <string name="topads_headline_recommendasi">Rekomendasi</string>
+    <string name="topads_headline_over_product_selection">Kamu telah memilih maksimum 10 produk.</string>
+    <string name="topads_headline_tooltip_text">Tips memilih produk.</string>
 </resources>

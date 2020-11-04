@@ -14,14 +14,14 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.item_layout_topads_category_shimmer.view.*
-import kotlinx.android.synthetic.main.topads_common_layout_rating.view.*
 
 private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
 private const val VIEW_CATEGORY = 1
-
+private const val MAX_PRODUCT_SELECTION = 10
 class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
-                         private val productItemClickListener: ProductItemClickListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                         private var selectedProductList: HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>,
+                         private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         this.list = list
@@ -42,29 +42,49 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as? ProductListViewHolder)?.let {
+        (holder as? ProductListViewHolder)?.let { viewHolder ->
             val product = list[position]
-            it.productName.text = product.productName
-            it.productPrice.text = product.productPrice
-            ImageUtils.loadImage(it.productImage, product.productImage)
-            it.checkBox.setOnCheckedChangeListener { _, _ ->
-                productItemClickListener?.onProductItemClick()
+            viewHolder.productName.text = product.productName
+            viewHolder.productPrice.text = product.productPrice
+            ImageUtils.loadImage(viewHolder.productImage, product.productImage)
+            viewHolder.checkBox.isChecked = selectedProductList.contains(product)
+            viewHolder.itemView.setOnClickListener {
+                val isChecked =  !selectedProductList.contains(product)
+                onItemSelection(isChecked, product)
+                viewHolder.checkBox.isChecked = selectedProductList.contains(product)
             }
-            if (product.productRating != 0) {
-                showRating(product.productRating, it.ratingView)
-                val ratingText = "($product.productReviewCount)"
-                it.ratingView.txt_rating_count.text = ratingText
-                it.ratingView.txt_rating_count.show()
-            } else {
-                it.ratingView.hide()
-                it.ratingView.txt_rating_count.hide()
-            }
-            it.recommendationTag.visibility = if(product.productIsPromoted){
+            setProductRating(product.productRating, product.productReviewCount, viewHolder.ratingView)
+            viewHolder.recommendationTag.visibility = if (product.productIsPromoted) {
                 View.VISIBLE
-            }else{
+            } else {
                 View.GONE
             }
         }
+    }
+
+    private fun setProductRating(productRating: Int, reviewCount: Int, ratingView: ViewGroup) {
+        if (productRating != 0) {
+            showRating(productRating, ratingView)
+            val ratingText = "($reviewCount)"
+            ratingView.findViewById<Typography>(R.id.txt_rating_count).text = ratingText
+            ratingView.findViewById<Typography>(R.id.txt_rating_count).show()
+        } else {
+            ratingView.hide()
+            ratingView.findViewById<Typography>(R.id.txt_rating_count).hide()
+        }
+    }
+
+    private fun onItemSelection(checked: Boolean, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+        if (checked) {
+            if (selectedProductList.size == MAX_PRODUCT_SELECTION) {
+                productListAdapterListener?.onProductOverSelect()
+            } else {
+                selectedProductList.add(product)
+            }
+        } else {
+            selectedProductList.remove(product)
+        }
+        productListAdapterListener?.onProductSelect(product)
     }
 
     private fun showRating(rating: Int, ratingView: ViewGroup) {
@@ -120,39 +140,39 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
         when (i) {
             1 -> {
                 if (show)
-                    ratingView.imageViewRating1.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.imageViewRating1.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             2 -> {
                 if (show)
-                    ratingView.imageViewRating2.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.imageViewRating2.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             3 -> {
                 if (show)
-                    ratingView.imageViewRating3.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.imageViewRating3.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             4 -> {
                 if (show)
-                    ratingView.imageViewRating4.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.imageViewRating4.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             5 -> {
                 if (show)
-                    ratingView.imageViewRating5.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.imageViewRating5.setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
         }
     }
 
-    interface ProductItemClickListener {
-        fun onProductItemClick()
+    interface ProductListAdapterListener {
+        fun onProductOverSelect()
+        fun onProductSelect(product: ResponseProductList.Result.TopadsGetListProduct.Data)
     }
-
 }

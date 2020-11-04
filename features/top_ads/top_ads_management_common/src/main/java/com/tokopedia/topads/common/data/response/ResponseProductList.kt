@@ -1,7 +1,9 @@
 package com.tokopedia.topads.common.data.response
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class ResponseProductList(
         @SerializedName("data")
@@ -19,6 +21,7 @@ data class ResponseProductList(
                 @SerializedName("errors")
                 val errors: List<Error> = listOf()
         ) {
+            @Parcelize
             data class Data(
                     @SerializedName("productID")
                     val productID: Int = 0,
@@ -54,7 +57,7 @@ data class ResponseProductList(
                     val productRating: Int = 0,
                     @SerializedName("productReviewCount")
                     val productReviewCount: Int = 0
-            )
+            ) : Parcelable
         }
     }
 }

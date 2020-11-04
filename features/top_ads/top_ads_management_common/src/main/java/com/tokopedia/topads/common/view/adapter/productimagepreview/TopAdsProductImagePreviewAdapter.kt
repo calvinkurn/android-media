@@ -8,13 +8,24 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.utils.image.ImageUtils
 
 private const val DEFAULT_SIZE = 1
-class TopAdsProductImagePreviewAdapter() : RecyclerView.Adapter<TopAdsProductImagePreviewAdapter.ProductImagePreviewViewHolder>() {
+
+class TopAdsProductImagePreviewAdapter : RecyclerView.Adapter<TopAdsProductImagePreviewAdapter.ProductImagePreviewViewHolder>() {
 
     private var imageList: ArrayList<String>? = null
+
+    private var topAdsImagePreviewClick: TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick? = null
+
+    fun setSelectedProductList(imageList: ArrayList<String>) {
+        this.imageList = imageList
+        this.imageList?.add(0, "")
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductImagePreviewViewHolder {
         val itemView: View = LayoutInflater.from(parent.context).inflate(R.layout.item_topads_product_image_preview, parent, false)
@@ -26,17 +37,32 @@ class TopAdsProductImagePreviewAdapter() : RecyclerView.Adapter<TopAdsProductIma
     }
 
     override fun onBindViewHolder(holder: ProductImagePreviewViewHolder, position: Int) {
-        if(position==0){
+        if (position == 0) {
             holder.productImage.setImageDrawable(holder.itemView.context.getResDrawable(R.drawable.ic_topads_product_image_preview))
+            holder.productImage.setOnClickListener {
+                topAdsImagePreviewClick?.onClickPreview(0)
+            }
             holder.deleteButton.hide()
-        }else{
-            holder.deleteButton.setImageDrawable(holder.itemView.context.getResDrawable(R.drawable.unify_chips_ic_close))
-            holder.deleteButton.show()
+        } else {
+            imageList?.getOrNull(position)?.let {
+                ImageUtils.loadImage(holder.productImage, it)
+                holder.deleteButton.setImageDrawable(holder.itemView.context.getResDrawable(R.drawable.unify_chips_ic_close))
+                holder.deleteButton.show()
+                holder.deleteButton.setOnClickListener {
+                    imageList?.removeAt(position)
+                    notifyItemRemoved(position)
+                    topAdsImagePreviewClick?.onDeletePreview(position - 1)
+                }
+            }
         }
     }
 
+    fun setAdapterTopAdsPreviewClick(topAdsImagePreviewClick: TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick?) {
+        this.topAdsImagePreviewClick = topAdsImagePreviewClick
+    }
+
     class ProductImagePreviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val productImage = itemView.findViewById<ImageUnify>(R.id.productImage)
-        val deleteButton = itemView.findViewById<UnifyImageButton>(R.id.ivDelete)
+        val productImage: ImageUnify = itemView.findViewById(R.id.productImage)
+        val deleteButton: UnifyImageButton = itemView.findViewById(R.id.ivDelete)
     }
 }
