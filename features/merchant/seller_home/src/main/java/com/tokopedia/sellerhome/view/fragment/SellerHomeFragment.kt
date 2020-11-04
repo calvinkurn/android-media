@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
@@ -173,6 +174,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.post {
                 requestVisibleWidgetsData()
             }
+            resetWidgetImpressionHolder()
         }
     }
 
@@ -707,8 +709,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun notifyWidgetChanged(position: Int) {
-        adapter.notifyItemChanged(position)
-        view?.swipeRefreshLayout?.isRefreshing = false
+        recyclerView.post {
+            adapter.notifyItemChanged(position)
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
@@ -763,6 +767,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     fun setNotifCenterCounter(count: Int) {
         this.notifCenterCount = count
         showNotificationBadge()
+    }
+
+    private fun resetWidgetImpressionHolder() {
+        adapter.data.forEachIndexed { i, widget ->
+            val isInvoked = widget.impressHolder.isInvoke
+            when (widget) {
+                !is SectionWidgetUiModel,
+                !is TickerWidgetUiModel,
+                !is WhiteSpaceUiModel -> {
+                    if (isInvoked) {
+                        widget.impressHolder = ImpressHolder()
+                        notifyWidgetChanged(i)
+                    }
+                }
+            }
+        }
     }
 
     interface Listener {
