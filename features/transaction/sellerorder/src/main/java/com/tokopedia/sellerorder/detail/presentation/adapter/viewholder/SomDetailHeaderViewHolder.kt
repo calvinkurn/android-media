@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -54,6 +55,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 } else {
                     warehouseLabel.hide()
                 }
+
+                val statusIndicatorColor = item.dataObject.statusIndicatorColor.replace("#", "")
+                statusIndicator.setColorFilter(Color.parseColor("#$statusIndicatorColor"), PorterDuff.Mode.SRC_IN)
 
                 header_see_history?.setOnClickListener {
                     context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")

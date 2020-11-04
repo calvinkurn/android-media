@@ -4,8 +4,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
-import kotlinx.android.parcel.Parcelize
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -32,6 +32,14 @@ data class SomDetailOrder(
                 @SerializedName("status_text")
                 @Expose
                 val statusText: String = "",
+
+                @SerializedName("status_text_color")
+                @Expose
+                val statusTextColor: String = "",
+
+                @SerializedName("status_indicator_color")
+                @Expose
+                val statusIndicatorColor: String = "",
 
                 @SerializedName("invoice")
                 @Expose
