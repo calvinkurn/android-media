@@ -28,8 +28,8 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
     fun setData(collectiveBannerModel: TravelCollectiveBannerModel) {
         bannerModel = TravelVideoBannerModel()
         collectiveBannerModel.let {
-            bannerModel.title = it.meta.title
             if (it.banners.isNotEmpty()) {
+                bannerModel.title = it.banners[0].attribute.description
                 bannerModel.imageUrl = it.banners[0].attribute.imageUrl
                 bannerModel.destinationLink =
                         if (it.banners[0].attribute.appUrl.isNotEmpty())

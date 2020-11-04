@@ -11,6 +11,7 @@
         android:id="@+id/tgTravelVideoBannerTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:padding="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
