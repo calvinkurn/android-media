@@ -1,4 +1,4 @@
-package com.tokopedia.logisticdata.data.autocomplete
+package com.tokopedia.dropoff.ui.autocomplete.model
 
 sealed class AutoCompleteVisitable
 

@@ -4,9 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.logisticdata.data.autocomplete.SavedAddress
-import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
-import com.tokopedia.logisticdata.data.autocomplete.autoComplete.AutocompleteResponse
+import com.tokopedia.dropoff.ui.autocomplete.model.SavedAddress
+import com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticdata.data.response.AutoCompleteResponse
 import com.tokopedia.logisticdata.data.repository.KeroRepository
 import com.tokopedia.logisticdata.data.response.AddressResponse
 import com.tokopedia.logisticdata.data.response.GetDistrictResponse
@@ -44,7 +44,7 @@ class AutoCompleteViewModelTest {
 
     @Test
     fun `When autocomplete Given success response Then livedata is changed to success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutocompleteResponse()
+        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Success }) }
     }
