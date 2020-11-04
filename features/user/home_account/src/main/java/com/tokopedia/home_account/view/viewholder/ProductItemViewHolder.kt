@@ -14,7 +14,6 @@ class ProductItemViewHolder(itemView: View, val listener: HomeAccountUserListene
     fun bind(element: RecommendationItem) {
         with(itemView) {
             val card = this.findViewById<ProductCardGridView>(R.id.product_card_view)
-
             card.setProductModel(ProductCardModel(
                     slashedPrice = element.slashedPrice,
                     productName = element.name,

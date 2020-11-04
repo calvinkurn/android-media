@@ -1,9 +1,7 @@
 package com.tokopedia.home_account.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.home_account.view.delegate.HomeAccountRecommendationItemDelegate
-import com.tokopedia.home_account.view.delegate.HomeAccountUserAdapterDelegate
-import com.tokopedia.home_account.view.delegate.HomeAccountUserSettingDelegate
+import com.tokopedia.home_account.view.delegate.*
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 
 /**
@@ -16,6 +14,8 @@ class HomeAccountUserAdapter(
     init {
         delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener))
         delegatesManager.addDelegate(HomeAccountUserSettingDelegate(listener))
+        delegatesManager.addDelegate(HomeAccountRecommendationTitleDelegate())
         delegatesManager.addDelegate(HomeAccountRecommendationItemDelegate(listener))
+        delegatesManager.addDelegate(HomeAccountSeparatorDelegate())
     }
 }

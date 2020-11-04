@@ -1,13 +1,11 @@
 package com.tokopedia.home_account.view
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -16,20 +14,13 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -45,7 +36,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
-import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.Analytics.ABOUT_US
@@ -60,6 +50,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.CommonDataView
+import com.tokopedia.home_account.data.model.SeparatorView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.di.HomeAccountUserComponents
@@ -72,9 +63,6 @@ import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -119,6 +107,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     @Inject
     lateinit var homeAccountAnalytic: HomeAccountAnalytics
 
+    private var isFirstPage = true
+
     override fun getScreenName(): String = "homeAccountUserFragment"
 
     override fun initInjector() {
@@ -145,18 +135,24 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun setupObserver() {
         viewModel.settingData.observe(viewLifecycleOwner, Observer {
-            addItem(it)
+            addItem(it, addSeparator = true)
         })
         viewModel.settingApplication.observe(viewLifecycleOwner, Observer {
-            addItem(it)
+            addItem(it, addSeparator = true)
         })
         viewModel.aboutTokopedia.observe(viewLifecycleOwner, Observer {
-            addItem(it)
+            addItem(it, addSeparator = true)
             addItem(
                     SettingDataView("", mutableListOf(
                             CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = "Keluar Akun", body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
-                    ), isExpanded = true)
+                    ), isExpanded = true),
+                    addSeparator = true
             )
+            viewModel.getRecommendation(0)
+        })
+
+        viewModel.addRecommendationTitle.observe(viewLifecycleOwner, Observer {
+            addItem(it, addSeparator = false)
         })
 
         viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
@@ -182,7 +178,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel){
         hideLoading()
-        addItem(mapper.mapToProfileDataView(buyerAccount))
+        addItem(mapper.mapToProfileDataView(buyerAccount), addSeparator = false)
         viewModel.getInitialData()
 
 //        setLayoutParams(200)
@@ -426,8 +422,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
     }
 
-    private fun addItem(item: Any) {
+    private fun addItem(item: Any, addSeparator: Boolean) {
         adapter?.addItem(item)
+        if(addSeparator) {
+            adapter?.addItem(SeparatorView())
+        }
         adapter?.notifyDataSetChanged()
     }
 
@@ -736,11 +735,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun hideLoadMoreLoading() {
-        adapter?.hideLoadMore()
-        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        if(!isFirstPage) {
+            adapter?.hideLoadMore()
+            endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        } else {
+            isFirstPage = false
+        }
     }
 
-    override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {
+    override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {
         //tracking
         activity?.let {
             if (item.isTopAds) {
@@ -755,7 +758,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {
+    override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
         //tracking
         activity?.let {
             if (item.isTopAds) {
@@ -769,12 +772,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+            putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
     }
 
-    override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {
+    override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
@@ -783,7 +786,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         productId = item.productId.toString(),
                         isTopAds = item.isTopAds,
                         topAdsWishlistUrl = item.wishlistUrl,
-                        productPosition = position
+                        productPosition = adapterPosition
                 )
         )
     }

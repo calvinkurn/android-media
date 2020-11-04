@@ -81,9 +81,9 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
             override fun onMemberItemClicked(applink: String) {}
             override fun onSettingItemClicked(item: CommonDataView) {}
             override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
-            override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {}
-            override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {}
-            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {}
+            override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {}
+            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {}
         }, CommonViewHolder.LAYOUT_FINANCIAL)
 
         adapter.list = profile.financial.items
@@ -105,9 +105,9 @@ class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUse
             }
             override fun onSettingItemClicked(item: CommonDataView) {}
             override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {}
-            override fun onProductRecommendationImpression(item: RecommendationItem, position: Int) {}
-            override fun onProductRecommendationClicked(item: RecommendationItem, position: Int) {}
-            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int) {}
+            override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {}
+            override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {}
+            override fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int) {}
         })
         adapter.list = profile.members.items
         home_account_member_layout_rv?.adapter = adapter

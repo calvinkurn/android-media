@@ -26,4 +26,7 @@
     <dimen name="home_account_shimmer_text_radius_small">5</dimen>
     <dimen name="home_account_shimmer_text_radius_large">8</dimen>
 
+    <dimen name="home_account_dp_9">9dp</dimen>
+    <dimen name="home_account_dp_14">14dp</dimen>
+
 </resources>

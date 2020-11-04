@@ -12,7 +12,7 @@ interface HomeAccountUserListener {
     fun onSettingItemClicked(item: CommonDataView)
     fun onMemberItemClicked(applink: String)
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean)
-    fun onProductRecommendationImpression(item: RecommendationItem, position: Int)
-    fun onProductRecommendationClicked(item: RecommendationItem, position: Int)
-    fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, position: Int)
+    fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
+    fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
+    fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)
 }

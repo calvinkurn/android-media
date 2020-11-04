@@ -19,7 +19,7 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module(includes = [TopAdsWishlistModule::class])
+@Module
 class HomeAccountUserUsecaseModules {
 
     @HomeAccountUserScope
@@ -64,15 +64,5 @@ class HomeAccountUserUsecaseModules {
                                        graphqlUseCase: GraphqlUseCase,
                                        userSession: UserSessionInterface): GetRecommendationUseCase {
         return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession)
-    }
-
-    @Provides
-    fun provideAddWishlistUseCase(@HomeAccountUserContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    fun provideRemoveWishlistUseCase(@HomeAccountUserContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 }

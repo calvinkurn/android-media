@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.view
 
-import android.preference.PreferenceManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -24,15 +23,11 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -46,9 +41,6 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getBuyerWalletBalanceUseCase: HomeAccountWalletBalanceUseCase,
         private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val walletPref: WalletPref,
         private val permissionChecker: PermissionChecker,
         private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
@@ -81,13 +73,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
         get() = _recommendationData
 
-    private val _addWishList = MutableLiveData<Result<String>>()
-    val addWishList : LiveData<Result<String>>
-        get() = _addWishList
-
-    private val _removeWishList = MutableLiveData<Result<String>>()
-    val removeWishList : LiveData<Result<String>>
-        get() = _removeWishList
+    private val _addRecommendationTitle = MutableLiveData<RecommendationTitleView>()
+    val addRecommendationTitle : LiveData<RecommendationTitleView>
+        get() = _addRecommendationTitle
 
     fun setSafeMode(isActive: Boolean){
 //        val savedValue: Boolean = !accountPref.getSafeMode()
@@ -169,8 +157,11 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getRecommendation(page: Int) {
         launchCatchError(Dispatchers.IO, block = {
-            val recommendationList = getRecommendationList(page).recommendationItemList
-            _recommendationData.postValue(Success(recommendationList))
+            val recommendationWidget = getRecommendationList(page)
+            if(page == 0) {
+                _addRecommendationTitle.postValue(RecommendationTitleView(recommendationWidget.title))
+            }
+            _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
         }, onError = {
             _recommendationData.postValue(Fail(it))
         })
@@ -187,63 +178,10 @@ class HomeAccountUserViewModel @Inject constructor(
         return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
     }
 
-    fun addWishList(item: RecommendationItem) {
-        launchCatchError(block = {
-            if (item.isTopAds) {
-                addWishlistTopAds(item)
-            } else {
-                addWishlistNonTopAds(item)
-            }
-        }, onError = {
-            _addWishList.postValue(Fail(Throwable(it)))
-        })
-
-    }
-
-    private fun addWishlistTopAds(item: RecommendationItem) {
-        val params = RequestParams.create()
-        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, item.wishlistUrl)
-        val result = topAdsWishlishedUseCase.createObservable(params).toBlocking().single()
-        if (result.data.isSuccess) {
-            _addWishList.postValue(Success(MSG_SUCCESS_ADD_WISHLIST))
-        } else {
-            _addWishList.postValue(Fail(Throwable(MSG_FAILED_ADD_WISHLIST)))
-        }
-    }
-
-    private fun addWishlistNonTopAds(item: RecommendationItem) {
-        addWishListUseCase.createObservable(item.productId.toString(), userSession.userId, wishListListener())
-    }
-
-    fun removeWishList(item: RecommendationItem) {
-        removeWishListUseCase.createObservable(item.productId.toString(), userSession.userId, wishListListener())
-    }
-
-    private fun wishListListener(): WishListActionListener {
-        return object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                _addWishList.postValue(Fail(Throwable(errorMessage)))
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                _removeWishList.postValue(Fail(Throwable(errorMessage)))
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                _addWishList.postValue(Success(MSG_SUCCESS_ADD_WISHLIST))
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                _removeWishList.postValue(Success(MSG_SUCCESS_REMOVE_WISHLIST))
-            }
-        }
-    }
-
     fun getInitialData() {
         getSettingData()
         getSettingApp()
         getAboutTokopediaData()
-        getRecommendation(0)
     }
 
     private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
