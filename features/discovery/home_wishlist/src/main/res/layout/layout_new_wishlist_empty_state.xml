@@ -49,7 +49,7 @@ android:layout_height="wrap_content">
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:text="@string/wishlist_empty_description"/>
 
         </LinearLayout>

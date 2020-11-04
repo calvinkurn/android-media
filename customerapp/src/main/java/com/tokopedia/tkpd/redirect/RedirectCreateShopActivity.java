@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.seller.base.view.core.TActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 

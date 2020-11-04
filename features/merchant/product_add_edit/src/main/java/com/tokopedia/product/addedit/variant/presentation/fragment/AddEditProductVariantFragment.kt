@@ -23,10 +23,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS
@@ -610,17 +607,16 @@ class AddEditProductVariantFragment :
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_SIZECHART_IMAGE -> {
-                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS).orEmpty()
                     imageUrlOrPathList.forEach {
                         viewModel.updateSizechart(it)
                     }
                 }
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE -> {
-                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    if (imageUrlOrPathList.isNotEmpty()) {
-                        val imageUrlOrPath = imageUrlOrPathList.first()
-                        val position = viewModel.clickedVariantPhotoItemPosition ?: 0
-                        variantPhotoAdapter?.updateImageData(imageUrlOrPath, position)
+                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS).orEmpty()
+                    imageUrlOrPathList.firstOrNull()?.let {
+                        val position = viewModel.clickedVariantPhotoItemPosition.orZero()
+                        variantPhotoAdapter?.updateImageData(it, position)
                     }
                 }
                 REQUEST_CODE_VARIANT_DETAIL -> {

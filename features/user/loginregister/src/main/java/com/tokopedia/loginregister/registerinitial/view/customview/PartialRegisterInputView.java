@@ -27,6 +27,7 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -308,7 +309,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
-        btnAction.setText(btnAction.getContext().getString(R.string.login));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn));
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
