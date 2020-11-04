@@ -4,8 +4,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
-import kotlinx.android.parcel.Parcelize
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-08-27.
@@ -32,6 +32,14 @@ data class SomDetailOrder(
                 @SerializedName("status_text")
                 @Expose
                 val statusText: String = "",
+
+                @SerializedName("status_text_color")
+                @Expose
+                val statusTextColor: String = "",
+
+                @SerializedName("status_indicator_color")
+                @Expose
+                val statusIndicatorColor: String = "",
 
                 @SerializedName("invoice")
                 @Expose
@@ -100,14 +108,6 @@ data class SomDetailOrder(
                 @SerializedName("flag_order_meta")
                 @Expose
                 val flagOrderMeta: FlagOrderMeta = FlagOrderMeta(),
-
-                @SerializedName("payment_method")
-                @Expose
-                val paymentMethod: List<PaymentMethod> = listOf(),
-
-                @SerializedName("payment_summary")
-                @Expose
-                val paymentSummary: PaymentSummary = PaymentSummary(),
 
                 @SerializedName("logistic_info")
                 @Expose
@@ -385,56 +385,6 @@ data class SomDetailOrder(
                     @SerializedName("is_free_shipping_campaign")
                     @Expose
                     val flagFreeShipping: Boolean = false)
-
-            data class PaymentMethod(
-                    @SerializedName("gateway_id")
-                    @Expose
-                    val gatewayId: Int = 0,
-
-                    @SerializedName("gateway_name")
-                    @Expose
-                    val gatewayName: String = "",
-
-                    @SerializedName("gateway_url")
-                    @Expose
-                    val gatewayUrl: String = "")
-
-            data class PaymentSummary(
-                    @SerializedName("products_price_text")
-                    @Expose
-                    val productsPriceText: String = "",
-
-                    @SerializedName("shipping_price_text")
-                    @Expose
-                    val shippingPriceText: String = "",
-
-                    @SerializedName("insurance_price")
-                    @Expose
-                    val insurancePrice: Int = 0,
-
-                    @SerializedName("insurance_price_text")
-                    @Expose
-                    val insurancePriceText: String = "",
-
-                    @SerializedName("additional_price")
-                    @Expose
-                    val additionalPrice: Int = 0,
-
-                    @SerializedName("additional_price_text")
-                    @Expose
-                    val additionalPriceText: String = "",
-
-                    @SerializedName("total_item")
-                    @Expose
-                    val totalItem: Int = 0,
-
-                    @SerializedName("total_weight_text")
-                    @Expose
-                    val totalWeightText: String = "",
-
-                    @SerializedName("total_price_text")
-                    @Expose
-                    val totalPriceText: String = "")
 
             data class LogisticInfo(
                     @SerializedName("all")

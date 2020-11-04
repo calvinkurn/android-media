@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -23,10 +24,12 @@ class SomListSortFilterTab(
 
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
+    private var somListFilterUiModel: SomListFilterUiModel? = null
 
     init {
         sortFilter.chipItems = arrayListOf()
         changeTabSortFilterText()
+        selectParentFilter()
     }
 
     private fun changeTabSortFilterText() {
@@ -107,7 +110,18 @@ class SomListSortFilterTab(
         getDeepChildOffset(mainParent, parentGroup.getParent(), parentGroup, accumulatedOffset)
     }
 
+    fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
+        var count = 0
+        somListFilterUiModel.forEach {
+            it.somFilterData.forEach { somFilter ->
+                if(somFilter.isSelected) count++
+            }
+        }
+        sortFilter.indicatorCounter = count
+    }
+
     fun show(somListFilterUiModel: SomListFilterUiModel) {
+        this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.statusList)
         sortFilter.show()
     }
@@ -116,6 +130,14 @@ class SomListSortFilterTab(
         selectedTab = status
         sortFilter.post {
             scrollToTab(filterItems.indexOfFirst { it.title.contains(status.status) })
+        }
+    }
+
+    private fun selectParentFilter() {
+        sortFilter.apply {
+            parentListener = {
+                listener.onParentSortFilterClicked()
+            }
         }
     }
 
@@ -130,7 +152,12 @@ class SomListSortFilterTab(
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
 
+    fun getSelectedTab() = selectedTab
+
+    fun getSomListFilterUiModel() = somListFilterUiModel
+
     interface SomListSortFilterTabClickListener {
+        fun onParentSortFilterClicked()
         fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean)
     }
 }

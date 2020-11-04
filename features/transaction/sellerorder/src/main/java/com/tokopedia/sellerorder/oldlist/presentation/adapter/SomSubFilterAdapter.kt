@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
+import com.tokopedia.sellerorder.common.presenter.model.SomSubFilter
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -13,8 +15,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
-import com.tokopedia.sellerorder.oldlist.data.model.SomSubFilter
 import com.tokopedia.sellerorder.oldlist.presentation.activity.SomSubFilterActivity
 import kotlinx.android.synthetic.main.filter_checkbox_item.view.*
 import kotlinx.android.synthetic.main.filter_radio_item.view.*
@@ -80,7 +80,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     inner class RadioViewHolder(itemView: View) : BaseViewHolder<SomSubFilter>(itemView) {
         private val titleRadio = itemView.label_radio
         private val radioBtn = itemView.rb_filter
-        private val divider = itemView.divider
+        private val divider = itemView.rbDivider
 
         override fun bind(item: SomSubFilter, position: Int) {
             titleRadio.text = item.name

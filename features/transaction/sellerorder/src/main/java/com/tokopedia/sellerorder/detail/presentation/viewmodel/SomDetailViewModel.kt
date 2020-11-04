@@ -6,10 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
-import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
-import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
+import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
 import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
 import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
@@ -25,18 +22,18 @@ class SomDetailViewModel @Inject constructor(
         dispatcher: SomDispatcherProvider,
         userSession: UserSessionInterface,
         private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
-        private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
+        somAcceptOrderUseCase: SomAcceptOrderUseCase,
         private val somReasonRejectUseCase: SomReasonRejectUseCase,
-        private val somRejectOrderUseCase: SomRejectOrderUseCase,
-        private val somEditRefNumUseCase: SomEditRefNumUseCase,
+        somRejectOrderUseCase: SomRejectOrderUseCase,
+        somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somSetDeliveredUseCase: SomSetDeliveredUseCase,
         private val getUserRoleUseCase: SomGetUserRoleUseCase,
-        private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
+        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase
 ) : SomOrderBaseViewModel(dispatcher.ui(), userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
-    private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
-    val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
+    private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
+    val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
         get() = _orderDetailResult
 
     private val _rejectReasonResult = MutableLiveData<Result<SomReasonRejectData.Data>>()
@@ -49,6 +46,8 @@ class SomDetailViewModel @Inject constructor(
 
     fun loadDetailOrder(orderId: String) {
         launchCatchError(block = {
+            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toIntOrNull() ?: 0)
+            somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(orderId))
         }, onError = {
             _orderDetailResult.postValue(Fail(it))

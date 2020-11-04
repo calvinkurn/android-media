@@ -10,6 +10,7 @@ import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -67,6 +68,8 @@ class SomListViewModel @Inject constructor(
         startDate = Utils.getFormattedDate(90, DATE_FORMAT)
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
+
+    private var somFilterUiModel: List<SomFilterUiModel> = mutableListOf()
 
     fun getTickers() {
         launchCatchError(block = {
@@ -154,4 +157,16 @@ class SomListViewModel @Inject constructor(
     }
 
     fun hasNextPage(): Boolean = getOrderListParams.nextOrderId != 0
+
+    fun getDataOrderListParams() = getOrderListParams
+
+    fun updateGetOrderListParams(getOrderListParams: SomListGetOrderListParam) {
+        this.getOrderListParams = getOrderListParams
+    }
+
+    fun getSomFilterUi() = somFilterUiModel
+
+    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
+        this.somFilterUiModel = somFilterUiModelList
+    }
 }

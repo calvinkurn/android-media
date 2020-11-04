@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
-import com.tokopedia.sellerorder.oldlist.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.oldlist.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.oldlist.di.SomListComponent
 import com.tokopedia.sellerorder.oldlist.presentation.fragment.SomFilterFragment

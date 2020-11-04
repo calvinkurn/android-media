@@ -34,7 +34,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
+import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
 import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder
@@ -70,7 +74,9 @@ import kotlin.coroutines.CoroutineContext
 class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
         TickerCallback, TickerPagerCallback, SearchInputView.Listener, SearchInputView.ResetListener,
-        SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope, SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener {
+        SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
+        SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener,
+        SomFilterBottomSheet.SomFilterFinishListener {
 
     companion object {
         private const val DELAY_SEARCH = 500L
@@ -137,14 +143,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null && arguments != null) {
+        if (arguments != null) {
             filterStatusId = arguments?.getString(FILTER_STATUS_ID).orEmpty().toIntOrZero()
             fromWidget = arguments?.getBoolean(FROM_WIDGET_TAG) ?: false
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-        } else if (savedInstanceState != null) {
-            isJustRestored = true
-            tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
-            selectedOrderId = savedInstanceState.getString(KEY_LAST_SELECTED_ORDER_ID).orEmpty()
         }
     }
 
@@ -293,6 +295,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    override fun onParentSortFilterClicked() {
+        val bottomSheetFilter = SomFilterBottomSheet.createInstance(
+                somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
+                viewModel.getDataOrderListParams().statusList,
+                viewModel.getSomFilterUi(),
+                this.activity
+        )
+        bottomSheetFilter.setSomFilterFinishListener(this)
+        bottomSheetFilter.show()
+    }
+
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
         onTickerDescriptionClicked(linkUrl.toString())
     }
@@ -428,8 +441,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             loadOrderList()
         }
         val stringBuilder = StringBuilder()
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 } ?: "")
-        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 } ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_success_message, totalSuccess).takeIf { totalSuccess > 0 }
+                ?: "")
+        stringBuilder.append(getString(R.string.som_list_bulk_accept_order_failed_message, totalFailed).takeIf { totalFailed > 0 }
+                ?: "")
         showCommonToaster(stringBuilder.toString())
     }
 
@@ -1010,4 +1025,21 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
+
+    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String) {
+        viewModel.updateGetOrderListParams(filterData)
+        val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
+                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
+        somListFilter.statusList.find { it.status == orderStatus }.let {
+            if (it != null) {
+                it.isChecked = true
+                somListSortFilterTab.selectTab(it)
+                refreshOrderList()
+            } else {
+                refreshOrderList()
+            }
+        }
+        viewModel.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
+    }
 }

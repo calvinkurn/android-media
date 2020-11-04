@@ -6,10 +6,13 @@ import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.domain.*
+import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -59,10 +62,13 @@ class SomDetailViewModelTest {
     @RelaxedMockK
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
 
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
+        somDetailViewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
                 somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
                 somRejectCancelOrderUseCase)
@@ -82,14 +88,14 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(123))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail(123)))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.orderId == 123)
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123)
     }
 
     @Test
@@ -111,14 +117,15 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
+        } returns Success(GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.Data.GetSomDetail(listProduct = listProducts)))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.listProduct.isNotEmpty())
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.listProduct?.isNotEmpty() ?: false)
     }
 
     // accept_order
@@ -130,7 +137,7 @@ class SomDetailViewModelTest {
         } returns Success(SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(success = 1)))
 
         //when
-        somDetailViewModel.acceptOrder("", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)
@@ -145,7 +152,7 @@ class SomDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.acceptOrder("", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Fail)
@@ -159,7 +166,7 @@ class SomDetailViewModelTest {
         } returns Success(SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.acceptOrder("", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)
@@ -265,7 +272,7 @@ class SomDetailViewModelTest {
         } returns Success(SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.editAwb(orderId, shippingRef)
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Success)
@@ -280,7 +287,7 @@ class SomDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.editAwb(orderId, shippingRef)
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Fail)
@@ -294,7 +301,7 @@ class SomDetailViewModelTest {
         } returns Success(SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.editAwb(orderId, shippingRef)
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Success)

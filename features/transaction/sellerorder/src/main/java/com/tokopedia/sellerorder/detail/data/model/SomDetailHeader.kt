@@ -8,6 +8,7 @@ import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 data class SomDetailHeader (
         val statusCode: Int = -1,
         val statusText: String = "",
+        val statusIndicatorColor: String = "",
         val isBuyerRequestCancel: Boolean = false,
         val invoice: String = "",
         val invoiceUrl: String = "",

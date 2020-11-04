@@ -26,123 +26,26 @@
         app:typographyWeight="bold"
         tools:text="@string/rincian_pembayaran" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_price_label"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDynamicPrice"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@+id/payments_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/payments_title"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Total Harga (4 Barang)" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_price_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/payments_title"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp10.326.000" />
+        tools:listitem="@layout/item_dynamic_price_detail"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shipping_price_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_price_label"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Total Ongkos Kirim (6kg)" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/shipping_price_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_price_value"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp50.000" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/insurance_price_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/insurance_price_label"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shipping_price_label"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="@string/insurance_price_label" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/insurance_price_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shipping_price_value"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp450" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/additional_price_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/additional_price_label"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/insurance_price_label"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="@string/additional_price_label" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/additional_price_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/insurance_price_value"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp200" />
-
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_payments"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:background="@color/Neutral_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/additional_price_label" />
+        app:layout_constraintTop_toBottomOf="@id/rvDynamicPrice" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/total_price_label"
