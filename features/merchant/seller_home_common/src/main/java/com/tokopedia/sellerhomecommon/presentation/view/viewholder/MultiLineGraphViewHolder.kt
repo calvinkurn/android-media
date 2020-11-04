@@ -5,10 +5,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
@@ -17,6 +19,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
 import timber.log.Timber
@@ -60,6 +64,19 @@ class MultiLineGraphViewHolder(
         }
 
         setOnMetricStateChanged(metric)
+    }
+
+    private fun setupTooltip(element: MultiLineGraphWidgetUiModel) = with(itemView) {
+        val tooltip = element.tooltip
+        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        if (shouldShowTooltip) {
+            tvShcMultiLineGraphTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
+            tvShcMultiLineGraphTitle.setOnClickListener {
+                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+            }
+        } else {
+            tvShcMultiLineGraphTitle.clearUnifyDrawableEnd()
+        }
     }
 
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
@@ -115,26 +132,48 @@ class MultiLineGraphViewHolder(
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
         val metricItems = element.data?.metrics.orEmpty()
+
+        if (metricItems.isEmpty()) {
+            setOnErrorState(element)
+            return
+        }
+
         val metric = metricItems.getOrNull(0)
         metric?.isSelected = true
 
         with(itemView) {
             tvShcMultiLineGraphTitle.text = element.title
 
-            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
-            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-            btnShcMultiLineCta.visibility = ctaVisibility
-            btnShcMultiLineCta.text = element.ctaText
+            setupMetricCards(metricItems)
             hideLegendView()
-
-            setupMetrics(metricItems)
 
             if (metric != null) {
                 lastSelectedMetric = metric
                 showLineGraph(listOf(metric))
             }
+
+            setupCta(element)
+            setupTooltip(element)
         }
     }
+
+    private fun setupCta(element: MultiLineGraphWidgetUiModel) = with(itemView) {
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+        val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+        tvShcMultiLineCta.visibility = ctaVisibility
+        imgShcMultiLineCta.visibility = ctaVisibility
+        if (isCtaVisible) {
+            tvShcMultiLineCta.text = element.ctaText
+            tvShcMultiLineCta.setOnClickListener {
+                openAppLink(element.appLink)
+            }
+            imgShcMultiLineCta.setOnClickListener {
+                openAppLink(element.appLink)
+            }
+        }
+    }
+
+    private fun openAppLink(appLink: String): Boolean = RouteManager.route(itemView.context, appLink)
 
     private fun showLegendView() {
         with(itemView) {
@@ -154,7 +193,7 @@ class MultiLineGraphViewHolder(
         }
     }
 
-    private fun setupMetrics(items: List<MultiLineMetricUiModel>) {
+    private fun setupMetricCards(items: List<MultiLineMetricUiModel>) {
         with(itemView) {
             rvShcGraphMetrics.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             rvShcGraphMetrics.adapter = metricsAdapter
@@ -266,8 +305,8 @@ class MultiLineGraphViewHolder(
                     ttvShcMlgTooltip2.showDot(Color.parseColor(hexColor))
                 }
             } catch (e: IndexOutOfBoundsException) {
-                Timber.i(e)
                 ttvShcMlgTooltip2.visibility = View.GONE
+                Timber.i(e)
             }
         }
     }
