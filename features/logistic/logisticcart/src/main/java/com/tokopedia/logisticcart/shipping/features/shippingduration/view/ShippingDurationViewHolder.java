@@ -94,36 +94,13 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         } else {
             tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.black_70));
             tvError.setVisibility(View.GONE);
+            tvPriceOrDuration.setVisibility(View.VISIBLE);
 
             if (!shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc().isEmpty()) {
                 tvTextDesc.setText(shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc());
                 tvTextDesc.setVisibility(View.VISIBLE);
             } else {
                 tvTextDesc.setVisibility(View.GONE);
-            }
-
-            /*put eta here*/
-            if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
-                String shipperNameEta = "";
-                if (shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice() == shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice()) {
-                    shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" +
-                            Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + ")";;
-                } else {
-                    String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + " - " +
-                            Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
-                    shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
-                }
-                if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
-                    tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
-                } else {
-                    tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
-                }
-                TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
-                tvPriceOrDuration.setVisibility(View.VISIBLE);
-            } else {
-                TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
-                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
-                tvPriceOrDuration.setVisibility(View.VISIBLE);
             }
 
             if (!isDisableOrderPrioritas && shippingDurationUiModel.getServiceData().getOrderPriority().getNow()) {
@@ -137,7 +114,29 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
 
         }
-        /*tv duration and contentdesctiption*/
+
+        /*put eta here*/
+        if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
+            String shipperNameEta = "";
+            if (shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice() == shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice()) {
+                shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" +
+                        Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + ")";;
+            } else {
+                String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + " - " +
+                        Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
+                shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
+            }
+            if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
+                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
+            } else {
+                tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
+            }
+            TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
+        } else {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
+            tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
+        }
+
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
         labelCodAvailable.setText(shippingDurationUiModel.getCodText());
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);

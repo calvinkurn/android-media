@@ -423,6 +423,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setBenefitAmount(data.getBenefitAmount());
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
+        courierData.setShipperName(data.getShipperName());
 
         try {
             shippingDurationBottomsheetListener.onLogisticPromoChosen(
