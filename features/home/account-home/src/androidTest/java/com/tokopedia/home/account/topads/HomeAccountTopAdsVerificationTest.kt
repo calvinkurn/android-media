@@ -92,9 +92,15 @@ class HomeAccountTopAdsVerificationTest {
     private fun scrollAndClickTopAds(index: Int, visitable: Visitable<*>) {
         if (visitable is RecommendationProductViewModel && visitable.isTopAds()) {
             recyclerViewAccountHome?.let {
-                onView(withId(it.id)).perform(RecyclerViewActions.scrollToPosition<RecommendationProductViewHolder>(index))
-                onView(withId(it.id)).perform(RecyclerViewActions.actionOnItemAtPosition<RecommendationProductViewHolder>(index, ViewActions.click()))
-                topAdsCount++
+                when(it.findViewHolderForAdapterPosition(index)) {
+                    is RecommendationProductViewHolder -> {
+                        onView(withId(it.id)).perform(RecyclerViewActions.scrollToPosition<RecommendationProductViewHolder>(index))
+                        onView(withId(it.id)).perform(RecyclerViewActions.actionOnItemAtPosition<RecommendationProductViewHolder>(index, ViewActions.click()))
+                        topAdsCount++
+                    }
+
+                    else -> { }
+                }
             }
         }
     }
