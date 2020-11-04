@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -37,11 +39,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var btnFinish: UnifyButton
+    private lateinit var btnSaveVideo: UnifyButton
+    private lateinit var btnDeleteVideo: UnifyButton
     private lateinit var loaderView: LoaderUnify
-    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
+    private lateinit var deleteVideoDialog: DialogUnify
 
-    private var toasterBottomMargin = 0
+    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
 
     override fun getScreenName(): String = "Play Summary Page"
 
@@ -74,22 +77,24 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         requireView().requestApplyInsetsWhenAttached()
-        btnFinish.requestApplyInsetsWhenAttached()
+        btnDeleteVideo.requestApplyInsetsWhenAttached()
     }
 
     private fun initView(view: View) {
         with(view) {
-            btnFinish = findViewById(R.id.btn_finish)
+            btnSaveVideo = findViewById(R.id.btn_save_video)
+            btnDeleteVideo = findViewById(R.id.btn_delete_video)
             loaderView = findViewById(R.id.loader_summary)
         }
     }
 
     private fun setupView(view: View) {
-        btnFinish.setOnClickListener {
-            analytic.clickDoneOnReportPage(parentViewModel.channelId, parentViewModel.title)
+        summaryInfoView.entranceAnimation(view as ViewGroup)
+        btnSaveVideo.setOnClickListener {
+            // TODO: setResult("on progress saving the video")
             activity?.finish()
         }
-        summaryInfoView.entranceAnimation(view as ViewGroup)
+        btnDeleteVideo.setOnClickListener { showConfirmDeleteVideoDialog() }
     }
 
     private fun setupInsets(view: View) {
@@ -97,7 +102,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
         }
 
-        btnFinish.doOnApplyWindowInsets { v, insets, _, margin ->
+        btnDeleteVideo.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
             if (marginLayoutParams.bottomMargin != newBottomMargin) {
@@ -162,5 +167,27 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     private fun observeLiveDuration() {
         parentViewModel.observableReportDuration.observe(viewLifecycleOwner, Observer(this::setLiveDuration))
+    }
+
+    private fun showConfirmDeleteVideoDialog() {
+        if (!::deleteVideoDialog.isInitialized) {
+            deleteVideoDialog = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_summary_delete_dialog_title),
+                    desc = getString(R.string.play_summary_delete_dialog_message),
+                    primaryCta = getString(R.string.play_summary_delete_dialog_action_delete),
+                    primaryListener = { dialog ->
+                        dialog.dismiss()
+                        // TODO: change this button with loading button
+                        // TODO: call use case update channel status to delete
+                        // TODO: setResult("complete delete the video")
+                        activity?.finish()
+                    },
+                    secondaryCta = getString(R.string.play_summary_delete_dialog_action_back),
+                    secondaryListener = { dialog -> dialog.dismiss() },
+                    cancelable = true
+            )
+        }
+        if (!deleteVideoDialog.isShowing) deleteVideoDialog.show()
     }
 }
