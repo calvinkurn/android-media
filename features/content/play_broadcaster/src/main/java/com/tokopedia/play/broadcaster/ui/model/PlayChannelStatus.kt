@@ -11,6 +11,7 @@ enum class PlayChannelStatus(val value: String) {
     Pause("3"),
     Stop("4"),
     Moderated("5"),
+    Deleted("-1"),
     Unknown("-2");
 
     companion object {

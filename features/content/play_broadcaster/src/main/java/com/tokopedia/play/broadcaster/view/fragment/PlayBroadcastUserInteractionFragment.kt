@@ -406,8 +406,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         })
             }
             is LivePusherErrorStatus.UnRecoverable -> {
-                errorMessage = getString(R.string.play_live_broadcast_system_error)
-                showToaster(message = getString(R.string.play_live_broadcast_system_error),
+                errorMessage = getString(R.string.play_broadcaster_default_error)
+                showToaster(message = getString(R.string.play_broadcaster_default_error),
                         type = Toaster.TYPE_ERROR,
                         duration = Toaster.LENGTH_INDEFINITE,
                         actionLabel = getString(R.string.play_broadcast_try_again),
