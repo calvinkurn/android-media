@@ -77,6 +77,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
+        String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -142,6 +143,8 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
         String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
     }
 
     interface ProductCardLabel {
@@ -152,6 +155,7 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
