@@ -88,6 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/notif_footer_care"
         android:textColor="@color/charcoal_grey_68"
         android:visibility="gone"
         android:textAlignment="center"
@@ -96,7 +97,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAction"
-        tools:text="HAHAHA"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
