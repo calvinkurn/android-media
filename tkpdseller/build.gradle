@@ -82,8 +82,6 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    kapt  rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
