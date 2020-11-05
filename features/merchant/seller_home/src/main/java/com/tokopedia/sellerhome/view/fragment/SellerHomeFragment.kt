@@ -557,8 +557,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun isTheSameWidget(oldWidget: BaseWidgetUiModel<*>, newWidget: BaseWidgetUiModel<*>): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
                 oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-                oldWidget.tooltip == newWidget.tooltip && oldWidget.url == newWidget.url &&
-                oldWidget.ctaText == newWidget.ctaText
+                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
