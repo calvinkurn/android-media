@@ -120,7 +120,7 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$channelPositionInList - play sgc channel - ${item .title}",
+                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
                                 position = channelPositionInList.toString()
                         )
