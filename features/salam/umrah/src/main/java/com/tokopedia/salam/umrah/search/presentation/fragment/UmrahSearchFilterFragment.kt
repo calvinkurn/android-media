@@ -11,10 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit

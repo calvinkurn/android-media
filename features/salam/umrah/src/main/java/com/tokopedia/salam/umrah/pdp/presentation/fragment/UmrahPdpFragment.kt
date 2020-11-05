@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahPdpTrackingUserAction

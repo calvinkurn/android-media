@@ -3,7 +3,6 @@ package com.tokopedia.salam.umrah.common.util
 import android.content.res.Resources
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.salam.umrah.R
 
 object UmrahPriceUtil {
