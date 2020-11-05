@@ -56,6 +56,18 @@
             android:layout_alignBottom="@id/tv_duration_or_price"
             android:layout_alignTop="@id/tv_duration_or_price"
             android:text="@string/tersedia_bayar_di_tempat"
+            android:visibility="gone"
+            app:labelType="general_light_green" />
+
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_cod_available_eta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_below="@+id/tv_duration_or_price"
+            android:visibility="gone"
+            android:text="@string/tersedia_bayar_di_tempat"
             app:labelType="general_light_green" />
 
         <!--price in old view, duration in ETA-->
@@ -63,7 +75,7 @@
             android:id="@+id/tv_price_or_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_duration_or_price"
+            android:layout_below="@+id/lbl_cod_available_eta"
             android:layout_marginTop="@dimen/dp_4"
             app:typographyType="body_3"
             app:typographyWeight="reguler"

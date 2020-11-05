@@ -50,6 +50,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
     private Label labelCodAvailable;
+    private Label labelCodAvailabelEta;
 
     private int cartPosition;
 
@@ -67,6 +68,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
+        labelCodAvailabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -89,6 +91,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.font_disabled));
             tvPriceOrDuration.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
+            tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
@@ -115,7 +118,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-        /*put eta here*/
+        /*ETA*/
         if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
             String shipperNameEta = "";
             if (shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice() == shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice()) {
@@ -132,14 +135,19 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
             }
             TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
+            labelCodAvailable.setVisibility(View.GONE);
+            labelCodAvailabelEta.setText(shippingDurationUiModel.getCodText());
+            labelCodAvailabelEta.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         } else {
             TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
             tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
+            labelCodAvailabelEta.setVisibility(View.GONE);
+            labelCodAvailable.setText(shippingDurationUiModel.getCodText());
+            labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         }
 
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-        labelCodAvailable.setText(shippingDurationUiModel.getCodText());
-        labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

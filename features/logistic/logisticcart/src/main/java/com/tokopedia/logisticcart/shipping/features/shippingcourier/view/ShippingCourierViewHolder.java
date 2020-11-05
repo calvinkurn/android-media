@@ -31,6 +31,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private View separator;
     private Label codLabel;
     private Label otdLabel;
+    private Label codLabelEta;
 
     private int cartPosition;
 
@@ -45,6 +46,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         separator = itemView.findViewById(R.id.separator);
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
+        codLabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -78,14 +80,6 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        /*shipperName*/
-        if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null) {
-            String shipperNameEta = shippingCourierUiModel.getProductData().getShipperName() + " " + "(" + shippingCourierUiModel.getProductData().getPrice().getFormattedPrice() + ")";
-            TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shipperNameEta, tvCourier.getContext().getString(R.string.content_desc_tv_courier));
-        } else {
-            TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
-        }
-
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
@@ -100,13 +94,26 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                 itemView.setOnClickListener(null);
             }
         } else {
-            if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0 && !shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
-                tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
-            } else if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0 && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
-                tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
-            }
-            else {
+            /*ETA*/
+            if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0) {
+                if (!shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
+                    tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
+                } else {
+                    tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
+                }
+                String shipperNameEta = shippingCourierUiModel.getProductData().getShipperName() + " " + "(" + shippingCourierUiModel.getProductData().getPrice().getFormattedPrice() + ")";
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shipperNameEta, tvCourier.getContext().getString(R.string.content_desc_tv_courier));
+                codLabel.setVisibility(View.GONE);
+                codLabelEta.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
+                codLabelEta.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                        getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
+            } else {
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
+                codLabelEta.setVisibility(View.GONE);
+                codLabel.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
+                codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                        getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
             }
             tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
