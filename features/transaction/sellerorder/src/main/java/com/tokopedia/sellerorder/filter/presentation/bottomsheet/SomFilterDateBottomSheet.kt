@@ -138,7 +138,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
 
     private fun setupCalendarView() {
         val minDate = Utils.getNPastYearTimeStamp(2)
-        val maxDate = Utils.getNowDaysTimestamp()
+        val maxDate = Date(Utils.getNNextDaysTimestamp(1))
 
         calendarView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)

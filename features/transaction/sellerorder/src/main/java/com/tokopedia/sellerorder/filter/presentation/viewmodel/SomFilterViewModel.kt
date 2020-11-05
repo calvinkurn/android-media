@@ -56,11 +56,13 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
-            if(somFilterDate != null) {
+            somFilterDate = result.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
+                    ?: SomFilterDateUiModel(nameFilter = FILTER_DATE)
+
+            if (date.isNotBlank()) {
                 somFilterDate?.date = date
-            } else {
-                somFilterDate = result.filterIsInstance<SomFilterDateUiModel>().firstOrNull() ?: SomFilterDateUiModel(nameFilter = FILTER_DATE)
             }
+
             if (somFilterUiModel.isNullOrEmpty()) {
                 somFilterUiModel = somFilterResult
             }
@@ -123,7 +125,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun updateSomFilterSeeAll(idFilter: String,
                               somSubFilterList: List<SomFilterChipsUiModel>,
-                              filterDate: String ) {
+                              filterDate: String) {
         launchCatchError(block = {
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
@@ -174,7 +176,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun resetFilterSelected(orderStatus: String) {
         launchCatchError(block = {
-            somFilterUiModel.map { somFilter -> somFilter.somFilterData.onEach { chips -> chips.isSelected = chips.name == orderStatus } }
+            somFilterUiModel.forEach { somFilter ->
+                somFilter.somFilterData.onEach { chips ->
+                    chips.isSelected = chips.name == orderStatus
+                }
+            }
             somListGetOrderListParam = SomListGetOrderListParam()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)

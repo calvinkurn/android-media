@@ -97,6 +97,10 @@ object Utils {
         return date.time
     }
 
+    fun getNNextDaysTimestamp(daysNext: Long): Long {
+        return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(daysNext))
+    }
+
     fun getNowDaysTimestamp(): Date  {
         return Calendar.getInstance(getLocale()).time
     }

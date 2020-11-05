@@ -18,6 +18,9 @@ class SomFilterDateViewHolder(view: View, private val somFilterListener: SomFilt
     override fun bind(element: SomFilterDateUiModel?) {
         with(itemView) {
             tvTitleFilterDate?.text = element?.nameFilter
+            if (element?.date?.isNotBlank() == true) {
+                selectDateFilter.setDateLabel(element.date)
+            }
             selectDateFilter.setOnClickListener {
                 somFilterListener.onDateClicked(adapterPosition)
             }

@@ -193,12 +193,4 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         }
         setToggleResetSubFilter()
     }
-
-    interface SubFilterListener {
-        fun onSaveSubFilter(
-                somListGetOrderListParam: SomListGetOrderListParam,
-                filterDate: String,
-                idFilter: String,
-                somSubFilterList: List<SomFilterChipsUiModel>)
-    }
 }
