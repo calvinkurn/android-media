@@ -1039,8 +1039,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator
-
+                playWidgetCoordinator,
+                RechargeBUWidgetCallback(context, getHomeViewModel(), this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

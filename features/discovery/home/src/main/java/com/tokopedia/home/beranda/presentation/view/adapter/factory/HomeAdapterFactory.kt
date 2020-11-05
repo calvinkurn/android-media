@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.listener.HomeFeedsListener
-import com.tokopedia.home.beranda.listener.HomeInspirationListener
-import com.tokopedia.home.beranda.listener.HomeReviewListener
+import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
@@ -53,7 +50,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val productHighlightListener: ProductHighlightListener,
                          private val lego4AutoBannerListener: Lego4AutoBannerListener,
                          private val featuredShopListener: FeaturedShopListener,
-                         private val playWidgetCoordinator: PlayWidgetCoordinator
+                         private val playWidgetCoordinator: PlayWidgetCoordinator,
+                         private val rechargeBUWidgetListener: RechargeBUWidgetListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -316,8 +314,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener)
-//            RechargeBUWidgetViewHolder.LAYOUT -> viewHolder =
-//                    RechargeBUWidgetViewHolder(view, )
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
@@ -333,6 +329,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     homeComponentListener
             )
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
+            RechargeBUWidgetViewHolder.LAYOUT -> viewHolder =
+                    RechargeBUWidgetViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
