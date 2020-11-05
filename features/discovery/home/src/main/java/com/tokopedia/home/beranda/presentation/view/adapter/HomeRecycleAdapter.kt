@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import org.jetbrains.annotations.TestOnly
 import java.util.*
 
 class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
@@ -146,5 +147,10 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
             if (position == -1) return@let
             notifyItemChanged(position, totalViewUiModel)
         }
+    }
+
+    @TestOnly
+    fun getItemList() : List<Visitable<*>> {
+        return visitables
     }
 }
