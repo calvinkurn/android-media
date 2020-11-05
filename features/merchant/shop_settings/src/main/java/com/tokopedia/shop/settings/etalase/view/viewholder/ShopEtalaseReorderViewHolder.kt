@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 
 /**
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseReorderViewHolder(itemView: View,
-                                   private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopEtalaseViewModel>(itemView) {
+                                   private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopEtalaseUiModel>(itemView) {
 
     private val tvEtalaseName: TextView
     private val tvEtalaseCount: TextView
@@ -27,7 +27,7 @@ class ShopEtalaseReorderViewHolder(itemView: View,
         handler = itemView.findViewById(R.id.ivReorder)
     }
 
-    override fun bind(shopEtalaseViewModel: ShopEtalaseViewModel) {
+    override fun bind(shopEtalaseViewModel: ShopEtalaseUiModel) {
         tvEtalaseName.text = shopEtalaseViewModel.name
         tvEtalaseCount.text = tvEtalaseCount.context.getString(R.string.x_products, shopEtalaseViewModel.count)
         if (shopEtalaseViewModel.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {

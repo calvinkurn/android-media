@@ -16,8 +16,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 class RecommendationCarouselItemDataModel(
         val productItem: RecommendationItem,
-        val parentPosition: Int,
-        val listener: RecommendationListener
+        val parentPosition: Int
 ) : HomeRecommendationDataModel {
 
     companion object{

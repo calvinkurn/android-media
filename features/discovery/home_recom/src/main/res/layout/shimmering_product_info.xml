@@ -4,8 +4,7 @@
     android:id="@+id/container_loading"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_112"
-    android:orientation="vertical"
-    android:visibility="gone">
+    android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering"

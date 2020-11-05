@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="blue_booking">#0066a9</color>
+    <color name="hotel_safety_badge_blue">#0081CB</color>
     <color name="pink_property">#ef144a</color>
     <color name="blue_background">#e5f5ff</color>
     <color name="grey_no_image">#f3f4f5</color>

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * Created by stevenfredian on 6/2/16.
@@ -81,7 +82,7 @@ public class LoginTextView extends LinearLayout {
             customText = a.getString(R.styleable.LoginTextView_customText);
             textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);
-            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
+            cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
             resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
@@ -127,7 +128,7 @@ public class LoginTextView extends LinearLayout {
 
     public void setText(String name) {
         TextView textView = findViewById(R.id.provider_name);
-        textView.setText(name);
+        TextAndContentDescriptionUtil.setTextAndContentDescription(textView, name, textView.getContext().getString(R.string.content_desc_provider_name));
     }
 
     public void setImage(String image) {

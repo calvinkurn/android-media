@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.data.repository;
 
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
 

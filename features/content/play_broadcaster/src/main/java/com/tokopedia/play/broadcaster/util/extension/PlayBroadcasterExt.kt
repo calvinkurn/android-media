@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 
@@ -35,6 +35,9 @@ internal fun sendCrashlyticsLog(throwable: Throwable) {
         throwable.printStackTrace()
     }
     try {
-        Crashlytics.logException(throwable)
-    } catch (e: Exception) {}
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+    } catch (e: Exception) {
+    }
 }
+
+class PlayBroadcasterException(message: String) : Throwable(message)

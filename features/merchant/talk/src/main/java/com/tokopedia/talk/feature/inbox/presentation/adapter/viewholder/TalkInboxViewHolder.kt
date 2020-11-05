@@ -4,9 +4,12 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -14,7 +17,8 @@ import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxViewHolder(
         view: View,
-        private val isSellerView: Boolean
+        private val isSellerView: Boolean,
+        private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxUiModel>(view) {
 
     companion object {
@@ -28,6 +32,9 @@ class TalkInboxViewHolder(
             setQuestion(content, isMasked)
             setNotification(isUnread)
             setCountAndDate(totalAnswer, lastReplyTime)
+            itemView.addOnImpressionListener(ImpressHolder()) {
+                talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
+            }
         }
     }
 
