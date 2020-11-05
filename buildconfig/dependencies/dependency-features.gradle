@@ -240,6 +240,6 @@ ext {
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp",
-            customer_mid_app                    : ":customer_mid_app"
+            customer_mid_app                : ":customer_mid_app"
     ]
 }

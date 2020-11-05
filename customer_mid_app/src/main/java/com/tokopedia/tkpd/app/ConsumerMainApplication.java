@@ -213,7 +213,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return true;
     }
 
-    private void setVersionName() {
+    protected void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
@@ -229,7 +229,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
     }
 
-    abstract void initConfigValues();
+    public abstract void initConfigValues();
 
     @NotNull
     private Boolean executePostCreateSequence() {
@@ -374,7 +374,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         return null;
     }
 
-    private void setVersionCode() {
+    protected void setVersionCode() {
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
@@ -386,7 +386,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
-    abstract void generateConsumerAppNetworkKeys();
+    public abstract void generateConsumerAppNetworkKeys();
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
