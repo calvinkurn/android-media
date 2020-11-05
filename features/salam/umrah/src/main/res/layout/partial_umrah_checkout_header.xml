@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/umrah_homepage_pax_all_in"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tg_umrah_checkout_price"

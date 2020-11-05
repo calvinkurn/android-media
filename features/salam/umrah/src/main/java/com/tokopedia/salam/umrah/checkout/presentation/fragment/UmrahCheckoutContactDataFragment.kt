@@ -79,7 +79,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutPilgrimsViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        umrahCheckoutPilgrimsViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
@@ -128,7 +128,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if(count>0){
+                    if(count > MIN_TEXT){
                         ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.error = ""
                     } else {
                         ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.error = getString(R.string.umrah_checkout_contact_name_error)
@@ -153,7 +153,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if(count>0){
+                    if(count > MIN_TEXT){
                         tf_umrah_checkout_contact_email.setError(false)
                         tf_umrah_checkout_contact_email.setMessage("")
                     } else {
@@ -177,7 +177,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if(start>=8){
+                    if(start > MIN_PHONE_NUMBER_DIGIT){
                         tf_umrah_checkout_contact_phone_number.setError(false)
                         tf_umrah_checkout_contact_phone_number.setMessage("")
                     } else {
@@ -279,6 +279,8 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         const val MIN_PHONE_NUMBER_DIGIT = 9
         const val PHONE_CODE_NULL = 0
         const val PHONE_CODE_INDONESIA = 62
+
+        private const val MIN_TEXT = 0
 
         fun getInstance(contactData: ContactUser): UmrahCheckoutContactDataFragment =
                 UmrahCheckoutContactDataFragment().also {
