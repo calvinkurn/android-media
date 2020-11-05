@@ -130,18 +130,18 @@ public class BranchHelper {
         saveBranchEvent(branchEvent);
     }
 
-    public static void sendItemViewEvent(Context context, LinkerData linkerData){
+    public static void sendItemViewEvent(Context context, LinkerData linkerData) {
         BranchUniversalObject buo = new BranchUniversalObject()
                 .setTitle(linkerData.getProductName())
                 .setContentMetadata(
                         new ContentMetadata()
-                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(),"Product price"), CurrencyType.IDR)
+                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(), "Product price"), CurrencyType.IDR)
                                 .setProductName(linkerData.getProductName())
-                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
+                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(), "Product quantity"))
                                 .setSku(linkerData.getSku())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                 .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getLevel3Name())));
-        new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.SHOP_ID, linkerData.getShopId())
                 .addCustomDataProperty(LinkerConstants.CURRENCY, linkerData.getCurrency())
@@ -155,22 +155,23 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
                 .setRevenue(0)
                 .setCurrency(CurrencyType.IDR)
-                .addContentItems(buo)
-                .logEvent(context);
+                .addContentItems(buo);
+        branchEvent.logEvent(context);
+        saveBranchEvent(branchEvent);
     }
 
-    public static void sendAddToCartEvent(Context context, LinkerData linkerData){
+    public static void sendAddToCartEvent(Context context, LinkerData linkerData) {
         BranchUniversalObject buo = new BranchUniversalObject()
                 .setTitle(linkerData.getProductName())
                 .setContentMetadata(
                         new ContentMetadata()
-                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(),"Product price"), CurrencyType.IDR)
+                                .setPrice(LinkerUtils.convertToDouble(linkerData.getPrice(), "Product price"), CurrencyType.IDR)
                                 .setProductName(linkerData.getProductName())
-                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(),"Product quantity"))
+                                .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(), "Product quantity"))
                                 .setSku(linkerData.getId())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                 .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
-        new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getSku())
                 .addCustomDataProperty(LinkerConstants.CONTENT_TYPE, linkerData.getContentType())
@@ -185,9 +186,11 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
                 .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
-                .addContentItems(buo)
-                .logEvent(context);
-        new BranchHelperValidation().validateCartQuantity( linkerData.getQuantity());
+                .addContentItems(buo);
+        branchEvent.logEvent(context);
+        saveBranchEvent(branchEvent);
+                
+        new BranchHelperValidation().validateCartQuantity(linkerData.getQuantity());
     }
 
     public static void sendAddToWishListEvent(Context context, LinkerData linkerData) {
