@@ -106,6 +106,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -131,6 +135,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
@@ -163,6 +171,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -189,6 +201,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
             }
@@ -206,6 +222,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
@@ -238,6 +258,10 @@ object CartListPresenterAddToCartTest : Spek({
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to update cart data") {
                 cartListPresenter.processAddToCart(productModel)
             }
@@ -265,6 +289,10 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {

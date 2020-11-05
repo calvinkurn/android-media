@@ -7,9 +7,10 @@ import com.tokopedia.product.detail.test.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 
-class InstrumentTestProductDetailActivity : AppCompatActivity() {
+class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestTopAdsCounter {
 
     private var shouldShowCartAnimation = false
+    private var topAdsCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,8 +18,12 @@ class InstrumentTestProductDetailActivity : AppCompatActivity() {
         showAddToCartDoneBottomSheet()
     }
 
+    override fun onTopAdsUrlHit() {
+        topAdsCount++
+    }
+
     private fun showAddToCartDoneBottomSheet() {
-        val addToCartDoneBottomSheet = InstrumentTestAddToCartBottomSheet()
+        val addToCartDoneBottomSheet = InstrumentTestAddToCartBottomSheet(this)
         val productName = "Bunga 3"
         val productImageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/11/7/77816542/77816542_a7945d31-95c8-4795-ac94-2d4a63d4ebff_1024_1024"
         val addedProductDataModel = AddToCartDoneAddedProductDataModel(
@@ -39,5 +44,10 @@ class InstrumentTestProductDetailActivity : AppCompatActivity() {
                     it, "ADD_TO_CART"
             )
         }
+    }
+
+
+    fun getTopAdsCount(): Int {
+        return topAdsCount
     }
 }

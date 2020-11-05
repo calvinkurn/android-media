@@ -1,18 +1,19 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.os.Bundle
 import com.tokopedia.officialstore.official.data.model.Banner
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
 
-class OfficialBannerViewModel(val banner: MutableList<Banner>, val categoryName: String) : Visitable<OfficialHomeAdapterTypeFactory> {
+class OfficialBannerViewModel(val banner: MutableList<Banner>, val categoryName: String) : OfficialHomeVisitable{
+    override fun getChangePayloadFrom(b: Any?): Bundle? = null
 
-    override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
-        return adapterTypeFactory.type(this)
-    }
+    override fun visitableId(): String = categoryName
 
-    fun getBannerImgUrl(): List<String> {
-        return banner.map {
-            it.imageUrl
-        }
-    }
+    override fun equalsWith(b: Any?): Boolean = b is OfficialBannerViewModel &&
+            banner == b.banner &&
+            categoryName == b.categoryName &&
+            banner.map { it.bannerId }.containsAll(b.banner.map { it.bannerId })
+
+
+    override fun type(typeFactory: OfficialHomeTypeFactory): Int = typeFactory.type(this)
 }
