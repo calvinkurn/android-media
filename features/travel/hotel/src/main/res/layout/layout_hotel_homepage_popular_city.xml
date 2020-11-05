@@ -32,7 +32,7 @@
         android:id="@+id/rv_popular_cities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"/>
+        android:layout_marginTop="@dimen/spacing_lvl3"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_homepage_popular_cities_see_more"
