@@ -16,14 +16,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ImageHandler
@@ -116,11 +114,11 @@ class RechargeBUWidgetViewHolder(itemView: View,
     }
 
     private fun initVar() {
-        recyclerView = itemView.findViewById(R.id.rv_product)
-        image = itemView.findViewById(R.id.parallax_image)
-        loadingBackground = itemView.findViewById(R.id.background_loader)
-        parallaxBackground = itemView.findViewById(R.id.parallax_background)
-        parallaxView = itemView.findViewById(R.id.parallax_view)
+        recyclerView = itemView.findViewById(R.id.rv_recharge_bu_product)
+        image = itemView.findViewById(R.id.recharge_bu_parallax_image)
+        loadingBackground = itemView.findViewById(R.id.recharge_bu_background_loader)
+        parallaxBackground = itemView.findViewById(R.id.recharge_bu_parallax_background)
+        parallaxView = itemView.findViewById(R.id.recharge_bu_parallax_view)
     }
 
     private fun setupBackground(imageUrl: String, gradientColor: String) {
@@ -248,7 +246,7 @@ class RechargeBUWidgetViewHolder(itemView: View,
 
     private fun setHeaderComponent(id: String, headerTitle: String, applink: String) {
         val channelModel = ChannelModel(id, id, channelHeader = ChannelHeader(name = headerTitle, applink = applink))
-        val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.home_component_header_view)
+        val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_header_view)
         headerView.setChannel(channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 listener.onRechargeBUWidgetClickMore(data)
