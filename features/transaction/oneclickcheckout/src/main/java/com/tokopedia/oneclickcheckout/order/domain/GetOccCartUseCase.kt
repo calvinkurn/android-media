@@ -343,6 +343,12 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 error_ticker
                 is_hide_digital
             }
+            phone_number_registered {
+                is_required
+                button_title
+                error_message
+                error_ticker
+            }
           }
         }
         shipment {

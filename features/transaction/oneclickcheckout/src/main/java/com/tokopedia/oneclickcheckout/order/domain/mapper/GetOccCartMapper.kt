@@ -230,6 +230,7 @@ class GetOccCartMapper @Inject constructor() {
         return OrderPaymentOvoAdditionalData(
                 activation = mapPaymentOvoActionData(ovoAdditionalData.ovoActivationData),
                 topUp = mapPaymentOvoActionData(ovoAdditionalData.ovoTopUpData),
+                phoneNumber = mapPaymentOvoActionData(ovoAdditionalData.phoneNumberRegistered),
                 callbackUrl = data.paymentAdditionalData.callbackUrl,
                 customerData = mapPaymentOvoCustomerData(data.customerData)
         )

@@ -315,16 +315,20 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         tvPaymentErrorMessage?.gone()
                         (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_ovo_error_action
                     }
-                    tvPaymentDetail?.gone()
-                    tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
-                    tvPaymentOvoErrorAction?.setOnClickListener {
-                        if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                            listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                        } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                            listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                    if (payment.ovoErrorData.buttonTitle.isNotBlank()) {
+                        tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
+                        tvPaymentOvoErrorAction?.setOnClickListener {
+                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            }
                         }
+                        tvPaymentOvoErrorAction?.visible()
+                    } else {
+                        tvPaymentOvoErrorAction?.gone()
                     }
-                    tvPaymentOvoErrorAction?.visible()
+                    tvPaymentDetail?.gone()
                     tvPaymentErrorAction?.gone()
                     if (payment.ovoErrorData.isBlockingError) {
                         setPaymentErrorAlpha(true)

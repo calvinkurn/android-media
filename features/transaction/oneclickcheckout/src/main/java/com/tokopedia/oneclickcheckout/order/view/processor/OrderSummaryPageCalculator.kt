@@ -78,17 +78,30 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 }
                 return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
             }
+            if (payment.isOvo && payment.ovoData.isPhoneNumberMissing) {
+                if (payment.isOvoOnlyCampaign) {
+                    if (currentState == OccButtonState.NORMAL) {
+                        currentState = OccButtonState.DISABLE
+                    }
+                    return@withContext payment.copy(isCalculationError = true,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.phoneNumber.errorMessage,
+                                    type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
+                }
+                return@withContext payment.copy(isCalculationError = true,
+                        ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.phoneNumber.errorMessage,
+                                type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.ovoData.phoneNumber.errorTicker, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             if (payment.isOvo && payment.ovoData.isActivationRequired) {
                 if (payment.isOvoOnlyCampaign) {
                     if (currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
                     }
                     return@withContext payment.copy(isCalculationError = true,
-                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = payment.ovoData.activation.buttonTitle,
+                            ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
                                     type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 return@withContext payment.copy(isCalculationError = true,
-                        ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = payment.ovoData.activation.buttonTitle,
+                        ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.activation.errorMessage, buttonTitle = payment.ovoData.activation.buttonTitle,
                                 type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = payment.ovoData.callbackUrl)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = payment.ovoData.activation.errorTicker, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.minimumAmount > subtotal) {
@@ -128,10 +141,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     if (currentState == OccButtonState.NORMAL) {
                         currentState = OccButtonState.DISABLE
                     }
-                    return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
+                    return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
+                            type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
                             paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
-                return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
+                return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
+                        type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = payment.ovoData.topUp.errorTicker,
                         buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }

@@ -94,11 +94,15 @@ data class OrderPaymentInstallmentTerm(
 data class OrderPaymentOvoAdditionalData(
         val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
         val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val phoneNumber: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
         val callbackUrl: String = "",
         val customerData: OrderPaymentOvoCustomerData = OrderPaymentOvoCustomerData()
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
+
+    val isPhoneNumberMissing: Boolean
+        get() = phoneNumber.isRequired
 }
 
 @Parcelize
@@ -127,5 +131,6 @@ data class OrderPaymentOvoErrorData(
     companion object {
         const val TYPE_ACTIVATION = 1
         const val TYPE_TOP_UP = 2
+        const val TYPE_MISSING_PHONE = 3
     }
 }

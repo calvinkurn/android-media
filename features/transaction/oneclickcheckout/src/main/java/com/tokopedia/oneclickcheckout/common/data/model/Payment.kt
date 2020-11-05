@@ -100,7 +100,9 @@ data class OvoAdditionalData(
         @SerializedName("ovo_activation")
         val ovoActivationData: OvoActionData = OvoActionData(),
         @SerializedName("ovo_top_up")
-        val ovoTopUpData: OvoActionData = OvoActionData()
+        val ovoTopUpData: OvoActionData = OvoActionData(),
+        @SerializedName("phone_number_registered")
+        val phoneNumberRegistered: OvoActionData = OvoActionData()
 )
 
 data class OvoActionData(

@@ -23,7 +23,7 @@ class OvoTopUpWebViewViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = OvoTopUpWebViewViewModel(getOvoTopUpUrlUseCase, mockk())
+        viewModel = OvoTopUpWebViewViewModel(getOvoTopUpUrlUseCase)
     }
 
     @Test
