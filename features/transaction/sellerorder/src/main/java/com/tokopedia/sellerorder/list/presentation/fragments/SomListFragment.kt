@@ -1369,10 +1369,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
         somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
-                it.isChecked = true
                 somListSortFilterTab.selectTab(it)
                 refreshOrderList()
             } else {
+                somListSortFilterTab.updateCounterSortFilter()
                 refreshOrderList()
             }
         }

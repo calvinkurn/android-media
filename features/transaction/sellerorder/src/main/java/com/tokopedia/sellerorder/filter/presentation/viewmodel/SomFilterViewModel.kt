@@ -59,7 +59,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             somFilterDate = result.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
                     ?: SomFilterDateUiModel(nameFilter = FILTER_DATE)
 
-            if(date.isNotBlank()) {
+            if (date.isNotBlank()) {
                 somFilterDate?.date = date
             }
 
@@ -176,7 +176,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun resetFilterSelected(orderStatus: String) {
         launchCatchError(block = {
-            somFilterUiModel.map { somFilter -> somFilter.somFilterData.onEach { chips -> chips.isSelected = false } }
+            somFilterUiModel.forEach { somFilter ->
+                somFilter.somFilterData.onEach { chips ->
+                    chips.isSelected = chips.name == orderStatus
+                }
+            }
             somListGetOrderListParam = SomListGetOrderListParam()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
