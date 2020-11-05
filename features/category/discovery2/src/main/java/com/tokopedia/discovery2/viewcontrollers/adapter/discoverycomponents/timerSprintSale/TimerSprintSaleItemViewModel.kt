@@ -15,7 +15,7 @@ import java.util.*
 
 class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    var timerWithBannerCounter: SaleCountDownTimer? = null
+    private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
     private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
