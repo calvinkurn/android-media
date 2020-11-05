@@ -223,7 +223,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-            product: ShopHomeProductViewModel,
+            product: ShopHomeProductUiModel,
             shopId: String,
             onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit,
             onErrorAddToCart: (exception: Throwable) -> Unit
@@ -323,7 +323,7 @@ class ShopHomeViewModel @Inject constructor(
         return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
-    private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
+    private fun submitAddProductToCart(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         val requestParams = AddToCartUseCase.getMinimumParams(product.id
                 ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
                 ?: "", userId = userId)
