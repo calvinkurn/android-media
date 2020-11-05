@@ -189,7 +189,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        presenter.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, "-1", ::onSuccessGetStatisticsInfo)
+        presenter.getStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, "-1", ::onSuccessGetStatisticsInfo)
     }
 
     private fun onSuccessGetStatisticsInfo(dataStatistic: DataStatistic) {
@@ -214,6 +214,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private fun showEmptyView() {
         app_bar_layout_2?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
+        mulai_beriklan?.isEnabled = false
         empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         text_title.text = getString(R.string.topads_headline_empty_state_title)
         text_desc.text = getString(R.string.topads_headline_empty_state_desc)

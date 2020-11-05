@@ -25,8 +25,8 @@ import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.NegKeywordAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
-import com.tokopedia.topads.headline.view.model.HeadlineDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_neg_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
@@ -67,7 +67,7 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)
     }
     private val viewModel by lazy {
-        viewModelProvider.get(HeadlineDetailViewModel::class.java)
+        viewModelProvider.get(GroupDetailViewModel::class.java)
     }
 
     override fun getScreenName(): String {
@@ -227,11 +227,11 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
     private fun onEmpty() {
         adapter.items.add(NegKeywordEmptyViewModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
-            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
             btn_submit?.isEnabled = false
             btnAddItem.visibility = View.GONE
         } else {
-            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
         }
         (activity as TopAdsHeadlineAdDetailViewActivity).setNegKeywordCount(0)
     }

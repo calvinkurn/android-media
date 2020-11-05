@@ -182,11 +182,11 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
 
 
     fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
-                     startDate: String, endDate: String,groupType: Int, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
+                     startDate: String, endDate: String, groupType: Int, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
         topAdsGetGroupDataUseCase.setQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
         val requestParams = topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate, groupType)
-        topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()  {
+        topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
             }
 
@@ -207,10 +207,10 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
     fun getStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
         val requestParams = getStatisticUseCase.createRequestParams(startDate, endDate, selectedStatisticType, userSession.shopId, adType)
         getStatisticUseCase.setQueryString(StatsList.GQL_QUERY)
-        getStatisticUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()
-        {
+        getStatisticUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
             }
+
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
@@ -218,12 +218,12 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
                 val dataStatistic = response.data.topadsDashboardStatistics.data
                 onSuccesGetStatisticsInfo(dataStatistic)
             }
+
             override fun onError(e: Throwable) {
-               view?.onErrorGetStatisticsInfo(e)
+                view?.onErrorGetStatisticsInfo(e)
             }
         })
     }
-
 
     fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
                                startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
@@ -292,16 +292,17 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
         topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_group_action))
         val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()
-        {
+        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
             }
+
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<GroupActionResponse?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<GroupActionResponse>
                 response.data.topAdsEditGroupBulk?.data?.action?.let { onSuccess(it) }
             }
+
             override fun onError(e: Throwable) {
                 view?.onErrorGetStatisticsInfo(e)
             }
@@ -341,7 +342,7 @@ constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.corou
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<NonGroupResponse>
                 val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if(nonGroupResponse.data.isEmpty()) {
+                if (nonGroupResponse.data.isEmpty()) {
                     onEmpty()
                 } else {
                     onSuccess(nonGroupResponse)

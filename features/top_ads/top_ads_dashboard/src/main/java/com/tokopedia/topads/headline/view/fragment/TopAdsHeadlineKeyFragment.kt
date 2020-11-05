@@ -26,9 +26,9 @@ import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
-import com.tokopedia.topads.headline.view.model.HeadlineDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
@@ -64,7 +64,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)
     }
     private val viewModel by lazy {
-        viewModelProvider.get(HeadlineDetailViewModel::class.java)
+        viewModelProvider.get(GroupDetailViewModel::class.java)
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
@@ -278,11 +278,11 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     private fun onEmpty() {
         adapter.items.add(KeywordEmptyViewModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
-            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
             btn_submit?.isEnabled = false
             btnAddItem.visibility = View.GONE
         } else {
-            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
         }
         setFilterCount()
         (activity as TopAdsHeadlineAdDetailViewActivity).setKeywordCount(0)

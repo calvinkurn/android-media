@@ -25,7 +25,7 @@ class KeywordItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_keyword_card
     }
 
-    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: KeywordItemViewModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
         item.let {
             if (selectMode) {
                 view.btn_switch.visibility = View.INVISIBLE
