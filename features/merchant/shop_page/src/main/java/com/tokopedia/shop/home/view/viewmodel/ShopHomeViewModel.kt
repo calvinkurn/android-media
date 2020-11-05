@@ -201,13 +201,17 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
         val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
-        if (index != -1) {
+        if (isMerchantVoucherExistsInHomeLayout(index)) {
             val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
                 getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
             }
             return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
         }
         return data
+    }
+
+    private fun isMerchantVoucherExistsInHomeLayout(index: Int): Boolean {
+        return index != -1
     }
 
     fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
