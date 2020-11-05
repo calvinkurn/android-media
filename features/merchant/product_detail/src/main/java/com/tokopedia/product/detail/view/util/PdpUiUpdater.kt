@@ -412,12 +412,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         shopCredibility?.enableButtonFavorite = true
     }
 
-    fun updateTickerData(shopInfo: ShopInfo?, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
         tickerInfoMap?.run {
-            shopInfo?.let {
-                statusInfo = if (it.isShopInfoNotEmpty()) it.statusInfo else null
-                closedInfo = if (it.isShopInfoNotEmpty()) it.closedInfo else null
-            }
             this.isProductWarehouse = isProductWarehouse
             this.isProductInCampaign = isProductInCampaign
             this.isOutOfStock = isOutOfStock

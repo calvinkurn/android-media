@@ -46,9 +46,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             setupShopInfoTicker(element.statusInfo, element.closedInfo)
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
             setupShopInfoTicker(element.statusInfo, element.closedInfo)
-        } else if (element.isOutOfStock && !element.isProductInCampaign && element.isProductWarehouse) {
+        } else if (element.isOos() && !element.isProductCampaign() && element.isProductInactive()) {
             renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis))
-        } else if (element.isProductWarehouse && !element.isOutOfStock) {
+        } else if (element.isProductInactive() && !element.isOos()) {
             renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title))
         } else if (element.generalTickerInfo?.isNotEmpty() == true) {
             setupGeneralTicker(element.generalTickerInfo ?: listOf())

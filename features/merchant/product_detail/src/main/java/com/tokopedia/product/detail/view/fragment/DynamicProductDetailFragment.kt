@@ -930,9 +930,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
-                        viewModel.addWishList(it,
-                                onSuccessAddWishlist = this::onSuccessAddWishlist,
-                                onErrorAddWishList = this::onErrorAddWishList)
+                        addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
                         }
@@ -1111,7 +1109,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
         pdpUiUpdater?.updateNotifyMeUpcoming(selectedChild?.productId.toString(), viewModel.p2Data.value?.upcomingCampaigns)
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
-        pdpUiUpdater?.updateTickerData(viewModel.p2Data.value?.shopInfo, viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
+        pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
@@ -1138,7 +1136,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, null)
         dynamicAdapter.notifyVariantSection(pdpUiUpdater?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
         dynamicAdapter.notifyNotifyMe(pdpUiUpdater?.notifyMeMap, null)
-        dynamicAdapter.notifyTicker(pdpUiUpdater?.tickerInfoMap)
+        dynamicAdapter.notifyItemComponentSections(pdpUiUpdater?.tickerInfoMap)
     }
 
     private fun updateButtonState() {
@@ -1428,6 +1426,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun showOrHideButton() {
+        if(viewModel.shouldHideFloatingButton()) {
+            actionButtonView.visibility = viewModel.shouldHideFloatingButton()
+            return
+        }
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
             val shouldShowSellerButtonByShopType = shopStatus != ProductShopStatusTypeDef.DELETED && shopStatus != ProductShopStatusTypeDef.MODERATED_PERMANENTLY
@@ -2049,6 +2051,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         sendIntentResultWishlistChange(productId ?: "", false)
         viewModel.updateCartRedirection(ProductDetailConstant.KEY_REMIND_ME, ProductDetailConstant.KEY_BUTTON_SECONDARY_GREEN, getString(R.string.button_remind_me))
+        updateButtonState()
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
@@ -2064,6 +2067,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }?.listOfContent?.firstOrNull()?.subtitle ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
         viewModel.updateCartRedirection(ProductDetailConstant.KEY_CHECK_WISHLIST, ProductDetailConstant.KEY_BUTTON_SECONDARY_GRAY, getString(R.string.button_check_wishlist))
+        updateButtonState()
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
@@ -2320,7 +2324,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
-                viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
+                addWishList()
                 return@let
             }
 
@@ -3010,6 +3014,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun goToRecommendation() {
         val uri = UriUtil.buildUri(ProductDetailConstant.RECOM_URL, viewModel.getDynamicProductInfoP1?.basic?.productID).toString()
         RouteManager.route(context, uri)
+    }
+
+    private fun addWishList() {
+        viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
     }
 
     override fun refreshPage() {

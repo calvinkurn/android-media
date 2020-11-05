@@ -150,13 +150,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyTicker(tickerData: ProductTickerInfoDataModel?) {
-        tickerData?.let {
-            val indexOfTicker = list.indexOf(tickerData)
-            notifyItemChanged(indexOfTicker)
-        }
-    }
-
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is ProductRecommendationViewHolder &&

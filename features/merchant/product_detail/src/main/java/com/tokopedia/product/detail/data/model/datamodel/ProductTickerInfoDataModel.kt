@@ -36,5 +36,17 @@ data class ProductTickerInfoDataModel(
                 !isOutOfStock && !isProductWarehouse
     }
 
+    fun isOos(): Boolean {
+        return isOutOfStock
+    }
+
+    fun isProductInactive(): Boolean {
+        return isProductWarehouse
+    }
+
+    fun isProductCampaign(): Boolean {
+        return isProductInCampaign
+    }
+
     fun getComponentTrackData(adapterPosition: Int) = ComponentTrackDataModel(type, name, adapterPosition + 1)
 }
