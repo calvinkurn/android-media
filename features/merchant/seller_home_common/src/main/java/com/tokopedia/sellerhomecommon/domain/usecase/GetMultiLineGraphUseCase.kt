@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -29,7 +30,7 @@ class GetMultiLineGraphUseCase (
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetMultiLineGraphResponse>()
             val multiLineData: List<MultiTrendlineWidgetDataModel>? = data.fetchMultiTrendlineWidgetData?.fetchMultiTrendlineData
-            return mapper.mapRemoteModelToUiModel(multiLineData)
+            return mapper.mapRemoteModelToUiModel(multiLineData, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }
