@@ -46,7 +46,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
         setChild(view)
         setTitle(getString(R.string.product_manage_menu_set_price))
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

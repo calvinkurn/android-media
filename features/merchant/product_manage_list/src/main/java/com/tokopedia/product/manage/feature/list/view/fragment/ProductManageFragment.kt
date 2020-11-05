@@ -98,11 +98,14 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
@@ -769,7 +772,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             editPriceResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
             }
@@ -783,7 +786,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             editStockResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
             }
@@ -799,7 +802,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         Toaster.make(coordinatorLayout, getString(
-                R.string.product_manage_quick_edit_stock_success, productName),
+                com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
 
@@ -855,7 +858,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             deleteProductResult.error?.message
         }
         message?.let {
-            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            val retryMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
             showErrorToast(it, retryMessage) {
                 viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
             }
@@ -885,7 +888,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun showErrorToast(
-        message: String = getString(R.string.product_manage_snack_bar_fail),
+        message: String = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
         actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
         listener: () -> Unit = {}
     ) {
@@ -906,7 +909,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
             Toaster.make(
                     it,
-                    getString(R.string.product_manage_snack_bar_fail),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.retry_label),
@@ -1002,7 +1005,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showMultiEditToast(result: MultiEditResult) {
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
-                val retryLabel = getString(R.string.product_manage_snack_bar_retry)
+                val retryLabel = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
                 val retryMessage = getRetryMessage(context, result)
 
                 showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
@@ -1564,7 +1567,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
                             getFiltersTab(withDelay = true)
 
-                            val successMessage = getString(R.string.product_manage_campaign_stock_success_toast, productName)
+                            val successMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_success_toast, productName)
                             Toaster.build(
                                     coordinatorLayout,
                                     successMessage,
@@ -1573,7 +1576,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                                     .show()
                         }
                         Activity.RESULT_CANCELED -> {
-                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(R.string.product_manage_campaign_stock_error_toast)
+                            val errorMessage = it.getStringExtra(EXTRA_UPDATE_MESSAGE) ?: getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_error_toast)
                             Toaster.build(
                                     coordinatorLayout,
                                     errorMessage,
@@ -1912,8 +1915,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when (it) {
                 is Success -> {
                     val message = context?.getString(
-                        R.string.product_manage_quick_edit_stock_success,
-                        it.data.productName
+                            com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success,
+                            it.data.productName
                     ).orEmpty()
                     updateVariantStock(it.data)
                     showMessageToast(message)
