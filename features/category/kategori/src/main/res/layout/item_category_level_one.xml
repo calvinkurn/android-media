@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/category_imageview"
+        android:contentDescription="@string/content_desc_category_imageview"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:gravity="center"
