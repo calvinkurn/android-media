@@ -85,8 +85,8 @@ class FlightSearchMapper {
             return airlines
         }
 
-        fun createJourneyWithCombo (journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
-            with (flightComboTable) {
+        fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
+            with(flightComboTable) {
                 journey.isBestPairing = isBestPairing
                 journey.comboId = comboId
                 if (!journey.isReturn) {
@@ -141,6 +141,8 @@ class FlightSearchMapper {
             return FlightJourneyTable(
                     id,
                     term,
+                    hasFreeRapidTest,
+                    isSeatDistancing,
                     departureAirportId,
                     "",
                     "",

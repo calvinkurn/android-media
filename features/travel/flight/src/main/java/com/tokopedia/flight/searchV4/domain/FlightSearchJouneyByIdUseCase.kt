@@ -77,6 +77,8 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
             return FlightJourneyModel(
                     term,
                     id,
+                    hasFreeRapidTest,
+                    isSeatDistancing,
                     departureAirport,
                     departureAirportName,
                     departureAirportCity,

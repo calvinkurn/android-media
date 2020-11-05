@@ -14,6 +14,8 @@ class FlightJourneyTable(
         @PrimaryKey
         var id: String = "",
         var term: String = "",
+        var hasFreeRapidTest: Boolean = false,
+        var isSeatDistancing: Boolean = false,
         var departureAirport: String = "",
         var departureAirportName: String = "",
         var departureAirportCity: String = "",
