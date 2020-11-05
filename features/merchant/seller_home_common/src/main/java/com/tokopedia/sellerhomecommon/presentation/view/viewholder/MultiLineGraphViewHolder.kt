@@ -65,7 +65,8 @@ class MultiLineGraphViewHolder(
 
     override fun onItemClickListener(metric: MultiLineMetricUiModel, position: Int) {
         itemView.rvShcGraphMetrics.post {
-            itemView.rvShcGraphMetrics.layoutManager?.scrollToPosition(position)
+            val mPosition = if (position == 0) position else position.plus(1)
+            itemView.rvShcGraphMetrics.layoutManager?.scrollToPosition(mPosition)
         }
 
         setOnMetricStateChanged(metric)

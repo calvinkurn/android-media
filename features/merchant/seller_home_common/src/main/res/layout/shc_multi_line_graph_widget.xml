@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shcMlgSuccessState"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/shc_super_large_widget_height">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMultiLineGraphTitle"
@@ -69,12 +69,12 @@
         <com.tokopedia.charts.view.LineChartView
             android:id="@+id/chartViewShcMultiLine"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/shc_dimen_156dp"
+            android:layout_height="@dimen/layout_lvl0"
             android:layout_marginStart="@dimen/shc_dimen_12dp"
             android:layout_marginTop="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/shc_dimen_12dp"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics"
@@ -96,7 +96,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imgShcMultiLineCta"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chartViewShcMultiLine"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             tools:text="Selanjutnya"

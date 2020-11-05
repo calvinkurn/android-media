@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="shc_super_large_widget_height">352dp</dimen>
     <dimen name="shc_large_widget_height">320dp</dimen>
     <dimen name="shc_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
