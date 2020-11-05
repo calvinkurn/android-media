@@ -613,6 +613,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
+                    ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
                     setHtmlDescription(it.subtitle)
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -629,9 +630,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             ReviewTracking.onClickDismissIncentiveOvoTracker(it.subtitle, "")
                         }
                     })
-                    addOnImpressionListener(ImpressHolder()) {
-                        ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
-                    }
                 }
             }
             return

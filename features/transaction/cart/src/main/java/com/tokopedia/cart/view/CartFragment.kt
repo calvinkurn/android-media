@@ -16,10 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -143,6 +140,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: UnifyButton
+    lateinit var vDisabledBtnToShipment: View
     lateinit var tvTotalPrice: TextView
     lateinit var rlContent: RelativeLayout
     lateinit var bottomLayout: LinearLayout
@@ -499,6 +497,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
+        vDisabledBtnToShipment = view.findViewById(R.id.v_disabled_go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
         rlContent = view.findViewById(R.id.rl_content)
         layoutGlobalError = view.findViewById(R.id.layout_global_error)
@@ -1003,14 +1002,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
@@ -1421,10 +1422,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         cartAdapter.checkForShipmentForm()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+
+        val params = generateParamValidateUsePromoRevamp(checked, -1, -1, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
     }
 
     override fun onCartDataEnableToCheckout() {
         if (isAdded) {
+            vDisabledBtnToShipment.gone()
             btnToShipment.isEnabled = true
             btnToShipment.setOnClickListener { checkGoToShipment("") }
         }
@@ -1433,6 +1443,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartDataDisableToCheckout() {
         if (isAdded) {
             btnToShipment.isEnabled = false
+            vDisabledBtnToShipment.show()
+            vDisabledBtnToShipment.setOnClickListener {
+                if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
+                    showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                }
+            }
         }
     }
 
@@ -3073,16 +3089,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
-        }
-    }
-
-    override fun onCartShopNameChecked(isAllChecked: Boolean) {
-        val params = generateParamValidateUsePromoRevamp(isAllChecked, -1, -1, false)
-        if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
-        } else {
-            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
     }
 
