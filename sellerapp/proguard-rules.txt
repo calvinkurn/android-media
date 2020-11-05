@@ -22,8 +22,7 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
--keep public class com.google.android.gms.* { public *; }
--dontwarn com.google.android.gms.**
+-keep class com.facebook.hermes.unicode.** { *; }
 
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
@@ -31,19 +30,6 @@
 }
 -keepclasseswithmembers class id.co.veritrans.android.api.**{
  @id.co.veritrans.android.api.** *;
- }
-
--keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
-    public static final *** NULL;
-}
-
--keepnames @com.google.android.gms.common.annotation.KeepName class *
--keepclassmembernames class * {
-    @com.google.android.gms.common.annotation.KeepName *;
-}
-
--keepnames class * implements android.os.Parcelable {
-    public static final ** CREATOR;
 }
 
 # start retrofit
