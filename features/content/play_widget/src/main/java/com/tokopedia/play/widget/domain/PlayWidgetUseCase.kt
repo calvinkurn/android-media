@@ -151,5 +151,15 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             override val authorType: String
                 get() = ""
         }
+        data class SellerApp(val shopId: String) : WidgetType() {
+            override val typeString: String
+                get() = "SELLER_APP"
+
+            override val authorId: String
+                get() = shopId
+
+            override val authorType: String
+                get() = "shop"
+        }
     }
 }
