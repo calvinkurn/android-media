@@ -24,7 +24,7 @@ class HomePlayWidgetAnalyticListener(
     private var mWidgetPosition: Int = RecyclerView.NO_POSITION
 
     fun setWidgetPosition(value: Int) {
-        this.mWidgetPosition = if (value <= 2) 0 else 1 // following the old implementation
+        this.mWidgetPosition = value
     }
 
     override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
@@ -46,11 +46,11 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_VIEW,
                 eventCategory = "homepage-cmp",
                 eventAction = "impression on play sgc banner",
-                eventLabel = "${item.imageUrl} - $channelPositionInList",
+                eventLabel = "${item.imageUrl} - $pos",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc banner - $widgetName",
+                                name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
                                 creative = item.imageUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -68,11 +68,11 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
                 eventAction = Event.CLICK,
-                eventLabel = "click on banner play - ${item.imageUrl} - $channelPositionInList",
+                eventLabel = "click on banner play - ${item.imageUrl} - $pos",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc banner - $widgetName",
+                                name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
                                 creative = item.imageUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -94,7 +94,7 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc channel - ${item.title}",
+                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -116,7 +116,7 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc channel - ${item.title}",
+                                name = "/ - p$channelPositionInList - play sgc channel - ${item .title}",
                                 creative = item.video.coverUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -147,7 +147,7 @@ class HomePlayWidgetAnalyticListener(
                         Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click other content",
-                        Label.KEY to "${item.imageUrl} - $channelPositionInList",
+                        Label.KEY to "${item.imageUrl} - $pos",
                         BusinessUnit.KEY to ADS_SOLUTION,
                         CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
@@ -157,6 +157,6 @@ class HomePlayWidgetAnalyticListener(
 
     private fun withWidgetPosition(onTrack: (Int) -> Unit) {
         if (mWidgetPosition == RecyclerView.NO_POSITION) return
-        onTrack(mWidgetPosition)
+        onTrack(if (mWidgetPosition <= 2) 0 else 1) // following the old implementation
     }
 }
