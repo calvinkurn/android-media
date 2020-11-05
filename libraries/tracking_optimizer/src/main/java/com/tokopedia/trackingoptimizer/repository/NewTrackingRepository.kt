@@ -188,8 +188,8 @@ class NewTrackingRepository(val context: Context, val remoteConfig: RemoteConfig
         map.put(Constant.EVENT_CATEGORY, inputEvent.category)
         map.put(Constant.EVENT_ACTION, inputEvent.action)
         map.put(Constant.EVENT_LABEL, inputEvent.label)
-        map.putAll(inputCustomDimensionMap as Map<String, Any>)
-        map.putAll(inputEnhanceECommerceMap as Map<String, Any>)
+        map.putAll((inputCustomDimensionMap as? Map<String, Any>).orEmpty())
+        map.putAll((inputEnhanceECommerceMap as? Map<String, Any>).orEmpty())
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 }
