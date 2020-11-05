@@ -1,6 +1,7 @@
 package com.tokopedia.shopwidget.shopcard
 
 import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ShopCardModel(
         val id: String = "",
@@ -28,7 +29,8 @@ data class ShopCardModel(
         val reputationScore: Int = 0,
         val isOfficial: Boolean = false,
         val gaKey: String = "",
-        val isRecommendation: Boolean = false
+        val isRecommendation: Boolean = false,
+        val impressHolder: ImpressHolder? = null
 ) {
 
     val isGoldShop = goldShop == KEY_SHOP_IS_GOLD
@@ -47,7 +49,8 @@ data class ShopCardModel(
             val price: Int = 0,
             val priceFormat: String = "",
             val imageUrl: String = "",
-            val isRecommendation: Boolean = false
+            val isRecommendation: Boolean = false,
+            val impressHolder: ImpressHolder? = null
     )
 
     data class ShopItemVoucher(

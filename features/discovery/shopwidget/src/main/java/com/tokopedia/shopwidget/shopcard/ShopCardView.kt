@@ -38,7 +38,7 @@ class ShopCardView: BaseCustomView {
         shopCardModel ?: return
 
         initCardViewShopCard(shopCardListener)
-        initImageShopAvatar(shopCardModel)
+        initImageShopAvatar(shopCardModel, shopCardListener)
         initImageShopBadge(shopCardModel)
         initShopName(shopCardModel)
         initImageShopReputation(shopCardModel)
@@ -57,9 +57,15 @@ class ShopCardView: BaseCustomView {
         }
     }
 
-    private fun initImageShopAvatar(shopCardModel: ShopCardModel) {
+    private fun initImageShopAvatar(shopCardModel: ShopCardModel, shopCardListener: ShopCardListener) {
         shopWidgetImageViewShopAvatar?.let {
             ImageHandler.loadImageCircle2(context, it, shopCardModel.image)
+        }
+
+        shopCardModel.impressHolder?.let { impressHolder ->
+            shopWidgetImageViewShopAvatar?.addOnImpressionListener(impressHolder) {
+                shopCardListener.onItemImpressed()
+            }
         }
     }
 
@@ -186,6 +192,12 @@ class ShopCardView: BaseCustomView {
     ) {
         imageViewShopItemProductImage?.let {
             ImageHandler.loadImageFitCenter(context, imageViewShopItemProductImage, productPreviewItem.imageUrl)
+        }
+
+        productPreviewItem.impressHolder?.let { impressHolder ->
+            imageViewShopItemProductImage?.addOnImpressionListener(impressHolder) {
+                shopCardListener.onProductItemImpressed(productPreviewIndex)
+            }
         }
 
         imageViewShopItemProductImage?.setOnClickListener {
