@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment
 
+import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
@@ -21,7 +22,10 @@ import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHol
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.mock.HomeEventMockResponse
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
+import com.tokopedia.graphql.GraphqlCacheManager
 import org.hamcrest.core.AllOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -29,14 +33,19 @@ class HomeEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule: ActivityTestRule<HomeEventActivity>  = object : IntentsTestRule<HomeEventActivity>(HomeEventActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            gtmLogDBSource.deleteAll().subscribe()
-            setupGraphqlMockResponse(HomeEventMockResponse())
-        }
+    var activityRule =  ActivityTestRule(HomeEventActivity::class.java, false, false)
+
+    @Before
+    fun setup() {
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().subscribe()
+        setupGraphqlMockResponse(HomeEventMockResponse())
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, HomeEventActivity::class.java)
+        activityRule.launchActivity(intent)
     }
 
     @Test

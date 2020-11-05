@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -18,6 +19,9 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.mock.PDPTicketEventMockResponse
+import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
+import com.tokopedia.graphql.GraphqlCacheManager
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,34 +30,32 @@ class PDPTicketEventActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule: IntentsTestRule<EventPDPTicketActivity> =
-            object : IntentsTestRule<EventPDPTicketActivity>(EventPDPTicketActivity::class.java) {
-                override fun getActivityIntent(): Intent {
-                    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-                    val intent = Intent(targetContext, EventPDPTicketActivity::class.java).apply {
-                        putExtra(EventPDPTicketActivity.EXTRA_URL_PDP, "doolive-ala-carte-booking-36116")
-                        putExtra(EventPDPTicketActivity.SELECTED_DATE, "1900534740")
-                        putExtra(EventPDPTicketActivity.START_DATE, "")
-                        putExtra(EventPDPTicketActivity.END_DATE, "")
+    var activityRule =  ActivityTestRule(EventPDPTicketActivity::class.java, false, false)
 
-                    }
-                    return intent
-                }
+    @Before
+    fun setup(){
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().subscribe()
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
+        }
+        setupGraphqlMockResponse(PDPTicketEventMockResponse())
 
-                override fun beforeActivityLaunched() {
-                    super.beforeActivityLaunched()
-                    gtmLogDBSource.deleteAll().subscribe()
-                    localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-                    localCacheHandler.apply {
-                        putBoolean(SHOW_COACH_MARK_KEY, false)
-                        applyEditor()
-                    }
-                    setupGraphqlMockResponse(PDPTicketEventMockResponse())
-                }
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, EventPDPTicketActivity::class.java).apply {
+            putExtra(EventPDPTicketActivity.EXTRA_URL_PDP, "doolive-ala-carte-booking-36116")
+            putExtra(EventPDPTicketActivity.SELECTED_DATE, "1900534740")
+            putExtra(EventPDPTicketActivity.START_DATE, "")
+            putExtra(EventPDPTicketActivity.END_DATE, "")
 
-            }
+        }
+        activityRule.launchActivity(intent)
+    }
 
 
     @Test

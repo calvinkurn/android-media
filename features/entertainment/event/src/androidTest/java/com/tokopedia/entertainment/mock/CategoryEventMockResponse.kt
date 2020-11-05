@@ -15,7 +15,7 @@ class CategoryEventMockResponse : MockModelConfig(){
         addMockResponse(
                 KEY_EVENT_CHILD,
                 InstrumentationMockHelper.getRawString(context, R.raw.event_category),
-                MockModelConfig.FIND_BY_CONTAINS)
+                FIND_BY_CONTAINS)
 
         return this
     }

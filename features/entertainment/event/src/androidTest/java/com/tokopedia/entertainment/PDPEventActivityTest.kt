@@ -10,13 +10,17 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.entertainment.home.activity.HomeEventActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.mock.PDPEventMockResponse
+import com.tokopedia.graphql.GraphqlCacheManager
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,26 +28,23 @@ class PDPEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule: IntentsTestRule<EventPDPActivity> =
-            object : IntentsTestRule<EventPDPActivity>(EventPDPActivity::class.java) {
-                override fun getActivityIntent(): Intent {
-                    val seo = "bali-zoo-30995"
-                    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-                    val intent = Intent(targetContext, EventPDPActivity::class.java).apply {
-                        putExtra(EventPDPActivity.EXTRA_URL_PDP, seo)
-                    }
-                    return intent
-                }
+    var activityRule =  ActivityTestRule(EventPDPActivity::class.java, false, false)
 
-                override fun beforeActivityLaunched() {
-                    super.beforeActivityLaunched()
-                    gtmLogDBSource.deleteAll().subscribe()
-                    setupGraphqlMockResponse(PDPEventMockResponse())
-                }
-            }
-
+    @Before
+    fun setup() {
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().subscribe()
+        setupGraphqlMockResponse(PDPEventMockResponse())
+        val seo = "bali-zoo-30995"
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, EventPDPActivity::class.java).apply {
+            putExtra(EventPDPActivity.EXTRA_URL_PDP, seo)
+        }
+        activityRule.launchActivity(intent)
+    }
 
     @Test
     fun validatePDPEvent() {
@@ -57,12 +58,9 @@ class PDPEventActivityTest {
     fun click_lanjutkan_ticket() {
         val viewInteraction = onView(withId(R.id.btn_event_pdp_cek_tiket))
         viewInteraction.perform(click())
-
     }
 
     fun click_check_ticket() {
-        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(0, null))
-
         onView(getElementFromMatchAtPosition(withText("23"), 0)).check(matches(isDisplayed()))
         onView(getElementFromMatchAtPosition(withText("23"), 0)).perform(click())
     }
