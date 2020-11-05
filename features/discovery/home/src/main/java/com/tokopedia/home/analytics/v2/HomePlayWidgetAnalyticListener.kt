@@ -13,6 +13,10 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
+/**
+ * https://docs.google.com/spreadsheets/d/1NR4Cfq5S4MjY_i4WqWRTqV0kguAKsi74N29q6rdb2K8/edit#gid=359560973 row 12-16, 20-21
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/61
+ */
 class HomePlayWidgetAnalyticListener(
         private val trackingQueue: TrackingQueue?,
         private val userId: String
