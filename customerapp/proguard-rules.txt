@@ -22,6 +22,7 @@
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
 
+#https://github.com/facebook/react-native/issues/25679
 -keep class com.facebook.hermes.unicode.** { *; }
 
 -keep class id.co.veritrans.android.api.**{ *;}
