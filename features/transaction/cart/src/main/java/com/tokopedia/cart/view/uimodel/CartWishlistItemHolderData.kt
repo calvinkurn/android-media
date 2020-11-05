@@ -20,5 +20,8 @@ data class CartWishlistItemHolderData(
         var shopName: String = "",
         var minOrder: Int = 1,
         var category: String = "",
-        var url: String = ""
+        var url: String = "",
+        var freeShipping: Boolean = false,
+        var freeShippingUrl: String = "",
+        var variant: String = "" // Currently empty, not provided from backend
 )
