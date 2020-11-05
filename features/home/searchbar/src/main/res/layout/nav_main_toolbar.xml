@@ -47,22 +47,20 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/toolbar_title"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            tools:visibility="visible"
+            tools:text="Devara Fikry Akmal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:typographyType="heading_4"
+            app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
+            app:layout_constraintStart_toEndOf="@id/nav_icon_back"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing_lvl2"
-            android:paddingRight="@dimen/spacing_lvl2"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/nav_icon_back"
-            app:typographyType="heading_4"
-            tools:layout_editor_absoluteY="8dp"
-            tools:text="Devara Fikry Akmal"
-            tools:visibility="visible" />
+            android:paddingRight="@dimen/spacing_lvl2"/>
 
         <LinearLayout
             android:id="@+id/layout_search"

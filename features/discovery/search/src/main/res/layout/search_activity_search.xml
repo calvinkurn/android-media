@@ -25,16 +25,16 @@
         android:id="@+id/toolbar"
         android:layout_width="@dimen/dp_0"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_N0"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_4"
         app:contentInsetEnd="@dimen/dp_0"
         app:contentInsetLeft="@dimen/dp_0"
         app:contentInsetRight="@dimen/dp_0"
         app:contentInsetStart="@dimen/dp_0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:titleTextColor="@color/Unify_N700_68">
 
         <androidx.constraintlayout.widget.ConstraintLayout
