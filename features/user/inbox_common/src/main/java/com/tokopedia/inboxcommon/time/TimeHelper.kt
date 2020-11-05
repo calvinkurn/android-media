@@ -12,12 +12,26 @@ object TimeHelper {
     private val HOUR_1_IN_SECOND = TimeUnit.HOURS.toSeconds(1)
     private val MINUTE_1_IN_SECOND = TimeUnit.MINUTES.toSeconds(1)
 
+    fun isBeforeCurrentTime(timestamp: Long): Boolean {
+        return timestamp < getCurrentTimeStamp()
+    }
+
+    fun isAfterCurrentTime(timestamp: Long): Boolean {
+        return timestamp >= getCurrentTimeStamp()
+    }
+
+    fun isIn24HourAfterCurrentTime(timestamp: Long): Boolean {
+        val currentTimestamp = getCurrentTimeStamp()
+        val next24Hour = currentTimestamp + DAYS_1_IN_SECOND
+        return timestamp in currentTimestamp until next24Hour
+    }
+
     /**
      * @param timestamp timestamp in seconds
      * @return relative date to current time
      */
     fun getRelativeTimeFromNow(timestamp: Long): String {
-        val diff: Long = Calendar.getInstance().timeInMillis / 1000 - timestamp
+        val diff: Long = getCurrentTimeStamp() - timestamp
         return when {
             diff / DAYS_90_IN_SECOND > 0 -> getMonthYearFormat(timestamp * 1000)
             diff / DAYS_6_IN_SECOND > 0 -> getDateMonthFormat(timestamp * 1000)
@@ -26,6 +40,16 @@ object TimeHelper {
             diff / MINUTE_1_IN_SECOND > 0 -> "${diff / MINUTE_1_IN_SECOND} mnt"
             else -> "<1 mnt"
         }
+    }
+
+    /**
+     * @param timestamp timestamp in milliseconds
+     * @return formatted date <dd MMM yyyy>
+     */
+    fun getDateMonthYearFormat(timestamp: Long): String {
+        val date = Date(timestamp)
+        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        return format.format(date)
     }
 
     /**
@@ -46,6 +70,13 @@ object TimeHelper {
         val date = Date(timestamp)
         val format = SimpleDateFormat("dd MMM", Locale.getDefault())
         return format.format(date)
+    }
+
+    /**
+     * @return current timestamp in seconds
+     */
+    private fun getCurrentTimeStamp(): Long {
+        return Calendar.getInstance().timeInMillis / 1000
     }
 
 }

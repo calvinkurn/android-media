@@ -44,6 +44,7 @@ class NotificationTypeFactoryImpl constructor(
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
+                item.isBanner() -> BannerNotificationTitleViewHolder.LAYOUT
                 else -> NormalNotificationViewHolder.LAYOUT
             }
         }
@@ -73,6 +74,9 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
+            BannerNotificationTitleViewHolder.LAYOUT -> BannerNotificationTitleViewHolder(
+                    view, notificationListener
+            )
             SingleProductNotificationViewHolder.LAYOUT -> SingleProductNotificationViewHolder(
                     view, notificationListener
             )
