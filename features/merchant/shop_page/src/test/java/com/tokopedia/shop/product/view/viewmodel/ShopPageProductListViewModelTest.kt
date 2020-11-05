@@ -28,53 +28,6 @@ import org.mockito.ArgumentMatchers.*
 class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture() {
 
     @Test
-    fun `check whether response get buyer shop page product tab data success is not null`() {
-        runBlocking {
-
-            coEvery { getMembershipUseCase.executeOnBackground() } returns MembershipStampProgress()
-            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(
-                    anyString(),
-                    listOf(),
-                    ShopEtalaseItemDataModel(),
-                    anyBoolean(),
-                    GetShopProductUiModel(),
-                    ShopProductFilterParameter()
-            )
-
-            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
-
-            verifyGetMemberShipUseCaseCalled()
-
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
-        }
-    }
-
-    @Test
-    fun `check whether response shop featured product error is null`() {
-        runBlocking {
-            coEvery { getMembershipUseCase.executeOnBackground() } throws Exception()
-            coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(
-                    anyString(),
-                    listOf(),
-                    ShopEtalaseItemDataModel(),
-                    anyBoolean(),
-                    GetShopProductUiModel(),
-                    ShopProductFilterParameter()
-            )
-
-            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
-
-            verifyGetMemberShipUseCaseCalled()
-
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is  Fail)
-        }
-    }
-
-    @Test
     fun `check whether response claim new membership success is not null`() {
         runBlocking {
             coEvery { claimBenefitMembershipUseCase.executeOnBackground() } returns MembershipClaimBenefitResponse()
