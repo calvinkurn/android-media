@@ -33,7 +33,7 @@ object CommonActions {
      * @param recyclerViewId id of recyclerview
      * @param fixedItemPositionLimit position limit when your recyclerview is endless recyclerview
      */
-    fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int, delayMs: Long = 0) {
+    fun clickOnEachItemRecyclerView(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
         val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
         val tempStoreDesc = childRecyclerView.contentDescription
@@ -45,7 +45,6 @@ object CommonActions {
         }
         for (i in 0 until childItemCount) {
             try {
-                if (delayMs > 0) Thread.sleep(delayMs)
                 Espresso.onView(Matchers.allOf(ViewMatchers.withId(recyclerViewId), ViewMatchers.withContentDescription(UNDER_TEST_TAG)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
             } catch (e: PerformException) {
