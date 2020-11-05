@@ -39,11 +39,11 @@ data class MultiTrendlineModel(
 
 data class MultiTrendLineMetricModel(
         @Expose
+        @SerializedName("error")
+        val isError: Boolean? = false,
+        @Expose
         @SerializedName("errMsg")
         val errMsg: String? = "",
-        @Expose
-        @SerializedName("error")
-        val error: Boolean? = false,
         @Expose
         @SerializedName("line")
         val line: LineModel? = LineModel(),
