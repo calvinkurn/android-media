@@ -386,7 +386,7 @@ data class SomDetailOrder(
                     @Expose
                     val flagFreeShipping: Boolean = false,
 
-                    @SerializedName("is_top_ads")
+                    @SerializedName("is_topads")
                     @Expose
                     val isTopAds: Boolean = false,
 
