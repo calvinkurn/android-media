@@ -75,6 +75,8 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     private int topAdsProductCount = 0;
     private Long totalSizeInBytes = 0L;
     private Map<String, Interceptor> testInterceptors = new HashMap<>();
+    private CacheManager cacheManager;
+
     @Override
     public void onCreate() {
         GlobalConfig.DEBUG = true;
@@ -431,7 +433,9 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public CacheManager getPersistentCacheManager() {
-        return PersistentCacheManager.instance;
+        if (cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override

@@ -199,4 +199,12 @@ class SuggestionFragment :
     override fun trackEventClickTopShopSeeMore(eventLabel: String) {
         AutocompleteTracking.eventClickTopShopSeeMore(eventLabel)
     }
+
+    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String) {
+        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId)
+    }
+
+    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String) {
+        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId)
+    }
 }
