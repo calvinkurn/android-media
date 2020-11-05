@@ -189,7 +189,7 @@ public class BranchHelper {
                 .addContentItems(buo);
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
-                
+
         new BranchHelperValidation().validateCartQuantity(linkerData.getQuantity());
     }
 
