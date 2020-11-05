@@ -213,6 +213,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun showEmptyView() {
         app_bar_layout_2?.visibility = View.GONE
+        headlinList?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
         mulai_beriklan?.isEnabled = false
         empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
