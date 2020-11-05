@@ -59,20 +59,20 @@ class HotelHomepageViewModel @Inject constructor(
         get() = mutableVideoBannerLiveData
 
     fun fetchVideoBannerData() {
-        launch {
-            val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, false)
+        launch(dispatcher.ui()) {
+            val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, true)
             mutableVideoBannerLiveData.postValue(bannerList)
         }
     }
 
     fun getHotelPromo() {
-        launch {
-            promoData.postValue(bannerUseCase.execute(TravelType.HOTEL, false))
+        launch(dispatcher.ui()) {
+            promoData.postValue(bannerUseCase.execute(TravelType.HOTEL, true))
         }
     }
 
     fun getPopularCitiesData() {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.ui(), block = {
             val response = getPropertyPopularUseCase.executeOnBackground()
             mutablePopularCitiesLiveData.postValue(Success(response))
         }) {
