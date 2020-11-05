@@ -123,7 +123,7 @@ class HomeTopAdsVerificationTest {
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0, 1000)
             }
         }
     }
@@ -145,6 +145,6 @@ class HomeTopAdsVerificationTest {
             throw AssertionError(detailMessage)
         }
 
-        return homeAdapter.getItemList()
+        return homeAdapter.currentList
     }
 }
