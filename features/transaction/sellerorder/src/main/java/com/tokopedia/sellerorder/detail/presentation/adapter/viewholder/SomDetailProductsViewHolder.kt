@@ -3,6 +3,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
@@ -17,26 +19,33 @@ class SomDetailProductsViewHolder(itemView: View, private val actionListener: So
     private val somDetailProductsCardAdapter = SomDetailProductsCardAdapter(actionListener)
 
     override fun bind(item: SomDetailData, position: Int) {
-        if (item.dataObject is SomDetailProducts) {
-            if (item.dataObject.listProducts.isNotEmpty()) {
-                itemView.rv_products?.visibility = View.VISIBLE
-                itemView.rv_products?.apply {
-                    isNestedScrollingEnabled = false
-                    layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                    adapter = somDetailProductsCardAdapter
+        with(itemView) {
+            if (item.dataObject is SomDetailProducts) {
+                if (item.dataObject.isTopAds) {
+                    group_top_ads.show()
+                } else {
+                    group_top_ads.hide()
                 }
-                somDetailProductsCardAdapter.listProducts = item.dataObject.listProducts.toMutableList()
-            } else {
-                itemView.rv_products?.visibility = View.GONE
+                if (item.dataObject.listProducts.isNotEmpty()) {
+                    rv_products?.visibility = View.VISIBLE
+                    rv_products?.apply {
+                        isNestedScrollingEnabled = false
+                        layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                        adapter = somDetailProductsCardAdapter
+                    }
+                    somDetailProductsCardAdapter.listProducts = item.dataObject.listProducts.toMutableList()
+                } else {
+                    rv_products?.visibility = View.GONE
+                }
             }
+
+            val coachmarkProducts = CoachMarkItem(this,
+                    itemView.context.getString(R.string.coachmark_product),
+                    itemView.context.getString(R.string.coachmark_product_info))
+
+            actionListener?.onAddedCoachMarkProducts(
+                    coachmarkProducts
+            )
         }
-
-        val coachmarkProducts = CoachMarkItem(itemView,
-                itemView.context.getString(R.string.coachmark_product),
-                itemView.context.getString(R.string.coachmark_product_info))
-
-        actionListener?.onAddedCoachMarkProducts(
-                coachmarkProducts
-        )
     }
 }

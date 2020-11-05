@@ -193,6 +193,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 }
                 flag_order_meta{
                     is_free_shipping_campaign
+                    is_topads
+                    is_tokocabang
                 }
                 label_info{
                   flag_name

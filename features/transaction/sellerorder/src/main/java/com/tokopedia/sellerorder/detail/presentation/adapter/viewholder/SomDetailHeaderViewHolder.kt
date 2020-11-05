@@ -21,7 +21,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
-import com.tokopedia.sellerorder.common.util.SomConsts.IS_WAREHOUSE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CANCELLED
@@ -46,7 +45,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
             with(itemView) {
-                if (item.dataObject.fullFillBy == IS_WAREHOUSE) {
+                if (item.dataObject.isWarehouse) {
                     warehouseLabel?.apply {
                         show()
                         unlockFeature = true

@@ -22,6 +22,38 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topads_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        tools:text="Penjualan dari TopAds"
+        android:text="@string/see_detail"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginEnd="@dimen/spacing_lvl4"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_topads_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toStartOf="@id/topads_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_som_topads"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_top_ads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:constraint_referenced_ids="topads_title, ic_topads_detail"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_products"
         android:layout_width="match_parent"
