@@ -96,7 +96,7 @@
         android:id="@+id/shcLoaderMultiLineGraph"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/shc_dimen_88dp"
+        android:layout_marginTop="@dimen/shc_dimen_93dp"
         android:layout_marginBottom="@dimen/shc_dimen_120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

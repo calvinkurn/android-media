@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartColor
 import com.tokopedia.charts.common.ChartTooltip
@@ -24,6 +25,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
+import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_multi_line_graph_loading_state.view.*
 import timber.log.Timber
@@ -128,12 +130,24 @@ class MultiLineGraphViewHolder(
     private fun setOnLoadingState() {
         with(itemView) {
             shcMlgSuccessState.gone()
+            commonWidgetErrorState.gone()
             shcMlgLoadingState.visible()
         }
     }
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
+        with(itemView) {
+            tvShcMultiLineGraphTitle.text = element.title
+            shcMlgLoadingState.gone()
+            shcMlgSuccessState.visible()
+            getWidgetComponents().forEach {
+                it.gone()
+            }
+            commonWidgetErrorState.visible()
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        }
 
+        setupTooltip(element)
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
@@ -148,8 +162,12 @@ class MultiLineGraphViewHolder(
         metric?.isSelected = true
 
         with(itemView) {
-            shcMlgSuccessState.visible()
             shcMlgLoadingState.gone()
+            commonWidgetErrorState.gone()
+            shcMlgSuccessState.visible()
+            getWidgetComponents().forEach {
+                it.visible()
+            }
 
             tvShcMultiLineGraphTitle.text = element.title
 
@@ -163,6 +181,13 @@ class MultiLineGraphViewHolder(
 
             setupCta(element)
             setupTooltip(element)
+        }
+    }
+
+    private fun getWidgetComponents(): List<View> {
+        return with(itemView) {
+            listOf(rvShcGraphMetrics, lvShcCurrentPeriod, lvShcLastPeriod,
+                    chartViewShcMultiLine, imgShcMultiLineCta, tvShcMultiLineCta)
         }
     }
 
@@ -378,9 +403,10 @@ class MultiLineGraphViewHolder(
                 showLegendView()
                 return getLineChartDataByPeriod(metric)
             }
+        } else {
+            isMetricComparableByPeriodSelected = false
         }
 
-        isMetricComparableByPeriodSelected = false
         hideLegendView()
 
         return metrics.map { metric ->

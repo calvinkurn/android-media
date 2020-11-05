@@ -114,7 +114,19 @@
             app:layout_constraintTop_toTopOf="@id/tvShcMultiLineCta"
             app:srcCompat="@drawable/ic_arrow_right_default"
             tools:visibility="visible" />
+
+        <include
+            layout="@layout/shc_partial_common_widget_state_error"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl9"
+            android:layout_marginBottom="@dimen/layout_lvl9"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/shc_partial_multi_line_graph_loading_state" />
+
 </com.tokopedia.unifycomponents.CardUnify>
