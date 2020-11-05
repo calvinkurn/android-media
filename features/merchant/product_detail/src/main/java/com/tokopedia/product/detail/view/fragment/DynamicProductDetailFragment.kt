@@ -130,6 +130,7 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -1565,6 +1566,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val alreadyFollowShop = restrictionInfo.restrictionData.firstOrNull()?.alreadyFollowShop ?: true
         val shouldShowRe = !alreadyFollowShop
         if (shouldShowRe && !viewModel.isShopOwner()) {
+            if (!base_btn_follow.isShown) {
+                base_btn_follow.translationY = 100.toPx().toFloat()
+            }
+
             val title = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.title
                     ?: ""
             val desc = restrictionInfo.restrictionData.firstOrNull()?.action?.firstOrNull()?.description
