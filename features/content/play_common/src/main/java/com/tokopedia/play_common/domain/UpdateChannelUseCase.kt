@@ -1,12 +1,13 @@
-package com.tokopedia.play.broadcaster.domain.usecase
+package com.tokopedia.play_common.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.ChannelId
-import com.tokopedia.play.broadcaster.domain.model.UpdateChannelResponse
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.domain.base.BaseUseCase
+import com.tokopedia.play_common.domain.model.ChannelId
+import com.tokopedia.play_common.domain.model.UpdateChannelResponse
+import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import javax.inject.Inject
 
 
@@ -45,7 +46,7 @@ class UpdateChannelUseCase @Inject constructor(
         fun createUpdateStatusRequest(
                 channelId: String,
                 authorId: String,
-                status: PlayChannelStatus
+                status: PlayChannelStatusType
         ): QueryParams {
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,

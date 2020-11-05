@@ -3,10 +3,11 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.ChannelId
+import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.domain.base.BaseUseCase
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import javax.inject.Inject
 
 
@@ -52,7 +53,7 @@ class CreateChannelUseCase @Inject constructor(
         fun createParams(
                 authorId: String,
                 authorType: Int = VALUE_SHOP_TYPE,
-                status: PlayChannelStatus  = PlayChannelStatus.Draft
+                status: PlayChannelStatusType = PlayChannelStatusType.Draft
         ): Map<String, Any> = mapOf(
                 PARAMS_AUTHOR_ID to authorId,
                 PARAMS_AUTHOR_TYPE to authorType,

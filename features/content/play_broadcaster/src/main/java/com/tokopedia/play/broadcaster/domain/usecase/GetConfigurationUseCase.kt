@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
 import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import com.tokopedia.play_common.domain.base.BaseUseCase
 import javax.inject.Inject
 
 /**

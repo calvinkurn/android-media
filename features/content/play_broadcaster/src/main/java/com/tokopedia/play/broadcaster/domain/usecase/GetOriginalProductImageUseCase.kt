@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.GetPDPInfo
+import com.tokopedia.play_common.domain.base.BaseUseCase
 import javax.inject.Inject
 
 /**

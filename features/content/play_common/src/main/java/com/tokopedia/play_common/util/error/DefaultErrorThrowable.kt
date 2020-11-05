@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util.error
+package com.tokopedia.play_common.util.error
 
 
 /**

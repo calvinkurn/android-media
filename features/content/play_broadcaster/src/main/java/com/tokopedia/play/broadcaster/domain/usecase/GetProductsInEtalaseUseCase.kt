@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play_common.domain.base.BaseUseCase
 import javax.inject.Inject
 
 /**

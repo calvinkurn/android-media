@@ -1,11 +1,11 @@
-package com.tokopedia.play.broadcaster.ui.model
+package com.tokopedia.play_common.types
 
 
 /**
  * Created by mzennis on 24/05/20.
  * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/844006102/Broadcaster+Constants+-+Status+Types
  */
-enum class PlayChannelStatus(val value: String) {
+enum class PlayChannelStatusType(val value: String) {
     Draft("0"),
     Live("2"),
     Pause("3"),
@@ -18,7 +18,7 @@ enum class PlayChannelStatus(val value: String) {
 
         private val values = values()
 
-        fun getByValue(value: String): PlayChannelStatus {
+        fun getByValue(value: String): PlayChannelStatusType {
             values.forEach {
                 if (it.value.equals(value, true)) return it
             }

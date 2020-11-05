@@ -1,13 +1,11 @@
-package com.tokopedia.play.broadcaster.domain.usecase
+package com.tokopedia.play_common.domain.base
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
-import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
+import com.tokopedia.play_common.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
@@ -35,7 +33,6 @@ abstract class BaseUseCase<T : Any>: UseCase<T>() {
                 else {
                     if (retryCount++ < MAX_RETRY) executeWithRetry()
                 }
-                sendCrashlyticsLog(throwable)
             }
         }
 

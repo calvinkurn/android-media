@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.play_common.util.error.DefaultNetworkThrowable
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.MediaType
