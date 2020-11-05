@@ -16,6 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
     private var notification: NotificationUiModel? = null
+    private var contentTitle: Typography? = null
     private var contentDesc: Typography? = null
     private var cta: UnifyButton? = null
 
@@ -62,9 +63,7 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     }
 
     private fun initTitle() {
-        notification?.title?.let {
-            setTitle(it)
-        }
+        contentTitle?.text = notification?.title
     }
 
     private fun parseArguments() {
@@ -76,6 +75,7 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     }
 
     private fun initViewBinding(view: View) {
+        contentTitle = view.findViewById(R.id.tv_title_bs)
         contentDesc = view.findViewById(R.id.tv_content_desc)
         cta = view.findViewById(R.id.btn_longer_content_cta)
     }
