@@ -1,0 +1,40 @@
+{
+  "readme": "P2#FINGERPRINT - Login page",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button selanjutnya - email",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "enter login phone number",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on lupa kata sandi"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button masuk",
+      "eventLabel": "click"
+    },
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on button socmed"
+    },
+    {
+      "event": "registerLogin",
+      "eventCategory": "Login",
+      "eventAction": "Register",
+      "eventLabel": "Register"
+    }
+  ]
+}

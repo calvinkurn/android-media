@@ -14,7 +14,11 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.common.LoginIdlingResourceTestRule
@@ -46,6 +50,8 @@ import org.junit.runner.RunWith
 @LargeTest
 class LoginActivityInstrumentedTest {
 
+    val trackerPath = "tracker/user/loginregister/login_register_p1.json"
+
     private var idlingResource: IdlingResource? = null
 
     @get:Rule
@@ -61,7 +67,11 @@ class LoginActivityInstrumentedTest {
     private lateinit var fingerprintSetting: FingerprintSetting
     private lateinit var activity: LoginEmailPhoneActivityStub
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val gtmLogDBSource = GtmLogDBSource(context)
+
     lateinit var fragment: LoginEmailPhoneFragmentStub
+
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
@@ -78,24 +88,60 @@ class LoginActivityInstrumentedTest {
     }
 
     @After
-    fun afterSetup(){
+    fun afterSetup() {
         Intents.release()
         IdlingRegistry.getInstance().unregister(idlingResource)
         mActivityTestRule.finishActivity()
     }
 
     @Test
-    /* Show socmed container if socmed button clicked */
-    fun onSocmedBtnClick(){
-        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
-        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
+    fun validateTracker() {
+//        onSocmedBtnClick()
+//        onLoginViaEmail()
+//        onLoginViaPhone()
+        forgotPassClick()
+        onRegisterFooterSpannableClick()
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
+                hasAllSuccess()
+        )
     }
 
-    @Test
+    /* Show socmed container if socmed button clicked */
+    fun onSocmedBtnClick() {
+        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
+//        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
+    }
+
+    /* Show socmed container if socmed button clicked */
+    fun onSocmedBtnClose() {
+        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
+//        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
+    }
+
+    /* click login email */
+    fun onLoginViaEmail() {
+        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
+        onView(withId(R.id.register_btn)).perform(click())
+    }
+
+    /* click login email */
+    fun onLoginViaPhone() {
+        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
+        onView(withId(R.id.register_btn)).perform(click())
+    }
+
+    /* goto forgot password if clicked */
+    fun forgotPassClick() {
+        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
+        onView(withId(R.id.register_btn)).perform(click())
+        Thread.sleep(1500)
+        onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
+    }
+
     /* Go to register initial if clicked */
     fun onRegisterFooterSpannableClick(){
         onView(withContentDescription(R.string.content_desc_register_button_phone)).perform(click())
-        intended(hasComponent(RegisterInitialActivity::class.java.name))
     }
 
 //    @Test
@@ -105,47 +151,34 @@ class LoginActivityInstrumentedTest {
 //        intended(hasComponent(RegisterInitialActivity::class.java.name))
 //    }
 
-    @Test
-    /* show fingerprint button if available */
-    fun showFingerprintBtnIfAvailable(){
-        fragment.setFingerprintEnable(true)
-        fingerprintSetting.registerFingerprint()
+//    /* show fingerprint button if available */
+//    fun showFingerprintBtnIfAvailable(){
+//        fragment.setFingerprintEnable(true)
+//        fingerprintSetting.registerFingerprint()
+//
+//        onView(allOf(withId(R.id.fingerprint_btn), withText("Sidik Jari"))).check(matches(isDisplayed()))
 
-        onView(allOf(withId(R.id.fingerprint_btn), withText("Sidik Jari"))).check(matches(isDisplayed()))
-    }
 
-    @Test
     /* Go to tokopedia care on click */
-    fun goToTokopediaCare (){
-        onView(withId(R.id.to_tokopedia_care)).perform(click())
-    }
+//    fun goToTokopediaCare (){
+//        onView(withId(R.id.to_tokopedia_care)).perform(click())
+//    }
 
-    @Test
     /* Show password field if email exist */
-    fun showPasswordField (){
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
-        onView(withId(R.id.register_btn)).perform(click())
-        onView(allOf(withId(R.id.wrapper_password), withContentDescription(R.string.content_desc_wrapper_pass_partial))).check(matches(isDisplayed()))
-    }
+//    fun showPasswordField (){
+//        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
+//        onView(withId(R.id.register_btn)).perform(click())
+//        onView(allOf(withId(R.id.wrapper_password), withContentDescription(R.string.content_desc_wrapper_pass_partial))).check(matches(isDisplayed()))
+//    }
 
-    @Test
-    /* goto forgot password if clicked */
-    fun forgotPassClick(){
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
-        onView(withId(R.id.register_btn)).perform(click())
-        onView(withId(R.id.forgot_pass)).perform(click())
-//        intended(hasComponent(RouteManager.getIntent(activity, ApplinkConstInternalGlobal.FORGOT_PASSWORD).component))
-    }
 
-    @Test
     /* goto verification phone if phone number exist */
-    fun goToVerificationPhone(){
-        val activityUnderTest: LoginEmailPhoneActivityStub = mActivityTestRule.activity
-        activityUnderTest.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-
-        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
-        onView(withId(R.id.register_btn)).perform(click())
-        intended(hasComponent(VerificationActivity::class.java.name))
-    }
-
+//    fun goToVerificationPhone(){
+//        val activityUnderTest: LoginEmailPhoneActivityStub = mActivityTestRule.activity
+//        activityUnderTest.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+//
+//        onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
+//        onView(withId(R.id.register_btn)).perform(click())
+//        intended(hasComponent(VerificationActivity::class.java.name))
+//    }
 }
