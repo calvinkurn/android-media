@@ -70,7 +70,7 @@ class MultiLineGraphViewHolder(
             } else {
                 position.plus(1)
             }
-            itemView.rvShcGraphMetrics.layoutManager?.scrollToPosition(mPosition)
+            itemView.rvShcGraphMetrics?.smoothScrollToPosition(mPosition)
         }
 
         setOnMetricStateChanged(metric)
@@ -113,6 +113,9 @@ class MultiLineGraphViewHolder(
                     this.lastSelectedMetric = otherSelectedMetric
                 } else {
                     metric.isSelected = true
+                    this.lastSelectedMetric?.let {
+                        it.isSelected = !checkIsMetricError(it)
+                    }
                     this.lastSelectedMetric = metric
                 }
             } else {
@@ -124,6 +127,14 @@ class MultiLineGraphViewHolder(
                 lastSelectedMetric?.isSelected = false
                 metric.isSelected = true
                 lastSelectedMetric = metric
+            }
+        }
+
+        if (checkIsMetricError(metric)) {
+            metricsAdapter.items.forEach {
+                if (it != metric) {
+                    it.isSelected = false
+                }
             }
         }
 
@@ -402,6 +413,12 @@ class MultiLineGraphViewHolder(
         //map the `current` and `lastPeriod`
         if (isSingleMetric) {
             val metric = metrics[0]
+
+            if (checkIsMetricError(metric)) {
+                showMetricErrorState()
+                return emptyList()
+            }
+
             val isComparableByPeriod = metricsAdapter.items.filter { it.type == metric.type }.size == 1
             isMetricComparableByPeriodSelected = isComparableByPeriod
             if (isComparableByPeriod && metric.linePeriod.lastPeriod.isNotEmpty()) {
@@ -414,7 +431,15 @@ class MultiLineGraphViewHolder(
 
         hideLegendView()
 
-        return metrics.map { metric ->
+        val successStateMetrics = metrics.filter { !checkIsMetricError(it) }
+        if (successStateMetrics.isEmpty()) {
+            showMetricErrorState()
+            return emptyList()
+        }
+
+        clearMetricErrorState()
+
+        return successStateMetrics.map { metric ->
             val hexColor = getLineHexColor(metric.summary.lineColor)
             val chartEntry: List<LineChartEntry> = getLineChartEntry(metric.linePeriod.currentPeriod)
             val yAxisLabel = getYAxisLabel(metric)
@@ -429,6 +454,26 @@ class MultiLineGraphViewHolder(
                     )
             )
         }
+    }
+
+    private fun showMetricErrorState() {
+        with(itemView) {
+            chartViewShcMultiLine.gone()
+            commonWidgetErrorState.visible()
+            ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        }
+    }
+
+    private fun clearMetricErrorState() {
+        with(itemView) {
+            chartViewShcMultiLine.visible()
+            commonWidgetErrorState.gone()
+        }
+    }
+
+    private fun checkIsMetricError(metric: MultiLineMetricUiModel): Boolean {
+        return metric.errorMsg.isNotEmpty() || metric.isError ||
+                metric.linePeriod.currentPeriod.isEmpty()
     }
 
     private fun getLineChartDataByPeriod(metric: MultiLineMetricUiModel): List<LineChartData> {

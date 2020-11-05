@@ -59,6 +59,13 @@ class MultiLineMetricsAdapter(
                 setOnClickListener {
                     listener.onItemClickListener(item, adapterPosition)
                 }
+
+                val isMetricError = item.errorMsg.isNotEmpty() || item.isError ||
+                        item.linePeriod.currentPeriod.isEmpty()
+                if (isMetricError) {
+                    tvShcMetricsValue.text = context.getString(R.string.shc_failed_to_load)
+                    tvShcMetricsSubValue.text = ""
+                }
             }
         }
     }
