@@ -36,7 +36,7 @@
 #com.google.android.gms
 #https://stackoverflow.com/questions/18646899/proguard-cant-find-referenced-class-com-google-android-gms-r
 -keep class * extends java.util.ListResourceBundle {
-    protected * getContents();
+    protected Object[][] getContents();
 }
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
@@ -222,6 +222,7 @@
 -dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
 -dontwarn com.tokopedia.home.beranda.presentation.view.**
 -dontwarn com.tokopedia.graphql.coroutines.domain.interactor.**
+
 
 #SELLERAPP ONLY:
 #from Apsara broadcaster 29/11/2019 document
