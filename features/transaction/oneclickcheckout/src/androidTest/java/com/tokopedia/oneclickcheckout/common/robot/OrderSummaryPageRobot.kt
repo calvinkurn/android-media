@@ -255,11 +255,13 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
     }
 
-    fun assertProfilePaymentOvoError(message: String?, buttonText: String) {
+    fun assertProfilePaymentOvoError(message: String?, buttonText: String?) {
         if (message != null) {
             onView(withId(R.id.tv_payment_error_message)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(message)))
         }
-        onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+        if (buttonText != null) {
+            onView(withId(R.id.tv_payment_ovo_error_action)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(buttonText)))
+        }
     }
 
     fun assertPayment(total: String, buttonText: String) {

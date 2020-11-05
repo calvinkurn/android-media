@@ -159,6 +159,19 @@ class OrderSummaryPageActivityCampaignTest {
     }
 
     @Test
+    fun errorFlow_OvoNoPhoneFlow() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_NO_PHONE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProfilePaymentOvoError(message = "Masukkan No. HP di halaman akun", buttonText = null)
+            assertPaymentButtonEnable(false)
+        }
+    }
+
+    @Test
     fun errorFlow_OvoActivationFlow() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ACTIVATION_RESPONSE_PATH
 

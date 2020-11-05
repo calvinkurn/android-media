@@ -85,6 +85,37 @@ class OrderSummaryPageActivityOvoTest {
     }
 
     @Test
+    fun happyFlow_OvoNoPhoneFlow() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_NO_PHONE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertPayment("Rp115.000", "Pilih Pembayaran")
+
+            assertProfilePaymentOvoError(message = "Masukkan No. HP di halaman akun", buttonText = null)
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
     fun errorFlow_OvoActivationFlow() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_ACTIVATION_RESPONSE_PATH
 
