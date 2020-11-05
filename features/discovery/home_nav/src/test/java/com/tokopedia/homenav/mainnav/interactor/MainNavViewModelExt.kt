@@ -8,6 +8,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.rule.TestDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,4 +83,10 @@ fun GetUserInfoUseCase.getBasicData() {
     coEvery {
         executeOnBackground()
     } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir"))
+}
+
+fun GetMainNavDataUseCase.getBasicData() {
+    coEvery {
+        executeOnBackground()
+    } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")))
 }
