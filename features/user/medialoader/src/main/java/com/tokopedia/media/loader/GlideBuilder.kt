@@ -44,7 +44,6 @@ object GlideBuilder {
     )
 
     private fun glideListener(
-            imageUrl: Any,
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
@@ -64,22 +63,9 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
-            if (imageUrl is GlideUrl) {
-                Log.d("MEDIALOADER", "${imageUrl.toStringUrl()} - ${BitmapCompat.getAllocationByteCount(resource!!)}")
-            } else if (imageUrl is String) {
-                Log.d("MEDIALOADER", "$imageUrl - ${BitmapCompat.getAllocationByteCount(resource!!)}")
-            } else {
-                Log.d("MEDIALOADER", "Unknown - ${BitmapCompat.getAllocationByteCount(resource!!)}")
-            }
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
-    }
-
-    private fun glideRequest(context: Context): GlideRequest<Bitmap> {
-        return GlideApp
-                .with(context)
-                .asBitmap()
     }
 
     @JvmOverloads
@@ -112,7 +98,7 @@ object GlideBuilder {
         if (url == null) {
             imageView.setImageDrawable(drawableError)
         } else {
-            glideRequest(context).apply {
+            GlideApp.with(context).asBitmap().load(url).apply {
 
                 when (imageView.scaleType) {
                     ImageView.ScaleType.FIT_CENTER -> fitCenter()
@@ -150,9 +136,9 @@ object GlideBuilder {
                     }
                 }
 
-                listener(glideListener(url, stateListener))
+                listener(glideListener(stateListener))
 
-            }.load(url).into(imageView)
+            }.into(imageView)
         }
     }
 
@@ -177,7 +163,8 @@ object GlideBuilder {
     }
 
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
-        return glideRequest(context)
+        return GlideApp.with(context)
+                .asBitmap()
                 .load(resource)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
