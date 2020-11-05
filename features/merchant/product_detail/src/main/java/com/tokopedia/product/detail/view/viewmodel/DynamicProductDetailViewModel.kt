@@ -739,16 +739,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateCartRedirection(cartType: String, color: String, text: String) {
-        p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.availableButtons?.let {
-            it.firstOrNull()?.let { firstButton ->
-                if (firstButton.cartType == ProductDetailConstant.KEY_CHECK_WISHLIST || firstButton.cartType == ProductDetailConstant.KEY_REMIND_ME) {
-                    it[0] = it.firstOrNull()?.copy(cartType, color, text) ?: AvailableButton()
-                }
-            }
-        }
-    }
-
     fun shouldHideFloatingButton(): Boolean {
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton ?: false
     }
