@@ -2786,12 +2786,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
             checkoutTradeInAnalytics.eventClickJemputTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, false);
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true, true);
             }
         } else {
             checkoutTradeInAnalytics.eventClickDropOffTab();
             if (recipientAddressModel.getLocationDataModel() != null) {
-                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, false);
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true, true);
             }
         }
     }
