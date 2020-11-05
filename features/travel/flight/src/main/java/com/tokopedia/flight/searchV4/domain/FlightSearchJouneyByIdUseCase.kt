@@ -102,7 +102,7 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
                     isReturn,
                     fare,
                     routes,
-                    flightAirlineDBS,
+                    flightAirlineDBS ?: arrayListOf(),
                     comboId,
                     ""
             )

@@ -179,8 +179,8 @@ class FlightSearchMapper {
                     fare.adult,
                     fare.adultNumeric,
                     isReturn,
-                    isRefundable,
                     !beforeTotalPrice.isNullOrEmpty(),
+                    isRefundable,
                     ""
             )
         }

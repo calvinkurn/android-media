@@ -107,7 +107,7 @@ class FlightSortAndFilterUseCase @Inject constructor(private val flightSearchRep
                         isReturn,
                         fare,
                         routes,
-                        flightAirlineDBS,
+                        flightAirlineDBS ?: arrayListOf(),
                         comboId,
                         specialTag
                 )
