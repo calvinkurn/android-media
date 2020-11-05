@@ -386,7 +386,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
         }
 
         submitButton.setOnClickListener {
-            val emailText= email.text.toString()
+            var emailText= email.text.toString()
             val affectedPageText = page.text.toString()
             val journeyText = journey.text.toString()
             val expectedResultText = expectedResult.text.toString()
@@ -416,6 +416,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
 
             if(validate) {
+                if (emailText.contains("@tokopedia.com")) emailText = emailText.substringBefore("@tokopedia.com", "")
                 emailTokopedia = "$emailText@tokopedia.com"
                 feedbackPagePresenter.sendFeedbackForm(requestMapper(emailTokopedia, journeyText, expectedResultText, detailFeedback))
 
