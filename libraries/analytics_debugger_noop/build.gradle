@@ -18,4 +18,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.testDependencies.androidAnnotation
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }
