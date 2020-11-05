@@ -63,8 +63,8 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
         overridePendingTransition(0, 0)
-        initInjector()
         super.onCreate(savedInstanceState)
+        initInjector()
         setContentView(R.layout.activity_initial_seller_search)
         setWhiteStatusBar()
         proceed()
