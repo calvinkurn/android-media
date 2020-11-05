@@ -27,6 +27,6 @@
     <string name="account_home_safe_mode_selected_dialog_positive_button">Aktifkan</string>
     <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
 
-    <string name="account_go_to_wishlist">Lihat Wishlist</string>
-
+    <string name="account_home_go_to_wishlist">Lihat Wishlist</string>
+    <string name="account_home_error_no_internet_connection">Tidak ada koneksi internet</string>
 </resources>

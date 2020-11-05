@@ -73,9 +73,9 @@ class HomeAccountUserViewModel @Inject constructor(
     val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
         get() = _recommendationData
 
-    private val _addRecommendationTitle = MutableLiveData<RecommendationTitleView>()
-    val addRecommendationTitle : LiveData<RecommendationTitleView>
-        get() = _addRecommendationTitle
+    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidget>>()
+    val firstRecommendationData : LiveData<Result<RecommendationWidget>>
+        get() = _firstRecommendationData
 
     fun setSafeMode(isActive: Boolean){
 //        val savedValue: Boolean = !accountPref.getSafeMode()
@@ -155,15 +155,24 @@ class HomeAccountUserViewModel @Inject constructor(
                 , showArrowDown = true)
     }
 
+    fun getFirstRecommendation() {
+        getRecommendation(page = 0)
+    }
+
     fun getRecommendation(page: Int) {
         launchCatchError(Dispatchers.IO, block = {
             val recommendationWidget = getRecommendationList(page)
-            if(page == 0) {
-                _addRecommendationTitle.postValue(RecommendationTitleView(recommendationWidget.title))
+            if(checkFirstPage(page)) {
+                _firstRecommendationData.postValue(Success(recommendationWidget))
+            } else {
+                _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
             }
-            _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
         }, onError = {
-            _recommendationData.postValue(Fail(it))
+            if(checkFirstPage(page)) {
+                _firstRecommendationData.postValue(Fail(it))
+            } else {
+                _recommendationData.postValue(Fail(it))
+            }
         })
 
     }
@@ -177,6 +186,8 @@ class HomeAccountUserViewModel @Inject constructor(
         )
         return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
     }
+
+    private fun checkFirstPage(page: Int): Boolean = page < 2
 
     fun getInitialData() {
         getSettingData()
@@ -222,9 +233,6 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     companion object {
-        private const val MSG_SUCCESS_ADD_WISHLIST = "Berhasil menambahkan ke Wishlist"
-        private const val MSG_FAILED_ADD_WISHLIST = "Gagal menambahkan ke Wishlist"
-        private const val MSG_SUCCESS_REMOVE_WISHLIST = "Berhasil menghapus dari Wishlist"
         private const val AKUN_PAGE = "account"
     }
 

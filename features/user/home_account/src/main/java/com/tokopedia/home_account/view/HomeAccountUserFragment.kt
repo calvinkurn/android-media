@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,10 +50,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.data.model.CommonDataView
-import com.tokopedia.home_account.data.model.SeparatorView
-import com.tokopedia.home_account.data.model.SettingDataView
-import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -77,6 +73,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -156,22 +154,32 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     ), isExpanded = true),
                     addSeparator = true
             )
-            viewModel.getRecommendation(0)
+            viewModel.getFirstRecommendation()
         })
 
-        viewModel.addRecommendationTitle.observe(viewLifecycleOwner, Observer {
-            widgetTitle = it.title
-            addItem(it, addSeparator = false)
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
+            adapter?.hideLoadMore()
+            when(it) {
+                is Success -> {
+                    widgetTitle = it.data.title
+                    addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
+                    addRecommendationItem(it.data.recommendationItemList)
+                }
+                is Fail -> {
+                    onFailGetData(it.throwable)
+                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
+                }
+            }
         })
 
         viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
             adapter?.hideLoadMore()
             when(it) {
-                is Success -> {
-                    endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-                    addRecommendationItem(it.data)
+                is Success -> addRecommendationItem(it.data)
+                is Fail -> {
+                    onFailGetData(it.throwable)
+                    endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
                 }
-                is Fail -> Log.d("FAIL-RECOM", it.throwable.toString())
             }
         })
 
@@ -180,6 +188,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 is Success -> onSuccessGetBuyerAccount(it.data)
             }
         })
+    }
+
+    private fun onFailGetData(throwable: Throwable) {
+        if(throwable is UnknownHostException || throwable is SocketTimeoutException) {
+            showErrorNoConnection()
+        } else {
+            showError(throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
+        }
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
@@ -199,6 +215,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             adapter?.addItem(item)
         }
         adapter?.notifyDataSetChanged()
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
     }
 
     fun showLoading() {
@@ -711,7 +728,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.account_go_to_wishlist),
+                    getString(R.string.account_home_go_to_wishlist),
                     View.OnClickListener {
                         RouteManager.route(activity, ApplinkConst.WISHLIST)
                     }
@@ -738,6 +755,32 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun showErrorNoConnection() {
+        showError(getString(R.string.account_home_error_no_internet_connection))
+    }
+
+    private fun showError(message: String) {
+        if (view != null && userVisibleHint) {
+            view?.let {
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
+            }
+        }
+//        fpmBuyer?.run { stopTrace() }
+    }
+
+    private fun showError(e: Throwable, errorCode: String) {
+        if (view != null && context != null && userVisibleHint) {
+            val message = "${ErrorHandler.getErrorMessage(context, e)} ($errorCode)"
+            view?.let {
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
+            }
+        }
+//        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)
+//        fpmBuyer?.run { stopTrace() }
     }
 
     companion object {
