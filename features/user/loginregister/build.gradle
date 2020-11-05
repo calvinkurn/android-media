@@ -128,6 +128,7 @@ dependencies {
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
