@@ -4,17 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 21/04/20.
  * ade.hadian@tokopedia.com
  */
 
-class VerificationViewBinding : BaseVerificationViewBinding() {
+class VerificationViewBinding @Inject constructor() : BaseOtpViewBinding() {
 
     override val layoutResId: Int = R.layout.fragment_verification
 

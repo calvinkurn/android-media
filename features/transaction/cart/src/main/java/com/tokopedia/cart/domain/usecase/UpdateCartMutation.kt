@@ -29,5 +29,5 @@ fun getUpdateCartMutation(): String {
                 }
             }
         }
-    """.trimIndent()
+    """
 }

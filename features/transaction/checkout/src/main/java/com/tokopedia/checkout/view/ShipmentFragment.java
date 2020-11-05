@@ -187,7 +187,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
     private AlertDialog progressDialogNormal;
-    private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
@@ -942,7 +941,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
         if (shipmentCartItemModel != null) {
             shippingCourierBottomsheet = null;
-            shippingDurationBottomsheet = null;
             RecipientAddressModel recipientAddressModel;
             if (shipmentPresenter.getRecipientAddressModel() != null) {
                 recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
@@ -2029,12 +2027,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentDetailData != null) {
                 String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 ArrayList<Product> products = getProductForRatesRequest(shipmentCartItemModel);
-                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                ShippingDurationBottomsheet shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
-                        isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(), shipmentPresenter.getPerOrderDuration());
+                        isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
+                        shipmentPresenter.getPerOrderDuration(), shipmentPresenter.generateRatesMvcParam());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {

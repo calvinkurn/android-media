@@ -10,6 +10,8 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MvcShippingBenefit;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
@@ -19,6 +21,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldTieringData;
@@ -323,6 +327,8 @@ public class ShipmentMapper implements IShipmentMapper {
                     lastApplyAdditionalInfoUiModel.setMessageInfo(lastApplyMessageInfoUiModel);
                     lastApplyAdditionalInfoUiModel.setErrorDetail(lastApplyErrorDetailUiModel);
                     lastApplyAdditionalInfoUiModel.setEmptyCartInfo(lastApplyEmptyCartInfoUiModel);
+
+                    lastApplyAdditionalInfoUiModel.setPromoSpIds(mapPromoSpId(responseAdditionalInfo));
 
                     // set usage summaries
                     ArrayList<LastApplyUsageSummariesUiModel> listUsageSummaries = new ArrayList<>();
@@ -759,6 +765,31 @@ public class ShipmentMapper implements IShipmentMapper {
         }
 
         return dataResult;
+    }
+
+    private List<PromoSpIdUiModel> mapPromoSpId(AdditionalInfo responseAdditionalInfo) {
+        List<PromoSpIdUiModel> promoSpIdUiModels = new ArrayList<>();
+        List<PromoSpId> promoSpIds = responseAdditionalInfo.getPromoSpIds();
+        if (promoSpIds.size() > 0) {
+            for (PromoSpId promoSpId : promoSpIds) {
+                PromoSpIdUiModel promoSpIdUiModel = new PromoSpIdUiModel();
+                promoSpIdUiModel.setUniqueId(promoSpId.getUniqueId());
+                List<MvcShippingBenefit> mvcShippingBenefits = promoSpId.getMvcShippingBenefits();
+                if (mvcShippingBenefits.size() > 0) {
+                    List<MvcShippingBenefitUiModel> mvcShippingBenefitUiModels = new ArrayList<>();
+                    for (MvcShippingBenefit mvcShippingBenefit : mvcShippingBenefits) {
+                        MvcShippingBenefitUiModel mvcShippingBenefitUiModel = new MvcShippingBenefitUiModel();
+                        mvcShippingBenefitUiModel.setBenefitAmount(mvcShippingBenefit.getBenefitAmount());
+                        mvcShippingBenefitUiModel.setSpId(mvcShippingBenefit.getSpId());
+                        mvcShippingBenefitUiModels.add(mvcShippingBenefitUiModel);
+                    }
+                    promoSpIdUiModel.setMvcShippingBenefits(mvcShippingBenefitUiModels);
+                }
+                promoSpIdUiModels.add(promoSpIdUiModel);
+            }
+        }
+
+        return promoSpIdUiModels;
     }
 
     @NotNull

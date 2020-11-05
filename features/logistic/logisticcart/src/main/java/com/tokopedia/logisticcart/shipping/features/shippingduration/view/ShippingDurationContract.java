@@ -45,7 +45,7 @@ public interface ShippingDurationContract {
                                        List<ShopShipment> shopShipmentList, int codHistory,
                                        boolean isCorner, boolean isLeasing, String pslCode,
                                        List<Product> products, String cartString, boolean isTradeInDropOff,
-                                       RecipientAddressModel recipientAddressModel, boolean isFulfillment, int preOrderTime);
+                                       RecipientAddressModel recipientAddressModel, boolean isFulfillment, int preOrderTime, String mvc);
 
         void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
 

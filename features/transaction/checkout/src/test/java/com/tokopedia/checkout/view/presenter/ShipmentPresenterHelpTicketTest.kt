@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
@@ -13,10 +14,10 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
@@ -60,6 +61,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
     val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
+    val gson = Gson()
 
     RxAndroidPlugins.getInstance().reset()
     RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
@@ -80,7 +82,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,
                     checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter,
-                    releaseBookingUseCase, validateUsePromoRevampUseCase)
+                    releaseBookingUseCase, validateUsePromoRevampUseCase, gson)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }

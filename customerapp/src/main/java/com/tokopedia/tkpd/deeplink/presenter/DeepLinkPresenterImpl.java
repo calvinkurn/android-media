@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -802,6 +803,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             URL obtainedURL = new URL(uriData.toString());
             Map<String, String> customDimension = new HashMap<>();
             customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName) {
+        Map<String, Object> campaignMap = campaign.getCampaign();
+        if (!TrackingUtils.isValidCampaign(campaignMap)) return;
+        try {
+            URL obtainedURL = new URL(uriData.toString());
+            Map<String, String> customDimension = new HashMap<>();
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
+            String utmSource = (String) campaignMap.get(AppEventTracking.GTM.UTM_SOURCE);
+            String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
+            customDimension.put("utmSource", utmSource);
+            customDimension.put("utmMedium", utmMedium);
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();

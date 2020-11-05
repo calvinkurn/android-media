@@ -8,11 +8,13 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
@@ -32,6 +34,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private Label codLabel;
     private Label otdLabel;
     private Label codLabelEta;
+    private ImageView imgMvc;
+    private Typography tvMvc;
 
     private int cartPosition;
 
@@ -47,6 +51,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
         codLabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
+        imgMvc = itemView.findViewById(R.id.img_mvc);
+        tvMvc = itemView.findViewById(R.id.tv_mvc_text);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -80,6 +86,17 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
+        if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(R.string.tv_mvc_text);
+        } else {
+            imgMvc.setVisibility(View.GONE);
+            tvMvc.setVisibility(View.GONE);
+        }
+
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {

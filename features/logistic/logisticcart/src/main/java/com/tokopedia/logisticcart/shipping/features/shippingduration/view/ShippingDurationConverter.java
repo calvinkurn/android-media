@@ -3,11 +3,13 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 import android.text.TextUtils;
 
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.MerchantVoucherData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 public class ShippingDurationConverter {
 
     private static final int COD_TRUE_VAL = 1;
+    private static final int MVC_TRUE_VAL = 1;
 
     @Inject
     public ShippingDurationConverter() {
@@ -94,6 +97,16 @@ public class ShippingDurationConverter {
             if (serviceData.getCodData() != null) {
                 shippingDurationUiModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
                 shippingDurationUiModel.setCodText(serviceData.getCodData().getCodText());
+            }
+            if (serviceData.getMerchantVoucherData() != null) {
+                MerchantVoucherData merchantVoucherData = serviceData.getMerchantVoucherData();
+                MerchantVoucherModel merchantVoucherModel = new MerchantVoucherModel(
+                        merchantVoucherData.isMvc(),
+                        merchantVoucherData.getMvcTitle(),
+                        merchantVoucherData.getMvcLogo(),
+                        merchantVoucherData.getMvcErrorMessage()
+                );
+               shippingDurationUiModel.setMerchantVoucherModel(merchantVoucherModel);
             }
         }
 
