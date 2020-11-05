@@ -116,20 +116,21 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createNewSlice(sliceUri: Uri, isLoading: Boolean = false): SellerSlice? {
-        val notNullContext = requireNotNull(context)
         return when (sliceUri.path) {
             SellerActionConst.Deeplink.ORDER -> {
                 val date = sliceUri.getDateFromOrderUri()
-                SellerOrderMapper(notNullContext, sliceUri, date).run {
-                    if (isLoading) {
-                        analytics.sendSellerActionImpression(SellerActionStatus.Loading)
-                        mainOrderStatus = SellerActionStatus.Loading
-                    }
-                    sendTrackingByStatus()
-                    getSlice(mainOrderStatus).also {
-                        if (mainOrderStatus is SellerActionStatus.Success || mainOrderStatus is SellerActionStatus.Fail) {
-                            mainOrderStatus = null
-                            sliceHashMap[sliceUri] = it
+                context?.let {
+                    SellerOrderMapper(it, sliceUri, date).run {
+                        if (isLoading) {
+                            analytics.sendSellerActionImpression(SellerActionStatus.Loading)
+                            mainOrderStatus = SellerActionStatus.Loading
+                        }
+                        sendTrackingByStatus()
+                        getSlice(mainOrderStatus).also { slice ->
+                            if (mainOrderStatus is SellerActionStatus.Success || mainOrderStatus is SellerActionStatus.Fail) {
+                                mainOrderStatus = null
+                                sliceHashMap[sliceUri] = slice
+                            }
                         }
                     }
                 }
@@ -137,8 +138,10 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
             else -> {
                 sendTrackingByStatus()
                 mainOrderStatus = null
-                SellerFailureSlice(notNullContext, sliceUri).also {
-                    sliceHashMap[sliceUri] = it
+                context?.let {
+                    SellerFailureSlice(it, sliceUri).also { slice ->
+                        sliceHashMap[sliceUri] = slice
+                    }
                 }
             }
         }
