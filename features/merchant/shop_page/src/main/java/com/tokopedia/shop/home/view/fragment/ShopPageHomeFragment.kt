@@ -1570,6 +1570,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
+        //TODO("Delete Failed Transcoding Channel")
+    }
+
     override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, channelType: PlayWidgetChannelType, position: Int) {
         showPlayWidgetBottomSheet()
     }

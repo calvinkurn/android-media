@@ -30,7 +30,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 config = configMapper.mapWidgetConfig(data),
                 items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
                     add(0, mapWidgetItemOverlay(widgetBackground))
-                }
+                }.subList(0, 2)
         )
     }
 
@@ -71,7 +71,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
     )
 
     private fun mapWidgetItemChannel(prevItem: PlayWidgetMediumChannelUiModel?, item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
-        val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
+        val channelType = PlayWidgetChannelType.FailedTranscoding
 
         return PlayWidgetMediumChannelUiModel(
                 channelId = item.id,

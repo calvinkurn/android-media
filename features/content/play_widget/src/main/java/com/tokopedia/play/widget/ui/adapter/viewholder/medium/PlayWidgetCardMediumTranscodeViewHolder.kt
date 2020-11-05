@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
 
 /**
@@ -24,7 +24,8 @@ import kotlinx.coroutines.*
  */
 class PlayWidgetCardMediumTranscodeViewHolder(
         itemView: View,
-        private val imageBlurUtil: ImageBlurUtil
+        private val imageBlurUtil: ImageBlurUtil,
+        private val listener: Listener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val job = SupervisorJob()
@@ -40,6 +41,7 @@ class PlayWidgetCardMediumTranscodeViewHolder(
     private val llLoadingContainer: LinearLayout = itemView.findViewById(R.id.ll_loading_container)
     private val loaderLoading: LoaderUnify = itemView.findViewById(R.id.loader_loading)
     private val llError: LinearLayout = itemView.findViewById(R.id.ll_error)
+    private val btnErrorDelete: UnifyButton = itemView.findViewById(R.id.btn_error_delete)
 
     private val transcodingCoverTarget = object : CustomTarget<Bitmap>() {
         override fun onLoadCleared(placeholder: Drawable?) {
@@ -101,6 +103,10 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         llWidgetContainer.visibility = View.GONE
         llLoadingContainer.visibility = View.GONE
         llError.visibility = View.VISIBLE
+
+        btnErrorDelete.setOnClickListener {
+            listener.onFailedTranscodingChannelDeleteButtonClicked(itemView, model)
+        }
     }
 
     companion object {
@@ -108,5 +114,13 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         val layoutRes = R.layout.item_play_widget_card_transcode_medium
 
         private const val BLUR_RADIUS = 20.0f
+    }
+
+    interface Listener {
+
+        fun onFailedTranscodingChannelDeleteButtonClicked(
+                view: View,
+                item: PlayWidgetMediumChannelUiModel
+        )
     }
 }

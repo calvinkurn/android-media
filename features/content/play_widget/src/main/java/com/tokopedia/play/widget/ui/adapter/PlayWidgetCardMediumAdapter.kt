@@ -9,6 +9,7 @@ import com.tokopedia.play.widget.ui.adapter.delegate.medium.PlayWidgetCardMedium
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumItemUiModel
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
@@ -21,7 +22,8 @@ class PlayWidgetCardMediumAdapter(
         imageBlurUtil: ImageBlurUtil,
         overlayCardListener: PlayWidgetCardMediumOverlayViewHolder.Listener,
         channelCardListener: PlayWidgetCardMediumChannelViewHolder.Listener,
-        bannerCardListener: PlayWidgetCardMediumBannerViewHolder.Listener
+        bannerCardListener: PlayWidgetCardMediumBannerViewHolder.Listener,
+        transcodeCardListener: PlayWidgetCardMediumTranscodeViewHolder.Listener
 ) : BaseDiffUtilAdapter<PlayWidgetMediumItemUiModel>() {
 
     init {
@@ -29,7 +31,7 @@ class PlayWidgetCardMediumAdapter(
                 .addDelegate(PlayWidgetCardMediumOverlayAdapterDelegate(overlayCardListener))
                 .addDelegate(PlayWidgetCardMediumChannelAdapterDelegate(channelCardListener))
                 .addDelegate(PlayWidgetCardMediumBannerAdapterDelegate(bannerCardListener))
-                .addDelegate(PlayWidgetCardMediumTranscodeAdapterDelegate(imageBlurUtil))
+                .addDelegate(PlayWidgetCardMediumTranscodeAdapterDelegate(imageBlurUtil, transcodeCardListener))
     }
 
     override fun areItemsTheSame(oldItem: PlayWidgetMediumItemUiModel, newItem: PlayWidgetMediumItemUiModel): Boolean {

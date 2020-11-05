@@ -21,4 +21,9 @@ interface PlayWidgetMediumListener : PlayWidgetRouterListener {
             channelType: PlayWidgetChannelType,
             position: Int
     ) {}
+
+    fun onDeleteFailedTranscodingChannel(
+            view: PlayWidgetMediumView,
+            channelId: String
+    ) {}
 }

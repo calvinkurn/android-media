@@ -13,7 +13,8 @@ import com.tokopedia.play_common.util.blur.ImageBlurUtil
  * Created by jegul on 04/11/20
  */
 class PlayWidgetCardMediumTranscodeAdapterDelegate(
-        private val imageBlurUtil: ImageBlurUtil
+        private val imageBlurUtil: ImageBlurUtil,
+        private val listener: PlayWidgetCardMediumTranscodeViewHolder.Listener
 ) : BaseAdapterDelegate<PlayWidgetMediumChannelUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumTranscodeViewHolder>(
         PlayWidgetCardMediumTranscodeViewHolder.layoutRes
 ) {
@@ -24,7 +25,7 @@ class PlayWidgetCardMediumTranscodeAdapterDelegate(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayWidgetCardMediumTranscodeViewHolder {
-        return PlayWidgetCardMediumTranscodeViewHolder(basicView, imageBlurUtil)
+        return PlayWidgetCardMediumTranscodeViewHolder(basicView, imageBlurUtil, listener)
     }
 
     override fun isForViewType(itemList: List<PlayWidgetMediumItemUiModel>, position: Int, isFlexibleType: Boolean): Boolean {

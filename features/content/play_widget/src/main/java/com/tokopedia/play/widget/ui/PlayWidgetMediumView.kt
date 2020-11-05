@@ -23,6 +23,7 @@ import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardMediumAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
@@ -128,11 +129,19 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
     }
 
+    private val transcodeCardListener = object : PlayWidgetCardMediumTranscodeViewHolder.Listener {
+
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetMediumView, item.channelId)
+        }
+    }
+
     private val adapter = PlayWidgetCardMediumAdapter(
             imageBlurUtil = ImageBlurUtil(context),
             overlayCardListener = overlayCardListener,
             channelCardListener = channelCardListener,
-            bannerCardListener = bannerCardListener
+            bannerCardListener = bannerCardListener,
+            transcodeCardListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false
