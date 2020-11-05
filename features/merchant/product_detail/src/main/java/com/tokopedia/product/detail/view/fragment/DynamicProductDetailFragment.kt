@@ -2317,13 +2317,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 return@let
             }
 
-            if (viewModel.buttonActionType == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
-                showToasterError(getString(R.string.tradein_error_label))
+            if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
+                viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
                 return@let
             }
 
-            if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
-                viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
+            if (viewModel.buttonActionType == ProductDetailConstant.CHECK_WISHLIST_BUTTON) {
+                goToWishlist()
+                return@let
+            }
+
+            if (viewModel.buttonActionType == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
+                showToasterError(getString(R.string.tradein_error_label))
                 return@let
             }
 
@@ -2474,6 +2479,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 url
         )
         RouteManager.route(context, webViewUrl)
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {

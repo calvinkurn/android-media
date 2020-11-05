@@ -85,7 +85,7 @@ class PartialButtonActionView private constructor(val view: View,
         resetTopChatLayoutParams()
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtons ?: mutableListOf()
 
         btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
 

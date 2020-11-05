@@ -7,7 +7,7 @@ data class CartTypeData(
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("available_buttons")
-        val availableButtons: List<AvailableButton> = listOf(),
+        val availableButtons: MutableList<AvailableButton> = mutableListOf(),
         @SerializedName("config_name")
         val configName: String = "",
         @SerializedName("unavailable_buttons")
