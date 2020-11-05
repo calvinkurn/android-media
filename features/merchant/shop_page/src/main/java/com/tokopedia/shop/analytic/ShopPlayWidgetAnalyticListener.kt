@@ -16,6 +16,9 @@ import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by mzennis on 26/10/20.
+ *
+ * https://docs.google.com/spreadsheets/d/1l91ritx5rj-RJzcTNVXnMTcOp3sWZz6O2v__nfV64Co/edit#gid=1005486470 row 61-65
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/63
  */
 class ShopPlayWidgetAnalyticListener(
         private val trackingQueue: TrackingQueue,
@@ -31,7 +34,21 @@ class ShopPlayWidgetAnalyticListener(
     private var widgetPosition = RecyclerView.NO_POSITION
 
     override fun onImpressPlayWidget(view: PlayWidgetView, widgetPositionInList: Int) {
-        widgetPosition = if (widgetPositionInList <= 2) 0 else 1 // following the old implementation
+        widgetPosition = widgetPositionInList
+    }
+
+    override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        EVENT to CLICK_SHOP_PAGE,
+                        EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                        EVENT_ACTION to "click view all play",
+                        EVENT_LABEL to "$shopId - Tokopedia Play - $pos",
+                        BUSINESS_UNIT to "ads solution",
+                        CURRENT_SITE to "tokopediamarketplace",
+                        USER_ID to userId
+                )
+        )
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
@@ -110,6 +127,20 @@ class ShopPlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
+    override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean) = withWidgetPosition { pos ->
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        EVENT to CLICK_SHOP_PAGE,
+                        EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                        EVENT_ACTION to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
+                        EVENT_LABEL to "${item.channelId} - $channelPositionInList - $pos",
+                        BUSINESS_UNIT to "ads solution",
+                        CURRENT_SITE to "tokopediamarketplace",
+                        USER_ID to userId
+                )
+        )
+    }
+
     override fun onClickBannerCard(view: PlayWidgetMediumView, item: PlayWidgetMediumBannerUiModel, channelPositionInList: Int) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
@@ -126,6 +157,6 @@ class ShopPlayWidgetAnalyticListener(
 
     private fun withWidgetPosition(onTrack: (Int) -> Unit) {
         if (widgetPosition == RecyclerView.NO_POSITION) return
-        onTrack(widgetPosition)
+        onTrack(if (widgetPosition <= 2) 0 else 1)  // following the old implementation
     }
 }

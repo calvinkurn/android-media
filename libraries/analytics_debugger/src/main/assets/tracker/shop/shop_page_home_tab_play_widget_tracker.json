@@ -3,6 +3,16 @@
   "mode": "exact",
   "query": [
     {
+      "businessUnit": "{{.+}}",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "currentSite": "{{.+}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "eventAction": "click view all play",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
       "promotions": [{
         "creative_name": "{{.+}}",
         "creative_slot": "{{\\d*.\\d*}}",
@@ -57,6 +67,26 @@
       "eventAction": "impression on play sgc channel",
       "sessionIris": "{{.+}}",
       "eventLabel":"{{view channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+    },
+    {
+      "businessUnit": "{{.+}}",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "currentSite": "{{.+}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "eventAction": "click remind me",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    },
+    {
+      "businessUnit": "{{.+}}",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "currentSite": "{{.+}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "eventAction": "click on remove remind me",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
     },
     {
       "businessUnit": "{{.+}}",
