@@ -565,6 +565,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         val dataHeader = SomDetailHeader(
                 detailResponse.statusCode,
                 detailResponse.statusText,
+                detailResponse.statusIndicatorColor,
                 detailResponse.buyerRequestCancel.isRequestCancel,
                 detailResponse.invoice,
                 detailResponse.invoiceUrl,

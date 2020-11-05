@@ -72,6 +72,8 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 order_id
                 status
                 status_text
+                status_text_color
+                status_indicator_color
                 invoice
                 invoice_url
                 checkout_date

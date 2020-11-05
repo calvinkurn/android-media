@@ -17,10 +17,8 @@ object SomAnalytics {
     private const val SUBMIT_SEARCH = "submit search"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
-    private const val CLICK_MAIN_ACTION_IN_ORDER_DETAIL = "click main action in order detail"
     private const val CLICK_MAIN_CTA_IN_ORDER_DETAIL = "click main CTA"
     private const val CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL = "click secondary action in order detail"
-    private const val CLICK_BUTTON_PELUANG_IN_EMPTY_STATE = "click button peluang in empty state"
     private const val CLICK_TERAPKAN_ON_FILTER_PAGE = "click terapkan on filter page"
     private const val VIEW_SOM_IRIS = "viewSOMIris"
     private const val VIEW_TICKER = "view ticker"
@@ -92,12 +90,8 @@ object SomAnalytics {
                 "$statusOrderCode - $orderStatusName - $labelBtn")
     }
 
-    fun eventClickButtonPeluangInEmptyState(statusOrder: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_PELUANG_IN_EMPTY_STATE, statusOrder)
-    }
-
-    fun eventClickTerapkanOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, orderCode)
+    fun eventClickTerapkanOnFilterPage(filterValue: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, filterValue)
     }
 
     fun eventViewTicker(tickerId: String) {
@@ -128,8 +122,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BACK_BUTTON_ON_FILTER_PAGE, orderCode)
     }
 
-    fun eventClickResetButtonOnFilterPage(orderCode: String) {
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, orderCode)
+    fun eventClickResetButtonOnFilterPage() {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, "")
     }
 
     fun eventClickTolakPesanan(statusOrderName: String, reason: String) {

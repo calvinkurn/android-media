@@ -400,7 +400,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
-        SomAnalytics.eventClickResetButtonOnFilterPage(tabActive)
+        SomAnalytics.eventClickResetButtonOnFilterPage()
         resetFilters()
         renderCourierList()
         renderOrderType()
