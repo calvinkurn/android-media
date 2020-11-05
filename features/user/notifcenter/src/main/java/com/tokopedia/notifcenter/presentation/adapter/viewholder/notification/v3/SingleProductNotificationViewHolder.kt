@@ -20,12 +20,7 @@ class SingleProductNotificationViewHolder constructor(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
-        bindClickProduct(element)
         bindClickItem(element)
-    }
-
-    private fun bindClickProduct(element: NotificationUiModel) {
-        productContainer?.setOnClickListener { goToPdp(element) }
     }
 
     private fun bindProductData(element: NotificationUiModel) {
@@ -36,16 +31,6 @@ class SingleProductNotificationViewHolder constructor(
     private fun bindClickItem(element: NotificationUiModel) {
         container?.setOnClickListener {
             listener?.showProductBottomSheet(element)
-        }
-    }
-
-    private fun goToPdp(element: NotificationUiModel) {
-        element.product?.productId?.let {
-            RouteManager.route(
-                    itemView.context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    it.toString()
-            )
         }
     }
 

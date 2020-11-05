@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -61,6 +63,7 @@ class CardProductNotificationCardUnify(
             bindProductPrice(product)
             bindProductName(product)
             bindCampaignTag(product)
+            bindProductClick(product)
         } else {
             hide()
         }
@@ -95,5 +98,17 @@ class CardProductNotificationCardUnify(
         } else {
             campaignTag?.hide()
         }
+    }
+
+    private fun bindProductClick(product: ProductData) {
+        setOnClickListener { goToPdp(product) }
+    }
+
+    private fun goToPdp(product: ProductData) {
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productId.toString()
+        )
     }
 }

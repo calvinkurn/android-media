@@ -47,6 +47,7 @@ class CarouselProductNotificationViewHolder constructor(
         super.bind(element)
         bindCarouselProduct(element)
         bindScrollState(element)
+        bindClickItem(element)
     }
 
     private fun bindCarouselProduct(element: NotificationUiModel) {
@@ -55,6 +56,12 @@ class CarouselProductNotificationViewHolder constructor(
 
     private fun bindScrollState(element: NotificationUiModel) {
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
+    }
+
+    private fun bindClickItem(element: NotificationUiModel) {
+        container?.setOnClickListener {
+            notificationItemListener?.showProductBottomSheet(element)
+        }
     }
 
     companion object {
@@ -111,6 +118,10 @@ class CarouselProductNotificationViewHolder constructor(
         )
 
         fun bind(product: ProductData) {
+            bindProductData(product)
+        }
+
+        private fun bindProductData(product: ProductData) {
             productContainer?.bindProductData(product)
         }
 
