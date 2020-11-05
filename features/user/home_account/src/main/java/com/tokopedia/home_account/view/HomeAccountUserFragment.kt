@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -55,6 +54,7 @@ import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
+import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
@@ -95,7 +95,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
 
-    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var endlessRecyclerViewScrollListener: HomeAccountEndlessScrollListener? = null
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -154,11 +154,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     ), isExpanded = true),
                     addSeparator = true
             )
-            viewModel.getFirstRecommendation()
+            getFirstRecommendation()
         })
 
         viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
-            adapter?.hideLoadMore()
+            removeLoadMoreLoading()
             when(it) {
                 is Success -> {
                     widgetTitle = it.data.title
@@ -173,7 +173,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         })
 
         viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
-            adapter?.hideLoadMore()
+            removeLoadMoreLoading()
             when(it) {
                 is Success -> addRecommendationItem(it.data)
                 is Fail -> {
@@ -216,6 +216,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
         adapter?.notifyDataSetChanged()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+    }
+
+    private fun getFirstRecommendation() {
+        showLoadMoreLoading()
+        viewModel.getFirstRecommendation()
     }
 
     fun showLoading() {
@@ -612,16 +617,49 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun setLoadMore() {
         if (endlessRecyclerViewScrollListener == null) {
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(home_account_user_fragment_rv?.layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    adapter?.showLoadMore()
-                    viewModel.getRecommendation(page)
+            val layoutManager = home_account_user_fragment_rv?.layoutManager
+            layoutManager?.let {
+                endlessRecyclerViewScrollListener = object : HomeAccountEndlessScrollListener(it) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                        if(isLoadingMore()) return
+                        showLoadMoreLoading()
+                        viewModel.getRecommendation(page)
+                    }
                 }
             }
         }
         endlessRecyclerViewScrollListener?.let {
             home_account_user_fragment_rv?.addOnScrollListener(it)
         }
+    }
+
+    private fun showLoadMoreLoading() {
+        adapter?.run {
+            addItem(getItems().size, LoadMoreRecommendation())
+            notifyItemInserted(itemCount)
+        }
+    }
+
+    private fun removeLoadMoreLoading() {
+        adapter?.run {
+            if (getItems().isNotEmpty() && getItems()[getItems().lastIndex]::class == LoadMoreRecommendation::class) {
+                removeItemAt(getItems().lastIndex)
+                notifyItemRemoved(getItems().size)
+            }
+        }
+    }
+
+    private fun isLoadingMore(): Boolean {
+        var isLoading = false
+        adapter?.run {
+            if (lastIndex > -1) {
+                val lastItem = getItem(lastIndex)
+                isLoading = lastItem is LoadMoreRecommendation
+            } else {
+                false
+            }
+        }
+        return isLoading
     }
 
     override fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int) {

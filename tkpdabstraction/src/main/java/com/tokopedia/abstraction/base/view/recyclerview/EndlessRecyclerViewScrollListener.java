@@ -161,8 +161,4 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     public void updateLayoutManager(@Nullable RecyclerView.LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
-
-    public void changeLoadingStatus(boolean status) {
-        loading = status;
-    }
 }

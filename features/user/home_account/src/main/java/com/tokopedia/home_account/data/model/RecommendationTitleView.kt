@@ -5,3 +5,4 @@ data class RecommendationTitleView (
 )
 
 class SeparatorView
+class LoadMoreRecommendation

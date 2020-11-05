@@ -156,7 +156,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     fun getFirstRecommendation() {
-        getRecommendation(page = 0)
+        getRecommendation(page = 1)
     }
 
     fun getRecommendation(page: Int) {
@@ -187,7 +187,7 @@ class HomeAccountUserViewModel @Inject constructor(
         return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
     }
 
-    private fun checkFirstPage(page: Int): Boolean = page < 2
+    private fun checkFirstPage(page: Int): Boolean = page == 1
 
     fun getInitialData() {
         getSettingData()
