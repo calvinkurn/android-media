@@ -29,9 +29,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         setTimerType()
-        if (timerSprintSaleItemViewModel.timerWithBannerCounter == null) {
-            timerSprintSaleItemViewModel.startTimer()
-        }
+        timerSprintSaleItemViewModel.startTimer()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
