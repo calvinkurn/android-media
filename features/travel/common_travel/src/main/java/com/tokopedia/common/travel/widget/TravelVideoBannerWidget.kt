@@ -2,6 +2,7 @@ package com.tokopedia.common.travel.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.R
@@ -29,7 +30,7 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
         bannerModel = TravelVideoBannerModel()
         collectiveBannerModel.let {
             if (it.banners.isNotEmpty()) {
-                bannerModel.title = it.banners[0].attribute.description
+                bannerModel.title = it.meta.label
                 bannerModel.imageUrl = it.banners[0].attribute.imageUrl
                 bannerModel.destinationLink =
                         if (it.banners[0].attribute.appUrl.isNotEmpty())
@@ -56,7 +57,7 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
                     RouteManager.route(context, bannerModel.destinationLink)
                 }
                 if (customHeight > 0) {
-                    ivTravelVideoBanner.layoutParams.height = customHeight
+                    cardViewTravelVideoBanner.layoutParams.height = customHeight
                 }
                 showTravelVideoBanner()
             } else {

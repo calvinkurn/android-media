@@ -86,14 +86,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private lateinit var remoteConfig: RemoteConfig
 
-    private var bannerWidthInPixels = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_HOMEPAGE)
-
-        measureBannerWidthInPixels()
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -257,13 +253,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun getScreenName(): String = ""
 
-    private fun measureBannerWidthInPixels() {
-        val displayMetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = displayMetrics.widthPixels
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
-    }
-
     override fun onSaveGuest(room: Int, adult: Int) {
         trackingHotelUtil.hotelSelectRoomGuest(context, room, adult, HOMEPAGE_SCREEN_NAME)
 
@@ -344,11 +333,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun renderVideoBanner(videoBannerModel: TravelCollectiveBannerModel) {
         showHotelHomepageVideoBanner(true)
         hotel_homepage_video_banner.listener = this
-        hotel_homepage_video_banner.customHeight = if (bannerWidthInPixels > 0) {
-            (bannerWidthInPixels * BANNER_HEIGHT_RATIO).toInt()
-        } else {
-            resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
-        }
         hotel_homepage_video_banner.setData(videoBannerModel)
         hotel_homepage_video_banner.build()
     }
