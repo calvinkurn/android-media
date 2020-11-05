@@ -58,7 +58,7 @@ class SellerActionActivity: Activity() {
             SellerActionFeatureName.ORDER_DETAIL -> {
                 intent?.getStringExtra(SellerActionConst.Params.ORDER_ID)?.let { orderId ->
                     analytics.clickOrderLine()
-                    RouteManager.route(this, ApplinkConstInternalOrder.ORDER_DETAIL_NEW, orderId)
+                    RouteManager.route(this, ApplinkConstInternalOrder.ORDER_DETAIL, orderId)
                 }
             }
             else -> {

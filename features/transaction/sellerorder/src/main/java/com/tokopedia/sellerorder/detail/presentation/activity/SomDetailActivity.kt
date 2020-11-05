@@ -35,9 +35,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         if (intent.extras != null) {
             bundle = intent.extras ?: Bundle()
         } else {
-            val orderId =
-                    intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID) ?:
-                    intent?.data?.lastPathSegment.orEmpty()
+            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
             bundle.putString(PARAM_ORDER_ID, orderId)
         }
         return SomDetailFragment.newInstance(bundle)
