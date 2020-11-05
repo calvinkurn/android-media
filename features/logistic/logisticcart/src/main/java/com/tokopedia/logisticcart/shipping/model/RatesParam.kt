@@ -66,7 +66,7 @@ data class RatesParam(
             products = builder.products,
             unique_id = builder.unique_id,
             is_fulfillment = builder.is_fulfillment,
-            po_time = builder.po_time),
+            po_time = builder.po_time,
             mvc = builder.mvc)
 
     fun toMap(): Map<String, Any> = mapOf(

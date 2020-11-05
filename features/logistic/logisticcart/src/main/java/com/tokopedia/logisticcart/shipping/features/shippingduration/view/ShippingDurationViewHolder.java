@@ -125,6 +125,28 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         }
 
+        /*MVC*/
+        if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == 1 ) {
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            tvMvcError.setVisibility(View.GONE);
+        } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
+            imgMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
+            tvMvc.setVisibility(View.VISIBLE);
+            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
+            ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
+            tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
+            tvMvcError.setVisibility(View.VISIBLE);
+            tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
+        } else {
+            imgMvc.setVisibility(View.GONE);
+            tvMvc.setVisibility(View.GONE);
+            tvMvcError.setVisibility(View.GONE);
+        }
+
         /*ETA*/
         if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
             String shipperNameEta = "";
@@ -154,33 +176,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-
-//        here
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDuration, shippingDurationUiModel.getServiceData().getServiceName(), tvDuration.getContext().getString(R.string.content_desc_tv_duration));
-        imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-        labelCodAvailable.setText(shippingDurationUiModel.getCodText());
-        labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
-
-        if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == 1 ) {
-            imgMvc.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
-            tvMvc.setVisibility(View.VISIBLE);
-            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
-            tvMvcError.setVisibility(View.GONE);
-        } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
-            imgMvc.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
-            tvMvc.setVisibility(View.VISIBLE);
-            tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
-            ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
-            tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
-            tvMvcError.setVisibility(View.VISIBLE);
-            tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
-        } else {
-            imgMvc.setVisibility(View.GONE);
-            tvMvc.setVisibility(View.GONE);
-            tvMvcError.setVisibility(View.GONE);
-        }
 
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {

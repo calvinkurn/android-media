@@ -763,26 +763,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         )) + ")";
 
                 if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
-                    labelSelectedShippingCourier.setText(courierName);
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, courierName, labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                     labelSelectedShippingPriceorDuration.setText(selectedCourierItemData.getEtaText());
                 } else if (selectedCourierItemData.getEtaErrorCode() == 0 && selectedCourierItemData.getEtaText().isEmpty()) {
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, courierName, labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                     labelSelectedShippingCourier.setText(courierName);
                     labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
                 }
                 else {
-                    labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                     labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             selectedCourierItemData.getShipperPrice(), false
                     )));
                 }
 
-//                here
                 labelSelectedShippingPriceorDuration.setOnClickListener(
-                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
-                labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShipperPrice(), false
-                )));
-                labelSelectedShippingPrice.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 labelSelectedShippingCourier.setOnClickListener(

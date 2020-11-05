@@ -1,173 +1,774 @@
-query RatesV3($param: OngkirRatesV3Input!) {
-  ratesV3(input: $param) {
-    ratesv3 {
-      id
-      rates_id
-      type
-      error {
-        error_id
-        error_message
-      }
-      services {
-        service_name
-        service_id
-        service_order
-        status
-        is_promo
-        range_price {
-          min_price
-          max_price
-        }
-        etd {
-          min_etd
-          max_etd
-        }
-        texts {
-          text_range_price
-          text_etd
-          text_notes
-          text_service_desc
-          text_eta_summarize
-          error_code
-        }
-        order_priority {
-          is_now
-          inactive_message
-          price
-          formatted_price
-          static_messages {
-            duration_message
-            checkbox_message
-            warningbox_message
-            fee_message
-            pdp_message
-          }
-        }
-        error {
-          error_id
-          error_message
-        }
-        status
-        cod {
-          is_cod
-          cod_text
-        }
-        mvc {
-          is_mvc
-          mvc_title
-          mvc_logo
-          mvc_error_message
-        }
-        products {
-          shipper_name
-          shipper_id
-          shipper_product_id
-          shipper_product_name
-          shipper_product_desc
-          is_show_map
-          shipper_weight
-          status
-          recommend
-          checksum
-          ut
-          promo_code
-          price {
-            price
-            formatted_price
-          }
-          etd {
-            min_etd
-            max_etd
-          }
-          texts {
-            text_price
-            text_etd
-          }
-          insurance {
-            insurance_price
-            insurance_type
-            insurance_type_info
-            insurance_used_type
-            insurance_used_info
-            insurance_used_default
-          }
-          error {
-            error_id
-            error_message
-          }
-          cod {
-            is_cod_available
-            cod_price
-            cod_text
-            formatted_price
-            tnc_text
-            tnc_link
-          }
-          features {
-            ontime_delivery_guarantee {
-              available
-              value
-              text_label
-              text_detail
-              url_detail
-              icon_url
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":2270:3172:400",
+          "rates_id": "1604552259115987241",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Instan",
+              "service_id": 1000,
+              "service_order": 0,
+              "status": 400,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 0,
+                "max_price": 0
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "",
+                "text_etd": "",
+                "text_notes": "",
+                "text_service_desc": " ",
+                "text_eta_summarize": "",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "Rp0",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "502",
+                "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": -1,
+                "mvc_title": "Promo yang dipakai",
+                "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                "mvc_error_message": "Promo yang kamu pilih sebelumnya tidak bisa dipakai"
+              },
+              "products": [
+                {
+                  "shipper_name": "Gojek",
+                  "shipper_id": 10,
+                  "shipper_product_id": 28,
+                  "shipper_product_name": "Instant Courier",
+                  "shipper_product_desc": "Layanan pengiriman instan dengan durasi pengiriman beberapa jam saja (3 jam) sejak serah terima paket ke kurir.",
+                  "is_show_map": 0,
+                  "shipper_weight": 0,
+                  "status": 400,
+                  "recommend": false,
+                  "checksum": "yEP52Ea8kLlJdDVB1k%2BhCgzJQCk%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 0,
+                    "formatted_price": ""
+                  },
+                  "etd": {
+                    "min_etd": 0,
+                    "max_etd": 0
+                  },
+                  "texts": {
+                    "text_price": "",
+                    "text_etd": ""
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 0,
+                    "insurance_type_info": "",
+                    "insurance_used_type": 0,
+                    "insurance_used_info": "",
+                    "insurance_used_default": 0
+                  },
+                  "error": {
+                    "error_id": "502",
+                    "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": -1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": "Promo yang kamu pilih sebelumnya tidak bisa dipakai"
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Reguler",
+              "service_id": 1104,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 21000,
+                "max_price": 31000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp21.000 - Rp31.000",
+                "text_etd": "2-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 7 Nov - 8 Nov",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 1,
+                "mvc_title": "Promo yang dipakai",
+                "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "J\u0026T",
+                  "shipper_id": 14,
+                  "shipper_product_id": 27,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "J\u0026T Express adalah layanan ekspres pertama di Indonesia berbasis teknologi, memberikan kemudahan dalam satu layanan.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "kIdYy3QZOPhTkTiQb5BV0oj5wRE%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 31000,
+                    "formatted_price": "Rp31.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp31.000",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 7 Nov - 8 Nov",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "Pos Indonesia",
+                  "shipper_id": 4,
+                  "shipper_product_id": 10,
+                  "shipper_product_name": "Pos Kilat Khusus",
+                  "shipper_product_desc": "Gunakan Pos Kilat Khusus, sebagai pilihan tepat untuk pengiriman Suratpos yang mengandalkan kecepatan kiriman dan menjangkau ke seluruh pelosok Indonesia.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "V1Nke7RIo%2FZO9gdlvnnw2l3GNO4%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 21000,
+                    "formatted_price": "Rp21.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 259200
+                  },
+                  "texts": {
+                    "text_price": "Rp21.000",
+                    "text_etd": "2-3 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Reguler",
+              "service_id": 1204,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 31000,
+                "max_price": 35000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp31.000 - Rp35.000",
+                "text_etd": "3-6 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 7 Nov - 12 Nov",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)"
+              },
+              "mvc": {
+                "is_mvc": 1,
+                "mvc_title": "Promo yang dipakai",
+                "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat Reg",
+                  "shipper_id": 11,
+                  "shipper_product_id": 18,
+                  "shipper_product_name": "Regular Package",
+                  "shipper_product_desc": "Layanan Pengiriman biasa dengan lead time 1-2 hari (kota besar) dan lead time 3-4 hari (Kabupaten/transit)",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "w4e%2Bng9Akhg64TMYcHLini%2BPqi8%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 35000,
+                    "formatted_price": "Rp35.000"
+                  },
+                  "etd": {
+                    "min_etd": 259200,
+                    "max_etd": 518400
+                  },
+                  "texts": {
+                    "text_price": "Rp35.000",
+                    "text_etd": "3-6 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 1,
+                    "cod_price": 7200,
+                    "cod_text": "Tersedia COD (Bayar di Tempat)",
+                    "formatted_price": "Rp7.200",
+                    "tnc_text": "S\u0026K Berlaku",
+                    "tnc_link": "https://gw.tokopedia.com/cod_info"
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 7 Nov - 8 Nov",
+                    "error_code": 0
+                  }
+                },
+                {
+                  "shipper_name": "JNE Reg",
+                  "shipper_id": 1,
+                  "shipper_product_id": 1,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "FziBe5uQc%2FN40Uro2vxK6L9jBuM%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 31000,
+                    "formatted_price": "Rp31.000"
+                  },
+                  "etd": {
+                    "min_etd": 259200,
+                    "max_etd": 518400
+                  },
+                  "texts": {
+                    "text_price": "Rp31.000",
+                    "text_etd": "3-6 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 8 Nov - 12 Nov",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Kargo",
+              "service_id": 1001,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 8000,
+                "max_price": 8000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp8.000",
+                "text_etd": "5-7 hari",
+                "text_notes": "",
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 1,
+                "cod_text": "Tersedia COD (Bayar di Tempat)"
+              },
+              "mvc": {
+                "is_mvc": 1,
+                "mvc_title": "Promo yang dipakai",
+                "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "SiCepat Gokil",
+                  "shipper_id": 11,
+                  "shipper_product_id": 43,
+                  "shipper_product_name": "Gokil",
+                  "shipper_product_desc": "Layanan pengiriman standard dengan kecepatan pengiriman 3-8 hari tergantung rute pengiriman. Harga lebih murah/ ekonomis dan berskala besar (bulk shipment) dengan durasi pengiriman yang lebih lama karena menggunakan jalur darat.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "GJsVSD%2FTpmZ3%2FG6tOp9L9cMz%2FIs%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 8000,
+                    "formatted_price": "Rp8.000"
+                  },
+                  "etd": {
+                    "min_etd": 432000,
+                    "max_etd": 604800
+                  },
+                  "texts": {
+                    "text_price": "Rp8.000",
+                    "text_etd": "5-7 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 1,
+                    "cod_price": 7200,
+                    "cod_text": "Tersedia COD (Bayar di Tempat)",
+                    "formatted_price": "Rp7.200",
+                    "tnc_text": "S\u0026K Berlaku",
+                    "tnc_link": "https://gw.tokopedia.com/cod_info"
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Ekonomi",
+              "service_id": 1005,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "range_price": {
+                "min_price": 27000,
+                "max_price": 27000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp27.000",
+                "text_etd": "4-7 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "Estimasi tiba 9 Nov - 11 Nov",
+                "error_code": 0
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 1,
+                "mvc_title": "Promo yang dipakai",
+                "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "JNE OKE",
+                  "shipper_id": 1,
+                  "shipper_product_id": 2,
+                  "shipper_product_name": "OKE",
+                  "shipper_product_desc": "JNE OKE adalah paket ekonomis yang ditawarkan JNE. Umumnya pengiriman melalui paket ini membutuhkan waktu yang lebih lama. Dukungan kota nya pun masih terbatas.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "wGeUd98xIBnZhNsw8Dk89QuiiQI%3D",
+                  "ut": "1604552259",
+                  "promo_code": "",
+                  "price": {
+                    "price": 27000,
+                    "formatted_price": "Rp27.000"
+                  },
+                  "etd": {
+                    "min_etd": 345600,
+                    "max_etd": 604800
+                  },
+                  "texts": {
+                    "text_price": "Rp27.000",
+                    "text_etd": "4-7 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 3,
+                    "insurance_type_info": "Must insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 1,
+                      "mvc_logo": "https://ecs7.tokopedia.net/img/blog/promo/2020/10/promo_lock_cour_2.png",
+                      "mvc_error_message": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "Estimasi tiba 9 Nov - 11 Nov",
+                    "error_code": 0
+                  }
+                }
+              ]
             }
-            mvc {
-              is_mvc
-              mvc_logo
-              mvc_error_message
+          ],
+          "promo_stacking": {
+            "is_promo": 1,
+            "promo_code": "BBOCEPATGKLINTEG",
+            "title": "Bebas Ongkir (5-7 hari)",
+            "shipper_id": 11,
+            "shipper_product_id": 43,
+            "shipper_name": "SiCepat Gokil",
+            "shipper_desc": "5-7 hari|1001",
+            "promo_detail": "",
+            "benefit_desc": "",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBBOCEPATGKLINTEG\u003c/b\u003e",
+            "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+            "service_id": 1001,
+            "is_applied": 0,
+            "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+            "discounted_rate": 0,
+            "shipping_rate": -2000,
+            "benefit_amount": 5000,
+            "disabled": false,
+            "hide_shipper_name": true,
+            "cod": {
+              "is_cod_available": 1,
+              "cod_text": "Tersedia COD (Bayar di Tempat)",
+              "cod_price": 7200,
+              "formatted_price": "Rp7.200",
+              "tnc_text": "S\u0026K Berlaku",
+              "tnc_link": "https://gw.tokopedia.com/cod_info"
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 0
+            }
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
             }
           }
-          eta {
-            text_eta
-            error_code
-          }
         }
-      }
-      promo_stacking {
-        is_promo
-        promo_code
-        title
-        shipper_id
-        shipper_product_id
-        shipper_name
-        shipper_desc
-        promo_detail
-        benefit_desc
-        point_change
-        user_point
-        promo_tnc_html
-        shipper_disable_text
-        service_id
-        is_applied
-        image_url
-        discounted_rate
-        shipping_rate
-        benefit_amount
-        disabled
-        hide_shipper_name
-        cod {
-              is_cod_available
-              cod_text
-              cod_price
-              formatted_price
-              tnc_text
-              tnc_link
-            }
-        eta {
-              text_eta
-              error_code
-            }
-      }
-      info {
-        blackbox_info {
-          text_info
-        }
-      }
-      error {
-        error_id
-        error_message
       }
     }
   }
-}
+]
