@@ -11,6 +11,6 @@ class TestOrderSummaryPageModule(activity: Activity): OrderSummaryPageModule(act
     @Provides
     @Named(OVO_ACTIVATION_URL)
     override fun provideOvoActivationLink(): String {
-        return ""
+        return "https://www.google.com"
     }
 }

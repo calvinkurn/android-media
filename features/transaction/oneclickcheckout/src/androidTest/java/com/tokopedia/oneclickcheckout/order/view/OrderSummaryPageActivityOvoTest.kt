@@ -1,11 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
-import android.app.Instrumentation
+import android.app.Instrumentation.ActivityResult
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -29,10 +29,6 @@ class OrderSummaryPageActivityOvoTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
-    private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -53,7 +49,7 @@ class OrderSummaryPageActivityOvoTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_ACTIVATION_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertProductCard(
@@ -93,7 +89,7 @@ class OrderSummaryPageActivityOvoTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_ACTIVATION_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertProductCard(
@@ -136,7 +132,7 @@ class OrderSummaryPageActivityOvoTest {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_LOW_WALLET_RESPONSE_PATH
 
         activityRule.launchActivity(null)
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertProductCard(

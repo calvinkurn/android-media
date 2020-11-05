@@ -503,7 +503,8 @@
                   "is_required": false,
                   "button_title": "Top-Up",
                   "error_message": "Rp1.000. OVO Cash kamu tidak cukup.",
-                  "error_ticker": "OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain."
+                  "error_ticker": "OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain.",
+                  "is_hide_digital": 1
                 }
               }
             },

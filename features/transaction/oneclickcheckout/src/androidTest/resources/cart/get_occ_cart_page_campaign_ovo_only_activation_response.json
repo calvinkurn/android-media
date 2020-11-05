@@ -606,7 +606,8 @@
             "merchant_code": "tokopedia",
             "profile_code": "TKPD_DEFAULT",
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
-            "change_cc_link": ""
+            "change_cc_link": "",
+            "callback_url": "https://api-staging.tokopedia.com/cart/v2/receiver"
           },
           "error_ticker": "",
           "prompt": {

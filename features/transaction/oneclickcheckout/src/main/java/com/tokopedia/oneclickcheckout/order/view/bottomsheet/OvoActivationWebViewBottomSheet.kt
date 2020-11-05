@@ -38,6 +38,9 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
 
         private const val IS_SUCCESS_QUERY = "is_success"
         private const val SUCCESS_QUERY_VALUE = "1"
+
+        private const val REDIRECT_URL_QUERY = "redirect_url"
+        private const val TOKOPEDIA_URL = "tokopedia"
     }
 
     fun show(fragment: OrderSummaryPageFragment, userSessionInterface: UserSessionInterface) {
@@ -94,12 +97,21 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
 //        }
 
         // DEBUG
-        webView?.loadAuthUrl(generateUrl(userSession), userSession)
+        loadOvoActivationWebView(userSession)
+    }
+
+    private fun loadOvoActivationWebView(userSession: UserSessionInterface) {
+        // Load auth only if tokopedia url
+        if (activationUrl.contains(TOKOPEDIA_URL)) {
+            webView?.loadAuthUrl(generateUrl(userSession), userSession)
+        } else {
+            webView?.loadUrl(activationUrl)
+        }
     }
 
     private fun generateUrl(userSession: UserSessionInterface): String {
         return URLGenerator.generateURLSessionLogin(
-                "$activationUrl?redirect_url=${generateRedirectUrl()}".encodeOnce(),
+                "$activationUrl?${REDIRECT_URL_QUERY}=${generateRedirectUrl()}".encodeOnce(),
                 userSession.deviceId,
                 userSession.userId)
     }
