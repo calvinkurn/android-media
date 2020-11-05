@@ -116,8 +116,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
-                .isFulfillment(isFulfillment)
-                .getPreOrderDuration(preOrderTime)
                 .build();
 
         Observable<ShippingRecommendationData> observable;
@@ -202,6 +200,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
+        shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
+        shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

@@ -141,9 +141,9 @@ data class RatesParam(
             private set
         var unique_id: String = shipping.uniqueId
             private set
-        var is_fulfillment: Boolean = false
+        var is_fulfillment: Boolean = shipping.isFulfillment
             private set
-        var po_time: Int = 0
+        var po_time: Int = shipping.preOrderDuration
             private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
@@ -155,10 +155,6 @@ data class RatesParam(
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
 
         fun build() = RatesParam(this)
-
-        fun isFulfillment(fulfillment: Boolean) = apply { this.is_fulfillment = fulfillment }
-
-        fun getPreOrderDuration(preorder: Int) = apply { this.po_time = preorder }
 
     }
 
