@@ -131,9 +131,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                         oldQtyValue = newValue
                         qtyEditorProduct?.setValue(newValue)
                     } else if (newValue <= 0) {
+                        // trigger reset quantity debounce to prevent empty quantity edit text
                         resetQuantityJob?.cancel()
                         resetQuantityJob = launch {
-                            delay(5000)
+                            delay(DEBOUNCE_RESET_QUANTITY_MS)
                             if (isActive) {
                                 qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
                             }
@@ -215,6 +216,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     companion object {
         const val MAX_NOTES_LENGTH = 144
+
+        private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
     }
 
     override val coroutineContext: CoroutineContext
