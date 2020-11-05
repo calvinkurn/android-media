@@ -56,8 +56,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     warehouseLabel.hide()
                 }
 
-                val statusIndicatorColor = item.dataObject.statusIndicatorColor.replace("#", "")
-                statusIndicator.setColorFilter(Color.parseColor("#$statusIndicatorColor"), PorterDuff.Mode.SRC_IN)
+                if(item.dataObject.statusIndicatorColor.isNotBlank()) {
+                    statusIndicator.setColorFilter(Color.parseColor(item.dataObject.statusIndicatorColor), PorterDuff.Mode.SRC_IN)
+                }
 
                 header_see_history?.setOnClickListener {
                     context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
