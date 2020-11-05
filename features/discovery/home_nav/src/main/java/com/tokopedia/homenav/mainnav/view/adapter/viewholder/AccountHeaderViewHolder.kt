@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -125,10 +126,12 @@ class AccountHeaderViewHolder(itemView: View,
         val btnRegister: UnifyButton = layoutNonLogin.findViewById(R.id.btn_register)
 
         btnLogin.setOnClickListener {
+            TrackingProfileSection.onClickLoginButton("")
             mainNavListener.onProfileLoginClicked()
         }
 
         btnRegister.setOnClickListener {
+            TrackingProfileSection.onClickRegisterButton("")
             mainNavListener.onProfileRegisterClicked()
         }
     }
@@ -143,6 +146,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnLoginAs.text = String.format(TEXT_LOGIN_AS, name)
 
         btnLoginAs.setOnClickListener {
+            TrackingProfileSection.onClickLoginReminderButton("")
             mainNavListener.onProfileLoginClicked()
         }
     }

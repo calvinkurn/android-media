@@ -15,7 +15,7 @@ object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_SHOP_ACCOUNT = "shop account"
     private const val CLICK_OPEN_SHOP = "open shop"
 
-    fun onClickLoginButton(title: String, userId: String){
+    fun onClickLoginButton(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
@@ -29,7 +29,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .build())
     }
-    fun onClickLoginReminderButton(title: String, userId: String){
+    fun onClickLoginReminderButton(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
@@ -43,7 +43,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .build())
     }
-    fun onClickRegisterButton(title: String, userId: String){
+    fun onClickRegisterButton(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
@@ -58,7 +58,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .build())
     }
 
-    fun onClickProfileSection(title: String, userId: String){
+    fun onClickProfileSection(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
@@ -72,7 +72,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .build())
     }
-    fun onClickShopProfileSection(title: String, userId: String){
+    fun onClickShopProfileSection(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
@@ -86,7 +86,7 @@ object TrackingProfileSection: BaseTrackerConst() {
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .build())
     }
-    fun onClickOpenShopSection(title: String, userId: String){
+    fun onClickOpenShopSection(userId: String){
         getTracker().sendGeneralEvent(
                 BaseTrackerBuilder()
                         .constructBasicGeneralClick(
