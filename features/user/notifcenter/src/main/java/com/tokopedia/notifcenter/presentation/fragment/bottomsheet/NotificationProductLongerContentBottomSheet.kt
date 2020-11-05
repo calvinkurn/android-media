@@ -6,6 +6,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -21,6 +22,10 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
             bind(productView, product)
             contentContainer?.addView(view)
         }
+    }
+
+    override fun initCtaButton() {
+        cta?.hide()
     }
 
     private fun bind(productView: CardProductNotificationCardUnify?, product: ProductData) {

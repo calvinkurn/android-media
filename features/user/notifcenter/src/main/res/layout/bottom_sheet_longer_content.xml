@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 app:typographyType="heading_3"
                 tools:text="Gebyar Diskon Elektronik" />
 
