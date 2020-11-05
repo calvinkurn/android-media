@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -16,6 +17,7 @@ import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeF
 import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeFactoryImpl
 import com.tokopedia.homenav.category.view.di.DaggerCategoryListComponent
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_nav_category.view.*
 import javax.inject.Inject
@@ -38,6 +40,9 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         arguments?.get(BUNDLE_MENU_ITEM)?.let {
             menuViewModel = it as HomeNavMenuViewModel
             adapter.submitList(it.submenu)
+            if(it.submenu.isEmpty()){
+                showGlobalError(view)
+            }
         }
     }
 
@@ -67,11 +72,23 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     }
 
     override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
-
     }
 
     private fun initRecyclerView(view: View) {
         view.recycler_view?.adapter = adapter
+    }
+
+    private fun showGlobalError(view: View){
+        view.category_global_error?.let {globalError ->
+            globalError.errorSecondaryAction.hide()
+            globalError.setActionClickListener {
+
+                activity?.let { activity ->
+                    Navigation.findNavController(activity, R.id.fragment_container).navigateUp()
+                }
+
+            }
+        }
     }
 
     companion object {
