@@ -1,5 +1,6 @@
 package com.tokopedia.topads.headline.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +19,7 @@ import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGro
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.HEADLINE_UPADTED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -208,7 +210,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         val intent = Intent(context, TopAdsHeadlineAdDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
         intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
-        startActivity(intent)
+        startActivityForResult(intent,HEADLINE_UPADTED)
     }
 
     private fun showEmptyView() {
@@ -399,6 +401,14 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
                 this::onSuccessGroupResult)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == HEADLINE_UPADTED){
+            if(resultCode == Activity.RESULT_OK)
+                fetchData()
+        }
     }
 
     override fun onAttach(context: Context) {

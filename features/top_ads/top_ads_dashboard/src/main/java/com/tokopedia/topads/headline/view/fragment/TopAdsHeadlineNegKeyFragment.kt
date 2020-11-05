@@ -159,6 +159,7 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
     }
 
     private fun performAction(actionActivate: String) {
+        activity?.setResult(Activity.RESULT_OK)
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!, String.format(getString(R.string.topads_neg_keyword_del_toaster), getAdIds().size),

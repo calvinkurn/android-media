@@ -60,6 +60,7 @@ object TopAdsDashboardConstant {
     const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
     const val GROUP_UPDATED = 23
     const val AUTO_ADS_DISABLED = 111
+    const val HEADLINE_UPADTED = 74
     const val STATUS_ACTIVE = 1
     const val STATUS_TIDAK_TAMPIL = 2
     const val TAB_POSITION = "tab_position"

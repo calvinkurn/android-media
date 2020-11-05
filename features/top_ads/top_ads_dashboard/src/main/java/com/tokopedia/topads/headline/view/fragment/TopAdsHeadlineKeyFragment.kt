@@ -160,7 +160,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
 
     private fun performAction(actionActivate: String) {
-
+        activity?.setResult(Activity.RESULT_OK)
         if (actionActivate == TopAdsDashboardConstant.ACTION_DELETE) {
             view.let {
                 Toaster.make(it!!, String.format(getString(R.string.topads_keyword_del_toaster), getAdIds().size), TopAdsDashboardConstant.TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_batal), View.OnClickListener {
