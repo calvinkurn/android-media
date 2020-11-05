@@ -2289,11 +2289,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                                 ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                                 ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
+                            } else {
+                                ordersItem.setShippingId(0);
+                                ordersItem.setSpId(0);
                             }
                         } else {
                             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                                 ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                                 ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
+                            } else {
+                                ordersItem.setShippingId(0);
+                                ordersItem.setSpId(0);
                             }
                         }
                     }
