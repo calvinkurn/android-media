@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.analytics
 
-import android.app.Activity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -14,6 +13,7 @@ object SomAnalytics {
     private const val CLICK = "Click"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ORDER_LIST = "click order card order list"
+    private const val CLICK_ORDER_CARD_ON_ORDER_LIST = "click order card on order list"
     private const val SUBMIT_SEARCH = "submit search"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
@@ -50,7 +50,7 @@ object SomAnalytics {
     private const val WAITING_FOR_PAYMENT = "waiting for payment"
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
@@ -196,6 +196,31 @@ object SomAnalytics {
                 TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
                 TrackAppUtils.EVENT_ACTION to CLICK_CHECK_MANAGE_STOCK,
                 TrackAppUtils.EVENT_LABEL to "$WAITING_FOR_PAYMENT - $AWAITING_PAYMENT:$counter",
+                CUSTOM_DIMENSION_USER_ID to userId,
+                CUSTOM_DIMENSION_SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // SOM Revamp
+    fun eventClickOrderCard(orderStatus: Int, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_ORDER_CARD_ON_ORDER_LIST, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventClickStatusFilter(orderStatus: String, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_QUICK_FILTER, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventClickStartAdvertise(orderStatus: String, orderStatusName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_SOM, CATEGORY_SOM, CLICK_START_ADVERTISE, "$orderStatus - $orderStatusName")
+    }
+
+    fun eventBulkAcceptOrder(orderStatus: String, orderStatusName: String, acceptedOrderCount: Int, userId: String, shopId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to CLICK_SOM,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                TrackAppUtils.EVENT_ACTION to "click accept all",
+                TrackAppUtils.EVENT_LABEL to "$orderStatus - $orderStatusName - $acceptedOrderCount",
                 CUSTOM_DIMENSION_USER_ID to userId,
                 CUSTOM_DIMENSION_SHOP_ID to shopId
         )

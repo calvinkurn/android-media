@@ -30,7 +30,7 @@ data class SomListGetOrderListParam(
         var orderTypeList: List<Int> = arrayListOf(),
         @SerializedName("sort_by")
         @Expose
-        var sortBy: Int = 0,
+        var sortBy: Int = 2,
         @SerializedName("is_mobile")
         @Expose
         var isMobile: Boolean = true,

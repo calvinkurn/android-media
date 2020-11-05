@@ -20,11 +20,16 @@ class SomListSortFilterTab(
         private val listener: SomListSortFilterTabClickListener
 ) {
 
+    companion object {
+        private const val SWIPE_TAB_ANIMATION_DELAY = 500L
+    }
+
     private val context by lazy { sortFilter.context }
 
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null
+    private var selectedCount: Int = 0
 
     init {
         sortFilter.chipItems = arrayListOf()
@@ -44,6 +49,7 @@ class SomListSortFilterTab(
                         it.title.contains(statusFilter.status)
                     }?.apply {
                         title = composeTabTitle(statusFilter.status, statusFilter.amount)
+                        type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
                     } ?: createNewTabs(statusFilter)
                 }
         filterItems = ArrayList(filters)
@@ -65,16 +71,17 @@ class SomListSortFilterTab(
 
     private fun onTabClicked(sortFilterItem: SortFilterItem, status: SomListFilterUiModel.Status) {
         status.isChecked = if (sortFilterItem.type == ChipsUnify.TYPE_NORMAL) {
-            sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.toggleSelected() }
+            sortFilter.chipItems.onEach { if (it.type == ChipsUnify.TYPE_SELECTED) it.type = ChipsUnify.TYPE_NORMAL }
             selectTab(status)
             true
         } else {
             selectedTab = null
             false
         }
-        sortFilterItem.toggleSelected()
+        sortFilterItem.type = ChipsUnify.TYPE_SELECTED
         listener.onTabClicked(status, true)
         changeTabSortFilterText()
+        updateCounter(selectedCount)
     }
 
     private fun scrollToTab(position: Int) {
@@ -86,6 +93,10 @@ class SomListSortFilterTab(
             getDeepChildOffset(scrollView, tabView.parent, tabView, childOffset)
             scrollView.smoothScrollTo(childOffset.x, 0)
         }
+    }
+
+    private fun updateCounter(count: Int) {
+        sortFilter.indicatorCounter = count + if (selectedTab != null) 1 else 0
     }
 
     /**
@@ -107,17 +118,19 @@ class SomListSortFilterTab(
         if (parentGroup == mainParent) {
             return
         }
-        getDeepChildOffset(mainParent, parentGroup.getParent(), parentGroup, accumulatedOffset)
+        getDeepChildOffset(mainParent, parentGroup.parent, parentGroup, accumulatedOffset)
     }
 
     fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
         var count = 0
         somListFilterUiModel.forEach {
-            it.somFilterData.forEach { somFilter ->
-                if(somFilter.isSelected) count++
+            if (it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
+                it.somFilterData.forEach { somFilter ->
+                    if(somFilter.isSelected) count++
+                }
             }
         }
-        sortFilter.indicatorCounter = count
+        selectedCount = count
     }
 
     fun show(somListFilterUiModel: SomListFilterUiModel) {
@@ -127,10 +140,20 @@ class SomListSortFilterTab(
     }
 
     fun selectTab(status: SomListFilterUiModel.Status) {
-        selectedTab = status
-        sortFilter.post {
-            scrollToTab(filterItems.indexOfFirst { it.title.contains(status.status) })
+        filterItems.forEach {
+            if (!it.title.contains(status.status) && it.type == ChipsUnify.TYPE_SELECTED) {
+                it.type = ChipsUnify.TYPE_NORMAL
+            }
         }
+        filterItems.find { it.title.contains(status.status) }?.apply {
+            if (type != ChipsUnify.TYPE_SELECTED) type = ChipsUnify.TYPE_SELECTED
+        }
+        changeTabSortFilterText()
+        selectedTab = status
+        sortFilter.postDelayed({
+            scrollToTab(filterItems.indexOfFirst { it.title.contains(status.status) })
+            updateCounter(selectedCount)
+        }, SWIPE_TAB_ANIMATION_DELAY)
     }
 
     private fun selectParentFilter() {
@@ -151,6 +174,8 @@ class SomListSortFilterTab(
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
+    fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
+    fun getSelectedFilterSatusName(): String = selectedTab?.status.orEmpty()
 
     fun getSelectedTab() = selectedTab
 

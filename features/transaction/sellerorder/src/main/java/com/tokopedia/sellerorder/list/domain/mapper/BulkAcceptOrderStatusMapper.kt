@@ -17,6 +17,7 @@ class BulkAcceptOrderStatusMapper @Inject constructor() {
                             )
                         },
                         success = result.data.success.toIntOrZero(),
+                        fail = result.data.fail.toIntOrZero(),
                         totalOrder = result.data.totalOrder.toIntOrZero()
                 ),
                 errors = result.errors.map {

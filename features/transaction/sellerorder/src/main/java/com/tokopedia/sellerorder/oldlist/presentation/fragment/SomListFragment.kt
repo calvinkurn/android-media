@@ -535,7 +535,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         loadFilterList()
         rl_search_filter.show()
         filterButton.show()
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        activity?.let { SomAnalytics.sendScreenName(LIST_ORDER_SCREEN_NAME) }
         isFromWidget?.let {
             if (it) SomAnalytics.eventClickWidgetNewOrder()
         }
@@ -934,7 +934,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
             }
         } else filter_action_button?.rightIconDrawable = null
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        activity?.let { SomAnalytics.sendScreenName(LIST_ORDER_SCREEN_NAME) }
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {
