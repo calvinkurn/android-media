@@ -128,17 +128,31 @@
             app:layout_constraintTop_toBottomOf="@id/usr_badge"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_name"
+        <TextSwitcher
+            android:id="@+id/switcher_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_6"
-            android:textSize="@dimen/sp_16"
             app:layout_constraintLeft_toRightOf="@id/usr_badge"
             app:layout_constraintTop_toTopOf="@id/usr_badge"
-            app:layout_constraintBottom_toBottomOf="@id/usr_badge"
-            app:typographyType="heading_4"
-            tools:text="John Doe"/>
+            app:layout_constraintBottom_toBottomOf="@id/usr_badge">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_greeting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                app:typographyType="heading_4"
+                tools:text="John Doe"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                app:typographyType="heading_4"
+                tools:text="John Doe"/>
+        </TextSwitcher>
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_ovo"
@@ -187,6 +201,8 @@
             app:layout_constraintLeft_toRightOf="@id/usr_shop_info"
             tools:visibility="visible"
             tools:text=" 5 "/>
+        
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

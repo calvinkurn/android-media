@@ -2,10 +2,12 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.text.Spannable
 import android.text.Spanned
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextSwitcher
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,15 +17,22 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 
 class AccountHeaderViewHolder(itemView: View,
                                private val mainNavListener: MainNavListener,
                                private val userSession: UserSessionInterface
-): AbstractViewHolder<AccountHeaderViewModel>(itemView) {
+): AbstractViewHolder<AccountHeaderViewModel>(itemView), CoroutineScope {
+
+
+    private val masterJob = SupervisorJob()
+    override val coroutineContext = masterJob + Dispatchers.Main
 
     private lateinit var layoutNonLogin: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
@@ -63,7 +72,9 @@ class AccountHeaderViewHolder(itemView: View,
         val usrBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_badge)
         val usrOvoBadge: AppCompatImageView = layoutLogin.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
+        val textSwitcher: TextSwitcher = layoutLogin.findViewById(R.id.switcher_name)
         val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
+        val tvGreeting: Typography = layoutLogin.findViewById(R.id.tv_greeting)
         val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
@@ -73,12 +84,16 @@ class AccountHeaderViewHolder(itemView: View,
 //        element.ovoPoint = ""
 //        element.shopName = AccountHeaderViewModel.ERROR_TEXT
         userImage.loadImageCircle(element.userImage)
-        renderProfileLoginSection(
-                MethodChecker.fromHtml(element.userName),
-                tvName,
-                if (element.userName.equals(AccountHeaderViewModel.ERROR_TEXT))
+
+        if (element.userName.equals(AccountHeaderViewModel.ERROR_TEXT)) {
+            renderProfileLoginSection(
+                    MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT),
+                    tvName,
                     View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
-                else null)
+            )
+        } else {
+            configureNameSwitcher(textSwitcher, getCurrentGreetings(), element.userName, needToSwitchText)
+        }
         renderProfileLoginSection(
                 MethodChecker.fromHtml(
                         if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT)) element.ovoSaldo
@@ -98,6 +113,7 @@ class AccountHeaderViewHolder(itemView: View,
                         View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
                     else null)
         }
+        tvGreeting.text = getCurrentGreetings()
 
         usrBadge.loadImage(element.badge)
         if (element.ovoSaldo.isNotEmpty()) {
@@ -153,5 +169,29 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun getSharedPreference(): SharedPreferences {
         return itemView.context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
+    }
+
+    private fun getCurrentGreetings() : String {
+        return "test"
+    }
+
+    private var needToSwitchText: Boolean = true
+
+    private fun configureNameSwitcher(switcher: TextSwitcher, greetingString: String, nameString: String, needSwitch: Boolean) {
+        switcher.setCurrentText(greetingString)
+        val textAnimationIn: Animation = AnimationUtils.loadAnimation(itemView.context, R.anim.nav_fade_in)
+        textAnimationIn.setDuration(1000)
+
+        val textAnimationOut: Animation = AnimationUtils.loadAnimation(itemView.context, R.anim.nav_fade_out)
+        textAnimationOut.setDuration(1000)
+
+        switcher.setInAnimation(textAnimationIn);
+        switcher.setOutAnimation(textAnimationOut);
+        if (needSwitch) {
+            launch {
+                delay(5000)
+                switcher.setText(nameString)
+            }
+        }
     }
 }
