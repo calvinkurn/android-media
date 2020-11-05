@@ -1,6 +1,7 @@
 package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,7 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
                     setBottomTextSize(textSize)
                     setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
                     setBottomTextStyle("bold")
+                    setBottonTextViewGravity(Gravity.END)
                     setBottomText(review.substringAfter(":"))
                 }
                 contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.addView(doubleTextView)

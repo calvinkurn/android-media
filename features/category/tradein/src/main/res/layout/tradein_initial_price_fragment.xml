@@ -277,6 +277,7 @@
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
                     android:layout_marginRight="@dimen/dp_6"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/tv_info_prize"
                     app:layout_constraintEnd_toStartOf="@id/tv_info_prize"
                     app:layout_constraintTop_toBottomOf="@+id/tv_old_product_price"
@@ -288,6 +289,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:paddingRight="@dimen/spacing_lvl4"
+                    android:visibility="gone"
                     android:text="@string/tradein_prizeinfo"
                     android:textColor="@color/black"
                     app:layout_constraintRight_toRightOf="parent"
@@ -361,7 +363,7 @@
         android:id="@+id/btn_continue_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_shadow_top">
+        android:background="@color/white">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
