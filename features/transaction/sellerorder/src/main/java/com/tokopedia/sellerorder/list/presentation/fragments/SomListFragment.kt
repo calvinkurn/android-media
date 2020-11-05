@@ -1270,6 +1270,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun refreshOrderList() {
+        globalErrorSomList.gone()
         isLoadingInitialData = true
         loadOrderList()
     }
@@ -1352,9 +1353,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String) {
         viewModel.updateGetOrderListParams(filterData)
+        viewModel.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
+        val selectedStatusFilterKey = somFilterUiModelList.find {
+            it.nameFilter == SomConsts.FILTER_STATUS_ORDER
+        }?.somFilterData?.find {
+            it.isSelected
+        }?.key
+        tabActive = selectedStatusFilterKey.orEmpty()
         val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
                 somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
-        somListFilter.statusList.find { it.status == orderStatus }.let {
+        somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
                 it.isChecked = true
                 somListSortFilterTab.selectTab(it)
@@ -1363,7 +1372,5 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 refreshOrderList()
             }
         }
-        viewModel.updateSomListFilterUi(somFilterUiModelList)
-        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
     }
 }
