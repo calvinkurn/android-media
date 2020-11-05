@@ -1,9 +1,5 @@
 package com.tokopedia.sellerorder.list.presentation.filtertabs
 
-import android.graphics.Point
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -84,41 +80,8 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    private fun scrollToTab(position: Int) {
-        if (position < 0) return
-        sortFilter.chipItems.getOrNull(position)?.let { tab ->
-            val tabView = tab.refChipUnify
-            val childOffset = Point()
-            val scrollView = sortFilter.sortFilterHorizontalScrollView
-            getDeepChildOffset(scrollView, tabView.parent, tabView, childOffset)
-            scrollView.smoothScrollTo(childOffset.x, 0)
-        }
-    }
-
     private fun updateCounter(count: Int) {
         sortFilter.indicatorCounter = count + if (selectedTab != null) 1 else 0
-    }
-
-    /**
-     * Used to get deep child offset.
-     *
-     *
-     * 1. We need to scroll to child in scrollview, but the child may not the direct child to scrollview.
-     * 2. So to get correct child position to scroll, we need to iterate through all of its parent views till the main parent.
-     *
-     * @param mainParent        Main Top parent.
-     * @param parent            Parent.
-     * @param child             Child.
-     * @param accumulatedOffset Accumulated Offset.
-     */
-    private fun getDeepChildOffset(mainParent: ViewGroup, parent: ViewParent, child: View, accumulatedOffset: Point) {
-        val parentGroup = parent as ViewGroup
-        accumulatedOffset.x += child.left
-        accumulatedOffset.y += child.top
-        if (parentGroup == mainParent) {
-            return
-        }
-        getDeepChildOffset(mainParent, parentGroup.parent, parentGroup, accumulatedOffset)
     }
 
     fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
@@ -151,7 +114,6 @@ class SomListSortFilterTab(
         changeTabSortFilterText()
         selectedTab = status
         sortFilter.postDelayed({
-            scrollToTab(filterItems.indexOfFirst { it.title.contains(status.status) })
             updateCounter(selectedCount)
         }, SWIPE_TAB_ANIMATION_DELAY)
     }
