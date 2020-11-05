@@ -28,6 +28,7 @@ class MultiLineGraphMapper @Inject constructor() {
     private fun getMetrics(metrics: List<MultiTrendLineMetricModel>): List<MultiLineMetricUiModel> {
         return metrics.map {
             MultiLineMetricUiModel(
+                    isError = it.isError ?: true,
                     errorMsg = it.errMsg.orEmpty(),
                     type = it.type ?: MetricsType.UNKNOWN,
                     summary = MetricsSummaryUiModel(

@@ -14,6 +14,7 @@ data class MultiLineGraphDataUiModel(
 ) : BaseDataUiModel
 
 data class MultiLineMetricUiModel(
+        val isError: Boolean = true,
         val errorMsg: String = "",
         val type: String = MetricsType.UNKNOWN,
         val summary: MetricsSummaryUiModel = MetricsSummaryUiModel(),
