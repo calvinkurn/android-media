@@ -1,6 +1,7 @@
 package com.tokopedia.promotionstarget.presentation.ui.dialog
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
@@ -70,6 +71,7 @@ class CmGratificationDialog {
     @NotificationEntryType
     private var notificationEntryType = NotificationEntryType.ORGANIC
     private var screenName = ""
+    private var closeCurrentActivity = false
 
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
@@ -80,12 +82,14 @@ class CmGratificationDialog {
              couponDetailResponse: TokopointsCouponDetailResponse,
              @NotificationEntryType notificationEntryType: Int,
              onShowListener: DialogInterface.OnShowListener,
-             screenName: String
+             screenName: String,
+             closeCurrentActivity: Boolean
     ): BottomSheetDialog? {
         this.gratifNotification = gratifNotification
         this.couponDetailResponse = couponDetailResponse
         this.notificationEntryType = notificationEntryType
         this.screenName = screenName
+        this.closeCurrentActivity = closeCurrentActivity
 
         val pair = prepareBottomSheet(activityContext, onShowListener)
         bottomSheetDialog = pair.second
@@ -216,6 +220,7 @@ class CmGratificationDialog {
                     when (type) {
                         HachikoButtonType.REDIRECT -> {
                             if (!gratifNotification.secondButton?.applink.isNullOrEmpty()) {
+                                clearCurrentActivity(it.context)
                                 RouteManager.route(it.context, gratifNotification.secondButton.applink)
                             }
                             bottomSheetDialog.dismiss()
@@ -389,6 +394,7 @@ class CmGratificationDialog {
             HachikoButtonType.REDIRECT -> {
                 val applink = couponDetailResponse?.coupon?.usage?.btnUsage?.applink
                 if (!applink.isNullOrEmpty()) {
+                    clearCurrentActivity(btnAction.context)
                     RouteManager.route(btnAction.context, applink)
                 }
                 bottomSheetDialog.dismiss()
@@ -404,6 +410,12 @@ class CmGratificationDialog {
             progressBar.visibility = View.VISIBLE
         } else {
             progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun clearCurrentActivity(context: Context){
+        if(closeCurrentActivity && context is Activity){
+            (context as Activity).finish()
         }
     }
 }

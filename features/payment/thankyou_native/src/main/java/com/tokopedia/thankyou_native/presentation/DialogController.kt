@@ -20,7 +20,7 @@ class DialogController(private val presenter: GratificationPresenter) {
                 gratifPopupCallback = gratifPopupCallback,
                 notificationEntryType = NotificationEntryType.ORGANIC,
                 screenName = screenName,
-                timeout = 6000L)
+                timeout = 6000L,closeCurrentActivity = true)
         return job
     }
 
