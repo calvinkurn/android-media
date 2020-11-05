@@ -65,7 +65,6 @@ class CsatOptionListViewHolder(itemView: View,
             }
             list.add(option)
         }
-        list.reverse()
         return list
 
     }
