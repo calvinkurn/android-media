@@ -2048,6 +2048,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateWishlistData(false)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         sendIntentResultWishlistChange(productId ?: "", false)
+        viewModel.updateCartRedirection(ProductDetailConstant.KEY_REMIND_ME, ProductDetailConstant.KEY_BUTTON_SECONDARY_GREEN, getString(R.string.button_remind_me))
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
@@ -2062,6 +2063,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             content.row == "bottom"
         }?.listOfContent?.firstOrNull()?.subtitle ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
+        viewModel.updateCartRedirection(ProductDetailConstant.KEY_CHECK_WISHLIST, ProductDetailConstant.KEY_BUTTON_SECONDARY_GRAY, getString(R.string.button_check_wishlist))
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {

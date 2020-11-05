@@ -30,9 +30,10 @@ data class ProductTickerInfoDataModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    // Update this logic
     fun shouldRemoveComponent(): Boolean {
-        return generalTickerInfo?.isNullOrEmpty() == true && (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true))
+        return generalTickerInfo?.isNullOrEmpty() == true &&
+                (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
+                !isOutOfStock && !isProductWarehouse
     }
 
     fun getComponentTrackData(adapterPosition: Int) = ComponentTrackDataModel(type, name, adapterPosition + 1)
