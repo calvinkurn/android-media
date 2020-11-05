@@ -254,9 +254,9 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
         // When restored, the lambdas that being passed to fragments in view pager are not working as intended (eg. next action is not running).
         // While you can save lambdas into savedInstanceState, it is not recommended to do that.
         // So, the best option right now is to finish activity when state is being restored to avoid anomalies in those fragments.
-        if (savedInstanceState != null) {
-            finish()
-        }
+//        if (savedInstanceState != null) {
+//            finish()
+//        }
         setContentView(R.layout.activity_create_merchant_voucher_steps)
         initInjector()
         setupView()
@@ -598,7 +598,9 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
             addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     performanceMonitoring.stopPerformanceMonitoring()
-                    removeOnGlobalLayoutListener(this)
+                    if (isAlive) {
+                        removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
         }
