@@ -14,7 +14,7 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         android:layout_marginTop="@dimen/layout_lvl1"
-        tools:text="Detail Produk"
+        tools:text="@string/see_detail"
         android:text="@string/see_detail"
         android:textColor="@color/Neutral_N700_96"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -28,11 +28,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/products_title"
         app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/spacing_lvl3"
         tools:text="@string/sale_from_top_ads"
         android:text="@string/sale_from_top_ads"
-        android:textColor="@color/Unify_N700"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -43,6 +45,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toStartOf="@id/topads_title"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/products_title"
         app:srcCompat="@drawable/ic_som_topads"/>
 
     <androidx.constraintlayout.widget.Group
@@ -52,6 +55,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:constraint_referenced_ids="topads_title, ic_topads_detail"/>
 
     <androidx.recyclerview.widget.RecyclerView
