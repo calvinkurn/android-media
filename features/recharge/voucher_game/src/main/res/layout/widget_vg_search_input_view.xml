@@ -33,7 +33,7 @@
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/voucher_game_dp_15"
             android:layout_weight="1"
             android:background="@null"
