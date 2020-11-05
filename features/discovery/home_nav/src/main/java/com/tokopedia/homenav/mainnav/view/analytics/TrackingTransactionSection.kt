@@ -6,8 +6,9 @@ import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_EMPTY
 import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
 import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object TrackingTransactionSection {
+object TrackingTransactionSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_ALL_TRANSACTION = "click on all transaction"
     private const val ACTION_CLICK_ON_TICKET = "click on e-ticket and e-voucher"
     private const val ACTION_CLICK_ON_REVIEW = "click on review"
@@ -24,6 +25,7 @@ object TrackingTransactionSection {
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
     fun clickOnTicket(userId: String) {
@@ -37,6 +39,7 @@ object TrackingTransactionSection {
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
     fun clickOnReview(userId: String) {
@@ -50,6 +53,7 @@ object TrackingTransactionSection {
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
     fun clickOnOrderStatus(userId: String, orderStatusNumber: String) {
@@ -63,5 +67,6 @@ object TrackingTransactionSection {
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 }
