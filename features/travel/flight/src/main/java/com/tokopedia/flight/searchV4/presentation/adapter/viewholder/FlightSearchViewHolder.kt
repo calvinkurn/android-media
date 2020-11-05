@@ -29,6 +29,7 @@ class FlightSearchViewHolder(itemView: View,
             setAirline(element)
             setSavingPrice(element)
             setBestPairingPrice(element)
+            setSeatDistanceAndRapidTest(element)
             setOnClickListener {
                 onFLightSearchListener.onItemClicked(element, adapterPosition)
             }
@@ -108,6 +109,24 @@ class FlightSearchViewHolder(itemView: View,
                 tvFlightAdditionalDay.text = context.getString(R.string.flight_label_duration_add_day, element.addDayArrival)
             } else {
                 tvFlightAdditionalDay.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setSeatDistanceAndRapidTest(element: FlightJourneyModel) {
+        with(itemView) {
+            if (element.isSeatDistancing) {
+                labelSeatDistancing.visibility = View.VISIBLE
+                guidelineFlightSearch.setGuidelinePercent(0.2F)
+            } else {
+                labelSeatDistancing.visibility = View.GONE
+                guidelineFlightSearch.setGuidelinePercent(0F)
+            }
+
+            if (element.hasFreeRapidTest) {
+                labelFreeRapidTest.visibility = View.VISIBLE
+            } else {
+                labelFreeRapidTest.visibility = View.GONE
             }
         }
     }
