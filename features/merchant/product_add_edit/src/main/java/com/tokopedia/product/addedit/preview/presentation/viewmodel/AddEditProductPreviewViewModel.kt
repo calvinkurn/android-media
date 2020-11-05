@@ -121,11 +121,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         // reassign wholesale information with the actual wholesale values
                         productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
 
-                        // remove auto generated draft showcase id from BE (for desktop product with no showcase information)
-                        val showCases = productInputModel.detailInputModel.productShowCases.toMutableList()
-                        showCases.removeAll { showCaseItemPicker ->
-                            showCaseItemPicker.showcaseId == DRAFT_SHOWCASE_ID
-                        }
+                        // filter the show cases from auto generated showcase from BE (showcase with draftId for desktop product with no showcase information)
+                        val showCases = productInputModel.detailInputModel.productShowCases
+                        val filteredShowCases = showCases.filter { showcaseItemPicker -> showcaseItemPicker.showcaseId != DRAFT_SHOWCASE_ID }
+
+                        // reassign product show cases information
+                        productInputModel.detailInputModel.productShowCases = filteredShowCases
 
                         productInputModel
                     }
