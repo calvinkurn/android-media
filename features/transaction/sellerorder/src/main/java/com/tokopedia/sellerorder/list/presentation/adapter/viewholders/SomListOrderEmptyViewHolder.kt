@@ -9,7 +9,10 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
 import kotlinx.android.synthetic.main.item_som_list_empty.view.*
 
-class SomListOrderEmptyViewHolder(itemView: View?) : AbstractViewHolder<SomListEmptyStateUiModel>(itemView) {
+class SomListOrderEmptyViewHolder(
+        itemView: View?,
+        private val listener: SomListEmptyStateListener
+) : AbstractViewHolder<SomListEmptyStateUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_som_list_empty
@@ -31,6 +34,12 @@ class SomListOrderEmptyViewHolder(itemView: View?) : AbstractViewHolder<SomListE
     }
 
     private fun openAppLink(context: Context, appLink: String) {
-        RouteManager.route(context, appLink)
+        if (RouteManager.route(context, appLink)) {
+            listener.onStartAdvertiseButtonClicked()
+        }
+    }
+
+    interface SomListEmptyStateListener {
+        fun onStartAdvertiseButtonClicked()
     }
 }
