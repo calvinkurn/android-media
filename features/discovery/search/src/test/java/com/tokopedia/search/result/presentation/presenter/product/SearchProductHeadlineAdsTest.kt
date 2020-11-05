@@ -11,14 +11,13 @@ import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import io.mockk.every
 import io.mockk.slot
-import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
 private const val searchProductHeadlineAdsTopJSON = "searchproduct/headlineads/headline-ads-top.json"
 private const val searchProductHeadlineAdsAdditionalPosition14JSON = "searchproduct/headlineads/headline-ads-additional-position-14.json"
 private const val searchProductHeadlineAdsAdditionalPosition24JSON = "searchproduct/headlineads/headline-ads-additional-position-24.json"
-private const val searchProductHeadlineAdsAdditionalPosition0JSON = "searchproduct/headlineads/headline-ads-additional-position-0.json"
+private const val searchProductHeadlineAdsAdditionalPositionNegativeJSON = "searchproduct/headlineads/headline-ads-additional-position-negative.json"
 
 internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() {
 
@@ -136,7 +135,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     @Test
     fun `Headline ads with invalid position`() {
-        val searchProductModel = searchProductHeadlineAdsAdditionalPosition0JSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = searchProductHeadlineAdsAdditionalPositionNegativeJSON.jsonToObject<SearchProductModel>()
 
         `Given search product API will return search product model`(searchProductModel)
         `Given visitable list will be captured`()

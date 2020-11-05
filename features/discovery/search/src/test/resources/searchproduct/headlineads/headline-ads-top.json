@@ -1347,7 +1347,7 @@
           "description": "Belanja di Advan Official Store dan dapatkan promo&#34; menarik!",
           "uri": "https://www.tokopedia.com/advan-official",
           "layout": 1,
-          "position": 1
+          "position": 0
         },
         "applinks": "tokopedia://shop/3072108"
       }

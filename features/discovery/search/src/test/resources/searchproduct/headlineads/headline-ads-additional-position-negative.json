@@ -1347,7 +1347,7 @@
           "description": "Belanja di Advan Official Store dan dapatkan promo&#34; menarik!",
           "uri": "https://www.tokopedia.com/advan-official",
           "layout": 0,
-          "position": 0
+          "position": -1
         },
         "applinks": "tokopedia://shop/3072108"
       },
@@ -1433,7 +1433,7 @@
           "description": "Belanja di nexard, diskon hingga 50%!",
           "uri": "https://staging.tokopedia.com/nexard",
           "layout": 0,
-          "position": 0
+          "position": -1
         },
         "applinks": "tokopedia://shop/480996"
       }

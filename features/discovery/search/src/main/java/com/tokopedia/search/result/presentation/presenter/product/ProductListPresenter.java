@@ -1225,7 +1225,7 @@ final class ProductListPresenter
             CpmData data = cpmDataIterator.next();
             int position = data.getCpm() == null ? -1 : data.getCpm().getPosition();
 
-            if (position <= 0 || !shouldShowCpmShop(data)) {
+            if (position < 0 || !shouldShowCpmShop(data)) {
                 cpmDataIterator.remove();
                 continue;
             }
@@ -1235,7 +1235,7 @@ final class ProductListPresenter
             try {
                 CpmViewModel cpmViewModel = createCpmViewModel(data);
 
-                if (position == 1) processHeadlineAdsAtTop(visitableList, cpmViewModel);
+                if (position == 0 || position == 1) processHeadlineAdsAtTop(visitableList, cpmViewModel);
                 else processHeadlineAdsAtPosition(visitableList, position, cpmViewModel);
 
                 cpmDataIterator.remove();
