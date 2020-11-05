@@ -13,9 +13,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.utils.image.ImageUtils
 
 class GiftPrizeLargeView : FrameLayout {
 
@@ -61,11 +61,12 @@ class GiftPrizeLargeView : FrameLayout {
         text?.forEachIndexed { index, s ->
             tvList[index].text = s
         }
-
-        if(tvDescription.lineCount > 1){
-            tvMessage.hide()
-        }else{
-            tvMessage.show()
+        tvDescription.doOnLayout {
+            if (tvDescription.lineCount > 1) {
+                tvMessage.hide()
+            } else {
+                tvMessage.show()
+            }
         }
     }
 
