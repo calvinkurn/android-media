@@ -21,6 +21,7 @@
         app:layout_constraintVertical_bias="0">
 
         <LinearLayout
+            android:id="@+id/content_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -29,6 +30,8 @@
                 android:id="@+id/tv_title_bs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
                 app:typographyType="heading_3"
                 tools:text="Gebyar Diskon Elektronik" />
@@ -38,6 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/notif_dp_16"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -48,6 +53,8 @@
                 android:id="@+id/tv_content_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
                 app:typographyType="body_2"
                 tools:text="@tools:sample/lorem/random" />
         </LinearLayout>
@@ -58,6 +65,8 @@
         android:id="@+id/btn_longer_content_cta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/notif_dp_8"
         android:text="@string/title_notifcenter_click_here" />
 

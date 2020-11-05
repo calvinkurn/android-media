@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.CommonUtils
@@ -13,12 +14,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class NotificationLongerContentBottomSheet : BottomSheetUnify() {
+open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
-    private var notification: NotificationUiModel? = null
-    private var contentTitle: Typography? = null
-    private var contentDesc: Typography? = null
-    private var cta: UnifyButton? = null
+    protected open var notification: NotificationUiModel? = null
+    protected open var contentTitle: Typography? = null
+    protected open var contentDesc: Typography? = null
+    protected open var cta: UnifyButton? = null
+    protected open var contentContainer: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +31,10 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
             inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         initContentView()
+        initViewConfig()
         return super.onCreateView(inflater, container, savedInstanceState)?.also {
             initViewBinding(it)
+            onInitContentView()
         }
     }
 
@@ -40,17 +44,16 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewConfig()
         initContentDesc()
         initCtaButton()
         initTitle()
     }
 
-    private fun initContentDesc() {
+    protected open fun initContentDesc() {
         contentDesc?.text = notification?.shortDescription
     }
 
-    private fun initCtaButton() {
+    protected open fun initCtaButton() {
         if (notification?.buttonText?.isNotEmpty() == true) {
             cta?.text = notification?.buttonText
         }
@@ -62,11 +65,11 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun initTitle() {
+    protected open fun initTitle() {
         contentTitle?.text = notification?.title
     }
 
-    private fun parseArguments() {
+    protected open fun parseArguments() {
         arguments?.getString(KEY_NOTIFICATION_PAYLOAD)?.let { notificationString ->
             notification = CommonUtils.fromJson(
                     notificationString, NotificationUiModel::class.java
@@ -74,18 +77,21 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun initViewBinding(view: View) {
+    protected open fun initViewBinding(view: View) {
         contentTitle = view.findViewById(R.id.tv_title_bs)
         contentDesc = view.findViewById(R.id.tv_content_desc)
         cta = view.findViewById(R.id.btn_longer_content_cta)
+        contentContainer = view.findViewById(R.id.content_container)
     }
 
-    private fun initContentView() {
+    protected open fun initContentView() {
         val contentView = View.inflate(context, R.layout.bottom_sheet_longer_content, null)
         setChild(contentView)
     }
 
-    private fun initViewConfig() {
+    protected open fun onInitContentView() {}
+
+    protected open fun initViewConfig() {
         clearContentPadding = true
         isHideable = true
         isDragable = true
@@ -96,7 +102,7 @@ class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val KEY_NOTIFICATION_PAYLOAD = "notification_payload"
+        const val KEY_NOTIFICATION_PAYLOAD = "notification_payload"
 
         fun create(notification: NotificationUiModel): NotificationLongerContentBottomSheet {
             val notificationString = CommonUtils.toJson(notification)

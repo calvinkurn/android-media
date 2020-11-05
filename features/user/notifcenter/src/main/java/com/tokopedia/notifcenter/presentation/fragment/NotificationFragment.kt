@@ -119,4 +119,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)
     }
+
+    override fun showProductBottomSheet(element: NotificationUiModel) {
+        BottomSheetFactory.showProductBottomSheet(childFragmentManager, element)
+    }
 }

@@ -9,4 +9,10 @@ object BottomSheetFactory {
                 .create(notification)
                 .show(manager, NotificationLongerContentBottomSheet::class.java.simpleName)
     }
+
+    fun showProductBottomSheet(manager: FragmentManager, notification: NotificationUiModel) {
+        NotificationProductLongerContentBottomSheet
+                .create(notification)
+                .show(manager, NotificationProductLongerContentBottomSheet::class.java.simpleName)
+    }
 }

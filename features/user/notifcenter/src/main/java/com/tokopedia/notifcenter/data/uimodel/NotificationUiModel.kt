@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.notification.Bottomsheet
 import com.tokopedia.notifcenter.data.entity.notification.DataNotification
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 
 data class NotificationUiModel(
@@ -101,11 +102,20 @@ data class NotificationUiModel(
         return typeLink == TYPE_BANNER
     }
 
+    fun isStockHandlerBottomSheet(): Boolean {
+        return typeBottomsheet == BS_TYPE_StockHandler
+    }
+
     companion object {
         const val TYPE_DEFAULT = 0
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
         const val TYPE_ATC = 3
         const val TYPE_RECOM = 2
+
+        const val BS_TYPE_LongerContent = 0
+        const val BS_TYPE_ProductCheckout = 1
+        const val BS_TYPE_StockHandler = 2
+        const val BS_TYPE_Information = 3
     }
 }
