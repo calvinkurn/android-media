@@ -30,8 +30,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        tools:text="Penjualan dari TopAds"
-        android:text="@string/see_detail"
+        tools:text="@string/sale_from_top_ads"
+        android:text="@string/sale_from_top_ads"
         android:textColor="@color/Unify_N700"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
