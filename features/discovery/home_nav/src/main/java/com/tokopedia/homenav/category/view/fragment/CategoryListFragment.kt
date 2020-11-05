@@ -18,6 +18,8 @@ import com.tokopedia.homenav.category.view.adapter.typefactory.CategoryListTypeF
 import com.tokopedia.homenav.category.view.di.DaggerCategoryListComponent
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_nav_category.view.*
 import javax.inject.Inject
@@ -81,12 +83,12 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     private fun showGlobalError(view: View){
         view.category_global_error?.let {globalError ->
             globalError.errorSecondaryAction.hide()
+            globalError.show()
+            globalError.findViewById<UnifyButton>(R.id.globalerrors_action)?.text = getString(R.string.category_back_menu)
             globalError.setActionClickListener {
-
                 activity?.let { activity ->
                     Navigation.findNavController(activity, R.id.fragment_container).navigateUp()
                 }
-
             }
         }
     }

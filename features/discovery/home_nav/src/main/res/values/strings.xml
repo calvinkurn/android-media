@@ -38,4 +38,6 @@
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
     <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. <a href="/">Buka Toko Gratis</a></string>
 
+
+    <string name="category_back_menu">Kembali</string>
 </resources>
