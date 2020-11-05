@@ -3,12 +3,15 @@ package com.tokopedia.shop.product.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,10 +40,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -81,6 +81,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Compani
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -528,6 +529,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
         view?.let {
+            recyclerView?.setPadding(
+                    toDp(12),
+                    toDp(0),
+                    toDp(12),
+                    toDp(82)
+            )
             partialShopNplFollowersViewLayout?.translationY = it.height.toFloat()
         }
     }
@@ -550,7 +557,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideShopFollowersView() {
+        recyclerView?.setPadding(
+                toDp(12),
+                toDp(0),
+                toDp(12),
+                toDp(8)
+        )
         partialShopNplFollowersView?.setupVisibility = false
+        partialShopNplFollowersViewLayout?.invisible()
+    }
+
+    private fun toDp(number: Int): Int {
+        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     private fun renderProductListEmptyState(productList: List<ShopProductViewModel>) {
