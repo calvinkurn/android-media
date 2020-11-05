@@ -14,6 +14,7 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.util.gotoDeviceSettings
 import com.tokopedia.troubleshooter.notification.util.setCustomSpan
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.R.color.Unify_G500 as Unify_G500
 
 class FooterViewHolder(
         private val listener: FooterListener,
@@ -58,7 +59,7 @@ class FooterViewHolder(
 
     private fun helpCareLabel() {
         val visitCareText = context.getString(R.string.notif_footer_visit_care)
-        val unifyGreenColor = ContextCompat.getColor(context, R.color.Unify_G500)
+        val unifyGreenColor = ContextCompat.getColor(context, Unify_G500)
 
         txtHelpCare?.setCustomSpan(visitCareText, unifyGreenColor)
 
