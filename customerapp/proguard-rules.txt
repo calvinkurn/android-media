@@ -210,6 +210,7 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+#traceroute
 -keepclassmembers class com.wandroid.traceroute.TraceRoute {
     void clearResult();
     void appendResult(***);

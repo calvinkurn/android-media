@@ -133,7 +133,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     }
 
     private fun setIconToggleReminder(active: Boolean) {
-        val drawableIconReminder = if (active) com.tokopedia.play_common.R.drawable.ic_play_reminder else com.tokopedia.play_common.R.drawable.ic_play_reminder_non_active
+        val drawableIconReminder = if (active) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active
         reminderBadge.setImageDrawable(
                 ContextCompat.getDrawable(context, drawableIconReminder)
         )

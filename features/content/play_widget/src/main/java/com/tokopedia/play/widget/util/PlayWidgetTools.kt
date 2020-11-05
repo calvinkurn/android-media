@@ -8,6 +8,7 @@ import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -16,26 +17,14 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 08/10/20
  */
-class PlayWidgetTools {
+class PlayWidgetTools @Inject constructor(
+        private val useCase: PlayWidgetUseCase,
+        private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
+){
 
-    private var useCase: PlayWidgetUseCase
-    private var reminderUseCase: PlayWidgetReminderUseCase? = null
-    private var mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
-
-    constructor(useCase: PlayWidgetUseCase,
-                mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>) :
-            this(useCase = useCase, reminderUseCase = null, mapperProviders = mapperProviders)
-
-    @Inject constructor(
-            useCase: PlayWidgetUseCase,
-            reminderUseCase: PlayWidgetReminderUseCase?,
-            mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
-    ) {
-        this.useCase = useCase
-        this.reminderUseCase = reminderUseCase
-        this.mapperProviders = mapperProviders
-    }
-
+    private val reminderUseCase: PlayWidgetReminderUseCase
+        get() = lazyReminderUseCase.get()
 
     suspend fun getWidgetFromNetwork(
             widgetType: PlayWidgetUseCase.WidgetType,
@@ -57,8 +46,8 @@ class PlayWidgetTools {
                                   remind: Boolean,
                                   coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
         return withContext(coroutineContext) {
-            reminderUseCase?.params = PlayWidgetReminderUseCase.createParams(channelId, remind)
-            reminderUseCase?.executeOnBackground() ?: throw IllegalStateException("PlayWidgetReminderUseCase cannot be null")
+            reminderUseCase.params = PlayWidgetReminderUseCase.createParams(channelId, remind)
+            reminderUseCase.executeOnBackground()
         }
     }
 
