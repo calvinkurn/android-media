@@ -30,9 +30,8 @@ class SomDetailDynamicPriceAdapter(private val dynamicPriceList: List<SomDetailP
                 dynamic_price_label.text = data.label
                 dynamic_price_value.text = data.value
                 if(data.textColor.isNotBlank()) {
-                    val colorPrice = data.textColor.replace("#", "")
-                    dynamic_price_label.setTextColor(Color.parseColor("#$colorPrice"))
-                    dynamic_price_value.setTextColor(Color.parseColor("#$colorPrice"))
+                    dynamic_price_label.setTextColor(Color.parseColor(data.textColor))
+                    dynamic_price_value.setTextColor(Color.parseColor(data.textColor))
                 }
             }
         }
