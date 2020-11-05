@@ -50,6 +50,9 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.ext.hasFailedTranscodedChannel
+import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -1594,6 +1597,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
             shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.widgetUiModel)
+
+            val widget = carouselPlayWidgetUiModel?.widgetUiModel
+
+            if (widget is PlayWidgetUiModel.Medium) {
+                if (widget.hasSuccessfulTranscodedChannel) {
+                    //TODO("Transcode Successful")
+                } else if (widget.hasFailedTranscodedChannel) {
+                    //TODO("Transcode Failed")
+                }
+            }
         })
     }
 

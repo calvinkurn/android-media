@@ -71,7 +71,7 @@ data class PlayWidgetMediumChannelUiModel(
         val video: PlayWidgetVideoUiModel,
         val channelType: PlayWidgetChannelType,
         val hasAction: Boolean,
-        val isClickable: Boolean
+        val channelTypeTransition: PlayWidgetChannelTypeTransition
 ) : PlayWidgetMediumItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()

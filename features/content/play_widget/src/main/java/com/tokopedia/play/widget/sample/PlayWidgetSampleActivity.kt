@@ -166,7 +166,7 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
             hasAction = false,
-            isClickable = true
+            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType)
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

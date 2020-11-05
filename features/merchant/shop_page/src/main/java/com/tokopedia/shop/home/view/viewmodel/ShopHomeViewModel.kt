@@ -468,7 +468,7 @@ class ShopHomeViewModel @Inject constructor(
                     PlayWidgetUseCase.WidgetType.ShopPage(shopId),
                     dispatcherProvider.io()
             )
-            val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
+            val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
             _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(widgetUiModel = widgetUiModel)
         }) {
             _playWidgetObservable.value = null

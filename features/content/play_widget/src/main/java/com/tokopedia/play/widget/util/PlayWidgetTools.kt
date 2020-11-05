@@ -46,10 +46,10 @@ class PlayWidgetTools {
         }
     }
 
-    suspend fun mapWidgetToModel(widgetResponse: PlayWidget, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetUiModel {
+    suspend fun mapWidgetToModel(widgetResponse: PlayWidget, prevModel: PlayWidgetUiModel? = null, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetUiModel {
         return withContext(coroutineContext) {
             val mapper = mapperProviders[PlayWidgetSize.getByTypeString(widgetResponse.meta.template)] ?: throw IllegalStateException("Mapper cannot be null")
-            mapper.mapWidget(widgetResponse)
+            mapper.mapWidget(widgetResponse, prevModel)
         }
     }
 

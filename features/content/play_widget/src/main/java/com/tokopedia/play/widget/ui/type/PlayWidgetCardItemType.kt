@@ -13,7 +13,6 @@ enum class PlayWidgetChannelType(val value: String) {
     Unknown("");
 
     companion object {
-
         private val values = values()
 
         fun getByValue(value: String): PlayWidgetChannelType {

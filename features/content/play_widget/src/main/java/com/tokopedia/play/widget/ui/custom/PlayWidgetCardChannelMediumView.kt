@@ -108,7 +108,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         }
 
         setOnClickListener {
-            if (model.isClickable) mListener?.onChannelClicked(it, model)
+            mListener?.onChannelClicked(it, model)
         }
 
         ivAction.setOnClickListener {

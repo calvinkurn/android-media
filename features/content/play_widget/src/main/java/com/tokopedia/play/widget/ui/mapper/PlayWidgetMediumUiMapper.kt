@@ -17,8 +17,10 @@ class PlayWidgetMediumUiMapper @Inject constructor(
         private val videoMapper: PlayWidgetVideoMapper
 ) : PlayWidgetMapper {
 
-    override fun mapWidget(data: PlayWidget): PlayWidgetUiModel {
+    override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
+        val prevMediumModel = prevModel as? PlayWidgetUiModel.Medium
+
         return PlayWidgetUiModel.Medium(
                 title = data.meta.widgetTitle,
                 actionTitle = data.meta.buttonText,
@@ -26,7 +28,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 actionWebLink = data.meta.overlayImageWebLink,
                 background = widgetBackground,
                 config = configMapper.mapWidgetConfig(data),
-                items = mapWidgetItem(data.data).toMutableList().apply {
+                items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
                     add(0, mapWidgetItemOverlay(widgetBackground))
                 }
         )
@@ -44,10 +46,13 @@ class PlayWidgetMediumUiMapper @Inject constructor(
             backgroundUrl = data.meta.widgetBackground
     )
 
-    private fun mapWidgetItem(items: List<PlayWidgetItem>): List<PlayWidgetMediumItemUiModel> = items.mapNotNull {
+    private fun mapWidgetItem(prevItems: List<PlayWidgetMediumItemUiModel>?, items: List<PlayWidgetItem>): List<PlayWidgetMediumItemUiModel> = items.mapNotNull {
         when (it.typename) {
             "PlayWidgetBanner" -> mapWidgetItemBanner(it)
-            "PlayWidgetChannel" -> mapWidgetItemChannel(it)
+            "PlayWidgetChannel" -> mapWidgetItemChannel(
+                    prevItems?.find { prevItem -> prevItem is PlayWidgetMediumChannelUiModel && prevItem.channelId == it.id } as? PlayWidgetMediumChannelUiModel,
+                    it
+            )
             else -> null
         }
     }
@@ -65,7 +70,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
             partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name)
     )
 
-    private fun mapWidgetItemChannel(item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
+    private fun mapWidgetItemChannel(prevItem: PlayWidgetMediumChannelUiModel?, item: PlayWidgetItem): PlayWidgetMediumChannelUiModel {
         val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
 
         return PlayWidgetMediumChannelUiModel(
@@ -82,7 +87,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live,
-                isClickable = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live || channelType == PlayWidgetChannelType.Upcoming
+                channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType)
         )
     }
 }
