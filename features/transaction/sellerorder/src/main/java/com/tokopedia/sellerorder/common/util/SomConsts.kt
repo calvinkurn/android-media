@@ -197,7 +197,6 @@ object SomConsts {
     const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
     const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
 
-    const val IS_WAREHOUSE = 1
 
     //SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"

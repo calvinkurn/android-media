@@ -384,7 +384,16 @@ data class SomDetailOrder(
             data class FlagOrderMeta(
                     @SerializedName("is_free_shipping_campaign")
                     @Expose
-                    val flagFreeShipping: Boolean = false)
+                    val flagFreeShipping: Boolean = false,
+
+                    @SerializedName("is_top_ads")
+                    @Expose
+                    val isTopAds: Boolean = false,
+
+                    @SerializedName("is_tokocabang")
+                    @Expose
+                    val isWareHouse: Boolean = false
+            )
 
             data class LogisticInfo(
                     @SerializedName("all")
