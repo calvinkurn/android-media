@@ -2,8 +2,11 @@ package com.tokopedia.topads.dashboard.data.constant
 
 object TopAdsDashboardConstant {
     const val PARAM_TYPE = "type"
-    const val PARAM_START_DATE = "start_date"
-    const val PARAM_END_DATE = "end_date"
+    const val PARAM_START_DATE = "startDate"
+    const val PARAM_END_DATE = "endDate"
+
+    const val GROUP_PARAM_START_DATE = "start_date"
+    const val GROUP_PARAM_END_DATE = "end_date"
 
     const val SOURCE = "source"
 

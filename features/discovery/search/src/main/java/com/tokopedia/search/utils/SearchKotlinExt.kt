@@ -41,3 +41,8 @@ internal fun safeCastRupiahToInt(price: String?): Int {
         0
     }
 }
+internal fun Map<String, Any>?.getValueString(key: String): String {
+    this ?: return ""
+
+    return get(key)?.toString() ?: ""
+}
