@@ -6,12 +6,10 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -81,7 +79,6 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Compani
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
