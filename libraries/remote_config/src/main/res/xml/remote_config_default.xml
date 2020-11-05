@@ -256,11 +256,11 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_flight_show_free_rapid</key>
+        <key>app_flag_flight_rapid_test</key>
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_flight_show_seat_distancing</key>
+        <key>app_flag_flight_seat_distancing</key>
         <value>true</value>
     </entry>
     <entry>
