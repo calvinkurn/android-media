@@ -32,6 +32,23 @@
  @id.co.veritrans.android.api.** *;
 }
 
+#com.google.android.gms
+#https://stackoverflow.com/questions/18646899/proguard-cant-find-referenced-class-com-google-android-gms-r
+-keep class * extends java.util.ListResourceBundle {
+    protected * getContents();
+}
+-keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+    public static final *** NULL;
+}
+-keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keepclassmembernames class * {
+    @com.google.android.gms.common.annotation.KeepName *;
+}
+-keepnames class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+#end com.google.android.gms
+
 # start retrofit
 # https://github.com/square/retrofit/blob/master/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro
 -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
