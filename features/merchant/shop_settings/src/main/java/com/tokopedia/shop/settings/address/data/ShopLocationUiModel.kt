@@ -6,7 +6,7 @@ import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ShopLocationViewModel(
+data class ShopLocationUiModel(
         val id: String = "",
         var name: String = "",
         var address: String = "",

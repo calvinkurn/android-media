@@ -8,7 +8,7 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.notes.view.adapter.factory.BaseShopNoteFactory
 
-class ShopNoteViewModel() : Parcelable, Visitable<BaseShopNoteFactory> {
+class ShopNoteUiModel() : Parcelable, Visitable<BaseShopNoteFactory> {
     var id: String? = null
         private set
     var title: String? = null
@@ -56,12 +56,12 @@ class ShopNoteViewModel() : Parcelable, Visitable<BaseShopNoteFactory> {
         return typeFactory.type(this)
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopNoteViewModel> {
-        override fun createFromParcel(source: Parcel): ShopNoteViewModel {
-            return ShopNoteViewModel(source)
+    companion object CREATOR : Parcelable.Creator<ShopNoteUiModel> {
+        override fun createFromParcel(source: Parcel): ShopNoteUiModel {
+            return ShopNoteUiModel(source)
         }
 
-        override fun newArray(size: Int): Array<ShopNoteViewModel?> {
+        override fun newArray(size: Int): Array<ShopNoteUiModel?> {
             return arrayOfNulls(size)
         }
     }
