@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.utils
+package com.tokopedia.seamless_login_common.utils
 
 /**
  * Created by Yoris Prayogo on 2019-11-11.

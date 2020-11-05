@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.domain.usecase
+package com.tokopedia.seamless_login_common.domain.usecase
 
 import android.net.Uri
 import com.google.gson.Gson
@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.seamless_login.data.UserDataPojo
-import com.tokopedia.seamless_login.internal.SeamlessLoginConstant
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.seamless_login.utils.AESUtils
+import com.tokopedia.seamless_login_common.data.UserDataPojo
+import com.tokopedia.seamless_login_common.internal.SeamlessLoginConstant
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.seamless_login_common.utils.AESUtils
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

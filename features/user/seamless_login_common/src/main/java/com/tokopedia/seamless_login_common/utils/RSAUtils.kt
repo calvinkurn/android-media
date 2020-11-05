@@ -1,7 +1,7 @@
-package com.tokopedia.seamless_login.utils
+package com.tokopedia.seamless_login_common.utils
 
 import android.util.Base64
-import com.tokopedia.seamless_login.internal.SeamlessLoginConstant.RSA_ALGORITHM
+import com.tokopedia.seamless_login_common.internal.SeamlessLoginConstant.RSA_ALGORITHM
 import java.security.KeyFactory
 import java.security.PublicKey
 import java.security.spec.X509EncodedKeySpec

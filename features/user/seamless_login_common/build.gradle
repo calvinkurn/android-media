@@ -56,10 +56,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'seamless-login'
+    artifactId = 'seamless-login-common'
     groupId = 'com.tokopedia.user'
     versionName = "0.0.2"
-    artifactName ="seamless_login-release"
+    artifactName ="seamless_login_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

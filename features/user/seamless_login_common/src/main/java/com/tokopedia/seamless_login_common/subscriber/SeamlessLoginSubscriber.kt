@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.subscriber
+package com.tokopedia.seamless_login_common.subscriber
 
 /**
  * Created by Yoris Prayogo on 2019-11-08.
