@@ -7,7 +7,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class SomFilterUiModel(
         val nameFilter: String = "",
-        var date: String = "",
         var somFilterData: List<SomFilterChipsUiModel> = listOf(),
         val canSelectMany: Boolean = false,
         val isDividerVisible: Boolean = false

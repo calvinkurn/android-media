@@ -43,7 +43,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
-        SomFilterListener, SomFilterDateBottomSheet.CalenderListener, SomSubFilterActivity.SubFilterListener,
+        SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
         HasComponent<SomFilterComponent> {
 
     @Inject
@@ -65,6 +65,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         super.onCreate(savedInstanceState)
         initInject()
         orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
+        filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
         somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
@@ -162,13 +163,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somFilterAdapter?.updateDateFilterText(date)
     }
 
-
-    override fun onSaveSubFilter(somListGetOrderListParam: SomListGetOrderListParam,
-                                 filterDate: String, idFilter: String,
-                                 somSubFilterList: List<SomFilterChipsUiModel>) {
-
-    }
-
     override fun getComponent(): SomFilterComponent? {
         return activity?.run {
             DaggerSomFilterComponent
@@ -233,7 +227,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             SomAnalytics.eventClickTerapkanOnFilterPage(keyFilter)
             somListOrderParam?.let { somListParam ->
                 somFilterFinishListener?.onClickShowOrderFilter(somListParam,
-                        somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus)
+                        somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus, filterDate)
             }
             dismiss()
         }
@@ -321,6 +315,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_ORDER_STATUS = "key_order_status"
         const val KEY_SOM_FILTER_LIST = "key_som_filter_list"
         const val KEY_ORDER_STATUS_ID_LIST = "key_order_status_id_list"
+        const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
@@ -329,13 +324,15 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         fun createInstance(orderStatus: String,
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
-                           mActivity: FragmentActivity?
+                           mActivity: FragmentActivity?,
+                           filterDate: String
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet(mActivity)
             val args = Bundle()
             args.putString(KEY_ORDER_STATUS, orderStatus)
             args.putIntegerArrayList(KEY_SOM_FILTER_LIST, ArrayList(orderStatusIdList))
             args.putParcelableArrayList(KEY_SOM_FILTER_LIST, ArrayList(somFilterUiModelList))
+            args.putString(KEY_FILTER_DATE, filterDate)
             fragment.arguments = args
             return fragment
         }
@@ -345,6 +342,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         fun onClickShowOrderFilter(filterData: SomListGetOrderListParam,
                                    somFilterUiModelList: List<SomFilterUiModel>,
                                    idFilter: String,
-                                   orderStatus: String)
+                                   orderStatus: String,
+                                   filterDate: String
+        )
     }
 }
