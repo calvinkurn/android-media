@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -21,6 +26,12 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     protected open var contentDesc: Typography? = null
     protected open var cta: UnifyButton? = null
     protected open var contentContainer: LinearLayout? = null
+
+    //    protected open var banner: BannerImageView? = null
+    protected open var banner: ImageView? = null
+
+    //TODO: remove later
+    protected open val imageSizer = DynamicSizeImageRequestListener()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +58,31 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         initContentDesc()
         initCtaButton()
         initTitle()
+        initBanner()
+    }
+
+    private fun initBanner() {
+        if (notification?.isBanner() == true) {
+            banner?.show()
+//            banner?.heightMultiplier = 0.25
+            ImageHandler.loadImageWithListener(
+                    banner, notification?.dataNotification?.infoThumbnailUrl, imageSizer
+            )
+//            Glide.with(context!!)
+//                    .load(notification?.dataNotification?.infoThumbnailUrl)
+//                    .listener(imageSizer)
+//                    .into(banner!!)
+//            ImageHandler.loadImageWithListener(
+//                    banner, notification?.dataNotification?.infoThumbnailUrl, imageSizer
+//            )
+//            Handler().postDelayed({
+//                ImageHandler.loadImageWithListener(
+//                        banner, notification?.dataNotification?.infoThumbnailUrl, imageSizer
+//                )
+//            }, 300)
+        } else {
+            banner?.hide()
+        }
     }
 
     protected open fun initContentDesc() {
@@ -82,6 +118,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         contentDesc = view.findViewById(R.id.tv_content_desc)
         cta = view.findViewById(R.id.btn_longer_content_cta)
         contentContainer = view.findViewById(R.id.content_container)
+        banner = view.findViewById(R.id.content_image)
     }
 
     protected open fun initContentView() {
@@ -115,3 +152,22 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         }
     }
 }
+
+//class BannerImageView : AppCompatImageView {
+//
+//    var heightMultiplier = 0.5
+//
+//    constructor(context: Context?) : super(context)
+//    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+//    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+//
+//    // some other necessary things
+//    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+//        val width = measuredWidth
+//
+//        //force a 2:1 aspect ratio
+//        val height = (width * heightMultiplier).roundToInt()
+//        setMeasuredDimension(width, height)
+//    }
+//}

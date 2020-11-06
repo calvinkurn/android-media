@@ -14,7 +14,8 @@ import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifyprinciples.Typography
 
 class BannerNotificationTitleViewHolder(
-        itemView: View?, listener: NotificationItemListener?
+        itemView: View?,
+        private val listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
     private val banner: ImageView? = itemView?.findViewById(R.id.iv_banner)
@@ -27,6 +28,7 @@ class BannerNotificationTitleViewHolder(
         super.bind(element)
         bindBannerImage(element)
         bindFooterTimeStatus(element)
+        bindClickBanner(element)
     }
 
     private fun bindBannerImage(element: NotificationUiModel) {
@@ -89,6 +91,12 @@ class BannerNotificationTitleViewHolder(
             countDown?.show()
         } else {
             countDown?.hide()
+        }
+    }
+
+    private fun bindClickBanner(element: NotificationUiModel) {
+        container?.setOnClickListener {
+            listener?.showLongerContent(element)
         }
     }
 
