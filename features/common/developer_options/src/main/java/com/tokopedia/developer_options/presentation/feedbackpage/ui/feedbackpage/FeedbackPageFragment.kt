@@ -203,14 +203,6 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     }
 
-   /* private fun checkResizeImageResult(image: String, imageSize: Long): Boolean {
-        resizeImage(image)
-        val resizedData = resizedUriImage?.let { handleItem(it) }
-        val resizedFile = File(resizedData?.path)
-        val imageSizedResult = resizedFile.length()/1000
-        return imageSizedResult > 250
-    }*/
-
     override fun goToTicketCreatedActivity(issueUrl: String?) {
         activity?.finish()
         Intent(context, TicketCreatedActivity::class.java).apply {
