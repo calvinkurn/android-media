@@ -18,6 +18,7 @@ import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
 import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ad_content_fragment.*
 import javax.inject.Inject
@@ -64,6 +65,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun gotoNextPage() {
+        stepperModel?.selectedProductIds?.apply {
+            selectedTopAdsProducts.forEach {
+                add(it.productID)
+            }
+        }
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -76,8 +82,12 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun populateView() {
         setUpSelectedText()
         productImagePreviewWidget.setTopAdsImagePreviewClick(this)
-        btn_submit.setOnClickListener {
-
+        btnSubmit.setOnClickListener {
+            if (selectedTopAdsProducts.isEmpty()) {
+                Toaster.make(it, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else {
+                gotoNextPage()
+            }
         }
     }
 

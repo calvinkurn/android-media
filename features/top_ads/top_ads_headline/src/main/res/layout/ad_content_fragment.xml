@@ -136,7 +136,7 @@
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_submit"
+            android:id="@+id/btnSubmit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

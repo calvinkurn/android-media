@@ -67,7 +67,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun gotoNextPage() {
-        stepperModel?.groupName = headline_ad_name_input.textFieldInput.text.toString()
+        stepperModel?.groupName = headlineAdNameInput.textFieldInput.text.toString()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -83,7 +83,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun setUpAdNameEditText() {
-        headline_ad_name_input?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -91,34 +91,34 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                error_text?.hide()
-                btn_submit?.isEnabled = s.toString().trim().isNotEmpty()
+                headlineAdNameInput.setError(false)
+                btnSubmit?.isEnabled = s.toString().trim().isNotEmpty()
                 if (s.toString().isBlank()) {
-                    headline_ad_name_input.getFirstIcon().hide()
+                    headlineAdNameInput.getFirstIcon().hide()
                 } else {
-                    headline_ad_name_input.getFirstIcon().show()
+                    headlineAdNameInput.getFirstIcon().show()
                 }
             }
         })
-        headline_ad_name_input?.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
+        headlineAdNameInput?.textFieldInput?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
             Utils.dismissKeyboard(context, v)
             true
         }
-        headline_ad_name_input.getFirstIcon().setOnClickListener {
-            headline_ad_name_input.textFieldInput.setText("")
+        headlineAdNameInput.getFirstIcon().setOnClickListener {
+            headlineAdNameInput.textFieldInput.setText("")
             it.hide()
         }
     }
 
     private fun setUpSubmitButtonClick() {
-        btn_submit.setOnClickListener {
-            if (headline_ad_name_input.textFieldInput.text.toString().isBlank()) {
+        btnSubmit.setOnClickListener {
+            if (headlineAdNameInput.textFieldInput.text.toString().isBlank()) {
                 onError(getString(R.string.topads_headline_ad_name_required))
             } else {
-                validateGroup(headline_ad_name_input.textFieldInput.text.toString())
+                validateGroup(headlineAdNameInput.textFieldInput.text.toString())
             }
         }
     }
@@ -131,7 +131,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     private fun onError(errorMsg: String) {
         errorTextVisibility(true)
-        error_text?.text = errorMsg
+        headlineAdNameInput.setMessage(errorMsg)
     }
 
     private fun onSuccess() {
@@ -140,13 +140,8 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun errorTextVisibility(visible: Boolean) {
-        if (visible) {
-            error_text?.show()
-            btn_submit?.isEnabled = false
-        } else {
-            error_text?.hide()
-            btn_submit?.isEnabled = true
-        }
+        headlineAdNameInput.setError(visible)
+        btnSubmit?.isEnabled = !visible
     }
 
 }

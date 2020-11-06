@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     android:padding="@dimen/dp_16">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/productListHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/topads_headline_product_list_heading"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold" />
-
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchInputView"
         android:layout_width="0dp"
@@ -25,7 +13,7 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toStartOf="@+id/btnSort"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productListHeading"
+        app:layout_constraintTop_toTopOf="parent"
         app:search_bar_placeholder="@string/topads_headline_cari_produk"
         app:search_bar_show_icon="@drawable/topads_ic_search" />
 
@@ -45,13 +33,28 @@
         app:unifyImageButtonType="main"
         app:unifyImageButtonVariant="image" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyResultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/shadow_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchInputView"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Kami tidak dapat menemukan produk “Kemeja batik xyzs”" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quickFilterRecyclerView"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/productTextCheckBox"
+        app:layout_constraintBottom_toTopOf="@id/selectProductCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchInputView"
@@ -62,7 +65,7 @@
         tools:scrollbars="horizontal" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/productTextCheckBox"
+        android:id="@+id/selectProductCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
@@ -82,7 +85,7 @@
         app:layout_constraintBottom_toTopOf="@id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productTextCheckBox"
+        app:layout_constraintTop_toBottomOf="@id/selectProductCheckBox"
         tools:itemCount="5"
         tools:listitem="@layout/item_layout_product_list" />
 

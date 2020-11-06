@@ -2,20 +2,22 @@ package com.tokopedia.top_ads_headline.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.TopAdsCategoryDataModel
@@ -24,8 +26,11 @@ import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.adapter.CategoryListAdapter
 import com.tokopedia.top_ads_headline.view.adapter.ProductListAdapter
+import com.tokopedia.top_ads_headline.view.viewmodel.DEFAULT_RECOMMENDATION_CATEGORY_ID
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
 import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.data.util.SpaceItemDecoration
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -35,6 +40,7 @@ import kotlinx.android.synthetic.main.fragment_topads_product_list.*
 import javax.inject.Inject
 
 private const val ROW = 50
+private const val MAX_PRODUCT_SELECTION = 10
 
 class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
 
@@ -43,24 +49,18 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private var Start = 0
-
+    private var start = 0
     private lateinit var viewModel: TopAdsProductListViewModel
-
     private var topAdsCategoryList = ArrayList<TopAdsCategoryDataModel>()
-
-    private var categoryListAdapter: CategoryListAdapter? = null
-
-    private var productsListAdapter: ProductListAdapter? = null
-
+    private lateinit var categoryListAdapter: CategoryListAdapter
+    private lateinit var productsListAdapter: ProductListAdapter
     private var selectedCategoryDataModel: TopAdsCategoryDataModel? = null
-
     private var selectedTopAdsProduct = HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>()
-
     private lateinit var sortProductList: ProductSortSheetList
-
     private var isProductSelectedListEdited = false
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private var isDataEnded = false
+    private var linearLayoutManager = LinearLayoutManager(context)
 
     companion object {
         fun newInstance(): TopAdsProductListFragment = TopAdsProductListFragment()
@@ -77,11 +77,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.run {
-            getParcelableArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>(SELECTED_PRODUCT_LIST)?.toHashSet()?.let {
-                selectedTopAdsProduct = it
-            }
-        }
+        getDataFromArguments()
         viewModel = ViewModelProvider(this, viewModelFactory).get(TopAdsProductListViewModel::class.java)
     }
 
@@ -97,25 +93,112 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         viewModel.getEtalaseList(userSession.shopId ?: "")
     }
 
+    private fun getSelectedSortId() = sortProductList.getSelectedSortId()
+
+    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
+
+    private fun getSelectedProducts() = selectedTopAdsProduct.toCollection(ArrayList())
+
+    private fun getDataFromArguments() {
+        arguments?.run {
+            getParcelableArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>(SELECTED_PRODUCT_LIST)?.toHashSet()?.let {
+                selectedTopAdsProduct = it
+            }
+        }
+    }
+
     private fun setUpUI() {
         categoryListAdapter = CategoryListAdapter(topAdsCategoryList, chipFilterClick = this::onChipFilterClick)
         productsListAdapter = ProductListAdapter(ArrayList(), selectedTopAdsProduct, this)
-        quickFilterRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        quickFilterRecyclerView.adapter = categoryListAdapter
-        quickFilterRecyclerView.addItemDecoration(SpaceItemDecoration(LinearLayoutManager.HORIZONTAL))
-        productListRecyclerView.layoutManager = LinearLayoutManager(context)
-        productListRecyclerView.adapter = productsListAdapter
-        productListRecyclerView.addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
+        quickFilterRecyclerView.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = categoryListAdapter
+            addItemDecoration(SpaceItemDecoration(LinearLayoutManager.HORIZONTAL))
+        }
+        productListRecyclerView.run {
+            layoutManager = linearLayoutManager
+            adapter = productsListAdapter
+            addItemDecoration(SpaceItemDecoration(LinearLayoutManager.VERTICAL))
+            recyclerviewScrollListener = onRecyclerViewListener()
+            addOnScrollListener(recyclerviewScrollListener)
+        }
         sortProductList = ProductSortSheetList.newInstance()
         sortProductList.onItemClick = { refreshProduct() }
+        setSelectProductText()
+        setUpSelectProductCheckBox()
+        setUpSearchBarUnify()
+        setUpToolTip()
         btnSort.setOnClickListener {
             sortProductList.show(childFragmentManager, "")
         }
         btnNext.setOnClickListener {
             setResultAndFinish()
         }
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (!isDataEnded) {
+                    start += ROW
+                    fetchTopAdsProducts()
+                }
+            }
+        }
+    }
+
+    private fun setUpSearchBarUnify() {
+        view?.let { Utils.setSearchListener(searchInputView, activity, it, ::refreshProduct) }
+        searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.toString().isBlank()) {
+                    hideEmptyView()
+                    refreshProduct()
+                }
+            }
+        })
+    }
+
+    private fun hideEmptyView() {
+        emptyResultText.hide()
+        quickFilterRecyclerView.show()
+        selectProductCheckBox.show()
+        productListRecyclerView.show()
+    }
+
+    private fun showEmptyView() {
+        if (getKeyword().isNotEmpty()) {
+            emptyResultText.text = String.format(getString(R.string.topads_headline_search_result_with_keyword, getKeyword()))
+        }
+        emptyResultText.show()
+        quickFilterRecyclerView.hide()
+        selectProductCheckBox.hide()
+        productListRecyclerView.hide()
+    }
+
+    private fun setUpSelectProductCheckBox() {
+        selectProductCheckBox.setOnClickListener {
+            val isChecked = selectProductCheckBox.isChecked
+            if (isChecked) {
+                productsListAdapter.list.let {
+                    selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
+                }
+            } else {
+                selectedTopAdsProduct.clear()
+            }
+            setSelectProductText()
+            productsListAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun setSelectProductText() {
         selectProductInfo.text = String.format(getString(R.string.format_selected_produk), selectedTopAdsProduct.size)
-        setUpToolTip()
     }
 
     private fun setUpToolTip() {
@@ -126,76 +209,93 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
             imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
         }
-        tooltipBtn?.addItem(tooltipView)
-        tooltipBtn?.setOnClickListener {
+        tooltipBtn.addItem(tooltipView)
+        tooltipBtn.setOnClickListener {
 
         }
     }
 
     private fun refreshProduct() {
-        Start = 0
+        start = 0
+        productsListAdapter.refreshList()
         fetchTopAdsProducts()
     }
 
     private fun setUpObservers() {
         viewModel.getEtalaseListLiveData().observe(viewLifecycleOwner, Observer {
-            categoryListAdapter?.setItems(it)
+            categoryListAdapter.setItems(it)
             it.first().let { topAdsCategory ->
                 selectedCategoryDataModel = topAdsCategory
+                setProductSelectCbText()
                 fetchTopAdsProducts()
             }
         })
     }
 
-    private fun fetchTopAdsProducts() {
-        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), getKeyword(), selectedCategoryDataModel?.id
-                ?: "", getSelectedSortId(), "", ROW, Start,
-                this::onSuccessGetProductList, this::onError)
+    private fun setProductSelectCbText() {
+        if (selectedCategoryDataModel?.id == DEFAULT_RECOMMENDATION_CATEGORY_ID) {
+            selectProductCheckBox.text = getString(R.string.topads_headline_select_all_recommendation)
+        } else {
+            val count = selectedCategoryDataModel?.count?.takeIf {
+                it <= MAX_PRODUCT_SELECTION
+            } ?: MAX_PRODUCT_SELECTION
+            selectProductCheckBox.text = String.format(getString(R.string.topads_headline_select_first_n_recommendation), count)
+        }
+        selectProductCheckBox.isChecked = false
     }
 
-    inner class SpaceItemDecoration(private val orientation: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            if (parent.getChildAdapterPosition(view) != (parent.adapter?.itemCount ?: 0) - 1) {
-                if (orientation == LinearLayoutManager.HORIZONTAL) {
-                    outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
-                } else {
-                    outRect.bottom = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+    private fun setSelectProductCbCheck(data: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+        if (data.size == selectedTopAdsProduct.size && selectedTopAdsProduct == HashSet(data)) {
+            selectProductCheckBox.setIndeterminate(false)
+            selectProductCheckBox.isChecked = true
+        } else {
+            if (selectedTopAdsProduct.isNotEmpty()) {
+                for (product in data) {
+                    if (selectedTopAdsProduct.contains(product)) {
+                        selectProductCheckBox.setIndeterminate(true)
+                        selectProductCheckBox.isChecked = true
+                        break
+                    }
                 }
             }
         }
     }
 
+    private fun fetchTopAdsProducts() {
+        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), getKeyword(), selectedCategoryDataModel?.id
+                ?: "", getSelectedSortId(), "", ROW, start,
+                this::onSuccessGetProductList, this::onError)
+    }
+
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsCategoryDataModel) {
         selectedCategoryDataModel = topAdsCategoryDataModel
+        setProductSelectCbText()
         fetchTopAdsProducts()
     }
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
-        productsListAdapter?.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>)
-    }
-
-    private fun onError(t: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
-            refreshProduct()
+        if (data.isNotEmpty()) {
+            productsListAdapter.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>)
+            prepareForNextFetch(eof)
+            setSelectProductCbCheck(data)
+        } else {
+            showEmptyView()
         }
     }
 
-    override fun onProductOverSelect() {
-        view?.let { Toaster.make(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+    private fun prepareForNextFetch(eof: Boolean) {
+        isDataEnded = eof
+        if (!isDataEnded)
+            recyclerviewScrollListener.updateStateAfterGetData()
     }
 
-    override fun onProductSelect(product: ResponseProductList.Result.TopadsGetListProduct.Data) {
-        val count = selectedTopAdsProduct.size
-        isProductSelectedListEdited = true
-        selectProductInfo.text = String.format(getString(R.string.format_selected_produk), count)
-        btnNext.isEnabled = count > 0
+    private fun onError(t: Throwable) {
+        view?.let {
+            Toaster.make(it, t.localizedMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+                refreshProduct()
+            })
+        }
     }
-
-    private fun getSelectedSortId() = sortProductList.getSelectedSortId()
-
-    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
-
-    private fun getSelectedProducts() = selectedTopAdsProduct.toCollection(ArrayList())
 
     fun setResultAndFinish() {
         val intent = Intent()
@@ -207,4 +307,17 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
     }
 
+    override fun onProductOverSelect() {
+        view?.let {
+            Toaster.make(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+        val count = selectedTopAdsProduct.size
+        isProductSelectedListEdited = true
+        selectProductCheckBox.setIndeterminate(true)
+        setSelectProductText()
+        btnNext.isEnabled = count > 0
+    }
 }

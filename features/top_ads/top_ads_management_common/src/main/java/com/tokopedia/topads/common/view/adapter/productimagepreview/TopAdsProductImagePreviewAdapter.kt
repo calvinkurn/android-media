@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyImageButton
-import com.tokopedia.utils.image.ImageUtils
 
 private const val DEFAULT_SIZE = 1
 
@@ -45,13 +45,13 @@ class TopAdsProductImagePreviewAdapter : RecyclerView.Adapter<TopAdsProductImage
             holder.deleteButton.hide()
         } else {
             imageList?.getOrNull(position)?.let {
-                ImageUtils.loadImage(holder.productImage, it)
+                holder.productImage.loadImage(it)
                 holder.deleteButton.setImageDrawable(holder.itemView.context.getResDrawable(R.drawable.unify_chips_ic_close))
                 holder.deleteButton.show()
                 holder.deleteButton.setOnClickListener {
                     imageList?.removeAt(position)
-                    notifyItemRemoved(position)
                     topAdsImagePreviewClick?.onDeletePreview(position - 1)
+                    notifyDataSetChanged()
                 }
             }
         }

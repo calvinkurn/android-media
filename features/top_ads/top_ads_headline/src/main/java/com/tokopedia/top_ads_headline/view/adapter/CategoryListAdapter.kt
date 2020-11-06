@@ -54,7 +54,11 @@ class CategoryListAdapter(private var list: ArrayList<TopAdsCategoryDataModel>,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as? CategoryListViewHolder)?.let {
             val categoryDataModel = list[position]
-            it.chipFilter.chipText = "${categoryDataModel.name} (${categoryDataModel.count})"
+            if(categoryDataModel.count>0){
+                it.chipFilter.chipText = "${categoryDataModel.name} (${categoryDataModel.count})"
+            } else {
+                it.chipFilter.chipText = categoryDataModel.name
+            }
             if (categoryDataModel.isSelected) {
                 it.chipFilter.chipType = ChipsUnify.TYPE_SELECTED
             } else {

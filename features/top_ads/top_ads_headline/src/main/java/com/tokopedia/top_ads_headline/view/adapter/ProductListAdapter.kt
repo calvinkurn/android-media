@@ -6,25 +6,31 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.item_layout_topads_category_shimmer.view.*
 
 private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
 private const val VIEW_CATEGORY = 1
 private const val MAX_PRODUCT_SELECTION = 10
-class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
+class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
                          private var selectedProductList: HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>,
                          private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         this.list = list
+        notifyDataSetChanged()
+    }
+
+    fun refreshList(){
+        list.clear()
         notifyDataSetChanged()
     }
 
@@ -46,19 +52,15 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
             val product = list[position]
             viewHolder.productName.text = product.productName
             viewHolder.productPrice.text = product.productPrice
-            ImageUtils.loadImage(viewHolder.productImage, product.productImage)
+            viewHolder.productImage.loadImage(product.productImage)
             viewHolder.checkBox.isChecked = selectedProductList.contains(product)
             viewHolder.itemView.setOnClickListener {
-                val isChecked =  !selectedProductList.contains(product)
-                onItemSelection(isChecked, product)
+                val checked = selectedProductList.contains(product)
+                onItemSelection(checked, product)
                 viewHolder.checkBox.isChecked = selectedProductList.contains(product)
             }
             setProductRating(product.productRating, product.productReviewCount, viewHolder.ratingView)
-            viewHolder.recommendationTag.visibility = if (product.productIsPromoted) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            viewHolder.recommendationTag.showWithCondition(product.isRecommended)
         }
     }
 
@@ -74,17 +76,17 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
         }
     }
 
-    private fun onItemSelection(checked: Boolean, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
-        if (checked) {
+    private fun onItemSelection(isAlreadyChecked: Boolean, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+        if (isAlreadyChecked) {
+            selectedProductList.remove(product)
+        } else {
             if (selectedProductList.size == MAX_PRODUCT_SELECTION) {
                 productListAdapterListener?.onProductOverSelect()
             } else {
                 selectedProductList.add(product)
             }
-        } else {
-            selectedProductList.remove(product)
         }
-        productListAdapterListener?.onProductSelect(product)
+        productListAdapterListener?.onProductClick(product)
     }
 
     private fun showRating(rating: Int, ratingView: ViewGroup) {
@@ -113,7 +115,6 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
         companion object {
             val Layout = R.layout.item_layout_product_list
         }
-
         val productImage: ImageUnify = itemView.findViewById(R.id.product_image)
         val checkBox: CheckboxUnify = itemView.findViewById(R.id.checkBox)
         val productName: Typography = itemView.findViewById(R.id.product_name)
@@ -126,7 +127,6 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
         companion object {
             val Layout = R.layout.item_layout_topads_category_shimmer
         }
-
         init {
             itemView.topadsShimmer.run {
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -173,6 +173,6 @@ class ProductListAdapter(private var list: ArrayList<ResponseProductList.Result.
 
     interface ProductListAdapterListener {
         fun onProductOverSelect()
-        fun onProductSelect(product: ResponseProductList.Result.TopadsGetListProduct.Data)
+        fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data)
     }
 }
