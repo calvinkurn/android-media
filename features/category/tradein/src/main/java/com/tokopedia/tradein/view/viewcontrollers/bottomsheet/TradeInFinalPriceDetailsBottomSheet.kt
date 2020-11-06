@@ -49,8 +49,8 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
                     setBottomTextSize(textSize)
                     setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
                     setBottomTextStyle("bold")
-                    setBottonTextViewGravity(Gravity.END)
                     setBottomText(review.substringAfter(":"))
+                    setBottomGravity(Gravity.END)
                 }
                 contentView?.findViewById<LinearLayout>(R.id.linear_layout)?.addView(doubleTextView)
             }

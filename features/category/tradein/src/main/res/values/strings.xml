@@ -113,4 +113,14 @@
     <string name="tradein_imei_helper">Tekan *#06# untuk cek IMEI atau dengan cara berikut</string>
     <string name="tradein_imei_label">No. IMEI</string>
     <string name="tradein_final_price">%1$s*</string>
+    <string name="tradein_price_label">Harga HP-mu</string>
+    <string name="tradein_price_total">Maks. Total Bayar</string>
+    <string name="tradein_header_final_price">Ringkasan Tukar Tambah</string>
+    <string name="tradein_diff_price_label">Ganti gadget hanya dengan harga</string>
+    <string name="tradein_remaining_price_label">Sisa Pembayaran Barang</string>
+    <string name="tradein_bs_info">1. Buka Pengaturan > Umum > Mengenai.
+        \n2. Cari nomor seri, IMEI perangkat kamu.
+        \n3. Sentuh dan tahan nomor IMEI hingga tersalin.</string>
+    <string name="tradein_imei_title">Masukkan no. IMEI</string>
+    <string name="tradein_imei_di_pengaturan">IMEI di pengaturan</string>
 </resources>

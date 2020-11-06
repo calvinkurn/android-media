@@ -25,7 +25,6 @@ import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.btn_continue
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.iv_back
@@ -79,13 +78,8 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         }
         tv_final_amt.text = getString(R.string.tradein_final_price, tradeinHomeViewModel.finalPrice)
         tv_final_amt_2.text = tradeinHomeViewModel.finalPrice
-        //no_imei_value.text = getTradeInDeviceId()
         model_value.text = StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString()
-//        typography_imei_help.setOnClickListener {
-//            val tradeInImeiHelpBottomSheet = newInstance()
-//            tradeInImeiHelpBottomSheet.show(childFragmentManager, "")
-//            tradeInAnalytics.clickInitialPriceImeiBottomSheet()
-//        }
+
         iv_back.setOnClickListener {
             activity?.onBackPressed()
         }
@@ -127,49 +121,9 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         }
     }
 
-    /* private fun setUpObservers() {
-         tradeInInitialPriceViewModel.imeiStateLiveData.observe(viewLifecycleOwner, Observer { showImei: Boolean ->
-             if (showImei) {
-                 handleImei()
-             } else {
-                 imei_view.hide()
-                 btn_continue.setOnClickListener {
-                     tradeinHomeViewModel.onInitialPriceClick(null)
-                 }
-             }
-         })
-     }*/
-
     private fun getTradeInDeviceId(): String? {
         return TradeInUtils.getDeviceId(context)
     }
-
-    /* private fun handleImei() {
-         imei_view.show()
-         no_imei.hide()
-         no_imei_value.hide()
-         edit_text_imei.setOnFocusChangeListener { _, hasFocus ->
-             if (hasFocus)
-                 tradeInAnalytics.clickInitialPriceInputImei()
-         }
-         btn_continue.setOnClickListener {
-             when {
-                 edit_text_imei.text.length == 15 -> {
-                     tradeinHomeViewModel.onInitialPriceClick(edit_text_imei.text.toString())
-                 }
-                 edit_text_imei.text.isEmpty() -> {
-                     tradeInAnalytics.clickInitialPriceImeiNoInput()
-                     typography_imei_description.text = getString(R.string.enter_the_imei_number_text)
-                     typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
-                 }
-                 else -> {
-                     tradeInAnalytics.clickInitialPriceImeiWrongInput()
-                     typography_imei_description.text = getString(R.string.wrong_imei_string)
-                     typography_imei_description.setTextColor(MethodChecker.getColor(context, R.color.tradein_hint_red))
-                 }
-             }
-         }
-     }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.tradein_initial_price_fragment, container, false)
@@ -198,10 +152,6 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     private fun setMaxPrice(maxPrice: String) {
         tv_old_product_price.text = getString(R.string.tradein_minus, maxPrice)
-//        val spannableString = SpannableString(getString(R.string.tradein_save_upto, maxPrice))
-//        val start = 18
-//        spannableString.setSpan(StyleSpan(Typeface.BOLD), start, start + maxPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        save_upto.text = spannableString
     }
 
     private fun isElligible() {
