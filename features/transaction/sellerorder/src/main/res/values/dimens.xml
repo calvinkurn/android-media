@@ -17,5 +17,4 @@
     <dimen name="som_list_order_product_image_height">210dp</dimen>
     <dimen name="som_list_product_image_size">46dp</dimen>
 
-    <dimen name="som_filter_reset_text_size">14sp</dimen>
 </resources>
