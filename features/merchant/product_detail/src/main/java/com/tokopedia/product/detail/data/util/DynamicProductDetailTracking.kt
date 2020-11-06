@@ -28,7 +28,6 @@ import org.json.JSONObject
 
 object DynamicProductDetailTracking {
 
-
     fun sendScreen(irisSessionId: String, shopID: String, shopType: String, productId: String) {
         val customDimension: MutableMap<String, String> = java.util.HashMap()
         customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopID
@@ -1308,7 +1307,11 @@ object DynamicProductDetailTracking {
                             "view product page",
                             label,
                             null,
-                            null
+                            null,
+                            productInfo?.isProductVariant().toString(),
+                            productInfo?.data?.campaign?.campaignID,
+                            productInfo?.basic?.status?.toLowerCase(),
+                            productInfo?.getFinalStock()?.toString()
                     )
         }
 
