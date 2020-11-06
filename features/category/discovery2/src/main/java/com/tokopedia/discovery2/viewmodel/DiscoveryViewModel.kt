@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
@@ -25,7 +24,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.REACT_NATIVE
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,7 +41,6 @@ import kotlin.coroutines.CoroutineContext
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
-                                             private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,
                                              private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
@@ -51,7 +48,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
-    private val discoveryUIConfig = MutableLiveData<Result<String>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -88,24 +84,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoveryPageInfo.value = Fail(it)
                 }
         )
-
-    }
-
-
-    fun getDiscoveryUIConfig() {
-        launchCatchError(
-                block = {
-                    val data = discoveryUIConfigRepo.getDiscoveryUIConfigData()
-                    setUIConfig(data.discoveryPageUIConfig?.data?.config)
-                },
-                onError = {
-                    discoveryUIConfig.postValue(Success(REACT_NATIVE))
-                }
-        )
-    }
-
-    private fun setUIConfig(config: String?) {
-        discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
@@ -127,13 +105,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         } else {
             discoveryFabLiveData.postValue(Fail(Throwable()))
         }
-
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
-    fun getDiscoveryUIConfigLiveData(): LiveData<Result<String>> = discoveryUIConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")

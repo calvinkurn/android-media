@@ -128,9 +128,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
-        if (!isMainProcess()) {
-            return;
-        }
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -337,19 +334,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("EXTRA_URI_IMAGE", uri);
         getApplicationContext().startActivity(intent);
-    }
-
-    private boolean isMainProcess() {
-        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
-
-        if (manager == null || manager.getRunningAppProcesses() == null) return false;
-
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == android.os.Process.myPid()) {
-                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
-            }
-        }
-        return false;
     }
 
     @Override
