@@ -19,6 +19,7 @@ import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,6 +47,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
     val deletePostUseCase by memoized<DeletePostUseCase>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+    val playWidgetTools by memoized<PlayWidgetTools>()
 
     return FeedViewModel(
             FeedTestDispatcherProvider(),
@@ -61,7 +63,8 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
             atcUseCase,
             trackAffiliateClickUseCase,
             deletePostUseCase,
-            sendTopAdsUseCase
+            sendTopAdsUseCase,
+            playWidgetTools
     )
 }
 
@@ -118,6 +121,10 @@ fun FeatureBody.createFeedTestInstance() {
 
     val sendTopAdsUseCase by memoized {
         mockk<SendTopAdsUseCase>(relaxed = true)
+    }
+
+    val playWidgetTools by memoized {
+        mockk<PlayWidgetTools>(relaxed = true)
     }
 }
 
