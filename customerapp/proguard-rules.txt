@@ -443,3 +443,5 @@
 -keep class com.google.android.material.internal.CollapsingTextHelper {
     public void recalculate();
 }
+
+-dontwarn module-info

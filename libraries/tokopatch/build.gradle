@@ -38,6 +38,11 @@ android {
         abortOnError false
     }
 
+    packagingOptions {
+        exclude 'META-INF/**'
+        exclude "**/module-info.class"
+    }
+
 }
 
 dependencies {
