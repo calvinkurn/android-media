@@ -217,6 +217,9 @@ class OrderSummaryPageActivityCreditCardTest {
             assertInstallment("Bayar Penuh")
 
             assertPaymentButtonEnable(true)
+
+            // Temporary to prevent onClick not triggered
+            Thread.sleep(1000)
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

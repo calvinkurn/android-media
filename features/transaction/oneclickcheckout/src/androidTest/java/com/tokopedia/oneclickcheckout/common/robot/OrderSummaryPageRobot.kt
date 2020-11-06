@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -16,6 +17,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.junit.Assert.assertEquals
@@ -112,7 +114,12 @@ class OrderSummaryPageRobot {
     }
 
     infix fun pay(func: OrderSummaryPageResultRobot.() -> Unit) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.btn_pay)).perform(scrollTo()).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            val btn = (view as UnifyButton)
+            Log.i("qwertyuiop", "btn is loading ${btn.isLoading}")
+            Log.i("qwertyuiop", "btn text ${btn.text}")
+        }.perform(click())
         OrderSummaryPageResultRobot().apply(func)
     }
 
@@ -229,6 +236,10 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.tv_payment_name)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(paymentName)))
     }
 
+    fun assertProfilePaymentDetail(detail: String) {
+        onView(withId(R.id.tv_payment_detail)).perform(scrollTo()).check(matches(isDisplayed())).check(matches(withText(detail)))
+    }
+
     fun assertInstallment(detail: String?) {
         if (detail == null) {
             onView(withId(R.id.tv_installment_type)).check { view, noViewFoundException ->
@@ -268,6 +279,7 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.btn_pay)).perform(scrollTo()).check(matches(withText(buttonText))).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             assertEquals(true, view.isEnabled)
+            assertEquals(false, (view as UnifyButton).isLoading)
         }
         onView(withId(R.id.tv_total_payment_value)).check(matches(withText(total)))
     }
@@ -420,6 +432,6 @@ class OvoActivationBottomSheetRobot {
             (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
         }
         //block main thread for webview processing
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 }

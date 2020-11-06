@@ -74,6 +74,9 @@ class OrderSummaryPageActivityOvoTest {
                 performActivation(true)
             }
 
+            assertProfilePayment("OVO")
+            assertProfilePaymentDetail("Rp 1.000.000")
+
             assertPayment("Rp115.000", "Bayar")
         } pay {
             assertGoToPayment(
