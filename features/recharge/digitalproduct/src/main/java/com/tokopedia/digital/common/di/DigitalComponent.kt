@@ -4,13 +4,11 @@ package com.tokopedia.digital.common.di
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
-import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -22,20 +20,18 @@ interface DigitalComponent {
 
     fun rechargeAnalytics(): RechargeAnalytics
 
-    fun userSession(): UserSession
+    fun userSession(): UserSessionInterface
 
     @ApplicationContext
     fun context(): Context
 
     fun abstractionRouter(): AbstractionRouter
 
-    fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
-
-    fun digitalGetCartUseCase(): DigitalGetCartUseCase
-
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
 
     @DigitalRestApiRetrofit
     fun digitalRestApiRetrofit(): Retrofit
+
+    fun cartMapperData(): ICartMapperData
 
 }

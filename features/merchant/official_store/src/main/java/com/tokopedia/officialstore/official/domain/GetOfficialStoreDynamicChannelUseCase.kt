@@ -1,6 +1,8 @@
 package com.tokopedia.officialstore.official.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
@@ -19,6 +21,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         private set
 
     override suspend fun executeOnBackground(): DynamicChannel {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         val responseType: Type = DynamicChannel.Response::class.java
         val requestInstance = GraphqlRequest(gqlQuery, responseType, requestParams)
 

@@ -32,7 +32,8 @@
       "eventAction": "click on dynamic icon",
       "sessionIris": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "categoryId": "{{.*}}"
+      "categoryId": "{{.*}}",
+      "campaignCode": "{{.*}}"
     }
   ]
 }

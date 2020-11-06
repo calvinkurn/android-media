@@ -11,7 +11,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatAttachmentUseCase @Inject constructor(
+open class ChatAttachmentUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
         private val mapper: ChatAttachmentMapper,
         private var dispatchers: TopchatCoroutineContextProvider
