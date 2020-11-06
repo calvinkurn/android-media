@@ -32,6 +32,7 @@
     <string name="menu_account_section_title_account_setting">Pengaturan Akun</string>
     <string name="menu_account_section_title_app_setting">Pengaturan Aplikasi</string>
     <string name="menu_account_section_title_about_us">Pengaturan Akun</string>
+    <string name="menu_account_section_title_developer">Pengaturan Developer</string>
 
     <!-- Menu Setting Item Title -->
     <string name="menu_account_title_address_list">Daftar Alamat</string>
@@ -49,6 +50,8 @@
     <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
     <string name="menu_account_title_review">Ulas Aplikasi Ini</string>
     <string name="menu_account_title_sign_out">Keluar Akun</string>
+    <string name="menu_account_title_dev_options">Developer Options</string>
+    <string name="menu_account_title_feedback_form">Feedback Form</string>
 
     <!-- Menu Setting Item Description -->
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>

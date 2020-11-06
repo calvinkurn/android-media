@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -38,6 +39,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.ABOUT_US
 import com.tokopedia.home_account.AccountConstants.Analytics.ACCOUNT_BANK
 import com.tokopedia.home_account.AccountConstants.Analytics.ADDRESS_LIST
 import com.tokopedia.home_account.AccountConstants.Analytics.APPLICATION_REVIEW
+import com.tokopedia.home_account.AccountConstants.Analytics.DEVELOPER_OPTIONS
 import com.tokopedia.home_account.AccountConstants.Analytics.LOGOUT
 import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
@@ -61,6 +63,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -71,10 +74,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.home_account_coordinator_layout.*
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -115,6 +115,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     @Inject
     lateinit var permissionChecker: PermissionChecker
 
+    private var fpmBuyer: PerformanceMonitoring? = null
+
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
 
@@ -126,6 +128,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         context?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -162,12 +165,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when(it) {
-                is Success -> {
-                    widgetTitle = it.data.title
-                    addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
-                    adapter?.notifyDataSetChanged()
-                    addRecommendationItem(it.data.recommendationItemList)
-                }
+                is Success -> onSuccessGetFirstRecommendationData(it.data)
                 is Fail -> {
                     onFailGetData(it.throwable)
                     endlessRecyclerViewScrollListener?.changeLoadingStatus(false)
@@ -188,7 +186,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onFailGetData(throwable: Throwable) {
-        if(throwable is UnknownHostException || throwable is SocketTimeoutException) {
+        val message = throwable.message?: ""
+        if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
             showErrorNoConnection()
         } else {
             showError(throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
@@ -210,6 +209,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyItemRangeChanged(0, 4)
         }
+        fpmBuyer?.run { stopTrace() }
+    }
+
+    private fun onSuccessGetFirstRecommendationData(recommendation: RecommendationWidget) {
+        widgetTitle = recommendation.title
+        addItem(RecommendationTitleView(widgetTitle), addSeparator = false)
+        adapter?.notifyDataSetChanged()
+        addRecommendationItem(recommendation.recommendationItemList)
     }
 
     private fun addRecommendationItem(list: List<RecommendationItem>) {
@@ -267,7 +274,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         adapter = HomeAccountUserAdapter(this)
         setupList()
         setLoadMore()
-
+        showLoading()
         getData()
 
         home_account_user_fragment_rv?.addOnScrollListener(NavRecyclerViewScrollListener(
@@ -290,17 +297,23 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
         home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
-            home_account_user_fragment_swipe_refresh?.isRefreshing = false
+            onRefresh()
             getData()
         }
-
     }
 
     private fun getData(){
         home_account_user_fragment_rv?.scrollToPosition(0)
         endlessRecyclerViewScrollListener?.resetState()
-        showLoading()
         viewModel.getBuyerData()
+        getFirstRecommendation()
+    }
+
+    private fun onRefresh() {
+        showLoading()
+        home_account_user_fragment_swipe_refresh?.isRefreshing = false
+        adapter?.clearAllItems()
+        setupSettingList()
     }
 
     private fun showDialogClearCache() {
@@ -338,16 +351,20 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         home_account_user_fragment_rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         home_account_user_fragment_rv?.adapter = adapter
         home_account_user_fragment_rv?.isNestedScrollingEnabled = false
+        setupSettingList()
+    }
 
+    private fun setupSettingList() {
         addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker), addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
+        }
         addItem(SettingDataView("", mutableListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_OUT_ID, title = getString(R.string.menu_account_title_sign_out), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_sign_out, endText = "Versi ${GlobalConfig.VERSION_NAME}")
         ), isExpanded = true), addSeparator = true)
         adapter?.notifyDataSetChanged()
-
-        getFirstRecommendation()
     }
 
     private fun addItem(item: Any, addSeparator: Boolean) {
@@ -471,6 +488,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_APP_REVIEW_ID -> {
                 homeAccountAnalytic.eventClickSetting(APPLICATION_REVIEW)
                 goToPlaystore()
+            }
+
+            AccountConstants.SettingCode.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
+                homeAccountAnalytic.eventClickSetting(DEVELOPER_OPTIONS)
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
 
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
@@ -829,6 +854,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
+        fpmBuyer?.run { stopTrace() }
     }
 
     private fun showError(e: Throwable, errorCode: String) {
@@ -839,6 +865,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
+        fpmBuyer?.run { stopTrace() }
     }
 
     companion object {
@@ -852,6 +879,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val REQUEST_FROM_PDP = 394
+        private val FPM_BUYER = "mp_account_buyer"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

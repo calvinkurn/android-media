@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.discoveryCommon)
 
+    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

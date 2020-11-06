@@ -1,6 +1,5 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -21,7 +20,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -29,8 +27,6 @@ import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
-import com.tokopedia.home_account.view.HomeAccountUserFragment;
-import com.tokopedia.home_account.view.activity.HomeAccountUserActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -135,9 +131,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         });
 
         menuInbox.setOnClickListener(v -> {
-//            accountAnalytics.eventTrackingInbox();
-//            RouteManager.route(getActivity(), ApplinkConst.INBOX);
-            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT);
+            accountAnalytics.eventTrackingInbox();
+            RouteManager.route(getActivity(), ApplinkConst.INBOX);
         });
 
         if (getActivity() instanceof AppCompatActivity) {
