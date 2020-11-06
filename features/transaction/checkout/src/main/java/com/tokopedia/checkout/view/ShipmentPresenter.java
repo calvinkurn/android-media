@@ -790,7 +790,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest) {
+    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrder) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
@@ -858,6 +858,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    }
 
                                                    cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
+                                               }
+
+                                               if (validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds().size() > 0 &&
+                                                       lastSelectedCourierOrder > -1) {
+                                                   getView().prepareReloadRates(lastSelectedCourierOrder);
                                                }
                                            }
                                        }

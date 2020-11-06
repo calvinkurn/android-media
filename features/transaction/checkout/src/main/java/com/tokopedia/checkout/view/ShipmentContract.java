@@ -99,9 +99,9 @@ public interface ShipmentContract {
         void cancelAllCourierPromo();
 
         void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition,
-                                              ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+                                              ShipmentCartItemModel shipmentCartItemModel);
 
-        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel);
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
@@ -146,6 +146,8 @@ public interface ShipmentContract {
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
+
+        void prepareReloadRates(int lastSelectedCourierOrder);
     }
 
     interface AnalyticsActionListener {
@@ -222,7 +224,7 @@ public interface ShipmentContract {
                              boolean isTradeInDropOff, String deviceId,
                              String cornerId, String leasingId);
 
-        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest);
+        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrder);
 
         void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 

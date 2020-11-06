@@ -62,7 +62,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 
@@ -124,14 +124,14 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
                                     shippingDurationUiModel.getShippingCourierViewModelList(),
-                                    itemPosition, shipmentCartItemModel, shopShipmentList
+                                    itemPosition, shipmentCartItemModel
                             );
                             return;
                         }
                     }
                 }
             }
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 

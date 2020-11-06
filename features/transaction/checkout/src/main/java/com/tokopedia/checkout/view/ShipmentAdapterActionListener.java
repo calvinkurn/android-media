@@ -33,7 +33,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment);
 
-    void onFinishChoosingShipment();
+    void onFinishChoosingShipment(int lastSelectedCourierOrder);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
