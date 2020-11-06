@@ -7,10 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -22,8 +19,11 @@ import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.entertainment.mock.CategoryEventMockResponse
+import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,9 +38,15 @@ class CategoryEventActivityTest {
 
     @Before
     fun setup(){
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(CategoryEventMockResponse())
+        setupGraphqlMockResponse {
+            addMockResponse(
+                    KEY_EVENT_CHILD,
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CATEGORY),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, EventCategoryActivity::class.java).apply {
@@ -50,6 +56,7 @@ class CategoryEventActivityTest {
         }
 
         mActivityRule.launchActivity(intent)
+        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
 
@@ -78,7 +85,16 @@ class CategoryEventActivityTest {
         Thread.sleep(2000)
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
     companion object {
+        private const val KEY_EVENT_CHILD = "event_search"
+
+        private const val PATH_RESPONSE_CATEGORY = "event_category.json"
+
         private const val ENTERTAINMENT_EVENT_CATEGORY_VALIDATOR_QUERY = "tracker/event/categorypageeventcheck.json"
     }
 }

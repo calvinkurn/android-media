@@ -18,10 +18,9 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewH
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.data.MockMetaData
-import com.tokopedia.entertainment.mock.CheckoutEventMockResponse
+import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationMockHelper
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,12 +43,12 @@ class CheckoutEventActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_PDP_V3,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.entertainment.test.R.raw.event_checkout),
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CHECKOUT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_CONTENT,
-                    InstrumentationMockHelper.getRawString(context, com.tokopedia.entertainment.test.R.raw.event_checkout_content),
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CHECKOUT_CONTENT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
         }
@@ -97,8 +96,13 @@ class CheckoutEventActivityTest {
     }
 
     companion object {
-        const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
-        const val KEY_CONTENT = "event_content_by_id"
+        private const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
+        private const val KEY_CONTENT = "event_content_by_id"
+
+        private const val PATH_RESPONSE_CHECKOUT = "event_checkout.json"
+        private const val PATH_RESPONSE_CHECKOUT_CONTENT = "event_checkout_content.json"
+
+
         private const val ENTERTAINMENT_EVENT_CHECKOUT_VALIDATOR_QUERY = "tracker/event/checkouteventcheck.json"
     }
 }

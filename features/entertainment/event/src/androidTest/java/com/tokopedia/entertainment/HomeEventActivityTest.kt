@@ -6,7 +6,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -21,9 +20,9 @@ import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventVie
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.entertainment.mock.HomeEventMockResponse
-import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
+import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Rule
@@ -42,7 +41,12 @@ class HomeEventActivityTest {
     fun setup() {
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(HomeEventMockResponse())
+        setupGraphqlMockResponse {
+            addMockResponse(
+                    KEY_EVENT_CHILD,
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_HOME),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, HomeEventActivity::class.java)
         activityRule.launchActivity(intent)
@@ -318,6 +322,8 @@ class HomeEventActivityTest {
 
     companion object {
         private const val ENTERTAINMENT_EVENT_HOME_VALIDATOR_QUERY = "tracker/event/homeeventcheck.json"
+        private const val KEY_EVENT_CHILD = "event_home"
+        private const val PATH_RESPONSE_HOME = "event_home.json"
     }
 
 }

@@ -1,17 +1,11 @@
 package com.tokopedia.entertainment
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -24,9 +18,8 @@ import com.tokopedia.entertainment.search.activity.EventSearchActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.entertainment.mock.SearchEventMockResponse
-import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +36,12 @@ class SearchEventActivityTest {
     fun setup(){
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse(SearchEventMockResponse())
+        setupGraphqlMockResponse{
+            addMockResponse(
+                    KEY_EVENT_CHILD,
+                    com.tokopedia.entertainment.util.ResourceUtils.getJsonFromResource(PATH_RESPONSE_SEARCH),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, EventSearchActivity::class.java)
@@ -83,5 +81,9 @@ class SearchEventActivityTest {
 
     companion object {
         private const val ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY = "tracker/event/searchpageevent.json"
+
+        private const val KEY_EVENT_CHILD = "event_location_search"
+
+        private const val PATH_RESPONSE_SEARCH = "event_search.json"
     }
 }
