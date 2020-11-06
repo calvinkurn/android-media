@@ -203,7 +203,7 @@
                 android:background="@color/thank_divider_color"
                 app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
 
-            <LinearLayout
+            <com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

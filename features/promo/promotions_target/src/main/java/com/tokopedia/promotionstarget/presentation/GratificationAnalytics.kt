@@ -41,7 +41,7 @@ object GratificationAnalytics {
     //4 thank you
     fun userDismissPopUpThankYou() {}
 
-    //5,7,10,12,14
+    //3,5,7,10,12,14
     fun userClickMainCtaPush(userId: String,
                              screenName: String,
                              action: String,
@@ -60,7 +60,7 @@ object GratificationAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
-    //6,9,11,13,15
+    //4,6,9,11,13,15
     fun userDismissPopup(userId: String, entryPoint: Int, popupType: String?, baseCode: String?, eventId: String?, screenName: String) {
         val map = mutableMapOf<String, Any>()
 

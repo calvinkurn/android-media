@@ -2,6 +2,7 @@ package com.tokopedia.promotionstarget.presentation.ui.dialog
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.DialogInterface
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promotionstarget.R
@@ -220,8 +222,7 @@ class CmGratificationDialog {
                     when (type) {
                         HachikoButtonType.REDIRECT -> {
                             if (!gratifNotification.secondButton?.applink.isNullOrEmpty()) {
-                                clearCurrentActivity(it.context)
-                                RouteManager.route(it.context, gratifNotification.secondButton.applink)
+                                launchApplink(it.context, gratifNotification.secondButton.applink!!)
                             }
                             bottomSheetDialog.dismiss()
                         }
@@ -394,8 +395,7 @@ class CmGratificationDialog {
             HachikoButtonType.REDIRECT -> {
                 val applink = couponDetailResponse?.coupon?.usage?.btnUsage?.applink
                 if (!applink.isNullOrEmpty()) {
-                    clearCurrentActivity(btnAction.context)
-                    RouteManager.route(btnAction.context, applink)
+                    launchApplink(btnAction.context, applink)
                 }
                 bottomSheetDialog.dismiss()
             }
@@ -413,9 +413,18 @@ class CmGratificationDialog {
         }
     }
 
-    private fun clearCurrentActivity(context: Context){
-        if(closeCurrentActivity && context is Activity){
-            (context as Activity).finish()
+    private fun launchApplink(context: Context, applink: String) {
+        if (closeCurrentActivity && context is Activity) {
+            val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+            val intent = RouteManager.getIntent(context, applink, "")
+            intent?.let {
+                TaskStackBuilder.create(context)
+                        .addNextIntent(homeIntent)
+                        .addNextIntent(intent)
+                        .startActivities()
+            }
+        } else {
+            RouteManager.route(context, applink)
         }
     }
 }
