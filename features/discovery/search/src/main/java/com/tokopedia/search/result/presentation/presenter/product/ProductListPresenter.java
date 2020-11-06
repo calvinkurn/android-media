@@ -99,6 +99,9 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_NAV;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
@@ -1102,7 +1105,9 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
+        if (getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP)) {
+            list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
+        }
 
         addPageTitle(list);
 
