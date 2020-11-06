@@ -49,10 +49,6 @@ import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTa
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
-import com.tokopedia.vouchercreation.create.view.interfaces.MerchantVoucherTargetListener
-import com.tokopedia.vouchercreation.create.view.interfaces.PromotionBudgetAndTypeListener
-import com.tokopedia.vouchercreation.create.view.interfaces.ReviewVoucherListener
-import com.tokopedia.vouchercreation.create.view.interfaces.SetVoucherPeriodListener
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
@@ -63,8 +59,7 @@ import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class CreateMerchantVoucherStepsActivity : BaseActivity(),
-MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherListener, SetVoucherPeriodListener{
+class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     companion object {
         private const val PROGRESS_ATTR_TAG = "progress"
@@ -117,21 +112,39 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
             put(VoucherCreationStepInfo.STEP_ONE,
                     MerchantVoucherTargetFragment.createInstance(
-                            this@CreateMerchantVoucherStepsActivity,
+                            ::setVoucherName,
+                            ::getPromoCodePrefix,
+                            ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
             put(VoucherCreationStepInfo.STEP_TWO,
                     PromotionBudgetAndTypeFragment.createInstance(
-                            this@CreateMerchantVoucherStepsActivity,
+                            ::setVoucherBenefit,
+                            ::getBannerVoucherUiModel,
+                            ::getBannerBaseUiModel,
+                            ::onSetShopInfo,
+                            ::getVoucherReviewUiModel,
                             isCreateNew))
             put(VoucherCreationStepInfo.STEP_THREE,
                     SetVoucherPeriodFragment.createInstance(
-                            this@CreateMerchantVoucherStepsActivity,
+                            ::setVoucherPeriod,
+                            ::getBannerVoucherUiModel,
+                            ::getBannerBaseUiModel,
+                            ::onSuccessGetBannerBitmap,
+                            ::getVoucherReviewUiModel,
                             isCreateNew,
                             isEditVoucher))
             put(VoucherCreationStepInfo.STEP_FOUR,
                     ReviewVoucherFragment.createInstance(
-                            this@CreateMerchantVoucherStepsActivity,
+                            ::getVoucherReviewUiModel,
+                            ::getToken,
+                            ::getPostBaseUiModel,
+                            ::onReturnToStep,
+                            ::getBannerBitmap,
+                            ::getVoucherId,
+                            ::getPromoCodePrefix,
+                            ::getBannerBaseUiModel,
+                            ::getBannerVoucherUiModel,
                             this@CreateMerchantVoucherStepsActivity.isEditVoucher))
         }
     }
@@ -284,71 +297,6 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
                 }
             }
         }
-    }
-
-
-    override fun onSetVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
-        bannerVoucherUiModel.promoName = voucherName
-        voucherReviewUiModel.run {
-            this.targetType = targetType
-            this.voucherName = voucherName
-            this.promoCode = promoCode
-        }
-        onNextStep()
-    }
-
-    override fun onSetVoucherBenefit(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
-        bannerVoucherUiModel.imageType = imageType
-        voucherReviewUiModel.run {
-            voucherType = imageType
-            this.minPurchase = minPurchase
-            voucherQuota = quota
-        }
-        onNextStep()
-    }
-
-    override fun onSetVoucherPeriod(dateStart: String,
-                                    dateEnd: String,
-                                    hourStart: String,
-                                    hourEnd: String) {
-        voucherReviewUiModel.run {
-            startDate = dateStart
-            endDate = dateEnd
-            startHour = hourStart
-            endHour = hourEnd
-        }
-        onNextStep()
-    }
-
-    override fun onSetShopInfo(shopName: String, shopAvatarUrl: String) {
-        bannerVoucherUiModel.shopName = shopName
-        bannerVoucherUiModel.shopAvatar = shopAvatarUrl
-        voucherReviewUiModel.shopName = shopName
-        voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
-    }
-
-    override fun onSuccessGetBannerBitmap(bitmap: Bitmap) {
-        bannerBitmap = bitmap
-    }
-
-    override fun getBannerVoucherUiModel() = bannerVoucherUiModel
-
-    override fun getVoucherReviewUiModel() = voucherReviewUiModel
-
-    override fun getPromoCodePrefix(): String = promoCodePrefix
-
-    override fun getBannerBaseUiModel() = bannerBaseUiModel
-
-    override fun getToken() = token
-
-    override fun getPostBaseUiModel() = postBaseUiModel
-
-    override fun getBannerBitmap() = bannerBitmap
-
-    override fun getVoucherId() = voucherId
-
-    override fun onReturnToStep(@VoucherCreationStep step: Int) {
-        viewModel.setStepPosition(step)
     }
 
     override fun onDestroy() {
@@ -540,19 +488,19 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
                     } else {
                         code
                     }
-            onSetVoucherName(targetType, name, promoCode)
+            setVoucherName(targetType, name, promoCode)
 
             if (isEdit && startTime.isNotEmpty() && finishTime.isNotEmpty()) {
                 val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DASH_DATE_FORMAT)
                 val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DASH_DATE_FORMAT)
                 val startHour = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.HOUR_FORMAT)
                 val endHour = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.HOUR_FORMAT)
-                onSetVoucherPeriod(startDate, endDate, startHour, endHour)
+                setVoucherPeriod(startDate, endDate, startHour, endHour)
             }
 
             val imageType = getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)
             imageType?.let { type ->
-                onSetVoucherBenefit(type, minimumAmt, quota)
+                setVoucherBenefit(type, minimumAmt, quota)
             }
         }
     }
@@ -584,6 +532,66 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
         }
     }
 
+    private fun setVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
+        bannerVoucherUiModel.promoName = voucherName
+        voucherReviewUiModel.run {
+            this.targetType = targetType
+            this.voucherName = voucherName
+            this.promoCode = promoCode
+        }
+        onNextStep()
+    }
+
+    private fun setVoucherBenefit(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
+        bannerVoucherUiModel.imageType = imageType
+        voucherReviewUiModel.run {
+            voucherType = imageType
+            this.minPurchase = minPurchase
+            voucherQuota = quota
+        }
+        onNextStep()
+    }
+
+    private fun setVoucherPeriod(dateStart: String,
+                                 dateEnd: String,
+                                 hourStart: String,
+                                 hourEnd: String) {
+        voucherReviewUiModel.run {
+            startDate = dateStart
+            endDate = dateEnd
+            startHour = hourStart
+            endHour = hourEnd
+        }
+        onNextStep()
+    }
+
+    private fun onSetShopInfo(shopName: String, shopAvatarUrl: String) {
+        bannerVoucherUiModel.shopName = shopName
+        bannerVoucherUiModel.shopAvatar = shopAvatarUrl
+        voucherReviewUiModel.shopName = shopName
+        voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
+    }
+
+    private fun onSuccessGetBannerBitmap(bitmap: Bitmap) {
+        bannerBitmap = bitmap
+    }
+
+    private fun getBannerVoucherUiModel() = bannerVoucherUiModel
+
+    private fun getVoucherReviewUiModel() = voucherReviewUiModel
+
+    private fun getPromoCodePrefix(): String = promoCodePrefix
+
+    private fun getBannerBaseUiModel() = bannerBaseUiModel
+
+    private fun getToken() = token
+
+    private fun getPostBaseUiModel() = postBaseUiModel
+
+    private fun getBannerBitmap() = bannerBitmap
+
+    private fun getVoucherId() = voucherId
+
     private fun onCancelVoucher() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
@@ -604,5 +612,9 @@ MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherList
                 }
             })
         }
+    }
+
+    private fun onReturnToStep(@VoucherCreationStep step: Int) {
+        viewModel.setStepPosition(step)
     }
 }

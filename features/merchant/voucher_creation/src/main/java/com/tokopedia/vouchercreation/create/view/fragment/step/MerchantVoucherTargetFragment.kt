@@ -34,9 +34,9 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.interfaces.MerchantVoucherTargetListener
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
@@ -52,19 +52,24 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
         private const val ERROR_MESSAGE = "Error validate voucher target"
 
         @JvmStatic
-        fun createInstance(listener: MerchantVoucherTargetListener,
+        fun createInstance(onNext: (Int, String, String) -> Unit,
+                           getPromoCodePrefix: () -> String,
+                           getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            isCreateNew: Boolean,
                            isEdit: Boolean) = MerchantVoucherTargetFragment().apply {
-            this.listener = listener
+            this.onNext = onNext
+            this.getPromoCodePrefix = getPromoCodePrefix
+            this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.isCreateNew = isCreateNew
             this.isEdit = isEdit
         }
     }
 
+    private var onNext: (Int, String, String) -> Unit = { _,_,_ -> }
+    private var getPromoCodePrefix: () -> String = {""}
+    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
     private var isCreateNew = true
     private var isEdit = false
-
-    private var listener: MerchantVoucherTargetListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -233,7 +238,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                             activity?.run {
                                 KeyboardHandler.hideSoftKeyboard(this)
                             }
-                            listener?.onSetVoucherName(currentTargetType, couponName, promoCodeText)
+                            onNext(currentTargetType, couponName, promoCodeText)
                         } else {
                             validation.couponNameError.run {
                                 if (isNotBlank()) {
@@ -343,8 +348,8 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     }
 
     private fun setupReloadData() {
-        listener?.getVoucherReviewUiModel()?.run {
-            viewModel.setReloadVoucherTargetData(targetType, promoCode, listener?.getPromoCodePrefix().orEmpty())
+        with(getVoucherReviewUiModel()) {
+            viewModel.setReloadVoucherTargetData(targetType, promoCode, getPromoCodePrefix())
             fillVoucherNameTextfield?.textFieldInput?.setText(voucherName)
         }
     }
@@ -371,7 +376,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
-        viewModel.setPromoCode(promoCode, listener?.getPromoCodePrefix().orEmpty())
+        viewModel.setPromoCode(promoCode, getPromoCodePrefix())
     }
 
     private fun onRadioButtonClicked(@VoucherTargetType targetType: Int) {
@@ -401,7 +406,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     private fun getClickedVoucherDisplayType() : VoucherTargetCardType = lastClickedVoucherDisplayType
 
     private fun getCreatePromoCodeBottomSheet() =
-            CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, listener?.let { it::getPromoCodePrefix }).apply {
+            CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix).apply {
                 setCloseClickListener {
                     VoucherCreationTracking.sendCreateVoucherClickTracking(
                             step = VoucherCreationStep.TARGET,
