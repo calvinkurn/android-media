@@ -1,16 +1,12 @@
 package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
@@ -57,9 +53,14 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     private var minDate: Date? = null
     private var maxDate: Date? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setChild(inflater, container)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val child: View = View.inflate(context, R.layout.bottom_sheet_filter_date, null)
+        setTitle(TITLE_FILTER_DATE)
+        clearContentPadding = true
+        isFullpage = true
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDateDialogStyle)
+        setChild(child)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,15 +83,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         return this
     }
 
-    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
-        val child: View = inflater.inflate(R.layout.bottom_sheet_filter_date, container, false)
-        setTitle(TITLE_FILTER_DATE)
-        clearContentPadding = true
-        isFullpage = true
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDateDialogStyle)
-        setChild(child)
-    }
-
     private fun initView(view: View) {
         calendarViewFilter = view.findViewById(R.id.somFilterCalendar)
         tfStartDate = view.findViewById(R.id.tfStartDate)
@@ -100,17 +92,15 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         calendarView = calendarViewFilter?.calendarPickerView
         tfStartDate?.textFieldInput?.isClickable = false
         tfEndDate?.textFieldInput?.isClickable = false
+        tfStartDate?.textFieldInput?.isFocusable = false
+        tfEndDate?.textFieldInput?.isFocusable = false
     }
 
     private fun toggleBtnShowOrder() {
         val isShowStartDate = tfStartDate?.textFieldInput?.text?.trim().toString().isNotBlank()
         val isShowEndDate = tfEndDate?.textFieldInput?.text?.trim().toString().isNotBlank()
 
-        if (isShowStartDate || isShowEndDate) {
-            cvSaveCalendar?.show()
-        } else {
-            cvSaveCalendar?.hide()
-        }
+        btnSaveCalendar?.isEnabled = (isShowStartDate || isShowEndDate)
     }
 
     private fun setDefaultSelectedDate() {
@@ -148,10 +138,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     private fun CalendarPickerView.selectDateClickListener() {
-        setOnFocusChangeListener { _, _ ->
-            if (tfStartDate?.textFieldInput?.isFocused == true) tfEndDate?.textFieldInput?.requestFocus()
-            else if (tfEndDate?.isFocused == true) tfStartDate?.requestFocus()
-        }
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
                 when (mode) {

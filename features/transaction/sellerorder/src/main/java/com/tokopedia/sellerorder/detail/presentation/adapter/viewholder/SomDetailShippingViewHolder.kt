@@ -32,7 +32,12 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.tv_shipping_name.text = item.dataObject.shippingName
                 itemView.tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
             }
-            itemView.tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} (${item.dataObject.receiverPhone})")
+            val numberPhone = if(item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
+                item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+            } else {
+                item.dataObject.receiverPhone
+            }
+            itemView.tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} ($numberPhone)")
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
             itemView.tv_receiver_province.text = item.dataObject.receiverProvince
@@ -133,5 +138,10 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 coachmarkShipping
         )
 
+    }
+
+    companion object {
+        const val NUMBER_PHONE_SIX_TWO = "62"
+        const val NUMBER_PHONE_ONE = "0"
     }
 }

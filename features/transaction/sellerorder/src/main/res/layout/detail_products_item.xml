@@ -13,13 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         tools:text="@string/see_detail"
         android:text="@string/see_detail"
         android:textColor="@color/Neutral_N700_96"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -62,7 +60,7 @@
         android:id="@+id/rv_products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/products_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -71,7 +69,7 @@
         android:id="@+id/dividerDetailProductsItem"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintTop_toBottomOf="@id/rv_products"
         app:layout_constraintStart_toStartOf="parent"/>
 

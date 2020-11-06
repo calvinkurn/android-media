@@ -2,19 +2,18 @@ package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -37,6 +36,8 @@ import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewMode
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -87,6 +88,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         loadSomFilterData()
         observeSomFilter()
         bottomSheetReset()
+        adjustBottomSheetPadding()
     }
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -94,8 +96,13 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         rvSomFilter = view.findViewById(R.id.rvSomFilter)
         btnShowOrder = view.findViewById(R.id.btnShowOrder)
         setChild(view)
+        isFullpage = true
+        isDragable = true
         setTitle(TITLE_FILTER)
         showKnob = true
+        showCloseIcon = false
+        isHideable = true
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     override fun onDateClicked(position: Int) {
@@ -182,6 +189,12 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         super.onDestroy()
     }
 
+    private fun adjustBottomSheetPadding() {
+        bottomSheetWrapper.setPadding(0, bottomSheetWrapper.paddingTop, 0, bottomSheetWrapper.paddingBottom)
+        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(), bottomSheetHeader.top,
+                16.toPx(), 16.toPx())
+    }
+
     fun show() {
         mActivity?.supportFragmentManager?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
@@ -215,19 +228,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun clickShowOrder() {
         btnShowOrder?.setOnClickListener {
-            val filterTextList = mutableSetOf<String>()
-            somFilterViewModel.getSomFilterUiModel().forEach {
-                it.somFilterData.filter { somFilter -> somFilter.isSelected }.forEach { somFilterChips ->
-                    filterTextList.add(somFilterChips.key)
-                    if (somFilterChips.childStatus.isNotEmpty()) {
-                        somFilterChips.childStatus.filter { somFilterChips.isSelected }.forEach { childStatus ->
-                            filterTextList.add(childStatus.key)
-                        }
-                    }
-                }
-            }
-            val keyFilter = filterTextList.joinToString(separator = ",")
-            SomAnalytics.eventClickTerapkanOnFilterPage(keyFilter)
+            SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
             somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
             somListOrderParam?.let {
                 somFilterFinishListener?.onClickShowOrderFilter(it,
@@ -237,11 +238,28 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
     }
 
+    private fun getFilterTextReset(): String {
+        val filterTextList = mutableSetOf<String>()
+        somFilterViewModel.getSomFilterUiModel().forEach {
+            it.somFilterData.filter { somFilter -> somFilter.isSelected }.forEach { somFilterChips ->
+                filterTextList.add(somFilterChips.key)
+                if (somFilterChips.childStatus.isNotEmpty()) {
+                    somFilterChips.childStatus.filter { somFilterChips.isSelected }.forEach { childStatus ->
+                        filterTextList.add(childStatus.key)
+                    }
+                }
+            }
+        }
+        return filterTextList.joinToString(separator = ",")
+    }
+
     private fun clickDateFilter() {
         val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance()
         somFilterDateBottomSheet.setCalendarListener(this)
         somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
-        somFilterDateBottomSheet.show()
+        if(!somFilterDateBottomSheet.isVisible) {
+            somFilterDateBottomSheet.show()
+        }
     }
 
     private fun observeSomFilter() {
@@ -290,10 +308,11 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     private fun bottomSheetReset() {
-        bottomSheetAction.visibility = View.GONE
+        bottomSheetAction.hide()
         context?.let {
             bottomSheetAction.text = it.resources.getString(R.string.reset)
         }
+        bottomSheetAction.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
         bottomSheetAction.setOnClickListener {
             SomAnalytics.eventClickResetButtonOnFilterPage()
             somFilterViewModel.resetFilterSelected(orderStatus)
@@ -302,7 +321,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun checkIsSelected(): Boolean {
         somFilterViewModel.getSomFilterUiModel().forEach {
-            it.somFilterData.filter { somChips -> somChips.name != orderStatus }.onEach { chips ->
+            it.somFilterData.forEach { chips ->
                 if (chips.isSelected) {
                     return true
                 }
@@ -325,6 +344,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
+        const val SIZE_ACTION_RESET = 14f
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 

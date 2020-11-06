@@ -13,7 +13,6 @@ class FilterItemDecoration : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.right = PADDING_ITEM.toPx()
-        outRect.top = PADDING_ITEM.toPx() / 2
-        outRect.bottom = PADDING_ITEM.toPx() / 2
+        outRect.top = PADDING_ITEM.toPx()
     }
 }

@@ -2,7 +2,12 @@ package com.tokopedia.sellerorder.common.util
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.LightingColorFilter
+import android.graphics.drawable.Drawable
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -76,6 +81,15 @@ object Utils {
         } else {
             text
         }
+    }
+
+    fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
+        val color = if (colorHex.length > 1) Color.parseColor(colorHex)
+        else MethodChecker.getColor(context, R.color.Unify_N0)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_order_status_indicator)
+        val filter: ColorFilter = LightingColorFilter(Color.BLACK, color)
+        drawable.colorFilter = filter
+        return drawable
     }
 
     fun getLocale(): Locale {
