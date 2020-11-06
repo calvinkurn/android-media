@@ -503,7 +503,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
             if (status == VoucherStatusConst.ONGOING) {
                 voucherDetailInfoList.addAll(listOf(
-                        UsageProgressUiModel(type, quota, confirmedQuota),
+                        UsageProgressUiModel(type, quota, confirmedQuota, bookedQuota),
                         DividerUiModel(DividerUiModel.THICK),
                         getOngoingTipsSection(isPublic)
                 ))

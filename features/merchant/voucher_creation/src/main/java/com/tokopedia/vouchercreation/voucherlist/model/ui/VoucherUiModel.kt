@@ -26,6 +26,7 @@ data class VoucherUiModel(
         val minimumAmt: Int,
         val quota: Int,
         val confirmedQuota: Int,
+        val bookedQuota: Int,
         val startTime: String,
         val finishTime: String,
         val code: String,

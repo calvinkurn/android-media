@@ -45,6 +45,7 @@ class GetVoucherListUseCase @Inject constructor(
                 "                    voucher_minimum_amt\n" +
                 "                    voucher_quota\n" +
                 "                    confirmed_global_quota\n" +
+                "                    booked_global_quota\n" +
                 "                    voucher_start_time\n" +
                 "                    voucher_finish_time\n" +
                 "                    voucher_code\n" +

@@ -8,6 +8,9 @@ data class MerchantVoucherModel(
         @SerializedName("confirmed_global_quota")
         val confirmedQuota: Int = 0,
         @Expose
+        @SerializedName("booked_global_quota")
+        val bookedQuota: Int = 0,
+        @Expose
         @SerializedName("create_time")
         val createTime: String = "",
         @Expose

@@ -43,6 +43,7 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                 "      voucher_discount_type_formatted\n" +
                 "      voucher_discount_amt_formatted\n" +
                 "      confirmed_global_quota\n" +
+                "      booked_global_quota\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"
