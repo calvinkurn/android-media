@@ -115,4 +115,7 @@
     <string name="tradein_final_price">%1$s*</string>
     <string name="tradein_price_label">Harga HP-mu</string>
     <string name="tradein_price_total">Maks. Total Bayar</string>
+    <string name="tradein_header_final_price">Ringkasan Tukar Tambah</string>
+    <string name="tradein_diff_price_label">Ganti gadget hanya dengan harga</string>
+    <string name="tradein_remaining_price_label">Sisa Pembayaran Barang</string>
 </resources>
