@@ -40,24 +40,6 @@
         </activity>
 
         <activity
-            android:name=".basicinfo.oldview.activity.OldShopEditBasicInfoActivity"
-            android:label="@string/shop_settings_basic_info"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".basicinfo.oldview.activity.OldShopSettingsInfoActivity"
-            android:label="@string/shop_settings_manage_shop_info"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".basicinfo.oldview.activity.OldShopEditScheduleActivity"
-            android:label="@string/shop_settings_shop_status"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
             android:name=".address.view.ShopSettingsAddressActivity"
             android:label="@string/shop_settings_manage_address"
             android:theme="@style/Theme.White"
