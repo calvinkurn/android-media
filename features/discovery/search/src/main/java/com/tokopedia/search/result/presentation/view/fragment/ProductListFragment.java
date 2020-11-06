@@ -1794,48 +1794,37 @@ public class ProductListFragment
 
     @Override
     public void onChangeViewClicked(int position) {
-        switchSearchNavigationLayoutType(position);
+        if (presenter == null) return;
+
+        presenter.handleChangeView(position, adapter.getCurrentLayoutType());
     }
 
-    private void switchSearchNavigationLayoutType(int position) {
-        if (!getUserVisibleHint() || adapter == null) {
-            return;
-        }
-
-        switch (adapter.getCurrentLayoutType()) {
-            case LIST:
-                switchSearchNavigationLayoutTypeTo(BIG_GRID, position);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
-                break;
-            case SMALL_GRID:
-                switchSearchNavigationLayoutTypeTo(LIST, position);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
-                break;
-            case BIG_GRID:
-                switchSearchNavigationLayoutTypeTo(SMALL_GRID, position);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
-                break;
-        }
+    @Override
+    public void trackEventSearchResultChangeView(String viewType) {
+        SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
     }
 
-    private void switchSearchNavigationLayoutTypeTo(SearchConstant.ViewType layoutType, int position) {
-        if (!getUserVisibleHint() || adapter == null) {
-            return;
-        }
+    @Override
+    public void switchSearchNavigationLayoutTypeToListView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
 
-        switch (layoutType) {
-            case LIST:
-                staggeredGridLayoutManager.setSpanCount(1);
-                adapter.changeSearchNavigationListView(position);
-                break;
-            case SMALL_GRID:
-                staggeredGridLayoutManager.setSpanCount(2);
-                adapter.changeSearchNavigationDoubleGridView(position);
-                break;
-            case BIG_GRID:
-                staggeredGridLayoutManager.setSpanCount(1);
-                adapter.changeSearchNavigationSingleGridView(position);
-                break;
-        }
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationListView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToBigGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationSingleGridView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToSmallGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(2);
+        adapter.changeSearchNavigationDoubleGridView(position);
     }
 }

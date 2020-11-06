@@ -31,6 +31,9 @@ public interface SearchConstant {
     interface DefaultViewType {
         int SMALL_GRID = 1;
         int LIST = 2;
+        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
+        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
+        String VIEW_TYPE_NAME_LIST = "list";
     }
 
     interface Wishlist {

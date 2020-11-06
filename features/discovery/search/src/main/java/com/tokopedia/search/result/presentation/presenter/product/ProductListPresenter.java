@@ -109,10 +109,16 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemo
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.KEY_ADVERTISING_ID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -2100,6 +2106,26 @@ final class ProductListPresenter
         getView().trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer());
 
         this.threeDotsProductItem = null;
+    }
+
+    @Override
+    public void handleChangeView(int position, SearchConstant.ViewType currentLayoutType) {
+        if (getView() == null) return;
+
+        switch(currentLayoutType) {
+            case LIST:
+                getView().switchSearchNavigationLayoutTypeToBigGridView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_BIG_GRID);
+                break;
+            case SMALL_GRID:
+                getView().switchSearchNavigationLayoutTypeToListView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_LIST);
+                break;
+            case BIG_GRID:
+                getView().switchSearchNavigationLayoutTypeToSmallGridView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_SMALL_GRID);
+                break;
+        }
     }
 
     @Override
