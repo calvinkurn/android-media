@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -28,9 +29,10 @@ class CardProductNotificationCardUnify(
     private var productVariant: ProductVariantLayout? = null
     private var productCampaign: CampaignRedView? = null
     private var productContainer: ConstraintLayout? = null
-    private var btnCheckout: UnifyButton? = null
     private var campaignTag: ImageView? = null
+    private var btnCheckout: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
+    private var listener: NotificationItemListener? = null
 
     init {
         initView()
@@ -54,9 +56,10 @@ class CardProductNotificationCardUnify(
         btnAtc = view.findViewById(R.id.btn_atc)
     }
 
-    fun bindProductData(product: ProductData?) {
+    fun bindProductData(product: ProductData?, listener: NotificationItemListener?) {
         if (product != null) {
             show()
+            initField(listener)
             bindProductImage(product)
             bindProductCampaign(product)
             bindProductVariant(product)
@@ -64,9 +67,14 @@ class CardProductNotificationCardUnify(
             bindProductName(product)
             bindCampaignTag(product)
             bindProductClick(product)
+            bindBuyClick(product)
         } else {
             hide()
         }
+    }
+
+    private fun initField(listener: NotificationItemListener?) {
+        this.listener = listener
     }
 
     private fun bindProductImage(product: ProductData) {
@@ -102,6 +110,12 @@ class CardProductNotificationCardUnify(
 
     private fun bindProductClick(product: ProductData) {
         setOnClickListener { goToPdp(product) }
+    }
+
+    private fun bindBuyClick(product: ProductData) {
+        btnCheckout?.setOnClickListener {
+            listener?.addProductToCheckout(product)
+        }
     }
 
     private fun goToPdp(product: ProductData) {

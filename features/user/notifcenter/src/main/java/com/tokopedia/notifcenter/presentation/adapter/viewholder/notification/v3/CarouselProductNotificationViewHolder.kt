@@ -122,7 +122,7 @@ class CarouselProductNotificationViewHolder constructor(
         }
 
         private fun bindProductData(product: ProductData) {
-            productContainer?.bindProductData(product)
+            productContainer?.bindProductData(product, listener)
         }
 
         companion object {

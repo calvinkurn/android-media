@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.presentation.fragment.bottomsheet
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -10,10 +11,18 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.widget.CardProductNotificationCardUnify
 import com.tokopedia.unifycomponents.toPx
 
 class NotificationProductLongerContentBottomSheet : NotificationLongerContentBottomSheet() {
+
+    private var listener: NotificationItemListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = parentFragment as? NotificationItemListener
+    }
 
     override fun onInitContentView() {
         notification?.productData?.forEach { product ->
@@ -29,7 +38,7 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
     }
 
     private fun bind(productView: CardProductNotificationCardUnify?, product: ProductData) {
-        productView?.bindProductData(product)
+        productView?.bindProductData(product, listener)
     }
 
     private fun createProductView(): View? {

@@ -25,7 +25,7 @@ class SingleProductNotificationViewHolder constructor(
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
-        productContainer?.bindProductData(product)
+        productContainer?.bindProductData(product, listener)
     }
 
     private fun bindClickItem(element: NotificationUiModel) {

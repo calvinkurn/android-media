@@ -1,21 +1,28 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
@@ -27,6 +34,8 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -122,5 +131,58 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun showProductBottomSheet(element: NotificationUiModel) {
         BottomSheetFactory.showProductBottomSheet(childFragmentManager, element)
+    }
+
+    override fun addProductToCheckout(product: ProductData) {
+        val atcPageIntent = getAtcPageIntent(product)
+        startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CHECKOUT -> onReturnFromCheckout(resultCode, data)
+        }
+    }
+
+    private fun onReturnFromCheckout(resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK || data == null) return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+                ?: return
+        view?.let {
+            Toaster.build(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
+                    onClickSeeButtonOnAtcSuccessToaster()
+            ).show()
+        }
+    }
+
+    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        }
+    }
+
+    private fun getAtcPageIntent(product: ProductData): Intent {
+        val atcOnly = ATC_ONLY
+        val needRefresh = true
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, product.minOrder)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CHECKOUT = 0
     }
 }

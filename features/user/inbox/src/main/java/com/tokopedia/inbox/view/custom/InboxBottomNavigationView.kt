@@ -23,8 +23,8 @@ class InboxBottomNavigationView : BottomNavigationView {
     private var labelFontSize: Float = DEFAULT_FONT_SIZE
     private var badges: Array<Typography?> = Array(3) { null }
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     init {
         initField()
