@@ -32,21 +32,17 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
             val atc = useCase.executeOnBackground()
             if (atc.atcMulti.buyAgainData.success == 1) {
                 for (param in listParam) {
-                    try {
-                        val productId = param.productId
-                        val productName = param.productName
-                        val quantity = param.qty
-                        val productPrice = param.productPrice
-                        AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
-                                quantity.toString(), "")
-                        AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
-                                quantity.toString(), "", "",
-                                "", "", "",
-                                "", "", userId)
-                    } catch (t: Throwable) {
-                        // failed parse json
-                        Timber.d(t)
-                    }
+                    val productId = param.productId
+                    val productName = param.productName
+                    val quantity = param.qty
+                    val productPrice = param.productPrice
+                    val category = param.category
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
+                            quantity.toString(), category)
+                    AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
+                            quantity.toString(), "", "",
+                            "", "", "",
+                            "", "", userId)
                 }
             }
             Success(atc)

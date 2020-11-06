@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -141,7 +140,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -206,6 +204,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
+    private var gson = Gson()
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -1122,13 +1121,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
         viewBottomSheet.btn_send_email?.setOnClickListener {
             if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-                val flightQueryParam = Gson().fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+                val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
-                val trainQueryParam = Gson().fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+                val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
@@ -1402,8 +1401,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         // analytics
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceClick.Products>()
         var i = 0
@@ -1486,8 +1485,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = Gson().fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
+            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceImpressions.Impressions>()
         var i = 0
@@ -1640,8 +1639,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun atc(orderData: UohListOrder.Data.UohOrders.Order) {
         if (orderData.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = Gson().fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
-            val jsonArray: JsonArray = Gson().toJsonTree(listOfStrings).asJsonArray
+            val listOfStrings = gson.fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
+            val jsonArray: JsonArray = gson.toJsonTree(listOfStrings).asJsonArray
             val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
@@ -1661,17 +1660,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-            var i = 0
-            orderData.metadata.products.forEach {
-                val objProduct = jsonArray.get(i).asJsonObject
+            orderData.metadata.products.forEachIndexed { index, product ->
+                val objProduct = jsonArray.get(index).asJsonObject
                 arrayListProducts.add(ECommerceAdd.Add.Products(
-                        name = it.title,
+                        name = product.title,
                         id = objProduct.get(EE_PRODUCT_ID).asString,
                         price = objProduct.get(EE_PRODUCT_PRICE).asString,
                         quantity = objProduct.get(EE_QUANTITY).asString,
                         dimension79 = objProduct.get(EE_SHOP_ID).asString
                 ))
-                i++
             }
             userSession?.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
         }
