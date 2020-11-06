@@ -37,8 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="1. Buka Pengaturan > Umum > Mengenai. \n2. Cari nomor seri, IMEI perangkat kamu.
-\n3. Sentuh dan tahan nomor IMEI hingga tersalin."
+        android:text="@string/tradein_bs_info"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/exchange_text" />
