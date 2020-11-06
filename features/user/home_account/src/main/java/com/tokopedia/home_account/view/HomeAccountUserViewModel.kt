@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
-import com.tokopedia.home_account.data.model.MemberDataView
-import com.tokopedia.home_account.data.model.ProfileDataView
-import com.tokopedia.home_account.data.model.SettingDataView
-import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.PermissionChecker
+import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
@@ -16,6 +14,9 @@ import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,20 +24,23 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
-            private val userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val accountPref: AccountPreference,
         private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
         private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
         private val getBuyerWalletBalanceUseCase: HomeAccountWalletBalanceUseCase,
         private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         private val walletPref: WalletPref,
-        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val permissionChecker: PermissionChecker,
+        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
@@ -61,6 +65,14 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _memberData = MutableLiveData<MemberDataView>()
     val memberData: LiveData<MemberDataView>
         get() = _memberData
+
+    private val _recommendationData = MutableLiveData<Result<List<RecommendationItem>>>()
+    val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
+        get() = _recommendationData
+
+    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidget>>()
+    val firstRecommendationData : LiveData<Result<RecommendationWidget>>
+        get() = _firstRecommendationData
 
     fun setSafeMode(isActive: Boolean){
 //        val savedValue: Boolean = !accountPref.getSafeMode()
@@ -118,6 +130,40 @@ class HomeAccountUserViewModel @Inject constructor(
 //        getAboutTokopediaData()
     }
 
+    fun getFirstRecommendation() {
+        getRecommendation(page = 1)
+    }
+
+    fun getRecommendation(page: Int) {
+        launchCatchError(Dispatchers.IO, block = {
+            val recommendationWidget = getRecommendationList(page)
+            if(checkFirstPage(page)) {
+                _firstRecommendationData.postValue(Success(recommendationWidget))
+            } else {
+                _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
+            }
+        }, onError = {
+            if(checkFirstPage(page)) {
+                _firstRecommendationData.postValue(Fail(it))
+            } else {
+                _recommendationData.postValue(Fail(it))
+            }
+        })
+
+    }
+
+    private fun getRecommendationList(page: Int): RecommendationWidget {
+        val params = getRecommendationUseCase.getRecomParams(
+                page,
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
+                AKUN_PAGE,
+                emptyList()
+        )
+        return getRecommendationUseCase.createObservable(params).toBlocking().single()[0]
+    }
+
+    private fun checkFirstPage(page: Int): Boolean = page == 1
+
     private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
         walletPref.saveWallet(accountDataModel.wallet)
         if (accountDataModel.vccUserStatus != null) {
@@ -153,6 +199,10 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {
         userSession.setIsAffiliateStatus(accountDataModel.isAffiliate)
+    }
+
+    companion object {
+        private const val AKUN_PAGE = "account"
     }
 
 }
