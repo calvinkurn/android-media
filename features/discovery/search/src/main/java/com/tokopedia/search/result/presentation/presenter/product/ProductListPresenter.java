@@ -5,7 +5,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -50,6 +49,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -1095,6 +1095,8 @@ final class ProductListPresenter
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
         }
+
+        list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
 
         addPageTitle(list);
 

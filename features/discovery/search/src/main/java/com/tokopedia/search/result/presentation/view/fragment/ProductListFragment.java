@@ -83,6 +83,7 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -141,7 +142,8 @@ public class ProductListFragment
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener {
+        SearchInTokopediaListener,
+        SearchNavigationClickListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -315,7 +317,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
-                this, this, this, this,
+                this, this, this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1788,5 +1790,52 @@ public class ProductListFragment
     @Override
     public void addLocalSearchRecommendation(List<Visitable> visitableList) {
         adapter.appendItems(visitableList);
+    }
+
+    @Override
+    public void onChangeViewClicked(int position) {
+        switchSearchNavigationLayoutType(position);
+    }
+
+    private void switchSearchNavigationLayoutType(int position) {
+        if (!getUserVisibleHint() || adapter == null) {
+            return;
+        }
+
+        switch (adapter.getCurrentLayoutType()) {
+            case LIST:
+                switchSearchNavigationLayoutTypeTo(BIG_GRID, position);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
+                break;
+            case SMALL_GRID:
+                switchSearchNavigationLayoutTypeTo(LIST, position);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
+                break;
+            case BIG_GRID:
+                switchSearchNavigationLayoutTypeTo(SMALL_GRID, position);
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
+                break;
+        }
+    }
+
+    private void switchSearchNavigationLayoutTypeTo(SearchConstant.ViewType layoutType, int position) {
+        if (!getUserVisibleHint() || adapter == null) {
+            return;
+        }
+
+        switch (layoutType) {
+            case LIST:
+                staggeredGridLayoutManager.setSpanCount(1);
+                adapter.changeSearchNavigationListView(position);
+                break;
+            case SMALL_GRID:
+                staggeredGridLayoutManager.setSpanCount(2);
+                adapter.changeSearchNavigationDoubleGridView(position);
+                break;
+            case BIG_GRID:
+                staggeredGridLayoutManager.setSpanCount(1);
+                adapter.changeSearchNavigationSingleGridView(position);
+                break;
+        }
     }
 }
