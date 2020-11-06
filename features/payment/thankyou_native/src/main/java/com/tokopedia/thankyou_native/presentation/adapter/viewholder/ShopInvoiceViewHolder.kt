@@ -85,9 +85,9 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
 
-            element.shippingTypeStr?.let {
+            element.shippingInfo?.let {
                 if(it.isNotEmpty()) {
-                    tvInvoiceShopItemCourier.text = element.shippingTypeStr
+                    tvInvoiceShopItemCourier.text = element.shippingInfo
                     tvInvoiceShopItemCourier.visible()
                 }else{
                     tvInvoiceShopItemCourier.gone()

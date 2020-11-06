@@ -18,7 +18,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         return visitableList
     }
 
-    private fun addInvoiceSummary(){
+    private fun addInvoiceSummary() {
         var totalPrice = 0F
         var totalItemCount = 0
         val invoiceSummaryMapList = arrayListOf<InvoiceSummaryMap>()
@@ -48,7 +48,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         visitableList.add(InvoiceSummery(totalPriceStr, totalItemCount, invoiceSummaryMapList))
     }
 
-    private fun addTotalFee(){
+    private fun addTotalFee() {
         var totalFee: String? = null
         thanksPageData.paymentItems?.filter {
             it.itemName == PaymentItemKey.SERVICE_FEE
@@ -76,7 +76,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         visitableList.add(PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList))
     }
 
-    private fun addCashBackEarned(){
+    private fun addCashBackEarned() {
         val cashBackMapList = arrayListOf<CashBackMap>()
         thanksPageData.paymentDeductions?.forEach {
             when (it.itemName) {
@@ -119,6 +119,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                 if (shopOrder.logisticDuration.isNullOrBlank()) "" else shopOrder.logisticDuration
             } else shopOrder.logisticETA
 
+            val shippingInfo = if (shippingDurationOrETA.isBlank())
+                shopOrder.logisticType
+            else shopOrder.logisticType + "\n" + shippingDurationOrETA
+
             val shopInvoice = ShopInvoice(
                     shopOrder.storeName,
                     orderedItemList,
@@ -128,7 +132,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                                 false)
                     else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
-                    shopOrder.logisticType + "\n"+ shippingDurationOrETA,
+                    shippingInfo,
                     logisticDiscountStr,
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     shopOrder.address)
