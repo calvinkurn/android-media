@@ -29,6 +29,11 @@ class SingleProductNotificationViewHolder constructor(
     private fun bindClickItem(element: NotificationUiModel) {
         container?.setOnClickListener {
             listener?.showProductBottomSheet(element)
+            // TODO: Implement longer content
+//            if (element.isLongerContent) {
+//            } else {
+//                productContainer?.goToPdp(element.product)
+//            }
         }
     }
 

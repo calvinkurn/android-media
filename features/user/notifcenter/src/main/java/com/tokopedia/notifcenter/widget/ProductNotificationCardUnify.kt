@@ -74,6 +74,15 @@ class ProductNotificationCardUnify(
         }
     }
 
+    fun goToPdp(product: ProductData?) {
+        if (product == null) return
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productId.toString()
+        )
+    }
+
     private fun initField(listener: NotificationItemListener?) {
         this.listener = listener
     }
@@ -123,13 +132,5 @@ class ProductNotificationCardUnify(
         btnAtc?.setOnClickListener {
             listener?.addProductToCart(product)
         }
-    }
-
-    private fun goToPdp(product: ProductData) {
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                product.productId.toString()
-        )
     }
 }

@@ -33,10 +33,6 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         }
     }
 
-    override fun initCtaButton() {
-        cta?.hide()
-    }
-
     private fun bind(productView: ProductNotificationCardUnify?, product: ProductData) {
         productView?.bindProductData(product, listener)
     }
