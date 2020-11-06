@@ -113,6 +113,24 @@ interface LoginEmailPhoneContract {
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
+
+        fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)
+
+        fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
+
+        fun goToChooseAccountPageFacebook(accessToken: String)
+
+        fun goToAddPin2FA(enableSkip2FA: Boolean)
+
+        fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String)
+
+        fun onGoToChangeName()
+
+        fun goToForgotPassword()
+
+        fun goToTokopediaCareWebview()
+
+        fun goToRegisterInitial(source: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
