@@ -10,7 +10,7 @@ class SectionTitleViewHolder(itemView: View?) : AbstractViewHolder<SectionTitleU
 
     private val title: Typography? = itemView?.findViewById(R.id.txt_section_title)
     private val topPadding = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifycomponents.R.dimen.spacing_lvl4
+            R.dimen.notif_dp_12
     ) ?: 0f
 
     override fun bind(element: SectionTitleUiModel) {
