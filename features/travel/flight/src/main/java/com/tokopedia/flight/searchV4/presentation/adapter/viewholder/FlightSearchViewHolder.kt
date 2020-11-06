@@ -117,10 +117,8 @@ class FlightSearchViewHolder(itemView: View,
         with(itemView) {
             if (element.isSeatDistancing) {
                 labelSeatDistancing.visibility = View.VISIBLE
-                guidelineFlightSearch.setGuidelinePercent(0.2F)
             } else {
                 labelSeatDistancing.visibility = View.GONE
-                guidelineFlightSearch.setGuidelinePercent(0F)
             }
 
             if (element.hasFreeRapidTest) {
