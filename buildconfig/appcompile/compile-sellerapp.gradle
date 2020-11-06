@@ -21,6 +21,7 @@ include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:play_common"
 include "features:content:play_broadcaster"
+include "features:content:play_widget"
 
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
@@ -53,7 +54,6 @@ include "features:logistic:logisticcart"
 include "features:logistic:editshipping"
 include "features:logistic:activation"
 
-include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_detail"
@@ -150,6 +150,7 @@ include "features:user:profilecommon"
 include "features:user:liveness"
 include "features:user:loginfingerprint"
 include 'features:user:notif-troubleshooter'
+include "features:user:additional_check"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"

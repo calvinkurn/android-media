@@ -110,15 +110,14 @@ object Utils {
         return (NumberFormat.getNumberInstance(locale).format(value))
     }
 
-    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").trim()
+    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp", "").trim()
 
-
-    fun validateKeyword(context:Context?,text: CharSequence?): CharSequence? {
+    fun validateKeyword(context: Context?, text: CharSequence?): CharSequence? {
         return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
             context?.getString(R.string.error_max_length_keyword)
         } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9]*$".toRegex())) {
             context?.getString(R.string.error_keyword)
-        } else if (text?.length?:0 > 70) {
+        } else if (text?.length ?: 0 > 70) {
             context?.getString(R.string.error_max_length)
         } else {
             null

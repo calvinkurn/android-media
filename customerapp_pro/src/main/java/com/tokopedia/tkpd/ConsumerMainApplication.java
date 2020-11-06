@@ -128,13 +128,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
-        if (!isMainProcess()) {
-            return;
-        }
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
+        initCacheManager();
 
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -148,6 +146,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         registerActivityLifecycleCallbacks();
 
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -180,7 +183,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
 
     private void createAndCallPreSeq() {
-        PersistentCacheManager.init(ConsumerMainApplication.this);
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -332,19 +334,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("EXTRA_URI_IMAGE", uri);
         getApplicationContext().startActivity(intent);
-    }
-
-    private boolean isMainProcess() {
-        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
-
-        if (manager == null || manager.getRunningAppProcesses() == null) return false;
-
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == android.os.Process.myPid()) {
-                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
-            }
-        }
-        return false;
     }
 
     @Override

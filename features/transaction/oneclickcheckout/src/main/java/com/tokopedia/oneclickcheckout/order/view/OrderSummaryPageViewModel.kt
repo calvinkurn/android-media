@@ -138,6 +138,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 atcOccExternalUseCase.createObservable(
                         RequestParams().apply {
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userSessionInterface.userId)
                         })
                         .subscribeOn(executorSchedulers.io)
                         .observeOn(executorSchedulers.main)
@@ -1658,8 +1659,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             setShopName(orderShop.shopName)
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.categoryId.toString())
-            if (step == OrderSummaryPageEnhanceECommerce.STEP_2) {
+            if (_orderShipment.getRealShipperProductId() > 0) {
                 setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+            } else {
+                setShippingPrice("")
             }
             setShippingDuration(_orderShipment.serviceDuration)
             setCampaignId(orderProduct.campaignId.toString())

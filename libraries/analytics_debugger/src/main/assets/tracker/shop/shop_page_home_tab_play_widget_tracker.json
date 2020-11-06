@@ -1,0 +1,72 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{click on banner play - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "view_item",
+      "userId": "{{.*}}",
+      "eventAction": "impression on play sgc banner",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{view on banner play - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "select_content",
+      "userId": "{{.*}}",
+      "eventAction": "click",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{click channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+    },
+    {
+      "promotions": [{
+        "creative_name": "{{.+}}",
+        "creative_slot": "{{\\d*.\\d*}}",
+        "item_id": "{{.+}}",
+        "item_name": "{{.+}}"
+      }],
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "event": "view_item",
+      "userId": "{{.*}}",
+      "eventAction": "impression on play sgc channel",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{view channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+    },
+    {
+      "businessUnit": "{{.+}}",
+      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "currentSite": "{{.+}}",
+      "event": "clickShopPage",
+      "userId": "{{.*}}",
+      "eventAction": "click other content",
+      "sessionIris": "{{.+}}",
+      "eventLabel":"{{.+}}"
+    }
+  ]
+}

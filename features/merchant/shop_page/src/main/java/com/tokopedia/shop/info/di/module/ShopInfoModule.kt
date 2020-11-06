@@ -9,6 +9,8 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
@@ -84,5 +86,12 @@ class ShopInfoModule {
     fun provideGetShopStatisticUseCase(graphqlUseCase: MultiRequestGraphqlUseCase,
                                        queries: Map<String, String>): GetShopStatisticUseCase {
         return GetShopStatisticUseCase(queries, graphqlUseCase)
+    }
+
+
+    @ShopInfoScope
+    @Provides
+    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
+        return CoroutineDispatcherProviderImpl
     }
 }
