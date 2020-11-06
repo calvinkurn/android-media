@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
-import com.tokopedia.play.broadcaster.domain.usecase.CustomUpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
@@ -23,7 +23,7 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
         private val dispatcher: CoroutineDispatcherProvider,
         private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase,
-        private val updateChannelUseCase: CustomUpdateChannelUseCase,
+        private val updateChannelUseCase: UpdateChannelUseCase,
         private val userSession: UserSessionInterface,
         private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
