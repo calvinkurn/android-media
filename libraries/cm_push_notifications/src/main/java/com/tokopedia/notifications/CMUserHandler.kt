@@ -134,9 +134,10 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
             val applicationName = CMNotificationUtils.getApplicationName(mContext)
+            if (applicationName == CMNotificationUtils.SELLER_APP_NAME && !CMPushNotificationManager.instance.sellerAppCmAddTokenEnabled)
+                return
 
-            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)
-                    || (applicationName == CMNotificationUtils.SELLER_APP_NAME && CMPushNotificationManager.instance.sellerAppCmAddTokenEnabled)) {
+            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
