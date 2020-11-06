@@ -12,13 +12,14 @@ data class BarChartWidgetUiModel(
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
-        override val url: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
         override var data: BarChartDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean
+        override var isLoaded: Boolean,
+        override var isLoading: Boolean,
+        override var isFromCache: Boolean
 ) : BaseWidgetUiModel<BarChartDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

@@ -112,11 +112,15 @@ data class ProductCardModel (
     }
 
     fun willShowRatingAndReviewCount(): Boolean {
-        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
+        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowSalesAndRating()
     }
 
     fun willShowSalesAndRating(): Boolean{
         return countSoldRating.isNotEmpty() && getLabelIntegrity() != null
+    }
+
+    fun willShowRating(): Boolean{
+        return countSoldRating.isNotEmpty()
     }
 
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
