@@ -65,12 +65,14 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun gotoNextPage() {
-        stepperModel?.selectedProductIds?.apply {
-            selectedTopAdsProducts.forEach {
-                add(it.productID)
-            }
-        }
+        stepperModel?.selectedProductIds = getAdItems()
         stepperListener?.goToNextPage(stepperModel)
+    }
+
+    private fun getAdItems(): MutableList<Int> {
+        return selectedTopAdsProducts.map {
+            it.productID
+        }.toMutableList()
     }
 
     override fun updateToolBar() {

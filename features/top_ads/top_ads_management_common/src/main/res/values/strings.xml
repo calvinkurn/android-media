@@ -115,6 +115,9 @@
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
     <string name="filter">Filter</string>
     <string name="topads_edit_urutkan">Urutkan</string>
+    <string name="topads_common_min_bid">Biaya minimum %s</string>
+    <string name="topads_common_recom_bid">Rekomendasi %s</string>
+
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

@@ -25,4 +25,22 @@
     <string name="topads_headline_select_first_n_recommendation">Pilih %s produk pertama</string>
     <string name="topads_headline_search_result_with_keyword">Kami tidak dapat menemukan produk “%s”</string>
     <string name="topads_headline_submit_ad_detail_error">Lengkapi informasi iklan produkmu.”</string>
+
+    <!--keyword-->
+    <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>
+    <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
+    <string name="topads_headline_add_button">Tambah</string>
+    <string name="topads_headline_keyword_desc">%s orang mencari ini /bulan</string>
+    <string name="topads_headline_klik">/klik</string>
+    <string name="topads_headline_keyword_recommended_keyword">REKOMENDASI KATA KUNCI</string>
+    <string name="topads_headline_keyword_bottomsheet_desc1">Kata kunci akan menentukan di halaman pencarian kata kunci mana saja iklan </string>
+    <string name="topads_headline_keyword_bottomsheet_desc2">Sesuaikan kata kunci dengan nama produk.</string>
+    <string name="topads_headline_keyword_bottomsheet_desc3">Gunakan kata kunci spesifik untuk lebih efisien beriklan</string>
+    <string name="topads_headline_keyword_bottomsheet_desc4">Gunakan kata kunci umum untuk meningkatkan frekuensi produk tampil.</string>
+    <string name="topads_headline_keyword_bottomsheet_desc5">Biaya rekomendasi merupakan rata-rata biaya iklan yang digunakan kompetitormu</string>
+    <string name="topads_headline_keyword_bottomsheet_desc6">Gunakan biaya rekomendasi atau lebih besar agar iklanmu terus tampil</string>
+    <string name="topads_headline_keyword_bottomsheet_desc7">Biaya ini hanya dikenakan setiap kali iklan headline diklik calon pembeli</string>
+    <string name="topads_headline_keyword_bottomsheet_title1">Tips memilih kata kunci</string>
+    <string name="topads_headline_keyword_bottomsheet_title2">Tips mengatur biaya kata kunci</string>
+
 </resources>

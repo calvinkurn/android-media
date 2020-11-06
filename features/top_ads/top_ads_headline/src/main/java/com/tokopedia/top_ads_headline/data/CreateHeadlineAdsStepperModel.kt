@@ -1,13 +1,14 @@
 package com.tokopedia.top_ads_headline.data
 
 import com.tokopedia.abstraction.base.view.model.StepperModel
+import com.tokopedia.topads.common.data.response.KeywordDataItem
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 open class CreateHeadlineAdsStepperModel(
         var groupName: String = "",
         var selectedProductIds: MutableList<Int> = mutableListOf(),
-        var selectedKeywords: MutableList<String> = mutableListOf(),
+        var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var STAGE: Int = 0,
 //        var selectedKeywordStage: MutableList<KeywordDataItem> = mutableListOf(),
         var selectedSuggestBid: MutableList<Int> = mutableListOf(),

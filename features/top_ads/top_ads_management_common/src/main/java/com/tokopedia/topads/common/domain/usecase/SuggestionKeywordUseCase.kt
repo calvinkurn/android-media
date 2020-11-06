@@ -1,23 +1,44 @@
-package com.tokopedia.topads.edit.usecase
+package com.tokopedia.topads.common.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
-import com.tokopedia.topads.common.di.ActivityContext
-import com.tokopedia.topads.edit.R
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
- * Created by Pika on 24/5/20.
+ * Created by Pika on 6/11/20.
  */
+private const val KEYWORD_SUGGESTION: String = """
+               query topAdsGetKeywordSuggestionV3(${'$'}product_ids : String!,${'$'}group_id : Int,${'$'}shop_id : Int!,${'$'}type : Int) {
+                 topAdsGetKeywordSuggestionV3(product_ids : ${'$'}product_ids, group_id : ${'$'}group_id, shop_id  : ${'$'}shop_id, type : ${'$'}type) {
+                   data {
+                     min_bid
+                     product_id
+                     keyword_data {
+                       keyword
+                       bid_suggest
+                       total_search
+                       source
+                       competition
+                     }
+                   }
+                   errors {
+                     code
+                     detail
+                     title
+                   }
+                 }
+               }
+           """
 
-class SuggestionKeywordUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordSuggestionResponse.Result>(graphqlRepository) {
+
+@GqlQuery("TopAdsGetKeywordsQuery", KEYWORD_SUGGESTION)
+class SuggestionKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordSuggestionResponse.Result>(graphqlRepository) {
 
     fun setParams(groupId: Int?, productIds: String?) {
         val queryMap = HashMap<String, Any?>()
@@ -28,7 +49,7 @@ class SuggestionKeywordUseCase @Inject constructor(@ActivityContext val context:
     }
 
     private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context?.resources, R.raw.query_ad_keyword_suggestion)
+        return TopAdsGetKeywordsQuery.GQL_QUERY
     }
 
     private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy
