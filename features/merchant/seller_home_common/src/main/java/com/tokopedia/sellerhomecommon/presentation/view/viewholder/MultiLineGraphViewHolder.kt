@@ -14,6 +14,7 @@ import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
@@ -228,18 +229,18 @@ class MultiLineGraphViewHolder(
     private fun showLegendView() {
         with(itemView) {
             lvShcCurrentPeriod.setText(context.getString(R.string.shc_current_period))
-            lvShcCurrentPeriod.visibility = View.VISIBLE
+            lvShcCurrentPeriod.visible()
             lvShcCurrentPeriod.showLine()
             lvShcLastPeriod.setText(context.getString(R.string.shc_last_period))
-            lvShcLastPeriod.visibility = View.VISIBLE
+            lvShcLastPeriod.visible()
             lvShcLastPeriod.showDashLine()
         }
     }
 
     private fun hideLegendView() {
         with(itemView) {
-            lvShcCurrentPeriod.visibility = View.INVISIBLE
-            lvShcLastPeriod.visibility = View.INVISIBLE
+            lvShcCurrentPeriod.invisible()
+            lvShcLastPeriod.invisible()
         }
     }
 
@@ -330,7 +331,7 @@ class MultiLineGraphViewHolder(
         with(view) {
             ttvShcMlgTooltip1.showDot(Color.TRANSPARENT)
             ttvShcMlgTooltip1.setContent(entry.xLabel, entry.yLabel)
-            tvShcTooltipHeader.visibility = View.VISIBLE
+            tvShcTooltipHeader.visible()
             tvShcTooltipHeader.text = entry.xLabel
 
             //show first metric tooltip
@@ -350,12 +351,12 @@ class MultiLineGraphViewHolder(
                 selectedMetrics[1].let { metric ->
                     val hexColor = getLineHexColor(metric.summary.lineColor)
                     val value = getTooltipValue(metric, axisIndex)
-                    ttvShcMlgTooltip2.visibility = View.VISIBLE
+                    ttvShcMlgTooltip2.visible()
                     ttvShcMlgTooltip2.setContent(metric.summary.title, value)
                     ttvShcMlgTooltip2.showDot(Color.parseColor(hexColor))
                 }
             } catch (e: IndexOutOfBoundsException) {
-                ttvShcMlgTooltip2.visibility = View.GONE
+                ttvShcMlgTooltip2.gone()
                 Timber.i(e)
             }
         }
@@ -381,12 +382,12 @@ class MultiLineGraphViewHolder(
                 //show last period tooltip
                 try {
                     metric.linePeriod.lastPeriod[axisIndex].let {
-                        ttvShcMlgTooltip2.visibility = View.VISIBLE
+                        ttvShcMlgTooltip2.visible()
                         ttvShcMlgTooltip2.showDot(Color.parseColor(hexColor), true)
                         ttvShcMlgTooltip2.setContent(it.xLabel, it.yLabel)
                     }
                 } catch (e: IndexOutOfBoundsException) {
-                    ttvShcMlgTooltip2.visibility = View.GONE
+                    ttvShcMlgTooltip2.gone()
                     Timber.i(e)
                 }
             }
