@@ -222,17 +222,15 @@
                     android:id="@+id/ticker_info_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:layout_marginLeft="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/dp_20"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <com.tokopedia.unifycomponents.ticker.Ticker
                         android:id="@+id/ticker_info_courier"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        app:tickerShapeType="loose"
+                        app:closeButtonVisibility="gone"/>
 
                 </LinearLayout>
 
