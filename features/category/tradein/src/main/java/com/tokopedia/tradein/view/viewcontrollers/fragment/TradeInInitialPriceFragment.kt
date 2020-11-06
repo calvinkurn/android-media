@@ -25,7 +25,6 @@ import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.tradein_final_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.btn_continue
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.iv_back

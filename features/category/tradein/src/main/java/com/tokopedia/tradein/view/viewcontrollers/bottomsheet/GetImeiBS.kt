@@ -36,7 +36,7 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
     }
 
     private fun initLayout() {
-        setTitle(getString(R.string.select_shipping))
+        setTitle(getString(R.string.tradein_imei_title))
         showCloseIcon = false
         showKnob = true
         contentView = View.inflate(context,

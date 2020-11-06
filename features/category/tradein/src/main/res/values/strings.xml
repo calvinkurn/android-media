@@ -121,4 +121,6 @@
     <string name="tradein_bs_info">1. Buka Pengaturan > Umum > Mengenai.
         \n2. Cari nomor seri, IMEI perangkat kamu.
         \n3. Sentuh dan tahan nomor IMEI hingga tersalin.</string>
+    <string name="tradein_imei_title">Masukkan no. IMEI</string>
+    <string name="tradein_imei_di_pengaturan">IMEI di pengaturan</string>
 </resources>
