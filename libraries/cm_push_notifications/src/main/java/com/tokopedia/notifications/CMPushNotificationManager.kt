@@ -52,6 +52,10 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
                 HOURS_24_IN_MILLIS * 7)
 
+    val sellerAppCmAddTokenEnabled: Boolean
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED,
+                false)
+
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic

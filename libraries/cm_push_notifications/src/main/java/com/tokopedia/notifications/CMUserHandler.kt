@@ -133,8 +133,10 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             }
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
+            val applicationName = CMNotificationUtils.getApplicationName(mContext)
 
-            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
+            if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)
+                    || (applicationName == CMNotificationUtils.SELLER_APP_NAME && CMPushNotificationManager.instance.sellerAppCmAddTokenEnabled)) {
                 val requestParams = HashMap<String, Any>()
 
                 requestParams["macAddress"] = ""
@@ -147,7 +149,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 requestParams[USER_STATE] = userIdAndStatus.first
                 requestParams[USER_ID] = userIdAndStatus.second
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
-                requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
+                requestParams[APP_NAME] = applicationName
 
                 graphQlUseCase = GraphqlUseCase()
 
