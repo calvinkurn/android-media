@@ -321,7 +321,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun checkIsSelected(): Boolean {
         somFilterViewModel.getSomFilterUiModel().forEach {
-            it.somFilterData.filter { somChips -> somChips.name != orderStatus }.onEach { chips ->
+            it.somFilterData.forEach { chips ->
                 if (chips.isSelected) {
                     return true
                 }
