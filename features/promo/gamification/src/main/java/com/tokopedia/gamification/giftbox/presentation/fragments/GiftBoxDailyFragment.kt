@@ -749,9 +749,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
         val tvBenefitsAnim = ObjectAnimator.ofPropertyValuesHolder(tvBenefits, alphaProp)
         val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+        val infoAnim = ObjectAnimator.ofPropertyValuesHolder(imageInfo, alphaProp)
 
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim)
+        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim, infoAnim)
         animatorSet.duration = 300L
 
         animatorSet.start()
