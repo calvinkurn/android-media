@@ -45,6 +45,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
+import com.tokopedia.home_account.HomeAccountErrorHandler
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -159,6 +160,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
+                is Fail -> onFailGetData(it.throwable)
             }
         })
 
@@ -190,7 +192,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if(message.contains("UnknownHostException") || message.contains("SocketTimeoutException")) {
             showErrorNoConnection()
         } else {
-            showError(throwable, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
+            showError(throwable)
         }
     }
 
@@ -844,27 +846,24 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun showErrorNoConnection() {
-        showError(getString(R.string.account_home_error_no_internet_connection))
-    }
-
-    private fun showError(message: String) {
         if (view != null && userVisibleHint) {
             view?.let {
-                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                Toaster.make(it, getString(R.string.account_home_error_no_internet_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
         fpmBuyer?.run { stopTrace() }
     }
 
-    private fun showError(e: Throwable, errorCode: String) {
+    private fun showError(e: Throwable) {
         if (view != null && context != null && userVisibleHint) {
-            val message = "${ErrorHandler.getErrorMessage(context, e)} ($errorCode)"
+            val message = "${ErrorHandler.getErrorMessage(context, e)} (${AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT})"
             view?.let {
                 Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
+        HomeAccountErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
         fpmBuyer?.run { stopTrace() }
     }
 
