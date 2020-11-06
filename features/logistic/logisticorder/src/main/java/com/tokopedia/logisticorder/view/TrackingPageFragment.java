@@ -155,7 +155,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     @Override
     public void populateView(TrackingUiModel model) {
-        referenceNumber.setText(model.getReferenceNumber());;
+        referenceNumber.setText(model.getReferenceNumber());
         if (TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(model.getDeliveryDate()))
             deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
