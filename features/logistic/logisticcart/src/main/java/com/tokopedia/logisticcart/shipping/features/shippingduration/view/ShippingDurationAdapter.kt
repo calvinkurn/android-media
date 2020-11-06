@@ -27,7 +27,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.mData = shippingDurationUiModels.toMutableList()
         promoUiModel?.let { this.mData.add(0, it) }
-        if (shippingDurationUiModels[0].shippingCourierViewModelList[0].productData.estimatedTimeArrival == null) {
+        if (shippingDurationUiModels[0].etaErrorCode == 1) {
             this.mData.add(0, NotifierModel())
         }
         notifyDataSetChanged()

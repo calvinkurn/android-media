@@ -77,6 +77,7 @@ public class ShippingDurationConverter {
             ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
             shippingDurationUiModel.setServiceData(serviceData);
             shippingDurationUiModel.setShowShippingInformation(isCourierInstantOrSameday(serviceData.getServiceId()));
+            shippingDurationUiModel.setEtaErrorCode(serviceData.getTexts().getErrorCode());
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
