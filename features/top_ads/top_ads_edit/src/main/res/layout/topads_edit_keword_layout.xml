@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/add_image"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
@@ -17,8 +17,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_plus_add_keyword" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/add_keyword"

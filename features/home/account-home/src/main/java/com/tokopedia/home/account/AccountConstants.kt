@@ -30,6 +30,7 @@ object AccountConstants {
         const val CLICK_HOME_PAGE = "clickHomePage"
         const val CLICK_SETTING = "clickSetting"
         const val CLICK_ACCOUNT = "clickAccount"
+        const val CLICK_OTP = "clickOtp"
         const val SHOP_MANAGE = "clickManageShop"
         const val CATEGORY_SHOP_MANAGE = "Manage Shop"
         const val SHOP_SHIPPING = "Shop Shipping"

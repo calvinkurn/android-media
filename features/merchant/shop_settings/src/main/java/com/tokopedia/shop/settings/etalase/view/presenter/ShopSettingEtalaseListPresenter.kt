@@ -5,8 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.DeleteShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopNoteUseCase
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 
 import java.util.ArrayList
 
@@ -22,7 +21,7 @@ constructor(private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase) : BaseDaggerPresenter<ShopSettingEtalaseListPresenter.View>() {
 
     interface View : CustomerView {
-        fun onSuccessGetShopEtalase(shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>)
+        fun onSuccessGetShopEtalase(shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>)
         fun onErrorGetShopEtalase(throwable: Throwable)
         fun onSuccessDeleteShopEtalase(successMessage: String)
         fun onErrorDeleteShopEtalase(throwable: Throwable)
@@ -42,10 +41,10 @@ constructor(private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
 
                     override fun onNext(shopEtalaseModels: ArrayList<ShopEtalaseModel>) {
                         view?.run {
-                            val shopEtalaseViewModels = ArrayList<ShopEtalaseViewModel>()
+                            val shopEtalaseViewModels = ArrayList<ShopEtalaseUiModel>()
                             var countPrimaryEtalase = 0
                             for (shopEtalaseModel in shopEtalaseModels) {
-                                shopEtalaseViewModels.add(ShopEtalaseViewModel(shopEtalaseModel,
+                                shopEtalaseViewModels.add(ShopEtalaseUiModel(shopEtalaseModel,
                                         countPrimaryEtalase < PRIMARY_ETALASE_LIMIT))
                                 countPrimaryEtalase++
                             }

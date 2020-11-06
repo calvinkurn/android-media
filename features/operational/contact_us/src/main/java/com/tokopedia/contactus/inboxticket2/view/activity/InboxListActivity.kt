@@ -16,7 +16,7 @@ import com.tokopedia.contactus.home.view.ContactUsHomeActivity
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.kotlin.extensions.view.hide
@@ -40,7 +40,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
-            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListPresenter)
+            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListContract.Presenter)
         } else {
             mAdapter?.notifyDataSetChanged()
         }
@@ -111,11 +111,11 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun initView() {
         this.findingViewsId()
-        (mPresenter as InboxListPresenter).getTicketList(null)
+        (mPresenter as InboxListContract.Presenter).getTicketList(null)
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
-        editText?.setListener((mPresenter as InboxListPresenter).getSearchListener())
+        editText?.setListener((mPresenter as InboxListContract.Presenter).getSearchListener())
     }
 
     private fun findingViewsId() {
@@ -151,7 +151,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     private fun onClickFilter(v: View) {
         if (v.id == R.id.btn_filter) {
-            (mPresenter as InboxListPresenter).onClickFilter()
+            (mPresenter as InboxListContract.Presenter).onClickFilter()
         } else if (v.id == R.id.close_search) {
             mPresenter?.clickCloseSearch()
         }
@@ -169,7 +169,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
                     InboxTicketTracking.Label.InboxEmpty)
             finish()
         } else {
-            (mPresenter as InboxListPresenter).getTicketList(null)
+            (mPresenter as InboxListContract.Presenter).getTicketList(null)
         }
     }
 
@@ -188,7 +188,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private val rvOnScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            (mPresenter as InboxListPresenter).onRecyclerViewScrolled(getLayoutManager())
+            (mPresenter as InboxListContract.Presenter).onRecyclerViewScrolled(getLayoutManager())
         }
     }
 

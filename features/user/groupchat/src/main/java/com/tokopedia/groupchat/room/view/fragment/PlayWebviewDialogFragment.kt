@@ -65,35 +65,37 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         webViewDialog.setOnShowListener { dialog ->
             val bottomSheetDialog = dialog as BottomSheetDialog
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            this.behavior = behavior
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                this.behavior = behavior
 
-            behavior.peekHeight = FIRST_STATE_HEIGHT
+                behavior.peekHeight = FIRST_STATE_HEIGHT
 
-            activity?.windowManager?.defaultDisplay?.let {
-                val displayMetrics = DisplayMetrics()
-                it.getMetrics(displayMetrics)
-                behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
+                activity?.windowManager?.defaultDisplay?.let {
+                    val displayMetrics = DisplayMetrics()
+                    it.getMetrics(displayMetrics)
+                    behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
+                }
+
+                isBottomSheetCloseable = true
+
+                behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        val newHeight = (behavior.peekHeight + (bottomSheet.height - behavior.peekHeight) * slideOffset)
+                        setWebviewContentHeight(newHeight.toInt())
+                    }
+
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (!isBottomSheetCloseable && newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+
+                        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                            bottomSheetDialog.cancel()
+                        }
+                    }
+                })
             }
-
-            isBottomSheetCloseable = true
-
-            behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    val newHeight = (behavior.peekHeight + (bottomSheet.height - behavior.peekHeight) * slideOffset)
-                    setWebviewContentHeight(newHeight.toInt())
-                }
-
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (!isBottomSheetCloseable && newState == BottomSheetBehavior.STATE_DRAGGING) {
-                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    }
-
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        bottomSheetDialog.cancel()
-                    }
-                }
-            })
         }
 
         return webViewDialog
