@@ -6,9 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Neutral_N0"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
     android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_title"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/unify_space_12"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_umrah_checkout_price"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/container_umrah_checkout_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/unify_space_12"/>
 
     <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
         android:id="@+id/iw_umrah_checkout_hotel"
@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_period"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/unify_space_12"/>
 
     <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
         android:id="@+id/iw_umrah_checkout_flight"
@@ -86,7 +86,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_hotel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/unify_space_12"/>
 
     <com.tokopedia.salam.umrah.common.presentation.widget.UmrahItemWidget
         android:id="@+id/iw_umrah_checkout_pilgrims"
@@ -94,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_checkout_flight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/unify_space_12"/>
 
 
 

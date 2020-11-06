@@ -13,7 +13,7 @@
         android:layout_height="@dimen/unify_space_96"
         tools:ignore="RtlSymmetry"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/unify_space_12"
         android:paddingRight="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography

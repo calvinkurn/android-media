@@ -6,13 +6,13 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_package_name_loading"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_12"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="@dimen/unify_space_96"
         android:layout_height="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/unify_space_12"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         />

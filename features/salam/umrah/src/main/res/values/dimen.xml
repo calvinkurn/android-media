@@ -4,6 +4,7 @@
     <dimen name="dimen_dp_1">1dp</dimen>
     <dimen name="margin_top_umrah_search">10dp</dimen>
     <dimen name="margin_right_umrah_banner">40dp</dimen>
+    <dimen name="dimen_dp_18">18dp</dimen>
     <dimen name="dimen_dp_72">72dp</dimen>
     <dimen name="dimen_dp_80">80dp</dimen>
     <dimen name="dimen_dp_126">126dp</dimen>

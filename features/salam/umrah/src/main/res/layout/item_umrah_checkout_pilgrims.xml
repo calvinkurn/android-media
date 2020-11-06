@@ -21,9 +21,9 @@
         android:layout_alignParentLeft="true"
         app:typographyType="heading_5"
         android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/unify_space_12"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/unify_space_12"
         tools:text="Jamaah 1"
         />
 
@@ -33,9 +33,9 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/unify_space_12"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/unify_space_12"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/img_umrah_checkout_right_arrow"
         android:text="@string/umrah_checkout_order_pilgrims_fill_data"
@@ -49,7 +49,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12"
         />
 
 

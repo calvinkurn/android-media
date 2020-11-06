@@ -221,7 +221,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/unify_space_12"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_arrow_right_grey" />

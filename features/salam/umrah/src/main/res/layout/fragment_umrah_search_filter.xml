@@ -12,7 +12,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bt_umrah_search_filter_save"
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_0"
-        android:layout_marginBottom="@dimen/spacing_lvl4">
+        android:layout_marginBottom="@dimen/unify_space_12">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -50,7 +50,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:clipToPadding="false"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"/>
@@ -88,7 +88,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:clipToPadding="false"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"/>
@@ -113,7 +113,7 @@
                 app:layout_constraintRight_toRightOf="@+id/tg_umrah_search_filter_departure_city_see_all"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"/>
+                android:layout_marginTop="@dimen/unify_space_12"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_package_price"
@@ -162,7 +162,7 @@
                 app:text_field_label_static="true"
                 android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:text_field_label="@string/umrah_search_filter_package_price_maximum"
                 app:text_field_input_type="number"
                 android:id="@+id/tf_umrah_search_filter_max_price"

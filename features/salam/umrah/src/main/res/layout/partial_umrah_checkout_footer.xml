@@ -6,16 +6,16 @@
     android:layout_height="wrap_content"
     android:background="@color/Neutral_N0"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
     android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_agreement_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl6"
-        android:lineHeight="@dimen/spacing_lvl4"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:text="@string/umrah_checkout_aggrement_condition"
         app:layout_constraintLeft_toRightOf="@+id/cb_umrah_checkout"
         app:layout_constraintTop_toTopOf="parent"
