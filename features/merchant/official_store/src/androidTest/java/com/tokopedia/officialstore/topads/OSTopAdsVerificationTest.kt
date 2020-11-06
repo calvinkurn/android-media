@@ -80,7 +80,7 @@ class OSTopAdsVerificationTest {
 
         waitForData()
 
-        val itemCount = itemAdapter.getVisitables().size
+        val itemCount = itemAdapter.currentList.size
         for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
