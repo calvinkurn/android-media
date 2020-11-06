@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.notification.Bottomsheet
 import com.tokopedia.notifcenter.data.entity.notification.DataNotification
+import com.tokopedia.notifcenter.data.entity.notification.Options
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 
 data class NotificationUiModel(
@@ -72,6 +72,7 @@ data class NotificationUiModel(
         val userId: Long = 0
 ) : Visitable<NotificationTypeFactory> {
 
+    var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
 
     override fun type(typeFactory: NotificationTypeFactory): Int {

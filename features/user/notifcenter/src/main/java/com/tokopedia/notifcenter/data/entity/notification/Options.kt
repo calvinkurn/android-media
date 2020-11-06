@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class Options(
     @SerializedName("longer_content")
-    val longerContent: Int = 0
+    val longerContent: Int = 150
 )

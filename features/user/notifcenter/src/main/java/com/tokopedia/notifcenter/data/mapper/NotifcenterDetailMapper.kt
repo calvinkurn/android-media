@@ -13,6 +13,9 @@ class NotifcenterDetailMapper @Inject constructor() {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
 
         if (response.notifcenterDetail.newList.isNotEmpty()) {
+            response.notifcenterDetail.newList.forEach {
+                it.options = response.notifcenterDetail.options
+            }
             items.add(SectionTitleUiModel("Terbaru"))
             items.addAll(response.notifcenterDetail.newList)
         }
@@ -20,6 +23,9 @@ class NotifcenterDetailMapper @Inject constructor() {
         if (response.notifcenterDetail.list.isNotEmpty()) {
             if (items.isNotEmpty()) {
                 items.add(BigDividerUiModel())
+            }
+            response.notifcenterDetail.list.forEach {
+                it.options = response.notifcenterDetail.options
             }
             items.add(SectionTitleUiModel("Sebelumnya"))
             items.addAll(response.notifcenterDetail.list)

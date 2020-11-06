@@ -1,6 +1,11 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
 import android.content.res.ColorStateList
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.inboxcommon.time.TimeHelper
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
@@ -57,7 +63,33 @@ abstract class BaseNotificationViewHolder constructor(
     }
 
     private fun bindDesc(element: NotificationUiModel) {
-        desc?.text = element.shortDescription
+        if (element.isLongerContent) {
+            var shorten = element.shortDescription.take(
+                    element.options.longerContent
+            )
+            val inFull = getStringResource(R.string.in_full)
+            shorten = "$shorten... $inFull"
+            val spannable = SpannableString(shorten)
+
+            val color = getColorResource(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            spannable.setSpan(
+                    ForegroundColorSpan(color),
+                    shorten.indexOf(inFull),
+                    shorten.indexOf(inFull) + inFull.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            spannable.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    shorten.indexOf(inFull),
+                    shorten.indexOf(inFull) + inFull.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            desc?.text = spannable
+        } else {
+            desc?.text = element.shortDescription
+        }
     }
 
     private fun bindNotificationType(element: NotificationUiModel) {
@@ -89,4 +121,11 @@ abstract class BaseNotificationViewHolder constructor(
         }
     }
 
+    private fun getStringResource(stringId: Int): String {
+        return itemView.context?.getString(stringId).toEmptyStringIfNull()
+    }
+
+    private fun getColorResource(colorId: Int): Int {
+        return MethodChecker.getColor(itemView.context, colorId)
+    }
 }

@@ -47,7 +47,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/spacing_lvl3</item>
         <item name="android:layout_marginTop">@dimen/spacing_lvl1</item>
-        <item name="android:maxLines">2</item>
         <item name="android:textColor">@color/Neutral_N700_96</item>
         <item name="typographyType">body_2</item>
     </style>
