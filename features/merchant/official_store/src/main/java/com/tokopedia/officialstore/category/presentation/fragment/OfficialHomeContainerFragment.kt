@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -32,6 +33,8 @@ import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeCon
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +70,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
 
+    private lateinit var remoteConfig: RemoteConfig
+    private val queryHashingKey = "android_do_query_hashing"
+
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
     }
@@ -90,9 +96,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         init(view)
         observeOfficialCategoriesData()
-        viewModel.getOfficialStoreCategories()
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
     }
 
     override fun onDestroy() {
@@ -143,7 +150,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                 is Fail -> {
                     removeLoading()
                     NetworkErrorHelper.showEmptyState(context, coordinator_layout_fragment_os) {
-                        viewModel.getOfficialStoreCategories()
+                        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
                     }
                 }
             }
@@ -233,6 +240,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun removeLoading() {
         loadingCategoryLayout?.visibility = View.GONE
+        view_content_loading?.hide()
         tabLayout?.visibility = View.VISIBLE
     }
 

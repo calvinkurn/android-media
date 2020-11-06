@@ -21,5 +21,8 @@ data class ProductRevIncentiveOvoResponse(
         var numberedList: List<String> = listOf(),
         @SerializedName("cta_text")
         @Expose
-        var ctaText: String = ""
+        var ctaText: String = "",
+        @SerializedName("amount")
+        @Expose
+        val amount: Int = 0
 )
