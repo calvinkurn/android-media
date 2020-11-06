@@ -13,6 +13,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
+import com.tokopedia.product.detail.data.util.TrackingUtil.getTickerTypeInfoString
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
@@ -1399,6 +1400,16 @@ object DynamicProductDetailTracking {
                             )))
 
             trackingQueue.putEETracking(mapEvent)
+        }
+
+        fun eventTickerImpression(tickerType: Int, tickerTitle: String, tickerMessage: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.VIEW_TICKER_OOS,
+                    String.format(ProductTrackingConstant.Label.TICKER_OOS, getTickerTypeInfoString(tickerType), tickerTitle, tickerMessage)
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
     }
 }

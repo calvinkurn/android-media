@@ -301,6 +301,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   show_recommendation
                 }
                 unavailable_buttons
+                hide_floating_button
               }
             }
             upcomingCampaigns {

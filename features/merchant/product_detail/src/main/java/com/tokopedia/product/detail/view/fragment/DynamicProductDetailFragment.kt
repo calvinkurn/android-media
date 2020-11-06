@@ -1427,7 +1427,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showOrHideButton() {
         if(viewModel.shouldHideFloatingButton()) {
-            actionButtonView.visibility = viewModel.shouldHideFloatingButton()
+            actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
             return
         }
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
