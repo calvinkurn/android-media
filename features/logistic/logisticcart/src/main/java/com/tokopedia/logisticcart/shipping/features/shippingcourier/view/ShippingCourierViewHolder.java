@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +36,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private Label otdLabel;
     private ImageView imgMvc;
     private Typography tvMvc;
+    private Typography tvMvcError;
+    private ConstraintLayout layoutMvc;
 
     private int cartPosition;
 
@@ -51,6 +54,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
         imgMvc = itemView.findViewById(R.id.img_mvc);
         tvMvc = itemView.findViewById(R.id.tv_mvc_text);
+        tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -85,13 +90,21 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
-            imgMvc.setVisibility(View.VISIBLE);
+            layoutMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
-            tvMvc.setVisibility(View.VISIBLE);
             tvMvc.setText(R.string.tv_mvc_text);
+            tvMvcError.setVisibility(View.GONE);
+        } else if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
+            layoutMvc.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
+            tvMvc.setText(R.string.tv_mvc_text);
+            ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
+            tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
+            tvMvcError.setVisibility(View.VISIBLE);
+            tvMvcError.setText(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcErrorMessage());
         } else {
-            imgMvc.setVisibility(View.GONE);
-            tvMvc.setVisibility(View.GONE);
+            layoutMvc.setVisibility(View.GONE);
+            tvMvcError.setVisibility(View.GONE);
         }
 
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
