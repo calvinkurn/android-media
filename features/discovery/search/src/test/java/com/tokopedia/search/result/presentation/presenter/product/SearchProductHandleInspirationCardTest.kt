@@ -80,7 +80,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
-        // 0 -> product
+        // 0 -> productCountTitle
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -88,19 +88,21 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 5 -> product
         // 6 -> product
         // 7 -> product
-        // 8 -> inspiration card (position 8)
-        // 9 -> product
+        // 8 -> product
+        // 9 -> inspiration card (position 8)
         // 10 -> product
         // 11 -> product
         // 12 -> product
         // 13 -> product
         // 14 -> product
         // 15 -> product
-        visitableList.size shouldBe 15
+        // 16 -> product
+        visitableList.size shouldBe 16
 
-        visitableList.forEachIndexed { index, visitable ->
+        for(index in 1 until visitableList.size) {
+            val visitable = visitableList[index]
             when (index) {
-                8 -> {
+                9 -> {
                     visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                             "visitable list at index $index should be InspirationCardViewModel"
                     )
@@ -220,9 +222,10 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 7 -> product
         // 8 -> product
 
-        visitableList.size shouldBe 8
+        visitableList.size shouldBe 9
 
-        visitableList.forEachIndexed { index, visitable ->
+        for(index in 1 until visitableList.size) {
+            val visitable = visitableList[index]
             visitable.shouldBeInstanceOf<ProductItemViewModel>(
                     "visitable list at index $index should be ProductItemViewModel"
             )
@@ -281,22 +284,24 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
-        // 0 -> product
+        // 0 -> productCountTitle
         // 1 -> product
         // 2 -> product
         // 3 -> product
-        // 4 -> inspiration card (position 4)
-        // 5 -> product
+        // 4 -> product
+        // 5 -> inspiration card (position 4)
         // 6 -> product
         // 7 -> product
         // 8 -> product
-        // 9 -> inspiration card (position 8)
+        // 9 -> product
+        // 10 -> inspiration card (position 8)
 
-        visitableList.size shouldBe 10
+        visitableList.size shouldBe 11
         var i = 0
 
-        visitableList.forEachIndexed { index, visitable ->
-            if (index == 4 || index == 9) {
+        for(index in 1 until visitableList.size) {
+            val visitable = visitableList[index]
+            if (index == 5 || index == 10) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
@@ -366,30 +371,32 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
         val inspirationWidgetIndex = listOf(1, 0, 2, 3)
 
-        // 0 -> product
+        // 0 -> productCountTitle
         // 1 -> product
         // 2 -> product
         // 3 -> product
-        // 4 -> inspiration card (position 4)
+        // 4 -> product
         // 5 -> inspiration card (position 4)
-        // 6 -> product
+        // 6 -> inspiration card (position 4)
         // 7 -> product
         // 8 -> product
         // 9 -> product
-        // 10 -> inspiration card (position 8)
-        // 11 -> product
+        // 10 -> product
+        // 11 -> inspiration card (position 8)
         // 12 -> product
-        // 13 -> inspiration card (position 10)
-        // 14 -> product
+        // 13 -> product
+        // 14 -> inspiration card (position 10)
         // 15 -> product
         // 16 -> product
         // 17 -> product
+        // 18 -> product
 
-        visitableList.size shouldBe 18
+        visitableList.size shouldBe 19
         var i = 0
 
-        visitableList.forEachIndexed { index, visitable ->
-            if (index == 4 || index == 5 || index == 10 || index == 13) {
+        for(index in 1 until visitableList.size) {
+            val visitable = visitableList[index]
+            if (index == 5 || index == 6 || index == 11 || index == 14) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )

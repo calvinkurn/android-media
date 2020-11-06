@@ -59,8 +59,8 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
-        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[1].shouldBeInstanceOf<GlobalNavViewModel>()
+        visitableList[2].shouldBeInstanceOf<CpmViewModel>()
     }
 
     @Test
@@ -82,9 +82,9 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list has global nav widget and no CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<GlobalNavViewModel>()
+        visitableList[1].shouldBeInstanceOf<GlobalNavViewModel>()
 
-        for(i in 1 until visitableList.size) {
+        for(i in 2 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
         }
     }
@@ -108,9 +108,9 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list not showing global nav widget and still show CPM`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
 
-        for (i in 1 until visitableList.size) {
+        for (i in 2 until visitableList.size) {
             visitableList[i].shouldBeInstanceOf<ProductItemViewModel>()
         }
     }
@@ -149,7 +149,7 @@ internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixture
     private fun `Then verify visitable list does not have global nav widget`() {
         val visitableList = visitableListSlot.captured
 
-        visitableList[0].shouldBeInstanceOf<CpmViewModel>()
+        visitableList[1].shouldBeInstanceOf<CpmViewModel>()
     }
 
     @Test
