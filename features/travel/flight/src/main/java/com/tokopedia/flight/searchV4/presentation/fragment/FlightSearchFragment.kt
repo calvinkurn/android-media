@@ -156,11 +156,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         })
-
-        flightSearchViewModel.isStatisticInitialized.observe(viewLifecycleOwner, Observer {
-            flight_sort_filter.chipItems.clear()
-            setupQuickFilter()
-        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -506,7 +501,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         if (filterItems.size < flightSearchViewModel.getQuickFilterItemSize()) {
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
-                    flightSearchViewModel.isSeatDistancingJourneyAvailable() &&
                     flightSearchViewModel.filterModel.canFilterSeatDistancing) {
                 val quickSeatDistancingFilter = SortFilterItem(getString(R.string.flight_search_has_seat_distancing_label))
                 quickSeatDistancingFilter.listener = {
@@ -528,7 +522,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
 
             if (flightSearchViewModel.isFilterModelInitialized() &&
-                    flightSearchViewModel.isFreeRapidTestJourneyAvailable() &&
                     flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
                 val quickFreeRapidTestFilter = SortFilterItem(getString(R.string.flight_search_free_rapid_test_label))
                 quickFreeRapidTestFilter.listener = {
