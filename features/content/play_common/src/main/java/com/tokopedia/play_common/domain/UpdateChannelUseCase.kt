@@ -29,7 +29,7 @@ class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : U
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
-        return response?.updateChannel ?: throw Throwable()
+        return response.updateChannel
     }
 
     fun setQueryParams(queryParams: QueryParams) {

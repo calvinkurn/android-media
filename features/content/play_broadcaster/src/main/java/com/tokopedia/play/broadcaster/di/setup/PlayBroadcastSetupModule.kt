@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -37,6 +38,11 @@ class PlayBroadcastSetupModule {
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
+        return UpdateChannelUseCase(graphqlRepository)
     }
 
     @Provides
