@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_3"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop=""
         android:layout_margin="@dimen/dp_16">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -44,20 +44,19 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_product_img"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_56"
+            android:layout_width="@dimen/som_list_product_image_size"
+            android:layout_height="@dimen/som_list_product_image_size"
             app:cardCornerRadius="6dp"
             app:cardElevation="@dimen/dp_0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/divider_product"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8">
 
             <ImageView
                 android:id="@+id/iv_product"
-                android:layout_width="@dimen/dp_56"
-                android:layout_height="@dimen/dp_56"
+                android:layout_width="@dimen/som_list_product_image_size"
+                android:layout_height="@dimen/som_list_product_image_size"
                 tools:ignore="ContentDescription" />
 
         </androidx.cardview.widget.CardView>
@@ -72,7 +71,6 @@
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6"
-            app:typographyWeight="reguler"
             tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -56,7 +55,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 if(item.dataObject.statusIndicatorColor.isNotBlank()) {
-                    statusIndicator.setColorFilter(Color.parseColor(item.dataObject.statusIndicatorColor), PorterDuff.Mode.SRC_IN)
+                    somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
                 }
 
                 header_see_history?.setOnClickListener {
