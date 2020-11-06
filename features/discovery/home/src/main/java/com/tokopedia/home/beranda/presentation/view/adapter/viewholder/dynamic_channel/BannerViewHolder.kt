@@ -33,19 +33,14 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val circularViewPager: CircularViewPager = itemView.findViewById(R.id.circular_view_pager)
     private val indicatorView: PageControl = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: Label = itemView.findViewById(R.id.see_more_label)
-    private val openHomeNav: Label = itemView.findViewById(R.id.homenav)
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     init {
-        indicatorView.activeColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_active)
-        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, R.color.home_hpb_indicator_inactive)
+        indicatorView.activeColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        indicatorView.inactiveColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0_32)
         seeAllPromo.unlockFeature = true
         seeAllPromo.setLabelType("#31353b")
         seeAllPromo.opacityLevel = 0.9f
-
-        openHomeNav.unlockFeature = true
-        openHomeNav.setLabelType("#31353b")
-        openHomeNav.opacityLevel = 0.9f
     }
 
     override fun bind(element: HomepageBannerDataModel) {
@@ -84,9 +79,6 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     private fun initSeeAllPromo(){
         seeAllPromo.setOnClickListener { onPromoAllClick() }
-        openHomeNav.setOnClickListener {
-            RouteManager.route(itemView.context, "tokopedia://navigation/main")
-        }
     }
 
     private fun initBanner(list: List<CircularModel>){

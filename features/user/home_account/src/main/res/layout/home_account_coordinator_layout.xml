@@ -19,7 +19,7 @@
             android:measureAllChildren="false">
 
             <include
-                android:id="@+id/home_account_shimmer_layout"
+                android:id="@+id/home_account_shimmer_layout_coordinator"
                 layout="@layout/home_account_shimmer_layout"/>
 
             <include

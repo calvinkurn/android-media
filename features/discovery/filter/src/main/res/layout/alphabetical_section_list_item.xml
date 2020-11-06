@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         style="@style/TextView.Small.Green.Bold"
         tools:text="Section Header"
         />
@@ -18,7 +18,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <FrameLayout
         android:id="@+id/item_container"

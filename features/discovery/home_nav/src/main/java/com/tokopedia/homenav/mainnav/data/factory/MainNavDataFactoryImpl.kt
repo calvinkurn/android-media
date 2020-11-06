@@ -30,7 +30,8 @@ class MainNavDataFactoryImpl(
                 visitableList.add(AccountHeaderViewModel(
                         userName = userPojo.profile.name,
                         userImage = userPojo.profile.profilePicture,
-                        loginState = loginState))
+                        loginState = loginState,
+                        shopId = userSession.shopId))
             }
             AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
             AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {

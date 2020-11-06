@@ -23,6 +23,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,14 +76,16 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
-import com.tokopedia.home.beranda.helper.isSuccess
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -112,10 +115,13 @@ import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerWidgetType
+import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.PlayWidgetView
+import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -135,9 +141,12 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -169,7 +178,8 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeReviewListener,
         PopularKeywordListener,
         FramePerformanceIndexInterface,
-        HomeAutoRefreshListener {
+        HomeAutoRefreshListener,
+        PlayWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -283,6 +293,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
+
+    private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -497,7 +509,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                    ContextCompat.getColor(it, R.color.green_600)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
         //status bar background compability, we show view background for android >= Kitkat
@@ -606,6 +618,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
         if(!shouldPausePlay) adapter?.onResumePlayWidget()
@@ -636,6 +649,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
@@ -645,6 +659,13 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::playWidgetCoordinator.isInitialized) {
+            playWidgetCoordinator.onDestroy()
         }
     }
 
@@ -680,9 +701,9 @@ open class HomeFragment : BaseDaggerFragment(),
         observeHomeRequestNetwork()
         observeSalamWidget()
         observeRechargeRecommendation()
-        observePlayReminder()
         observeIsNeedRefresh()
         observeSearchHint()
+        observePlayWidgetToggleReminder()
     }
           
     private fun observeIsNeedRefresh() {
@@ -805,20 +826,6 @@ open class HomeFragment : BaseDaggerFragment(),
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-            }
-        })
-    }
-
-    private fun observePlayReminder(){
-        getHomeViewModel().reminderPlayLiveData.observe(viewLifecycleOwner, Observer {
-            if(it.isSuccess()){
-                showToaster(
-                        if(it.data == true) getString(R.string.home_page_play_card_success_add_reminder)
-                        else getString(R.string.home_page_play_card_success_remove_reminder),
-                        Toaster.TYPE_NORMAL
-                )
-            } else {
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
             }
         })
     }
@@ -974,6 +981,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
+        setupPlayWidgetCoordinator()
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -991,7 +999,8 @@ open class HomeFragment : BaseDaggerFragment(),
                         SalamWidgetCallback(context,getHomeViewModel(),this, getUserSession())),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(context, this)
+                FeaturedShopComponentCallback(context, this),
+                playWidgetCoordinator
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1211,6 +1220,7 @@ open class HomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_PLAY_ROOM -> {
                 if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW) && data.hasExtra(EXTRA_CHANNEL_ID)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_CHANNEL_ID), data.getStringExtra(EXTRA_TOTAL_VIEW))
             }
+            PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE -> if (data != null) notifyPlayWidgetTotalView(data)
         }
     }
 
@@ -1522,24 +1532,6 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
-        getHomeViewModel().getPlayBannerCarousel(position)
-    }
-
-    override fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(getHomeViewModel().getUserId().isNotEmpty()) getHomeViewModel().setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, playBannerCarouselItemDataModel.remindMe)
-        else RouteManager.route(context, ApplinkConst.LOGIN)
-    }
-
-    override fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel) {
-        if(playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.UPCOMING && playBannerCarouselItemDataModel.widgetType != PlayBannerWidgetType.NONE) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, playBannerCarouselItemDataModel.channelId)
-            startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
-        } else {
-            RouteManager.route(context, playBannerCarouselItemDataModel.applink)
-        }
-    }
-
     override fun getTopAdsBannerNextPageToken(): String {
         return getHomeViewModel().currentTopAdsBannerToken
     }
@@ -1644,6 +1636,9 @@ open class HomeFragment : BaseDaggerFragment(),
         resetAutoPlay(isVisibleToUser)
         trackScreen(isVisibleToUser)
         conditionalViewModelRefresh()
+        playWidgetOnVisibilityChanged(
+                isUserVisibleHint = isVisibleToUser
+        )
     }
 
     private fun restartBanner(isVisibleToUser: Boolean) {
@@ -2112,4 +2107,69 @@ open class HomeFragment : BaseDaggerFragment(),
         return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
+    /**
+     * Play Widget
+     */
+    private fun setupPlayWidgetCoordinator() {
+        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+            setListener(this@HomeFragment)
+        }
+    }
+
+    override fun onWidgetShouldRefresh(view: PlayWidgetView) {
+        getHomeViewModel().getPlayWidget()
+    }
+
+    override fun onToggleReminderClicked(view: PlayWidgetMediumView, channelId: String, remind: Boolean, position: Int) {
+        if(getHomeViewModel().getUserId().isNotEmpty()) {
+            getHomeViewModel().setToggleReminderPlayWidget(channelId, remind, position)
+        } else {
+            adapter?.updatePlayWidgetReminder(PlayWidgetReminderUiModel(
+                    remind = remind,
+                    success = false,
+                    position = position
+            ))
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    override fun onWidgetOpenAppLink(view: View, appLink: String) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
+    }
+
+    private fun observePlayWidgetToggleReminder() {
+        getHomeViewModel().playWidgetToggleReminderObservable.observe(viewLifecycleOwner, Observer {
+            if (it.success) {
+                showToaster(
+                        if(it.remind) {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        } else {
+                            getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                        }, TYPE_NORMAL)
+            } else {
+                adapter?.updatePlayWidgetReminder(it)
+                showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
+            }
+        })
+    }
+
+    private fun notifyPlayWidgetTotalView(data: Intent) {
+        val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
+        val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+        adapter?.updatePlayWidgetTotalView(PlayWidgetTotalViewUiModel(channelId, totalView))
+    }
+
+    private fun playWidgetOnVisibilityChanged(
+            isViewResumed: Boolean = if (view == null) false else viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
+            isUserVisibleHint: Boolean = userVisibleHint,
+            isParentHidden: Boolean = parentFragment?.isHidden ?: true
+    ) {
+        if (::playWidgetCoordinator.isInitialized) {
+            val isViewVisible = isViewResumed && isUserVisibleHint && !isParentHidden
+
+            if (isViewVisible) playWidgetCoordinator.onResume()
+            else playWidgetCoordinator.onPause()
+        }
+    }
 }

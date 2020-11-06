@@ -18,8 +18,8 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.getLink
+import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -83,8 +83,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -107,8 +107,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE

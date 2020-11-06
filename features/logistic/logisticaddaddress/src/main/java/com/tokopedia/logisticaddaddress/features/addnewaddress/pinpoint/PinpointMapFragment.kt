@@ -333,7 +333,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun getLastLocationClient() {
         if (!isGpsEnable && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            SimpleIdlingResource.increment()
             Handler().postDelayed({
+                SimpleIdlingResource.decrement()
                 showAutoCompleteBottomSheet("")
             }, 200)
         } else {

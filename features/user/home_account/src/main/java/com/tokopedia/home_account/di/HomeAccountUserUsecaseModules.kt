@@ -11,10 +11,7 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
 import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

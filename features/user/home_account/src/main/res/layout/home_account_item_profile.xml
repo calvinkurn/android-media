@@ -27,7 +27,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="62dp"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"

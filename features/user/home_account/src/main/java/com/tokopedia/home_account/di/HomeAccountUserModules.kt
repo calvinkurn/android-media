@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -73,4 +74,10 @@ class HomeAccountUserModules(val context: Context) {
     fun provideHomeAccountAnalytics(@HomeAccountUserContext context: Context, userSession: UserSessionInterface): HomeAccountAnalytics {
         return HomeAccountAnalytics(context, userSession)
     }
+
+    @Provides
+    fun provideMenuGenerator(@HomeAccountUserContext context: Context): StaticMenuGenerator {
+        return StaticMenuGenerator(context)
+    }
+
 }

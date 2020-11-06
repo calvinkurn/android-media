@@ -6,14 +6,12 @@ import com.tokopedia.homenav.mainnav.domain.interactor.*
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
 import com.tokopedia.homenav.rule.TestDispatcherProvider
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
 
 fun createViewModel (
-        getUserInfoUseCase: GetUserInfoUseCase = mockk(relaxed= true),
         getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
         getUserMembershipUseCase: GetUserMembershipUseCase = mockk(relaxed = true),
         getShopInfoUseCase: GetShopInfoUseCase = mockk(relaxed = true),
@@ -21,6 +19,7 @@ fun createViewModel (
         dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
         userSession: UserSessionInterface = mockk(relaxed = true),
         clientMenuGenerator: ClientMenuGenerator = mockk(relaxed = true),
+        getSaldoUseCase: GetSaldoUseCase = mockk(relaxed = true),
         getResolutionNotification: GetResolutionNotification = mockk(relaxed = true)
 ): MainNavViewModel {
     return MainNavViewModel(
@@ -28,7 +27,7 @@ fun createViewModel (
             getShopInfoUseCase = Lazy { getShopInfoUseCase },
             getUserMembershipUseCase = Lazy { getUserMembershipUseCase },
             getWalletUseCase = Lazy { getWalletBalanceUseCase },
-            getUserInfoUseCase = Lazy { getUserInfoUseCase },
+            getSaldoUseCase = Lazy { getSaldoUseCase },
             clientMenuGenerator = Lazy { clientMenuGenerator },
             userSession = Lazy { userSession },
             getMainNavDataUseCase = Lazy { getMainNavDataUseCase },
