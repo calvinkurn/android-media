@@ -2033,7 +2033,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
-                        isTradeInByDropOff(), shipmentPresenter.generateRatesMvcParam());
+                        isTradeInByDropOff(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {

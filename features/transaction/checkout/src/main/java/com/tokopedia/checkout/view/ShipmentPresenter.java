@@ -1744,7 +1744,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
 
-        String mvc = generateRatesMvcParam();
+        String mvc = generateRatesMvcParam(cartString);
 
         RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
@@ -1774,7 +1774,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public String generateRatesMvcParam() {
+    public String generateRatesMvcParam(String cartString) {
         String mvc = "";
 
         List<MvcShippingBenefitUiModel> tmpMvcShippingBenefitUiModel = new ArrayList<>();
@@ -1787,7 +1787,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (promoSpIdUiModels.size() > 0) {
             for (PromoSpIdUiModel promoSpIdUiModel : promoSpIdUiModels) {
-                tmpMvcShippingBenefitUiModel.addAll(promoSpIdUiModel.getMvcShippingBenefits());
+                if (cartString.equals(promoSpIdUiModel.getUniqueId())) {
+                    tmpMvcShippingBenefitUiModel.addAll(promoSpIdUiModel.getMvcShippingBenefits());
+                }
             }
         }
 

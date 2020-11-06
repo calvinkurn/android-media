@@ -332,7 +332,7 @@ public interface ShipmentContract {
 
         ValidateUsePromoRequest getLastValidateUseRequest();
 
-        String generateRatesMvcParam();
+        String generateRatesMvcParam(String cartString);
     }
 
 }
