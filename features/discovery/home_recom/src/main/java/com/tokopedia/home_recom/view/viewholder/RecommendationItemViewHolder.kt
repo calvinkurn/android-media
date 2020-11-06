@@ -53,7 +53,7 @@ class RecommendationItemViewHolder(
 
             setOnClickListener {
                 listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
                         this.javaClass.simpleName,
                         element.productItem.clickUrl,
                         element.productItem.productId.toString(),
