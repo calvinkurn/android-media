@@ -9,5 +9,6 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 interface NotificationItemListener {
     fun showLongerContent(element: NotificationUiModel)
     fun showProductBottomSheet(element: NotificationUiModel)
-    fun addProductToCheckout(product: ProductData)
+    fun buyProduct(product: ProductData)
+    fun addProductToCart(product: ProductData)
 }

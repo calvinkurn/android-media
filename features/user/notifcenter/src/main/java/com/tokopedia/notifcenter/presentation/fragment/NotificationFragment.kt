@@ -34,6 +34,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
@@ -133,7 +134,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         BottomSheetFactory.showProductBottomSheet(childFragmentManager, element)
     }
 
-    override fun addProductToCheckout(product: ProductData) {
+    override fun buyProduct(product: ProductData) {
+        val atcPageIntent = getBuyPageIntent(product)
+        startActivity(atcPageIntent)
+    }
+
+    override fun addProductToCart(product: ProductData) {
         val atcPageIntent = getAtcPageIntent(product)
         startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
     }
@@ -167,14 +173,40 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
-    private fun getAtcPageIntent(product: ProductData): Intent {
-        val atcOnly = ATC_ONLY
+    private fun getBuyPageIntent(product: ProductData): Intent {
+        val atcAndBuyAction = ATC_AND_BUY
         val needRefresh = true
-        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+        return RouteManager.getIntent(
+                context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
+        ).apply {
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, product.minOrder)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId.toString())
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID,
+                    product.productId.toString()
+            )
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
+        }
+    }
+
+    private fun getAtcPageIntent(product: ProductData): Intent {
+        val atcOnly = ATC_ONLY
+        val needRefresh = true
+        return RouteManager.getIntent(
+                context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT
+        ).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, product.minOrder)
+            putExtra(
+                    ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID,
+                    product.productId.toString()
+            )
             putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcOnly)
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)

@@ -68,6 +68,7 @@ class ProductNotificationCardUnify(
             bindCampaignTag(product)
             bindProductClick(product)
             bindBuyClick(product)
+            bindAtcClick(product)
         } else {
             hide()
         }
@@ -114,7 +115,13 @@ class ProductNotificationCardUnify(
 
     private fun bindBuyClick(product: ProductData) {
         btnCheckout?.setOnClickListener {
-            listener?.addProductToCheckout(product)
+            listener?.buyProduct(product)
+        }
+    }
+
+    private fun bindAtcClick(product: ProductData) {
+        btnAtc?.setOnClickListener {
+            listener?.addProductToCart(product)
         }
     }
 
