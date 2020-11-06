@@ -47,6 +47,9 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -69,6 +72,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     lateinit var viewModelFactory: ViewModelProvider.Factory
     protected lateinit var flightSearchViewModel: FlightSearchViewModel
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
+    protected lateinit var remoteConfig: RemoteConfig
     private lateinit var flightSearchComponent: FlightSearchComponent
 
     private lateinit var flightSearchCache: FlightSearchCache
@@ -81,6 +85,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        context?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
         initViewModels()
         flightSearchCache = FlightSearchCache(requireContext())
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
@@ -148,6 +155,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     hideTickerView()
                 }
             }
+        })
+
+        flightSearchViewModel.isStatisticInitialized.observe(viewLifecycleOwner, Observer {
+            flight_sort_filter.chipItems.clear()
+            setupQuickFilter()
         })
     }
 
@@ -377,7 +389,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     open fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel =
-            filterModel
+            filterModel.also {
+                it.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
+                it.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
+            }
 
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
@@ -488,7 +503,52 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
 
         // setup items
-        if (filterItems.size < FILTER_SORT_ITEM_SIZE) {
+        if (filterItems.size < flightSearchViewModel.getQuickFilterItemSize()) {
+
+            if (flightSearchViewModel.isFilterModelInitialized() &&
+                    flightSearchViewModel.isSeatDistancingJourneyAvailable() &&
+                    flightSearchViewModel.filterModel.canFilterSeatDistancing) {
+                val quickSeatDistancingFilter = SortFilterItem(getString(R.string.flight_search_has_seat_distancing_label))
+                quickSeatDistancingFilter.listener = {
+                    if (flightSearchViewModel.isFilterModelInitialized() &&
+                            flightSearchViewModel.filterModel.canFilterSeatDistancing &&
+                            flightSearchViewModel.filterModel.isSeatDistancing) {
+                        flightSearchViewModel.filterModel.isSeatDistancing = false
+                        quickSeatDistancingFilter.unselect()
+                    } else if (flightSearchViewModel.isFilterModelInitialized()) {
+                        flightSearchViewModel.filterModel.isSeatDistancing = true
+                        quickSeatDistancingFilter.select()
+                    }
+                    flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_SEAT_DISTANCING)
+                    flightSearchViewModel.changeHasFilterValue()
+                    clearAllData()
+                    fetchSortAndFilterData()
+                }
+                filterItems.add(quickSeatDistancingFilter)
+            }
+
+            if (flightSearchViewModel.isFilterModelInitialized() &&
+                    flightSearchViewModel.isFreeRapidTestJourneyAvailable() &&
+                    flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
+                val quickFreeRapidTestFilter = SortFilterItem(getString(R.string.flight_search_free_rapid_test_label))
+                quickFreeRapidTestFilter.listener = {
+                    if (flightSearchViewModel.isFilterModelInitialized() &&
+                            flightSearchViewModel.filterModel.canFilterFreeRapidTest &&
+                            flightSearchViewModel.filterModel.isFreeRapidTest) {
+                        flightSearchViewModel.filterModel.isFreeRapidTest = false
+                        quickFreeRapidTestFilter.unselect()
+                    } else if (flightSearchViewModel.isFilterModelInitialized()) {
+                        flightSearchViewModel.filterModel.isFreeRapidTest = true
+                        quickFreeRapidTestFilter.select()
+                    }
+                    flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FREE_RAPID_TEST)
+                    flightSearchViewModel.changeHasFilterValue()
+                    clearAllData()
+                    fetchSortAndFilterData()
+                }
+                filterItems.add(quickFreeRapidTestFilter)
+            }
+
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {
                 if (flightSearchViewModel.isFilterModelInitialized() &&
@@ -645,7 +705,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
-        private const val FILTER_SORT_ITEM_SIZE = 4
 
         private const val QUICK_FILTER_DIRECT_ORDER = 0
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1
@@ -657,6 +716,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_QUICK_FILTER_BAGGAGE = "Gratis Bagasi"
         private const val FLIGHT_QUICK_FILTER_MEAL = "In-flight Meal"
         private const val FLIGHT_QUICK_FILTER_TRANSIT = "Transit"
+        private const val FLIGHT_QUICK_FREE_RAPID_TEST = "Free Rapid Test"
+        private const val FLIGHT_QUICK_SEAT_DISTANCING = "Seat Distancing"
 
         fun newInstance(flightSearchPassDataModel: FlightSearchPassDataModel): FlightSearchFragment =
                 FlightSearchFragment().also {

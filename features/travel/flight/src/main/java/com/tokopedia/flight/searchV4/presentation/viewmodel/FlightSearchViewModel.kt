@@ -78,6 +78,10 @@ class FlightSearchViewModel @Inject constructor(
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
 
+    private val mutableIsStatisticInitialized = MutableLiveData<Boolean>()
+    val isStatisticInitialized: LiveData<Boolean>
+        get() = mutableIsStatisticInitialized
+
     val progress = MutableLiveData<Int>()
     private var isSearchViewSent: Boolean = false
     private var isSearchImpressionSent: Boolean = false
@@ -112,6 +116,9 @@ class FlightSearchViewModel @Inject constructor(
         launchCatchError(context = dispatcherProvider.ui(), block = {
             if (::filterModel.isInitialized) {
                 searchStatisticModel = flightSearchStatisticUseCase.execute(filterModel)
+                searchStatisticModel?.let {
+                    mutableIsStatisticInitialized.postValue(true)
+                }
             }
         }) {
             it.printStackTrace()
@@ -300,6 +307,8 @@ class FlightSearchViewModel @Inject constructor(
                 filterModel.priceMax < priceFilterStatistic.second) {
             counter++
         }
+        if (filterModel.canFilterSeatDistancing && filterModel.isSeatDistancing) counter++
+        if (filterModel.canFilterFreeRapidTest && filterModel.isFreeRapidTest) counter++
 
         return counter
     }
@@ -321,6 +330,21 @@ class FlightSearchViewModel @Inject constructor(
             searchNotFoundSent = true
         }
     }
+
+    fun getQuickFilterItemSize(): Int {
+        var quickFilterItemSize = FILTER_SORT_ITEM_SIZE
+
+        if (filterModel.canFilterSeatDistancing && searchStatisticModel?.isSeatDistancing == true) quickFilterItemSize++
+        if (filterModel.canFilterFreeRapidTest && searchStatisticModel?.isHasFreeRapidTest == true) quickFilterItemSize++
+
+        return quickFilterItemSize
+    }
+
+    fun isFreeRapidTestJourneyAvailable(): Boolean = searchStatisticModel?.isHasFreeRapidTest
+            ?: false
+
+    fun isSeatDistancingJourneyAvailable(): Boolean = searchStatisticModel?.isSeatDistancing
+            ?: false
 
     private fun deleteAllSearchData() {
         launchCatchError(dispatcherProvider.ui(), block = {
@@ -450,6 +474,7 @@ class FlightSearchViewModel @Inject constructor(
     companion object {
         private const val DEFAULT_PROGRESS_VALUE = 0
         private const val MAX_PROGRESS = 100
+        private const val FILTER_SORT_ITEM_SIZE = 4
     }
 
 }
