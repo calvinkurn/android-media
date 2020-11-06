@@ -28,8 +28,8 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
+import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 

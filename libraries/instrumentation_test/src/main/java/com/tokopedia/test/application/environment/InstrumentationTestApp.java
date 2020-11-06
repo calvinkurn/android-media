@@ -13,7 +13,9 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.gson.Gson;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -221,7 +223,17 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
         @Override
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
+        }
 
+        @Override
+        public void sendTrackEvent(Map<String, Object> data, String eventName) {
+            sendTrackEvent(eventName, data);
+        }
+
+        @Override
+        public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+            GtmLogger.getInstance(getContext()).save(eventName, eventValue, AnalyticsSource.APPS_FLYER);
         }
     }
 

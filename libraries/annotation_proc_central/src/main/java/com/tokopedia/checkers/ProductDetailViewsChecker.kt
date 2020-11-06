@@ -11,4 +11,6 @@ object ProductDetailViewsChecker {
     fun isOnlyOneProduct(items: List<ProductDetailProduct>) = items.size == 1
 
     fun isOnlyOneProduct_(items: List<Product>) = items.size == 1
+
+    fun checkMap(map: Map<String, String>) = map.isNotEmpty()
 }
