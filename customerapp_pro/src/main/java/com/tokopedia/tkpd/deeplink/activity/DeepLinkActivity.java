@@ -53,7 +53,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
-        sendCampaignTrack(uriData);
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
 
         checkUrlMapToApplink();
         isAllowFetchDepartmentView = true;
@@ -67,7 +67,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private void sendCampaignTrack(Uri uriData) {
         String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(applink));
-        presenter.sendAuthenticatedEvent(uriData, campaign, getScreenName());
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     private void checkUrlMapToApplink() {
