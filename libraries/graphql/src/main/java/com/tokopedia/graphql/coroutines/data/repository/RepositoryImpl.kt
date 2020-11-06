@@ -1,42 +1,35 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
-import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.data.model.GraphqlResponseInternal
-import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
 import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
-import kotlin.Exception
 
 @Deprecated("Dont use it, will be deleted after Interactor not being used")
 open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                                               private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
-    private val mResults = mutableMapOf<Type, Any>()
-    private val mRefreshRequests = mutableListOf<GraphqlRequest>()
-    private val mIsCachedData = mutableMapOf<Type, Boolean>()
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
-        mResults.clear()
+        val mResults = mutableMapOf<Type, Any>()
+        val mRefreshRequests = mutableListOf<GraphqlRequest>()
+        val mIsCachedData = mutableMapOf<Type, Boolean>()
 
         val originalRequests = requests.toMutableList();
 
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                getCloudResponse(originalRequests, cacheStrategy)
+                getCloudResponse(mResults, mRefreshRequests, mIsCachedData,
+                        originalRequests, cacheStrategy)
             }
             CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
             else -> {
@@ -48,7 +41,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
-                        responseCloud = getCloudResponse(tempRequestCloud.toMutableList(), cacheStrategy)
+                        responseCloud = getCloudResponse(mResults, mRefreshRequests, mIsCachedData,tempRequestCloud.toMutableList(), cacheStrategy)
                     }
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
@@ -56,10 +49,12 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    getCloudResponse(originalRequests.toMutableList(), cacheStrategy)
+                    getCloudResponse(mResults, mRefreshRequests, mIsCachedData,
+                            originalRequests.toMutableList(), cacheStrategy)
                 }
             }
-        }.toGraphqlResponse(originalRequests)
+        }.toGraphqlResponse(mResults, mRefreshRequests, mIsCachedData,
+                originalRequests)
     }
 
     private fun List<GraphqlRequest>.regroup(indexOfEmptyCached: List<Int>?): MutableList<GraphqlRequest> {
@@ -75,7 +70,11 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         return tempGraphqlRequest
     }
 
-    fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
+    fun GraphqlResponseInternal.toGraphqlResponse(
+            mResults: MutableMap<Type, Any>,
+            mRefreshRequests: MutableList<GraphqlRequest>,
+            mIsCachedData: MutableMap<Type, Boolean>,
+            requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
 
@@ -117,7 +116,12 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     /**
      * Helper method to merge the partial caches response with lived response of network
      */
-    private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+    private suspend fun getCloudResponse(
+            mResults: MutableMap<Type, Any>,
+            mRefreshRequests: MutableList<GraphqlRequest>,
+            mIsCachedData: MutableMap<Type, Boolean>,
+            requests: MutableList<GraphqlRequest>,
+            cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()
             copyRequests.addAll(requests);
