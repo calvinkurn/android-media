@@ -3,9 +3,9 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel
@@ -41,15 +41,14 @@ class SearchProductCountViewHolder(itemView: View, private val listener: SearchN
     override fun bind(element: SearchProductCountViewModel?, payloads: MutableList<Any>) {
         payloads.getOrNull(0) ?: return
 
-        val payload = payloads.getOrNull(0)
-        when(payload) {
-            SearchConstant.RecyclerView.VIEW_LIST -> changeViewButton(R.drawable.search_ic_view_list)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID -> changeViewButton(R.drawable.search_ic_view_grid)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID -> changeViewButton(R.drawable.search_ic_view_grid_big)
+        when(payloads.getOrNull(0)) {
+            SearchConstant.RecyclerView.VIEW_LIST -> changeViewButton(IconUnify.VIEW_LIST)
+            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID -> changeViewButton(IconUnify.VIEW_GRID)
+            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID -> changeViewButton(IconUnify.VIEW_GRID_BIG)
         }
     }
 
     private fun changeViewButton(id: Int) {
-        ImageHandler.loadImageWithId(itemView.searchProductCountChangeViewButton, id)
+        itemView.searchProductCountChangeViewButton.setImage(newIconId = id)
     }
 }
