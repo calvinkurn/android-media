@@ -133,10 +133,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PlayCardViewHolder.LAYOUT
     }
 
-//    override fun type(playCard: PlayCarouselCardDataModel): Int {
-//        return PlayBannerCardViewHolder.LAYOUT
-//    }
-
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
         return HomeLoadingMoreViewHolder.LAYOUT
     }

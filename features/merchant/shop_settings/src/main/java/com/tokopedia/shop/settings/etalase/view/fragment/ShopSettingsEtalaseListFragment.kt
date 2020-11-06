@@ -29,9 +29,9 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.etalase.data.BaseShopEtalaseViewModel
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
-import com.tokopedia.shop.settings.etalase.data.TickerReadMoreViewModel
+import com.tokopedia.shop.settings.etalase.data.BaseShopEtalaseUiModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
+import com.tokopedia.shop.settings.etalase.data.TickerReadMoreUiModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory
@@ -45,7 +45,7 @@ import javax.inject.Inject
 
 
 class ShopSettingsEtalaseListFragment :
-        BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>(),
+        BaseSearchListFragment<BaseShopEtalaseUiModel, ShopEtalaseFactory>(),
         ShopSettingEtalaseListPresenter.View,
         ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener,
         TickerReadMoreEtalaseViewHolder.TickerReadMoreListener
@@ -54,7 +54,7 @@ class ShopSettingsEtalaseListFragment :
     lateinit var shopSettingEtalaseListPresenter: ShopSettingEtalaseListPresenter
     @Inject
     lateinit var userSession: UserSessionInterface
-    private var shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>? = null
+    private var shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>? = null
     private var shopEtalaseAdapter: ShopEtalaseAdapter? = null
     private var progressDialog: ProgressDialog? = null
     private var shopEtalaseIdToDelete: String? = null
@@ -67,8 +67,8 @@ class ShopSettingsEtalaseListFragment :
         get() = searchInputView.searchText
 
     interface OnShopSettingsEtalaseFragmentListener {
-        fun goToReorderFragment(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseViewModel>,
-                                shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>)
+        fun goToReorderFragment(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseUiModel>,
+                                shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,7 +120,7 @@ class ShopSettingsEtalaseListFragment :
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
-    private fun hasCustomEtalaseAtLeast2(shopEtalaseViewModelList: List<ShopEtalaseViewModel>): Boolean {
+    private fun hasCustomEtalaseAtLeast2(shopEtalaseViewModelList: List<ShopEtalaseUiModel>): Boolean {
         var count = 0
         for (shopEtalaseViewModel in shopEtalaseViewModelList) {
             if (shopEtalaseViewModel.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
@@ -142,8 +142,8 @@ class ShopSettingsEtalaseListFragment :
             if (shopEtalaseViewModels == null || shopEtalaseViewModels!!.size == 0) {
                 return true
             }
-            val shopEtalaseViewModelListDefaultOnly = ArrayList<ShopEtalaseViewModel>()
-            val shopEtalaseViewModelListCustomOnly = ArrayList<ShopEtalaseViewModel>()
+            val shopEtalaseViewModelListDefaultOnly = ArrayList<ShopEtalaseUiModel>()
+            val shopEtalaseViewModelListCustomOnly = ArrayList<ShopEtalaseUiModel>()
             for (shopEtalaseViewModel in shopEtalaseViewModels!!) {
                 if (shopEtalaseViewModel.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
                     shopEtalaseViewModelListCustomOnly.add(shopEtalaseViewModel)
@@ -198,23 +198,23 @@ class ShopSettingsEtalaseListFragment :
         shopSettingEtalaseListPresenter.getShopEtalase()
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<BaseShopEtalaseViewModel, ShopEtalaseFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<BaseShopEtalaseUiModel, ShopEtalaseFactory> {
         shopEtalaseAdapter = ShopEtalaseAdapter(adapterTypeFactory, this)
         return shopEtalaseAdapter as ShopEtalaseAdapter
     }
 
-    override fun onItemClicked(baseShopEtalaseViewModel: BaseShopEtalaseViewModel) {
+    override fun onItemClicked(baseShopEtalaseUiModel: BaseShopEtalaseUiModel) {
         //no-op
     }
 
-    private fun goToEditEtalase(shopEtalaseViewModel: ShopEtalaseViewModel) {
+    private fun goToEditEtalase(shopEtalaseViewModel: ShopEtalaseUiModel) {
         val intent = ShopSettingsEtalaseAddEditActivity.createIntent(context!!, true, shopEtalaseViewModel)
         startActivityForResult(intent, REQUEST_CODE_EDIT_ETALASE)
     }
 
     private fun goToAddEtalase() {
         val intent = ShopSettingsEtalaseAddEditActivity.createIntent(context!!,
-                false, ShopEtalaseViewModel())
+                false, ShopEtalaseUiModel())
         startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
     }
 
@@ -222,7 +222,7 @@ class ShopSettingsEtalaseListFragment :
         return ShopEtalaseFactory(this, this)
     }
 
-    override fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseViewModel) {
+    override fun onIconMoreClicked(shopEtalaseViewModel: ShopEtalaseUiModel) {
         val menus = Menus(context!!)
         if (shopEtalaseViewModel.count > 0) {
             menus.setItemMenuList(resources.getStringArray(R.array.shop_etalase_menu_more_change))
@@ -258,7 +258,7 @@ class ShopSettingsEtalaseListFragment :
         menus.show()
     }
 
-    override fun onSuccessGetShopEtalase(shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>) {
+    override fun onSuccessGetShopEtalase(shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>) {
         this.shopEtalaseViewModels = shopEtalaseViewModels
         onSearchSubmitted(keyword)
         activity!!.invalidateOptionsMenu()
@@ -272,7 +272,7 @@ class ShopSettingsEtalaseListFragment :
     }
 
     private fun addIdlePowerMerchantTicker() {
-        val model = TickerReadMoreViewModel(
+        val model = TickerReadMoreUiModel(
                 getString(R.string.ticker_etalase_title),
                 getString(R.string.ticker_etalase_description),
                 getString(R.string.ticker_etalase_read_more)
@@ -287,7 +287,7 @@ class ShopSettingsEtalaseListFragment :
     override fun onSearchSubmitted(text: String) {
         shopEtalaseAdapter!!.clearAllElements()
         isLoadingInitialData = true
-        val tempShopEtalaseViewModels = ArrayList<BaseShopEtalaseViewModel>()
+        val tempShopEtalaseViewModels = ArrayList<BaseShopEtalaseUiModel>()
         if (this.shopEtalaseViewModels != null &&
                 this.shopEtalaseViewModels!!.size > 0) {
             val textLowerCase = text.toLowerCase()
