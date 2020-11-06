@@ -1,21 +1,25 @@
-package com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller
+package com.tokopedia.product.addedit.detail.data.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 data class ShopShowcaseListSellerResponse(
         @SerializedName("shopShowcases")
-        val shopShowcases: shopShowcases = shopShowcases()
+        @Expose
+        val shopShowcases: ShopShowcases = ShopShowcases()
 )
 
-data class shopShowcases(
+data class ShopShowcases(
         @SerializedName("error")
+        @Expose
         val error: Error = Error(),
         @SerializedName("result")
-        val result: List<ShopEtalaseModel> = listOf()
+        @Expose
+        val result: List<ShowcaseItem> = listOf()
 )
 
 data class Error(
         @SerializedName("message")
+        @Expose
         val message: String = ""
 )
