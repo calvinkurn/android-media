@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginBottom="@dimen/spacing_lvl3"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_3"
@@ -17,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop=""
-        android:layout_margin="@dimen/dp_16">
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_notes"
