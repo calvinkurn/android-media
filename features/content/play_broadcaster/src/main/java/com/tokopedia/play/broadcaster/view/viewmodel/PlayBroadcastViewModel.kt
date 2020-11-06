@@ -45,7 +45,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
-        private val updateChannelUseCase: UpdateChannelUseCase,
+        private val updateChannelUseCase: CustomUpdateChannelUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,

@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
-import com.tokopedia.play_common.util.error.DefaultNetworkThrowable
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel

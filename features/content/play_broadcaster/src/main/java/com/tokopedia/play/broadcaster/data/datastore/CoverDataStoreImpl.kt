@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.CustomUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 class CoverDataStoreImpl @Inject constructor(
         private val dispatcher: CoroutineDispatcherProvider,
-        private val updateChannelUseCase: UpdateChannelUseCase,
+        private val updateChannelUseCase: CustomUpdateChannelUseCase,
         private val userSession: UserSessionInterface
 ): CoverDataStore {
 
@@ -86,7 +86,7 @@ class CoverDataStoreImpl @Inject constructor(
 
         updateChannelUseCase.apply {
             setQueryParams(
-                    UpdateChannelUseCase.createUpdateFullCoverRequest(
+                    CustomUpdateChannelUseCase.createUpdateFullCoverRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
                             coverTitle = coverTitle,
@@ -103,7 +103,7 @@ class CoverDataStoreImpl @Inject constructor(
 
         updateChannelUseCase.apply {
             setQueryParams(
-                    UpdateChannelUseCase.createUpdateCoverTitleRequest(
+                    CustomUpdateChannelUseCase.createUpdateCoverTitleRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
                             coverTitle = coverTitle
