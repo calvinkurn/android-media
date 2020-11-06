@@ -13,11 +13,11 @@ import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -63,7 +63,7 @@ import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class CreateMerchantVoucherStepsActivity : FragmentActivity(),
+class CreateMerchantVoucherStepsActivity : BaseActivity(),
 MerchantVoucherTargetListener, PromotionBudgetAndTypeListener, ReviewVoucherListener, SetVoucherPeriodListener{
 
     companion object {
