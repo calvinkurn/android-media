@@ -210,6 +210,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                 }
             }
         })
+        chooseAccountViewModel.showPopup.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                showPopupError(it.header, it.body, it.action)
+            }
+        })
         chooseAccountViewModel.goToActivationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToActivationPage()
         })
@@ -338,27 +343,12 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLoginToken(loginToken: LoginToken) {
-        if(loginToken.popupError.header.isNotEmpty() &&
-                loginToken.popupError.body.isNotEmpty() &&
-                loginToken.popupError.action.isNotEmpty()) {
-            dismissLoadingProgress()
-            showPopupError(
-                    loginToken.popupError.header,
-                    loginToken.popupError.body,
-                    loginToken.popupError.action
-            )
-        } else {
-            chooseAccountViewModel.getUserInfo()
-        }
+        chooseAccountViewModel.getUserInfo()
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
         if (throwable is AkamaiErrorException) {
-            showPopupError(
-                    getString(R.string.popup_error_title),
-                    getString(R.string.popup_error_desc),
-                    TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-            )
+            showPopupErrorAkamai()
         } else {
             onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
         }
@@ -447,8 +437,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(header)
             dialog.setDescription(body)
-            dialog.setPrimaryCTAText("Cek Informasi Lengkap")
-            dialog.setSecondaryCTAText("Tutup")
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
             dialog.setPrimaryCTAClickListener {
                 RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
             }
@@ -457,6 +447,14 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             }
             dialog.show()
         }
+    }
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -118,6 +118,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -131,6 +132,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 LoginTokenFacebookSubscriber(userSession,
                         view.onSuccessLoginFacebookPhone(),
                         view.onErrorLoginFacebookPhone(),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToSecurityQuestion(""))
         )
     }
@@ -155,6 +157,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -184,6 +187,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         email, password), LoginTokenSubscriber(userSession,
                         { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
             } else {
@@ -198,6 +202,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     userSession, validateToken), LoginTokenSubscriber(userSession,
                     { view.onSuccessReloginAfterSQ(it) },
                     view.onErrorReloginAfterSQ(validateToken),
+                    { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
         }

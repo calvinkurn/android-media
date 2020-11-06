@@ -90,6 +90,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -684,38 +685,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo) {
-        if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
-            dismissLoadingLogin()
-            showPopupError(
-                    loginTokenPojo.loginToken.popupError.header,
-                    loginTokenPojo.loginToken.popupError.body,
-                    loginTokenPojo.loginToken.popupError.action
-            )
-        } else {
-            setSmartLock()
-            RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-            if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
-            else presenter.getUserInfo()
-        }
+        setSmartLock()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+        else presenter.getUserInfo()
     }
 
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
-        if(loginTokenPojo.loginToken.popupError.header.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
-                loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
-            dismissLoadingLogin()
-            showPopupError(
-                    loginTokenPojo.loginToken.popupError.header,
-                    loginTokenPojo.loginToken.popupError.body,
-                    loginTokenPojo.loginToken.popupError.action
-            )
-        } else {
-            RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-            if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
-            else presenter.getUserInfo()
-        }
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+        if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
+        else presenter.getUserInfo()
     }
 
     override fun onSuccessLogin() {
@@ -979,11 +958,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 onGoToActivationPage(email)
             } else if (it is AkamaiErrorException) {
                 dismissLoadingLogin()
-                showPopupError(
-                        getString(R.string.popup_error_title),
-                        getString(R.string.popup_error_desc),
-                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-                )
+                showPopupErrorAkamai()
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
                 onErrorLogin(it.errorDescription)
             } else {
@@ -1065,11 +1040,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return {
             dismissLoadingLogin()
             if (it is AkamaiErrorException) {
-                showPopupError(
-                        getString(R.string.popup_error_title),
-                        getString(R.string.popup_error_desc),
-                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-                )
+                showPopupErrorAkamai()
             } else {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
                 NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
@@ -1085,11 +1056,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return {
             dismissLoadingLogin()
             if (it is AkamaiErrorException) {
-                showPopupError(
-                        getString(R.string.popup_error_title),
-                        getString(R.string.popup_error_desc),
-                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-                )
+                showPopupErrorAkamai()
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))
             }
@@ -1110,11 +1077,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return {
             dismissLoadingLogin()
             if (it is AkamaiErrorException) {
-                showPopupError(
-                        getString(R.string.popup_error_title),
-                        getString(R.string.popup_error_desc),
-                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-                )
+                showPopupErrorAkamai()
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))
             }
@@ -1126,11 +1089,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             logoutGoogleAccountIfExist()
             if (it is AkamaiErrorException) {
                 dismissLoadingLogin()
-                showPopupError(
-                        getString(R.string.popup_error_title),
-                        getString(R.string.popup_error_desc),
-                        getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
-                )
+                showPopupErrorAkamai()
             } else {
                 onErrorLogin(ErrorHandler.getErrorMessage(context, it))
             }
@@ -1573,13 +1532,24 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
+    override fun showPopup(): (PopupError) -> Unit {
+        return {
+            dismissLoadingLogin()
+            showPopupError(
+                    it.header,
+                    it.body,
+                    it.action
+            )
+        }
+    }
+
     private fun showPopupError(header: String, body: String, url: String) {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(header)
             dialog.setDescription(body)
-            dialog.setPrimaryCTAText("Cek Informasi Lengkap")
-            dialog.setSecondaryCTAText("Tutup")
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
             dialog.setPrimaryCTAClickListener {
                 RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
             }
@@ -1588,6 +1558,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
             dialog.show()
         }
+    }
+
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
     }
 
     companion object {

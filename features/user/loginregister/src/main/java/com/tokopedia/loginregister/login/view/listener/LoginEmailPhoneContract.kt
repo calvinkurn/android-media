@@ -16,6 +16,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
 
@@ -74,6 +75,8 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
+
+        fun showPopup(): Function1<PopupError, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
