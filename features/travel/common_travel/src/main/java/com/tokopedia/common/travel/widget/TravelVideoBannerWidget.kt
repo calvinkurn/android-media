@@ -2,7 +2,6 @@ package com.tokopedia.common.travel.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.R
@@ -18,7 +17,6 @@ import kotlinx.android.synthetic.main.widget_travel_video_banner.view.*
 class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
 
-    var customHeight: Int = 0
     var listener: ActionListener? = null
     private lateinit var bannerModel: TravelVideoBannerModel
 
@@ -47,17 +45,19 @@ class TravelVideoBannerWidget @JvmOverloads constructor(context: Context, attrs:
 
     fun build() {
         if (::bannerModel.isInitialized) {
-            if (bannerModel.title.isNotEmpty() &&
-                    bannerModel.imageUrl.isNotEmpty() &&
-                    bannerModel.destinationLink.isNotEmpty()) {
+            if (bannerModel.title.isNotEmpty()) {
                 tgTravelVideoBannerTitle.text = bannerModel.title
+                tgTravelVideoBannerTitle.visibility = View.VISIBLE
+            } else {
+                tgTravelVideoBannerTitle.visibility = View.GONE
+            }
+
+            if (bannerModel.imageUrl.isNotEmpty() &&
+                    bannerModel.destinationLink.isNotEmpty()) {
                 ivTravelVideoBanner.loadImage(bannerModel.imageUrl)
                 ivTravelVideoBanner.setOnClickListener {
                     listener?.onVideoBannerClicked(bannerModel)
                     RouteManager.route(context, bannerModel.destinationLink)
-                }
-                if (customHeight > 0) {
-                    cardViewTravelVideoBanner.layoutParams.height = customHeight
                 }
                 showTravelVideoBanner()
             } else {
