@@ -356,8 +356,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setContactUs(final ContactUs contactUs, String helpLink) {
         String text = getResources().getString(R.string.contact_us_text);
+        String clickableLink = getResources().getString(R.string.contact_us_clickable_text);
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf(getResources().getString(R.string.help_text));
+        int startIndexOfLink = text.indexOf(clickableLink);
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
@@ -383,7 +384,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     ds.setUnderlineText(false);
                     ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             helpLabel.setHighlightColor(Color.TRANSPARENT);
             helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
 
