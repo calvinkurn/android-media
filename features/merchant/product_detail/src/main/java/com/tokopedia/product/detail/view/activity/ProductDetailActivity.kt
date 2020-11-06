@@ -64,7 +64,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     private var isFromDeeplink = false
-    private var isFromAffiliate = false
+    private var isFromAffiliate: Boolean? = false
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
@@ -80,6 +80,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+
     //Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
@@ -105,7 +106,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         performanceMonitoringFull?.stopTrace()
     }
 
-    fun startMonitoringPltNetworkRequest(){
+    fun startMonitoringPltNetworkRequest() {
         pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
@@ -137,7 +138,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
-            isFromAffiliate, trackerAttribution,
+            isFromAffiliate ?: false, trackerAttribution,
             trackerListName, affiliateString, deeplinkUrl, layoutId)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
@@ -173,6 +174,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
+            isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -196,11 +198,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             if (affiliateString.isNullOrBlank()) {
                 affiliateString = it.getString(PARAM_AFFILIATE_STRING)
             }
-        }
-        isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
-            true
-        } else {
-            intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
         if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {

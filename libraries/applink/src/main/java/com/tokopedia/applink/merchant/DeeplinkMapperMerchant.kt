@@ -251,6 +251,17 @@ object DeeplinkMapperMerchant {
         return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toIntOrZero() != 0
     }
 
+    fun isProductDetailAffiliatePageDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT) && uri.pathSegments.size == 2
+    }
+
+    fun getRegisteredProductDetailAffiliate(deeplink: String) : String {
+        val parsedUri = Uri.parse(deeplink)
+
+        return  UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE, parsedUri.lastPathSegment , "isAffiliate")
+    }
+
     fun getRegisteredProductDetail(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
