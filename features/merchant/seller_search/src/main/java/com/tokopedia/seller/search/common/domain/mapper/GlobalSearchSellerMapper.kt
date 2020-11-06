@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.common.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.FAQ
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HIGHLIGHTS
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.NAVIGATION
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
@@ -19,7 +20,7 @@ object GlobalSearchSellerMapper {
 
     private fun mapToTitleListSearch(searchSeller: SellerSearchResponse.SellerSearch): List<String> {
         return mutableListOf<String>().apply {
-            searchSeller.data.sections.map {
+            searchSeller.data.sections.filter { it.id != HIGHLIGHTS }.map {
                 it.items.map { item ->
                     add(item.title.orEmpty())
                 }
@@ -152,7 +153,7 @@ object GlobalSearchSellerMapper {
             val titleList = mapToTitleListSearch(sellerSearch)
 
             val searchSellerList = mutableListOf<ItemInitialSearchUiModel>()
-            sellerSearch.data.sections.map { section ->
+            sellerSearch.data.sections.filter { it.id != HIGHLIGHTS }.map { section ->
                 section.items.map { itemSearch ->
                     searchSellerList.add(
                             ItemInitialSearchUiModel(id = itemSearch.id, title = itemSearch.title,
