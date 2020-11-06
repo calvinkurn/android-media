@@ -74,7 +74,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         } else {
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
-        visitableList.add(BestSellerDataModel(pageName = "pdp_3_1759", widgetParam = ""))
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)

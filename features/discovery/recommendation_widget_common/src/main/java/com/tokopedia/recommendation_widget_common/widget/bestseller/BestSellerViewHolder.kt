@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -55,6 +56,11 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
 
         recommendationAdapter.submitList(recommendationCarouselList)
+
+        val recyclerViewLayoutParams = itemView.best_seller_recommendation_recycler_view.layoutParams
+        recyclerViewLayoutParams.height = element.height
+        itemView.best_seller_recommendation_recycler_view.layoutParams = recyclerViewLayoutParams
+
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
