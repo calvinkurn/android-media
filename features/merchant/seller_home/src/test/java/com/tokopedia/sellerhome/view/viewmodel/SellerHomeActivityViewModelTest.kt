@@ -53,7 +53,7 @@ class SellerHomeActivityViewModelTest {
     @Test
     fun `get notifications then returns success result`() {
 
-        val notifications = NotificationUiModel(NotificationChatUiModel(), NotificationCenterUnreadUiModel(),
+        val notifications = NotificationUiModel(0, 0,
             NotificationSellerOrderStatusUiModel())
 
         coEvery {

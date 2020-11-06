@@ -3,7 +3,8 @@ package com.tokopedia.atc_common.domain.usecase
 import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_EXTERNAL
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
-import com.tokopedia.atc_common.domain.AddToCartExternalAnalytics
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
+import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartExternalDataMapper
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,11 +23,12 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_USER_ID = "userID"
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<AddToCartExternalModel> {
-        val params = requestParams.parameters
-        val graphqlRequest = GraphqlRequest(queryString, AddToCartExternalGqlResponse::class.java, params)
+        val productId = requestParams.getLong(PARAM_PRODUCT_ID, 0)
+        val graphqlRequest = GraphqlRequest(queryString, AddToCartExternalGqlResponse::class.java, mapOf(PARAM_PRODUCT_ID to productId))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
@@ -34,8 +36,14 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
             if (response != null && response.response.status.equals("OK", true)) {
                 val result = addToCartDataMapper.map(response)
                 if (result.success == 1) {
-                    analytics.sendEnhancedEcommerceTracking(result.data)
-                    analytics.sendAppsFlyerTracking(result.data)
+                    val data = result.data
+                    analytics.sendEnhancedEcommerceTracking(data)
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(data.productId.toString(), data.productName, data.price.toString(),
+                            data.quantity.toString(), data.category)
+                    AddToCartBaseAnalytics.sendBranchIoTracking(data.productId.toString(), data.productName, data.price.toString(),
+                            data.quantity.toString(), data.category, "",
+                            "", "", "",
+                            "", "", requestParams.getString(PARAM_USER_ID, ""))
                     result
                 } else {
                     val message = response.response.data.message.firstOrNull() ?: ATC_ERROR_GLOBAL

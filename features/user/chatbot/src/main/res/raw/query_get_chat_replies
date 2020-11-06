@@ -13,7 +13,6 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
       domain
       status {
         timestamp
-        isOnline
       }
     }
     list {

@@ -4,7 +4,7 @@
   "query": [
     {
       "eventCategory": "product detail page",
-      "eventAction": "impression - modular component",
+      "eventAction": "{{.*}}",
       "event": "view_item",
       "categoryId": "{{productId : \\d{1,}}}",
       "productId": "{{\\d{1,}}}",
@@ -27,7 +27,7 @@
     },
     {
       "eventCategory": "product detail page",
-      "eventAction": "click - choose product variant",
+      "eventAction": "{{.*}}",
       "event": "clickPDP",
       "productId": "{{\\d{1,}}}",
       "sessionIris": "{{.{1,}}}",
@@ -36,7 +36,7 @@
       "component": "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
     },
     {
-      "eventAction": "click Beli Langsung on pdp - non login",
+      "eventAction": "{{.*}}",
       "eventCategory": "product detail page",
       "event": "clickPDP",
       "shopType": "{{.*}}",
