@@ -1,4 +1,4 @@
-package com.tokopedia.topads.headline.view.adapter.aditem.viewholder
+package com.tokopedia.topads.headline.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -16,7 +16,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDA
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
@@ -36,9 +36,10 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         var LAYOUT = R.layout.topads_dash_item_with_group_card
     }
 
-    private  val sheet: TopadsSelectActionSheet? by lazy {
+    private val sheet: TopadsSelectActionSheet? by lazy {
         TopadsSelectActionSheet.newInstance()
     }
+
     override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
@@ -82,10 +83,14 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     if (it.data.groupEndDate != TIDAK_DIBATASI) {
                         view.scheduleImg.visibility = View.VISIBLE
                         view.scheduleDate.visibility = View.VISIBLE
+                        view.total_item.visibility = View.GONE
+                        view.img_total.visibility = View.GONE
                         view.scheduleDate.text = String.format(view.context.getString(R.string.topads_headline_group_schedule), it.data.groupEndDate)
                     } else {
                         view.scheduleImg.visibility = View.GONE
                         view.scheduleDate.visibility = View.GONE
+                        view.total_item.visibility = View.VISIBLE
+                        view.img_total.visibility = View.VISIBLE
                     }
                 }
             }
@@ -114,7 +119,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.groupStatus, item.data.groupName , true)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, true)
             sheet?.onDeleteClick = {
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)

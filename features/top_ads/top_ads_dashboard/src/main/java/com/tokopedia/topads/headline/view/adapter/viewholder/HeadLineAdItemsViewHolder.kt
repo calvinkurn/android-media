@@ -1,4 +1,4 @@
-package com.tokopedia.topads.headline.view.adapter.aditem.viewholder
+package com.tokopedia.topads.headline.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

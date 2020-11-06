@@ -1,7 +1,7 @@
-package com.tokopedia.topads.headline.view.adapter.aditem.viewmodel
+package com.tokopedia.topads.headline.view.adapter.viewmodel
 
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
-import com.tokopedia.topads.headline.view.adapter.aditem.HeadLineAdItemsAdapterTypeFactory
+import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsAdapterTypeFactory
 
 
 /**

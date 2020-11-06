@@ -1,4 +1,4 @@
-package com.tokopedia.topads.headline.view.adapter.aditem.viewholder
+package com.tokopedia.topads.headline.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsEmptyViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**

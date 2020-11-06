@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.PagerAdapter
@@ -26,6 +25,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
@@ -86,11 +86,10 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     }
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
+
     private val viewModel by lazy {
-        viewModelProvider.get(GroupDetailViewModel::class.java)
+
+        ViewModelProvider(this,viewModelFactory).get(GroupDetailViewModel::class.java)
     }
 
     private lateinit var detailPagerAdapter: TopAdsDashGroupDetailPagerAdapter
@@ -308,7 +307,7 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
         sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
         sheet.setListener(this)
-        sheet.show(supportFragmentManager, "datepicker")
+        sheet.show(supportFragmentManager, DATE_PICKER_SHEET)
     }
 
 

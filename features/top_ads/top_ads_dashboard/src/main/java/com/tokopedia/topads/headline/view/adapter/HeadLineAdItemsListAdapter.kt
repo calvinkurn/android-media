@@ -1,13 +1,13 @@
-package com.tokopedia.topads.headline.view.adapter.aditem
+package com.tokopedia.topads.headline.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
-import com.tokopedia.topads.headline.view.adapter.aditem.viewholder.HeadLineAdItemsViewHolder
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsItemViewModel
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsViewModel
+import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsViewHolder
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsViewModel
 
 /**
  * Created by Pika on 16/10/20.

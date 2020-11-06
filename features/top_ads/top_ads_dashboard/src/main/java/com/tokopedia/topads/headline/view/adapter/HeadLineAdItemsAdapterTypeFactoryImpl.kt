@@ -1,11 +1,11 @@
-package com.tokopedia.topads.headline.view.adapter.aditem
+package com.tokopedia.topads.headline.view.adapter
 
 import android.view.View
-import com.tokopedia.topads.headline.view.adapter.aditem.viewholder.HeadLineAdItemsEmptyViewHolder
-import com.tokopedia.topads.headline.view.adapter.aditem.viewholder.HeadLineAdItemsItemViewHolder
-import com.tokopedia.topads.headline.view.adapter.aditem.viewholder.HeadLineAdItemsViewHolder
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsEmptyViewHolder
+import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsItemViewHolder
+import com.tokopedia.topads.headline.view.adapter.viewholder.HeadLineAdItemsViewHolder
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
 
 
 /**

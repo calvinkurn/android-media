@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
@@ -218,6 +219,6 @@ abstract class TopAdsBaseTabFragment :BaseDaggerFragment(), CustomDatePicker.Act
         val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
         sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
         sheet.setListener(this)
-        sheet.show(childFragmentManager, "datepicker")
+        sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }
 }

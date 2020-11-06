@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -63,11 +62,9 @@ class TopAdsHeadlineNegKeyFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
+
     private val viewModel by lazy {
-        viewModelProvider.get(GroupDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(GroupDetailViewModel::class.java)
     }
 
     override fun getScreenName(): String {

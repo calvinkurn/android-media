@@ -39,6 +39,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_PRODUK
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_ONBOARDING_PATH
@@ -319,7 +320,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
         val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
         sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
         sheet.setListener(this)
-        sheet.show(childFragmentManager, "datepicker")
+        sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }
 
     override fun onDestroy() {

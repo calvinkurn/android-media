@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,6 +29,7 @@ import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_keyword_list.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -46,7 +46,6 @@ import javax.inject.Inject
 
 class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
-
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
@@ -55,16 +54,15 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     private var currentPageNum = 1
     private var deleteCancel = false
     private var singleAction = false
-
     private lateinit var adapter: KeywordAdapter
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
+
     private val viewModel by lazy {
-        viewModelProvider.get(GroupDetailViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(GroupDetailViewModel::class.java)
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {

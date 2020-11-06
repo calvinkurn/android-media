@@ -31,10 +31,10 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
-import com.tokopedia.topads.headline.view.adapter.aditem.HeadLineAdItemsAdapterTypeFactoryImpl
-import com.tokopedia.topads.headline.view.adapter.aditem.HeadLineAdItemsListAdapter
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.aditem.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsAdapterTypeFactoryImpl
+import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsListAdapter
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_headline_group_list.*
