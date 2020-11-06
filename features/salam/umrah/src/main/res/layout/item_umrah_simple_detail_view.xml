@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:lineHeight="@dimen/spacing_lvl4"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintLeft_toRightOf="@+id/iv_umrah_detail_icon"
         app:layout_constraintTop_toTopOf="parent"

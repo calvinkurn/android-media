@@ -23,7 +23,7 @@
         android:id="@+id/tg_umrah_checkout_desc_term"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
+        android:layout_margin="@dimen/dimen_dp_18"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Keamanan"

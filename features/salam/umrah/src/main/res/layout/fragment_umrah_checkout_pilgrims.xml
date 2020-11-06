@@ -78,7 +78,7 @@
         android:id="@+id/btn_umrah_checkout_pilgrims"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dimen_dp_18"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackgroundBorderless"
