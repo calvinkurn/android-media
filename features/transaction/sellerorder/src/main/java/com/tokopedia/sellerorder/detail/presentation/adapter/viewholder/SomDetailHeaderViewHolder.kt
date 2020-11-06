@@ -89,8 +89,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
                         itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                     }
-
-
                 } else {
                     header_deadline_label?.visibility = View.GONE
                     due_label?.visibility = View.GONE

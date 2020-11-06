@@ -13,7 +13,8 @@
         android:layout_height="@dimen/layout_lvl0"
         android:background="@drawable/ic_order_status_indicator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_title"
@@ -193,7 +194,8 @@
         app:cardCornerRadius="3dp"
         app:cardElevation="@dimen/dp_0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_date_value">
+        app:layout_constraintTop_toBottomOf="@id/header_date_value"
+        app:layout_constraintBottom_toBottomOf="@id/header_deadline_label">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -232,6 +234,6 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_deadline_label" />
+        app:layout_constraintTop_toBottomOf="@id/due_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
