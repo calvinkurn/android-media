@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +51,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private Typography tvShippingInformation;
     private Typography tvMvcError;
     private Label labelCodAvailable;
+    private ConstraintLayout layoutMvc;
 
     private int cartPosition;
 
@@ -70,6 +72,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         imgMvc = itemView.findViewById(R.id.img_mvc);
         tvMvc = itemView.findViewById(R.id.tv_mvc_text);
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
+        layoutMvc = itemView.findViewById(R.id.layout_mvc);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -124,23 +127,20 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
 
         if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == 1 ) {
-            imgMvc.setVisibility(View.VISIBLE);
+            layoutMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
-            tvMvc.setVisibility(View.VISIBLE);
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
             tvMvcError.setVisibility(View.GONE);
         } else if (shippingDurationUiModel.getMerchantVoucherModel() != null && shippingDurationUiModel.getMerchantVoucherModel().isMvc() == -1 ){
-            imgMvc.setVisibility(View.VISIBLE);
+            layoutMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingDurationUiModel.getMerchantVoucherModel().getMvcLogo());
-            tvMvc.setVisibility(View.VISIBLE);
             tvMvc.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcTitle());
             ContextCompat.getColor(imgMvc.getContext(), R.color.font_disabled);
             tvMvc.setTextColor(ContextCompat.getColor(tvMvc.getContext(), R.color.font_disabled));
             tvMvcError.setVisibility(View.VISIBLE);
             tvMvcError.setText(shippingDurationUiModel.getMerchantVoucherModel().getMvcErrorMessage());
         } else {
-            imgMvc.setVisibility(View.GONE);
-            tvMvc.setVisibility(View.GONE);
+            layoutMvc.setVisibility(View.GONE);
             tvMvcError.setVisibility(View.GONE);
         }
 
