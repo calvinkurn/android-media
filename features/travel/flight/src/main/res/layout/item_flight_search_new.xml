@@ -11,17 +11,6 @@
         android:layout_height="wrap_content"
         android:background="@color/Neutral_N0">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineFlightSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/labelSeatDistancing"
-            app:layout_constraintGuide_percent="0.2"
-            app:layout_constraintLeft_toRightOf="@id/labelSeatDistancing"
-            app:layout_constraintRight_toRightOf="@id/labelSeatDistancing"
-            app:layout_constraintTop_toTopOf="@id/labelSeatDistancing" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelFreeRapidTest"
             android:layout_width="wrap_content"
@@ -33,7 +22,7 @@
             android:paddingBottom="@dimen/spacing_lvl2"
             android:text="@string/flight_search_free_rapid_test_label"
             android:textColor="@color/Neutral_N0"
-            app:layout_constraintLeft_toRightOf="@id/guidelineFlightSearch"
+            app:layout_constraintLeft_toRightOf="@id/labelSeatDistancing"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
             app:typographyWeight="bold"
