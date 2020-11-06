@@ -91,16 +91,13 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
 
     protected open fun initCtaButton() {
         if (notification?.buttonText?.isNotEmpty() == true) {
-            cta?.show()
             cta?.text = notification?.buttonText
-            notification?.dataNotification?.appLink?.let { applink ->
-                cta?.setOnClickListener {
-                    RouteManager.route(it.context, applink)
-                    dismiss()
-                }
+        }
+        notification?.dataNotification?.appLink?.let { applink ->
+            cta?.setOnClickListener {
+                RouteManager.route(it.context, applink)
+                dismiss()
             }
-        } else {
-            cta?.hide()
         }
     }
 
