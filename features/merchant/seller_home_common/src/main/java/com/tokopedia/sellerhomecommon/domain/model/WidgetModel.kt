@@ -31,5 +31,8 @@ data class WidgetModel(
         val url: String?,
         @Expose
         @SerializedName("widgetType")
-        val widgetType: String?
+        val widgetType: String?,
+        @Expose
+        @SerializedName("postFilter")
+        val postFilter: List<PostFilterModel>?
 )

@@ -20,7 +20,8 @@ class PostListWidgetUiModel(
         override val impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
-        override var isFromCache: Boolean
+        override var isFromCache: Boolean,
+        val postFilter: List<PostFilterUiModel>
 ) : BaseWidgetUiModel<PostListDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

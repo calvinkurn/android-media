@@ -113,6 +113,9 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
                 data = null,
+                postFilter = widget.postFilter?.mapIndexed { i, filter ->
+                    PostFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                }.orEmpty(),
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = fromCache

@@ -53,6 +53,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -466,6 +467,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
+    }
+
+    override fun showPostFilter(postFilters: List<PostFilterUiModel>) {
+        if (!isAdded || context == null) return
+        val postFilterBottomSheet = PostFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(requireContext(), postFilters) {
+            postFilterBottomSheet.dismiss()
+        }.show(childFragmentManager)
     }
 
     private fun showGlobalSearchIcon() {

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactory
+import com.tokopedia.sellerhomecommon.presentation.model.PostFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
@@ -93,10 +94,27 @@ class PostListViewHolder(
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
             itemView.tvPostListTitle.text = element.title
+            setupPostFilter(element)
             showCtaButtonIfNeeded(element.ctaText, element.appLink)
             setupPostList(items)
             showListLayout()
             addImpressionTracker(element.dataKey, element.impressHolder)
+        }
+    }
+
+    private fun setupPostFilter(element: PostListWidgetUiModel) {
+        with(itemView) {
+            val isFilterAvailable = element.postFilter.isNotEmpty()
+            if (isFilterAvailable) {
+                val selectedFilter = element.postFilter.find { it.isSelected }
+                filterShcPostList.visible()
+                filterShcPostList.textView.text = selectedFilter?.name.orEmpty()
+                filterShcPostList.setOnClickListener {
+                    listener.showPostFilter(element.postFilter)
+                }
+            } else {
+                filterShcPostList.gone()
+            }
         }
     }
 
@@ -209,5 +227,7 @@ class PostListViewHolder(
         fun sendPostListCtaClickEvent(dataKey: String) {}
 
         fun sendPostListImpressionEvent(dataKey: String) {}
+
+        fun showPostFilter(postFilters: List<PostFilterUiModel>) {}
     }
 }
