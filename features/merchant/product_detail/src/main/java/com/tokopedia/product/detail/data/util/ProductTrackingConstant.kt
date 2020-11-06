@@ -171,6 +171,7 @@ object ProductTrackingConstant {
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
         const val VIEW_TICKER_OOS = "view - ticker on pdp"
+        const val CLICK_BUTTON_OOS = "click - %s on pdp"
     }
 
 
@@ -182,6 +183,7 @@ object ProductTrackingConstant {
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
         const val TICKER_OOS = "ticker type:%s;ticker title:%s;ticker message:%s;"
+        const val BUTTON_OOS = "fitur : OOS; is_variant:%s;"
     }
 
     object Report {
