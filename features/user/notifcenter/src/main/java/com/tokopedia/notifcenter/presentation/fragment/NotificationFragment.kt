@@ -73,7 +73,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_notification, container, false)?.also {
+        return inflater.inflate(
+                R.layout.fragment_notifcenter_notification, container, false
+        )?.also {
             initView(it)
             setupObserver()
             setupRecyclerView()
