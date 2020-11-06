@@ -12,7 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.common.util.animateProfileName
+import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
+import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragment
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -22,6 +24,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import java.util.*
 
 
 class AccountHeaderViewHolder(itemView: View,
@@ -44,6 +47,8 @@ class AccountHeaderViewHolder(itemView: View,
         const val TEXT_MY_SHOP = "Toko saya: %s"
         const val TEXT_DOT = "\\u2022"
         const val TEXT_POINTS = " Points"
+        private const val NAV_SHARED_NOTIFICATION_KEY_PREF = "NAV_SHARED_NOTIFICATION_KEY_PREF"
+        private const val NAV_SHARED_NOTIFICATION_KEY_FIRST_OPEN = "NAV_SHARED_NOTIFICATION_KEY_FIRST_OPEN"
     }
 
     override fun bind(element: AccountHeaderViewModel) {
@@ -89,7 +94,7 @@ class AccountHeaderViewHolder(itemView: View,
                     View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
             )
         } else {
-            configureNameSwitcher(tvName, getCurrentGreetings(), element.userName, needToSwitchText)
+            configureNameSwitcher(tvName, getCurrentGreetings(element.userName), element.userName)
         }
         renderProfileLoginSection(
                 MethodChecker.fromHtml(
@@ -167,19 +172,39 @@ class AccountHeaderViewHolder(itemView: View,
         return itemView.context.getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
-    private fun getCurrentGreetings() : String {
-        return "test"
+    private fun getCurrentGreetings(default: String) : String {
+        val hourTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        return when (hourTime) {
+            in 0..2 -> "Selamat tidur~"
+            in 3..4 -> "Lagi begadang? Kangen, ya?"
+            in 5..9 -> "Selamat pagi! Semongko!"
+            in 10..14 -> "Udah makan siang?"
+            in 15..17 -> "Selamat sore! Ngopi, kuy?"
+            in 18..23 -> "Jangan lupa makan malam~"
+            else -> default
+        }
     }
 
-    private var needToSwitchText: Boolean = true
+    private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameSwitcher(tvName: Typography, greetingString: String, nameString: String, needSwitch: Boolean) {
-        tvName.text = greetingString
-        if (needSwitch) {
+    private fun configureNameSwitcher(tvName: Typography, greetingString: String, nameString: String) {
+        if (needToSwitchText) {
+            tvName.text = greetingString
             launch {
-                delay(3000)
+                delay(1000)
                 tvName.animateProfileName(nameString, 300)
+                setFirstTimeUserSeeNameAnimationOnSession(false)
             }
+        } else {
+            tvName.text = nameString
         }
+    }
+
+    fun isFirstTimeUserSeeNameAnimationOnSession(): Boolean {
+        return MainNavConst.MainNavState.runAnimation
+    }
+
+    fun setFirstTimeUserSeeNameAnimationOnSession(value: Boolean) {
+        MainNavConst.MainNavState.runAnimation = false
     }
 }
