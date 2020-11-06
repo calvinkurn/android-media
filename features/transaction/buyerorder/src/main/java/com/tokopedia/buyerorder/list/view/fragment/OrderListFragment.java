@@ -62,11 +62,11 @@ import com.tokopedia.buyerorder.list.view.presenter.OrderListContract;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -74,6 +74,7 @@ import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -635,7 +636,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
     }
 
     @Override
@@ -891,7 +892,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             surveyBtn.animate().translationY(0).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = true;
         } else if (!isVisible && isSurveyBtnVisible) {
-            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
+            surveyBtn.animate().translationY(surveyBtn.getHeight() + getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)).setDuration(ANIMATION_DURATION).start();
             isSurveyBtnVisible = false;
         }
     }
@@ -980,30 +981,32 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void showPopUpSelesai() {
         orderListAnalytics.sendActionButtonClickEvent("selesai");
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
-            @Override
-            public int layoutResId() {
-                return R.layout.dialog_seller_finish;
-            }
-        };
-        dialog.setTitle(getString(R.string.popup_selesai_title));
-        dialog.setDesc(getString(R.string.popup_selesai_desc));
-        dialog.setBtnOk(getString(R.string.popup_selesai_ok_btn));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        if (getContext() != null) {
+            DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+            View childView = LayoutInflater.from(getContext()).inflate(com.tokopedia.buyerorder.R.layout.dialog_seller_finish, null);
+            TextView title = childView.findViewById(R.id.tv_title_dialog);
+            title.setText(getString(R.string.popup_selesai_title));
+
+            TextView desc = childView.findViewById(R.id.tv_desc_dialog);
+            desc.setText(getString(R.string.popup_selesai_desc));
+
+            TextView btnOk = childView.findViewById(R.id.btn_ok_dialog);
+            btnOk.setText(getString(R.string.popup_selesai_ok_btn));
+            btnOk.setOnClickListener(view1 -> {
+                dialogUnify.dismiss();
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
-            }
-        });
-        dialog.setBtnCancel(getString(R.string.popup_selesai_cancel_btn));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+            });
+
+            TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
+            btnCancel.setText(getString(R.string.popup_selesai_cancel_btn));
+            btnCancel.setOnClickListener(view12 -> {
+                dialogUnify.dismiss();
+            });
+
+            dialogUnify.setUnlockVersion();
+            dialogUnify.setChild(childView);
+            dialogUnify.show();
+        }
     }
 
     private void handleDefaultCase(ActionButton actionButton) {
@@ -1031,7 +1034,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
-                        getResources().getString(R.string.title_ok), v -> {
+                        getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
                         });
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);

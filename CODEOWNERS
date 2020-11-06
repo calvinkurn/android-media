@@ -34,6 +34,7 @@
 /features/content/play/                                 @tokopedia/android-miniondave-dev
 /features/content/play_common/                          @tokopedia/android-miniondave-dev
 /features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
+/features/content/play_widget/                          @tokopedia/android-miniondave-dev
 /features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
@@ -110,6 +111,7 @@
 /features/top_ads/top_ads_autoads/                      @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_create/                       @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionskywalker-dev
+/features/top_ads/top_ads_edit/                         @tokopedia/android-minionskywalker-dev
 
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
 /features/recharge/rechargeocr                          @tokopedia/android-minionmark-dev
@@ -311,6 +313,10 @@
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
 /libraries/blockcanary                                  @tokopedia/android-core-dev
 /libraries/annotation_proc_central                      @tokopedia/android-core-dev
+/libraries/cassavatest                                  @tokopedia/android-core-dev
+/libraries/screen_recorder                              @tokopedia/android-core-dev
+/libraries/screenshot_observer                          @tokopedia/android-core-dev
+/libraries/tokopatch                                    @tokopedia/android-core-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

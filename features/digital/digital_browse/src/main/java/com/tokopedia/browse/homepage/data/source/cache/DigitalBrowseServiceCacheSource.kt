@@ -1,9 +1,9 @@
 package com.tokopedia.browse.homepage.data.source.cache
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.browse.homepage.data.entity.DigitalBrowseMarketplaceData
+import com.tokopedia.cachemanager.CacheManager
 import rx.Observable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -22,13 +22,13 @@ constructor(private val cacheManager: CacheManager) {
 
         }.type
 
-        cacheManager.save(DIGITAL_BROWSE_SERVICE_CACHE_KEY,
+        cacheManager.put(DIGITAL_BROWSE_SERVICE_CACHE_KEY,
                 CacheUtil.convertModelToString(orderEntity, type),
                 DIGITAL_BROWSE_SERVICE_CACHE_TIMEOUT)
     }
 
     fun getCache(): Observable<DigitalBrowseMarketplaceData> {
-        var jsonString = cacheManager.get(DIGITAL_BROWSE_SERVICE_CACHE_KEY)
+        var jsonString = cacheManager.getString(DIGITAL_BROWSE_SERVICE_CACHE_KEY)
 
         if (jsonString != null) {
             val type = object : TypeToken<DigitalBrowseMarketplaceData>() {

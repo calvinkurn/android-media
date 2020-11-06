@@ -18,7 +18,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:drawablePadding="@dimen/layout_lvl1"
         android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,20 +28,6 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Info Seller" />
-
-    <ImageView
-        android:id="@+id/imgInfo"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:background="@android:color/transparent"
-        android:padding="@dimen/shc_dimen_7dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvPostListTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvPostListTitle"
-        app:layout_constraintTop_toTopOf="@+id/tvPostListTitle"
-        app:srcCompat="@drawable/ic_info"
-        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPostList"
@@ -68,9 +54,7 @@
         android:gravity="end"
         android:maxLines="1"
         android:paddingStart="@dimen/layout_lvl1"
-        android:paddingLeft="@dimen/layout_lvl1"
         android:paddingEnd="@dimen/spacing_lvl2"
-        android:paddingRight="@dimen/spacing_lvl2"
         android:text="@string/shc_more"
         android:textColor="@color/Green_G500"
         android:textSize="@dimen/fontSize_lvl3"
@@ -87,7 +71,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl1"
         app:layout_constraintBottom_toBottomOf="@+id/tvPostListSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvPostListSeeDetails"

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -16,6 +17,8 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactor
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
@@ -132,11 +135,10 @@ class PostListViewHolder(
         tooltip?.run {
             val shouldShowTooltip = shouldShow && (content.isNotBlank() || list.isNotEmpty())
             if (shouldShowTooltip) {
-                imgInfo.visible()
-                imgInfo.setOnClickListener { showBottomSheet(tooltip) }
+                tvPostListTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
                 tvPostListTitle.setOnClickListener { showBottomSheet(tooltip) }
             } else {
-                imgInfo.gone()
+                tvPostListTitle.clearUnifyDrawableEnd()
             }
         }
     }
