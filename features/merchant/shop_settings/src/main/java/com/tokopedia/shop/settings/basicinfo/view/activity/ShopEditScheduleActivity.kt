@@ -101,11 +101,6 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         return R.layout.activity_shop_edit_schedule
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.detachView()
-    }
-
     override fun onPause() {
         super.onPause()
         dismissToaster()

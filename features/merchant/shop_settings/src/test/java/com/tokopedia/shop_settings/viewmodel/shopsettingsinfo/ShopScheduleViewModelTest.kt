@@ -47,14 +47,4 @@ class ShopScheduleViewModelTest: ShopSettingsInfoViewModelTestFixture() {
             assertTrue(shopScheduleViewModel.message.value == result)
         }
     }
-
-    @Test
-    fun `when detach view should unsubscribe use case`() {
-        shopScheduleViewModel.detachView()
-
-        verify {
-            getShopBasicDataUseCase.unsubscribe()
-            updateShopScheduleUseCase.unsubscribe()
-        }
-    }
 }

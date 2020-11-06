@@ -54,9 +54,4 @@ class ShopScheduleViewModel
             _shopBasicData.value = Fail(it)
         }
     }
-
-    fun detachView() {
-        getShopBasicDataUseCase.unsubscribe()
-        updateShopScheduleUseCase.unsubscribe()
-    }
 }
