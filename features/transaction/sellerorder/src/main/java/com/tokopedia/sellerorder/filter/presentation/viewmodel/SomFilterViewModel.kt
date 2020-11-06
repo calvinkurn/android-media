@@ -87,11 +87,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         launchCatchError(block = {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.map { it.isSelected = false }
-            if (idFilter != FILTER_STATUS_ORDER) {
-                somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
-            } else {
-                somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = true
-            }
+            somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
             somFilterDate?.date = date
