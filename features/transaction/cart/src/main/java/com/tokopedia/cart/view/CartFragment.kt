@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -1493,14 +1494,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
-        val imageSource = imageView.drawable.toBitmap()
+        val imageSource: Bitmap? = imageView.drawable?.toBitmap()
         val location = IntArray(2)
         imageView.getLocationOnScreen(location)
         val xCoordinate = location[0]
         val yCoordinate = location[1]
 
         tmpAnimatedImage.apply {
-            setImageBitmap(imageSource)
+            imageSource?.let {
+                setImageBitmap(imageSource)
+            }
             if (isUnavailableItem) {
                 val size = resources.getDimensionPixelOffset(R.dimen.dp_56)
                 layoutParams.width = size
