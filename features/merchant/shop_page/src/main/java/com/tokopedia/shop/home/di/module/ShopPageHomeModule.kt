@@ -33,6 +33,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -363,7 +364,7 @@ class ShopPageHomeModule {
     @ShopPageHomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
     }
