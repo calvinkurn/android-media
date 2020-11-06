@@ -113,4 +113,6 @@
     <string name="tradein_imei_helper">Tekan *#06# untuk cek IMEI atau dengan cara berikut</string>
     <string name="tradein_imei_label">No. IMEI</string>
     <string name="tradein_final_price">%1$s*</string>
+    <string name="tradein_price_label">Harga HP-mu</string>
+    <string name="tradein_price_total">Maks. Total Bayar</string>
 </resources>
