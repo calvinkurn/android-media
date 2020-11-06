@@ -10,6 +10,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
@@ -25,7 +26,8 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopStatisticUseCase: GetShopStatisticUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
-                                            dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                            private val coroutineDispatcherProvider: CoroutineDispatcherProvider
+): BaseViewModel(coroutineDispatcherProvider.main()){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -36,7 +38,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopInfo = withContext(Dispatchers.IO) {
+                val getShopInfo = withContext(coroutineDispatcherProvider.io()) {
                     val shopIdParams = listOf(shopId.toIntOrZero())
 
                     getShopInfoUseCase.isFromCacheFirst = false
@@ -55,7 +57,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopNotes(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val shopNotes = withContext(Dispatchers.IO) {
+                val shopNotes = withContext(coroutineDispatcherProvider.io()) {
                     getShopNoteUseCase.params = GetShopNotesByShopIdUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
 
@@ -82,10 +84,10 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun getShopStats(shopId: String) {
         launchCatchError(block = {
             coroutineScope{
-                val getShopStatisticRespAsync = async(Dispatchers.IO) {
+                val getShopStatisticRespAsync = async(coroutineDispatcherProvider.io()) {
                     getShopStatistics(shopId)
                 }
-                val getShopReputationRespAsync = async(Dispatchers.IO) {
+                val getShopReputationRespAsync = async(coroutineDispatcherProvider.io()) {
                     getShopReputation(shopId)
                 }
 
