@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
-import com.tokopedia.graphql.util.LoggingUtils.logGqlSizeCached
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -21,16 +20,16 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
-        val mResults = mutableMapOf<Type, Any>()
-        val mRefreshRequests = mutableListOf<GraphqlRequest>()
-        val mIsCachedData = mutableMapOf<Type, Boolean>()
+        val results = mutableMapOf<Type, Any>()
+        val refreshRequests = mutableListOf<GraphqlRequest>()
+        val isCachedData = mutableMapOf<Type, Boolean>()
 
         val originalRequests = requests.toMutableList();
 
         return withContext(Dispatchers.IO) {
             when (cacheStrategy.type) {
                 CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                    getCloudResponse(mResults, mRefreshRequests, mIsCachedData,
+                    getCloudResponse(results, refreshRequests, isCachedData,
                             originalRequests.toMutableList(), cacheStrategy)
                 }
                 CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(originalRequests, cacheStrategy)
@@ -43,7 +42,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                         }
                         var responseCloud: GraphqlResponseInternal? = null
                         if (!tempRequestCloud.isNullOrEmpty()) {
-                            responseCloud = getCloudResponse(mResults, mRefreshRequests, mIsCachedData,
+                            responseCloud = getCloudResponse(results, refreshRequests, isCachedData,
                                     tempRequestCloud.toMutableList(), cacheStrategy)
                         }
                         responseCloud?.let {
@@ -52,11 +51,11 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                         GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        getCloudResponse(mResults, mRefreshRequests, mIsCachedData,
+                        getCloudResponse(results, refreshRequests, isCachedData,
                                 originalRequests.toMutableList(), cacheStrategy)
                     }
                 }
-            }.toGraphqlResponse(mResults, mRefreshRequests, mIsCachedData,
+            }.toGraphqlResponse(results, refreshRequests, isCachedData,
                     originalRequests)
         }
     }
@@ -75,9 +74,9 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     }
 
     private fun GraphqlResponseInternal.toGraphqlResponse(
-            mResults: MutableMap<Type, Any>,
-            mRefreshRequests: MutableList<GraphqlRequest>,
-            mIsCachedData: MutableMap<Type, Boolean>,
+            results: MutableMap<Type, Any>,
+            refreshRequests: MutableList<GraphqlRequest>,
+            isCachedData: MutableMap<Type, Boolean>,
             requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
@@ -88,8 +87,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data
-                    mResults[typeOfT] = CommonUtils.fromJson(data, typeOfT)
-                    mIsCachedData[typeOfT] = false
+                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
+                    isCachedData[typeOfT] = false
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
@@ -104,14 +103,14 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
             }
         }
 
-        val graphqlResponse = GraphqlResponse(mResults, errors, mIsCachedData)
+        val graphqlResponse = GraphqlResponse(results, errors, isCachedData)
 
-        if (mRefreshRequests.isEmpty()) {
+        if (refreshRequests.isEmpty()) {
             return graphqlResponse
         }
 
         //adding cached request.
-        graphqlResponse.refreshRequests = mRefreshRequests
+        graphqlResponse.refreshRequests = refreshRequests
 
         return graphqlResponse
     }
@@ -120,9 +119,9 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
      * Helper method to merge the partial caches response with lived response of network
      */
     private suspend fun getCloudResponse(
-            mResults: MutableMap<Type, Any>,
-            mRefreshRequests: MutableList<GraphqlRequest>,
-            mIsCachedData: MutableMap<Type, Boolean>,
+            results: MutableMap<Type, Any>,
+            refreshRequests: MutableList<GraphqlRequest>,
+            isCachedData: MutableMap<Type, Boolean>,
             requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()
@@ -142,10 +141,10 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 }
 
                 //Lookup for data
-                mResults[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
-                mIsCachedData[copyRequests[i].typeOfT] = true
+                results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
-                mRefreshRequests.add(copyRequests[i])
+                refreshRequests.add(copyRequests[i])
                 requests.remove(copyRequests[i])
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
