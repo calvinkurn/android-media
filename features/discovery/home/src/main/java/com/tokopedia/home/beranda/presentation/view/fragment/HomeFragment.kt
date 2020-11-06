@@ -123,6 +123,10 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -178,7 +182,8 @@ open class HomeFragment : BaseDaggerFragment(),
         PopularKeywordListener,
         FramePerformanceIndexInterface,
         HomeAutoRefreshListener,
-        PlayWidgetListener {
+        PlayWidgetListener,
+        RecommendationWidgetListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
@@ -1031,7 +1036,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 ProductHighlightComponentCallback(this),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator
+                playWidgetCoordinator,
+                this
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
@@ -1737,6 +1743,22 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String, positionInWidget: Int) {
         RouteManager.route(context, applink)
         PopularKeywordTracking.sendPopularKeywordClickItem(channel, position, keyword, positionInWidget)
+    }
+
+    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        RouteManager.route(context, recommendationItem.appUrl)
+    }
+
+    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+
+    }
+
+    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
+
+    }
+
+    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
     }
 
     protected fun registerBroadcastReceiverTokoCash() {
