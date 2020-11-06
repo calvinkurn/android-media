@@ -178,7 +178,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         launchCatchError(block = {
             somFilterUiModel.forEach { somFilter ->
                 somFilter.somFilterData.onEach { chips ->
-                    chips.isSelected = chips.name == orderStatus
+                    chips.isSelected = false
                 }
             }
             somListGetOrderListParam = SomListGetOrderListParam()

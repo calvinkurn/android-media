@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        tools:layout_editor_absoluteX="411dp" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfStartDate"
@@ -46,6 +53,7 @@
         android:paddingEnd="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@+id/cvSaveCalendar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.8"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -53,10 +61,11 @@
         android:id="@+id/cvSaveCalendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/layout_lvl0"
-        app:cardElevation="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="@dimen/layout_lvl0"
+        app:cardElevation="@dimen/spacing_lvl2">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSaveCalendar"

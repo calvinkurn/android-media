@@ -19,15 +19,15 @@
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700"/>
 
-    <RadioButton
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="@dimen/dp_18"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_18"/>
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl3"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/rbDivider"

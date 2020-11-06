@@ -355,7 +355,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 filterDate
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
-        bottomSheetFilter.show()
+        if(!bottomSheetFilter.isVisible) {
+            bottomSheetFilter.show()
+        }
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
