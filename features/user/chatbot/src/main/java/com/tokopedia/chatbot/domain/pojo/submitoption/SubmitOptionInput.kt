@@ -4,9 +4,14 @@ package com.tokopedia.chatbot.domain.pojo.submitoption
 import com.google.gson.annotations.SerializedName
 
 data class SubmitOptionInput(
-    var caseChatID: String = "",
-    var caseID: String = "",
-    var messageID: String = "",
-    var source: String = "",
-    var value: Int = 0
+        @SerializedName("caseChatID")
+        var caseChatID: String = "",
+        @SerializedName("caseID")
+        var caseID: String = "",
+        @SerializedName("messageID")
+        var messageID: String = "",
+        @SerializedName("source")
+        var source: String = "",
+        @SerializedName("value")
+        var value: Int = 0
 )

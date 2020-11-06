@@ -15,11 +15,11 @@ import javax.inject.Inject
 
 private const val INPUT = "input"
 
-//@GqlQuery("GetChatListRating", CHIP_GET_CHAT_RATING_LIST_QUERY)
+@GqlQuery("GetChatListRating", CHIP_GET_CHAT_RATING_LIST_QUERY)
 class ChipGetChatRatingListUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlRequest = GraphqlRequest(CHIP_GET_CHAT_RATING_LIST_QUERY,
+        val graphqlRequest = GraphqlRequest(GetChatListRating.GQL_QUERY,
                 ChipGetChatRatingListResponse::class.java, requestParams, false)
 
         graphqlUseCase.clearRequest()
