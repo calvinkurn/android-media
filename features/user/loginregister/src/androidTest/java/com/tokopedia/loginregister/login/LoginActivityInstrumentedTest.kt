@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.login
 
-import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -9,8 +8,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -25,8 +22,6 @@ import com.tokopedia.loginregister.login.common.LoginIdlingResourceTestRule
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
-import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -77,6 +72,7 @@ class LoginActivityInstrumentedTest {
     fun setup() {
         Intents.init()
         Dispatchers.setMain(TestCoroutineDispatcher())
+        gtmLogDBSource.deleteAll().subscribe()
         userSession = mActivityTestRule.activity.stubUserSession
         fingerprintSetting = mActivityTestRule.activity.stubFingerprintSetting
         activity = mActivityTestRule.activity
@@ -96,54 +92,99 @@ class LoginActivityInstrumentedTest {
 
     @Test
     fun validateTracker() {
-//        onSocmedBtnClick()
-//        onLoginViaEmail()
-//        onLoginViaPhone()
+        onLoginViaEmail()
         forgotPassClick()
+        clickUbahButton()
+        onLoginViaPhone()
         onRegisterFooterSpannableClick()
+        onSocmedBtnClick()
+
         assertThat(
-                getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
-                hasAllSuccess()
+            getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
+            hasAllSuccess()
         )
+    }
+
+    fun restartActivity(){
+        Intents.init()
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        userSession = mActivityTestRule.activity.stubUserSession
+        fingerprintSetting = mActivityTestRule.activity.stubFingerprintSetting
+        activity = mActivityTestRule.activity
+        fragment = activity.setupTestFragment() as LoginEmailPhoneFragmentStub
+
+        idlingResource = LoginIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
+        setupGraphqlMockResponse(LoginMockResponse())
+
+//        with(mActivityTestRule) {
+//            finishActivity()
+//            launchActivity(null)
+//        }
     }
 
     /* Show socmed container if socmed button clicked */
     fun onSocmedBtnClick() {
+        Thread.sleep(1000)
         onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
-//        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
+        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
     }
 
     /* Show socmed container if socmed button clicked */
-    fun onSocmedBtnClose() {
-        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
+//    @Test
+//    fun onSocmedBtnClose() {
+//        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
 //        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
-    }
+//    }
 
     /* click login email */
     fun onLoginViaEmail() {
+        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
+//        Thread.sleep(1000)
+    }
+
+    fun clickUbahButton(){
+        Thread.sleep(1000)
+        onView(withId(R.id.change_button)).perform(click())
     }
 
     /* click login email */
     fun onLoginViaPhone() {
+        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
         onView(withId(R.id.register_btn)).perform(click())
+//        intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
+//            Bundle().apply {
+//                putString(ApplinkConstInternalGlobal.PARAM_UUID, "1234")
+//                putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "1234")
+//            }
+//        }))
     }
 
     /* goto forgot password if clicked */
     fun forgotPassClick() {
+        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
-        Thread.sleep(1500)
         onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
+//        intending(hasComponent(ForgotPasswordActivity::class.java.name))
     }
 
     /* Go to register initial if clicked */
+//    @Test
     fun onRegisterFooterSpannableClick(){
-        onView(withContentDescription(R.string.content_desc_register_button_phone)).perform(click())
+        onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
     }
 
+//    @Test
+//    fun validateTracker(){
+//        assertThat(
+//                getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
+//                hasAllSuccess()
+//        )
+//    }
 //    @Test
 //    /* Go to register initial if clicked */
 //    fun onRegisterToolbarClick(){

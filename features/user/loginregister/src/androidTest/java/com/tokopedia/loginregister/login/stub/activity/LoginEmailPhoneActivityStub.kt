@@ -2,11 +2,8 @@ package com.tokopedia.loginregister.login.stub.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.user.session.UserSession
@@ -31,6 +28,14 @@ class LoginEmailPhoneActivityStub: LoginActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(parentViewResourceID, newFragment, tagFragment)
                 .commit()
+        return newFragment
+    }
+
+    fun setupTestFragmentAllowingLossState(): Fragment {
+        val newFragment = newFragment
+        supportFragmentManager.beginTransaction()
+                .replace(parentViewResourceID, newFragment, tagFragment)
+                .commitAllowingStateLoss()
         return newFragment
     }
 

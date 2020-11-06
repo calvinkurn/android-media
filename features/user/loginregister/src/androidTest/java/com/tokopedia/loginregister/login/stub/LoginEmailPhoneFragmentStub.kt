@@ -1,15 +1,12 @@
 package com.tokopedia.loginregister.login.stub
 
-import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.dagger.DaggerMockLoginComponent
 import com.tokopedia.loginregister.login.dagger.MockLoginQueryModule
 import com.tokopedia.loginregister.login.dagger.MockLoginUseCaseModule
 import com.tokopedia.loginregister.login.dagger.MockLoginmodule
-import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -23,10 +20,21 @@ class LoginEmailPhoneFragmentStub : LoginEmailPhoneFragment(){
     lateinit var stubUserSession: UserSessionInterface
     lateinit var stubFingerprintSetting: FingerprintSetting
 
-    //    lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
 
     fun setFingerprintEnable(enable: Boolean) {
         isEnableFingerprint = enable
+    }
+
+    override fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int) {
+        // do nothing
+    }
+
+    override fun goToForgotPassword(){
+        // do nothing
+    }
+
+    override fun goToRegisterInitial(source: String) {
+        // do nothing
     }
 
     override fun initInjector() {
