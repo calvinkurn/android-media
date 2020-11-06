@@ -51,14 +51,13 @@ class HotelDestinationViewModel @Inject constructor(
     private lateinit var locationCallback: LocationCallback
 
     fun getHotelRecommendation() {
-
         launchCatchError(block = {
             val popularPropertyData = getPropertyPopularUseCase.executeOnBackground()
             if (popularPropertyData.isNotEmpty()) popularSearch.postValue(Success(popularPropertyData))
 
             if (userSessionInterface.isLoggedIn) {
                val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
-                recentSearch.postValue(Success(recentSearchData))
+                if (recentSearchData.isNotEmpty()) recentSearch.postValue(Success(recentSearchData))
             }
         }) {
             popularSearch.postValue(Fail(it))
@@ -145,8 +144,6 @@ class HotelDestinationViewModel @Inject constructor(
 
     companion object {
         private const val LOCATION_REQUEST_INTERVAL: Long = 10 * 1000
-
-        private val TYPE_POPULAR_RESPONSE = PopularSearch.Response::class.java
         private val TYPE_SEARCH_RESPONSE = HotelSuggestion.Response::class.java
 
         const val PARAM_SEARCH_KEY = "searchKey"
