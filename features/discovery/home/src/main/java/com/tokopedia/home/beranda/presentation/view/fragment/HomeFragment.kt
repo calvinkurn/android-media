@@ -706,6 +706,7 @@ open class HomeFragment : BaseDaggerFragment(),
         observeRechargeRecommendation()
         observeIsNeedRefresh()
         observePlayWidgetToggleReminder()
+        observeRechargeBUWidget()
     }
           
     private fun observeIsNeedRefresh() {

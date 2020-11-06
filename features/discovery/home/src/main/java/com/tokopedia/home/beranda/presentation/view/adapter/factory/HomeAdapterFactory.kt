@@ -163,7 +163,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     override fun type(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel): Int {
-        return RechargeBUWidgetViewHolder.LAYOUT
+        return if (rechargeBUWidgetDataModel.data.option1 == RechargeBUWidgetMixTopViewHolder.BU_WIDGET_TYPE_TOP)
+        RechargeBUWidgetMixTopViewHolder.LAYOUT else RechargeBUWidgetMixLeftViewHolder.LAYOUT
     }
 
     override fun type(mixLeftDataModel: MixLeftDataModel): Int {
@@ -325,8 +326,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     homeComponentListener
             )
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
-            RechargeBUWidgetViewHolder.LAYOUT -> viewHolder =
-                    RechargeBUWidgetViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
+            RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
+                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)
+            RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
+                    RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

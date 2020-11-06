@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
 import com.tokopedia.home.beranda.listener.RechargeBUWidgetListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.RechargeBUWidgetDataModel
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,9 +46,9 @@ import kotlin.math.abs
  */
 
 @SuppressLint("SyntheticAccessor")
-class RechargeBUWidgetViewHolder(itemView: View,
-                                 val listener: RechargeBUWidgetListener,
-                                 private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
+class RechargeBUWidgetMixLeftViewHolder(itemView: View,
+                                        val listener: RechargeBUWidgetListener,
+                                        private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
     : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private var data: RechargePerso = RechargePerso()
@@ -71,8 +72,9 @@ class RechargeBUWidgetViewHolder(itemView: View,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_component_recharge_bu_widget
+        val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
         private const val FPM_MIX_LEFT = "home_mix_left"
+        const val BU_WIDGET_TYPE_LEFT = "mix-left"
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -85,8 +87,10 @@ class RechargeBUWidgetViewHolder(itemView: View,
             setSnapEffect()
             setHeaderComponent(element.visitableId(), data.title, data.applink)
 
-            itemView.addOnImpressionListener(element) {
-                if (!isCacheData) listener.onRechargeBUWidgetImpression(data)
+            if (!isCacheData) {
+                itemView.addOnImpressionListener(element) {
+                    listener.onRechargeBUWidgetImpression(data)
+                }
             }
         } else {
             listener.getRechargeBUWidget(element.source)
@@ -212,7 +216,11 @@ class RechargeBUWidgetViewHolder(itemView: View,
                             productName = element.subtitle,
                             formattedPrice = element.label3,
                             productImageUrl = element.mediaUrl,
-                            discountPercentage = element.label1
+                            discountPercentage = element.label1,
+                            labelGroupList = listOf(ProductCardModel.LabelGroup(
+                                    position = "gimmick",
+                                    title = element.title.toUpperCase()
+                            ))
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = ChannelGrid(),
@@ -245,7 +253,7 @@ class RechargeBUWidgetViewHolder(itemView: View,
     }
 
     private fun setHeaderComponent(id: String, headerTitle: String, applink: String) {
-        val channelModel = ChannelModel(id, id, channelHeader = ChannelHeader(name = headerTitle, applink = applink))
+        val channelModel = ChannelModel(id, id, channelHeader = ChannelHeader(id, name = headerTitle, applink = applink))
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_header_view)
         headerView.setChannel(channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {

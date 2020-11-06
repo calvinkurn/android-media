@@ -21,7 +21,7 @@ data class RechargePerso(
         val textlink: String = "",
         @Expose
         @SerializedName("option_1")
-        val option1: String = "",
+        val option1: String = "mix_left",
         @Expose
         @SerializedName("option_2")
         val option2: String = "",

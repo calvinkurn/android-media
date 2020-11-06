@@ -11,7 +11,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/recharge_bu_background_loader"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,14 +21,14 @@
         android:id="@+id/recharge_bu_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
+        app:layout_constraintTop_toBottomOf="@+id/recharge_bu_header_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -47,7 +47,7 @@
 
             <ImageView
                 android:id="@+id/recharge_bu_parallax_image"
-                android:layout_marginLeft="@dimen/dp_48"
+                android:layout_marginLeft="@dimen/spacing_lvl8"
                 android:layout_height="match_parent"
                 android:layout_width="@dimen/product_card_flashsale_width"
                 android:clickable="true"
@@ -60,10 +60,10 @@
             android:id="@+id/rv_recharge_bu_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl3"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
