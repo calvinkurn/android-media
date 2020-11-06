@@ -84,13 +84,12 @@
 
     <TextView
         android:id="@+id/txtHelpCare"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/notif_footer_care"
         android:textColor="@color/charcoal_grey_68"
-        android:visibility="gone"
         android:textAlignment="center"
         android:layout_marginBottom="@dimen/dp_56"
         app:layout_constraintBottom_toBottomOf="parent"
