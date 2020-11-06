@@ -10,7 +10,6 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
 data class UsageProgressUiModel(
         @VoucherTargetType val targetType: Int,
         val quota: Int,
-        val remaningQuota: Int,
         val bookedQuota: Int
 ) : VoucherDetailUiModel {
 
