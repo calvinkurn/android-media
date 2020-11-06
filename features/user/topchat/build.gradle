@@ -106,7 +106,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
