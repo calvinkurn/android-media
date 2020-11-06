@@ -10,7 +10,7 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
-import com.tokopedia.notifcenter.widget.CardProductNotificationCardUnify
+import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 import com.tokopedia.notifcenter.widget.CarouselProductRecyclerView
 
 class CarouselProductNotificationViewHolder constructor(
@@ -113,7 +113,7 @@ class CarouselProductNotificationViewHolder constructor(
             private val listener: NotificationItemListener?
     ) : RecyclerView.ViewHolder(itemView) {
 
-        private val productContainer: CardProductNotificationCardUnify? = itemView.findViewById(
+        private val productContainer: ProductNotificationCardUnify? = itemView.findViewById(
                 R.id.pc_single
         )
 

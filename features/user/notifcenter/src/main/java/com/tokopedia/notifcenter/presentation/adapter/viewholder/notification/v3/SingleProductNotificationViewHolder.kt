@@ -1,19 +1,17 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
 import android.view.View
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
-import com.tokopedia.notifcenter.widget.CardProductNotificationCardUnify
+import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
 class SingleProductNotificationViewHolder constructor(
         itemView: View?,
         private val listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
-    private val productContainer: CardProductNotificationCardUnify? = itemView?.findViewById(
+    private val productContainer: ProductNotificationCardUnify? = itemView?.findViewById(
             R.id.pc_single
     )
 

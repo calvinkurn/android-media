@@ -18,7 +18,7 @@ import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class CardProductNotificationCardUnify(
+class ProductNotificationCardUnify(
         context: Context,
         attrs: AttributeSet?
 ) : CardUnify(context, attrs) {

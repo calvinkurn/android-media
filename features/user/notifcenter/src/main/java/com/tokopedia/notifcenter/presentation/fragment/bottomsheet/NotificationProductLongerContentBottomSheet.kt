@@ -12,7 +12,7 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
-import com.tokopedia.notifcenter.widget.CardProductNotificationCardUnify
+import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 import com.tokopedia.unifycomponents.toPx
 
 class NotificationProductLongerContentBottomSheet : NotificationLongerContentBottomSheet() {
@@ -27,7 +27,7 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
     override fun onInitContentView() {
         notification?.productData?.forEach { product ->
             val view = createProductView()
-            val productView: CardProductNotificationCardUnify? = view?.findViewById(R.id.pc_single)
+            val productView: ProductNotificationCardUnify? = view?.findViewById(R.id.pc_single)
             bind(productView, product)
             contentContainer?.addView(view)
         }
@@ -37,7 +37,7 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         cta?.hide()
     }
 
-    private fun bind(productView: CardProductNotificationCardUnify?, product: ProductData) {
+    private fun bind(productView: ProductNotificationCardUnify?, product: ProductData) {
         productView?.bindProductData(product, listener)
     }
 
