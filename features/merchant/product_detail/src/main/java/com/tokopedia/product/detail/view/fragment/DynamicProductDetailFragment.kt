@@ -789,9 +789,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductTickerViewHolder
      */
-    override fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String) {
         if (url.isEmpty()) return
-        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
+        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         if (activity != null && RouteManager.isSupportApplink(activity, url)) {
             goToApplink(url)
         } else {
@@ -799,9 +799,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String) {
         activity?.let {
-            trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
+            trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
             //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
             val shopStatusBs = ShopStatusInfoBottomSheet()
             shopStatusBs.statusInfo = viewModel.getShopInfo().statusInfo
@@ -811,8 +811,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
-        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
+    override fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String) {
+        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         goToRecommendation()
     }
 
@@ -2913,8 +2913,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun trackOnTickerClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
+    private fun trackOnTickerClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String) {
+        DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId, tickerDescription)
     }
 
     private fun showImeiPermissionBottomSheet() {

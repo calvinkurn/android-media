@@ -31,7 +31,7 @@ object ProductTrackingConstant {
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
-        const val KEY_TICKER_TYPE = "tickerType"
+        const val KEY_TICKER_TYPE = "ticker type"
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
 

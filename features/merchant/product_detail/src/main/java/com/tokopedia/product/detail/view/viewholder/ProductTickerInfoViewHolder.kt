@@ -101,7 +101,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             this.tickerTitle = tickerTitle
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    listener.onTickerGoToRecomClicked(shop_ticker_info.tickerTitle.toString(), shop_ticker_info.tickerType, componentTrackDataModel)
+                    listener.onTickerGoToRecomClicked(shop_ticker_info.tickerTitle.toString(), shop_ticker_info.tickerType, componentTrackDataModel, tickerDescription)
                 }
 
                 override fun onDismiss() {}
@@ -111,12 +111,12 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         }
     }
 
-    private fun renderShopTicker(statusTitle: String, statusMessage: String, tickerClicked: ((String, Int, ComponentTrackDataModel?) -> Unit?)?) = with(view) {
+    private fun renderShopTicker(statusTitle: String, statusMessage: String, tickerClicked: ((String, Int, ComponentTrackDataModel?, String) -> Unit?)?) = with(view) {
         shop_ticker_info.setHtmlDescription(statusMessage)
         shop_ticker_info.tickerTitle = statusTitle
         shop_ticker_info.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                tickerClicked?.invoke(shop_ticker_info.tickerTitle.toString(), shop_ticker_info.tickerType, componentTrackDataModel)
+                tickerClicked?.invoke(shop_ticker_info.tickerTitle.toString(), shop_ticker_info.tickerType, componentTrackDataModel, statusMessage)
             }
 
             override fun onDismiss() {}
@@ -141,7 +141,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             general_ticker_info.addPagerView(tickerViewPager, tickerData)
             tickerViewPager.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    listener.onTickerGeneralClicked(general_ticker_info.tickerTitle.toString(), general_ticker_info.tickerType, linkUrl.toString(), componentTrackDataModel)
+                    listener.onTickerGeneralClicked(general_ticker_info.tickerTitle.toString(), general_ticker_info.tickerType, linkUrl.toString(), componentTrackDataModel, linkUrl.toString())
                 }
 
                 override fun onDismiss() {}
