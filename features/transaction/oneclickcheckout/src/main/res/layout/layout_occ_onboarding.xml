@@ -21,10 +21,11 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_occ_onboarding"
                 android:layout_width="88dp"
-                android:layout_height="88dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_6"
                 android:layout_marginBottom="@dimen/dp_6"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

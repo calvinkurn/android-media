@@ -778,6 +778,7 @@ public class HomePageTracking {
                 AFFINITY_LABEL, homeIconItem.getPersona(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),
                 SHOP_ID, homeIconItem.getBrandId(),
+                CAMPAIGN_CODE, homeIconItem.getCampaignCode(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
