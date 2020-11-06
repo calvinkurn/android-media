@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.dropoff.ui.autocomplete.model.SavedAddress
-import com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticdata.domain.model.SavedAddress
+import com.tokopedia.logisticdata.domain.model.SuggestedPlace
 import com.tokopedia.logisticdata.data.repository.KeroRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

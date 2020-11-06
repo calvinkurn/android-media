@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.dropoff.R
-import com.tokopedia.dropoff.ui.autocomplete.model.*
+import com.tokopedia.logisticdata.domain.model.*
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
