@@ -224,7 +224,7 @@ public interface ShipmentContract {
                              boolean isTradeInDropOff, String deviceId,
                              String cornerId, String leasingId);
 
-        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrder);
+        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
         void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 
@@ -240,7 +240,8 @@ public interface ShipmentContract {
                                              List<ShopShipment> shopShipmentList,
                                              boolean isInitialLoad, ArrayList<Product> products,
                                              String cartString, boolean isTradeInDropOff,
-                                             RecipientAddressModel recipientAddressModel);
+                                             RecipientAddressModel recipientAddressModel,
+                                             boolean isForceReload);
 
         RecipientAddressModel getRecipientAddressModel();
 

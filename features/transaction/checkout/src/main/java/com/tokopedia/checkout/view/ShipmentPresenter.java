@@ -790,7 +790,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrder) {
+    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest,
+                                                int lastSelectedCourierOrderIndex,
+                                                String cartString) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
@@ -860,16 +862,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
                                                }
 
-                                               if (validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds().size() > 0 &&
-                                                       lastSelectedCourierOrder > -1) {
-                                                   getView().prepareReloadRates(lastSelectedCourierOrder);
-                                               }
+                                               reloadCourierForMvc(validateUsePromoRevampUiModel, lastSelectedCourierOrderIndex, cartString);
                                            }
                                        }
                                    }
                         )
         );
 
+    }
+
+    // Re-fetch rates to get promo mvc icon
+    private void reloadCourierForMvc(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int lastSelectedCourierOrderIndex, String cartString) {
+        List<PromoSpIdUiModel> promoSpids = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        if (promoSpids.size() > 0 && lastSelectedCourierOrderIndex > -1) {
+            for (PromoSpIdUiModel promoSpId : promoSpids) {
+                if (promoSpId.getUniqueId().equalsIgnoreCase(cartString)) {
+                    getView().prepareReloadRates(lastSelectedCourierOrderIndex);
+                    break;
+                }
+            }
+        }
     }
 
     private void updateTickerAnnouncementData(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
@@ -1738,7 +1750,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
-                                                RecipientAddressModel recipientAddressModel) {
+                                                RecipientAddressModel recipientAddressModel,
+                                                boolean isForceReload) {
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1774,7 +1787,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
                                 shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
-                                isInitialLoad, isTradeInDropOff
+                                isInitialLoad, isTradeInDropOff, isForceReload
                         ));
     }
 

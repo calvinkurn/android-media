@@ -762,7 +762,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData, boolean isForceReload) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
@@ -792,7 +792,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
-        checkHasSelectAllCourier(false, position);
+        int tmpPosition = isForceReload ? position : -1;
+        checkHasSelectAllCourier(false, tmpPosition);
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
             updateShippingCompletionTickerVisibility();
         }

@@ -32,13 +32,15 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
     private final boolean isTradeInDropOff;
+    private final boolean isForceReloadRates;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
                                               List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad, boolean isTradeInDropOff) {
+                                              boolean isInitialLoad, boolean isTradeInDropOff,
+                                              boolean isForceReloadRates) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -49,6 +51,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
         this.isTradeInDropOff = isTradeInDropOff;
+        this.isForceReloadRates = isForceReloadRates;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
 
     @Override
     public void onNext(ShippingRecommendationData shippingRecommendationData) {
-        if (isInitialLoad) {
+        if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
@@ -79,7 +82,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                             shippingCourierUiModel.setSelected(false);
                         }
                         for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
-                            if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
+                            if (isForceReloadRates || isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
                                     shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
                                 if (shippingCourierUiModel.getProductData().getError() != null &&
                                         !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
