@@ -157,7 +157,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 )
             }
             else -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, false) }
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
             }
         }
     }
