@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -78,6 +79,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initShopPageHeaderPerformanceMonitoring()
+        Log.i("PLT_SHOP", "ShopPageActivity initShopPageHeaderPerformanceMonitoring")
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
@@ -126,6 +128,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 SHOP_TRACE_RENDER
         )
         performanceMonitoringShop?.startMonitoring(SHOP_TRACE)
+        Log.i("PLT_SHOP", "ShopPageActivity performanceMonitoringShop?.startMonitoring")
         performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
 
         performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -885,6 +886,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun initPltMonitoring() {
         if (!isShowNewShopHomeTab()) {
+            Log.i("PLT_SHOP", "ShopPageProductListFragment initPltMonitoring")
             (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
         }
     }
@@ -893,6 +895,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
+                    Log.i("PLT_SHOP", "ShopPageProductListFragment startMonitoringPltNetworkRequest")
                     shopPageActivity.stopMonitoringPltPreparePage(it)
                     shopPageActivity.startMonitoringPltNetworkRequest(it)
                 }
@@ -904,6 +907,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
+                    Log.i("PLT_SHOP", "ShopPageProductListFragment startMonitoringPltRenderPage")
                     shopPageActivity.startMonitoringPltRenderPage(it)
                 }
             }
@@ -914,6 +918,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
+                    Log.i("PLT_SHOP", "ShopPageProductListFragment stopMonitoringPltRenderPage")
                     shopPageActivity.stopMonitoringPltRenderPage(it)
                 }
             }

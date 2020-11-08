@@ -217,6 +217,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun initPltMonitoring() {
+        Log.i("PLT_SHOP", "ShopPageHomeFragment initPltMonitoring")
         (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.initShopPageHomeTabPerformanceMonitoring()
     }
 
@@ -224,6 +225,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun startMonitoringPltNetworkRequest() {
         (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                Log.i("PLT_SHOP", "ShopPageHomeFragment startMonitoringPltNetworkRequest")
                 shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
@@ -233,6 +235,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun startMonitoringPltRenderPage() {
         (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                Log.i("PLT_SHOP", "ShopPageHomeFragment startMonitoringPltRenderPage")
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
@@ -241,6 +244,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun stopMonitoringPltRenderPage() {
         (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                Log.i("PLT_SHOP", "ShopPageHomeFragment stopMonitoringPltRenderPage")
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
