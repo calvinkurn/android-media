@@ -48,8 +48,8 @@ data class Product(
         val catalog: Catalog = Catalog(),
         @SerializedName("category")
         val category: Category = Category(),
-        @SerializedName("menu")
-        val menu: Menu = Menu(),
+        @SerializedName("menus")
+        val menus: List<String> = listOf(),
         @SerializedName("pictures")
         val pictures: List<Picture> = listOf(),
         @SerializedName("preorder")
@@ -68,7 +68,7 @@ data class Product(
         val lock: Lock = Lock(),
         @SerializedName("stats")
         val stats: Stats = Stats(),
-        @SerializedName("TxStats")
+        @SerializedName("txStats")
         val txStats: TxStats = TxStats(),
         @SerializedName("variant")
         val variant: Variant = Variant()

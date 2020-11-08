@@ -3,9 +3,9 @@ package com.tokopedia.tkpd.home.favorite.view;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.seller.common.usecase.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.seller.common.usecase.PostExecutionThread;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;

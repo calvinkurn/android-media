@@ -31,6 +31,7 @@ import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
+import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -66,6 +67,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         private const val ERROR_GET_COURIER_LIST = "Error when get courier list."
         private const val ERROR_CHANGE_COURIER = "Error when change courier."
 
+        private const val TAG_BOTTOMSHEET = "bottomSheet"
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomConfirmShippingFragment {
             return SomConfirmShippingFragment().apply {
@@ -98,6 +101,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         setupListeners()
         observingCourierList()
         observingChangeCourier()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
+            if (it.isVisible) it.dismiss()
+        }
     }
 
     private fun setupLayout() {
@@ -277,7 +287,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { bottomSheetUnify.show(it, TAG_BOTTOMSHEET) }
 
         if (isCourierService) {
             setCourierServiceListData(currShipmentId)

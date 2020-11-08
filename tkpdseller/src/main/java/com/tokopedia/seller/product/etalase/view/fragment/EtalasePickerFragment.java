@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.seller.common.utils.TkpdProgressDialog;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;

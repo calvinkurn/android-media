@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -34,6 +33,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -45,7 +45,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -53,7 +52,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
@@ -64,7 +63,6 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -72,7 +70,6 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -90,6 +87,7 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -97,7 +95,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
-import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -150,7 +147,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GamificationRouter,
         ReactNativeRouter,
         NetworkRouter,
-        GlobalNavRouter,
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
@@ -172,7 +168,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
 
-    private CacheManager cacheManager;
+    protected CacheManager cacheManager;
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
@@ -416,10 +412,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        sessionHandler.forceLogout();
+
+        forceLogout();
+
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
+    }
+
+    private void forceLogout() {
+        PasswordGenerator.clearTokenStorage(context);
+        TrackApp.getInstance().getMoEngage().logoutEvent();
+        UserSessionInterface userSession = new UserSession(context);
+        userSession.logoutSession();
     }
 
     public Intent getHomeIntent(Context context) {
@@ -455,8 +459,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onForceLogout(Activity activity) {
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
+        forceLogout();
         Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -512,14 +515,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         accessTokenRefresh.refreshToken();
     }
 
-    /**
-     * User PersistentCacheManager Library directly
-     */
-    @Deprecated
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         if (cacheManager == null) {
-            cacheManager = new GlobalCacheManager();
+            cacheManager = new PersistentCacheManager(this);
         }
         return cacheManager;
     }
@@ -622,47 +621,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getHomeFragment(boolean scrollToRecommendList) {
-        return HomeInternalRouter.getHomeFragment(scrollToRecommendList);
-    }
-
-    @Override
-    public Fragment getFeedPlusFragment(Bundle bundle) {
-        return FeedPlusContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return OfficialHomeContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public ApplicationUpdate getAppUpdate(Context context) {
-        return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
     public long getLongRemoteConfig(String key, long defaultValue) {
         return remoteConfig.getLong(key, defaultValue);
     }
 
     @Override
-    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
-        return remoteConfig.getBoolean(key, defaultValue);
-    }
-
-    @Override
-    public void sendOpenHomeEvent() {
-        UserSessionInterface userSession = new UserSession(context);
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
+    }
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        return remoteConfig.getBoolean(key, defaultValue);
     }
 
     @Override

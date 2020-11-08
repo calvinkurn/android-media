@@ -30,6 +30,8 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import java.util.*
 
 /**
@@ -50,7 +52,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val reminderWidgetListener: ReminderWidgetListener,
                          private val productHighlightListener: ProductHighlightListener,
                          private val lego4AutoBannerListener: Lego4AutoBannerListener,
-                         private val featuredShopListener: FeaturedShopListener
+                         private val featuredShopListener: FeaturedShopListener,
+                         private val playWidgetCoordinator: PlayWidgetCoordinator
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -132,10 +135,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return PlayCardViewHolder.LAYOUT
     }
 
-    override fun type(playCard: PlayCarouselCardDataModel): Int {
-        return PlayBannerCardViewHolder.LAYOUT
-    }
-
     override fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int {
         return HomeLoadingMoreViewHolder.LAYOUT
     }
@@ -192,6 +191,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int {
         return FeaturedShopViewHolder.LAYOUT
     }
+
+    override fun type(dataModel: CarouselPlayWidgetDataModel) =
+            CarouselPlayWidgetViewHolder.LAYOUT
+
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -269,7 +272,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
-            PlayBannerCardViewHolder.LAYOUT -> viewHolder = PlayBannerCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
@@ -320,6 +322,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     featuredShopListener,
                     homeComponentListener
             )
+            CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

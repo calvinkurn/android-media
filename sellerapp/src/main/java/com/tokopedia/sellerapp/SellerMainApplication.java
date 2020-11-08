@@ -48,6 +48,9 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -142,6 +145,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
         initRemoteConfig();
+        initCacheManager();
+
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -149,13 +154,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        PersistentCacheManager.init(this);
-
         TimberWrapper.init(this);
         super.onCreate();
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
@@ -164,6 +168,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks();
         initBlockCanary();
         TokoPatch.init(this);
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void setVersionName(){
@@ -195,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
     }
 
     @Override

@@ -53,6 +53,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -739,13 +740,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         labelFreeShippingEtaText.setVisibility(View.GONE);
                     }
                 }
-
             } else {
                 // Is normal shipping
                 layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
                 layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
 
-                labelSelectedShippingDuration.setText(selectedCourierItemData.getEstimatedTimeDelivery());
+                /*here sam*/
+                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), labelSelectedShippingDuration.getContext().getString(R.string.content_desc_label_selected_shipping_duration));
                 labelSelectedShippingDuration.setOnClickListener(
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
                 );
@@ -773,12 +774,20 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
 
                 labelSelectedShippingPriceorDuration.setOnClickListener(
+
+                        /*here sam*/
+                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
+                labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        selectedCourierItemData.getShipperPrice(), false
+                )));
+                labelSelectedShippingPrice.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 labelSelectedShippingCourier.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 iconChevronChooseCourier.setOnClickListener(
+
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
 
@@ -1057,21 +1066,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
-        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)));
-        tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), tvSubTotalPrice.getContext().getString(R.string.content_desc_tv_sub_total_price));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), tvTotalItemPrice.getContext().getString(R.string.content_desc_tv_total_item_price_subtotal));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
-        tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice), tvShippingFeePrice.getContext().getString(R.string.content_desc_tv_shipping_fee_price_subtotal));
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
                 tvShippingFeePrice.setText(tvShippingFeePrice.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping));
             } else {
-                tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()));
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), tvShippingFeePrice.getContext().getString(R.string.content_desc_tv_shipping_fee_price_subtotal));
             }
         }
-        tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvInsuranceFeePrice, getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice), tvInsuranceFee.getContext().getString(R.string.content_desc_tv_insurance_fee_price_subtotal));
         tvPrioritasFeePrice.setText(getPriceFormat(tvPrioritasFee, tvPrioritasFeePrice, priorityPrice));
         tvProtectionLabel.setText(totalPPPItemLabel);
         tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));

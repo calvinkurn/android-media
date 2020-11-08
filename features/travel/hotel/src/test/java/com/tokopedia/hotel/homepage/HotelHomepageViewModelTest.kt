@@ -56,11 +56,11 @@ class HotelHomepageViewModelTest {
     fun getHotelPromo_shouldReturnNoBanner() {
         //given
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel())
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
@@ -73,11 +73,11 @@ class HotelHomepageViewModelTest {
         val listOfBanner = mutableListOf<TravelCollectiveBannerModel.Banner>()
         listOfBanner.add(TravelCollectiveBannerModel.Banner(id = "1"))
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel(banners = listOfBanner))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
@@ -93,11 +93,11 @@ class HotelHomepageViewModelTest {
         val listOfBanner = mutableListOf<TravelCollectiveBannerModel.Banner>()
         for (i in 1..5) listOfBanner.add(TravelCollectiveBannerModel.Banner(i.toString()))
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel(banners = listOfBanner))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
@@ -111,11 +111,11 @@ class HotelHomepageViewModelTest {
 
         //given
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Fail(Throwable("Failing"))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value

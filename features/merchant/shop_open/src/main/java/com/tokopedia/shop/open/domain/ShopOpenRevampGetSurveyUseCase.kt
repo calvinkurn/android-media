@@ -3,19 +3,16 @@ package com.tokopedia.shop.open.domain
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.open.common.GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA
 import com.tokopedia.shop.open.data.model.GetSurveyData
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class ShopOpenRevampGetSurveyUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA) val queryGetSurveyData: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<GetSurveyData>() {
 
     override suspend fun executeOnBackground(): GetSurveyData {
-        val surveyDataRequest = GraphqlRequest(queryGetSurveyData, GetSurveyData::class.java)
+        val surveyDataRequest = GraphqlRequest(QUERY, GetSurveyData::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(surveyDataRequest)
         val gqlResponse = graphqlUseCase.executeOnBackground()
@@ -31,5 +28,24 @@ class ShopOpenRevampGetSurveyUseCase @Inject constructor(
         }
     }
 
-    companion object { }
+    companion object {
+        private const val QUERY = "query {\n" +
+                "  getSurveyData(id:1){\n" +
+                "    result{\n" +
+                "      questions{\n" +
+                "        ID\n" +
+                "        type\n" +
+                "        question\n" +
+                "        choices{\n" +
+                "          ID\n" +
+                "          choice\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "    error{\n" +
+                "      message\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+    }
 }

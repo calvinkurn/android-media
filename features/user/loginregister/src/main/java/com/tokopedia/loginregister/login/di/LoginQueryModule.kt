@@ -39,4 +39,11 @@ class LoginQueryModule {
     fun provideRawQueryVerifyFingerprint(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_verify_fingerprint)
 
+    @LoginScope
+    @Provides
+    @IntoMap
+    @StringKey(LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF)
+    fun provideRawQueryRegisterPushNotif(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_register_push_notif)
+
 }

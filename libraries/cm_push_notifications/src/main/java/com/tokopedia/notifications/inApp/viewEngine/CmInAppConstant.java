@@ -11,6 +11,7 @@ public interface CmInAppConstant {
     String TYPE_INTERSTITIAL_IMAGE_ONLY = "interstitial_img";
     String TYPE_BORDER_BOTTOM = "borderBottom";
     String TYPE_BORDER_TOP = "borderTop";
+    String TYPE_SILENT = "silent";
 
     String ORIENTATION_VERTICAL = "vertical";
     String ORIENTATION_HORIZONTAL = "horizontal";

@@ -47,9 +47,9 @@ class HotelHomepageViewModel @Inject constructor(
     val deleteRecentSearch: LiveData<Result<Boolean>>
         get() = mutableDeleteRecentSearch
 
-    fun getHotelPromo(rawQuery: String) {
+    fun getHotelPromo() {
         launch {
-            promoData.postValue(bannerUseCase.execute(rawQuery, TravelType.HOTEL, true))
+            promoData.postValue(bannerUseCase.execute(TravelType.HOTEL, true))
         }
     }
 
