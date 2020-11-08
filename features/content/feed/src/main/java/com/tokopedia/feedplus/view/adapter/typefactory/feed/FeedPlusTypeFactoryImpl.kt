@@ -21,6 +21,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerVi
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -28,6 +29,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
+import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
@@ -37,16 +39,20 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
-                              private val userSession: UserSessionInterface,
-                              private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener) :
-        BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
+class FeedPlusTypeFactoryImpl(
+        context: FeedPlusFragment,
+        private val userSession: UserSessionInterface,
+        private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener,
+        private val playWidgetCoordinator: PlayWidgetCoordinator
+) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val kolPostListener: KolPostViewHolderListener
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener
@@ -126,6 +132,10 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         return OnboardingViewHolder.LAYOUT
     }
 
+    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return CarouselPlayCardViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
 
         val viewHolder: AbstractViewHolder<*>
@@ -159,6 +169,13 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
             viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
         } else if (type == TopAdsBannerViewHolder.LAYOUT){
             viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
+        } else if (type == CarouselPlayCardViewHolder.LAYOUT){
+            viewHolder = CarouselPlayCardViewHolder(
+                    PlayWidgetViewHolder(
+                            itemView = view,
+                            coordinator = playWidgetCoordinator
+                    )
+            )
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder

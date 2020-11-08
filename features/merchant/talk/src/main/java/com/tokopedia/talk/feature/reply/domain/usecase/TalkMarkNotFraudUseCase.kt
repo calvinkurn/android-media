@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
@@ -10,7 +11,8 @@ class TalkMarkNotFraudUseCase @Inject constructor(graphqlRepository: GraphqlRepo
 
     companion object {
         const val PARAM_TALK_ID = "talk_id"
-        private val query by lazy {
+        private const val TALK_MARK_NOT_FRAUD_MUTATION_CLASS_NAME = "TalkMarkNotFraud"
+        private const val query =
             """
                 mutation talkMarkNotFraud(${'$'}talk_id: Int) {
                   talkMarkNotFraud(talk_id:${'$'}talk_id) {
@@ -22,12 +24,16 @@ class TalkMarkNotFraudUseCase @Inject constructor(graphqlRepository: GraphqlRepo
                     messageErrorOriginal
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+      setupUseCase()
+    }
+
+    @GqlQuery(TALK_MARK_NOT_FRAUD_MUTATION_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkMarkNotFraud.GQL_QUERY)
         setTypeClass(TalkMarkNotFraudResponseWrapper::class.java)
     }
 

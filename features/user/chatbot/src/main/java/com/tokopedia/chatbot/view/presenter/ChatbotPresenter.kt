@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -23,13 +22,13 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -45,8 +44,8 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -170,11 +169,13 @@ class ChatbotPresenter @Inject constructor(
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
                     if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
-                        val model = ConnectionDividerViewModel(liveChatDividerAttribute?.divider?.label, false, SHOW_TEXT, null)
-                        view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
+                        val model = ChatSepratorViewModel(sepratorMessage = liveChatDividerAttribute?.divider?.label,
+                                dividerTiemstamp = chatResponse.message.timeStampUnixNano)
+                        view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
+
                     }
                     if(attachmentType == LIVE_CHAT_DIVIDER){
-                        mappingQueueDivider(liveChatDividerAttribute)
+                        mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
                 } catch (e: JsonSyntaxException) {
@@ -231,7 +232,7 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes) {
+    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
         if (!isErrorOnLeaveQueue) {
             val agentQueue = liveChatDividerAttribute.agentQueue
             if (agentQueue?.type.equals(SHOW_TEXT)) {
@@ -239,16 +240,16 @@ class ChatbotPresenter @Inject constructor(
             } else {
                 view.isBackAllowed(true)
             }
-            val model = ConnectionDividerViewModel(agentQueue?.label, true,
-                    agentQueue?.type ?: SHOW_TEXT, leaveQueue())
-            view.onReceiveConnectionEvent(model,getLiveChatQuickReply())
+            val model = ConnectionDividerViewModel(dividerMessage = agentQueue?.label, isShowButton = true,
+                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue(dividerTime))
+            view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
         }
 
     }
 
-    private fun leaveQueue(): () -> Unit {
+    private fun leaveQueue(dividerTime: String): () -> Unit {
         return {
-            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess(dividerTime)))
         }
     }
 
@@ -258,18 +259,11 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun onSuccess(): (String) -> Unit {
+    private fun onSuccess(dividerTime: String = ""): (String) -> Unit {
         return { str ->
-            if (view!=null){
+            if (view != null) {
                 view.isBackAllowed(true)
-                if(str==ERROR_CODE){
-                    isErrorOnLeaveQueue = true
-                    val model = ConnectionDividerViewModel("",false, TEXT_HIDE, null)
-                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
-                }else{
-                    val model = ConnectionDividerViewModel(view.context?.getString(R.string.cb_bot_you_left_the_queue),false, SHOW_TEXT, null)
-                    view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
-                }
+                if (str == ERROR_CODE) isErrorOnLeaveQueue = true
             }
         }
     }
