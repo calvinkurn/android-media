@@ -928,7 +928,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun invalidateMonitoringPlt() {
         if (!isShowNewShopHomeTab()) {
-            (activity as? ShopPageProductTabPerformanceMonitoringListener)?.invalidateMonitoringPlt()
+            (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
         }
     }
 

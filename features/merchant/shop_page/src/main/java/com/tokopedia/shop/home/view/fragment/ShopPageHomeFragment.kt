@@ -252,7 +252,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.invalidateMonitoringPlt()
+        (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
