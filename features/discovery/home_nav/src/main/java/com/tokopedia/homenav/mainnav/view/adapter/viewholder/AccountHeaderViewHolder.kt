@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
@@ -50,6 +51,8 @@ class AccountHeaderViewHolder(itemView: View,
         private const val GREETINGS_15_17 = "Selamat sore! Ngopi, kuy?"
         private const val GREETINGS_18_23 = "Jangan lupa makan malam~"
         private const val GREETINGS_DEFAULT = "Hai Toppers"
+
+        private const val ANIMATION_DURATION_MS: Long = 300
     }
 
     override fun bind(element: AccountHeaderViewModel) {
@@ -95,7 +98,7 @@ class AccountHeaderViewHolder(itemView: View,
                     View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
             )
         } else {
-            configureNameSwitcher(tvName, getCurrentGreetings(), element.userName)
+            configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIcon(), element.badge)
         }
         renderProfileLoginSection(
                 MethodChecker.fromHtml(
@@ -117,7 +120,6 @@ class AccountHeaderViewHolder(itemView: View,
                     else null)
         }
 
-        usrBadge.loadImage(element.badge)
         if (element.ovoSaldo.isNotEmpty()) {
             usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
         } else if (element.saldo.isNotEmpty()) {
@@ -185,18 +187,33 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
+    private fun getCurrentGreetingsIcon() : Int {
+        return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            in 0..2 -> R.drawable.emo_0_2
+            in 3..4 -> R.drawable.emo_3_4
+            in 5..9 -> R.drawable.emo_5_9
+            in 10..14 -> R.drawable.emo_10_14
+            in 15..17 -> R.drawable.emo_15_17
+            in 18..23 -> R.drawable.emo_18_23
+            else -> R.drawable.emo_10_14
+        }
+    }
+
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameSwitcher(tvName: Typography, greetingString: String, nameString: String) {
+    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, drawableInt: Int, badgeUrl: String) {
         if (needToSwitchText) {
             tvName.text = greetingString
+            ivBadge.loadImageDrawable(drawableInt)
             launch {
                 delay(1000)
-                tvName.animateProfileName(nameString, 300)
+                tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
+                ivBadge.animateProfileBadge(badgeUrl, ANIMATION_DURATION_MS)
                 setFirstTimeUserSeeNameAnimationOnSession(false)
             }
         } else {
             tvName.text = nameString
+            ivBadge.loadImage(badgeUrl)
         }
     }
 
