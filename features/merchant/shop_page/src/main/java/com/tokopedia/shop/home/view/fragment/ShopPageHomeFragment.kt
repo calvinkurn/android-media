@@ -244,6 +244,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
+        stopPerformanceMonitor()
+    }
+
+    private fun invalidateMonitoringPlt() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.invalidateMonitoringPlt()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -311,6 +316,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pauseSliderBannerAutoScroll()
+        invalidateMonitoringPlt()
     }
 
     override fun onDestroyView() {
