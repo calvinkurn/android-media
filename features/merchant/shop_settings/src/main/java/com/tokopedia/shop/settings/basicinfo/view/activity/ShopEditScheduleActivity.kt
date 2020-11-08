@@ -284,7 +284,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
         val closeEnd = selectedEndCloseUnixTimeMs
         viewModel.updateShopSchedule(
                 shopAction,
-                isClosedNow,
+                shopBasicDataModel?.isClosed ?: false,
                 if (closeStart == 0L) null else closeStart.toString(),
                 if (closeEnd == 0L) null else closeEnd.toString(),
                 closeNote)

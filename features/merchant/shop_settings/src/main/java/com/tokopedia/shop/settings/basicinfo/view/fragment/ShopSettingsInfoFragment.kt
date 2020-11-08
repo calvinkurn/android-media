@@ -118,9 +118,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun onItemMenuClicked(itemMenuTitle: String) {
         when(itemMenuTitle) {
-            getString(R.string.label_close_shop_now) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
-            }
             getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
                     Dialog(it, Dialog.Type.PROMINANCE).apply {
