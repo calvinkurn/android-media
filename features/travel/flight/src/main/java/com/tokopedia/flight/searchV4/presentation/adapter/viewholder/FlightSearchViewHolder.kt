@@ -126,6 +126,12 @@ class FlightSearchViewHolder(itemView: View,
             } else {
                 labelFreeRapidTest.visibility = View.GONE
             }
+
+            if (element.isSeatDistancing && element.hasFreeRapidTest) {
+                labelSeatDistancingBackground.visibility = View.VISIBLE
+            } else {
+                labelSeatDistancingBackground.visibility = View.GONE
+            }
         }
     }
 

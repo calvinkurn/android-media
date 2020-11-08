@@ -29,6 +29,16 @@
             tools:text="Free Rapid Test" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:id="@+id/labelSeatDistancingBackground"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_B500"
+            app:layout_constraintBottom_toBottomOf="@id/labelSeatDistancing"
+            app:layout_constraintLeft_toLeftOf="@id/labelSeatDistancing"
+            app:layout_constraintRight_toRightOf="@id/labelSeatDistancing"
+            app:layout_constraintTop_toTopOf="@id/labelSeatDistancing" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelSeatDistancing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
