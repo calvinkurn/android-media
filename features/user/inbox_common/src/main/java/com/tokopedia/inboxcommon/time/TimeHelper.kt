@@ -11,6 +11,7 @@ object TimeHelper {
     private val DAYS_1_IN_SECOND = TimeUnit.DAYS.toSeconds(1)
     private val HOUR_1_IN_SECOND = TimeUnit.HOURS.toSeconds(1)
     private val MINUTE_1_IN_SECOND = TimeUnit.MINUTES.toSeconds(1)
+    private val locale = Locale("in", "ID")
 
     fun isBeforeCurrentTime(timestamp: Long): Boolean {
         return timestamp < getCurrentTimeStamp()
@@ -48,7 +49,7 @@ object TimeHelper {
      */
     fun getDateMonthYearFormat(timestamp: Long): String {
         val date = Date(timestamp)
-        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("dd MMM yyyy", locale)
         return format.format(date)
     }
 
@@ -58,7 +59,7 @@ object TimeHelper {
      */
     private fun getMonthYearFormat(timestamp: Long): String {
         val date = Date(timestamp)
-        val format = SimpleDateFormat("MMM yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("MMM yyyy", locale)
         return format.format(date)
     }
 
@@ -68,7 +69,7 @@ object TimeHelper {
      */
     private fun getDateMonthFormat(timestamp: Long): String {
         val date = Date(timestamp)
-        val format = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val format = SimpleDateFormat("dd MMM", locale)
         return format.format(date)
     }
 
