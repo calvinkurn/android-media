@@ -62,7 +62,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_REQUEST_PICKUP
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_DETAIL
-import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.REQUEST_FILTER
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
@@ -393,7 +392,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 filterDate
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
-        if(!bottomSheetFilter.isVisible) {
+        if (!bottomSheetFilter.isVisible) {
             bottomSheetFilter.show()
         }
     }
@@ -579,6 +578,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (bulkAcceptOrderDialog == null) {
                 bulkAcceptOrderDialog = SomListBulkActionDialog(context).apply {
                     init()
+                    setOnDismiss {
+                        resetOrderSelectedStatus()
+                        toggleBulkAction()
+                        toggleBulkActionButtonVisibility()
+                        toggleBulkActionCheckboxVisibility()
+                        toggleTvSomListBulkText()
+                        loadFilters()
+                        if (shouldReloadOrderListImmediately()) {
+                            loadOrderList()
+                        } else {
+                            getSwipeRefreshLayout(view)?.isRefreshing = true
+                        }
+                    }
                 }
             }
             showOnProgressAcceptAllOrderDialog(orderCount)
@@ -824,6 +836,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             hideSecondaryButton()
             setTitle(getString(R.string.som_list_bulk_accept_dialog_title_on_progress, orderCount))
             setDescription(getString(R.string.som_list_bulk_accept_dialog_description_on_progress))
+            showOnProgress()
         }
     }
 
@@ -831,18 +844,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         bulkAcceptOrderDialog?.run {
             setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
             setDescription(getString(R.string.som_list_bulk_accept_dialog_description_success))
+            showSuccess()
             setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_success)) {
-                dismiss()
-                toggleBulkAction()
-                toggleBulkActionButtonVisibility()
-                toggleBulkActionCheckboxVisibility()
-                toggleTvSomListBulkText()
-                loadFilters()
-                if (shouldReloadOrderListImmediately()) {
-                    loadOrderList()
-                } else {
-                    getSwipeRefreshLayout(view)?.isRefreshing = true
-                }
+                dismissAndRunAction()
             }
             hideSecondaryButton()
         }
@@ -850,28 +854,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showPartialSuccessAcceptAllOrderDialog(successCount: Int, failedCount: Int, canRetry: Boolean) {
         bulkAcceptOrderDialog?.run {
-            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_success, successCount, failedCount))
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
             if (canRetry) {
                 setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success_can_retry, failedCount))
+                showSuccess()
                 setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_can_retry)) {
                     showOnProgressAcceptAllOrderDialog(successCount + failedCount)
                     viewModel.retryGetBulkAcceptOrderStatus()
                 }
                 setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry)) { dismiss() }
             } else {
-                setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success_cant_retry, failedCount))
+                setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success_can_retry, failedCount))
+                showSuccess()
                 setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry)) {
-                    dismiss()
-                    toggleBulkAction()
-                    toggleBulkActionButtonVisibility()
-                    toggleBulkActionCheckboxVisibility()
-                    toggleTvSomListBulkText()
-                    loadFilters()
-                    if (shouldReloadOrderListImmediately()) {
-                        loadOrderList()
-                    } else {
-                        getSwipeRefreshLayout(view)?.isRefreshing = true
-                    }
+                    dismissAndRunAction()
                 }
                 setSecondaryButton("")
             }
@@ -882,6 +878,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         bulkAcceptOrderDialog?.run {
             setTitle(getString(R.string.som_list_bulk_accept_dialog_title_failed, orderCount))
             setDescription(getString(R.string.som_list_bulk_accept_dialog_description_failed))
+            showFailed()
             setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_failed)) {
                 showOnProgressAcceptAllOrderDialog(orderCount)
                 if (shouldRetryCheck) {
@@ -1344,13 +1341,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showBulkAcceptOrderBottomSheet() {
-        context?.let { context ->
-            if (bulkAcceptOrderDialog == null) {
-                bulkAcceptOrderDialog = SomListBulkActionDialog(context).apply {
-                    init()
-                }
-            }
-        }
         if (somListBulkAcceptOrderBottomSheet == null) {
             somListBulkAcceptOrderBottomSheet = SomListBulkAcceptOrderBottomSheet()
         }
