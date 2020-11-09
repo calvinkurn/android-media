@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.recommendation_carousel_item_view_holder.v
  */
 class RecommendationCarouselItemViewHolder(view: View, private val listener: RecommendationCarouselListener) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view){
     override fun bind(element: RecommendationCarouselItemDataModel) {
+        itemView.recommendation_item_card.applyCarousel()
         itemView.recommendation_item_card.setProductModel(element.productCardModel)
         itemView.recommendation_item_card.setThreeDotsOnClickListener {
             listener.onThreeDotsClick(element.recommendationItem, adapterPosition)

@@ -13,4 +13,21 @@ data class RecommendationSeeMoreDataModel (
     override fun type(typeFactory: RecommendationCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RecommendationSeeMoreDataModel) return false
+
+        if (applink != other.applink) return false
+        if (backgroundImage != other.backgroundImage) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = applink.hashCode()
+        result = 31 * result + backgroundImage.hashCode()
+        return result
+    }
+
 }

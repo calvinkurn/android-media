@@ -7,11 +7,10 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
-    tools:layout_width="match_parent"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_width="@dimen/layout_lvl9"
+    android:layout_width="@dimen/product_card_flashsale_width"
     android:layout_height="match_parent"
     tools:layout_height="match_parent">
 

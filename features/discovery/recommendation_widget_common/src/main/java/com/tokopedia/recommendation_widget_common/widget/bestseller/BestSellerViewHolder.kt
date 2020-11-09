@@ -1,10 +1,11 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller
 
+import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -13,6 +14,8 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfi
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_HIDE_LOADING_RECOMMENDATION
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_UPDATE_RECOMMENDATION
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.adapter.RecommendationCarouselAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.adapter.RecommendationCarouselListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.model.RecommendationCarouselItemDataModel
@@ -32,10 +35,49 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
 
     private var bestSellerDataModel: BestSellerDataModel? = null
 
+    init {
+        view.hide()
+    }
+
     override fun bind(element: BestSellerDataModel) {
-        bestSellerDataModel = element
-        initFilterChip(element)
-        initRecommendation(element)
+        if(element.recommendationItemList.isNotEmpty()) {
+            bestSellerDataModel = element
+            initHeader(element)
+            initFilterChip(element)
+            initRecommendation(element)
+        } else {
+            itemView.hide()
+            itemView.root.hide()
+        }
+    }
+
+    override fun bind(element: BestSellerDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && payloads.first() is Bundle){
+            val bundle = payloads.first() as Bundle
+            if(bundle.containsKey(BEST_SELLER_UPDATE_RECOMMENDATION)){
+                initFilterChip(element)
+                initRecommendation(element)
+                itemView.best_seller_loading_recommendation.hide()
+                itemView.best_seller_recommendation_recycler_view.show()
+            } else if(bundle.containsKey(BEST_SELLER_HIDE_LOADING_RECOMMENDATION)){
+                itemView.best_seller_loading_recommendation.hide()
+                itemView.best_seller_recommendation_recycler_view.show()
+            }
+        }
+    }
+
+    private fun initHeader(element: BestSellerDataModel){
+        itemView.best_seller_title.shouldShowWithAction(element.title.isNotBlank()){
+            itemView.best_seller_title.text = element.title
+        }
+        itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
+            itemView.best_seller_subtitle.text = element.subtitle
+        }
+        itemView.best_seller_see_more.setOnClickListener {
+            listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
+        }
+        itemView.root.show()
+        itemView.show()
     }
 
     private fun initFilterChip(element: BestSellerDataModel){
@@ -54,17 +96,21 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         }.toMutableList()
 
         recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
-
         recommendationAdapter.submitList(recommendationCarouselList)
-
-        val recyclerViewLayoutParams = itemView.best_seller_recommendation_recycler_view.layoutParams
-        recyclerViewLayoutParams.height = element.height
-        itemView.best_seller_recommendation_recycler_view.layoutParams = recyclerViewLayoutParams
+        itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
 
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
+            annotationChipAdapter.submitList(
+                    it.filterChip.map {filter ->
+                        filter.copy(
+                                isActivated = annotationChip.name == filter.name
+                                        && !annotationChip.isActivated
+                        )
+                    }
+            )
             listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition)
             itemView.best_seller_loading_recommendation.show()
             itemView.best_seller_recommendation_recycler_view.hide()

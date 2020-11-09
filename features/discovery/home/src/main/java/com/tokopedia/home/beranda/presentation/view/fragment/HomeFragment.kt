@@ -1754,7 +1754,11 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
+        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel)
+    }
 
+    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
     }
 
     override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {

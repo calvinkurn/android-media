@@ -23,6 +23,7 @@ class BestSellerMapper (
                 pageName = recommendationWidget.pageName,
                 productCardModelList = productList,
                 recommendationItemList = recommendationWidget.recommendationItemList,
+                filterChip = recommendationWidget.recommendationFilterChips,
                 seeMoreAppLink = recommendationWidget.seeMoreAppLink
         )
     }

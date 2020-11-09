@@ -255,7 +255,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
-        visitableList.add(BestSellerDataModel(pageName = channel.pageName, widgetParam = channel.widgetParam))
+        if(!isCache) {
+            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam))
+        }
     }
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {

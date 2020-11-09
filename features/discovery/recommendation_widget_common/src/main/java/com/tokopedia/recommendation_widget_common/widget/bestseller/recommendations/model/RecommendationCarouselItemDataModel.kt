@@ -16,4 +16,21 @@ data class RecommendationCarouselItemDataModel(
     override fun type(typeFactory: RecommendationCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RecommendationCarouselItemDataModel) return false
+
+        if (recommendationItem != other.recommendationItem) return false
+        if (productCardModel != other.productCardModel) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = recommendationItem.hashCode()
+        result = 31 * result + productCardModel.hashCode()
+        return result
+    }
+
 }

@@ -307,6 +307,61 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel){
+        val data = _homeLiveData.value?.list?.toMutableList()
+        data?.withIndex()?.find { it.value is BestSellerDataModel && (it.value as BestSellerDataModel).id == bestSellerDataModel.id }?.let {
+            launchCatchError(coroutineContext, block = {
+                val recomData = getRecommendationUseCase.get().getData(
+                        GetRecommendationRequestParam(
+                                pageName = bestSellerDataModel.pageName,
+                                queryParam = if(filterChip.isActivated) filterChip.value else ""
+                        )
+                )
+                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
+                    val recomWidget = recomData.first().copy(
+                            recommendationFilterChips = bestSellerDataModel.filterChip
+                    )
+                    val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                            bestSellerDataModel.copy(
+                                    recommendationItemList = newBestSellerDataModel.recommendationItemList,
+                                    productCardModelList = newBestSellerDataModel.productCardModelList,
+                                    height = newBestSellerDataModel.height,
+                                    filterChip = newBestSellerDataModel.filterChip.map{
+                                        it.copy(isActivated = filterChip.name == it.name
+                                                && filterChip.isActivated)
+                                    }
+                            ),
+                            it.index,
+                            this@HomeViewModel
+                    ))
+                } else {
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                            bestSellerDataModel.copy(
+                                    filterChip = bestSellerDataModel.filterChip.map{
+                                        it.copy(isActivated = filterChip.name == it.name
+                                                && !filterChip.isActivated)
+                                    }
+                            ),
+                            it.index,
+                            this@HomeViewModel
+                    ))
+                }
+            }){ _ ->
+                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                        bestSellerDataModel.copy(
+                                filterChip = bestSellerDataModel.filterChip.map {
+                                    it.copy(isActivated = filterChip.name == it.name
+                                            && !filterChip.isActivated)
+                                }
+                        ),
+                        it.index,
+                        this@HomeViewModel
+                ))
+            }
+        }
+    }
+
     fun sendGeolocationData() {
         sendGeolocationInfoUseCase.get().createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
@@ -1240,42 +1295,38 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
-        val requestParams = RequestParams()
-        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = grid.id,
-                quantity = quantity,
-                shopId = grid.shopId,
-                warehouseId = grid.warehouseId,
-                productName = grid.name,
-                price = grid.price,
-                userId = getUserId()
-        ))
-        getAtcUseCase.get().createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                        {
-                            if(it.status == STATUS_OK) {
-                                _oneClickCheckoutHomeComponent.postValue(Event(
-                                        mapOf(
-                                                ATC to it,
-                                                CHANNEL to channel,
-                                                GRID to grid,
-                                                QUANTITY to quantity,
-                                                POSITION to position
+        launchCatchError(coroutineContext, block = {
+            val requestParams = RequestParams()
+            val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
+            requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                    productId = grid.id,
+                    quantity = quantity,
+                    shopId = grid.shopId,
+                    warehouseId = grid.warehouseId,
+                    productName = grid.name,
+                    price = grid.price,
+                    userId = getUserId()
+            ))
+            val addToCartResult = getAtcUseCase.get().createObservable(requestParams).toBlocking().first()
+            if(addToCartResult.status == STATUS_OK) {
+                _oneClickCheckoutHomeComponent.postValue(Event(
+                        mapOf(
+                                ATC to addToCartResult,
+                                CHANNEL to channel,
+                                GRID to grid,
+                                QUANTITY to quantity,
+                                POSITION to position
 
-                                        )
-                                ))
-                            }
-                            else {
-                                _oneClickCheckoutHomeComponent.postValue(Event(Throwable()))
-                            }
-                        },
-                        {
-                            _oneClickCheckoutHomeComponent.postValue(Event(it))
-                        }
-                )
+                        )
+                ))
+            }
+            else {
+                _oneClickCheckoutHomeComponent.postValue(Event(Throwable()))
+            }
+        }){
+            it.printStackTrace()
+            _oneClickCheckoutHomeComponent.postValue(Event(it))
+        }
     }
 
     private fun getTokocashBalance() {
