@@ -264,7 +264,8 @@ public class SearchActivity extends BaseActivity
     }
 
     private String getNavType() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV);
+        //revert the default value to AB_TEST_OLD_NAV
+        return RemoteConfigInstance.getInstance().getABTestPlatform().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_NAV_REVAMP);
     }
 
     private void configureSearchNavigationToolbar() {
