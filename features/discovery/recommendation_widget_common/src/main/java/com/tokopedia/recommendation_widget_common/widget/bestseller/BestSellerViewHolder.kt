@@ -70,8 +70,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
             itemView.best_seller_subtitle.text = element.subtitle
         }
-        itemView.best_seller_see_more.setOnClickListener {
-            listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
+        itemView.best_seller_see_more.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
+            itemView.best_seller_see_more.setOnClickListener {
+                listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
+            }
         }
         itemView.root.show()
         itemView.show()

@@ -46,7 +46,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                 .appendUserId(userId)
                 .appendChannelId(channelId)
                 .build()
-        getTracker().sendGeneralEvent(tracker)
+        getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 
     fun sendFilterClickTracker(categoryId: String, channelId: String, headerName: String, userId: String) {
@@ -74,7 +74,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                 ChannelId.KEY, channelId,
                 UserId.KEY, userId
         )
-        getTracker().sendGeneralEvent(tracker)
+        getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 
     fun sendViewAllCardClickTracker(channelId: String, headerName: String, userId: String) {
