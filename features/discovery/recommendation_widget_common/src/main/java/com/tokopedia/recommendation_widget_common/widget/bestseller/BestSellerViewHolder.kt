@@ -45,9 +45,6 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             initHeader(element)
             initFilterChip(element)
             initRecommendation(element)
-        } else {
-            itemView.hide()
-            itemView.root.hide()
         }
     }
 
@@ -81,24 +78,28 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     }
 
     private fun initFilterChip(element: BestSellerDataModel){
-        if (itemView.best_seller_chip_filter_recyclerview?.adapter == null) {
-            itemView.best_seller_chip_filter_recyclerview?.adapter = annotationChipAdapter
+        itemView.best_seller_chip_filter_recyclerview.shouldShowWithAction(element.filterChip.isNotEmpty()){
+            if (itemView.best_seller_chip_filter_recyclerview?.adapter == null) {
+                itemView.best_seller_chip_filter_recyclerview?.adapter = annotationChipAdapter
+            }
+            annotationChipAdapter.submitList(element.filterChip)
         }
-        annotationChipAdapter.submitList(element.filterChip)
     }
 
     private fun initRecommendation(element: BestSellerDataModel) {
-        if(itemView.best_seller_recommendation_recycler_view.adapter == null) {
-            itemView.best_seller_recommendation_recycler_view.adapter = recommendationAdapter
+        itemView.best_seller_recommendation_recycler_view.shouldShowWithAction(element.recommendationItemList.isNotEmpty()){
+            if(itemView.best_seller_recommendation_recycler_view.adapter == null) {
+                itemView.best_seller_recommendation_recycler_view.adapter = recommendationAdapter
+            }
+            val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
+                RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
+            }.toMutableList()
+
+            recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
+            recommendationAdapter.submitList(recommendationCarouselList)
+            itemView.best_seller_recommendation_recycler_view.show()
+            itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
         }
-        val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
-            RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
-        }.toMutableList()
-
-        recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
-        recommendationAdapter.submitList(recommendationCarouselList)
-        itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
-
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
