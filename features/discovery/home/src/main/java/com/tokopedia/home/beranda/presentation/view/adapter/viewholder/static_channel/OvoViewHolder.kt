@@ -101,9 +101,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
-        if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
+//        if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
             renderBebasOngkirSection(element)
-        }
+//        }
     }
 
     private fun goToScanner() {

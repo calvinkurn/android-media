@@ -476,7 +476,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(tokopointsQuery)
+        useCase.setGraphqlQuery(tokopointsListQuery)
         return GetHomeTokopointsListDataUseCase(useCase)
     }
 
