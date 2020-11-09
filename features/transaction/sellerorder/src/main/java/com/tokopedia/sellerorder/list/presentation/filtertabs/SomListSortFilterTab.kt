@@ -20,8 +20,6 @@ class SomListSortFilterTab(
         private const val SWIPE_TAB_ANIMATION_DELAY = 500L
     }
 
-    private val context by lazy { sortFilter.context }
-
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null
@@ -29,12 +27,7 @@ class SomListSortFilterTab(
 
     init {
         sortFilter.chipItems = arrayListOf()
-        changeTabSortFilterText()
         selectParentFilter()
-    }
-
-    private fun changeTabSortFilterText() {
-        sortFilter.textView.text = context.getString(com.tokopedia.sellerorder.R.string.som_list_filter_chip)
     }
 
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
@@ -51,7 +44,6 @@ class SomListSortFilterTab(
         filterItems = ArrayList(filters)
         sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
-        changeTabSortFilterText()
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
@@ -76,7 +68,6 @@ class SomListSortFilterTab(
         }
         sortFilterItem.type = ChipsUnify.TYPE_SELECTED
         listener.onTabClicked(status, true)
-        changeTabSortFilterText()
         updateCounter(selectedCount)
     }
 
@@ -111,7 +102,6 @@ class SomListSortFilterTab(
         filterItems.find { it.title.contains(status.status) }?.apply {
             if (type != ChipsUnify.TYPE_SELECTED) type = ChipsUnify.TYPE_SELECTED
         }
-        changeTabSortFilterText()
         selectedTab = status
         sortFilter.postDelayed({
             updateCounter(selectedCount)
