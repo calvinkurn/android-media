@@ -43,6 +43,9 @@ public class Cpm implements Parcelable {
     @SerializedName(KEY_CTA_TEXT)
     private String cta = "";
 
+    public Cpm() {
+    }
+
     public Cpm(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TEMPLATE_ID)){
             setTemplateId(object.getInt(KEY_TEMPLATE_ID));

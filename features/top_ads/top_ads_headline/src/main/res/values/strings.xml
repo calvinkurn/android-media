@@ -24,7 +24,31 @@
     <string name="topads_headline_select_all_recommendation">Pilih semua rekomendasi</string>
     <string name="topads_headline_select_first_n_recommendation">Pilih %s produk pertama</string>
     <string name="topads_headline_search_result_with_keyword">Kami tidak dapat menemukan produk “%s”</string>
-    <string name="topads_headline_submit_ad_detail_error">Lengkapi informasi iklan produkmu.”</string>
+    <string name="topads_headline_submit_ad_detail_error">Lengkapi informasi iklan produkmu.</string>
+    <string name="topads_headline_recommended_template">Rekomendasi Template:</string>
+    <string name="topads_headline_recommended_template_1">Penawaran terbatas! Produk ori asli Indonesia.</string>
+    <string name="topads_headline_recommended_template_2">Belanja di %s, diskon hingga 50%%!</string>
+    <string name="topads_headline_recommended_template_3">Cari produk lokal kualitas terbaik? Cek %s yuk!</string>
+    <string name="topads_headline_recommended_template_4">Harga termurah, hanya di %s!</string>
+    <string name="topads_headline_promotional_message_length_error">Minimum 20 karakter. Lengkapi pesan promosi agar iklanmu lebih menarik.</string>
+    <string name="topads_headline_promotional_message_empty_error">Pesan promosimu masih kosong</string>
+    <string name="topads_headline_promotional_message_success">Sedikit lagi! Lengkapi pesan agar promosimu lebih menarik</string>
+
+    <!--tips for choosing product-->
+    <string name="topads_headline_tips_choosing_product">Tips memilih produk</string>
+    <string name="topads_headline_tips_choose_product_with_most_reviews">Pilih produk dengan ulasan terbanyak.</string>
+    <string name="topads_headline_tips_choose_product_with_most_popularity">Pilih produk terpopuler.</string>
+    <string name="topads_headline_tips_choose_product_with_same_category">Pilih 2-10 produk di kategori yang sama.</string>
+    <string name="topads_headline_tips_name_and_photo_correct">Pastikan nama dan foto produk sudah sesuai.</string>
+
+    <!--tips for creating promotional messages-->
+    <string name="topads_headline_promotional_message_header">Tips membuat pesan promosi</string>
+    <string name="topads_headline_promotional_message_1">Ceritakan keunggulan toko, produk atau promo yang berlangsung ke calon pembeli.</string>
+    <string name="topads_headline_promotional_message_2">Gunakan kata-kata promosi, seperti “Diskon hingga 50%”, “Ekstra cashback 30%”, “Bebas ongkir”, dan lainnya.</string>
+    <string name="topads_headline_promotional_message_3">Tuliskan keunggulan produkmu, seperti “Produk original”, “Produk lokal”, “Handmade”, dan lainnya.</string>
+    <string name="topads_headline_promotional_message_4">Gunakan slogan tokomu.</string>
+    <string name="topads_headline_promotional_message_5">Hindari penggunaan huruf kapital yang berlebih.</string>
+
 
     <!--keyword-->
     <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>

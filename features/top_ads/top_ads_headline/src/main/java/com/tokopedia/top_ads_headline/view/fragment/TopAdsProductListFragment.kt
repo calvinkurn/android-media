@@ -31,7 +31,10 @@ import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.data.util.SpaceItemDecoration
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.ProductSortSheetList
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -211,7 +214,15 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
-
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_reviews, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_most_popularity, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_choose_product_with_same_category, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_tips_name_and_photo_correct, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, getString(R.string.topads_headline_tips_choosing_product), tipsList) }
+            tipsListSheet?.show(fragmentManager!!, "")
         }
     }
 
@@ -291,7 +302,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun onError(t: Throwable) {
         view?.let {
-            Toaster.make(it, t.localizedMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, t.localizedMessage?:"", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 refreshProduct()
             })
         }
@@ -309,7 +320,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.make(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

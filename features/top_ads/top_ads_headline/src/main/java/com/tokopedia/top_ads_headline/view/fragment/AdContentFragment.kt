@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
@@ -15,9 +16,11 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
+import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ad_content_fragment.*
@@ -84,13 +87,45 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun populateView() {
         setUpSelectedText()
         productImagePreviewWidget.setTopAdsImagePreviewClick(this)
+        if (selectedTopAdsProducts.isNotEmpty()) {
+            onProductsSelectionChange()
+        }
+        promotionalMessageInputText.addOnFocusChangeListener = { _, hasFocus ->
+            if (hasFocus) {
+                openPromotionalMessageBottomSheet()
+            }
+        }
+        promotionalMessageInputText.textFieldInput.setOnClickListener {
+            openPromotionalMessageBottomSheet()
+        }
         btnSubmit.setOnClickListener {
             if (selectedTopAdsProducts.isEmpty()) {
-                Toaster.make(it, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.build(it, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
                 gotoNextPage()
             }
         }
+        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", 3, 0, this::onSuccess, this::onError)
+    }
+
+    private fun onSuccess(cpmModel: CpmModel) {
+        topAdsBannerView.displayAds(cpmModel)
+    }
+
+    private fun onError(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun openPromotionalMessageBottomSheet() {
+        val promotionalMessageBottomSheet = PromotionalMessageBottomSheet.newInstance(userSession.shopName,
+                this::onPromotionalBottomSheetDismiss)
+        promotionalMessageBottomSheet.show(fragmentManager!!, "")
+    }
+
+    private fun onPromotionalBottomSheetDismiss(promotionalMessage: String) {
+        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
     }
 
     private fun setUpSelectedText() {
