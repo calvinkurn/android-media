@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -66,6 +67,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDaggerInject()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
     }
