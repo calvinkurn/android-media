@@ -20,9 +20,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
-import com.tokopedia.shop.pageheader.domain.interactor.RequestModerateShopUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -60,10 +58,6 @@ class ShopPageViewModelTest {
     @RelaxedMockK
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
     @RelaxedMockK
-    lateinit var getModerateShopUseCase: Lazy<GetModerateShopUseCase>
-    @RelaxedMockK
-    lateinit var requestModerateShopUseCase: Lazy<RequestModerateShopUseCase>
-    @RelaxedMockK
     lateinit var stickyLoginUseCase: Lazy<StickyLoginUseCase>
     @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
@@ -91,8 +85,6 @@ class ShopPageViewModelTest {
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 getShopReputationUseCase,
                 toggleFavouriteShopUseCase,
-                getModerateShopUseCase,
-                requestModerateShopUseCase,
                 stickyLoginUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
