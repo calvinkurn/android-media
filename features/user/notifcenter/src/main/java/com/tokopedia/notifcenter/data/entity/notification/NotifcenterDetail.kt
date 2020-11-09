@@ -14,6 +14,8 @@ data class NotifcenterDetail(
         val options: Options = Options(),
         @SerializedName("paging")
         val paging: Paging = Paging(),
+        @SerializedName("new_paging")
+        val newPaging: Paging = Paging(),
         @SerializedName("user_info")
         val userInfo: UserInfo = UserInfo()
 )

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
@@ -19,6 +20,7 @@ class NotificationTypeFactoryImpl constructor(
 ) : BaseAdapterTypeFactory(), NotificationTypeFactory {
 
     private val notificationListener = viewListener as? NotificationItemListener
+    private val loadMoreListener = viewListener as? LoadMoreViewHolder.Listener
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SectionTitleViewHolder.LAYOUT
@@ -30,6 +32,10 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun type(notificationUiModel: NotificationUiModel): Int {
         return NormalNotificationViewHolder.LAYOUT
+    }
+
+    override fun type(loadMoreUiModel: LoadMoreUiModel): Int {
+        return LoadMoreViewHolder.LAYOUT
     }
 
     @LayoutRes
@@ -74,6 +80,9 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
+            LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
+                    view, loadMoreListener
+            )
             BannerNotificationTitleViewHolder.LAYOUT -> BannerNotificationTitleViewHolder(
                     view, notificationListener
             )

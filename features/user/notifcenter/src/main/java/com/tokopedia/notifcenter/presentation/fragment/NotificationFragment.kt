@@ -20,9 +20,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
@@ -31,6 +33,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
@@ -41,7 +44,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
-        InboxFragment, NotificationItemListener {
+        InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -69,7 +72,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun loadData(page: Int) {
-        viewModel.loadNotification(page, containerListener?.role)
+        viewModel.loadNotification(containerListener?.role)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -113,6 +116,27 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 viewModel.filter = filterType
                 loadInitialData()
             }
+        }
+    }
+
+    override fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
+        rvAdapter?.loadMoreEarlier(lastKnownPosition, element)
+        viewModel.loadMoreEarlier(containerListener?.role,
+                {
+                    rvAdapter?.insertEarlierNotificationData(lastKnownPosition, element, it)
+                },
+                {
+                    rvAdapter?.failLoadMoreEarlier(lastKnownPosition, element)
+                    showErrorMessage(it)
+                }
+        )
+    }
+
+    private fun showErrorMessage(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    .show()
         }
     }
 
@@ -218,5 +242,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
+
     }
 }

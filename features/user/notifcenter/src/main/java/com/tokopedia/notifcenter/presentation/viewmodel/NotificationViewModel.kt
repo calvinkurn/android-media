@@ -31,13 +31,25 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        notifcenterDetailUseCase.getNotifications(filter, role,
+        notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
                 },
                 {
                     _mutateNotificationItems.value = Fail(it)
                 }
+        )
+    }
+
+    fun loadMoreEarlier(
+            @RoleType
+            role: Int?,
+            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        if (role == null) return
+        notifcenterDetailUseCase.getMoreEarlierNotifications(
+                filter, role, onSuccess, onError
         )
     }
 
