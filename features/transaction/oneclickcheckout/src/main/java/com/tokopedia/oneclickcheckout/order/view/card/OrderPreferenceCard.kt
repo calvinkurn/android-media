@@ -362,9 +362,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
         if (isDetailRed) {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
         } else {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
@@ -372,7 +372,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
     }
 
     private fun showAddress() {
