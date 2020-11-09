@@ -10,16 +10,17 @@ import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.firebase.analytic.rules.ProductImpressionsRules
+import com.tokopedia.firebase.analytic.rules.ProductListImpressionsRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
 /**
  * Product Detail
  */
+@Deprecated("use in beta package", replaceWith = ReplaceWith("use in beta package", imports = ["com.tokopedia.abstraction.processor.beta.ProductListImpression"]))
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductImpressionsRules::class)
+@AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductListImpressionsRules::class)
 data class ProductListImpression(
         val item_list: String,
         val items: List<ProductListImpressionProduct>,

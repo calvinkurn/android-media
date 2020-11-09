@@ -5,13 +5,6 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class ShopInfoUiModel(
-        val dateShopCreated: String = "",
         val shopAvatar: String = "",
-        val shopCover: String = "",
-        val shopDomain: String = "",
-        val shopId: String = "",
-        val shopLocation: String = "",
-        val shopName: String = "",
-        val shopScore: Int = 0,
-        val totalActiveProduct: Int = 0
+        val shopName: String = ""
 )
