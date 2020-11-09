@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,8 +24,11 @@ import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearch
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.SuggestionViewUpdateListener
+import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchActivityViewModel
 import com.tokopedia.seller.search.feature.initialsearch.view.widget.GlobalSearchView
 import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSearchFragment
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -38,6 +42,9 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModel: InitialSearchActivityViewModel
 
     private val performanceMonitoring: GlobalSearchSellerPerformanceMonitoring by lazy {
         GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
@@ -57,6 +64,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
         performanceMonitoring.initGlobalSearchSellerPerformanceMonitoring()
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
+        initInjector()
         setContentView(R.layout.activity_initial_seller_search)
         setWhiteStatusBar()
         proceed()
@@ -73,6 +81,11 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     private fun proceed() {
         initView()
         initSearchBarView()
+        observeSearchPlaceholder()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     private fun initSearchBarView() {
@@ -153,6 +166,17 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
             setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             setLightStatusBar(true)
         }
+    }
+
+    private fun observeSearchPlaceholder() {
+        observe(viewModel.searchPlaceholder) {
+            val placeholder = when(it) {
+                is Success -> it.data
+                is Fail -> getString(R.string.placeholder_search_seller)
+            }
+            searchBarView?.setPlaceholder(placeholder)
+        }
+        viewModel.getSearchPlaceholder()
     }
 
     override fun startNetworkPerformanceMonitoring() {
