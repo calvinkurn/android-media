@@ -50,6 +50,14 @@
 }
 #end com.google.android.gms
 
+-keep class twitter4j.** { *; }
+-keepclasseswithmembers class * {
+    @twitter4j.** *;
+}
+-keepclassmembers class * {
+    @twitter4j.** *;
+}
+
 # start retrofit
 # https://github.com/square/retrofit/blob/master/retrofit/src/main/resources/META-INF/proguard/retrofit2.pro
 -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
