@@ -55,6 +55,10 @@ class AccountHeaderViewHolder(itemView: View,
         private const val ANIMATION_DURATION_MS: Long = 300
     }
 
+    override fun bind(element: AccountHeaderViewModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(element: AccountHeaderViewModel) {
         initViewHolder()
         when(element.loginState) {
