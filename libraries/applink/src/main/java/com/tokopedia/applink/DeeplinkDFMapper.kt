@@ -182,7 +182,6 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TRAVEL = "df_travel"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
-    const val DF_USER_GROUPCHAT = "df_user_groupchat"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_GAMIFICATION = "df_gamification"

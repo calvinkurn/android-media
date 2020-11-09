@@ -716,18 +716,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check group chat list internal play appLink then should return DF_USER_GROUPCHAT in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_GROUPCHAT)
-    }
-
-    @Test
-    fun `check group chat detail internal play appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat/12345/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_USER_GROUPCHAT)
-    }
-
-    @Test
     fun `check promo campaign shake landing prefix appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalPromo.INTERNAL_PROMO}/campaign-shake-landing"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
