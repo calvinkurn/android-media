@@ -135,6 +135,6 @@ class InboxBottomNavigationView : BottomNavigationView {
 
     companion object {
         const val DEFAULT_TYPEFACE = "NunitoSansExtraBold.ttf"
-        val DEFAULT_FONT_SIZE = 10f.toPx()
+        val DEFAULT_FONT_SIZE = 12f.toPx()
     }
 }
