@@ -52,7 +52,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         this.somListGetOrderListParam = somListGetOrderListParam
     }
 
-    fun getSomFilterData(orderStatus: String, date: String) {
+    fun getSomFilterData(orderStatus: String, date: String, isReset: Boolean) {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
@@ -68,8 +68,10 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
             somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData =
                     somFilterResult.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
-                        if (chips.name == orderStatus) {
-                            chips.isSelected = true
+                        if (!isReset) {
+                            if (chips.name == orderStatus) {
+                                chips.isSelected = true
+                            }
                         }
                     } ?: listOf()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
@@ -172,8 +174,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     fun resetFilterSelected() {
         launchCatchError(block = {
-            somFilterUiModel.forEach { somFilter ->
-                somFilter.somFilterData.onEach { chips ->
+            somFilterUiModel.map { somFilter ->
+                somFilter.somFilterData.map { chips ->
                     chips.isSelected = false
                 }
             }

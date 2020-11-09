@@ -58,6 +58,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private var somFilterAdapter: SomFilterAdapter? = null
     private var orderStatus: String = ""
     private var filterDate: String = ""
+    private var isReset: Boolean = false
 
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
@@ -67,6 +68,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         initInject()
         orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
         filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
+        isReset = arguments?.getBoolean(KEY_IS_RESET, false) ?: false
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
         somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
@@ -204,7 +206,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private fun loadSomFilterData() {
         somFilterAdapter?.showLoading()
         btnShowOrder?.hide()
-        somFilterViewModel.getSomFilterData(orderStatus, filterDate)
+        somFilterViewModel.getSomFilterData(orderStatus, filterDate, isReset)
     }
 
     private fun finishSomFilterData() {
@@ -232,7 +234,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
             somListOrderParam?.let {
                 somFilterFinishListener?.onClickShowOrderFilter(it,
-                        somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus, filterDate)
+                        somFilterViewModel.getSomFilterUiModel(), FILTER_STATUS_ORDER, orderStatus, filterDate, isReset)
             }
             dismiss()
         }
@@ -283,9 +285,9 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 is Success -> {
                     showHideBottomSheetReset()
                     somFilterAdapter?.updateData(it.data)
+                    isReset = filterIsReset(it.data.filterIsInstance<SomFilterUiModel>())
                 }
-                is Fail -> {
-                }
+                is Fail -> { }
             }
         }
         observe(somFilterViewModel.somFilterOrderListParam) {
@@ -318,6 +320,17 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             somFilterViewModel.resetFilterSelected()
             actionResetFilter()
         }
+    }
+
+    private fun filterIsReset(somFilterUiModelList: List<SomFilterUiModel>): Boolean {
+        var count = 0
+        somFilterUiModelList.forEach { somFilter ->
+            somFilter.somFilterData.forEach {
+                if(it.isSelected) count++
+            }
+        }
+        val isNotReset = (count > 0)
+        return !isNotReset
     }
 
     private fun actionResetFilter() {
@@ -354,6 +367,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
+        const val KEY_IS_RESET = "key_reset_som_filter"
         const val SIZE_ACTION_RESET = 14f
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
@@ -362,7 +376,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            mActivity: FragmentActivity?,
-                           filterDate: String
+                           filterDate: String,
+                           isReset: Boolean
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet(mActivity)
             val args = Bundle()
@@ -370,6 +385,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             args.putIntegerArrayList(KEY_SOM_FILTER_LIST, ArrayList(orderStatusIdList))
             args.putParcelableArrayList(KEY_SOM_FILTER_LIST, ArrayList(somFilterUiModelList))
             args.putString(KEY_FILTER_DATE, filterDate)
+            args.putBoolean(KEY_IS_RESET, isReset)
             fragment.arguments = args
             return fragment
         }
@@ -380,7 +396,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                                    somFilterUiModelList: List<SomFilterUiModel>,
                                    idFilter: String,
                                    orderStatus: String,
-                                   filterDate: String
+                                   filterDate: String,
+                                   isReset: Boolean
         )
     }
 }

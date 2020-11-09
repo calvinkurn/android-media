@@ -154,6 +154,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var textChangeJob: Job? = null
     private var menu: Menu? = null
     private var filterDate = ""
+    private var isResetFilter = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -352,7 +353,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.getDataOrderListParams().statusList,
                 viewModel.getSomFilterUi(),
                 this.activity,
-                filterDate
+                filterDate,
+                isResetFilter
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
         if(!bottomSheetFilter.isVisible) {
@@ -1356,8 +1358,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
     override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-                                        idFilter: String, orderStatus: String, filterDate: String) {
+                                        idFilter: String, orderStatus: String, filterDate: String, isReset: Boolean) {
         this.filterDate = filterDate
+        this.isResetFilter = isReset
         viewModel.updateGetOrderListParams(filterData)
         viewModel.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
@@ -1374,23 +1377,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somListSortFilterTab.selectTab(it)
                 refreshOrderList()
             } else {
-                if(filterIsReset(somFilterUiModelList)) {
+                if(isReset) {
                     somListSortFilterTab.updateTabs(somListFilter.statusList)
                 }
                 somListSortFilterTab.updateCounterSortFilter()
                 refreshOrderList()
             }
         }
-    }
-
-    private fun filterIsReset(somFilterUiModelList: List<SomFilterUiModel>): Boolean {
-        var count = 0
-        somFilterUiModelList.forEach { somFilter ->
-            somFilter.somFilterData.forEach {
-                if(it.isSelected) count++
-            }
-        }
-        val isNotReset = (count > 0)
-        return !isNotReset
     }
 }

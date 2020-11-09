@@ -29,6 +29,7 @@ abstract class SomFilterViewModelTestFixture {
     companion object {
         val mockDate = "14 Okt 2020 - 24 Okt 2020"
         val mockIdFilter = "Siap Dikirim"
+        val isResetFilter = false
         val SOM_FILTER_SUCCESS_RESPONSE = "json/som_get_order_filter_success_response.json"
     }
 
