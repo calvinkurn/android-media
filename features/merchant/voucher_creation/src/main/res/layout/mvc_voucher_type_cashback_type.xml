@@ -10,9 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_create_voucher_type_chips_title_margin_top"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:text="@string/mvc_create_promo_type_cashback_title_type"
+        android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -22,7 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/mvc_create_voucher_type_chips_margin_left"
         android:layout_marginStart="@dimen/mvc_create_voucher_type_chips_margin_left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cashbackTypeTitle"
