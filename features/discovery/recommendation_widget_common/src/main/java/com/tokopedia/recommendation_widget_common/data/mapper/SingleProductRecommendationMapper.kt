@@ -44,7 +44,7 @@ object SingleProductRecommendationMapper {
                     data.slashedPriceInt,
                     data.discountPercentage,
                     if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
-                    index,
+                    index + 1,
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",

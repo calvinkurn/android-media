@@ -20,8 +20,10 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): CoroutineScope {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -44,6 +46,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private var noteTextWatcher: TextWatcher? = null
 
     private var oldQtyValue: Int = 0
+
+    private var resetQuantityJob: Job? = null
 
     fun setProduct(product: OrderProduct) {
         this.product = product
@@ -99,6 +103,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 qtyEditorProduct?.editText?.removeTextChangedListener(quantityTextWatcher)
                 qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
             }
+            qtyEditorProduct?.autoHideKeyboard = true
             qtyEditorProduct?.minValue = product.quantity.minOrderQuantity
             qtyEditorProduct?.maxValue = product.quantity.maxOrderStock
             oldQtyValue = product.quantity.orderQuantity
@@ -121,9 +126,19 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 override fun afterTextChanged(s: Editable?) {
                     // for automatic reload rates when typing
                     val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
-                    if (oldQtyValue != newValue) {
+                    if (newValue > 0 && oldQtyValue != newValue) {
+                        resetQuantityJob?.cancel()
                         oldQtyValue = newValue
                         qtyEditorProduct?.setValue(newValue)
+                    } else if (newValue <= 0) {
+                        // trigger reset quantity debounce to prevent empty quantity edit text
+                        resetQuantityJob?.cancel()
+                        resetQuantityJob = launch {
+                            delay(DEBOUNCE_RESET_QUANTITY_MS)
+                            if (isActive) {
+                                qtyEditorProduct?.setValue(product.quantity.minOrderQuantity)
+                            }
+                        }
                     }
                 }
 
@@ -201,5 +216,14 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     companion object {
         const val MAX_NOTES_LENGTH = 144
+
+        private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main.immediate
+
+    fun clearJob() {
+        resetQuantityJob?.cancel()
     }
 }
