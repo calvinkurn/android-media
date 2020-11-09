@@ -180,7 +180,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider1"
-                app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+                app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/parent_collapse"
