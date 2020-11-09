@@ -75,6 +75,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            Log.i("PLT_SHOP", "Prepare Duration: $preparePageDuration")
         }
     }
 
@@ -98,6 +99,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            Log.i("PLT_SHOP", "Network Duration: $requestNetworkDuration")
         }
     }
 
@@ -121,6 +123,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            Log.i("PLT_SHOP", "Render Duration: $renderDuration")
         }
     }
 

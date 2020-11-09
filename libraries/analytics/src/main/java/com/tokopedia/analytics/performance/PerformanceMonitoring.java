@@ -1,5 +1,7 @@
 package com.tokopedia.analytics.performance;
 
+import android.util.Log;
+
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -52,6 +54,7 @@ public class PerformanceMonitoring {
             trace.stop();
             this.endTime = System.currentTimeMillis();
             if(FpmLogger.getInstance() != null) FpmLogger.getInstance().save(traceName, startTime, endTime, attributes, metrics);
+            Log.i("PLT_SHOP", traceName + ":" + startTime + ":" + endTime);
         }
     }
 
