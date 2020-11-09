@@ -1,12 +1,18 @@
 package com.tokopedia.productcard
 
+import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -16,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -26,6 +34,7 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
+    renderLabelGroupVariant(productCardModel)
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
@@ -61,6 +70,102 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
         val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productNameFromHtml.toString(), context.getString(R.string.content_desc_textViewProductName))
     }
+}
+
+private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
+    val willShowVariant = productCardModel.willShowVariant()
+
+    labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
+        labelVariantContainer.removeAllViews()
+
+        val marginStart = 4.toPx()
+        val colorSampleSize = 14.toPx()
+
+        productCardModel.labelGroupVariant.forEachIndexed { index, labelVariant ->
+            val hasMarginStart = index > 0
+
+            when {
+                labelVariant.isColor() -> {
+                    labelVariantContainer.addLabelVariantColor(labelVariant, hasMarginStart, colorSampleSize, marginStart)
+                }
+                labelVariant.isSize() -> {
+                    labelVariantContainer.addLabelVariantSize(labelVariant, hasMarginStart, marginStart)
+                }
+                labelVariant.isCustom() -> {
+                    labelVariantContainer.addLabelVariantCustom(labelVariant, marginStart)
+                }
+            }
+        }
+    }
+}
+
+private fun LinearLayout.addLabelVariantColor(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        colorSampleSize: Int,
+        marginStart: Int
+) {
+    val gradientDrawable = createColorSampleDrawable(context, labelVariant.hexColor)
+
+    val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
+    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+    val colorSampleImageView = ImageView(context)
+    colorSampleImageView.setImageDrawable(gradientDrawable)
+    colorSampleImageView.layoutParams = layoutParams
+
+    addView(colorSampleImageView)
+}
+
+internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
+    val gradientDrawable = GradientDrawable()
+
+    gradientDrawable.shape = GradientDrawable.OVAL
+    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+    gradientDrawable.setColor(safeParseColor(colorString))
+
+    return gradientDrawable
+}
+
+internal fun safeParseColor(color: String): Int {
+    return try {
+        Color.parseColor(color)
+    }
+    catch (throwable: Throwable) {
+        throwable.printStackTrace()
+        0
+    }
+}
+
+private fun LinearLayout.addLabelVariantSize(
+        labelVariant: ProductCardModel.LabelGroupVariant,
+        hasMarginStart: Boolean,
+        marginStart: Int
+) {
+    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
+
+    val unifyLabel = Label(context)
+    unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
+    unifyLabel.text = labelVariant.title
+    unifyLabel.layoutParams = layoutParams
+
+    addView(unifyLabel)
+}
+
+private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
+    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    layoutParams.marginStart = marginStart
+
+    val typography = Typography(context)
+    typography.weightType = Typography.BOLD
+    typography.setType(Typography.SMALL)
+    typography.text = labelVariant.title
+    typography.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+    typography.layoutParams = layoutParams
+
+    addView(typography)
 }
 
 private fun View.renderDiscount(productCardModel: ProductCardModel) {

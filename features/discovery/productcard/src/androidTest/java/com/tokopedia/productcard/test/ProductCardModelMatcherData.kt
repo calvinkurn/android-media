@@ -58,6 +58,8 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testNoLabelIntegrityAndHasRatingFloat())
     it.add(testPriorityRatingAverage())
     it.add(testLabelCampaign())
+    it.add(testLabelVariantColor())
+    it.add(testLabelVariantSize())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -1443,6 +1445,92 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
         it[R.id.textViewLabelCampaign] = isDisplayedWithText(labelCampaign.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelVariantColor(): ProductCardModelMatcher {
+    val labelColor1 = LabelGroupVariant(typeVariant = "color", hexColor = "#ff0016")
+    val labelColor2 = LabelGroupVariant(typeVariant = "color", hexColor = "#bf00ff")
+    val labelColor3 = LabelGroupVariant(typeVariant = "color", hexColor = "#ffffff")
+    val labelColor4 = LabelGroupVariant(typeVariant = "color", hexColor = "#000000")
+    val labelCustom = LabelGroupVariant(typeVariant = "custom", title = "+2")
+
+    val productCardModel = ProductCardModel(
+            productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupVariant = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelCustom)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
+        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelVariantSize(): ProductCardModelMatcher {
+    val labelSize1 = LabelGroupVariant(typeVariant = "size", title = "S", type = LIGHT_GREY)
+    val labelSize2 = LabelGroupVariant(typeVariant = "size", title = "M", type = LIGHT_GREY)
+    val labelSize3 = LabelGroupVariant(typeVariant = "size", title = "XXXL", type = LIGHT_GREY)
+    val labelSize4 = LabelGroupVariant(typeVariant = "size", title = "All size", type = LIGHT_GREY)
+    val labelCustom = LabelGroupVariant(typeVariant = "custom", title = "+2")
+
+    val productCardModel = ProductCardModel(
+            productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+            productImageUrl = productImageUrl,
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            reviewCount = 60,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            isTopAds = true,
+            hasThreeDots = true,
+            labelGroupVariant = listOf(labelSize1, labelSize2, labelSize3, labelSize4, labelCustom)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)

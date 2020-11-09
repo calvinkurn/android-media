@@ -47,7 +47,7 @@ private class ProductCardInPositionMatcher(
     }
 
     private fun Matcher<View?>.matchProductCardComponent(view: View): Boolean {
-        currentViewComponentName = view.resources.getResourceEntryName(view.id)
+        currentViewComponentName = try { view.resources.getResourceEntryName(view.id) } catch(throwable: Throwable) { "No resource entry name for view id" }
         currentMatcher = this
 
         return this.matches(view)

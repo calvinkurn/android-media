@@ -18,6 +18,9 @@
     <dimen name="product_card_text_view_product_name_height">36dp</dimen>
     <dimen name="product_card_flashsale_text_view_product_name_margin_bottom">4dp</dimen>
 
+    <dimen name="product_card_label_variant_margin_top">4dp</dimen>
+    <dimen name="product_card_label_variant_height">20dp</dimen>
+
     <dimen name="product_card_label_discount_margin_top">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
     <dimen name="product_card_flashsale_label_discount_margin_bottom">4dp</dimen>

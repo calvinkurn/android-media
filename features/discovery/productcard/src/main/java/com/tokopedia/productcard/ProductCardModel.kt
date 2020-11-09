@@ -44,7 +44,8 @@ data class ProductCardModel (
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
-        val countSoldRating: String = ""
+        val countSoldRating: String = "",
+        val labelGroupVariant: List<LabelGroupVariant> = listOf()
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -81,6 +82,17 @@ data class ProductCardModel (
         fun isShowLabelCampaign(): Boolean {
             return imageUrl.isNotEmpty() && title.isNotEmpty()
         }
+    }
+
+    data class LabelGroupVariant(
+            val typeVariant: String = "",
+            val title: String = "",
+            val type: String = "",
+            val hexColor: String = ""
+    ) {
+        fun isColor() = typeVariant == TYPE_VARIANT_COLOR
+        fun isSize() = typeVariant == TYPE_VARIANT_SIZE
+        fun isCustom() = typeVariant == TYPE_VARIANT_CUSTOM
     }
 
     fun getLabelProductStatus(): LabelGroup? {
@@ -132,4 +144,39 @@ data class ProductCardModel (
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
+
+    fun willShowVariant(): Boolean {
+        return labelGroupVariant.isNotEmpty()
+    }
+
+    fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
+        val sizeVariantLimit = 16
+        var sizeVariantCount = 0
+        val colorVariant = mutableListOf<LabelGroupVariant>()
+        val sizeVariant = mutableListOf<LabelGroupVariant>()
+        val customVariant = mutableListOf<LabelGroupVariant>()
+        for (element in labelGroupVariant) {
+            when {
+                element.isColor() -> {
+                    colorVariant.add(element)
+                }
+                element.isSize() -> {
+                    if ((sizeVariantCount + element.title.length + 2) <= sizeVariantLimit) {
+                        sizeVariant.add(element)
+                        sizeVariantCount += element.title.length + 2
+                    }
+                }
+                else -> {
+                    customVariant.add(element)
+                }
+            }
+        }
+
+        if (colorVariant.size < 2 && sizeVariant.size < 2) return listOf()
+
+        val colorVariantTaken = if (colorVariant.size >= 2) 5 else 0
+        val sizeVariantTaken = if (colorVariantTaken > 0) 0 else 5
+
+        return colorVariant.take(colorVariantTaken) + sizeVariant.take(sizeVariantTaken) + customVariant
+    }
 }
