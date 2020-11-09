@@ -90,9 +90,6 @@ subprojects {
                 substitute module('androidx.sqlite:sqlite-framework') with module("androidx.sqlite:sqlite-framework:${sqliteFrameworkVersion}")
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")
 
-                substitute module('com.google.android.gms:play-services-basement') with module("com.google.android.gms:play-services-basement:${playServicesBasement}")
-                substitute module('com.google.android.gms:play-services-tasks') with module("com.google.android.gms:play-services-tasks:${playServicesBasement}")
-
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
                 }
