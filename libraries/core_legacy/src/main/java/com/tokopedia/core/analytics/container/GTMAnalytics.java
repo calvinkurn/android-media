@@ -86,6 +86,10 @@ public class GTMAnalytics extends ContextAnalytics {
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
 
+    private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
+    private static long gtmSizeThresholdLog = 0;
+
     private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
 
     public GTMAnalytics(Context context) {
@@ -287,7 +291,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle =  addWrapperValue(value);
+        Bundle bundle = addWrapperValue(value);
         bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
         pushIris(eventName, bundle);
@@ -862,32 +866,49 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
-        String name = eventName == null ? (String) values.get("event") : eventName;
-        if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
-        logEventSize(eventName, values);
-        if (tetraDebugger != null) {
-            tetraDebugger.send(values);
+        // fix Caused by java.lang.NoSuchMethodError
+        try {
+            String name = eventName == null ? (String) values.get("event") : eventName;
+            if (isGtmV5) name += " (v5)";
+            GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
+            logEventSize(eventName, values);
+            if (tetraDebugger != null) {
+                tetraDebugger.send(values);
+            }
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
+    private long getGTMSizeLogThreshold(){
+        if (gtmSizeThresholdLog == 0){
+            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY,
+                    GTM_SIZE_LOG_THRESHOLD_DEFAULT);
+        }
+        return gtmSizeThresholdLog;
+    }
+
     private void logEventSize(String eventName, Map<String, Object> values) {
+        int size = values.toString().length();
+        if (size < getGTMSizeLogThreshold()) {
+            return;
+        }
         String eventCategory = (String) values.get("eventCategory");
         if (!TextUtils.isEmpty(eventCategory)) {
-            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, values.toString().length(), eventCategory);
+            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, size, eventCategory);
             return;
         }
         String screenName = (String) values.get("screenName");
         if (!TextUtils.isEmpty(screenName)) {
-            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, values.toString().length(), screenName);
+            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, size, screenName);
             return;
         }
         String pageType = (String) values.get("pageType");
         if (!TextUtils.isEmpty(pageType)) {
-            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, values.toString().length(), pageType);
+            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, size, pageType);
             return;
         }
-        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, values.toString().length());
+        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, size);
     }
 
     public void sendScreenAuthenticated(String screenName) {
