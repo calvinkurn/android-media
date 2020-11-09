@@ -119,14 +119,27 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
-    override fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
-        rvAdapter?.loadMoreEarlier(lastKnownPosition, element)
-        viewModel.loadMoreEarlier(containerListener?.role,
+    override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
+        rvAdapter?.loadMore(lastKnownPosition, element)
+        viewModel.loadMoreNew(containerListener?.role,
                 {
-                    rvAdapter?.insertEarlierNotificationData(lastKnownPosition, element, it)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
                 },
                 {
-                    rvAdapter?.failLoadMoreEarlier(lastKnownPosition, element)
+                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
+                    showErrorMessage(it)
+                }
+        )
+    }
+
+    override fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
+        rvAdapter?.loadMore(lastKnownPosition, element)
+        viewModel.loadMoreEarlier(containerListener?.role,
+                {
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
+                },
+                {
+                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
                     showErrorMessage(it)
                 }
         )

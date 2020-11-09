@@ -39,11 +39,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
         getNotifications(
                 params, onSuccess, onError,
-                { response ->
-                    return@getNotifications mapper.mapFirstPage(
-                            response, true
-                    )
-                },
+                { response -> mapper.mapFirstPage(response, true) },
                 { response ->
                     updateNewPaging(response)
                     updateEarlierPaging(response)
@@ -51,8 +47,31 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
     }
 
-    fun getMoreEarlierNotifications(
+    fun getMoreNewNotifications(
+            @NotificationFilterType
             filter: Int,
+            @RoleType
+            role: Int,
+            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        // TODO: confirm with BE if it need fields parameter
+        val params = generateParam(
+                filter, role, pagingNew.lastNotifId, arrayOf("new")
+        )
+        getNotifications(
+                params, onSuccess, onError,
+                { response -> mapper.mapNewSection(response, false) },
+                { response ->
+                    updateNewPaging(response)
+                }
+        )
+    }
+
+    fun getMoreEarlierNotifications(
+            @NotificationFilterType
+            filter: Int,
+            @RoleType
             role: Int,
             onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
             onError: (Throwable) -> Unit
@@ -62,11 +81,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
         getNotifications(
                 params, onSuccess, onError,
-                { response ->
-                    return@getNotifications mapper.mapEarlierSection(
-                            response, false
-                    )
-                },
+                { response -> mapper.mapEarlierSection(response, false) },
                 { response ->
                     updateEarlierPaging(response)
                 }

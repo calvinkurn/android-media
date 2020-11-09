@@ -53,4 +53,16 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
+    fun loadMoreNew(
+            @RoleType
+            role: Int?,
+            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        if (role == null) return
+        notifcenterDetailUseCase.getMoreNewNotifications(
+                filter, role, onSuccess, onError
+        )
+    }
+
 }

@@ -15,6 +15,7 @@ class LoadMoreViewHolder constructor(
 
     interface Listener {
         fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel)
+        fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel)
     }
 
     override fun bind(element: LoadMoreUiModel, payloads: MutableList<Any>) {
@@ -36,7 +37,14 @@ class LoadMoreViewHolder constructor(
 
     private fun bindClick(element: LoadMoreUiModel) {
         btnLoading?.setOnClickListener {
-            listener?.loadMoreEarlier(adapterPosition, element)
+            when (element.type) {
+                LoadMoreUiModel.LoadMoreType.NEW -> {
+                    listener?.loadMoreNew(adapterPosition, element)
+                }
+                LoadMoreUiModel.LoadMoreType.EARLIER -> {
+                    listener?.loadMoreEarlier(adapterPosition, element)
+                }
+            }
         }
     }
 

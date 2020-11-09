@@ -63,7 +63,7 @@ class NotificationAdapter constructor(
         return productCarouselState[position]
     }
 
-    fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
+    fun loadMore(lastKnownPosition: Int, element: LoadMoreUiModel) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
         val item = elementData.second
@@ -72,7 +72,7 @@ class NotificationAdapter constructor(
         notifyItemChanged(position, LoadMoreViewHolder.PAYLOAD_UPDATE_STATE)
     }
 
-    fun failLoadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
+    fun failLoadMoreNotification(lastKnownPosition: Int, element: LoadMoreUiModel) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
         val item = elementData.second
@@ -81,7 +81,7 @@ class NotificationAdapter constructor(
         notifyItemChanged(position, LoadMoreViewHolder.PAYLOAD_UPDATE_STATE)
     }
 
-    fun insertEarlierNotificationData(
+    fun insertNotificationData(
             lastKnownPosition: Int,
             element: LoadMoreUiModel,
             data: List<Visitable<NotificationTypeFactory>>
