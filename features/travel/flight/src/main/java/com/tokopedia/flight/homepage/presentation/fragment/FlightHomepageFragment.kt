@@ -118,6 +118,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    renderBannerTitle(it.data.meta.label)
                     renderBannerView(it.data.banners)
                 }
                 is Fail -> {
@@ -313,17 +314,21 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
         flightHomepageVideoBanner.listener = this
-        flightHomepageVideoBanner.customHeight = if (bannerWidthInPixels > 0) {
-            measureBannerHeightBasedOnRatio()
-        } else {
-            resources.getDimensionPixelSize(R.dimen.banner_height)
-        }
         flightHomepageVideoBanner.setData(bannerData)
         flightHomepageVideoBanner.build()
     }
 
     private fun hideVideoBannerView() {
         flightHomepageVideoBanner.hideTravelVideoBanner()
+    }
+
+    private fun renderBannerTitle(title: String) {
+        if (title.isNotEmpty()) {
+            flightHomepageBannerTitle.text = title
+            flightHomepageBannerTitle.visibility = View.VISIBLE
+        } else {
+            flightHomepageBannerTitle.visibility = View.GONE
+        }
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
