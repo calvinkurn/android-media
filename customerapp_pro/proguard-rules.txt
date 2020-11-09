@@ -84,6 +84,14 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+#traceroute
+#https://github.com/wangjing53406/traceroute-for-android
+-keepclassmembers class com.wandroid.traceroute.TraceRoute {
+    void clearResult();
+    void appendResult(***);
+    int execute(***);
+}
+
 #GLIDE
 #https://github.com/bumptech/glide/blob/master/library/proguard-rules.txt
 -keep public class * implements com.bumptech.glide.module.GlideModule
