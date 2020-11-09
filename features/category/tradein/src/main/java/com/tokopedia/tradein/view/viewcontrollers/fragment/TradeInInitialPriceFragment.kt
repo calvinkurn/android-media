@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.utils.TradeInUtils
@@ -96,16 +97,14 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     }
 
     private fun initCollapse() {
-
-        val drawbleExpand = resources.getDrawable(com.tokopedia.analyticsdebugger.R.drawable.ic_expand_more_black_24dp)
-        val drawableCollase = resources.getDrawable(com.tokopedia.analyticsdebugger.R.drawable.ic_expand_less_black_24dp)
+        iv_collapse.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_chevron_normal))
         iv_collapse.setOnClickListener {
             if (collapseFlag) {
-                iv_collapse.setImageDrawable(drawbleExpand)
+                iv_collapse.rotation = 0f
                 collapse(parent_collapse)
                 collapseFlag = !collapseFlag
             } else {
-                iv_collapse.setImageDrawable(drawableCollase)
+                iv_collapse.rotation = 180f
                 expand(parent_collapse)
                 collapseFlag = !collapseFlag
             }
