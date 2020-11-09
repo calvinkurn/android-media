@@ -37,7 +37,9 @@ data class RatesParam(
         var is_express_checkout: Int? = null,
         var val_rates: String? = null,
         var used_otdg: Int? = null,
-        var occ: String = "0"
+        var occ: String = "0",
+        var po_time: Int = 0,
+        var is_fulfillment: Boolean = false
 ) {
 
     private constructor(builder: Builder) : this(
@@ -61,7 +63,9 @@ data class RatesParam(
             vehicle_leasing = builder.vehicle_leasing,
             psl_code = builder.psl_code,
             products = builder.products,
-            unique_id = builder.unique_id)
+            unique_id = builder.unique_id,
+            is_fulfillment = builder.is_fulfillment,
+            po_time = builder.po_time)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
@@ -88,7 +92,9 @@ data class RatesParam(
             "psl_code" to psl_code,
             "products" to products,
             "unique_id" to unique_id,
-            "occ" to occ
+            "occ" to occ,
+            "po_time" to po_time,
+            "is_fulfillment" to is_fulfillment
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -134,6 +140,10 @@ data class RatesParam(
         var products: String = RatesParamHelper.generateProducts(shipping)
             private set
         var unique_id: String = shipping.uniqueId
+            private set
+        var is_fulfillment: Boolean = shipping.isFulfillment
+            private set
+        var po_time: Int = shipping.preOrderDuration
             private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }

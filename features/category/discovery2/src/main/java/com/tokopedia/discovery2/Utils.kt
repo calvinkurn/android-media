@@ -22,10 +22,8 @@ const val DARK_ORANGE = "darkOrange"
 const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
-const val LABEL_GIMMICK = "gimmick"
-const val LABEL_INTEGRITY = "integrity"
-const val LABEL_SHIPPING = "shipping"
 const val PDP_APPLINK = "tokopedia://product/"
+val TIME_DISPLAY_FORMAT = "%1$02d"
 
 class Utils {
 
@@ -123,19 +121,19 @@ class Utils {
         fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val saleStartDate = parseData(saleStartDate)
-            val saleEndDate = parseData(saleEndDate)
-            return if (saleStartDate != null && saleEndDate != null) {
-                (saleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < saleEndDate.time)
+            val parsedSaleStartDate = parseData(saleStartDate)
+            val parsedSaleEndDate = parseData(saleEndDate)
+            return if (parsedSaleStartDate != null && parsedSaleEndDate != null) {
+                (parsedSaleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < parsedSaleEndDate.time)
             } else {
                 false
             }
         }
 
-        fun isSaleOver(saleEndDate: String): Boolean {
+        fun isSaleOver(saleEndDate: String, timerFormat : String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleEndDate.isEmpty()) return true
             val currentSystemTime = Calendar.getInstance().time
-            val parsedDate = parseData(saleEndDate)
+            val parsedDate = parseData(saleEndDate, timerFormat)
             return if (parsedDate != null) {
                 currentSystemTime.time >= parsedDate.time
             } else {
@@ -143,15 +141,24 @@ class Utils {
             }
         }
 
-        fun parseData(date: String?): Date? {
+        fun parseData(date: String?, timerFormat : String  = TIMER_SPRINT_SALE_DATE_FORMAT): Date? {
             return date?.let {
                 try {
-                    SimpleDateFormat(TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
+                    SimpleDateFormat(timerFormat, Locale.getDefault())
                             .parse(date)
                 } catch (parseException: ParseException) {
                     null
                 }
             }
+        }
+
+        fun parseFlashSaleDate(saleTime: String?): String {
+            if (!saleTime.isNullOrEmpty() && saleTime.length >= 19) {
+                    val date = saleTime.substring(0, 10)
+                    val time = saleTime.substring(11, 19)
+                    return "${date}T${time}"
+            }
+            return ""
         }
     }
 }
