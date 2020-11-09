@@ -1,6 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
+
+android {
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -41,6 +49,16 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 project.ext {
@@ -51,3 +69,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

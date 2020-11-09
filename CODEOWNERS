@@ -34,6 +34,7 @@
 /features/content/play/                                 @tokopedia/android-miniondave-dev
 /features/content/play_common/                          @tokopedia/android-miniondave-dev
 /features/content/play_broadcaster/                     @tokopedia/android-miniondave-dev
+/features/content/play_widget/                          @tokopedia/android-miniondave-dev
 /features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
@@ -162,7 +163,7 @@
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 
-/features/user/chatbot/                         		@tokopedia/android-miniondarth-dev
+/features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/chat_common/                     		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev

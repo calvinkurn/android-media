@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
@@ -119,6 +120,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
                         // reassign wholesale information with the actual wholesale values
                         productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
+
+                        // filter the show cases from auto generated showcase from BE (showcase with draftId for desktop product with no showcase information)
+                        val showCases = productInputModel.detailInputModel.productShowCases
+                        val filteredShowCases = showCases.filter { showcaseItemPicker -> showcaseItemPicker.showcaseId != DRAFT_SHOWCASE_ID }
+
+                        // reassign product show cases information
+                        productInputModel.detailInputModel.productShowCases = filteredShowCases
 
                         productInputModel
                     }
