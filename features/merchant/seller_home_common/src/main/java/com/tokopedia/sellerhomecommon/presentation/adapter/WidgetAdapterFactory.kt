@@ -33,4 +33,6 @@ interface WidgetAdapterFactory {
     fun type(tickerWidget: TickerWidgetUiModel): Int
 
     fun type(multiLineGraphWidget: MultiLineGraphWidgetUiModel): Int
+
+    fun type(announcementWidgetUiModel: AnnouncementWidgetUiModel): Int
 }
