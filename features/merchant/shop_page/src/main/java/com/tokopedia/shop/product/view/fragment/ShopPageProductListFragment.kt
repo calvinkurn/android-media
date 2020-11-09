@@ -885,7 +885,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun initPltMonitoring() {
-        if (!isShowNewShopHomeTab()) {
+        if (!isShowNewShopHomeTab() && userVisibleHint) {
             Log.i("PLT_SHOP", "ShopPageProductListFragment initPltMonitoring")
             (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
         }
