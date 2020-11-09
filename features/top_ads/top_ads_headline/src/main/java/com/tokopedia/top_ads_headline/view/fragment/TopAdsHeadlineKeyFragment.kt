@@ -17,9 +17,15 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
+import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
@@ -59,8 +65,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun getSelectedKeywords(): MutableList<KeywordDataItem> {
-        var list: MutableList<KeywordDataItem> = mutableListOf()
-        list = keywordSelectedAdapter.items.map {
+        val list: MutableList<KeywordDataItem> = keywordSelectedAdapter.items.map {
             it
         }.toMutableList()
         list.addAll(keywordListAdapter.getSelectItems().map {
@@ -76,22 +81,21 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
             addManualKeywords()
         }
         editText?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val error = Utils.validateKeyword(context, s)
-                if (error == null && s?.trim()?.isNotEmpty() == true) {
-                    addBtn?.isEnabled = true
-                    editText?.setError(true)
-
-                } else {
-                    addBtn.isEnabled = false
-                    editText?.setError(true)
-                    editText?.setMessage(error.toString())
+                editText.textFiedlLabelText.text = getString(R.string.topads_headline_enter_keyword_hint)
+                if (s?.trim()?.isNotEmpty() == true) {
+                    val error = Utils.validateKeyword(context, s)
+                    if (error == null) {
+                        addBtn?.isEnabled = true
+                        editText?.setError(false)
+                        editText?.setMessage("")
+                    } else {
+                        addBtn.isEnabled = false
+                        editText?.setError(true)
+                        editText?.setMessage(error.toString())
+                    }
                 }
             }
         })
@@ -105,11 +109,27 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
             imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
         tipBtn?.addItem(tooltipView)
+        tipBtn.setOnClickListener {
+            val tipsList: ArrayList<TipsUiModel> = ArrayList()
+            tipsList.apply {
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc4, R.drawable.topads_create_ic_checklist))
+                add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title2))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc5, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7, R.drawable.topads_create_ic_checklist))
+            }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, getString(R.string.topads_headline_keyword_bottomsheet_title1), tipsList) }
+            tipsListSheet?.showCloseIcon = false
+            tipsListSheet?.show(childFragmentManager, "")
+        }
     }
 
     override fun updateToolBar() {
         if (activity is HeadlineStepperActivity) {
-            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_ad_detail_fragment_label))
+            (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
         }
     }
 
@@ -123,9 +143,27 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect)
-        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked)
+        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onError)
+        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError)
+        getLatestBid()
         viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(""), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+    }
+
+    private fun onError(enable: Boolean) {
+        btnNext?.isEnabled = enable
+    }
+
+    private fun getLatestBid() {
+        val dummyId: MutableList<Int> = mutableListOf()
+        val suggestions = java.util.ArrayList<DataSuggestions>()
+        suggestions.add(DataSuggestions("group", dummyId))
+        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onEmptySuggestion)
+    }
+
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
+        keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
+                data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
+
     }
 
     private fun setAdapter() {
@@ -143,8 +181,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 item.keyword = editText.textFieldInput.text.toString()
                 item.totalSearch = "-1"
                 item.fromSearch = true
-                //todo
-                item.bidSuggest = 500
+                item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordListAdapter.itemCount - 1)
                 setCount()
@@ -159,7 +196,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
         minSuggestedBid = list.firstOrNull()?.minBid ?: 0
-        keywordListAdapter.setList(list)
+        keywordListAdapter.setList(list, list.firstOrNull()?.minBid ?: 0)
+        setCount()
     }
 
     private fun onItemChecked(pos: Int) {
@@ -167,6 +205,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun onItemUnselect(pos: Int) {
+        setCount()
         removeFromList(pos)
     }
 
@@ -177,7 +216,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     private fun setCount() {
         selectedTitle.visibility = if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
-        selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), keywordSelectedAdapter.itemCount)
+        selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), keywordSelectedAdapter.itemCount + keywordListAdapter.getSelectItems().size)
     }
 
     override fun initInjector() {

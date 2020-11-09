@@ -13,9 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/topads_headline_keyword_page_title"
+        android:textColor="@color/topads_light_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
+        app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -28,7 +29,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/addBtn"
         app:text_field_input_type="text"
-        app:text_field_label="@string/topads_headline_enter_keyword_hint"
         app:text_field_label_static="true"
         app:text_field_placeholder="@string/topads_headline_enter_keyword_hint"
         tools:layout_height="@dimen/dp_50" />
@@ -50,6 +50,7 @@
         android:text="@string/topads_headline_add_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/keyword_title"
+        app:unifyButtonSize="medium"
         app:unifyButtonType="main" />
 
     <androidx.core.widget.NestedScrollView
@@ -70,9 +71,12 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/topads_common_selected_list"
                 android:textAllCaps="true"
+                android:textColor="@color/topads_light_shadow"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
                 tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -87,15 +91,17 @@
                 tools:itemCount="2"
                 tools:listitem="@layout/topads_headline_keyword_item" />
 
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/recomTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/topads_headline_keyword_recommended_keyword"
+                android:textColor="@color/topads_light_shadow"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rvSelectedKeywordList" />
+                app:layout_constraintTop_toBottomOf="@id/rvSelectedKeywordList"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvKeywordList"

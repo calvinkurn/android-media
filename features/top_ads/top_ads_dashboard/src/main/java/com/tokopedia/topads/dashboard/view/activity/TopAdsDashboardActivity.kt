@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,10 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -30,8 +27,6 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPIRE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_CREATE_FORM_PATH
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SELLER_PACKAGENAME
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -94,12 +89,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             finish()
         })
         createAd.setOnClickListener {
-            if (GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-                startActivityForResult(intent, AUTO_ADS_DISABLED)
-            } else {
-                openCreateForm()
-            }
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+            startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val height = createAd?.measuredHeight
@@ -235,16 +226,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     }
 
     fun getAdInfo(): String? = adType
-
-    private fun openCreateForm() {
-        if (AppUtil.isSellerInstalled(this)) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER)
-            intent.component = ComponentName(SELLER_PACKAGENAME, SELLER_CREATE_FORM_PATH)
-            startActivity(intent)
-        } else {
-            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
-        }
-    }
 
     override fun setAppBarState(state: TopAdsProductIklanFragment.State?) {
         if (state == TopAdsProductIklanFragment.State.COLLAPSED) {

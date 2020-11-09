@@ -51,6 +51,7 @@
 
 
     <!--keyword-->
+    <string name="topads_headline_keywrod_title">Pilih Kata Kunci</string>
     <string name="topads_headline_keyword_page_title">Iklanmu akan tampil saat pembeli mencari produk menggunakan kata kunci yang kamu pilih.</string>
     <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
     <string name="topads_headline_add_button">Tambah</string>

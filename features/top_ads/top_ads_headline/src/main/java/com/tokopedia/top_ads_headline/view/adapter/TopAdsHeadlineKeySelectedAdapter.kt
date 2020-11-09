@@ -13,9 +13,13 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
  * Created by Pika on 6/10/20.
  */
 
-class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
+class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> Unit),
+                                       private val onError: ((enable: Boolean) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
+    private var minBid = 0
+    private var maxBid = 0
+    private var suggestedBid = 0
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -38,33 +42,50 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
         else
             holder.view.keywordDesc.visibility = View.VISIBLE
         holder.view.setOnClickListener {
-            items[holder.adapterPosition].onChecked = !holder.view.checkBox.isChecked
+            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
+            items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
             if (holder.adapterPosition != RecyclerView.NO_POSITION)
                 onCheck(holder.adapterPosition)
         }
-        setBidInfo(holder, position)
+        setBidInfo(holder)
     }
 
-    private fun setBidInfo(holder: ViewHolder, position: Int) {
+    private fun setBidInfo(holder: ViewHolder) {
         holder.view.keywordBid.textFieldInput.addTextChangedListener(object : NumberTextWatcher(holder.view.keywordBid.textFieldInput, "0") {
 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
-                //todo set recom and minbid
-                if (result < 200) {
-                    holder.view.keywordBid.setError(true)
-                    holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), "200"))
+                when {
+                    result < minBid -> {
+                        holder.view.keywordBid.setError(true)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), minBid))
+                        onError(false)
+                    }
+                    result < suggestedBid -> {
+                        holder.view.keywordBid.setError(false)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), suggestedBid))
+                        onError(true)
+                    }
+                    result > maxBid -> {
+                        holder.view.keywordBid.setError(true)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
+                        onError(false)
+                    }
+                    else -> {
+                        holder.view.keywordBid.setError(false)
+                        holder.view.keywordBid.setMessage("")
+                        onError(true)
+                    }
                 }
-                else if (result < 400) {
-                    holder.view.keywordBid.setError(true)
-                    holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), "400"))
-
-                }
-
-
             }
         })
     }
 
+    fun setDefaultValues(maxBid: Int?, minBid: Int?, suggestionBid: Int?) {
+        this.maxBid = maxBid ?: 0
+        this.minBid = minBid ?: 0
+        this.suggestedBid = suggestionBid ?: 0
+        notifyDataSetChanged()
+    }
 }

@@ -14,10 +14,13 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
 /**
  * Created by Pika on 6/10/20.
  */
+private const val maxBid: Int = 10000
 
-class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
+class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
+                               private val onError: ((enable: Boolean) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
+    private var minimumBid: Int = 0
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -30,52 +33,56 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit)) : Recy
         return items.count()
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.checkBox.setOnClickListener(null)
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordDesc.text = String.format(holder.view.context.getString(R.string.topads_headline_keyword_desc), convertToCurrency(items[holder.adapterPosition].totalSearch.toLong()))
         holder.view.keywordBid.textFieldInput.setText(items[holder.adapterPosition].bidSuggest.toString())
-        if (items[holder.adapterPosition].onChecked) {
-            holder.view.checkBox.setOnCheckedChangeListener(null)
-            holder.view.checkBox.isChecked = true
-        }
-        if (items[holder.adapterPosition].totalSearch == "-1")
-            holder.view.keywordDesc.visibility = View.GONE
-        else
-            holder.view.keywordDesc.visibility = View.VISIBLE
+        holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
         holder.view.setOnClickListener {
-            items[holder.adapterPosition].onChecked = !holder.view.checkBox.isChecked
+            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
+            items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
             if (holder.adapterPosition != RecyclerView.NO_POSITION)
                 onCheck(position)
         }
-        setBidInfo(holder,position)
+        setBidInfo(holder, items[holder.adapterPosition].bidSuggest)
     }
 
-    private fun setBidInfo(holder: ViewHolder, position: Int) {
+    private fun setBidInfo(holder: ViewHolder, bidSuggest: Int) {
         holder.view.keywordBid.textFieldInput.addTextChangedListener(object : NumberTextWatcher(holder.view.keywordBid.textFieldInput, "0") {
 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
-                //todo set recom and minbid
-                if (result < 200) {
-                    holder.view.keywordBid.setError(true)
-                    holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), "200"))
+                when {
+                    result < minimumBid -> {
+                        holder.view.keywordBid.setError(true)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_min_bid), minimumBid))
+                        onError(false)
+                    }
+                    result < bidSuggest -> {
+                        holder.view.keywordBid.setError(false)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), bidSuggest))
+                        onError(true)
+                    }
+                    result > maxBid -> {
+                        holder.view.keywordBid.setError(true)
+                        holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
+                        onError(false)
+                    }
+                    else -> {
+                        holder.view.keywordBid.setError(false)
+                        holder.view.keywordBid.setMessage("")
+                        onError(true)
+                    }
                 }
-                else if (result < 400) {
-                    holder.view.keywordBid.setError(true)
-                    holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_recom_bid), "400"))
-
-                }
-
-
             }
         })
     }
 
-    fun setList(list: List<KeywordData>) {
+    fun setList(list: List<KeywordData>, minBid: Int) {
         items.clear()
+        minimumBid = minBid
         list.forEach {
             it.keywordData.forEach { data ->
                 data.onChecked = true
