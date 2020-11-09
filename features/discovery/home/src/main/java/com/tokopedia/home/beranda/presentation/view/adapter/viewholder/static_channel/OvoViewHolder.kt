@@ -101,8 +101,10 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
+        containerOvo.weightSum = 7f
 //        if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
             renderBebasOngkirSection(element)
+            containerOvo.weightSum = 0f
 //        }
     }
 
@@ -382,15 +384,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                                 else
                                     tokopointsDrawerHomeData.mainPageTitle
                         )
-                        if(tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent.first().textAttributes?.text?.contains(BEBAS_ONGKIR_TYPE, ignoreCase = true) == true){
-                            OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
-                        } else if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes?.text?.isNotEmpty() == true) {
-                            OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
-                        } else {
-                            OvoWidgetTracking.sendTokopointTrackerClick()
-                        }
+                        OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
                     }
                 }
             }
