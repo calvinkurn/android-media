@@ -265,12 +265,7 @@ object DeeplinkMapperMerchant {
     fun getRegisteredProductDetail(deeplink: String): String {
         val parsedUri = Uri.parse(deeplink)
         val segments = parsedUri.pathSegments
-        val layoutId = parsedUri.getQueryParameter("layoutId") ?: ""
-        val productDetailInternal = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, segments[0])
-        return Uri.parse(productDetailInternal)
-                .buildUpon()
-                .appendQueryParameter("layoutId", layoutId)
-                .build()
-                .toString()
+
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, segments[0])
     }
 }
