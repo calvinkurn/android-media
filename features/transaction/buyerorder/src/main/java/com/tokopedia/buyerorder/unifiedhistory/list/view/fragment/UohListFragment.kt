@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
@@ -321,11 +322,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         observingOrderHistory()
         observingRecommendationList()
         observingFinishOrder()
-        observingAtc()
+        observingAtcMulti()
         observingLsFinishOrder()
         observingFlightResendEmail()
         observingTrainResendEmail()
         observingRechargeSetFail()
+        observingAtc()
     }
 
     private fun prepareLayout() {
@@ -493,8 +495,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
-    private fun observingAtc() {
-        uohListViewModel.atcResult.observe(this, androidx.lifecycle.Observer {
+    private fun observingAtcMulti() {
+        uohListViewModel.atcMultiResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -596,6 +598,24 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                }
+            }
+        })
+    }
+
+    private fun observingAtc() {
+        uohListViewModel.atcResult.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                is Success -> {
+                    val msg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                    if (it.data.data.success == 1) {
+                        showToasterAtc(msg, Toaster.TYPE_NORMAL)
+                    } else {
+                        showToaster(msg, Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -1569,7 +1589,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
-        val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
+        /*val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
         listParamAtcMulti.add(AddToCartMultiParam(
                 productId = recommendationItem.productId,
                 productName = recommendationItem.name,
@@ -1578,8 +1598,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 notes = "",
                 shopId = recommendationItem.shopId,
                 category = recommendationItem.categoryBreadcrumbs))
-        uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+        uohListViewModel.doAtcMulti(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)*/
 
+        val atcParam = AddToCartRequestParams(
+                productId = recommendationItem.productId.toLong(),
+                productName = recommendationItem.name,
+                price = recommendationItem.priceInt.toString(),
+                quantity = recommendationItem.quantity,
+                shopId = recommendationItem.shopId,
+                category = recommendationItem.categoryBreadcrumbs)
+        uohListViewModel.doAtc(atcParam)
         // analytics
         trackAtcRecommendationItem(recommendationItem)
     }
@@ -1656,7 +1684,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            uohListViewModel.doAtc(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+            uohListViewModel.doAtcMulti(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()

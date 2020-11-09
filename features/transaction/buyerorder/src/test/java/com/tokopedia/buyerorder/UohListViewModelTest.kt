@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.JsonArray
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
@@ -243,11 +242,11 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtc("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Success)
-        assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.success == 1)
+        assert(uohListViewModel.atcMultiResult.value is Success)
+        assert((uohListViewModel.atcMultiResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.success == 1)
     }
 
     @Test
@@ -258,10 +257,10 @@ class UohListViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.doAtc("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Fail)
+        assert(uohListViewModel.atcMultiResult.value is Fail)
     }
 
     @Test
@@ -272,11 +271,11 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(1, listMsg))))
 
         //when
-        uohListViewModel.doAtc("", "", arrayListOf())
+        uohListViewModel.doAtcMulti("", "", arrayListOf())
 
         //then
-        assert(uohListViewModel.atcResult.value is Success)
-        assert((uohListViewModel.atcResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
+        assert(uohListViewModel.atcMultiResult.value is Success)
+        assert((uohListViewModel.atcMultiResult.value as Success<AtcMultiData>).data.atcMulti.buyAgainData.message.isNotEmpty())
     }
 
     // lsprint
