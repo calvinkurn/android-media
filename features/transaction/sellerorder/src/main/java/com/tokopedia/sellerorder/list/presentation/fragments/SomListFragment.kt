@@ -1363,7 +1363,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         this.isResetFilter = isReset
         viewModel.updateGetOrderListParams(filterData)
         viewModel.updateSomListFilterUi(somFilterUiModelList)
-        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList, filterDate)
         val selectedStatusFilterKey = somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {
@@ -1375,14 +1375,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
                 somListSortFilterTab.selectTab(it)
-                refreshOrderList()
             } else {
-                if(isReset) {
-                    somListSortFilterTab.updateTabs(somListFilter.statusList)
-                }
-                somListSortFilterTab.updateCounterSortFilter()
-                refreshOrderList()
+                somListSortFilterTab.show(somListFilter)
             }
+            refreshOrderList()
         }
     }
 }

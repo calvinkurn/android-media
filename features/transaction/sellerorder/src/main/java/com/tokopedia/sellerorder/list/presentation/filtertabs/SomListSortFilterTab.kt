@@ -121,7 +121,7 @@ class SomListSortFilterTab(
         getDeepChildOffset(mainParent, parentGroup.parent, parentGroup, accumulatedOffset)
     }
 
-    fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
+    fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>, filterDate: String) {
         var count = 0
         somListFilterUiModel.forEach {
             if(it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
@@ -130,6 +130,7 @@ class SomListSortFilterTab(
                 }
             }
         }
+        if(filterDate.isNotBlank()) count += 1
         selectedCount = count
     }
 
