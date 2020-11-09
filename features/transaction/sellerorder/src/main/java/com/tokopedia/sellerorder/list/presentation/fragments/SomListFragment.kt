@@ -296,7 +296,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_DETAIL -> handleSomDetailActivityResult(resultCode, data)
-            REQUEST_FILTER -> handleSomFilterActivityResult(resultCode, data)
             REQUEST_CONFIRM_SHIPPING -> handleSomConfirmShippingActivityResult(resultCode, data)
             REQUEST_CONFIRM_REQUEST_PICKUP -> handleSomRequestPickUpActivityResult(resultCode, data)
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -620,7 +619,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Success -> {
                     if (adapter.data.filterIsInstance<SomListEmptyStateUiModel>().isNotEmpty()) {
                         showEmptyState()
-                        if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
+                        rvSomList.show()
                     }
                 }
                 is Fail -> showToasterError(view)
@@ -837,6 +836,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 toggleBulkAction()
                 toggleBulkActionButtonVisibility()
                 toggleBulkActionCheckboxVisibility()
+                toggleTvSomListBulkText()
                 loadFilters()
                 if (shouldReloadOrderListImmediately()) {
                     loadOrderList()
@@ -865,6 +865,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     toggleBulkAction()
                     toggleBulkActionButtonVisibility()
                     toggleBulkActionCheckboxVisibility()
+                    toggleTvSomListBulkText()
                     loadFilters()
                     if (shouldReloadOrderListImmediately()) {
                         loadOrderList()
@@ -981,6 +982,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             updateOrderCounter()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
+            toggleTvSomListBulkText()
         }
 
         checkBoxBulkAction.setOnClickListener {
@@ -1002,6 +1004,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    private fun toggleTvSomListBulkText() {
+        val textResId = if (viewModel.isMultiSelectEnabled) R.string.som_list_multi_select_cancel else R.string.som_list_multi_select
+        tvSomListBulk.text = getString(textResId)
+    }
+
     private fun updateOrderCounter() {
         val text = if (viewModel.isMultiSelectEnabled) {
             val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
@@ -1010,10 +1017,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
         }
         tvSomListOrderCounter.text = text
-    }
-
-    private fun handleSomFilterActivityResult(resultCode: Int, data: Intent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun handleSomDetailActivityResult(resultCode: Int, data: Intent?) {

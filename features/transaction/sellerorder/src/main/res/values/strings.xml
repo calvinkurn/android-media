@@ -374,6 +374,7 @@
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
+    <string name="som_list_multi_select_cancel">Batalkan</string>
     <string name="som_list_order_courier_label">Kurir:</string>
     <string name="som_list_order_counter">%1$d Pesanan</string>
     <string name="som_list_order_counter_multi_select_enabled">%1$d Pesanan dipilih</string>
