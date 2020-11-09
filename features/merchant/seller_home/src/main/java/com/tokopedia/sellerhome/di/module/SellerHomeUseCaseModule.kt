@@ -1,19 +1,13 @@
 package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.ShopStatusTypeUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsAutoTopupUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhomecommon.domain.mapper.*
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -136,6 +130,15 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideAnnouncementDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: AnnouncementMapper
+    ): GetAnnouncementDataUseCase {
+        return GetAnnouncementDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
             mapper: TickerMapper
@@ -144,24 +147,24 @@ class SellerHomeUseCaseModule {
     @SellerHomeScope
     @Provides
     fun provideGetAllShopInfoUseCase(
-        userSession: UserSessionInterface,
-        balanceInfoUseCase: BalanceInfoUseCase,
-        getShopBadgeUseCase: GetShopBadgeUseCase,
-        getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-        shopStatusTypeUseCase: ShopStatusTypeUseCase,
-        topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
-        topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
-        dispatcher: SellerHomeCoroutineDispatcher
+            userSession: UserSessionInterface,
+            balanceInfoUseCase: BalanceInfoUseCase,
+            getShopBadgeUseCase: GetShopBadgeUseCase,
+            getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
+            shopStatusTypeUseCase: ShopStatusTypeUseCase,
+            topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
+            topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
+            dispatcher: SellerHomeCoroutineDispatcher
     ): GetAllShopInfoUseCase {
         return GetAllShopInfoUseCase(
-            userSession,
-            balanceInfoUseCase,
-            getShopBadgeUseCase,
-            getShopTotalFollowersUseCase,
-            shopStatusTypeUseCase,
-            topAdsAutoTopupUseCase,
-            topAdsDashboardDepositUseCase,
-            dispatcher
+                userSession,
+                balanceInfoUseCase,
+                getShopBadgeUseCase,
+                getShopTotalFollowersUseCase,
+                shopStatusTypeUseCase,
+                topAdsAutoTopupUseCase,
+                topAdsDashboardDepositUseCase,
+                dispatcher
         )
     }
 }

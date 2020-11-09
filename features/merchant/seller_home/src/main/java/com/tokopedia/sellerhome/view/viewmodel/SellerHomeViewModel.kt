@@ -39,6 +39,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
+        private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: SellerHomeCoroutineDispatcher
 ) : CustomBaseViewModel(dispatcher.io()) {
@@ -73,6 +74,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
     private val _multiLineGraphWidgetData = MutableLiveData<Result<List<MultiLineGraphDataUiModel>>>()
+    private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -98,6 +100,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _barChartWidgetData
     val multiLineGraphWidgetData: LiveData<Result<List<MultiLineGraphDataUiModel>>>
         get() = _multiLineGraphWidgetData
+    val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
+        get() = _announcementWidgetData
 
     private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
@@ -204,7 +208,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getMultiLineGraphData(dataKeys: List<String>) {
+    fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io()) {
                 getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -213,6 +217,18 @@ class SellerHomeViewModel @Inject constructor(
             _multiLineGraphWidgetData.postValue(result)
         }, onError = {
             _multiLineGraphWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getAnnouncementWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io()) {
+                getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+                return@withContext getAnnouncementUseCase.get().executeOnBackground()
+            })
+            _announcementWidgetData.postValue(result)
+        }, onError = {
+            _announcementWidgetData.postValue(Fail(it))
         })
     }
 

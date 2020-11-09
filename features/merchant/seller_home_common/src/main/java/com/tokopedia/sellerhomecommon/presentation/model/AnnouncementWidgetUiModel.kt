@@ -16,13 +16,13 @@ data class AnnouncementWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
-        override var data: BaseDataUiModel?,
+        override var data: AnnouncementDataUiModel?,
         override val impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean
-) : BaseWidgetUiModel<BaseDataUiModel> {
-    
+) : BaseWidgetUiModel<AnnouncementDataUiModel> {
+
     override fun type(typeFactory: WidgetAdapterFactory): Int {
         return typeFactory.type(this)
     }

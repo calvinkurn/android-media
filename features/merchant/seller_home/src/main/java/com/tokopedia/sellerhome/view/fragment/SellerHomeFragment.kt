@@ -29,6 +29,7 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.SellerHomeTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
@@ -124,6 +125,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePieChart: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeBarChart: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomeMultiLineGraph: PerformanceMonitoring? = null
+    private var performanceMonitoringAnnouncement: PerformanceMonitoring? = null
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
@@ -157,6 +159,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.pieChartWidgetData, WidgetType.PIE_CHART)
         observeWidgetData(sellerHomeViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
+        observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickerLiveData()
         context?.let { UpdateShopActiveService.startService(it) }
     }
@@ -374,8 +377,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgets.onEach { it.isLoaded = true }
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
         performanceMonitoringSellerHomeMultiLineGraph = PerformanceMonitoring.start(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getMultiLineGraphData(dataKeys)
+        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
     }
+
+    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.onEach { it.isLoaded = true }
+        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        performanceMonitoringAnnouncement = PerformanceMonitoring.start(SELLER_HOME_ANNOUNCEMENT_TRACE)
+        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
+    }
+
+
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
@@ -582,6 +594,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets = widgets.groupBy { it.widgetType }
+        groupedWidgets[WidgetType.ANNOUNCEMENT]?.run { getAnnouncementData(this) }
         groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
         groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
         groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
@@ -706,6 +719,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             WidgetType.PIE_CHART -> performanceMonitoringSellerHomePieChart?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringSellerHomeBarChart?.stopTrace()
             WidgetType.MULTI_LINE_GRAPH -> performanceMonitoringSellerHomeMultiLineGraph?.stopTrace()
+            WidgetType.ANNOUNCEMENT -> performanceMonitoringAnnouncement?.stopTrace()
         }
     }
 

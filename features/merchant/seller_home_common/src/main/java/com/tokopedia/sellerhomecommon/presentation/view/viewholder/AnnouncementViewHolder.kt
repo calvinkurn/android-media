@@ -1,9 +1,14 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import kotlinx.android.synthetic.main.shc_announcement_widget.view.*
@@ -23,14 +28,48 @@ class AnnouncementViewHolder(
     }
 
     override fun bind(element: AnnouncementWidgetUiModel) {
+        val data = element.data
+        when {
+            data == null -> showLoadingState()
+            data.error.isNotBlank() -> {
+                //remove widget if state is error
+                listener.removeWidget(adapterPosition, element)
+            }
+            else -> showSuccessState(element)
+        }
+    }
+
+    private fun showSuccessState(element: AnnouncementWidgetUiModel) {
         with(itemView) {
-            tvShcAnnouncementTitle.text = element.title
-            tvShcAnnouncementSubTitle.text = element.subtitle
+            shcAnnouncementLoadingState.gone()
+            shcAnnouncementSuccessState.visible()
+
+            val selectableItemBg = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
+                    selectableItemBg, true)
+            shcAnnouncementSuccessState.setBackgroundResource(selectableItemBg.resourceId)
+
+            tvShcAnnouncementTitle.text = element.data?.title
+            tvShcAnnouncementSubTitle.text = element.data?.subtitle
             icuShcAnnouncement.setImage(IconUnify.CHEVRON_RIGHT)
 
-            setOnClickListener {
+            ImageHandler.loadImageRounded(context, imgShcAnnouncement, element.data?.imgUrl, 0f)
 
+            val appLink = element.data?.appLink.orEmpty()
+            setOnClickListener {
+                setOnCtaClick(appLink)
             }
+        }
+    }
+
+    private fun setOnCtaClick(appLink: String) {
+        RouteManager.route(itemView.context, appLink)
+    }
+
+    private fun showLoadingState() {
+        with(itemView) {
+            shcAnnouncementSuccessState.gone()
+            shcAnnouncementLoadingState.visible()
         }
     }
 
