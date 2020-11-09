@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.internal
+package com.tokopedia.seamless_login_common.internal
 
 object SeamlessLoginConstant {
 

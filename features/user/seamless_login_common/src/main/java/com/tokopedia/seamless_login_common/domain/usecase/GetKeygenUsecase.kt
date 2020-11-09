@@ -1,11 +1,11 @@
-package com.tokopedia.seamless_login.domain.usecase
+package com.tokopedia.seamless_login_common.domain.usecase
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seamless_login.R
-import com.tokopedia.seamless_login.data.KeyResponse
+import com.tokopedia.seamless_login_common.R
+import com.tokopedia.seamless_login_common.data.KeyResponse
 import javax.inject.Inject
 
 /**

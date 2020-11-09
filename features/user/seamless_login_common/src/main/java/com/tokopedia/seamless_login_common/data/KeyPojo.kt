@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.data
+package com.tokopedia.seamless_login_common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

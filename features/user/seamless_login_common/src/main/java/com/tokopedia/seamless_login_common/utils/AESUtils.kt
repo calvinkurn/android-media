@@ -1,4 +1,4 @@
-package com.tokopedia.seamless_login.utils
+package com.tokopedia.seamless_login_common.utils
 
 import android.util.Base64
 import java.security.MessageDigest
