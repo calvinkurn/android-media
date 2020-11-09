@@ -20,8 +20,8 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>) {
         this.data = shippingCourierUiModels.toMutableList()
-        if (shippingCourierUiModels[0].serviceData.serviceName == "Instan") this.data.add(0, NotifierModel())
-        if (shippingCourierUiModels[0].serviceData.serviceName == "Same Day") this.data.add(0, NotifierModelSameDay())
+        if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(0, NotifierModel())
+        if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(0, NotifierModelSameDay())
         notifyDataSetChanged()
     }
 
@@ -58,6 +58,11 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is NotifierViewHolderSameDay -> holder.bindData()
             is NotifierViewHolderInstant -> holder.bindData()
         }
+    }
+
+    companion object {
+        private const val INSTAN_VIEW_TYPE = "Instan"
+        private const val SAME_DAY_VIEW_TYPE = "Same Day"
     }
 
 }

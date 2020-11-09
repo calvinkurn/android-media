@@ -82,6 +82,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));

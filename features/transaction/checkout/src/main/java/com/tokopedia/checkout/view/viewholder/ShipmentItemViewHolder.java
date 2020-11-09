@@ -744,8 +744,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 // Is normal shipping
                 layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
                 layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
-
-                /*here sam*/
                 TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), labelSelectedShippingDuration.getContext().getString(R.string.content_desc_label_selected_shipping_duration));
                 labelSelectedShippingDuration.setOnClickListener(
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -760,34 +758,27 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         )) + ")";
 
                 if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
-                    labelSelectedShippingCourier.setText(courierName);
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, courierName, labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                     labelSelectedShippingPriceorDuration.setText(selectedCourierItemData.getEtaText());
                 } else if (selectedCourierItemData.getEtaErrorCode() == 0 && selectedCourierItemData.getEtaText().isEmpty()) {
-                    labelSelectedShippingCourier.setText(courierName);
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, courierName, labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
+
                     labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
                 }
                 else {
-                    labelSelectedShippingCourier.setText(selectedCourierItemData.getName());
+                    TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
                     labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             selectedCourierItemData.getShipperPrice(), false
                     )));
                 }
 
                 labelSelectedShippingPriceorDuration.setOnClickListener(
-
-                        /*here sam*/
-                TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
-                labelSelectedShippingPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShipperPrice(), false
-                )));
-                labelSelectedShippingPrice.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 labelSelectedShippingCourier.setOnClickListener(
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
                 iconChevronChooseCourier.setOnClickListener(
-
                         getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
                 );
 
