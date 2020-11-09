@@ -8,9 +8,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.data.model.ShowcaseItem
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetShopShowCasesUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -22,6 +24,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -36,7 +39,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase
+        private val validateProductUseCase: ValidateProductUseCase,
+        private val getShopShowCasesUseCase: GetShopShowCasesUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -44,6 +48,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAdding = false
 
     var isDrafting = false
+
+    var isReloadingShowCase = false
 
     var isFirstMoved = false
 
@@ -54,6 +60,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val hasTransaction get() = productInputModel.itemSold > 0
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
+
+    var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
 
@@ -146,6 +154,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
+
+    private val mShopShowCases = MutableLiveData<Result<List<ShowcaseItem>>>()
+    val shopShowCases: LiveData<Result<List<ShowcaseItem>>>
+        get() = mShopShowCases
 
     private fun isInputValid(): Boolean {
 
@@ -411,6 +423,10 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
+        productShowCases = selectedShowcaseList
+    }
+
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO) {
@@ -431,6 +447,16 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
+        })
+    }
+
+    fun getShopShowCasesUseCase() {
+        launchCatchError(block = {
+            mShopShowCases.value = Success(withContext(Dispatchers.IO) {
+                getShopShowCasesUseCase.executeOnBackground()
+            })
+        }, onError = {
+            mShopShowCases.value = Fail(it)
         })
     }
 }
