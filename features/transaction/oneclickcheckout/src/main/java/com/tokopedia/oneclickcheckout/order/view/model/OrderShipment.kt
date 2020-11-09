@@ -59,6 +59,12 @@ data class OrderShipment(
         } else shippingPrice ?: 0
     }
 
+    fun getRealShippingPrice(): Int {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.discountedRate
+        } else shippingPrice ?: 0
+    }
+
     fun getRealInsurancePrice(): Int {
         return if (isCheckInsurance && insuranceData != null) {
             insuranceData.insurancePrice

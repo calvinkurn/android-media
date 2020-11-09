@@ -28,7 +28,8 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_SETTINGS_DUPLICATE = "$CLICK_SETTINGS_OPTION - duplicate product"
     const val EVENT_ACTION_CLICK_SETTINGS_REMINDER = "$CLICK_SETTINGS_OPTION - stock reminder"
     const val EVENT_ACTION_CLICK_SETTINGS_DELETE = "$CLICK_SETTINGS_OPTION - delete product"
-    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "$CLICK_SETTINGS_OPTION - topads"
+    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "click advertise the product"
+    const val EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL = "click ads detail"
     const val EVENT_ACTION_CLICK_SETTINGS_CASHBACK = "$CLICK_SETTINGS_OPTION - cashback settings"
     const val EVENT_ACTION_CLICK_SETTINGS_FEATURED = "$CLICK_SETTINGS_OPTION - featured product"
 

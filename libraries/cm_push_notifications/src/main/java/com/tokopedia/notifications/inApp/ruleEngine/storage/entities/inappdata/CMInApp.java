@@ -108,6 +108,9 @@ public class CMInApp {
     @ColumnInfo(name = "is_interacted")
     private boolean isInteracted = false;
 
+    @ColumnInfo(name = "is_amplification")
+    private boolean isAmplification = false;
+
     @ColumnInfo(name = "customValues")
     private String customValues = "";
 
@@ -280,5 +283,13 @@ public class CMInApp {
 
     public String getCustomValues() {
         return customValues;
+    }
+
+    public boolean isAmplification() {
+        return isAmplification;
+    }
+
+    public void setAmplification(boolean amplification) {
+        isAmplification = amplification;
     }
 }

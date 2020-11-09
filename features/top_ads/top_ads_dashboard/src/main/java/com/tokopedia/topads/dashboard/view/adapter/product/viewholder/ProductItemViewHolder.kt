@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 
@@ -36,7 +36,11 @@ class ProductItemViewHolder(val view: View,
                 view.check_box.visibility = View.GONE
             }
             view.check_box.isChecked = item.isChecked
-            view.btn_switch.isChecked = it.data.adStatus == STATUS_ACTIVE || it.data.adStatus == STATUS_TIDAK_TAMPIL
+            view.btn_switch.setOnCheckedChangeListener(null)
+            if (!item.isChanged)
+                view.btn_switch.isChecked = it.data.adStatus == STATUS_ACTIVE || it.data.adStatus == STATUS_TIDAK_TAMPIL
+            else
+                view.btn_switch.isChecked = item.valueChanged
             ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
             view.product_name.text = it.data.productName
             if (statsData.isNotEmpty() && adapterPosition < statsData.size) {
@@ -51,6 +55,8 @@ class ProductItemViewHolder(val view: View,
             view.img_menu.visibility = View.INVISIBLE
             view.progress_layout.visibility = View.GONE
             view.btn_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+                item.isChanged = true
+                item.valueChanged = isChecked
                 onSwitchAction.invoke(adapterPosition, isChecked)
             }
             if (!view.check_box.isChecked) {

@@ -32,7 +32,15 @@ data class Payment(
         @SerializedName("credit_card")
         val creditCard: PaymentCreditCard = PaymentCreditCard(),
         @SerializedName("error_message")
-        val errorMessage: PaymentErrorMessage = PaymentErrorMessage()
+        val errorMessage: PaymentErrorMessage = PaymentErrorMessage(),
+        @SerializedName("ticker_message")
+        val tickerMessage: String = "",
+        @SerializedName("is_enable_next_button")
+        val isEnableNextButton: Boolean = false,
+        @SerializedName("is_disable_pay_button")
+        val isDisablePayButton: Boolean = false,
+        @SerializedName("is_ovo_only_campaign")
+        val isOvoOnlyCampaign: Boolean = false
 )
 
 data class PaymentErrorMessage(

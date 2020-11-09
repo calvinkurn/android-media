@@ -10,7 +10,7 @@ import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 
 /**
  * @author by jessica on 15/06/20

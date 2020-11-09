@@ -125,7 +125,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
             }
         }
-
         initInjector()
         intent.extras?.let {
             setupBundlePass(it)

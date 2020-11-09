@@ -276,16 +276,6 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         verifyIsFollowingEquals(expected)
     }
 
-    @Test
-    fun `when set IsMyShop should set to expected value`() {
-        val expected = false
-        val shopId = "13516"
-
-        viewModel.setIsMyShop(shopId)
-
-        assertEquals(expected, viewModel.isMyShop)
-    }
-
     private fun onGetDiscussionData_thenReturn(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
         coEvery { discussionDataByQuestionIDUseCase.executeOnBackground() } returns discussionDataByQuestionIDResponseWrapper
     }
@@ -344,6 +334,14 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     private fun verifyTalkCreateNewCommentUseCaseExecuted() {
         coVerify { talkCreateNewCommentUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkMarkNotFraudUseCaseExecuted() {
+        coVerify { talkMarkNotFraudUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkMarkCommentNotFraudUseCaseExecuted() {
+        coVerify { talkMarkCommentNotFraudUseCase.executeOnBackground() }
     }
 
     private fun verifyDiscussionDataEquals(expectedResponse: Success<DiscussionDataByQuestionIDResponseWrapper>) {

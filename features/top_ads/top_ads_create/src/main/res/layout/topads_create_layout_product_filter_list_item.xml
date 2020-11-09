@@ -36,7 +36,7 @@
         tools:text="@tools:sample/lorem" />
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,7 +45,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_ic_check"
         android:visibility="invisible"
         tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

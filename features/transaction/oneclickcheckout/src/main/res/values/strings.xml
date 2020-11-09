@@ -1,6 +1,7 @@
 <resources>
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="pay">Bayar</string>
+    <string name="continue_pay">Lanjutkan</string>
     <string name="preference_number">Pilihan %1d</string>
     <string name="preference_number_summary">Pilihan</string>
 

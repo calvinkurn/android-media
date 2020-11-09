@@ -4,6 +4,7 @@ object GetDistrictQuery {
     val keroPlacesGetDistrict = """
         query KeroPlacesGetDistrict(${'$'}param: String!, ${'$'}err: Boolean) {
           kero_places_get_district(placeid: ${'$'}param, error_data: ${'$'}err) {
+            error_code
             data {
               title
               formatted_address

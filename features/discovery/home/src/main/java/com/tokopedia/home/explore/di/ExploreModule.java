@@ -3,8 +3,8 @@ package com.tokopedia.home.explore.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;

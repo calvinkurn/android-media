@@ -9,6 +9,7 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_invoice">Invoice</string>
+    <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
     <string name="hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
     <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
@@ -31,7 +32,7 @@
     <string name="key_all_order">all_order</string>
 
     <!--Empty state non topads user-->
-    <string name="empty_peluang_desc_non_topads_no_filter">4 dari 5 seller mendapatkan penjualan pertamanya dengan beriklan menggunakan TopAds</string>
+    <string name="empty_peluang_desc_non_topads_no_filter">Ayo bikin tokomu lebih ramai pembeli dengan beriklan pakai TopAds!</string>
     <string name="empty_peluang_desc_non_topads_with_filter">Ubah filter untuk menemukan pesanan yang sesuai</string>
     <string name="btn_cek_peluang_non_topads">Mulai Beriklan</string>
 
@@ -73,10 +74,13 @@
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="informasi_pembayaran">Informasi Pembayaran</string>
-    <string name="product_price_label">Harga</string>
+    <string name="product_price_label">Total Harga</string>
     <string name="shipping_price_label">Total Ongkos Kirim</string>
-    <string name="insurance_price_label">Asuransi</string>
+    <string name="insurance_price_label">Biaya Asuransi</string>
     <string name="additional_price_label">Biaya Tambahan Penjual</string>
+    <string name="purchase_protection_fee_label">Biaya Proteksi Produk (%1$d Barang)</string>
+    <string name="readiness_insurance_fee_label">Jaminan Ready Stock (%1$d Barang)</string>
+    <string name="cod_fee_label">Biaya Bayar Ditempat</string>
     <string name="total_price_label">Total Pembayaran</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="tolak_pesanan">Tolak Pesanan</string>
@@ -302,4 +306,50 @@
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
+
+    <!--CONTENT DESC-->
+    <string name="content_desc_label_status_order">text status pesanan</string>
+    <string name="content_desc_label_reject">text menu</string>
+    <string name="content_desc_tf_no_resi">input nomor resi</string>
+    <string name="content_desc_label">text kurir pengiriman</string>
+    <string name="content_desc_label_choosen_courier">text kurir terpilih</string>
+    <string name="content_desc_switch_change_courier">button ganti kurir</string>
+    <string name="content_desc_btn_confirm_shipping">button konirmasi</string>
+    <string name="content_desc_tf_cancel_notes">input alasan pembatalan</string>
+    <string name="content_desc_btn_cancel_order_canceled">button batal</string>
+    <string name="content_desc_btn_cancel_order_confirmed">button ubah</string>
+    <string name="content_desc_btn_primary">button utama</string>
+    <string name="content_desc_btn_secondary">button three dots</string>
+    <string name="content_desc_filter_action_button">button filter</string>
+    <string name="content_desc_btn_terapkan">button terapkan</string>
+    <string name="content_desc_label_radio">text status</string>
+    <string name="content_desc_btn_simpan">button simpan</string>
+    <string name="content_desc_rl_status">text filter by status</string>
+
+    <!--  waiting payment orders  -->
+    <string name="som_list_coachmark_waiting_payment_order_title">Menunggu pembayaran pembeli</string>
+    <string name="som_list_coachmark_check_and_mange_product_stock_title">Cek dan atur stok produkmu</string>
+    <string name="som_list_coachmark_waiting_payment_order_description">Di sini kamu bisa cek pesanan yang dibayar oleh pembeli. Pesanan gagal bayar atau terbayar saat stok habis tidak akan ditampilkan.</string>
+    <string name="som_list_coachmark_check_and_mange_product_stock_description">Sembari menunggu, kamu bisa atur ketersediaan stok produk untuk memenuhi pesanan yang masuk.</string>
+
+    <string name="som_list_order_waiting_payment_button_text">%1$s (%2$s)</string>
+    <string name="som_list_waiting_payment_order_max_counter">99+</string>
+
+    <string name="som_waiting_payment_orders_ticker_description">Atur ketersediaan stok produkmu sembari menunggu pembayaran. Pesanan yang gagal bayar atau terbayar saat stok habis tidak akan ditampilkan. &lt;a href="#"&gt;Pelajari Lebih Lanjut&lt;/a&gt;</string>
+
+    <string name="bottomsheet_waiting_payment_order_header">Sembari menunggu pembayaran dari pembeli, kamu bisa cek ketersediaan dan isi kembali stok produkmu. &lt;a href="https://seller.tokopedia.com/edu/articles/"&gt;Selengkapnya&lt;/a&gt;</string>
+    <string name="bottomsheet_waiting_payment_order_tips_title">Tips</string>
+    <string name="bottomsheet_waiting_payment_tips_best_selling_description">Barang yang sering dicari pembeli cenderung cepat laku dan akan hilang dari daftar tunggu saat pembayaran terverifikasi.</string>
+    <string name="bottomsheet_waiting_payment_tips_empty_stock_description">Jika pembayaran terverifikasi saat stok habis, pesanan akan otomatis dibatalkan.</string>
+
+    <string name="waiting_payment_orders_less_product">Lebih Sedikit</string>
+    <string name="waiting_payment_orders_more_products">Tampilkan Lebih Banyak</string>
+
+    <string name="waiting_payment_orders_product_quantity_and_price">%1$d x %2$s</string>
+
+    <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
+    <string name="btn_reload">Muat Ulang</string>
+
+    <string name="label_payment_deadline">Batas Pembayaran:</string>
+    <string name="label_buyer_and_place_name">Pembeli:</string>
 </resources>

@@ -2,28 +2,54 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_msg_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl2"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_header_info"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/dp_topchat_14"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_topchat_broadcast_grey" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:text="@string/title_topchat_reply_from_broadcast"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fx_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginLeft="@dimen/dp_topchat_12"
         android:gravity="left"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_header_info"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
             android:id="@+id/fxChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_topchat_left_chat_message"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/dp_topchat_10"
             android:paddingRight="@dimen/spacing_lvl4"

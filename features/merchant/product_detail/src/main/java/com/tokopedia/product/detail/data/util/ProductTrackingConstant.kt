@@ -34,6 +34,7 @@ object ProductTrackingConstant {
         const val KEY_TICKER_TYPE = "tickerType"
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
+        const val KEY_CATEGORY_ID = "categoryId"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -76,6 +77,7 @@ object ProductTrackingConstant {
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val KEY_DISCUSSION_USER_ID = "userId"
+        const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
@@ -89,6 +91,8 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_98 = "dimension98"
 
+        const val CONTENT_TYPE = "product"
+        const val BRANCH_QUANTITY ="1"
     }
     object Action {
         const val CLICK = "click"
@@ -115,6 +119,7 @@ object ProductTrackingConstant {
         const val CLICK_SEARCH_BOX = "click search box"
         const val CLICK_RIBBON_TRADE_IN = "click - ribbon trade in"
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
+        const val CLICK_ANNOTATION_RECOM_CHIP = "click annotation chips"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_CATEGORY = "click - category on informasi produk"
@@ -189,6 +194,7 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"

@@ -7,4 +7,5 @@
     <color name="text_color_grey">#ae31353b</color>
     <color name="text_color_orange">#fa591d</color>
     <color name="clr_FF5C84">#FF5C84</color>
+    <color name="showcase_picker_disable_color">#31353B</color>
 </resources>

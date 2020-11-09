@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.data.datastore
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
  * Created by jegul on 23/06/20

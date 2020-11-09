@@ -39,7 +39,7 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
@@ -211,9 +211,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun loadData(page: Int) {
         showOnlyList(true)
-        destinationViewModel.getHotelRecommendation(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_popular),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_recent_search))
+        destinationViewModel.getHotelRecommendation()
     }
 
     private fun showOnlyList(showListOnly: Boolean) {

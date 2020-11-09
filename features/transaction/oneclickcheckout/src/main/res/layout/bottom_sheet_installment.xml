@@ -33,16 +33,17 @@
             android:background="@color/background_bottom_sheet_installment"
             android:paddingBottom="@dimen/dp_16">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_installment_terms"
                 android:layout_width="@dimen/dp_26"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                app:srcCompat="@drawable/ic_installment_term"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_corner_radius="0"
+                app:unify_image_placeholder="@drawable/ic_installment_term"
+                app:unify_image_type="rect"
                 tools:ignore="ContentDescription" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -60,17 +61,18 @@
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_expand_terms"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:background="?attr/selectableItemBackground"
                 android:rotation="180"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_installment_terms"
-                app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module"
+                app:unify_image_corner_radius="0"
+                app:unify_image_placeholder="@drawable/ic_arrow_drop_down_grey_checkout_module"
+                app:unify_image_type="rect"
                 tools:ignore="ContentDescription" />
 
             <WebView

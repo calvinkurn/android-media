@@ -28,7 +28,7 @@ class AnimatedStarsView @JvmOverloads constructor(
 
     fun resetStars() {
         showingNormalAnim = true
-        setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_star))
+        setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_star_review_pending))
     }
 
     fun morph() {

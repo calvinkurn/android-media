@@ -19,11 +19,11 @@ import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.util.extension.doOnPreDraw
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import javax.inject.Inject
 
 class PlayEtalaseListFragment @Inject constructor(

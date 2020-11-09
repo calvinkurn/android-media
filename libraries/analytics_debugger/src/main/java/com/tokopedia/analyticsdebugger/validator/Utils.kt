@@ -7,7 +7,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-internal object Utils {
+object Utils {
 
     fun getJsonDataFromAsset(context: Context, fileName: String): String? {
         val jsonString: String
@@ -20,10 +20,19 @@ internal object Utils {
         return jsonString
     }
 
+    //todo Rahul - need better logic to support branch-io and appsflyer events
     fun getAnalyticsName(item: Map<String, Any>): String {
         return if (item.containsKey("eventAction")) item["eventAction"] as String
-        else if (item.isNotEmpty()) item[item.keys.first()] as String
-        else ""
+        else if (item.isNotEmpty()) {
+            val key = item.keys.find { key ->
+                item[key] is String
+            }.orEmpty()
+
+            if (key.isNotEmpty()) {
+                item[key] as String
+            } else ""
+
+        } else ""
     }
 
     fun listAssetFiles(c: Context, rootPath: String): List<String> {

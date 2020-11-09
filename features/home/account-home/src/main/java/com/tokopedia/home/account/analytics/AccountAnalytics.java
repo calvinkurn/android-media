@@ -35,12 +35,15 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_FIELD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.BUSINESS_UNIT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENCY_CODE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENT_SITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ATTRIBUTION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_BRAND;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_CATEGORY;
@@ -57,11 +60,17 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_DALAM_PROSES;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ETICKET_EVOUCHER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_MENUNGGU_PEMBAYARAN;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_SEMUA_TRANSAKSI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_ACCOUNT_PAGE_BUYER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY_AKUN_PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_PRODUCT_VIEW;
@@ -72,6 +81,9 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_CREATI
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_SHOP_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
@@ -90,8 +102,11 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_
 import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
 import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.USER_BELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.USER_PLATFORM;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_ACCOUNT_PROMOTION_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_BEBAS_ONGKIR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.VALUE_PRODUCT_RECOMMENDATION_LIST;
@@ -116,6 +131,22 @@ public class AccountAnalytics {
     public AccountAnalytics(Context context) {
         this.context = context;
         userSessionInterface = new UserSession(context);
+    }
+
+    public void eventTroubleshooterClicked() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> map = DataLayer.mapOf(
+                EVENT, EVENT_NAME_CLICK_NOTIF_CENTER,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, EVENT_ACTION_TS_USR_MENU,
+                EVENT_LABEL, EMPTY,
+                FIELD_USER_ID, userSessionInterface.getUserId(),
+                FIELD_SHOP_ID, userSessionInterface.getShopId()
+
+        );
+
+        analytics.sendEnhanceEcommerceEvent(map);
     }
 
     public void eventTokopediaPayClick(String event, String category, String action, String label) {
@@ -271,6 +302,17 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickSignInByPushNotifSetting() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_OTP,
+                String.format("%s %s", ACCOUNT, SETTING),
+                "click masuk lewat notifikasi",
+                ""
+        ));
+    }
+
     public void eventClickKYCSellerAccountPage(int status) {
 
         final Analytics analytics = TrackApp.getInstance().getGTM();
@@ -346,6 +388,70 @@ public class AccountAnalytics {
         eventTracking.put(EVENT_CATEGORY, TOP_NAV);
         eventTracking.put(EVENT_ACTION, String.format("%s %s", AccountConstants.Analytics.CLICK, INBOX));
         eventTracking.put(EVENT_LABEL, "");
+
+        analytics.sendGeneralEvent(eventTracking);
+    }
+
+     public void clickMenungguPembayaranUoh(String userId) {
+         final Analytics analytics = TrackApp.getInstance().getGTM();
+
+         Map<String, Object> eventTracking = new HashMap<>();
+         eventTracking.put(SCREEN_NAME, USER_BELI);
+         eventTracking.put(EVENT, EVENT_CLICK_ACCOUNT);
+         eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI);
+         eventTracking.put(EVENT_ACTION, EVENT_ACTION_MENUNGGU_PEMBAYARAN);
+         eventTracking.put(EVENT_LABEL, "");
+         eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+         eventTracking.put(FIELD_USER_ID, userId);
+         eventTracking.put(BUSINESS_UNIT, USER_PLATFORM);
+
+         analytics.sendGeneralEvent(eventTracking);
+     }
+
+    public void clickSemuaTransaksiUoh(String userId) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, USER_BELI);
+        eventTracking.put(EVENT, EVENT_CLICK_ACCOUNT);
+        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI);
+        eventTracking.put(EVENT_ACTION, EVENT_ACTION_SEMUA_TRANSAKSI);
+        eventTracking.put(EVENT_LABEL, "");
+        eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventTracking.put(FIELD_USER_ID, userId);
+        eventTracking.put(BUSINESS_UNIT, USER_PLATFORM);
+
+        analytics.sendGeneralEvent(eventTracking);
+    }
+
+    public void clickDalamProsesUoh(String userId) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, USER_BELI);
+        eventTracking.put(EVENT, EVENT_CLICK_ACCOUNT);
+        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI);
+        eventTracking.put(EVENT_ACTION, EVENT_ACTION_DALAM_PROSES);
+        eventTracking.put(EVENT_LABEL, "");
+        eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventTracking.put(FIELD_USER_ID, userId);
+        eventTracking.put(BUSINESS_UNIT, USER_PLATFORM);
+
+        analytics.sendGeneralEvent(eventTracking);
+    }
+
+    public void clickEticketEvoucherUoh(String userId) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, USER_BELI);
+        eventTracking.put(EVENT, EVENT_CLICK_ACCOUNT);
+        eventTracking.put(EVENT_CATEGORY, EVENT_CATEGORY_AKUN_PEMBELI);
+        eventTracking.put(EVENT_ACTION, EVENT_ACTION_ETICKET_EVOUCHER);
+        eventTracking.put(EVENT_LABEL, "");
+        eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventTracking.put(FIELD_USER_ID, userId);
+        eventTracking.put(BUSINESS_UNIT, USER_PLATFORM);
 
         analytics.sendGeneralEvent(eventTracking);
     }
@@ -588,8 +694,8 @@ public class AccountAnalytics {
             ""
         );
 
-        event.put(AccountConstants.Analytics.FIELD_USER_ID, userSessionInterface.getUserId());
-        event.put(AccountConstants.Analytics.FIELD_SHOP_ID, userSessionInterface.getShopId());
+        event.put(FIELD_USER_ID, userSessionInterface.getUserId());
+        event.put(FIELD_SHOP_ID, userSessionInterface.getShopId());
         event.put(AccountConstants.Analytics.FIELD_SHOP_TYPE, getShopType());
 
         analytics.sendGeneralEvent(event);

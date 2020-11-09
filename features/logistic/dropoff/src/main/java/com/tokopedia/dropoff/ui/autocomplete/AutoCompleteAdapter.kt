@@ -44,6 +44,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
+        is Place -> R.layout.item_autocomplete_result
     }
 
     fun setActionListener(listener: ActionListener) {

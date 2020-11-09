@@ -1,6 +1,6 @@
 package com.tokopedia.flight.bookingV3.presentation.activity
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -15,17 +15,12 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-10-23
  */
 
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
-
-    lateinit var userSession: UserSessionInterface
-        @Inject set
 
     override fun getNewFragment(): Fragment {
         val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)
@@ -77,14 +72,14 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         private const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         private const val EXTRA_PRICE = "EXTRA_PRICE"
 
-        fun getCallingIntent(activity: Activity,
+        fun getCallingIntent(context: Context,
                              passDataModel: FlightSearchPassDataModel,
                              departureId: String,
                              departureTerm: String,
                              priceModel: FlightPriceModel,
                              returnId: String = "",
                              returnTerm: String = ""): Intent {
-            val intent = Intent(activity, FlightBookingActivity::class.java)
+            val intent = Intent(context, FlightBookingActivity::class.java)
             intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataModel)
             intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId)

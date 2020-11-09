@@ -32,7 +32,10 @@ class Lego4AutoBannerViewHolder (itemView: View,
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var adapter: Lego4AutoBannerAdapter
 
+    private var isCacheData = false
+
     override fun bind(element: Lego4AutoDataModel) {
+        isCacheData = element.isCache
         setHeaderComponent(element)
         initView(element)
     }
@@ -44,8 +47,10 @@ class Lego4AutoBannerViewHolder (itemView: View,
     private fun initView(element: Lego4AutoDataModel) {
         initRV()
         initItems(element)
-        itemView.addOnImpressionListener(element.channelModel)  {
-            legoListener?.onChannelLegoImpressed(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                legoListener?.onChannelLegoImpressed(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -57,7 +62,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
     }
 
     private fun initItems(element: Lego4AutoDataModel) {
-        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition)
+        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData)
         adapter.addData(element)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()

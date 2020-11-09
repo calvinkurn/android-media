@@ -66,20 +66,20 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun checkApplink(): LiveData<String> = applinkCheck
     fun isPageRefresh(): LiveData<Boolean> = refreshPage
 
-    fun onBannerClicked(position: Int) {
+    fun onBannerClicked(position: Int, context: Context) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
             when (listItem[position].action) {
-                BannerAction.APPLINK.name -> navigation(position, application.applicationContext)
+                BannerAction.APPLINK.name -> navigation(position, context)
                 BannerAction.CODE.name -> copyCodeToClipboard(position)
                 BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
-                BannerAction.LOGIN.name -> loginUser(position)
-                else -> navigation(position, application.applicationContext)
+                BannerAction.LOGIN.name -> loginUser(position, context)
+                else -> navigation(position, context)
             }
         }
     }
 
-    private fun loginUser(position: Int) {
-        if (isUserLoggedIn()) navigation(position, application.applicationContext) else refreshPage.value = true
+    private fun loginUser(position: Int, context: Context) {
+        if (isUserLoggedIn()) navigation(position, context) else refreshPage.value = true
     }
 
     private fun copyCodeToClipboard(position: Int) {
@@ -129,14 +129,16 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     private fun checkUserPushStatus(position: Int) {
-        launchCatchError(block = {
-            val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
-            if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
-                pushBannerSubscription.value = position
-            }
-        }, onError = {
-            it.printStackTrace()
-        })
+        if (isUserLoggedIn()) {
+            launchCatchError(block = {
+                val pushSubscriptionResponse = checkPushStatusUseCase.checkPushStatus(getCampaignId(position))
+                if (pushSubscriptionResponse.notifierCheckReminder?.status == 1) {
+                    pushBannerSubscription.value = position
+                }
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getCampaignId(position: Int): Int {

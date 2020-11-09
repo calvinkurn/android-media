@@ -8,8 +8,8 @@ import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
 import com.tokopedia.seller.search.common.util.CoroutineDispatcherProvider
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
+import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,8 +22,8 @@ class SuggestionSearchViewModel @Inject constructor(
         private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    private val _getSearchSeller = MutableLiveData<Result<List<SellerSearchUiModel>>>()
-    val getSellerSearch: LiveData<Result<List<SellerSearchUiModel>>>
+    private val _getSearchSeller = MutableLiveData<Result<List<BaseSuggestionSearchSeller>>>()
+    val getSellerSearch: LiveData<Result<List<BaseSuggestionSearchSeller>>>
         get() = _getSearchSeller
 
     private val _insertSuccessSearch = MutableLiveData<Result<RegisterSearchUiModel>>()
@@ -34,7 +34,7 @@ class SuggestionSearchViewModel @Inject constructor(
         launchCatchError(block = {
             val responseGetSellerSearch  = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(keyword, shopId, section)
-                GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground(), keyword)
+                GlobalSearchSellerMapper.mapToSellerSearchVisitable(getSellerSearchUseCase.executeOnBackground(), keyword)
             }
             _getSearchSeller.postValue(Success(responseGetSellerSearch))
         }, onError = {

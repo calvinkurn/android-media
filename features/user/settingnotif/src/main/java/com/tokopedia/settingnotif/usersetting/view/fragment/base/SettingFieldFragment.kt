@@ -20,16 +20,20 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics.trackTroubleshooterClicked
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.util.intent
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
+import com.tokopedia.settingnotif.usersetting.view.listener.ActivationItemListener
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
@@ -37,13 +41,15 @@ import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecorati
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER as PUSH_NOTIFICATION_TROUBLESHOOTER
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError as GetSettingError
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError as SetSettingError
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         SettingFieldAdapter.SettingFieldAdapterListener,
-        SectionItemListener {
+        SectionItemListener,
+        ActivationItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
@@ -154,8 +160,9 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onItemClicked() {
+        SellerMigrationTracking.trackClickNotificationSeller(userSession.userId.orEmpty())
         activity?.let {
-            (it as ParentActivity).openSellerFiled()
+            (it as ParentActivity).openPushNotificationFiled()
         }
     }
 
@@ -175,6 +182,21 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
                 if (isRequiredPinnedActivation) {
                     addPinnedActivation(pinnedItem)
                 }
+                disableSwitchComponent()
+            }
+        }
+    }
+
+    protected fun permissionValidationNotification(
+            notificationEnabled: Boolean,
+            pinnedItem: NotificationActivation,
+            lastStateItems: List<ParentSetting>
+    ) {
+        with(settingFieldAdapter) {
+            addPinnedActivation(pinnedItem)
+            if (notificationEnabled) {
+                enableSwitchComponent(lastStateItems)
+            } else {
                 disableSwitchComponent()
             }
         }
@@ -206,7 +228,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl(this, userSession)
+        return SettingFieldTypeFactoryImpl(
+                this,
+                this,
+                userSession
+        )
+    }
+
+    override fun onTroubleshooterClicked() {
+        trackTroubleshooterClicked(userSession.userId, userSession.shopId)
+        context?.let { it.startActivity(it.intent(PUSH_NOTIFICATION_TROUBLESHOOTER)) }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.adapter
 
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -243,6 +244,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductSortFilterUiViewModel?.apply {
             selectedEtalaseId = etalaseId
             selectedEtalaseName = etalaseName
+        }
+        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+    }
+
+    fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
+        shopProductSortFilterUiViewModel?.apply {
+            this.filterIndicatorCounter = filterIndicatorCounter
         }
         notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
     }
@@ -568,13 +576,24 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    fun addShopPageProductChangeGridSection(data: ShopProductChangeGridSectionUiModel) {
-        val isProductChangeGridSectionExists = visitables.any {
-            it::class.java == ShopProductChangeGridSectionUiModel::class.java
-        }
-        if (!isProductChangeGridSectionExists) {
-            visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, data)
-            notifyChangedDataSet()
+    fun updateShopPageProductChangeGridSection(totalProductData: Int) {
+        val gridSectionModel = visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()
+        if (gridSectionModel == null) {
+            if(totalProductData != 0) {
+                visitables.add(getListWithoutProductCardDataAndLoadingMoreModel().size, ShopProductChangeGridSectionUiModel(totalProductData))
+                notifyChangedDataSet()
+            }
+        } else {
+            gridSectionModel.apply {
+                val index = visitables.indexOf(this)
+                if(totalProductData == 0){
+                    visitables.remove(this)
+                    notifyRemovedItem(index)
+                }else{
+                    this.totalProduct = totalProductData
+                    notifyChangedItem(index)
+                }
+            }
         }
     }
 

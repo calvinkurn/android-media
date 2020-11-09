@@ -7,7 +7,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearc
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 import kotlinx.android.synthetic.main.item_initial_search_with_history.view.*
 
-class HistorySearchViewHolder(private val view: View,
+class HistorySearchViewHolder(view: View,
                               private val historySearchListener: HistorySearchListener) :
         AbstractViewHolder<ItemInitialSearchUiModel>(view) {
 
@@ -16,7 +16,7 @@ class HistorySearchViewHolder(private val view: View,
     }
 
     override fun bind(element: ItemInitialSearchUiModel) {
-        with(view) {
+        with(itemView) {
             tvTitleHistory?.text = element.title
 
             ivCloseHistory?.setOnClickListener {

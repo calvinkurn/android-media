@@ -80,7 +80,7 @@ data class ShopInfo(
 
         @SerializedName("activeProduct")
         @Expose
-        val activeProduct: Int = 0,
+        val activeProduct: String = "",
 
         @SerializedName("shopStats")
         @Expose

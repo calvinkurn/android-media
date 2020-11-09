@@ -41,11 +41,20 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
                     null
             )
         }
+
+        fun <T> errorPagination(error: Throwable, data: T? = null): Result<T> {
+            return Result(
+                    Status.ERROR_PAGINATION,
+                    data,
+                    error
+            )
+        }
     }
 
     enum class Status {
         SUCCESS,
         ERROR,
+        ERROR_PAGINATION,
         LOADING
     }
 

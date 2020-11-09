@@ -4,6 +4,9 @@
   "is_multiple": 0,
   "is_coupon_active": 0,
   "is_shipping_recommendation": 1,
+  "ab_test_button": {
+    "enable": false
+  },
   "group_address": [
     {
       "errors": [

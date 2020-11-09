@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 
 data class SearchInspirationCarouselModel(
-        @SerializedName("searchInspirationCarousel")
+        @SerializedName("searchInspirationCarouselV2")
         @Expose
         val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel()
 )

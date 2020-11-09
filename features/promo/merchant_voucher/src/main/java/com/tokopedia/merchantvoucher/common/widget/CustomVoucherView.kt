@@ -110,10 +110,14 @@ open class CustomVoucherView : FrameLayout {
         paint.strokeWidth = 0f
         paint.style = Paint.Style.FILL_AND_STROKE
         paint.strokeJoin = Paint.Join.BEVEL
-        paint.setShadowLayer(10f, 0f, 5f, getShadowColor())
+        paint.setShadowLayer(getShadowRadiusValue(), 0f, getShadowOffsetDx(), getShadowColor())
         canvas.drawPath(pathSmoothJaggedEdgeBackgroundLayout, paint)
         super.onDraw(canvas)
     }
+
+    protected open fun getShadowRadiusValue() = 10f
+
+    protected open fun getShadowOffsetDx() = 5f
 
     @ColorInt
     protected open fun getShadowColor(): Int {

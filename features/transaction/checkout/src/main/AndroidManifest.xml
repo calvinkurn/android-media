@@ -7,13 +7,6 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
-            android:label="@string/checkout_module_title_activity_multiple_address"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <activity
             android:name="com.tokopedia.checkout.view.ShipmentActivity"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"

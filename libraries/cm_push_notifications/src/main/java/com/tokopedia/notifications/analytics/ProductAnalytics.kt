@@ -59,6 +59,22 @@ object ProductAnalytics {
     private const val CHECKOUT_STEP = "1"
     private const val CHECKOUT_OPTION = "checkout page loaded"
 
+
+    fun clickCollapsedBody(
+            userId: String,
+            element: BaseNotificationModel?,
+            product: ProductInfo?
+    ) {
+        sendTracker(mapOf(
+                KEY_EVENT to EVENT_CLICK,
+                KEY_EVENT_CATEGORY to CATEGORY,
+                KEY_EVENT_ACTION to ACTION_CLICK_PUSH_BODY,
+                KEY_EVENT_LABEL to element?.transactionId.toString(),
+                KEY_SHOP_ID to product?.shopId.toString(),
+                KEY_USER_ID to userId
+        ))
+    }
+
     fun impression(
             userId: String,
             element: BaseNotificationModel,

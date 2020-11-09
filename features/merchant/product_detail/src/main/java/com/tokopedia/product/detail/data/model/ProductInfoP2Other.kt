@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
  * Created by Yehezkiel on 27/07/20
  */
 data class ProductInfoP2Other(
-        var imageReviews: List<ImageReviewItem> = listOf(),
-        var helpfulReviews: List<Review> = listOf(),
+        var imageReviews: List<ImageReviewItem>? = null,
+        var helpfulReviews: List<Review>? = null,
         var discussionMostHelpful: DiscussionMostHelpful? = null
 )

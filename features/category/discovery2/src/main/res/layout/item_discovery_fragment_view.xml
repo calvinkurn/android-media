@@ -44,4 +44,16 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible"/>
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visbility="visible" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

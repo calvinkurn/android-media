@@ -428,12 +428,13 @@
       ]
     }
   },
-  "searchInspirationCarousel": {
+  "searchInspirationCarouselV2": {
     "data": [
       {
         "title": "Cek kategori berikut - should not be shown (position error)",
-        "type": "category",
+        "type": "price",
         "position": 0,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -495,6 +496,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 4,
+        "layout": "info",
         "options": [
           {
             "title": "Android OS",
@@ -554,8 +556,9 @@
       },
       {
         "title": "Cek kategori berikut",
-        "type": "category",
+        "type": "price",
         "position": 8,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -617,6 +620,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 12,
+        "layout": "info",
         "options": [
           {
             "title": "Android OS",
@@ -676,8 +680,9 @@
       },
       {
         "title": "Cek kategori berikut",
-        "type": "category",
+        "type": "price",
         "position": 16,
+        "layout": "list",
         "options": [
           {
             "title": "Android OS",
@@ -739,6 +744,7 @@
         "title": "Cek kategori berikut",
         "type": "category",
         "position": 20,
+        "layout": "info",
         "options": [
           {
             "title": "Android OS",

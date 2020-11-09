@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.List;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -19,6 +21,7 @@ public class CartItemModel implements Parcelable {
     private double price;
     private double originalPrice;
     private int currency;
+    private String variant;
 
     private int weightUnit;
     private double weight;
@@ -63,6 +66,10 @@ public class CartItemModel implements Parcelable {
     private boolean isValidTradeIn;
     private int newDevicePrice;
     private int oldDevicePrice;
+
+    private List<String> productInformation;
+    private String productAlertMessage;
+    private boolean isWholesalePrice;
 
     public String getPreOrderInfo() {
         return preOrderInfo;
@@ -410,6 +417,38 @@ public class CartItemModel implements Parcelable {
         this.tickerMessage = tickerMessage;
     }
 
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public String getProductAlertMessage() {
+        return productAlertMessage;
+    }
+
+    public void setProductAlertMessage(String productAlertMessage) {
+        this.productAlertMessage = productAlertMessage;
+    }
+
+    public boolean isWholesalePrice() {
+        return isWholesalePrice;
+    }
+
+    public void setWholesalePrice(boolean wholesalePrice) {
+        isWholesalePrice = wholesalePrice;
+    }
+
+    public List<String> getProductInformation() {
+        return productInformation;
+    }
+
+    public void setProductInformation(List<String> productInformation) {
+        this.productInformation = productInformation;
+    }
+
     public CartItemModel() {
     }
 
@@ -427,6 +466,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice(), that.getPrice())
                 .append(getOriginalPrice(), that.getOriginalPrice())
                 .append(getCurrency(), that.getCurrency())
+                .append(getVariant(), that.getVariant())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(getWeight(), that.getWeight())
                 .append(getQuantity(), that.getQuantity())
@@ -463,6 +503,7 @@ public class CartItemModel implements Parcelable {
                 .append(getPrice())
                 .append(getOriginalPrice())
                 .append(getCurrency())
+                .append(getVariant())
                 .append(getWeightUnit())
                 .append(getWeight())
                 .append(getWeightFmt())
@@ -500,6 +541,7 @@ public class CartItemModel implements Parcelable {
         dest.writeDouble(this.price);
         dest.writeDouble(this.originalPrice);
         dest.writeInt(this.currency);
+        dest.writeString(this.variant);
         dest.writeInt(this.weightUnit);
         dest.writeDouble(this.weight);
         dest.writeString(this.weightFmt);
@@ -527,6 +569,8 @@ public class CartItemModel implements Parcelable {
         dest.writeString(this.freeShippingBadgeUrl);
         dest.writeByte(this.showTicker ? (byte) 1: (byte) 0);
         dest.writeString(this.tickerMessage);
+        dest.writeString(this.productAlertMessage);
+        dest.writeByte(this.isWholesalePrice ? (byte) 1: (byte) 0);
     }
 
     protected CartItemModel(Parcel in) {
@@ -538,6 +582,7 @@ public class CartItemModel implements Parcelable {
         this.price = in.readDouble();
         this.originalPrice = in.readDouble();
         this.currency = in.readInt();
+        this.variant = in.readString();
         this.weightUnit = in.readInt();
         this.weight = in.readDouble();
         this.weightFmt = in.readString();
@@ -565,6 +610,8 @@ public class CartItemModel implements Parcelable {
         this.freeShippingBadgeUrl = in.readString();
         this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
+        this.productAlertMessage = in.readString();
+        this.isWholesalePrice = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

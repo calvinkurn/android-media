@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
+        android:contentDescription="@string/content_desc_checkBoxSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
@@ -34,9 +35,24 @@
         app:unify_image_corner_radius="6"
         app:unify_image_type="rect" />
 
+    <ImageView
+        android:id="@+id/imageTopAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl7"
+        android:layout_marginLeft="@dimen/spacing_lvl7"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+        app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+        app:layout_constraintRight_toRightOf="@id/imageProduct"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        app:srcCompat="@drawable/ic_product_manage_topads_dark"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTitle"
-        android:contentDescription="@string/content_desc_textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -51,7 +67,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textPrice"
-        android:contentDescription="@string/content_desc_textPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -83,7 +98,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStockCount"
-        android:contentDescription="@string/content_desc_textStockCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
@@ -162,7 +176,6 @@
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelVariant"
-        android:contentDescription="@string/content_desc_labelVariant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"

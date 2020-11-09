@@ -95,7 +95,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
 
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug)
+            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
@@ -121,11 +121,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOfficialStoreBanners(categoryId: String): Result<OfficialStoreBanners> {
+    private suspend fun getOfficialStoreBanners(categoryId: String, isCache:Boolean): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io()) {
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
-                val banner = getOfficialStoreBannersUseCase.executeOnBackground()
+                val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
                 Success(banner)
             } catch (t: Throwable) {
                 Fail(t)
@@ -157,11 +157,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun getOfficialStoreDynamicChannel(channelType: String) {
-        getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
-        getOfficialStoreDynamicChannelUseCase.execute(
-                { dynamicChannel -> _officialStoreDynamicChannelResult.value = Success(dynamicChannel) },
-                { throwable -> _officialStoreDynamicChannelResult.value = Fail(throwable) }
-        )
+        launchCatchError(coroutineContext, block = {
+            getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+        }){
+            _officialStoreDynamicChannelResult.postValue(Fail(it))
+        }
     }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {

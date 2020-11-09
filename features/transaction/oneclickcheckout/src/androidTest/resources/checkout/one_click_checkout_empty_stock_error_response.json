@@ -39,6 +39,13 @@
               "method": "",
               "form": ""
             }
+          },
+          "prompt": {
+            "type": "",
+            "title": "",
+            "description": "",
+            "image_url": "",
+            "buttons": []
           }
         },
         "status": "OK"

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -24,26 +25,10 @@
 
         <include layout="@layout/toolbar_account"
             app:layout_anchor="@id/status_bar_bg" />
-
-        <com.tokopedia.design.component.Tabs
-            android:id="@+id/tab_home_account"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
-            app:tabTextColor="@color/font_black_disabled_38"
-            app:tabTextAppearance="@style/AccountTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/tkpd_main_green"
-            app:tabPaddingBottom="@dimen/dp_12"
-            android:theme="@style/ThemeOverlay.AppCompat.Light"/>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager_home_account"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

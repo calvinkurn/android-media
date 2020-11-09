@@ -3,14 +3,15 @@ package com.tokopedia.home_recom.view.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.FragmentInflater
@@ -27,29 +28,36 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.util.showToastError
+import com.tokopedia.home_recom.util.showToastSuccess
+import com.tokopedia.home_recom.util.showToastSuccessWithAction
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
+import com.tokopedia.home_recom.view.adapter.SimilarRecommendationFilterAdapter
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
 import javax.inject.Inject
 
 /**
  * Created by Lukas on 26/08/19
  */
-open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener {
+open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(), RecommendationListener, SimilarRecommendationFilterAdapter.FilterChipListener, RecommendationErrorListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl() }
+    private val adapterFactory by lazy { SimilarProductRecommendationTypeFactoryImpl(this, this) }
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val recommendationViewModel by lazy { viewModelProvider.get(SimilarProductRecommendationViewModel::class.java) }
     private val adapter by lazy { SimilarProductRecommendationAdapter(adapterFactory) }
+    private val filterChipAdapter by lazy { SimilarRecommendationFilterAdapter(this) }
     private val staggeredGrid by lazy { StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
     private var trackingQueue: TrackingQueue? = null
     private var ref: String = ""
@@ -88,34 +96,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
-        RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
-        getRecyclerView(view)?.apply {
-            if(this is VerticalRecyclerView) clearItemDecoration()
-            layoutManager = recyclerViewLayoutManager
-        }
+        setupRecyclerView(view)
+        setupBackToTop(view)
         enableLoadMore()
-        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when {
-                    it.status.isLoading() || it.status.isLoadMore()  -> showLoading()
-                    it.status.isEmpty() -> showEmpty()
-                    it.status.isError() -> showGetListError(Throwable(it.message))
-                    it.status.isSuccess() -> {
-                        if(it.data?.isNotEmpty() == true){
-                            it.data[0].let {
-                                activity?.run{
-                                    (this as AppCompatActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
-                                }
-                            }
-                        }
-                        renderList(mapDataModel(it.data ?: emptyList()), true)
-                    }
-                }
-            }
-        })
+        observeLiveData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,7 +117,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 if(position >= 0 && adapter.data.size > position) {
-                    (adapter.data[position] as SimilarProductRecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
+                    (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
             }
@@ -137,6 +128,71 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                         handleWishlistAction(productCardOptionsModel)
                     }
                 })
+    }
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable) {
+        if (activity != null) {
+            adapter.showRecommendationError(RecommendationErrorDataModel(throwable))
+            if (swipeToRefresh != null) {
+                swipeToRefresh.isEnabled = false
+            }
+        }
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
+
+    private fun setupRecyclerView(view: View){
+        view.filter_chip_recyclerview?.adapter = filterChipAdapter
+        getRecyclerView(view)?.apply {
+            if(this is VerticalRecyclerView) clearItemDecoration()
+            layoutManager = recyclerViewLayoutManager
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val lastItems = staggeredGrid.findFirstVisibleItemPositions(null)
+                    if(lastItems.isNotEmpty() && lastItems[0] >= 2){
+                        view.recom_back_to_top?.show()
+                    } else {
+                        view.recom_back_to_top?.hide()
+                    }
+                }
+            })
+        }
+        RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
+    }
+
+    private fun setupBackToTop(view: View){
+        view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
+            view.recycler_view?.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun observeLiveData(){
+        recommendationViewModel.recommendationItem.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when {
+                    it.status.isLoading() || it.status.isLoadMore() -> showLoading()
+                    it.status.isEmpty() -> showEmpty()
+                    it.status.isError() -> showGetListError(it.exception)
+                    it.status.isSuccess() -> {
+                        if (it.data?.isNotEmpty() == true) {
+                            it.data[0].let {
+                                activity?.run {
+                                    (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                }
+                            }
+                        }
+                        renderList(mapDataModel(it.data ?: emptyList()), true)
+                    }
+                }
+            }
+        })
+
+        recommendationViewModel.filterChips.observe(viewLifecycleOwner, Observer {
+            if (it.status.isSuccess()) {
+                it.data?.let { data -> filterChipAdapter.submitFilter(data) }
+            }
+        })
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
@@ -171,23 +227,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if(position > -1 && adapter.itemCount > 0 &&
                 adapter.itemCount > position) {
-            (adapter.data[position] as SimilarProductRecommendationItemDataModel).productItem.isWishlist = isWishlist
+            (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
             adapter.notifyItemChanged(position, isWishlist)
         }
     }
 
     private fun showMessageSuccessAddWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_add_wishlist)
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.home_recom_go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
+            View.OnClickListener { goToWishlist() }
         }
     }
 
@@ -197,16 +244,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     private fun showMessageSuccessRemoveWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
     }
 
     private fun showMessageFailedWishlistAction() {
-        if (activity == null) return
-        val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
+        showToastError()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -226,11 +268,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
 
-    override fun createAdapterInstance(): BaseListAdapter<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl> {
+    override fun createAdapterInstance(): BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl> {
         return adapter
     }
 
-    override fun onItemClicked(item: SimilarProductRecommendationDataModel?) {
+    override fun onItemClicked(item: HomeRecommendationDataModel?) {
 
     }
 
@@ -248,12 +290,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         return true
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.home_recom.R.id.recycler_view
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         return staggeredGrid
     }
 
-    override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
-        return EndlessLayoutManagerListener { recyclerViewLayoutManager }
+    override fun refresh() {
+        showLoading()
+        loadInitialData()
     }
 
     /**
@@ -319,6 +366,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     /**
+     * Filter chip listener
+     */
+
+    override fun onFilterAnnotationClicked(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
+        SimilarProductRecommendationTracking.eventUserClickAnnotationChip(filterChip.value)
+        recommendationViewModel.getRecommendationFromFilterChip(filterChip, source)
+    }
+
+    /**
      * =================================================================================
      * Private function
      * =================================================================================
@@ -330,8 +386,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      * @param listRecommendationModel list pojo recommendationWidget from API
      * @return list of dataModel
      */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<SimilarProductRecommendationDataModel>{
-        return listRecommendationModel.map { SimilarProductRecommendationItemDataModel(it, this) }
+    private fun mapDataModel(listRecommendationModel: List<RecommendationItem>): List<RecommendationItemDataModel>{
+        return listRecommendationModel.map { RecommendationItemDataModel(it) }
     }
 
     private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {

@@ -31,8 +31,8 @@ class TopAdsMiniKeywordInsightAdapter(var onCheck: ((pos: Int) -> Unit?)) : Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.img.setImageDrawable(holder.view.context.getResDrawable(R.drawable.topads_dashboard_folder))
         holder.view.arrow.setImageDrawable(holder.view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
-        holder.view.keywordName.text = items[position].name
-        holder.view.insightCount.text = items[position].count.toString()
+        val name = items[position].name + "(" + items[position].count.toString() + ")"
+        holder.view.keywordName.text = name
         holder.view.setOnClickListener {
             onCheck(position)
         }

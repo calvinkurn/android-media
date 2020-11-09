@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="subtitle_gray_color">#ae31353b</color>
+    <color name="title_gray_color">#f531353b</color>
     <color name="tkpd_transaction_font_title_recharge_widget">#f531353b</color>
     <color name="tkpd_transaction_font_subtitle_recharge_widget">#ae31353b</color>
     <color name="tkpd_transaction_label_pink">#ef164c</color>
@@ -48,4 +50,5 @@
     <color name="detail_text_color">#31353b</color>
     <color name="green_template">#f3fef3</color>
     <color name="gray_disable_button_text">#31353B</color>
+    <color name="gray_product_desc">#AD31353B</color>
 </resources>

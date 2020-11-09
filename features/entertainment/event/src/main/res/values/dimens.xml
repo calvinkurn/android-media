@@ -5,6 +5,7 @@
     <dimen name="dimen_dp_12">12dp</dimen>
     <dimen name="dimen_dp_18">18dp</dimen>
     <dimen name="dimen_dp_20">20dp</dimen>
+    <dimen name="dimen_dp_27">27dp</dimen>
     <dimen name="dimen_dp_110">110dp</dimen>
     <dimen name="dimen_dp_200">200dp</dimen>
     <dimen name="dimen_dp_240">240dp</dimen>

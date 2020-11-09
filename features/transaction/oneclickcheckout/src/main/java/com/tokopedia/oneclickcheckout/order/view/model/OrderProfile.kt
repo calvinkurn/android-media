@@ -53,5 +53,6 @@ data class OrderProfilePayment(
         val metadata: String = "",
         val mdr: Float = 0f,
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage()
+        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+        val tickerMessage: String = ""
 )

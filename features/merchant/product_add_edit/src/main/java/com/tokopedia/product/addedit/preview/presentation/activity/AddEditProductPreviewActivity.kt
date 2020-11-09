@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -11,13 +10,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
@@ -25,7 +20,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_UPLOADING
-import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.user.session.UserSession
@@ -56,9 +50,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var draftId = ""
     private var isDuplicate = false
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+    override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_preview
 
@@ -122,6 +114,4 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         navController.setGraph(com.tokopedia.product.addedit.R.navigation.product_add_edit_navigation, bundle)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
     }
-
-
 }

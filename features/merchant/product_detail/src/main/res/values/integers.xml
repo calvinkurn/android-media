@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="default_description_lines">5</integer>
-    <integer name="discussion_max_lines">2</integer>
-    <integer name="discussion_length_of_ellipsis">3</integer>
 </resources>

@@ -18,7 +18,8 @@ class DisabledItemHeaderViewHolder(itemView: View, val actionListener: ActionLis
     }
 
     fun bind(data: DisabledItemHeaderHolderData) {
-        itemView.text_disabled_item_count.text = "${data.disabledItemCount} barang tidak dapat dibeli"
+        val disabledLabelText = String.format(itemView.context.getString(R.string.label_cannot_be_processed), data.disabledItemCount)
+        itemView.text_disabled_item_count.text = disabledLabelText
         itemView.text_delete.setOnClickListener { actionListener?.onDeleteAllDisabledProduct() }
     }
 

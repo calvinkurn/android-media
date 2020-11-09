@@ -32,7 +32,6 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvChangeAddress;
     private RadioButton mRbCheckAddress;
     private TextView mButtonAddAddress;
-    private TextView mHeaderText;
 
     private ShipmentAddressListAdapter.ActionListener mListener;
 
@@ -48,7 +47,6 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvChangeAddress = view.findViewById(R.id.button_change_address);
         mRbCheckAddress = view.findViewById(R.id.rb_check_address);
         mButtonAddAddress = view.findViewById(R.id.button_add_new_address);
-        mHeaderText = view.findViewById(R.id.text_view_address_header);
     }
 
     public void bind(RecipientAddressModel address, ShipmentAddressListAdapter.ActionListener listener, int position) {
@@ -59,7 +57,6 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
         mTvRecipientName.setText(Utils.getHtmlFormat(address.getRecipientName()));
         mTvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(address)));
         mTvRecipientPhone.setText(address.getRecipientPhoneNumber());
-        mHeaderText.setVisibility(address.isHeader() ? View.VISIBLE : View.GONE);
         mButtonAddAddress.setVisibility(address.isFooter() ? View.VISIBLE : View.GONE);
 
         mRbCheckAddress.setChecked(address.isSelected());

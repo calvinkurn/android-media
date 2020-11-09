@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.util.bottomsheet
 
 import android.app.Dialog
 import android.os.Build
-import com.tokopedia.play.broadcaster.util.extension.updateNavigationBarColors
+import com.tokopedia.play_common.util.extension.updateNavigationBarColors
 import javax.inject.Inject
 
 /**

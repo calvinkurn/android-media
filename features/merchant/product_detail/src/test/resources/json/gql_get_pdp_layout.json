@@ -531,16 +531,6 @@
           },
           {
             "data": [],
-            "name": "social_proof",
-            "type": "social_proof"
-          },
-          {
-            "data": [],
-            "name": "value_prop",
-            "type": "value_prop"
-          },
-          {
-            "data": [],
             "name": "separator",
             "type": "separator"
           },

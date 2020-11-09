@@ -21,7 +21,7 @@ class TopAdsInsightSheetScreen1 : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_insight_page1))
-        view.step_indicator.setImageDrawable(view.context.getResDrawable(R.drawable.topads_indi_1))
+        view.step_indicator.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_indi_1))
     }
 
 }

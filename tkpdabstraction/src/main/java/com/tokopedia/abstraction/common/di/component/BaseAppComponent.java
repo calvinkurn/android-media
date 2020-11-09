@@ -4,12 +4,11 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.cachemanager.CacheManager;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -33,12 +32,10 @@ public interface BaseAppComponent {
 
     AbstractionRouter provideAbstractionRouter();
 
-    TkpdAuthInterceptor tkpdAuthInterceptor();
-
     HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 
-    CacheManager globalCacheManager();
+    CacheManager getCacheManager();
 
 }

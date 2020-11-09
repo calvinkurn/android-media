@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.category.di.component;
 
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.core.common.category.di.scope.CategoryPickerScope;
+import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 
 import dagger.Component;

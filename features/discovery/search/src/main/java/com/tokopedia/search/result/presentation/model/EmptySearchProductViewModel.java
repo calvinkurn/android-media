@@ -1,50 +1,16 @@
 package com.tokopedia.search.result.presentation.model;
 
-import androidx.annotation.DrawableRes;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
 public class EmptySearchProductViewModel implements Visitable<ProductListTypeFactory> {
 
-    @DrawableRes
-    private int imageRes;
-    private String title;
-    private String content;
-    private String buttonText;
     private boolean bannerAdsAllowed = true;
-
-    public int getImageRes() {
-        return imageRes;
-    }
-
-    public void setImageRes(int imageRes) {
-        this.imageRes = imageRes;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getButtonText() {
-        return buttonText;
-    }
-
-    public void setButtonText(String buttonText) {
-        this.buttonText = buttonText;
-    }
+    private boolean isFilterActive = false;
+    private boolean isLocalSearch = false;
+    private String globalSearchApplink = "";
+    private String keyword = "";
+    private String pageTitle = "";
 
     public boolean isBannerAdsAllowed() {
         return bannerAdsAllowed;
@@ -52,6 +18,46 @@ public class EmptySearchProductViewModel implements Visitable<ProductListTypeFac
 
     public void setBannerAdsAllowed(boolean bannerAdsAllowed) {
         this.bannerAdsAllowed = bannerAdsAllowed;
+    }
+
+    public void setIsFilterActive(boolean isFilterActive) {
+        this.isFilterActive = isFilterActive;
+    }
+
+    public boolean getIsFilterActive() {
+        return isFilterActive;
+    }
+
+    public boolean isLocalSearch() {
+        return isLocalSearch;
+    }
+
+    public void setLocalSearch(boolean localSearch) {
+        isLocalSearch = localSearch;
+    }
+
+    public String getGlobalSearchApplink() {
+        return globalSearchApplink;
+    }
+
+    public void setGlobalSearchApplink(String globalSearchApplink) {
+        this.globalSearchApplink = globalSearchApplink;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.fragmentLifecycle.FragmentLifecycleObserver;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.FragmentObserver;
+import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -29,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -36,6 +40,7 @@ import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.R
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
@@ -128,12 +133,14 @@ public class CMInAppManager implements CmInAppListener,
             } else {
                 Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
+            sendAmplificationEventInAppRead(cmInApp);
         }
     }
 
     private boolean checkForOtherSources(CMInApp cmInApp, int entityHashCode, String screenName) {
         if (CmEventListener.INSTANCE.getInAppPopupContractMap().containsKey(cmInApp.type)) {
             CmEventListener.INSTANCE.getInAppPopupContractMap().get(cmInApp.type).handleInAppPopup(cmInApp, entityHashCode, screenName);
+            sendAmplificationEventInAppRead(cmInApp);
             return true;
         }
         return false;
@@ -142,6 +149,16 @@ public class CMInAppManager implements CmInAppListener,
 
     private void sendEventInAppPrepared(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_PREREAD, null);
+    }
+
+    private void sendAmplificationEventInAppRead(CMInApp cmInApp) {
+        if (cmInApp.isAmplification()) {
+            IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(
+                    application.getApplicationContext(),
+                    IrisAnalyticsEvents.INAPP_READ,
+                    cmInApp
+            );
+        }
     }
 
     @Override
@@ -158,7 +175,8 @@ public class CMInAppManager implements CmInAppListener,
                 case TYPE_INTERSTITIAL:
                     showInterstitialDialog(currentActivity, data);
                     break;
-                default:
+                case TYPE_SILENT:
+                break;default:
                     showLegacyDialog(currentActivity, data);
                     break;
             }
@@ -221,10 +239,19 @@ public class CMInAppManager implements CmInAppListener,
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
                     new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                } else {
+                    Timber.w("%svalidation;reason='application_null';data=''", CMConstant.TimberTags.TAG);
                 }
             }
         } catch (Exception e) {
-            Timber.e(e);
+            Map<String, String> data = remoteMessage.getData();
+            if (data != null)
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data='" + data.toString()
+                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))) + "'");
+            else
+                Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
+                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
         }
     }
 
@@ -246,6 +273,9 @@ public class CMInAppManager implements CmInAppListener,
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null) {
             activity.startActivity(RouteManager.getIntent(activity, appLink));
+            CMNotificationUtils.INSTANCE.sendUTMParamsInGTM(appLink);
+        } else {
+            Timber.w("%svalidation;reason='application_null_no_activity';data=''", CMConstant.TimberTags.TAG);
         }
 
         switch (elementType.getViewType()) {
@@ -263,9 +293,9 @@ public class CMInAppManager implements CmInAppListener,
         if (cmInApp == null) return;
 
         if (elementId != null) {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp, elementId);
         } else {
-            IrisAnalyticsEvents.INSTANCE.sendPushEvent(application.getApplicationContext(), eventName, cmInApp);
+            IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), eventName, cmInApp);
         }
     }
 

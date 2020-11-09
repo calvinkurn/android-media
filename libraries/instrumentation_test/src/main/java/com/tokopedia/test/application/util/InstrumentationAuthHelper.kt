@@ -41,6 +41,19 @@ object InstrumentationAuthHelper {
         }
     }
 
+    fun clearUserSession() {
+        try {
+            val userSession = UserSession(InstrumentationRegistry.getInstrumentation().targetContext)
+            userSession.userId = ""
+            userSession.email = ""
+            userSession.accessTokenBearer = ""
+            userSession.setIsLogin(false)
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
+
     private fun userSession(
             context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
             action: UserSession.() -> Unit
@@ -56,16 +69,21 @@ object InstrumentationAuthHelper {
         }
     }
 
+
+
     private var UserSession.accessTokenBearer: String
         get() = accessToken
         set(bearerToken) = setToken(bearerToken, "Bearer")
 
-    fun loginToAnUser(application: Application, idlingResource: CountingIdlingResource? = null) {
+    fun loginToAnUser(
+            application: Application,
+            idlingResource: CountingIdlingResource? = null,
+            userName: String = "fauzanofami.luthfi+01@tokopedia.com",
+            password: String = "toped12345"
+    ) {
         idlingResource?.increment()
         val userSession = UserSession(application)
 
-        val userName = "fauzanofami.luthfi+01@tokopedia.com"
-        val password = "toped12345"
         DataSource.getLoginService(application as InstrumentationTestApp).getToken(hashMapOf(
                 "username" to userName,
                 "password" to password,

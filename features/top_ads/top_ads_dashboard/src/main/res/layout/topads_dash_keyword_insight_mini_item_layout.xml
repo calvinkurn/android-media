@@ -28,20 +28,6 @@
         app:typographyType="heading_5"
         tools:text="@tools:sample/lorem" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/insightCount"
-        android:layout_width="@dimen/dp_22"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:background="@drawable/topads_insight_count"
-        android:gravity="center"
-        android:textColor="@color/topads_light_shadow"
-        app:layout_constraintEnd_toStartOf="@id/arrow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
-        tools:text="25" />
-
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/arrow"
         android:layout_width="wrap_content"

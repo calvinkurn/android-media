@@ -34,11 +34,16 @@ import kotlin.collections.ArrayList
  * @author by erry on 30/01/17.
  */
 class TopAdsShopAdapter(
-        private val favoriteClickListener: FavoriteClickListener?
+        private val favoriteClickListener: FavoriteClickListener?,
+        private val impressionImageLoadedListener: ImpressionImageLoadedListener
 ) : RecyclerView.Adapter<TopAdsShopAdapter.ViewHolder>() {
 
     companion object {
         private const val className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter"
+
+        fun mainContentDescription(position: Int): String {
+            return "top-ads-item-main-content-$position"
+        }
     }
 
     protected var anim: ScaleAnimation? = null
@@ -66,9 +71,22 @@ class TopAdsShopAdapter(
         val shopItem = data[position]
         holder.shopName.text = Html.fromHtml(shopItem.shopName)
         holder.shopLocation.text = Html.fromHtml(shopItem.shopLocation)
-        imageLoader?.loadImage(shopItem.shopImageUrl, shopItem.shopImageEcs, holder.shopIcon)
+        imageLoader?.loadImage(shopItem.shopImageEcs, null, holder.shopIcon)
+
+        val shopImageUrl = shopItem.shopImageUrl
+        if (shopImageUrl != null && shopImageUrl.contains(PATH_VIEW)) {
+            impressionImageLoadedListener.onImageLoaded(
+                    className,
+                    shopImageUrl,
+                    shopItem.shopId,
+                    shopItem.shopName,
+                    shopItem.shopImageUrl
+            )
+        }
+
         setShopCover(holder, shopItem)
         setFavorite(holder, shopItem)
+        holder.mainContent.contentDescription = mainContentDescription(position)
         holder.mainContent.setOnClickListener(onShopClicked(shopItem))
         holder.favButton.setOnClickListener(
                 if (shopItem.isFav) null else onFavClicked(holder, shopItem)
@@ -92,13 +110,23 @@ class TopAdsShopAdapter(
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any, target: Target<Drawable?>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                            TopAdsUrlHitter(holder.getContext()).hitImpressionUrl(
-                                    className,
-                                    shopItem.shopImageUrl,
-                                    shopItem.shopId,
-                                    shopItem.shopName,
-                                    shopItem.shopImageUrl)
+                        override fun onResourceReady(resource: Drawable?,
+                                                     model: Any,
+                                                     target: Target<Drawable?>,
+                                                     dataSource: DataSource,
+                                                     isFirstResource: Boolean): Boolean {
+                            val coverUrl = shopItem.shopCoverUrl
+                            if (coverUrl != null
+                                    && coverUrl.contains(PATH_VIEW)
+                                    && !isFirstResource) {
+                                impressionImageLoadedListener.onImageLoaded(
+                                        className,
+                                        coverUrl,
+                                        shopItem.shopId,
+                                        shopItem.shopName,
+                                        shopItem.shopImageUrl
+                                )
+                            }
                             return false
                         }
                     })
@@ -187,6 +215,18 @@ class TopAdsShopAdapter(
             shopInfo = itemView.findViewById<View>(R.id.shop_info) as LinearLayout
             favButton = itemView.findViewById<View>(R.id.fav_button) as ImageView
         }
+    }
+
+    interface ImpressionImageLoadedListener {
+
+        fun onImageLoaded(
+                className: String?,
+                url: String,
+                productId: String?,
+                productName: String?,
+                imageUrl: String?
+        )
+
     }
 
 }

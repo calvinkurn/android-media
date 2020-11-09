@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
@@ -947,7 +948,7 @@ class ModelBuilder {
 //            moderatorName, contentId, contentType, likeType, isShowCart)
 
     fun buildVideoPropertyUiModel(
-            state: PlayVideoState = PlayVideoState.Playing
+            state: PlayViewerVideoState = PlayViewerVideoState.Play
     ) = VideoPropertyUiModel(state = state)
 
     fun buildVideoStreamUiModel(

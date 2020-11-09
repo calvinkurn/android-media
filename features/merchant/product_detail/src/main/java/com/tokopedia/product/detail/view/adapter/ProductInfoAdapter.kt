@@ -33,6 +33,8 @@ class ProductInfoAdapter(private val listener: DynamicProductDetailListener,
         private val categoryApplink: String = view.context.getString(R.string.pdp_category_applink)
 
         fun bind(data: Content) {
+            view.title_info.contentDescription = view.context.getString(R.string.content_desc_title_info, data.title)
+            view.desc_info.contentDescription = view.context.getString(R.string.content_desc_desc_info, data.subtitle)
             view.title_info.text = data.title
             view.desc_info.text = data.subtitle
 

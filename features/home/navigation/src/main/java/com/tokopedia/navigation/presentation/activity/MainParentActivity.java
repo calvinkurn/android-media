@@ -45,6 +45,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
@@ -56,15 +57,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
+import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.fragmentLifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
+import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
@@ -82,13 +86,16 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -97,6 +104,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -162,9 +170,9 @@ public class MainParentActivity extends BaseActivity implements
     @Inject Lazy<UserSessionInterface> userSession;
     @Inject Lazy<MainParentPresenter> presenter;
     @Inject Lazy<GlobalNavAnalytics> globalNavAnalytics;
-    @Inject Lazy<ApplicationUpdate> appUpdate;
     @Inject Lazy<RemoteConfig> remoteConfig;
 
+    private ApplicationUpdate appUpdate;
     private LottieBottomNavbar bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
@@ -222,6 +230,7 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
+        appUpdate = new FirebaseRemoteAppUpdate(this);
         createView(savedInstanceState);
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
@@ -254,30 +263,24 @@ public class MainParentActivity extends BaseActivity implements
 
     @NotNull
     private boolean sendOpenHomeEvent() {
-        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        UserSessionInterface userSession = new UserSession(this);
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
         return true;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter.get().isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
     }
 
-    /**
-     * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
-     */
     private void routeOnboarding() {
-        if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
-            if (Build.VERSION.RELEASE.contains("5.0.2")) {
-                return;
-            }
-        }
         RouteManager.route(this, ApplinkConstInternalMarketplace.ONBOARDING);
         finish();
     }
@@ -525,7 +528,7 @@ public class MainParentActivity extends BaseActivity implements
             ft.commitNowAllowingStateLoss();
         });
     }
-    
+
     private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
         for (int i = 0; i < manager.getFragments().size(); i++) {
             Fragment frag = manager.getFragments().get(i);
@@ -665,13 +668,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
-            fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
-        }
+
+        fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+        fragmentList.add(FeedPlusContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+        fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
+
         return fragmentList;
     }
 
@@ -839,7 +842,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAppUpdateRemoteConfig() {
-        appUpdate.get().checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
                 if (!isFinishing()) {

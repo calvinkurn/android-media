@@ -6,7 +6,8 @@ import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.order.view.model.ButtonBayarState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -35,69 +36,74 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
 
     private fun setupButtonBayar(orderTotal: OrderTotal) {
         view.context?.let { context ->
-            if (orderTotal.isButtonChoosePayment) {
-                when (orderTotal.buttonState) {
-                    ButtonBayarState.NORMAL -> {
-                        btnPay?.apply {
-                            setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                            layoutParams?.width = Utils.convertDpToPixel(160f, context)
-                            layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            isLoading = false
-                            isEnabled = true
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                            setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+            btnPay?.apply {
+                when (orderTotal.buttonType) {
+                    OccButtonType.CHOOSE_PAYMENT -> {
+                        layoutParams?.width = Utils.convertDpToPixel(160f, context)
+                        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                        when (orderTotal.buttonState) {
+                            OccButtonState.NORMAL -> {
+                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                isEnabled = true
+                                isLoading = false
+                            }
+                            OccButtonState.DISABLE -> {
+                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                isEnabled = false
+                                isLoading = false
+                            }
+                            else -> {
+                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                isLoading = true
+                            }
                         }
                     }
-                    ButtonBayarState.DISABLE -> {
-                        btnPay?.apply {
-                            setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
-                            layoutParams?.width = Utils.convertDpToPixel(160f, context)
-                            layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            isLoading = false
-                            isEnabled = false
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                            setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
+                    OccButtonType.PAY -> {
+                        layoutParams?.width = Utils.convertDpToPixel(140f, context)
+                        when (orderTotal.buttonState) {
+                            OccButtonState.NORMAL -> {
+                                setText(R.string.pay)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+                                isEnabled = true
+                                isLoading = false
+                            }
+                            OccButtonState.DISABLE -> {
+                                setText(R.string.pay)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+                                isEnabled = false
+                                isLoading = false
+                            }
+                            else -> {
+                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                                isLoading = true
+                            }
                         }
                     }
-                    else -> {
-                        btnPay?.apply {
-                            layoutParams?.width = Utils.convertDpToPixel(160f, context)
-                            layoutParams?.height = Utils.convertDpToPixel(48f, context)
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                            isLoading = true
-                        }
-                    }
-                }
-            } else {
-                when (orderTotal.buttonState) {
-                    ButtonBayarState.NORMAL -> {
-                        btnPay?.apply {
-                            setText(R.string.pay)
-                            layoutParams?.width = Utils.convertDpToPixel(140f, context)
-                            layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-                            isLoading = false
-                            isEnabled = true
-                            setText(R.string.pay)
-                        }
-                    }
-                    ButtonBayarState.DISABLE -> {
-                        btnPay?.apply {
-                            setText(R.string.pay)
-                            layoutParams?.width = Utils.convertDpToPixel(140f, context)
-                            layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-                            isLoading = false
-                            isEnabled = false
-                            setText(R.string.pay)
-                        }
-                    }
-                    else -> {
-                        btnPay?.apply {
-                            layoutParams?.width = Utils.convertDpToPixel(140f, context)
-                            layoutParams?.height = Utils.convertDpToPixel(48f, context)
-                            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                            isLoading = true
+                    OccButtonType.CONTINUE -> {
+                        layoutParams?.width = Utils.convertDpToPixel(160f, context)
+                        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                        when (orderTotal.buttonState) {
+                            OccButtonState.NORMAL -> {
+                                setText(R.string.continue_pay)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                isEnabled = true
+                                isLoading = false
+                            }
+                            OccButtonState.DISABLE -> {
+                                setText(R.string.continue_pay)
+                                layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                isEnabled = false
+                                isLoading = false
+                            }
+                            else -> {
+                                layoutParams?.height = Utils.convertDpToPixel(48f, context)
+                                isLoading = true
+                            }
                         }
                     }
                 }

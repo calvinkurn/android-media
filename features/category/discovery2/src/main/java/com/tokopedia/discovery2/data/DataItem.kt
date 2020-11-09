@@ -25,7 +25,7 @@ data class DataItem(
         val value: String? = "",
 
         @SerializedName("target_component_id")
-        val targetComponentId: String? = "",
+        var targetComponentId: String? = "",
 
         @SerializedName("background_image")
         val backgroundImage: String? = "",
@@ -38,6 +38,9 @@ data class DataItem(
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
+
+        @SerializedName("filter")
+        val filterKey: String? = "",
 
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
@@ -282,9 +285,6 @@ data class DataItem(
         @SerializedName("shop_applink")
         val shopApplink: String? = "",
 
-        @SerializedName("count_review")
-        val countReview: String? = "",
-
         @SerializedName("preorder")
         val preorder: String? = "",
 
@@ -294,8 +294,14 @@ data class DataItem(
         @SerializedName("product_id")
         val productId: String? = "",
 
+        @SerializedName("count_review")
+        val countReview: String? = "",
+
         @SerializedName("rating")
         val rating: String? = "",
+
+        @SerializedName("rating_average")
+        val averageRating: String = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",
@@ -356,6 +362,9 @@ data class DataItem(
 
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
+
+        @SerializedName("carousel_component_id")
+        var flashTimerTargetComponent: String = "",
 
         var shopAdsClickURL: String? = "",
 

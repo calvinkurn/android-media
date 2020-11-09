@@ -3,7 +3,9 @@ package com.tokopedia.shop.pageheader.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -71,6 +73,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     private var shopPageHeaderLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
     private var shopPageHomeTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
     private var shopPageProductTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
+
+    var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initShopPageHeaderPerformanceMonitoring()

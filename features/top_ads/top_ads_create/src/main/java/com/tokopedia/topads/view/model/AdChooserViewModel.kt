@@ -13,12 +13,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.param.AutoAdsParam
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
-import com.tokopedia.topads.data.response.TopAdsAutoAds
+import com.tokopedia.topads.data.response.TopAdsAutoAdsCreate
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,7 +36,7 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
 
     val CHANNEL = "topchat"
     val SOURCE = "one_click_promo"
-    val autoAdsData = MutableLiveData<TopAdsAutoAds.Response.TopAdsAutoAdsData>()
+    val autoAdsData = MutableLiveData<TopAdsAutoAdsCreate.Response.TopAdsAutoAdsData>()
 
     fun getAdsState(onSuccess: ((AdCreationOption) -> Unit)) {
         launchCatchError(
@@ -69,12 +69,12 @@ class AdChooserViewModel @Inject constructor(private val context: Context,
             ))
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_post_autoads)
-                        , TopAdsAutoAds.Response::class.java, getParams(param).parameters)
+                        , TopAdsAutoAdsCreate.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
+            data.getSuccessData<TopAdsAutoAdsCreate.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
             }
         }) {

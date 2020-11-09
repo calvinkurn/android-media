@@ -28,7 +28,7 @@ data class SearchProductModel(
         @Expose
         val globalSearchNavigation: GlobalSearchNavigation = GlobalSearchNavigation(),
 
-        @SerializedName("searchInspirationCarousel")
+        @SerializedName("searchInspirationCarouselV2")
         @Expose
         val searchInspirationCarousel: SearchInspirationCarousel = SearchInspirationCarousel(),
 
@@ -358,7 +358,19 @@ data class SearchProductModel(
 
             @SerializedName("wishlist")
             @Expose
-            val isWishlist: Boolean = false
+            val isWishlist: Boolean = false,
+
+            @SerializedName("count_sold")
+            @Expose
+            val countSold: String = "",
+
+            @SerializedName("minOrder")
+            @Expose
+            val minOrder: Int = 1,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -393,7 +405,23 @@ data class SearchProductModel(
 
             @SerializedName("city")
             @Expose
-            val city: String = ""
+            val city: String = "",
+
+            @SerializedName("rating_average")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("isOfficial")
+            @Expose
+            val isOfficial: Boolean = false,
+
+            @SerializedName("isPowerBadge")
+            @Expose
+            val isPowerBadge: Boolean = false,
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductFreeOngkir(
@@ -417,7 +445,11 @@ data class SearchProductModel(
 
             @SerializedName("type")
             @Expose
-            val type: String = ""
+            val type: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = ""
     )
 
     data class ProductBadge(

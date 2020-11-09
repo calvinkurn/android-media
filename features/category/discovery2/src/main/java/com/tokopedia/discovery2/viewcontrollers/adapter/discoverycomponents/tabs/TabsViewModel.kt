@@ -3,11 +3,16 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tab
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.usecase.tabsusecase.DynamicTabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 const val TAB_DEFAULT_BACKGROUND = "plain"
@@ -16,9 +21,22 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     private val setColorTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val setUnifyTabs: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
+
+    @Inject
+    lateinit var dynamicTabsUseCase: DynamicTabsUseCase
+
+
+    init {
+        initDaggerInject()
+    }
+
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        fetchDynamicTabData()
+        updateTabItems()
+    }
 
+    private fun updateTabItems() {
         components.getComponentsItem()?.let {
             it as ArrayList<ComponentsItem>
             if (components.properties?.background == TAB_DEFAULT_BACKGROUND) {
@@ -26,8 +44,23 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
             } else {
                 setColorTabs.value = it
             }
-
         }
+    }
+
+    private fun fetchDynamicTabData() {
+        components.properties?.let {
+            if (components.getComponentsItem()?.size == 0 && it.dynamic) {
+                launchCatchError(block = {
+                    dynamicTabsUseCase.getTabData(components.id, components.pageEndPoint, components.rpc_discoQuery).run {
+                        updateTabItems()
+                        this@TabsViewModel.syncData.value = this
+                    }
+                }, onError = {
+                    it.printStackTrace()
+                })
+            }
+        }
+
     }
 
 
@@ -42,9 +75,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    override fun initDaggerInject() {
-
-    }
 
     fun setSelectedState(position: Int, selection: Boolean): Boolean {
         if (components.getComponentsItem()?.isNotEmpty() == true) {
@@ -61,4 +91,10 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
         this.syncData.value = true
     }
 
+    override fun initDaggerInject() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
 }

@@ -98,6 +98,10 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         id
                         name
                         city
+                        rating_average
+                        url
+                        isOfficial
+                        isPowerBadge
                     }
                     freeOngkir {
                         isActive
@@ -121,10 +125,13 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     warehouseIdDefault
                     boosterList
                     source_engine
+                    minOrder
+                    url
                     labelGroups {
                         title
                         position
                         type
+                        url
                     }
                     badges {
                         title
@@ -132,6 +139,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         show
                     }
                     wishlist
+                    count_sold
                 }
             }
         }
@@ -192,6 +200,8 @@ private const val TOPADS_PRODUCT_QUERY = """
                     product_cashback_rate
                     product_rating
                     product_rating_format
+                    product_item_sold_payment_verified
+                    product_minimum_order
                     free_ongkir {
                       is_active
                       img_url
@@ -219,6 +229,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                     owner_id
                     is_owner
                     shop_is_official
+                    shop_rating_avg
                     badges {
                         title
                         image_url

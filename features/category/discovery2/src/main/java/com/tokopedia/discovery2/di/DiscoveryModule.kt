@@ -19,7 +19,6 @@ import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlReposit
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -30,6 +29,8 @@ import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
+import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
@@ -59,6 +60,11 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository()
+    }
+
+    @Provides
+    fun provideTabsGQLRepository(): TabsRepository {
+        return TabsGQLRepository()
     }
 
     @Provides
@@ -113,11 +119,6 @@ class DiscoveryModule {
     @Provides
     fun provideCampaignSubscribeGQLRepository(@ApplicationContext context: Context): CampaignSubscribeRepo {
         return CampaignSubscribeGQLRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository {
-        return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
     }
 
     @Provides

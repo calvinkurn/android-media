@@ -12,12 +12,11 @@ class SellerHomeRemoteConfig @Inject constructor(
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_SEARCH_SELLER, false)
     }
 
-    fun isNewSellerHomeDisabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.NEW_SELLER_HOME_DISABLED, false)
-    }
-
     fun isNotificationTrayClear(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR, false)
     }
 
+    fun isSellerHomeDashboardCachingEnabled(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.SELLER_HOME_DASHBOARD_ENABLE_CACHE, false)
+    }
 }

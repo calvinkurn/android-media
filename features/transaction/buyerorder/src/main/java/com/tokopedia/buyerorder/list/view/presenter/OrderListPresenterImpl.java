@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
@@ -100,6 +102,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private static final String QUANTITY = "quantity";
     private static final String NOTES = "notes";
     private static final String SHOP_ID = "shop_id";
+    private static final String PRODUCT_PRICE = "product_price";
+    private static final String CATEGORY = "category";
+    private static final String PRODUCT_NAME = "product_name";
     private static final String SEARCH = "Search";
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
@@ -126,6 +131,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private RequestCancelInfo requestCancelInfo;
     private PostCancelReasonUseCase postCancelReasonUseCase;
     private FinishOrderUseCase finishOrderUseCase;
+    private AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
 
     @Inject
     public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase,
@@ -135,7 +141,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                   TopAdsWishlishedUseCase topAdsWishlishedUseCase,
                                   UserSessionInterface userSessionInterface,
                                   OrderListAnalytics orderListAnalytics,
-                                  PostCancelReasonUseCase postCancelReasonUseCase, FinishOrderUseCase finishOrderUseCase) {
+                                  PostCancelReasonUseCase postCancelReasonUseCase,
+                                  FinishOrderUseCase finishOrderUseCase,
+                                  AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
         this.addWishListUseCase = addWishListUseCase;
@@ -145,6 +153,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.orderListAnalytics = orderListAnalytics;
         this.postCancelReasonUseCase = postCancelReasonUseCase;
         this.finishOrderUseCase = finishOrderUseCase;
+        this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
     }
 
     @Override
@@ -335,7 +344,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
             finishFilter.setName(entry.getFilterName());
             finishFilter.setType(entry.getFilterLabel());
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            finishFilter.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green);
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);
@@ -367,6 +376,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (addToCartUseCase != null) {
             addToCartUseCase.unsubscribe();
         }
+        addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -482,6 +492,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
         int productId = 0;
         int shopId = 0;
+        int quantity = 0;
         String productName = "";
         String productCategory = "";
         String productPrice = "";
@@ -498,6 +509,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             externalSource = "recommendation_list";
             clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
             imageUrl = orderListRecomViewModel.getRecommendationItem().getImageUrl();
+            quantity = orderListRecomViewModel.getRecommendationItem().getMinOrder();
         }
 
         if(!clickUrl.isEmpty()) {
@@ -506,13 +518,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);
         addToCartRequestParams.setShopId(shopId);
-        addToCartRequestParams.setQuantity(0);
+        addToCartRequestParams.setQuantity(quantity);
         addToCartRequestParams.setNotes("");
         addToCartRequestParams.setWarehouseId(0);
         addToCartRequestParams.setAtcFromExternalSource(externalSource);
         addToCartRequestParams.setProductName(productName);
         addToCartRequestParams.setCategory(productCategory);
         addToCartRequestParams.setPrice(productPrice);
+        addToCartRequestParams.setUserId(userSessionInterface.getUserId());
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
@@ -584,7 +597,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                         getView().displayLoadMore(false);
                         if (wishlistModel.getData() != null) {
                             wishListResponseListener.onWhishListSuccessResponse(true);
-                            getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                            getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist));
                         }
                     }
                 }
@@ -604,7 +617,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     if (getView() != null) {
                         getView().displayLoadMore(false);
                         wishListResponseListener.onWhishListSuccessResponse(true);
-                        getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                        getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist));
                     }
                 }
 
@@ -648,7 +661,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             public void onSuccessRemoveWishlist(String productId) {
                 if (getView() != null) {
                     getView().displayLoadMore(false);
-                    getView().showSuccessMessage(getView().getString(R.string.msg_success_remove_wishlist));
+                    getView().showSuccessMessage(getView().getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist));
                     wishListResponseListener.onWhishListSuccessResponse(false);
                 }
             }
@@ -659,17 +672,10 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getView() == null || getView().getAppContext() == null)
             return;
         Map<String, Object> variables = new HashMap<>();
-        JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
         getView().displayLoadMore(true);
-        GraphqlUseCase buyAgainUseCase = new GraphqlUseCase();
-        buyAgainUseCase.clearRequest();
-        buyAgainUseCase.addRequest(graphqlRequest);
-
-        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+        addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
 
@@ -684,18 +690,16 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
 
             @Override
-            public void onNext(GraphqlResponse objects) {
+            public void onNext(AtcMultiData atcMultiData) {
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().displayLoadMore(false);
-                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     } else {
-                        getView().showFailureMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showFailureMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "", getStatus().status());
+                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, false, "", getStatus().status());
                 }
-
             }
         });
     }
@@ -783,11 +787,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             int quantity = 0;
             int shopId = 0;
             String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
                 shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
@@ -795,6 +805,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, notes);
             passenger.addProperty(SHOP_ID, shopId);
+            passenger.addProperty(PRODUCT_PRICE, price);
+            passenger.addProperty(CATEGORY, category);
+            passenger.addProperty(PRODUCT_NAME, productName);
             jsonArray.add(passenger);
         }
         return jsonArray;

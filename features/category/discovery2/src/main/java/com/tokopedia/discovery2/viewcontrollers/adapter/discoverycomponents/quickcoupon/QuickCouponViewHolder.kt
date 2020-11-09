@@ -117,7 +117,11 @@ class QuickCouponViewHolder(itemView: View, val fragment: Fragment) : AbstractVi
         if (!it) {
             val message = quickCouponViewModel.getCouponAddedFailMessage()
             if (message.isNotEmpty()) {
-                Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                try {
+                    Toaster.make(itemView.rootView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

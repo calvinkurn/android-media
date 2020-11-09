@@ -454,9 +454,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                 }
                 else -> {
-                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.trimStart()
+                    val subReasonLainnya = tf_choose_sub_reason_editable.textFieldInput.text.toString().trimStart()
                     if (subReasonLainnya.isNotEmpty() && !isCancelAlreadyClicked) {
-                        reasonCancel = java.lang.String.valueOf(subReasonLainnya)
+                        reasonCancel = subReasonLainnya
                         isCancelAlreadyClicked = true
                     }
                     if (isEligibleInstantCancel) submitInstantCancel()
@@ -720,7 +720,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             visible()
             tickerType = Utils.getTickerType(tickerInfo.type)
             tickerShape = Ticker.SHAPE_LOOSE
-            setHtmlDescription(tickerInfo.text + " ${getString(R.string.ticker_info_selengkapnya)
+            setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
                     .replace(TICKER_LABEL, tickerInfo.actionText)}")
             setDescriptionClickEvent(object : TickerCallback {

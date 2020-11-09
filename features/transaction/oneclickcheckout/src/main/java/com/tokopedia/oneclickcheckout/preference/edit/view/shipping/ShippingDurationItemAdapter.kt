@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.LogisticPromoInfo
@@ -86,7 +87,12 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
 
         fun bind(data: ServicesItemModel) {
             itemShippingText.text = data.servicesName
-            itemShippingPrice.text = data.texts?.textRangePrice
+            if (data.texts?.textRangePrice?.isNotBlank() == true) {
+                itemShippingPrice.text = data.texts?.textRangePrice
+                itemShippingPrice.visible()
+            } else {
+                itemShippingPrice.gone()
+            }
             when {
                 data.errorMessage.isNotEmpty() && data.errorId != ErrorProductData.ERROR_PINPOINT_NEEDED -> {
                     itemShippingDesc.visible()
@@ -96,15 +102,28 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                     itemShippingDesc.visible()
                     itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
+                isCourierInstantOrSameday(data.servicesId) -> {
+                    itemShippingDesc.setText(com.tokopedia.logisticcart.R.string.label_shipping_information)
+                    itemShippingDesc.visible()
+                }
                 else -> {
                     itemShippingDesc.gone()
                 }
             }
             itemShippingRadio.isChecked = data.isSelected
+            itemShippingRadio.skipAnimation()
 
             itemList.setOnClickListener {
                 listener.onSelect(data.servicesId)
             }
+        }
+
+        private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
+            val ids = CourierConstant.INSTANT_SAMEDAY_DURATION
+            for (id in ids) {
+                if (shipperId == id) return true
+            }
+            return false
         }
     }
 }

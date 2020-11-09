@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
+import android.content.Context
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -35,36 +38,72 @@ data class ProductMiniSocialProofDataModel(
         return typeFactory.type(this)
     }
 
+    private fun firstPositionData(): Pair<String, Int> {
+        return when {
+            paymentVerifiedCount != 0 -> PAYMENT_VERIFIED to paymentVerifiedCount
+            wishlistCount != 0 -> WISHLIST to wishlistCount
+            viewCount != 0 -> VIEW_COUNT to viewCount
+            else -> "" to 0
+        }
+    }
+
     /**
      * Social proof mini should only show 3 of this, with hierarchy
      * When it only contains 1 data, it will show single line social proof
      */
     val getLastThreeHirarchyData: List<Pair<String, Int>>
-        get() = listOf(RATING to ratingCount,
-                TALK to talkCount,
-                PAYMENT_VERIFIED to paymentVerifiedCount,
-                WISHLIST to wishlistCount,
-                VIEW_COUNT to viewCount)
+        get() = listOf(firstPositionData(),
+                RATING to ratingCount,
+                TALK to talkCount)
                 .filter { it.second > 0 }
                 .take(3)
 
-    private fun shouldShowSinglePaymentVerified(): Boolean {
-        val data = getLastThreeHirarchyData
-        return if (data.size == 2) {
-            data.size == data.count {
-                it.first == PAYMENT_VERIFIED || it.first == VIEW_COUNT
+    fun shouldShowSingleViewSocialProof(): Boolean {
+        return talkCount == 0 && ratingCount == 0
+    }
+
+    fun generateFirstSocialProofText(context: Context): String {
+        if (firstPositionData().second == 0) return ""
+        return when (firstPositionData().first) {
+            PAYMENT_VERIFIED -> {
+                context.getString(R.string.label_terjual_builder, firstPositionData().second.productThousandFormatted())
             }
-        } else {
-            false
+            WISHLIST -> {
+                context.getString(R.string.label_wishlist_builder, firstPositionData().second.productThousandFormatted())
+            }
+            VIEW_COUNT -> {
+                context.getString(R.string.label_view_builder, firstPositionData().second.productThousandFormatted())
+            }
+            else -> {
+                ""
+            }
         }
     }
 
-    private fun shouldShowSingleViewCount(): Boolean {
-        val data = getLastThreeHirarchyData
-        return data.size == 1 && data.firstOrNull()?.first == VIEW_COUNT
+    fun generateSingleView(context: Context): String {
+        if (firstPositionData().second == 0) return ""
+        return when (firstPositionData().first) {
+            PAYMENT_VERIFIED -> {
+                context.getString(R.string.terjual_single_text_template_builder, firstPositionData().second.productThousandFormatted())
+            }
+            WISHLIST -> {
+                context.getString(R.string.wishlist_single_text_template_builder, firstPositionData().second.productThousandFormatted())
+            }
+            VIEW_COUNT -> {
+                context.getString(R.string.view_single_text__template_builder, firstPositionData().second.productThousandFormatted())
+            }
+            else -> {
+                ""
+            }
+        }
     }
 
-    fun shouldShowSingleViewSocialProof(): Boolean {
-        return shouldShowSinglePaymentVerified() || shouldShowSingleViewCount()
+    fun isFirstData(data: Pair<String, Int>): Boolean {
+        return when (data.first) {
+            PAYMENT_VERIFIED, WISHLIST, VIEW_COUNT -> true
+            else -> {
+                false
+            }
+        }
     }
 }

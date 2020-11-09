@@ -107,7 +107,7 @@
     },
     {
       "event": "clickTopupTagihan",
-      "eventCategory": "digital - subhomepage - topup tagihan",
+      "eventCategory": "digital - subhomepage",
       "eventAction": "click lihat semua banner",
       "eventLabel": "{{.*}}",
       "sessionIris": "{{.*}}"
@@ -217,46 +217,6 @@
       "eventCategory": "digital - subhomepage",
       "eventAction": "click urgency widget",
       "eventLabel": "{{.* - .* - .*}}",
-      "screenName": "/top-up-tagihan",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "promotions": [
-        {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}"
-        }
-      ],
-      "sessionIris": "{{.*}}",
-      "clientId": "{{.*}}"
-    },
-    {
-      "event": "view_item",
-      "eventCategory": "digital - subhomepage",
-      "eventAction": "impression video highlight",
-      "eventLabel": "{{.* - .*}}",
-      "screenName": "/top-up-tagihan",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": "{{.*}}",
-      "businessUnit": "recharge",
-      "promotions": [
-        {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "creative_name": "{{.*}}",
-          "creative_slot": "{{.*}}"
-        }
-      ],
-      "sessionIris": "{{.*}}",
-      "clientId": "{{.*}}"
-    },
-    {
-      "event": "select_content",
-      "eventCategory": "digital - subhomepage",
-      "eventAction": "click video highlight",
-      "eventLabel": "{{.* - .* - .* - .*}}",
       "screenName": "/top-up-tagihan",
       "currentSite": "tokopediadigitalRecharge",
       "userId": "{{.*}}",

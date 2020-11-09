@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -15,8 +16,13 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
+import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -25,6 +31,8 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -34,6 +42,9 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
+        videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+        channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+        videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -43,7 +54,8 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatcherProvider,
+        private val pageMonitoring: PlayPltPerformanceCallback
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -66,7 +78,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableChatList
     val observableTotalLikes: LiveData<TotalLikeUiModel>
         get() = _observableTotalLikes
-    val observableLikeState: LiveData<LikeStateUiModel>
+    val observableLikeState: LiveData<NetworkResult<LikeStateUiModel>>
         get() = _observableLikeState
     val observableTotalViews: LiveData<TotalViewUiModel>
         get() = _observableTotalViews
@@ -102,6 +114,11 @@ class PlayViewModel @Inject constructor(
             val videoPlayer = _observableVideoMeta.value?.videoPlayer
             return videoPlayer ?: Unknown
         }
+    val viewerVideoState: PlayViewerVideoState
+        get() {
+            val videoState = _observableVideoProperty.value?.state
+            return videoState ?: PlayViewerVideoState.Unknown
+        }
     val feedInfoUiModel: FeedInfoUiModel?
         get() {
             val channelInfo = _observableCompleteInfo.value?.channelInfo
@@ -134,7 +151,7 @@ class PlayViewModel @Inject constructor(
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
-    private val _observableLikeState = MutableLiveData<LikeStateUiModel>()
+    private val _observableLikeState = MutableLiveData<NetworkResult<LikeStateUiModel>>()
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
     private val _observablePartnerInfo = MutableLiveData<PartnerInfoUiModel>()
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
@@ -142,6 +159,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableVideoMeta = MutableLiveData<VideoMetaUiModel>()
     private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
@@ -150,19 +168,8 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableVideoMeta = MediatorLiveData<VideoMetaUiModel>().apply {
-        addSource(playVideoManager.getObservableVideoPlayer()) {
-            if (!videoPlayer.isYouTube) {
-                val videoPlayer = General(it)
-                value = value?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
-            }
-        }
-    }
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(playVideoManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(it)
-        }
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
             if (currentMessageValue != null) {
@@ -198,6 +205,35 @@ class PlayViewModel @Inject constructor(
 
     private var channelInfoJob: Job? = null
 
+    private val videoStateListener = object : PlayViewerVideoStateListener {
+        override fun onStateChanged(state: PlayViewerVideoState) {
+            scope.launch(dispatchers.immediate) {
+                _observableVideoProperty.value = VideoPropertyUiModel(state)
+            }
+        }
+    }
+
+    private val channelStateListener = object : PlayViewerChannelStateListener {
+        override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
+            scope.launch(dispatchers.immediate) {
+                val value = _observableEvent.value
+                value?.let { _observableEvent.value = it.copy(isFreeze = shouldFreeze) }
+            }
+        }
+    }
+
+    private val videoManagerListener = object : PlayVideoManager.Listener {
+        override fun onVideoPlayerChanged(player: ExoPlayer) {
+            scope.launch(dispatchers.immediate) {
+                if (!videoPlayer.isYouTube) {
+                    val videoPlayer = General(player)
+                    val currentMetaValue = _observableVideoMeta.value
+                    _observableVideoMeta.value = currentMetaValue?.copy(videoPlayer = videoPlayer) ?: VideoMetaUiModel(videoPlayer)
+                }
+            }
+        }
+    }
+
     /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
@@ -205,7 +241,16 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
+    private val videoStateProcessor = videoStateProcessorFactory.create(scope) { channelType }
+    private val channelStateProcessor = channelStateProcessorFactory.create(scope) { channelType }
+    private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
+
     init {
+        playVideoManager.addListener(videoManagerListener)
+        videoStateProcessor.addStateListener(videoStateListener)
+        channelStateProcessor.addStateListener(channelStateListener)
+        videoBufferGovernor.startBufferGovernance()
+
         stateHandler.observeForever(stateHandlerObserver)
 
         _observablePinned.addSource(_observablePinnedMessage) {
@@ -232,6 +277,9 @@ class PlayViewModel @Inject constructor(
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
         stopPlayer()
+        playVideoManager.removeListener(videoManagerListener)
+        videoStateProcessor.removeStateListener(videoStateListener)
+        channelStateProcessor.removeStateListener(channelStateListener)
     }
     //endregion
 
@@ -377,6 +425,7 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
 
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
         var retryCount = 0
 
         fun getChannelInfoResponse(channelId: String){
@@ -428,7 +477,7 @@ class PlayViewModel @Inject constructor(
 
         if (!isFreezeOrBanned) {
             _observableGetChannelInfo.value = NetworkResult.Loading
-            getChannelInfoResponse(channelId)
+            if (channelInfoJob?.isActive != true) getChannelInfoResponse(channelId)
         }
     }
 
@@ -450,7 +499,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
-        _observableLikeState.value = LikeStateUiModel(isLiked = shouldLike, fromNetwork = false)
+        _observableLikeState.value = NetworkResult.Success(LikeStateUiModel(isLiked = shouldLike, fromNetwork = false))
         val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
         if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
             var finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
@@ -530,9 +579,10 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableEvent.value = _observableEvent.value?.copy(
-                                    isFreeze = result.isFreeze,
                                     isBanned = result.isBanned && result.userId.isNotEmpty()
                                             && result.userId.equals(userSession.userId, true))
+
+                            channelStateProcessor.setIsFreeze(result.isFreeze)
                         }
                     }
                     is ProductTag -> {
@@ -613,8 +663,9 @@ class PlayViewModel @Inject constructor(
                 )
                 getIsLikeUseCase.executeOnBackground()
             }
-            _observableLikeState.value = LikeStateUiModel(isLiked, fromNetwork = true)
+            _observableLikeState.value = NetworkResult.Success(LikeStateUiModel(isLiked, fromNetwork = true))
         } catch (e: Exception) {
+            _observableLikeState.value = NetworkResult.Fail(e)
         }
     }
 

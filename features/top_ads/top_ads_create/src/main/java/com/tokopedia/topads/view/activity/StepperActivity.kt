@@ -1,11 +1,7 @@
 package com.tokopedia.topads.view.activity
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics

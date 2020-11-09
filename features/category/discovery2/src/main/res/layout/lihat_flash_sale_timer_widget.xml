@@ -17,6 +17,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_tv"
+            android:contentDescription="@string/content_desc_title_tv"
             style="@style/WrapContent"
             android:maxLines="1"
             android:textColor="@color/clr_f531353b"
@@ -24,6 +25,7 @@
             app:layout_constraintEnd_toStartOf="@id/hours_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="@dimen/dp_4"
             app:typographyType="heading_3"
             tools:text="Flash Sale Timer" />
 

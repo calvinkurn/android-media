@@ -8,7 +8,7 @@ import dagger.Component
 @InitialStateScope
 @Component(modules = [
     InitialStateUseCaseModule::class,
-    PopularSearchUseCaseModule::class,
+    RefreshInitialStateUseCaseModule::class,
     DeleteRecentSearchUseCaseModule::class,
     InitialStateRepositoryModule::class,
     InitialStateMapperModule::class,

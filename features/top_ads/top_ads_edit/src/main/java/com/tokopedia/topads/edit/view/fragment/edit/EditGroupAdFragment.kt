@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.watcher.NumberTextWatcher
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.param.DataSuggestions
@@ -22,9 +24,9 @@ import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
-import com.tokopedia.topads.edit.utils.Constants.GROUPKEY
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
+import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLY_CONST
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
@@ -40,10 +42,14 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+private const val CLICK_RADIO_BUTTON_1 = "click - anggaran harian tidak dibatasi"
+private const val CLICK_RADIO_BUTTON_2 = "click - anggaran harian dibatasi"
+
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
     private var buttonStateCallback: SaveButtonStateCallBack? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var minBid = 0
@@ -56,6 +62,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var productId: MutableList<String> = mutableListOf()
     private var groupId: Int? = 0
     private var priceDaily = 0
+    private var groupName: String = ""
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -65,6 +72,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private val sharedViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
     }
+    private var initialBudgetChoice = false
+    private var initialPriceBid = 0
+    private var initialDailyBudget = 0
+
 
     companion object {
 
@@ -98,6 +109,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
+        groupName = data.groupName
+        group_name?.textFieldInput?.setText(data.groupName)
         budget?.textFieldInput?.setText(data.priceBid.toString())
         priceDaily = data.priceDaily
         if (priceDaily != 0) {
@@ -107,14 +120,17 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             daily_budget?.textFieldInput?.setText((MULTIPLIER * data.priceBid).toString())
         }
         progressbar?.visibility = View.GONE
+        saveInitialChoices()
     }
 
+    private fun getCurrentTitle() = group_name?.textFieldInput?.text?.toString()
+
     private fun getCurrentBid(): Int {
-        return budget?.textFieldInput?.text.toString().replace(",", "").toInt()
+        return budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
     }
 
     private fun getCurrentDailyBudget(): Int {
-        return daily_budget?.textFieldInput?.text.toString().replace(",", "").toInt()
+        return daily_budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
     }
 
     private fun checkForbidValidity(result: Int) {
@@ -164,7 +180,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGroupName(error: String) {
-        if (group_name?.textFieldInput?.text.toString() != arguments?.getString(GROUPKEY)) {
+        if (getCurrentTitle() != groupName) {
             group_name?.setError(true)
             validation1 = false
             actionEnable()
@@ -178,18 +194,21 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        groupId = arguments?.getString(GROUP_ID)?.toInt()
-        sharedViewModel.setGroupName(arguments?.getString(GROUPKEY) ?: " ")
-        sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
+        if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
+            groupId = arguments?.getString(GROUP_ID)?.toInt()
+            sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
+        }
         if (btnUnlimitedBudget.isChecked) {
             daily_budget?.visibility = View.GONE
         }
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == btnUnlimitedBudget.id) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_1, "")
                 daily_budget?.visibility = View.GONE
                 validation3 = true
                 actionEnable()
             } else {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_2, "")
                 daily_budget?.visibility = View.VISIBLE
             }
         }
@@ -243,6 +262,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun saveInitialChoices() {
+        initialBudgetChoice = btnUnlimitedBudget?.isChecked ?: false
+        initialPriceBid = getCurrentBid()
+        initialDailyBudget = getCurrentDailyBudget()
+    }
+
     private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
         budget?.setError(bool)
         budget?.setMessage(String.format(error, bid))
@@ -255,7 +280,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        group_name?.textFieldInput?.setText(arguments?.getString(GROUPKEY))
         viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo)
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
@@ -277,15 +301,21 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
         try {
-            dataMap[GROUP_NAME] = group_name?.textFieldInput?.text?.toString()
+            dataMap[IS_DATA_CHANGE] = checkDataChanged()
+            dataMap[GROUP_NAME] = getCurrentTitle()
             dataMap[PRICE_BID] = getCurrentBid()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
             dataMap[BUDGET_LIMITED] = btnUnlimitedBudget.isChecked
-            dataMap[NAME_EDIT] = group_name?.textFieldInput?.text?.toString() != arguments?.getString(GROUPKEY)
+            dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {
         }
         return dataMap
+    }
+
+    private fun checkDataChanged(): Boolean {
+        return initialBudgetChoice != btnUnlimitedBudget.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
+                initialPriceBid != getCurrentBid() || groupName != getCurrentTitle()
     }
 
     override fun onDetach() {

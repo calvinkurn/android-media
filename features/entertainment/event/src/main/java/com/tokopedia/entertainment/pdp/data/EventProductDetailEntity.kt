@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import java.io.Serializable
 
@@ -440,7 +441,11 @@ data class Form(
         val validatorRegex: String = "",
         @SerializedName("value")
         @Expose
-        var value: String = ""
+        var value: String = "",
+        var valuePosition: String = "",
+        var valueList: String = "",
+        var isError: Boolean = false,
+        var errorType: Int = EMPTY_TYPE
 ): Serializable
 
 data class Group(
@@ -803,7 +808,10 @@ data class PackageV3(
         val endDate: String = "",
         @SerializedName("package_items")
         @Expose
-        val packageItems: List<PackageItem> = emptyList()
+        val packageItems: List<PackageItem> = emptyList(),
+        @SerializedName("forms_package")
+        @Expose
+        val formsPackages: List<Form> = emptyList()
 ): EventPDPTicketModel(){
 
         override fun type(typeFactory: PackageTypeFactory): Int {
@@ -872,6 +880,9 @@ data class PackageItem(
         @SerializedName("provider_custom_text")
         @Expose
         val providerCustomText: String = "",
+        @SerializedName("forms_item")
+        @Expose
+        val formsItems: List<Form> = emptyList(),
         var isClicked: Boolean = false
 
 )

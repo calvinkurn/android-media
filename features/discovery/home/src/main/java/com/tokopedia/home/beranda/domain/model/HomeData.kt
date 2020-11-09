@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 
 data class HomeData(
     @SerializedName("dynamicHomeChannel")
-    val dynamicHomeChannel: DynamicHomeChannel = DynamicHomeChannel(),
+    var dynamicHomeChannel: DynamicHomeChannel = DynamicHomeChannel(),
     @SerializedName("slides")
     val banner: BannerDataModel = BannerDataModel(),
     @SerializedName("ticker")
@@ -15,5 +15,6 @@ data class HomeData(
     @SerializedName("spotlight")
     val spotlight: Spotlight = Spotlight(),
     @SerializedName("homeFlag")
-    val homeFlag: HomeFlag = HomeFlag()
+    val homeFlag: HomeFlag = HomeFlag(),
+    var token: String = ""
 )

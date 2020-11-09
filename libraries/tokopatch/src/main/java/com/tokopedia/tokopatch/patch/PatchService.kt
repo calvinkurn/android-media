@@ -12,6 +12,7 @@ import com.tokopedia.tokopatch.utils.PatchLogger
 import com.tokopedia.tokopatch.utils.Utils
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -31,11 +32,15 @@ class PatchService : JobIntentService() {
         private const val PATCHES_CLASS_FULL_NAME = "com.meituan.robust.patch.PatchesInfoImpl"
 
         fun startService(app: Application) {
-            val work = Intent(app.applicationContext, PatchService::class.java)
-            enqueueWork(
-                    app.applicationContext, PatchService::class.java,
-                    JOB_ID, work
-            )
+            try {
+                val work = Intent(app.applicationContext, PatchService::class.java)
+                enqueueWork(
+                        app.applicationContext, PatchService::class.java,
+                        JOB_ID, work
+                )
+            } catch (e: Exception){
+                Timber.e(e, "P1#ROBUST#exceptionNotify where: ${e.message}")
+            }
         }
     }
 

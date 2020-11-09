@@ -23,6 +23,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -138,7 +139,7 @@ class TopAdsImageView : AppCompatImageView {
                             this@TopAdsImageView.setOnClickListener {
                                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
                                 Timber.d("TopAdsImageView is clicked")
-                                ImpresionTask(this@TopAdsImageView.javaClass.canonicalName).execute(imageData.adClickUrl)
+                                TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName,imageData.adClickUrl,"","","")
                             }
                             return false
                         }
@@ -171,10 +172,4 @@ class TopAdsImageView : AppCompatImageView {
         return (widthRatio * height).toInt()
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        if (::topAdsImageViewViewModel.isInitialized) {
-            topAdsImageViewViewModel.onClear()
-        }
-    }
 }

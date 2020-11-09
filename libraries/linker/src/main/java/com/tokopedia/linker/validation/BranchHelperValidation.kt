@@ -24,13 +24,13 @@ class BranchHelperValidation {
 
     private fun validatePaymentId(paymentId: String) {
         if (paymentId.isNullOrBlank()) {
-            logging("validation;reason=paymentId_blank")
+            logging("validation;reason=paymentId_blank;data=''")
         }
     }
 
     private fun validateOrderId(orderID: String) {
         if (orderID.isNullOrBlank()) {
-            logging("validation;reason=orderId_blank")
+            logging("validation;reason=orderId_blank;data=''")
         }
     }
 

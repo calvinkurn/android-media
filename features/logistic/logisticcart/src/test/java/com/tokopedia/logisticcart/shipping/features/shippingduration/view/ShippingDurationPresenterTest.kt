@@ -59,7 +59,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0)
             }
 
             Then("view shows positive data") {
@@ -86,7 +86,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0)
             }
 
             Then("view shows no courier page from errorMessage") {
@@ -109,7 +109,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0)
             }
 
             Then("view shows no courier page") {
@@ -128,7 +128,7 @@ object ShippingDurationPresenterTest : Spek({
             When("executed") {
                 presenter.loadCourierRecommendation(shipmentDetailData, 0,
                         shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address)
+                        products, "1479278-30-740525-99367774", false, address, false, 0)
             }
 
             Then("view shows error page") {

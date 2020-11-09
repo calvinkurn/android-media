@@ -26,7 +26,7 @@ object ProductDetailCommonConstant{
     const val PARAM_PRODUCT_ORIGIN = "origin"
     const val PARAM_IS_PDP = "isPDP"
 
-    const val DEFAULT_NUM_IMAGE_REVIEW = 4
+    const val DEFAULT_NUM_IMAGE_REVIEW = 5
 
     const val SHOP_ID_PARAM = "shopId"
     const val PRODUCT_ID_PARAM = "productId"

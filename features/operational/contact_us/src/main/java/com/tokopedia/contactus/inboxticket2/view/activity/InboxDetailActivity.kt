@@ -28,7 +28,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomSheet
@@ -122,8 +122,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             detailAdapter = InboxDetailAdapter(this,
                     commentsItems,
                     ticketDetail.isNeedAttachment,
-                    (mPresenter as InboxDetailPresenter),
-                    this)
+                    (mPresenter as InboxDetailContract.Presenter),
+                    this,
+                    (mPresenter as? InboxDetailContract.Presenter)?.getUserId() ?: "",
+                    (mPresenter as? InboxDetailContract.Presenter)?.getTicketId() ?: "")
             rvMessageList.adapter = detailAdapter
             rvMessageList.show()
             scrollTo(detailAdapter.itemCount - 1)
@@ -193,9 +195,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun initView() {
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         findingViewsId()
-        (mPresenter as InboxDetailPresenter).getTicketDetails((mPresenter as InboxDetailPresenter).getTicketId())
+        (mPresenter as InboxDetailContract.Presenter).getTicketDetails((mPresenter as InboxDetailContract.Presenter).getTicketId())
         rvMessageList.layoutManager = layoutManager
-        editText.setListener((mPresenter as InboxDetailPresenter).getSearchListener())
+        editText.setListener((mPresenter as InboxDetailContract.Presenter).getSearchListener())
         settingClickListner()
     }
 
@@ -268,7 +270,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         imageUploadAdapter = ImageUploadAdapter(this, this, onClickCross)
         rvSelectedImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvSelectedImages.adapter = imageUploadAdapter
-        edMessage.addTextChangedListener((mPresenter as InboxDetailPresenter).watcher())
+        edMessage.addTextChangedListener((mPresenter as InboxDetailContract.Presenter).watcher())
     }
 
     private val onClickCross = {
@@ -301,7 +303,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                 image.position = position
                 image.imageId = "image" + UUID.randomUUID().toString()
                 image.fileLoc = imagePath
-                (mPresenter as InboxDetailPresenter).onImageSelect(image)
+                (mPresenter as InboxDetailContract.Presenter).onImageSelect(image)
             }
         }
     }
@@ -316,7 +318,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     private fun onEmojiClick(v: View) {
         val id = v.id
-        val presenter = mPresenter as InboxDetailPresenter
+        val presenter = mPresenter as InboxDetailContract.Presenter
         when (id) {
             R.id.btn_inactive_1 -> presenter.onClickEmoji(1)
             R.id.btn_inactive_2 -> presenter.onClickEmoji(2)
@@ -338,7 +340,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun sendMessage() {
-        (mPresenter as InboxDetailPresenter).sendMessage()
+        (mPresenter as InboxDetailContract.Presenter).sendMessage()
         edMessage.setHint(R.string.contact_us_type_here)
         ContactUsTracking.sendGTMInboxTicket(this, "",
                 InboxTicketTracking.Category.EventInboxTicket,
@@ -362,9 +364,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val id = v?.id
         val index: Int
         index = if (id == R.id.iv_next_down) {
-            (mPresenter as InboxDetailPresenter).getNextResult()
+            (mPresenter as InboxDetailContract.Presenter).getNextResult()
         } else {
-            (mPresenter as InboxDetailPresenter).getPreviousResult()
+            (mPresenter as InboxDetailContract.Presenter).getPreviousResult()
         }
         scrollToResult(index)
     }
@@ -584,7 +586,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         }
         if (agreed) {
             viewReplyButton.hide()
-            (mPresenter as InboxDetailPresenter).onClick(true, commentPosition, item?.id ?: "")
+            (mPresenter as InboxDetailContract.Presenter).onClick(true, commentPosition, item?.id ?: "")
             helpFullBottomSheet?.dismiss()
             if (iscloseAllow) {
                 sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
@@ -598,7 +600,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
                     InboxTicketTracking.Action.EventRatingCsatOnSlider)
-            (mPresenter as InboxDetailPresenter).onClick(false, commentPosition, item?.id ?: "")
+            (mPresenter as InboxDetailContract.Presenter).onClick(false, commentPosition, item?.id ?: "")
             textToolbar.show()
             helpFullBottomSheet?.dismiss()
         }
@@ -615,7 +617,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         if (agreed) {
             sendGTmEvent(InboxTicketTracking.Label.EventYes,
                     InboxTicketTracking.Action.EventClickCloseTicket)
-            (mPresenter as InboxDetailPresenter).closeTicket()
+            (mPresenter as InboxDetailContract.Presenter).closeTicket()
             closeComplainBottomSheet?.dismiss()
         } else {
             sendGTmEvent(InboxTicketTracking.Label.EventNo,
@@ -638,7 +640,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                         mPresenter?.refreshLayout()
                     }
                 })
-        (mPresenter as InboxDetailPresenter).onClickEmoji(0)
+        (mPresenter as InboxDetailContract.Presenter).onClickEmoji(0)
     }
 
     override fun showMessage(message: String) {

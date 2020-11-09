@@ -1,17 +1,22 @@
 package com.tokopedia.promocheckout.list.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi.Companion.BASE_URL_EVENT_DEALS
+import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
@@ -19,12 +24,9 @@ import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepo
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.UmrahCheckPromoMapper
+import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,8 +64,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideFlightCheckVoucherUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -106,6 +108,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideDealsPresenter(promoCheckoutListDealsUseCase: PromoCheckoutDealsRepository, compositeSubscription: CompositeSubscription, graphqlUseCase: GraphqlUseCase): PromoCheckoutListDealsPresenter {
+        return PromoCheckoutListDealsPresenter(promoCheckoutListDealsUseCase, compositeSubscription, graphqlUseCase)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideUmrahPresenter(umrahCheckPromoUseCase: UmrahCheckPromoUseCase,
                               umrahCheckPromoMapper: UmrahCheckPromoMapper) : PromoCheckoutListUmrahPresenter {
         return PromoCheckoutListUmrahPresenter(umrahCheckPromoUseCase, umrahCheckPromoMapper)
@@ -115,6 +123,12 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideCheckoutLisDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
+        return DealsCheckRepositoryImpl(dealsCheckoutApi)
     }
 
     @PromoCheckoutListScope
@@ -144,16 +158,33 @@ class PromoCheckoutListModule {
         return FingerprintInterceptor(networkRouter, userSession)
     }
 
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideUserSession(@ApplicationContext context: Context) : UserSessionInterface {
+        val userSession = UserSession(context)
+        return userSession
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+                                   userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, context.applicationContext as NetworkRouter, userSession)
+    }
+
     @Provides
     @PromoCheckoutListScope
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
+                                     tkpdAuthInterceptor: TkpdAuthInterceptor,
                                      chuckerInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
         return builder
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(chuckerInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
@@ -174,17 +205,23 @@ class PromoCheckoutListModule {
         return retrofit.create(EventCheckoutApi::class.java)
     }
 
-    @PromoCheckoutListScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context) : NetworkRouter{
-        return (context as NetworkRouter)
+    @PromoCheckoutListScope
+    fun provideApiServiceDeals(gson: Gson, client: OkHttpClient): DealsCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(BASE_URL_EVENT_DEALS)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(DealsCheckoutApi::class.java)
     }
 
     @PromoCheckoutListScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context) : UserSessionInterface {
-        val userSession = UserSession(context)
-        return userSession
+    fun provideNetworkRouter(@ApplicationContext context: Context) : NetworkRouter{
+        return (context as NetworkRouter)
     }
 
     @Provides

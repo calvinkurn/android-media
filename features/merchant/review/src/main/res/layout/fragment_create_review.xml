@@ -40,6 +40,7 @@
                 app:layout_constraintTop_toBottomOf="@id/ovoPointsTicker" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/create_review_product_info_container"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/layout_lvl2"
@@ -74,12 +75,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/create_review_product_info_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="createReviewProductImage, create_review_product_info_container"
+                app:barrierDirection="bottom"/>
+
             <com.tokopedia.unifycomponents.ContainerUnify
                 android:id="@+id/createReviewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/layout_lvl2"
-                app:layout_constraintTop_toBottomOf="@id/createReviewProductImage">
+                app:layout_constraintTop_toBottomOf="@id/create_review_product_info_barrier">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -226,12 +234,33 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createReviewTextAreaTitle"/>
 
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/incentiveHelperText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyType="body_3"
+                app:layout_constraintStart_toStartOf="@id/createReviewExpandableTextArea"
+                app:layout_constraintTop_toBottomOf="@id/createReviewExpandableTextArea"/>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_text_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="incentiveHelperText, createReviewExpandableTextArea"
+                app:barrierDirection="bottom" />
+
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/createReviewDivider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_marginTop="@dimen/dp_16"
-                app:layout_constraintTop_toBottomOf="@+id/createReviewExpandableTextArea"/>
+                app:layout_constraintTop_toBottomOf="@id/barrier_text_area"/>
 
             <com.tokopedia.review.common.presentation.widget.ReviewScoreWidget
                 android:id="@+id/createReviewScore"

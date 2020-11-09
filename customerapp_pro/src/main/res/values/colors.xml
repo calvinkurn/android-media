@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pure_transparent">#00ffffff</color>
+    <color name="tkpd_main_green_70">#b342b549</color>
+    <color name="background_top_splash_screen">#CCF9EB</color>
+    <color name="background_bottom_splash_screen">#FFFFFF</color>
+</resources>

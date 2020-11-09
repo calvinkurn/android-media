@@ -1,7 +1,0 @@
-query get_cart_type{
-      get_cart_type{
-          data{
-              cart_type
-          }
-      }
-  }

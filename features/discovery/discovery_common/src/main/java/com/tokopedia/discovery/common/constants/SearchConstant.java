@@ -77,6 +77,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
+        String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -138,11 +139,23 @@ public interface SearchConstant {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
+        String AB_TEST_SHOP_RATING = "Hierarchical Rating Toko";
+        String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
+    }
+
+    interface ProductCardLabel {
+        String LABEL_INTEGRITY = "integrity";
+        String LABEL_INTEGRITY_TYPE = "textDarkGrey";
     }
 
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {
@@ -154,5 +167,12 @@ public interface SearchConstant {
         String TOP_ADS = "search_product_top_ads";
         String ORGANIC_ADS = "search_product_organic_ads";
         String BROAD_MATCH_ADS = "search_product_broad_match_ads";
+    }
+
+    interface InspirationCard {
+        String TYPE_ANNOTATION = "annotation";
+        String TYPE_CATEGORY = "category";
+        String TYPE_GUIDED = "guided";
+        String TYPE_CURATED = "curated";
     }
 }

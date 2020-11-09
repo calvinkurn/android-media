@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -131,6 +130,10 @@ class AddToCartDoneViewModel @Inject constructor(
                 shopId = recommendationItem.shopId
                 quantity = if(recommendationItem.minOrder > 0) recommendationItem.minOrder else 1
                 notes = ""
+                userId = userSessionInterface.userId
+                productName = recommendationItem.name
+                category = recommendationItem.categoryBreadcrumbs
+                price = recommendationItem.price
             }
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.sellerhome.settings.analytics.sendSettingClickBackButtonTracking
+import com.tokopedia.seller.menu.common.analytics.sendSettingClickBackButtonTracking
 import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
 import timber.log.Timber
 

@@ -41,7 +41,10 @@ data class ProductCardModel (
         val stockBarLabel: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
-        val addToCardText: String = ""
+        val addToCardText: String = "",
+        val shopRating: String = "",
+        val isShopRatingYellow: Boolean = false,
+        val countSoldRating: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -71,8 +74,14 @@ data class ProductCardModel (
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
-            val type: String = ""
-    ):Parcelable
+            val type: String = "",
+            val imageUrl: String = ""
+    ):Parcelable {
+
+        fun isShowLabelCampaign(): Boolean {
+            return imageUrl.isNotEmpty() && title.isNotEmpty()
+        }
+    }
 
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
@@ -98,11 +107,29 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_SHIPPING)
     }
 
-    fun willShowRatingAndReviewCount(): Boolean {
-        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
+    fun getLabelCampaign(): LabelGroup? {
+        return findLabelGroup(LABEL_CAMPAIGN)
     }
+
+    fun willShowRatingAndReviewCount(): Boolean {
+        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowSalesAndRating()
+    }
+
+    fun willShowSalesAndRating(): Boolean{
+        return countSoldRating.isNotEmpty() && getLabelIntegrity() != null
+    }
+
+    fun willShowRating(): Boolean{
+        return countSoldRating.isNotEmpty()
+    }
+
+    fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
 
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
+
+    fun isShowShopRating() = shopRating.isNotEmpty()
+
+    fun isShowLabelGimmick() = getLabelCampaign()?.isShowLabelCampaign()?.not() ?: true
 }

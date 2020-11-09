@@ -125,7 +125,7 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickPay(selectedBills: List<RechargeBills>) {
+    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int) {
         val actionField = mapOf(EnhanceEccomerce.STEP to STEP_VALUE, EnhanceEccomerce.OPTION to OPTION_VALUE)
         val ecommerce = with (EnhanceEccomerce) {
             val products = createEcommerceProducts(selectedBills).map {
@@ -139,11 +139,12 @@ class SmartBillsAnalytics {
             )))
         }
 
+        val areAllBills = selectedBills.size == totalBillsCount
         val map = TrackAppUtils.gtmData(
                 Event.CHECKOUT,
                 CATEGORY_SMART_BILLS,
-                Action.CLICK_BAYAR,
-                Label.BAYAR)
+                if (areAllBills) Action.CLICK_BAYAR_FULL else Action.CLICK_BAYAR_PARTIAL,
+                "${Label.BAYAR} - $totalBillsCount - ${selectedBills.size}")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -151,12 +152,12 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickPayFailed() {
+    fun clickPayFailed(totalBillsCount: Int, selectedBillsCount: Int) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
-                Action.CLICK_BAYAR,
-                Label.GAGAL)
+                Action.CLICK_BAYAR_FAILED,
+                "${Label.GAGAL} - $totalBillsCount - $selectedBillsCount")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_DETAIL
         map.putAll(ADDITIONAL_INFO_MAP)

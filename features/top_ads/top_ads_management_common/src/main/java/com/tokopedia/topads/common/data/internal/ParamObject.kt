@@ -30,7 +30,7 @@ object ParamObject {
     const val PER_PAGE = "perPage"
     const val GROUPID = "groupID"
     const val FILTER = "filter"
-    const val KEYWORD_SOURCE = "editkeyword"
+    const val KEYWORD_SOURCE = "edit_keyword_app"
     const val SEPARATE_STAT = "separate_statistic"
     const val QUERY_INPUT = "queryInput"
     const val SORT = "sort"
@@ -56,4 +56,6 @@ object ParamObject {
     const val SEARCH_TERM = "search_term"
     const val NEXT_CURSOR = "next_cursor"
     const val LIMIT = "limit"
+    const val ADS = "ads"
+    const val ACTION = "action"
 }

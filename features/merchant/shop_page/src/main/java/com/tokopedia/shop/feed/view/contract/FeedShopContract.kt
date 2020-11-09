@@ -37,6 +37,10 @@ interface FeedShopContract {
 
         fun onEmptyFeedButtonClicked()
 
+        fun onGotoPlayStoreClicked()
+
+        fun onGotoLearnMoreClicked(url: String): Boolean
+
         fun onAddToCartSuccess()
 
         fun onAddToCartFailed(pdpAppLink: String)

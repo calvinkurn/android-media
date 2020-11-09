@@ -19,17 +19,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.di.RechargeHomepageComponent
-import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
+import com.tokopedia.digital.home.di.RechargeHomepageComponent
+import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
-import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomeSectionDecoration
-import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapter
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -114,6 +115,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
         }
+
+        // Recharge Branch Event
+        rechargeHomepageAnalytics.eventHomepageLaunched(userSession.userId)
 
         loadData()
     }
@@ -223,10 +227,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeLegoBannerItemClicked(sectionID: Int, itemID: Int, itemPosition: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }?.tracking?.find {
-                it.action == RechargeHomepageAnalytics.ACTION_CLICK
-            }?.run {
-                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+            val bannerItem = homeComponentsData.find { it.id == sectionID }?.items?.find { it.id == itemID }
+            bannerItem?.run {
+                tracking.find {
+                    it.action == RechargeHomepageAnalytics.ACTION_CLICK
+                }?.run {
+                    rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+                }
+
+                RouteManager.route(context, applink)
             }
         }
     }
@@ -238,10 +247,15 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onRechargeReminderWidgetClicked(sectionID: Int) {
         if (::homeComponentsData.isInitialized) {
-            homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()?.tracking?.find {
-                it.action == RechargeHomepageAnalytics.ACTION_CLICK
-            }?.run {
-                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+            val reminderData = homeComponentsData.find { it.id == sectionID }?.items?.firstOrNull()
+            reminderData?.run {
+                tracking.find {
+                    it.action == RechargeHomepageAnalytics.ACTION_CLICK
+                }?.run {
+                    rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
+                }
+
+                RouteManager.route(context, applink)
             }
         }
     }

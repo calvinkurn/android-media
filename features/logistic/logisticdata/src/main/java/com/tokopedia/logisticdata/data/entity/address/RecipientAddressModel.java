@@ -28,16 +28,7 @@ public class RecipientAddressModel implements Parcelable {
     private String longitude;
     private String cityId;
     private String provinceId;
-
-    // For PickupPoint Alfamart
-    private String tokenPickup;
-    private String unixTime;
-
     private boolean selected;
-    private boolean stateExtraPaddingTop;
-
-    // Flag for one click shipment
-    private boolean isDisableMultipleAddress;
 
     private boolean isCornerAddress;
     private String cornerId;
@@ -158,22 +149,6 @@ public class RecipientAddressModel implements Parcelable {
         this.destinationDistrictName = destinationDistrictName;
     }
 
-    public String getTokenPickup() {
-        return tokenPickup;
-    }
-
-    public void setTokenPickup(String tokenPickup) {
-        this.tokenPickup = tokenPickup;
-    }
-
-    public String getUnixTime() {
-        return unixTime;
-    }
-
-    public void setUnixTime(String unixTime) {
-        this.unixTime = unixTime;
-    }
-
     public boolean isSelected() {
         return selected;
     }
@@ -212,22 +187,6 @@ public class RecipientAddressModel implements Parcelable {
 
     public void setProvinceId(String provinceId) {
         this.provinceId = provinceId;
-    }
-
-    public boolean isStateExtraPaddingTop() {
-        return stateExtraPaddingTop;
-    }
-
-    public void setStateExtraPaddingTop(boolean stateExtraPaddingTop) {
-        this.stateExtraPaddingTop = stateExtraPaddingTop;
-    }
-
-    public boolean isDisableMultipleAddress() {
-        return isDisableMultipleAddress;
-    }
-
-    public void setDisableMultipleAddress(boolean disableMultipleAddress) {
-        isDisableMultipleAddress = disableMultipleAddress;
     }
 
     public boolean isCornerAddress() {
@@ -438,11 +397,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeString(this.longitude);
         dest.writeString(this.cityId);
         dest.writeString(this.provinceId);
-        dest.writeString(this.tokenPickup);
-        dest.writeString(this.unixTime);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
         dest.writeString(this.cornerId);
         dest.writeString(this.userCornerId);
@@ -476,11 +431,7 @@ public class RecipientAddressModel implements Parcelable {
         this.longitude = in.readString();
         this.cityId = in.readString();
         this.provinceId = in.readString();
-        this.tokenPickup = in.readString();
-        this.unixTime = in.readString();
         this.selected = in.readByte() != 0;
-        this.stateExtraPaddingTop = in.readByte() != 0;
-        this.isDisableMultipleAddress = in.readByte() != 0;
         this.isCornerAddress = in.readByte() != 0;
         this.cornerId = in.readString();
         this.userCornerId = in.readString();
