@@ -102,7 +102,7 @@ class AccountHeaderViewHolder(itemView: View,
                     View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
             )
         } else {
-            configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIcon(), element.badge)
+            configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
         }
         renderProfileLoginSection(
                 MethodChecker.fromHtml(
@@ -191,24 +191,24 @@ class AccountHeaderViewHolder(itemView: View,
         }
     }
 
-    private fun getCurrentGreetingsIcon() : Int {
+    private fun getCurrentGreetingsIconStringUrl() : String {
         return when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 0..2 -> R.drawable.emo_0_2
-            in 3..4 -> R.drawable.emo_3_4
-            in 5..9 -> R.drawable.emo_5_9
-            in 10..14 -> R.drawable.emo_10_14
-            in 15..17 -> R.drawable.emo_15_17
-            in 18..23 -> R.drawable.emo_18_23
-            else -> R.drawable.emo_10_14
+            in 0..2 -> "https://ecs7.tokopedia.net/home-img/greet-sleep.png"
+            in 3..4 -> "https://ecs7.tokopedia.net/home-img/greet-confused.png"
+            in 5..9 -> "https://ecs7.tokopedia.net/home-img/greet-cloud-sun.png"
+            in 10..14 -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
+            in 15..17 -> "https://ecs7.tokopedia.net/home-img/greet-dusk.png"
+            in 18..23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
+            else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
         }
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
 
-    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, drawableInt: Int, badgeUrl: String) {
+    private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
         if (needToSwitchText) {
             tvName.text = greetingString
-            ivBadge.loadImageDrawable(drawableInt)
+            ivBadge.loadImage(badgeGreetingsUrl)
             launch {
                 delay(1000)
                 tvName.animateProfileName(nameString, ANIMATION_DURATION_MS)
