@@ -26,7 +26,6 @@ import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -114,7 +113,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupNavigator() {
-        navigator = InboxNavigator(this, R.id.fragment_contaier, supportFragmentManager, InboxFragmentFactoryImpl())
+        navigator = InboxNavigator(
+                this,
+                R.id.fragment_contaier,
+                supportFragmentManager,
+                InboxFragmentFactoryImpl()
+        )
     }
 
     private fun setupBackground() {
@@ -178,6 +182,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
-        navigator?.showPage(page)
+        navigator?.onPageSelected(page)
     }
 }

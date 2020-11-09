@@ -157,6 +157,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         loadInitialData()
     }
 
+    override fun onPageClickedAgain() {
+        rv?.smoothScrollToPosition(0)
+    }
+
     override fun initInjector() {
         DaggerNotificationComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)

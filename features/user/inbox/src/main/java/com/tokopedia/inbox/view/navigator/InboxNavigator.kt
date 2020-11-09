@@ -21,10 +21,11 @@ class InboxNavigator constructor(
 ) {
     private var notificationFragment: Fragment? = null
     private var chatFragment: Fragment? = null
-
     //    private var discussionFragment: Fragment? = null
+
     @InboxFragmentType
-    private var currentSelectedPage: Int = InboxFragmentType.NONE
+    var currentSelectedPage: Int = InboxFragmentType.NONE
+        private set
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
 
     init {
@@ -55,16 +56,40 @@ class InboxNavigator constructor(
 //        updateFragmentVisibilityHint(fragment)
     }
 
-    fun showPage(@InboxFragmentType page: Int) {
-        if (isActivityResumed()) {
-            val transaction = fm.beginTransaction()
-            val fragment = getPageFragment(page)
-            fragment?.let {
-                showFragment(it, transaction)
-                setSelectedPage(page)
-            }
+    /**
+     * TODO: Remove this later
+     * previously known as:
+     * fun showPage(@InboxFragmentType page: Int) { .. }
+     */
+    fun onPageSelected(@InboxFragmentType page: Int) {
+        if (isActivityResumed() && !isCurrentlyOnThePage(page)) {
+            showPage(page)
 //            updateFragmentVisibilityHint(fragment)
+        } else {
+            onPageClickedAgain(page)
         }
+    }
+
+    private fun showPage(page: Int) {
+        val transaction = fm.beginTransaction()
+        val fragment = getPageFragment(page)
+        fragment?.let {
+            showFragment(it, transaction)
+            setSelectedPage(page)
+        }
+    }
+
+    private fun onPageClickedAgain(page: Int) {
+        val fragment = getFragmentOf(page) ?: return
+        if (fragment is InboxFragment) {
+            fragment.onPageClickedAgain()
+        }
+    }
+
+    private fun isCurrentlyOnThePage(@InboxFragmentType page: Int): Boolean {
+        val fragment = getFragmentOf(page) ?: return false
+        val fragmentState = fragment.lifecycle.currentState
+        return page == currentSelectedPage && fragmentState.isAtLeast(Lifecycle.State.RESUMED)
     }
 
     fun notifyRoleChanged(@RoleType role: Int) {
@@ -184,7 +209,6 @@ class InboxNavigator constructor(
         val selectedFragment = fragmentByTag ?: fragment
         val currentState = selectedFragment.lifecycle.currentState
         val isFragmentNotResumed = !currentState.isAtLeast(Lifecycle.State.RESUMED)
-
         if (isFragmentNotResumed) {
             try {
                 transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
@@ -192,12 +216,16 @@ class InboxNavigator constructor(
                 e.printStackTrace()
             }
         }
-
         hideAllPages(transaction)
-
-        transaction
-                .show(selectedFragment)
+        transaction.show(selectedFragment)
                 .commit()
+    }
+
+    private fun getFragmentOf(@InboxFragmentType type: Int): Fragment? {
+        val fragment = getPageFragment(type) ?: return null
+        val tag = fragment::class.java.canonicalName
+        val fragmentByTag = fm.findFragmentByTag(tag)
+        return fragmentByTag ?: fragment
     }
 
     private fun getPageFragment(@InboxFragmentType type: Int): Fragment? {
