@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.buyerorder.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,14 +10,17 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
+import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 class UohTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
@@ -33,7 +36,7 @@ class UohTopAdsVerificationTest {
     var activityRule = object: ActivityTestRule<UohListActivity>(UohListActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            loginInstrumentationTestTopAdsUser()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
     }

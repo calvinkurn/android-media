@@ -87,6 +87,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -322,13 +323,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun observingData() {
         observingOrderHistory()
-        observingRecommendationList()
+        /*observingRecommendationList()
         observingFinishOrder()
         observingAtc()
         observingLsFinishOrder()
         observingFlightResendEmail()
         observingTrainResendEmail()
-        observingRechargeSetFail()
+        observingRechargeSetFail()*/
     }
 
     private fun prepareLayout() {
@@ -416,7 +417,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun observingOrderHistory() {
         if (orderIdNeedUpdated.isEmpty()) uohItemAdapter.showLoader()
-        uohListViewModel.orderHistoryListResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     orderList = it.data
@@ -442,16 +443,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                     }
                     currPage += 1
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingRecommendationList() {
-        uohListViewModel.recommendationListResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.recommendationListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     recommendationList = it.data
@@ -459,13 +462,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
+                    UohIdlingResource.decrement()
+                }
+                is Fail -> {
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
@@ -483,16 +490,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                         chosenOrder?.let { it1 -> uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, it1) }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -501,16 +510,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
@@ -528,16 +539,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
                         chosenOrder?.let { it1 -> uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, it1) }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val flightEmailResponse = it.data.flightResendEmailV2
@@ -551,17 +564,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
@@ -575,17 +590,19 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(this, androidx.lifecycle.Observer {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
@@ -595,9 +612,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })

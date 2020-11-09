@@ -6,6 +6,7 @@ import com.google.gson.JsonArray
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
@@ -62,12 +63,14 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
         get() = _rechargeSetFailResult
 
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
+        UohIdlingResource.increment()
         launch {
             _orderHistoryListResult.postValue(uohListUseCase.execute(paramOrder, orderQuery))
         }
     }
 
     fun loadRecommendationList(pageNumber: Int) {
+        UohIdlingResource.increment()
         launch {
             val recommendationData = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
@@ -78,36 +81,43 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     }
 
     fun doFinishOrder(finishOrderQuery: String, paramFinishOrder: UohFinishOrderParam) {
+        UohIdlingResource.increment()
         launch {
             _finishOrderResult.postValue(uohFinishOrderUseCase.execute(finishOrderQuery, paramFinishOrder))
         }
     }
 
     fun doAtc(atcMultiQuery: String, listParam: JsonArray) {
+        UohIdlingResource.increment()
         launch {
             _atcResult.postValue(atcMultiProductsUseCase.execute(atcMultiQuery, listParam))
         }
     }
 
     fun doLsPrintFinishOrder(lsPrintQuery: String, verticalId: String) {
+        UohIdlingResource.increment()
         launch {
             _lsPrintFinishOrderResult.postValue(lsPrintFinishOrderUseCase.execute(lsPrintQuery, verticalId))
         }
     }
 
     fun doFlightResendEmail(flightResendQuery: String, invoiceId: String, email: String) {
+        UohIdlingResource.increment()
         launch {
             _flightResendEmailResult.postValue(flightResendEmailUseCase.execute(flightResendQuery, invoiceId, email))
         }
     }
 
     fun doTrainResendEmail(trainResendQuery: String, param: TrainResendEmailParam) {
+        UohIdlingResource.increment()
         launch {
             _trainResendEmailResult.postValue(trainResendEmailUseCase.execute(trainResendQuery, param))
         }
     }
 
     fun doRechargeSetFail(rechargeSetFailQuery: String, orderId: Int) {
+        UohIdlingResource.increment()
+
         launch {
             _rechargeSetFailResult.postValue(rechargeSetFailUseCase.execute(rechargeSetFailQuery, orderId))
         }
