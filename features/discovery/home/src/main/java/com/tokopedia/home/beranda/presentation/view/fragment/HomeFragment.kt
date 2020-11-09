@@ -1313,8 +1313,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
 
     private fun executeGetStickyContent():Boolean{
-        val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME, true)
-        if (isShowSticky && !getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
+        if (!getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
         return true
     }
 

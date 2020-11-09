@@ -211,9 +211,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun loadData(page: Int) {
         showOnlyList(true)
-        destinationViewModel.getHotelRecommendation(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_popular),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_destination_recent_search))
+        destinationViewModel.getHotelRecommendation()
     }
 
     private fun showOnlyList(showListOnly: Boolean) {

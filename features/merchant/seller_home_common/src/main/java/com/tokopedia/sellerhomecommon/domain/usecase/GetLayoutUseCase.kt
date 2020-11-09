@@ -66,7 +66,6 @@ class GetLayoutUseCase(
                       description
                     }
                   }
-                  url
                   applink
                   dataKey
                   ctaText

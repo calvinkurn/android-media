@@ -33,7 +33,7 @@ import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
