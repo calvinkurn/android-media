@@ -33,7 +33,6 @@ import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
 import dagger.Lazy
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -123,41 +122,37 @@ class ShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success`() {
-        runBlocking {
-            coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
-            shopPageViewModel.getShopPageTabData(
-                    SAMPLE_SHOP_ID.toIntOrZero(),
-                    "shop domain",
-                    1,
-                    10,
-                    ShopProductFilterParameter(),
-                    "",
-                    "",
-                    true
-            )
-            coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        shopPageViewModel.getShopPageTabData(
+                SAMPLE_SHOP_ID.toIntOrZero(),
+                "shop domain",
+                1,
+                10,
+                ShopProductFilterParameter(),
+                "",
+                "",
+                true
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
 
-            assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
-        }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
     }
 
     @Test
     fun `check whether shopPageP1Data value is Fail`() {
-        runBlocking {
-            coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
-            shopPageViewModel.getShopPageTabData(
-                    SAMPLE_SHOP_ID.toIntOrZero(),
-                    "shop domain",
-                    1,
-                    10,
-                    ShopProductFilterParameter(),
-                    "",
-                    "",
-                    true
-            )
-            coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
-            assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
-        }
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
+        shopPageViewModel.getShopPageTabData(
+                SAMPLE_SHOP_ID.toIntOrZero(),
+                "shop domain",
+                1,
+                10,
+                ShopProductFilterParameter(),
+                "",
+                "",
+                true
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
     }
 
     @Test
@@ -246,7 +241,7 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether getShopIdFromDomain post shopIdFromDomainData success value`() = runBlocking {
+    fun `check whether getShopIdFromDomain post shopIdFromDomainData success value`() {
         coEvery { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() } returns ShopInfo()
         shopPageViewModel.getShopIdFromDomain("Mock domain")
         coVerify { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() }
@@ -254,7 +249,7 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether getShopIdFromDomain post shopIdFromDomainData fail value`() = runBlocking {
+    fun `check whether getShopIdFromDomain post shopIdFromDomainData fail value`() {
         coEvery { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() } throws Throwable()
         shopPageViewModel.getShopIdFromDomain("Mock domain")
         coVerify { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() }
@@ -262,7 +257,7 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether getShopPageHeaderContentData post shopPageHeaderContentData success value`() = runBlocking {
+    fun `check whether getShopPageHeaderContentData post shopPageHeaderContentData success value`() {
         every { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
         coEvery { gqlGetShopInfoForHeaderUseCase.get().executeOnBackground() } returns ShopInfo()
         coEvery { getShopReputationUseCase.get().executeOnBackground() } returns ShopBadge()
@@ -309,10 +304,11 @@ class ShopPageViewModelTest {
         }
 
         mockkStatic(ImageUtils::class)
-        every { ImageUtils.writeImageToTkpdPath(
-                ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                mockBitmap,
-                true)
+        every {
+            ImageUtils.writeImageToTkpdPath(
+                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                    mockBitmap,
+                    true)
         } returns File("path")
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())
