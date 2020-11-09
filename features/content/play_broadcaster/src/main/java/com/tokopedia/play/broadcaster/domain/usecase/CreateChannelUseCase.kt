@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.play_common.types.PlayChannelStatusType
-import com.tokopedia.play_common.domain.base.BaseUseCase
-import com.tokopedia.play_common.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class CreateChannelUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-) : BaseUseCase<ChannelId>() {
+) : UseCase<ChannelId>() {
 
     private val query = """
            mutation createChannel(${'$'}authorId: String!, ${'$'}authorType: Int!, ${'$'}status: Int!){
@@ -33,13 +33,15 @@ class CreateChannelUseCase @Inject constructor(
     var params: Map<String, Any> = emptyMap()
 
     override suspend fun executeOnBackground(): ChannelId {
-        val gqlResponse = configureGqlResponse(graphqlRepository, query, CreateChannelBroadcastResponse::class.java, params, GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val gqlResponse = DefaultUseCaseHandler(
+                gqlRepository = graphqlRepository,
+                query = query,
+                typeOfT = CreateChannelBroadcastResponse::class.java,
+                params = params,
+                gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        ).executeWithRetry()
         val response = gqlResponse.getData<CreateChannelBroadcastResponse>(CreateChannelBroadcastResponse::class.java)
-        if (response?.getChannelId != null) {
-            return response.getChannelId
-        }
-        throw DefaultErrorThrowable()
+        return response.getChannelId
     }
 
     companion object {
