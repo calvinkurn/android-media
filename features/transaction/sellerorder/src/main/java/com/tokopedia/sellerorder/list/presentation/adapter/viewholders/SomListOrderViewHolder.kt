@@ -64,11 +64,15 @@ class SomListOrderViewHolder(
     }
 
     private fun touchCheckBox(element: SomListOrderUiModel) {
-        itemView.checkBoxSomListMultiSelect.apply {
-            isChecked = !isChecked
-            element.isChecked = isChecked
+        if (element.cancelRequest == 0) {
+            itemView.checkBoxSomListMultiSelect.apply {
+                isChecked = !isChecked
+                element.isChecked = isChecked
+            }
+            listener.onCheckChanged()
+        } else {
+            listener.onCheckBoxClickedWhenDisabled()
         }
-        listener.onCheckChanged()
     }
 
     private fun setupQuickActionButton(element: SomListOrderUiModel) {
