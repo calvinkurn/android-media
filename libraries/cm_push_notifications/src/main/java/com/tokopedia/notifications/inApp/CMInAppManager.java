@@ -130,10 +130,10 @@ public class CMInAppManager implements CmInAppListener,
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
+                sendAmplificationEventInAppRead(cmInApp);
             } else {
                 Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
-            sendAmplificationEventInAppRead(cmInApp);
         }
     }
 

@@ -1,12 +1,15 @@
 package com.tokopedia.notifications.inApp
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.viewEngine.BannerView
 import com.tokopedia.notifications.inApp.viewEngine.ViewEngine
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class CmDialogHandler {
@@ -23,6 +26,8 @@ class CmDialogHandler {
             // set flag if has dialog showing
             cmDialogHandlerCallback.onShow(activity)
         } catch (e: Exception) {
+            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString(e).substring(0, Math.min(Log.getStackTraceString(e).length, CMConstant.TimberTags.MAX_LIMIT))
+                    + "';data='" + data.toString().substring(0, Math.min(data.toString().length, CMConstant.TimberTags.MAX_LIMIT)) + "'")
             cmDialogHandlerCallback.onException(e, data)
         }
     }
